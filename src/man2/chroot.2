@@ -1,0 +1,121 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright (c) 1992 Drew Eckhardt (drew@cs.colorado.edu), March 28, 1992
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified by Michael Haardt <michael@moria.de>
+.\" Modified 1993-07-21 by Rik Faith <faith@cs.unc.edu>
+.\" Modified 1994-08-21 by Michael Chastain <mec@shell.portal.com>
+.\" Modified 1996-06-13 by aeb
+.\" Modified 1996-11-06 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified 1997-08-21 by Joseph S. Myers <jsm28@cam.ac.uk>
+.\" Modified 2003-08-24 by Martin Schulze <joey@infodrom.org>
+.\" Modified 2004-06-23 by Michael Kerrisk <mtk16@ext.canterbury.ac.nz>
+.\"
+.\" Translation (c) 1998 Przemek Borys <pborys@dione.ids.pl>
+.\" Last update: Robert Luberda <robert@debian.org> Nov 2004,
+.\"              manpages 1.70
+.\" $Id: chroot.2,v 1.5 2004/11/21 11:50:55 robert Exp $
+.\"
+.TH CHROOT 2 2004-06-23 "Linux 2.6.7" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+chroot \- zmiana katalogu g³ównego
+.SH SK£ADNIA
+.B #include <unistd.h>
+.sp
+.BI "int chroot(const char *" path );
+.SH OPIS
+.B chroot
+zmienia katalog g³ówny na katalog podany w
+.IR path .
+Ten katalog bêdzie u¿ywany do nazw ¶cie¿ek zaczynaj±cych siê od /. Katalog
+g³ówny jest dziedziczony przez wszystkie procesy potomne bie¿±cego procesu.
+
+Funkcjê 
+.BR chroot (2)
+mo¿e wywo³aæ tylko proces uprzywilejowany (pod Linuksem: ten ze
+zdolno¶ci±
+.BR CAP_SYS_CHROOT ).
+
+Funkcja ta zmienia tylko sk³adniki w procesie rozwi±zywania nazw plików
+i nie robi nic poza tym.
+
+Funkcja ta nie zmienia bie¿±cego katalogu roboczego,
+wiêc `.' mo¿e znajdowaæ siê poza drzewem zakorzenionym w `/'.
+W szczególno¶ci, superu¿ytkownik mo¿e uciec `uwiêzienia w chroot'
+wykonuj±c `mkdir foo; chroot foo; cd ..'.
+
+Funkcja ta nie zamyka otwartych deskryptorów plików, wiêc takie deskryptory
+plików mog± zezwalaæ na dostêp poza nowym drzewem zakorzenionym w `/'.
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu zwracane jest zero. w przypadku b³êdu zwracane jest
+\-1 i odpowiednio ustawiane
+.I errno .
+.SH B£ÊDY
+Dla niektórych systemów plików mog± byæ zwracane inne b³êdy ni¿ opisane
+poni¿ej. Najogólniejsze b³êdy to:
+.TP
+.B EACCES
+Brak praw do przeszukiwania dla sk³adowej ¶cie¿ki.
+(Patrz tak¿e
+.BR path_resolution (2)).
+.TP
+.B EFAULT
+.I path
+wskazuje poza dostêpn± dla u¿ytkownika przestrzeñ adresow±.
+.TP
+.B EIO
+Wyst±pi³ b³±d we/wy.
+.TP
+.B ELOOP
+Podczas rozwi±zywania
+.I path
+napotkano zbyt wiele dowi±zañ symbolicznych.
+.TP
+.B ENAMETOOLONG
+.I path
+jest zbyt d³ugie.
+.TP
+.B ENOENT
+Plik nie istnieje.
+.TP
+.B ENOMEM
+Brak pamiêci j±dra.
+.TP
+.B ENOTDIR
+Sk³adowa ¶cie¿ki
+.I path
+nie jest katalogiem.
+.TP
+.B EPERM
+Efektywny UID nie jest zerem.
+.SH "ZGODNE Z"
+SVr4, SVID, 4.4BSD, X/OPEN. Ta funkcja nie jest czê¶ci± POSIX.1. SVr4
+dokumentuje dodatkowe b³êdy EINTR, ENOLINK i EMULTIHOP. X/OPEN nie dokumentuje
+b³êdów EIO, ENOMEM i EFAULT.
+Interfejs ten jest oznaczany jako spadek po X/OPEN.
+.SH UWAGI
+FreeBSD ma silniejsz± funkcjê systemow±
+.IR jail() .
+.SH "ZOBACZ TAK¯E"
+.BR chdir (2),
+.BR path_resolution (2)

@@ -1,0 +1,66 @@
+.\" Copyright 1993 David Metcalfe (david@prism.demon.co.uk)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" References consulted:
+.\"     Linux libc source code
+.\"     Lewine's _POSIX Programmer's Guide_ (O'Reilly & Associates, 1991)
+.\"     386BSD man pages
+.\" Modified Sat Jul 24 19:17:53 1993 by Rik Faith (faith@cs.unc.edu)
+.\"
+.\" T³umaczenie wersji man-pages 1.50 - czerwiec 2002 PTM
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\"
+.TH GETUSERSHELL 3 1993-07-04 "BSD" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+getusershell, setusershell, endusershell \- odczytanie dozwolonej pow³oki
+u¿ytkownika
+.SH SK£ADNIA
+.nf
+.B #include <unistd.h>
+.sp
+.B char *getusershell(void);
+.sp
+.B void setusershell(void);
+.sp
+.B void endusershell(void);
+.fi
+.SH OPIS
+Funkcja \fBgetusershell()\fP zwraca nastêpn± liniê z pliku \fI/etc/shells\fP,
+otwieraj±c plik, je¶li jest to potrzebne. Linia powinna zawieraæ ¶cie¿kê do
+prawid³owej pow³oki u¿ytkownika. Je¶li \fI/etc/shells\fP nie istnieje, lub
+jego odczyt nie jest mo¿liwy, \fBgetusershell()\fP zachowuje siê tak, jakby
+w pliku tym by³y wymienione \fI/bin/sh\fP i \fI/bin/csh\fP.
+.PP
+Funkcja \fBsetusershell()\fP ustawia wska¼nik pliku \fI/etc/shells\fP na
+jego pocz±tek.
+.PP
+Funkcja \fBendusershell()\fP zamyka \fI/etc/shells\fP.
+.SH "WARTO¦Æ ZWRACANA"
+Funkcja \fBgetusershell()\fP zwraca wska¼nik NULL po napotkaniu koñca pliku.
+.SH PLIKI
+.nf
+/etc/shells
+.fi
+.SH "ZGODNE Z"
+BSD 4.3
+.SH "ZOBACZ TAK¯E"
+.BR shells (5)

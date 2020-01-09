@@ -1,0 +1,17 @@
+.\" 1999 PTM Przemek Borys
+.TH KILLALL5 8 "10 Pa¼dziernik 1994" "" "Podrêcznik administratora Linuksa"
+.SH NAZWA
+killall5 -- wy¶lij sygna³ wszystkim procesom.
+.SH SK£ADNIA
+.B killall5
+.RB -numersygna³u
+.SH OPIS
+.B killall5
+jest komend± killall z SystemV. Wysy³a sygna³ do wszystkich procesów, poza
+procesami swojej sesji, wiêc nie ubije pow³oki, w której pracuje skrypt, w
+którym wywo³ano tê komendê. Podstawowym zadaniem tej komendy jest u¿ycie w
+plikach startowych \fBrc\fR, z katalogu /etc/init.d.
+.SH ZOBACZ TAK¯E
+halt(8), reboot(8).
+.SH AUTOR
+Miquel van Smoorenburg, miquels@cistron.nl

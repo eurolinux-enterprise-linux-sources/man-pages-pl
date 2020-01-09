@@ -1,0 +1,89 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+.\"
+.\" mountd(8)
+.\"
+.\" Copyright (C) 1999 Olaf Kirch <okir@monad.swb.de>
+.TH rpc.mountd 8 "31 maja 1999"
+.SH NAZWA
+rpc.mountd \- demon montowania NFS
+.SH SK£ADNIA
+.BI "/usr/sbin/rpc.mountd [" opcje "]"
+.SH OPIS
+Program
+.B rpc.mountd
+implementuje protokó³ montowania NFS. Po odebraniu ¿±dania montowania od
+klienta NFS sprawdza je wed³ug listy obecnie wyeksportowanych systemów
+plików. Je¶li klient ma prawa do zamontowania systemu,
+.B rpc.mountd
+pobiera uchwyt ¿±danego katalogu i zwraca go klientowi.
+.SS Eksportowanie systemów plików NFS
+Udostêpnianie systemów plików klientom NFS nazywa siê
+.IR eksportowaniem .
+.P
+Zazwyczaj system plików i hosty, dla których system ma byæ dostêpny, powinny
+byæ wymienione w pliku
+.BR /etc/exports .
+Ponadto przy ka¿dym uruchamianiu systemu nale¿y wywo³aæ polecenie
+.BR exportfs -a .
+Polecenie
+.BR exportfs (8)
+powoduje wyeksportowanie informacji z tego pliku zarówno do j±dra, jak i
+do demona
+.BR rpc.mountd .
+.P
+Zamiast tego, mo¿na eksportowaæ poszczególne katalogi tymczasowo,
+u¿ywaj±c sk³adni
+.IB host : /katalog
+.BR exportfs .
+.SS Plik rmtab
+Dla ka¿dego ¿±dania montowania odebranego od klienta NFS,
+.B rpc.mountd
+dodaje wpis w pliku
+.BR /var/state/nfs/rmtab .
+Podczas odbierania ¿±dania odmontowania, wpis jest usuwany. 
+.\" user level part of the NFS service.
+.P
+Jednak plik ten jest raczej ozdobnikiem. Po pierwsze, klient mo¿e korzystaæ
+z uchwytu katalogu nawet po wywo³aniu procedury odmontowania. Po drugie,
+je¶li system bêd±cy klientem zostanie prze³adowany bez informowania
+.BR rpc.mountd , to
+w 
+.B rmtab
+pozostanie przestarza³y plik.
+.SH OPCJE
+.TP
+.\" This file isn't touched by mountd at all--even though it
+.\" accepts the option.
+.\" .BR \-f " or " \-\-exports-file
+.\" This option specifies the exports file, listing the clients that this
+.\" server is prepared to serve and parameters to apply to each
+.\" such mount (see
+.\" .BR exports (5)).
+.\" By default, export information is read from
+.\" .IR /etc/exports .
+.TP
+.BR \-N " or " \-\-no-nfs-version
+Opcja ta mo¿e byæ u¿ywana do ¿±dania by
+.B rpc.mountd
+nie oferowa³ pewnych wersji NFS. Obecna wersja
+.B rpc.mountd
+mo¿e obs³ugiwaæ zarówno wersjê 2 jak i 3 NFS. Je¶li sterownik j±dra zosta³
+skompilowany dla NFS3,
+.B rpc.mountd
+musi byæ wywo³ywany z opcj±
+.BR "\-\-no-nfs-version 3" .
+.TP
+.BR \-v " or " \-\-version
+Wypisuje wersjê 
+.B rpc.mountd
+i koñczy pracê.
+.SH ZOBACZ TAK¯E
+.BR rpc.nfsd (8),
+.BR exportfs (8),
+.BR exports (5),
+.BR rpc.rquotad (8).
+.SH PLIKI
+.BR /etc/exports ,
+.BR /var/state/nfs/xtab .
+.SH AUTOR
+Olaf Kirch, H. J. Lu, G. Allan Morris III i wielu innych.

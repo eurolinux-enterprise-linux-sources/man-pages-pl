@@ -1,0 +1,116 @@
+.\" This man page is Copyright (C) 1998 Heiner Eisen. 
+.\" Permission is granted to distribute possibly modified copies
+.\" of this page provided the header is included verbatim,
+.\" and in case of nontrivial modification author and date
+.\" of the modification is added to the header.
+.\" $Id: x25.7,v 1.1 2003/08/27 09:51:49 ankry Exp $
+.\"
+.\" Translation (c) 2003 "Andrzej M. Krzysztofowicz" <ankry@mif.pg.gda.pl>
+.\"             man-pages 1.60
+.\"
+.TH X25 4 1998-12-01 "Linux" "Podrêcznik programisty Linuksa" 
+.SH NAZWA
+x25, PF_X25 \- ITU-T X.25 / ISO-8208 protocol interface. 
+
+.SH SK£ADNIA
+.B #include <sys/socket.h>
+.br
+.B #include <linux/x25.h>
+.sp
+.B x25_socket = socket(PF_X25, SOCK_SEQPACKET, 0); 
+
+.SH OPIS
+Gniazda X25 stanowi± interfejs do warstwy pakietów protoko³u X.25. Umo¿liwiaj±
+³±czenie siê aplikacji poprzez publiczn± sieæ danych X.25, zgodnie z opisem w
+zaleceniach Miêdzynarodowej Unii Telekomunikacyjnej dotycz±cych X25 (tryb
+DTE-DCE X.25). Gniazda X25 mog± równie¿ byæ stosowane do ³±czno¶ci bez
+po¶rednictwa sieci X.25 (trybu DTE-DCE X.25), jak opisano to w ISO-8208.
+.PP
+Granice komunikatów s± zachowane \- odczyt z gniazda za pomoc±
+.BR read (2)
+spowoduje otrzymanie tej samej porcji danych, któr± wyprowadzono za pomoc±
+odpowiadaj±cego mu
+.BR write (2)
+do gniazda z drugiej strony po³±czenia. Gdy jest potrzeba, j±dro przeprowadza
+podzia³ i powtórne z³o¿enie d³ugich komunikatów z wykorzystaniem bitu M X.25.
+Nie ma zakodowanego na sta³e górnego ograniczenia rozmiaru komunikatu.
+Jednak¿e powtórne z³o¿enie d³ugiego komunikatu mo¿e siê nie powie¶æ w
+przypadku tymczasowego braku zasobów systemowych lub gdy oka¿± siê istotnymi
+ograniczenia innych zasobów (takich jak pamiêæ dla gniazd czy ograniczenia
+rozmiaru bufora). Gdy zajdzie taka sytuacja, po³±czenia X.25 zostanie
+zainicjowane ponownie.
+.SH "ADRESY GNIAZD"
+Rodzina adresów gniazd
+.B AF_X25 
+korzysta do reprezentacji adresów sieciowych ze struktury
+.B struct sockaddr_x25
+zdefiniowanej w zaleceniach ITU-T dla X.121.
+.PP
+.RS
+.nf
+.ta 4n 18n 32n
+struct sockaddr_x25 {
+	sa_family_t	sx25_family;	/* musi byæ AF_X25 */
+	x25_address	sx25_addr;	/* adres X.121 */
+};
+.ta
+.fi
+.RE
+.PP
+.I sx25_addr
+zawiera tablic± znakow±
+.I x25_addr[] 
+interpretowan± jako zakoñczony znakiem NULL ³añcuch.
+.I sx25_addr.x25_addr[]
+sk³ada siê z maksymalnie 15 (nie licz±c koñcowego 0) znaków ASCII tworz±cych
+adres X.121.
+Dozwolone s± jedynie cyfry dziesiêtne od "0" do "9".
+.SH "OPCJE GNIAZD"
+Nastêpuj±ce specyficzne dla X.25 opcje gniazd mo¿na ustawiaæ za pomoc±
+.BR setsockopt (2)
+i odczytywaæ za pomoc±
+.BR getsockopt (2),
+gdy parametr poziomu (ang. level) jest ustawiony na
+.BR SOL_X25 .
+.TP
+.B X25_QBITINCL
+Okre¶la, czy bit Q X.25 (Kwalifikowany bit danych - Qualified Data Bit) jest
+dostêpny dla programu u¿ytkownika. Oczekuje argumentu ca³kowitego. Gdy
+argument ten jest ustawiony na 0 (warto¶æ domy¶lna), bit Q nigdy nie jest
+ustawiany w pakietach wychodz±cych, a bit Q pakietów przychodz±cych jest
+ignorowany. Gdy argument tjest ustawiony na 1, do ka¿dego komunikatu
+odczytanego z gniazda lub zapisanego do niego jest do³±czany dodatkowy
+pierwszy bajt. Dla danych odczytanych z gniazda warto¶æ 0 tego bajtu oznacza,
+¿e bity Q odpowiednich przychodz±cych pakietów z danymi nie by³y ustawione.
+Warto¶æ 1 pierwszego bajtu oznacza, ¿e bity Q odpowiednich przychodz±cych
+pakietów z danymi by³y ustawione. Gdy pierwszy bajt danych zapisywanych do
+gniazda jest równy 1, to zostanie ustawiony bit Q odpowiednich wysy³anych
+pakietów. Gdy pierwszy bajt jest równy 0, bit Q nie zostanie ustawiony.
+.SH USTERKI
+Mnóstwo, gdy¿ implementacja X.25 PLP jest
+.BR CONFIG_EXPERIMENTAL .
+.PP
+Ta strona podrêcznika jest niekompletna.
+.PP
+Nie ma jeszcze przeznaczonego dla programistów aplikacji pliku nag³ówkowego;
+trzeba pos³ugiwaæ siê plikiem nag³ówkowym j±dra
+.BR <linux/x25.h> .
+Z
+.B CONFIG_EXPERIMENTAL 
+mo¿e wynikaæ niezgodno¶æ interfejsu binarnego w przysz³ych wersjach.
+.PP
+Zdarzenia X.25 N-Reset nie propaguj± siê jeszcze do procesów u¿ytkownika.
+Wobec tego, w przypadku wyst±pienia b³êdu, dane mog± zostaæ utracone bez
+ostrze¿enia. 
+.SH "ZOBACZ TAK¯E"
+.BR socket (7),
+.BR socket (2)
+.PP
+Jonathan Simon Naylor: 
+\(lqThe Re-Analysis and Re-Implementation of X.25.\(rq
+Dostêpne pod URL-em
+.RS
+.I ftp://ftp.pspt.fi/pub/ham/linux/ax25/x25doc.tgz
+.RE
+.SH WERSJE
+Rodzina protoko³ów PF_X25 pojawi³a siê w Linuksie 2.2.

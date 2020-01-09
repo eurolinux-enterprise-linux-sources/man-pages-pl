@@ -1,0 +1,55 @@
+.\" 1999 PTM, Przemek Borys
+.\"
+.\" Generated automatically from man.config.5.in by the
+.\" configure script.
+.\"
+.\" @(#)man.config
+.TH MAN.CONFIG 5 "30 Marca 1994"
+.SH NAZWA
+man.config \- dane konfiguracyjne systemu podrêcznika man
+.SH OPIS
+.LP
+Plik ten jest odczytywany przez
+.BR man (1)
+i sk³ada siê z (a) informacji o tym, jak konstruowaæ ¶cie¿kê przeszukiwania
+dla podrêczników, (b) pe³nych nazw (ze ¶cie¿kami) dla programów takich, jak
+nroff, eqn, tbl, itd, u¿ywanych przez man oraz (c) listy dekompresorów dla
+plików o podanych rozszerzeniach. Alternatywn± wersjê tego pliku mo¿na podaæ
+przez
+.LP
+.RS
+man -C private_man.config ...
+.RE
+.LP
+Nazwy komend mog± byæ przekazywane z opcjami. Przydatne opcje mo¿na znale¼æ
+w grotty(1). Np. zamiast domy¶lnej linii
+.LP
+.RS
+.nf
+NROFF /usr/bin/groff -mandoc -Tlatin1
+.fi
+.RE
+.LP
+mo¿na napisaæ
+.LP
+.RS
+.nf
+NROFF /usr/bin/groff -mandoc -Tlatin1 -P-u -P-b
+.fi
+.RE
+.LP
+co powoduje zaniechanie pokre¶lania i wyt³uszczania.
+.SH "ZOBACZ TAK¯E"
+.BR col (1),
+.BR (g)eqn (1),
+.BR (g)pic (1), 
+.BR groff (1),
+.BR grotty (1),
+.BR (g)refer (1), 
+.BR (g)tbl (1),
+.BR less (1),
+.BR man (1)
+oraz
+.BR compress (1),
+.BR gzip (1).
+

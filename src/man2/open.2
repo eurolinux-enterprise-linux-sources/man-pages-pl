@@ -1,0 +1,419 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" 1999 PTM Przemek Borys
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Aug 2002,
+.\"              manpages 1.53
+.\"
+.\" This manpage is Copyright (C) 1992 Drew Eckhardt;
+.\"                               1993 Michael Haardt, Ian Jackson.
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Wed Jul 21 22:42:16 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified Sun Aug 21 18:18:14 1994: Michael Haardt's NFS diffs were
+.\"          applied by hand (faith@cs.unc.edu).
+.\" Modified Sat Apr 13 16:25:28 1996 by Andries Brouwer (aeb@cwi.nl)
+.\" Modified Mon May 13 00:53:52 1996: added symbolic constants
+.\"          as sent by Thomas Koenig
+.\" Modified Fri Dec 20 16:06:45 1996 by Michael Haardt: More NFS details
+.\" Modified Fri Feb 19 15:08:34 1999 by Andries Brouwer (aeb@cwi.nl)
+.\" Modified 981128 by Joseph S. Myers <jsm28@hermes.cam.ac.uk>
+.\" Modified Thu Jun  3 19:29:06 1999 by Michael Haardt: NFS lock optimisation
+.\" Modified, 7 May 2002, Michael Kerrisk <mtk16@ext.canterbury.ac.nz>
+.\"
+.TH OPEN 2 1999-06-03 "Linux" "Wywo³ania systemowe"
+.SH NAZWA
+open, creat \- otwarcie i utworzenie pliku lub urz±dzenia
+.SH SK£ADNIA
+.nf
+.B #include <sys/types.h>
+.B #include <sys/stat.h>
+.B #include <fcntl.h>
+.sp
+.BI "int open(const char *" pathname ", int " flags );
+.BI "int open(const char *" pathname ", int " flags ", mode_t " mode );
+.BI "int creat(const char *" pathname ", mode_t " mode );
+.fi
+.SH OPIS
+Funkcja systemowa
+.B open
+s³u¿y do przekszta³cenia ¶cie¿ki na deskryptor pliku (ma³±, nieujemn± liczbê
+ca³kowit± u¿ywan± w pó¼niejszych operacjach we/wy, takich jak
+.BR read ", " write ", itd.)."
+Je¶li wywo³anie siê powiedzie, to zwrócony deskryptor pliku bêdzie
+najmniejszym aktualnie nie otwartym deskryptorem pliku dla tego procesu.
+Funkcja ta tworzy nowy otwarty plik, nie wspó³dzielony z ¿adnym innym procesem.
+(Ale wspó³dzielone otwarte pliki mog± pochodziæ z wywo³ania funkcji systemowej
+.BR fork (2).)
+Nowt deskryptor pliku bêdzie przekazywany przez wywo³ania funkcji exec
+(zobacz
+.BR fcntl (2)).
+Przesuniêcie pliku jest ustawiane na jego pocz±tek.
+
+Parametr
+.I flags
+to jedna z warto¶ci:
+.BR O_RDONLY ", " O_WRONLY " lub " O_RDWR ","
+które stanowi±, odpowiednio, ¿±dania otwarcia tylko dla odczytu, tylko dla
+zapisu, lub dla odczytu i zapisu.
+Argument
+.I flags
+mo¿e byæ po³±czony bitowym
+.I OR
+z zerem lub wiêcej spo¶ród nastêpuj±cych warto¶ci:
+.TP
+.B O_CREAT
+Je¶li plik nie istnieje, to bêdzie utworzony.
+W³a¶ciciel (ID u¿ytkownika) tego pliku jest ustawiany na efektywny ID
+u¿ytkownika procesu. Grupa w³a¶ciciela (ID grupy) jest ustawiana albo na
+efektywny ID grupy procesu. albo na ID grupy katalogu nadrzêdnego
+(w zale¿no¶ci od rodzaju systemu plików, opcji montowania i atrybutów
+katalogu nadrzêdnego, zobacz np. opcje montowania
+.I bsdgroups
+i
+.I sysvgroups
+dla systemu plików ext2 opisane w
+.BR mount (8)).
+.TP
+.B O_EXCL
+Gdy zostanie u¿yte w po³±czeniu z
+.BR O_CREAT ,
+to je¶li plik ju¿ istnieje,
+.B open
+siê nie powiedzie. W tym kontek¶cie dowi±zanie symboliczne jest istniej±cym
+plikiem, niezale¿nie od tego, na co wskazuje.
+.B O_EXCL
+nie dzia³a jak nale¿y na systemach plików NFS. Programy, które nadmiernie
+ufaj± wykonywaniu przez
+.B open
+zadañ blokowania, bêd± zawieraæ wy¶cig. Rozwi±zanie dla wykonywania atomowych
+operacji blokowania plików za pomoc± pliku-blokady polega na utworzeniu
+unikalnego pliku na tym samym systemie plików (np. wykorzystuj±c nazwê hosta
+i PID) i u¿yciu
+.BR link (2)
+do utworzenia dowi±zania do pliku-blokady. Je¶li \fBlink()\fP zwróci 0, to
+utworzenie blokady siê powiod³o. W przeciwnym razie, nale¿y u¿yæ
+.BR stat (2)
+na unikalnym pliku, aby sprawdziæ, czy ilo¶æ jego dowi±zañ wzros³a do 2.
+W takiej sytuacji utworzenie blokady równie¿ siê powiod³o.
+.TP
+.B O_NOCTTY
+Je¶li
+.I pathname
+odnosi siê do urz±dzenia terminalowego \(em zobacz
+.BR tty (4)
+\(em to nie stanie siê terminalem steruj±cym procesu, nawet je¶li proces
+takiego nie ma.
+.TP
+.B O_TRUNC
+Je¶li plik ju¿ istnieje, jest zwyk³ym plikiem i tryb otwarcia pozwala na
+zapis (tzn. jest to O_RDWR lub O_WRONLY), to plik ten zostanie obciêty do
+zerowej d³ugo¶ci. Je¶li plik to FIFO lub urz±dzenie terminalowe, to znacznik
+O_TRUNC jest ignorowany. W pozosta³ych przypadkach efekt u¿ycia znacznika
+O_TRUNC jest nieokre¶lony. (W wielu wersjach Linuksa zostanie zignorowany,
+w innych wersjach funkcja zwróci b³±d.)
+.TP
+.B O_APPEND
+Plik jest otwierany w trybie dopisywania. Przed ka¿d± operacj±
+.BR write ,
+wska¼nik pliku jest ustawiany na koniec pliku, jak z
+.BR lseek .
+.B O_APPEND
+mo¿e prowadziæ do zepsucia plików na systemach plików NFS, gdy wiêcej ni¿
+jeden proces naraz dopisuje dane do pliku. Jest to zwi±zane z faktem, ¿e NFS
+nie wspiera dopisywania do pliku, wiêc j±dro klienta musi to zasymulowaæ,
+co nie mo¿e zostaæ wykonane bez wy¶cigu.
+.TP
+.BR O_NONBLOCK " lub " O_NDELAY
+Plik jest otwierany w trybie nieblokuj±cym, o ile to mo¿liwe. Ani
+.B open
+ani kolejne operacje na zwróconym przez to wywo³anie deskryptorze nie
+spowoduj± blokowania procesu (zatrzymania w oczekiwaniu na dane, itp.).
+Szczegó³y dotycz±ce obs³ugi FIFO (nazwanych potoków) mo¿na znale¼æ w
+.BR fifo (4).
+Ten tryb mo¿e nie mieæ ¿adnego wp³ywu na pliki inne ni¿ FIFO.
+.TP
+.B O_SYNC
+Plik jest otwierany dla synchronicznego we/wy. Wszelkie zapisy
+.B write
+na otrzymanym deskryptorze pliku bêd± blokowaæ proces wo³aj±cy a¿ do
+fizycznego zapisania danych na odpowiednim no¶niku.
+.I Jednak, zobacz ni¿ej USTERKI.
+.TP
+.B O_NOFOLLOW
+Je¶li \fIpathname\fR jest dowi±zaniem symbolicznym, to otwarcie siê nie
+powiedzie. Jest to rozszerzenie FreeBSD, które zosta³o dodane do Linuksa
+w wersji 2.1.126. Nadal bêdzie siê odbywaæ przechodzenie po dowi±zaniach
+symbolicznych we wcze¶niejszych sk³adnikach ¶cie¿ki. Pliki nag³ówkome
+w glibc 2.0.100 i po¼niejszych zawieraj± definicjê tego znacznika. \fIJ±dra
+poprzedzaj±ce 2.1.126 zignoruj± go, je¶li jest u¿ywany\fR.
+.TP
+.B O_DIRECTORY
+Je¶li \fIpathname\fR nie jest katalogiem, spowoduje, ¿e open zawiedzie.
+Ten znacznik jest specyficzny dla Linuksa i zosta³ do dany w kernelu 2.1.126,
+aby unikn±æ problemów blokowania us³ug (DoS), gdy \fBopendir\fR(3) jest
+wywo³ane dla FIFO lub dla urz±dzenia ta¶mowego, ale nie powinno byæ u¿ywane
+poza implementacj± \fBopendir\fR.
+.TP
+.B O_DIRECT
+Powoduje próbê zminimalizowania efektów zwi±zanych z buforowanie we/wy do
+i z tego pliku. Na ogó³ spowoduje to zmniejszenie wydajno¶ci, ale jest to
+przydatne w specyficznych sytuacjach, na przyk³ad gdy aplikacje buforuj±
+we w³asnym zakresie. We/wy dla pliku odbywa siê wówczas bezpo¶rednio z/do
+buforów w przestrzeni u¿ytkownika. We/wy jest sunchromiczne, tzn. po
+zakoñczeniu funkcji systemowej
+.BR read (2)
+lub
+.BR write (2)
+zagwarantowane jest, ¿e dane zosta³y przeniesione.
+Wielko¶ci przesy³anych danych, wyrównania buforów w przestrzeni
+u¿ytkownika oraz pozycje w pliku musz± byæ wielokrotno¶ciami rozmiaru
+logicznego bloku systemu plików.
+.\" Mog± wyst±piæ problemy ze spójno¶ci±.
+.br
+Ten znacznik jest wspierany przez wiele systemów uniksopodobnych;
+w Linuksie, wsparcie zosta³o dodane w j±drze wersji 2.4.10.
+.br
+Semantycznie podobny interfejs dla urz±dzeñ blokowych opisano w
+.BR raw (8).
+.TP
+.B O_ASYNC
+Generowanie sygna³u (domy¶lnie SIGIO, ale mo¿na go zmieniæ za pomoc±
+.BR fcntl (2)),
+gdy wej¶cie lub wyj¶cie poprzez ten deskryptor pliku staje siê mo¿liwe.
+Ta funkcja jest dostêpna jedynie dla terminali, pseudoterminali i gniazd.
+Wiêcej szczegó³ów mo¿na znale¼æ w
+.BR fcntl (2).
+.TP
+.B O_LARGEFILE
+W systemach 32-bitowych, które wspieraj± obs³ugê du¿ych plików (LFS), 
+zezwala na otwieranie plików, których rozmiar nie mo¿e byæ reprezentowany
+jako liczba 31-bitowa.
+.PP
+Pewne z tych znaczników mo¿na zmieniaæ za pomoc±
+.BR fcntl
+ju¿ po otwarciu pliku.
+
+Argument
+.I mode
+okre¶la prawa, które bêd± u¿ywane do ewentualnego tworzenia nowego pliku.
+S± one modyfikowane przez
+.BR umask
+procesu w zwyk³y sposób: prawa tworzonego pliku to
+.BR "(mode & ~umask)" .
+Nale¿y zauwa¿yæ, ¿e te uprawnienia dotycz± jedynie dostêpu do nowo
+utworzonego pliku w przysz³o¶ci; wywo³anie
+.BR open ,
+które tworzy plik tylko do obczytu mo¿e równie dobrze zwróciæ deskryptor
+pliku do odczytu i zapisu.
+.PP
+Dla parametru
+.IR mode 
+udostêpniono nastêpuj±ce sta³e symboliczne:
+.TP
+.B S_IRWXU
+00700 u¿ytkownik (w³a¶ciciel pliku) ma prawa odczytu, zapisu i uruchamiania.
+.TP
+.B S_IRUSR (S_IREAD)
+00400 u¿ytkownik ma prawa odczytu.
+.TP
+.B S_IWUSR (S_IWRITE)
+00200 u¿ytkownik ma prawa zapisu.
+.TP
+.B S_IXUSR (S_IEXEC)
+00100 u¿ytkownik ma prawa uruchamiania.
+.TP
+.B S_IRWXG
+00070 grupa ma prawa odczytu, zapisu i uruchamiania.
+.TP
+.B S_IRGRP
+00040 grupa ma prawa odczytu.
+.TP
+.B S_IWGRP
+00020 grupa ma prawa zapisu.
+.TP
+.B S_IXGRP
+00010 grupa ma prawa uruchamiania.
+.TP
+.B S_IRWXO
+00007 inni maj± prawa odczytu, zapisu i uruchamiania.
+.TP
+.B S_IROTH
+00004 inni maj± prawa odczytu.
+.TP
+.B S_IWOTH
+00002 inni maj± prawa zapisu. 
+.TP
+.B S_IXOTH
+00001 inni maj± prawa uruchamiania.
+.PP
+.I mode
+musi byæ podane, gdy w
+.I flags
+u¿ywany jest znacznik
+.BR O_CREAT ,
+w przeciwnym wypadku jest ignorowane.
+
+.B creat
+jest równowa¿ne
+.B open
+z argumentem
+.I flags
+ustawionym na
+.BR O_CREAT|O_WRONLY|O_TRUNC .
+.SH "WARTO¦Æ ZWRACANA"
+.BR open " i " creat
+zwracaj± nowy deskryptor pliku, lub \-1 w wypadku b³êdu (w tym drugim
+wypadku ustawiane jest te¿ odpowiednio
+.IR errno ).
+Nale¿y zauwa¿yæ, ¿e
+.B open
+mo¿e otwieraæ pliki urz±dzeñ, lecz
+.B creat
+nie mo¿e ich tworzyæ. Zamiast niego nale¿y u¿ywaæ
+.BR mknod (2).
+.LP
+Na systemach NFS z w³±czonym mapowaniem UID-ów, \fBopen\fP mo¿e zwróciæ
+deskryptor pliku, dla którego np. ¿adania \fBread\fP(2) s± zabronione przy
+ustawionym \fBEACCES\fP. Jest to zwi±zane sprawdzanie uprawnieñ odbywa siê na
+kliencie, ale to serwer wykonuje moapowanie UID-ów podczas ¿±dañ odczytu
+i zapisu. 
+
+Je¶li plik jest nowoutworzony, to jego pola atime, ctime i mtime s± ustawione
+na czas bie¿±cy i to samo dotyczy pól ctime i mtime katalogu nadrzêdnego. 
+Natomiast gdy plik jest modyfikowany z powodu u¿ycia znacznika O_TRUNC, jego
+pola ctime i mtime s± ustawiane na czas bie¿±cy.
+
+.SH B£ÊDY
+.TP
+.B EEXIST
+.I pathname
+ju¿ istnieje, a u¿yto
+.BR O_CREAT " i " O_EXCL .
+.TP
+.B EISDIR
+.I pathname
+odnosi siê do katalogu, a ¿±dany by³ dostêp z prawem zapisu
+(tzn. ustwine by³o
+.B O_WRONLY
+lub
+.BR O_RDWR ).
+.TP
+.B EACCES
+¯±dany dostêp do pliku nie jest dozwolony, jeden z katalogów w
+.IR pathname
+nie ma praw przeszukiwania (wykonywania), lub plik nie istnieje, a katalog
+nadrzêdny nie ma praw zapisu.
+.TP
+.B ENAMETOOLONG
+.IR pathname " by³o zbyt d³ugie."
+.TP
+.B ENOENT
+O_CREAT nie by³o ustawione, a plik o zadanej nazwie nie istnieje.
+Lub, sk³adnik
+.IR pathname ,
+który powinien byæ katalogiem nie istnieje lub jest wisz±cym dowi±zaniem
+symbolicznym.
+.TP
+.B ENOTDIR
+Sk³adnik u¿yty w
+.I pathname
+jako katalog w rzeczywisto¶ci nie jest katalogiem lub podano
+\fBO_DIRECTORY\fR, a
+.I pathname
+nie by³o katalogiem.
+.TP
+.B ENXIO
+Podano O_NONBLOCK | O_WRONLY, plik o zadanej nazwie stanowi FIFO i nie jest
+ono otwarte dla ¿adnego procesu do odczytu. Lub plik jest plikiem urz±dzenia
+specjalnego, a odpowiadaj±ce mu urz±dzenie nie istnieje.
+.TP
+.B ENODEV
+.I pathname
+odnosi siê do pliku urz±dzenia specjalnego, a odpowiadaj±ce mu urz±dzenie nie
+istnieje. (Jest to b³±d w j±drze Linuksa - ENXIO powinno byæ zwracane
+w takiej sytuacji)
+.TP
+.B EROFS
+.I pathname
+odnosi siê do pliku na systemie plików tylko dla odczytu, a ¿±dano otwarcia
+w trybie zapisu.
+.TP
+.B ETXTBSY
+.I pathname
+odnosi siê do wykonywalnego obrazu, który obecnie jest wykonywany, a
+za¿±dano dostêpu dla zapisu.
+.TP
+.B EFAULT
+.IR pathname " wskazuje poza dostêpn± dla u¿ytkownika przestrzeñ adresow±."
+.TP
+.B ELOOP
+Podczas rozwi±zywania
+.I pathname
+napotkano zbyt wiele dowi±zañ symbolicznych lub podano \fBO_NOFOLLOW\fR, a
+.I pathname
+jest dowi±zaniem symbolicznym.
+.TP
+.B ENOSPC
+Gdy
+.I pathname
+mia³o byæ utworzone, okaza³o siê, ¿e na urz±dzeniu na którym mia³o siê
+znajdowaæ brak miejsca na nowy plik.
+.TP
+.B ENOMEM
+Brak dostêpnej pamiêci j±dra.
+.TP
+.B EMFILE
+Proces ma jy¿ otwart± maksymaln± liczbê plików.
+.TP
+.B ENFILE
+Osi±gniêto ograniczenie dla ³±cznej liczby otwartych plików w systemie.
+.SH "ZGODNE Z"
+SVr4, SVID, POSIX, X/OPEN, BSD 4.3
+Znaczniki
+.B O_NOFOLLOW
+i
+.B O_DIRECTORY
+s± specyficzne dla Linuksa. Aby uzyskaæ ich definicje, nale¿y zdefiniowaæ
+makro
+.BR _GNU_SOURCE .
+.SH OGRANICZENIA
+Jest wiele nieszczê¶liwo¶ci w protokole podleg³ym NFS, dotykaj±cych miêdzy
+innymi
+.BR O_SYNC " i " O_NDELAY .
+
+POSIX zapewnia trzy ró¿ne warianty synchronicznego we/wy, odpowiadaj±ce
+znacznikom \fBO_SYNC\fR, \fBO_DSYNC\fR i \fBO_RSYNC\fR. Aktualnie (2.1.130)
+s± one pod Linuksem synonimami.
+.SH "ZOBACZ TAK¯E"
+.BR read (2),
+.BR write (2),
+.BR fcntl (2),
+.BR close (2),
+.BR link (2),
+.BR mknod (2),
+.BR mount (2),
+.BR stat (2),
+.BR umask (2),
+.BR unlink (2),
+.BR socket (2),
+.BR fopen (3),
+.BR fifo (4)

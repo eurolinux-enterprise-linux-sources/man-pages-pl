@@ -1,0 +1,3936 @@
+%& -translate-file=il2-pl
+\def\fontprefix{pl}
+\input texinfo @c -*-texinfo-*-
+@c %**start of header
+@setfilename diffutils.info
+@settitle Porównywanie i scalanie plików
+@setchapternewpage odd
+@documentencoding ISO-8859-2
+@documentlanguage pl
+@c %**end of header
+
+@set TRANSLATED marzec 2001
+
+@ifinfo
+@format
+START-INFO-DIR-ENTRY
+* Porównywanie i scalanie plików: (diffutils).      Narzêdzia ró¿nicowe GNU.
+* cmp: (diffutils)Wywo³anie cmp.           Porównuje dwa pliki binarnie.
+* diff: (diffutils)Wywo³anie diff.         Porównuje dwa pliki tekstowe.
+* diff3: (diffutils)Wywo³anie diff3.       Porównuje trzy pliki tekstowe.
+* patch: (diffutils)Wywo³anie patch.       £ata plik ze starego tworz±c nowy.
+* sdiff: (diffutils)Wywo³anie sdiff.       Interaktywnie scala zmiany.
+END-INFO-DIR-ENTRY
+@end format
+@end ifinfo
+
+@ifinfo
+Plik ten dokumentuje polecenia @code{diff}, @code{diff3}, @code{sdiff}
+i @code{cmp} w wersji GNU, pokazuj±ce ró¿nice pomiêdzy plikami tekstowymi
+oraz polecenie @code{patch} do korzystania z ich wyników do aktualizacji
+plików.
+
+Copyright (C) 1992, 1993, 1994 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end ifinfo
+
+@titlepage
+@title Porównywanie i scalanie plików
+@subtitle @code{diff}, @code{diff3}, @code{sdiff}, @code{cmp} i @code{patch}
+@subtitle Wydanie 1.3, do @code{diff} 2.5 i @code{patch} 2.1
+@subtitle wrzesieñ 1993
+@author napisali: David MacKenzie, Paul Eggert i Richard Stallman
+
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1992, 1993, 1994 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end titlepage
+
+@node Top, , , (dir)
+
+@ifinfo
+Plik ten dokumentuje polecenia @code{diff}, @code{diff3}, @code{sdiff}
+i @code{cmp} w wersji GNU, pokazuj±ce ró¿nice pomiêdzy plikami tekstowymi
+oraz polecenie @code{patch} do korzystania z ich wyników do aktualizacji
+plików.
+
+@c HQ: w oryginale diff 2.4, inaczej ni¿ wy¿ej !
+To jest wydanie 1.3, do @code{diff} 2.5 i @code{patch} 2.1.
+@end ifinfo
+
+@menu
+* Od t³umacza::		Parê s³ów od t³umacza.
+
+* Ogólny opis::		Wstêpne informacje.
+
+* Porównanie::		Co to znaczy porównanie plików.
+* Formaty wyj¶ciowe::	Formaty zestawieñ ró¿nic.
+* Porównywanie katalogów::	Porównywanie plików i katalogów.
+* Dostosowywanie wyj¶cia::	Upiêkszanie wyj¶cia @code{diff}.
+* Wydajno¶æ diff::	Przyspieszanie i usprytnianie @code{diff}.
+* Porównanie trzech plików::	Formaty raportów ró¿nic trójstronnych.
+
+* Scalanie diff3::	Scalanie wed³ug wspólnego przodka.
+* Interaktywne scalanie::	Interaktywne scalanie za pomoc± @code{sdiff}.
+* Scalanie z patch::	U¿ycie @code{patch} do zmiany starych plików w nowe.
+* Tworzenie ³at::	Wskazówki, jak tworzyæ rozsy³ane ³aty.
+
+* Wywo³anie cmp::	Sposób uruchamiania @code{cmp} i zestawienie opcji.
+* Wywo³anie diff::	Sposób uruchamiania @code{diff} i zestawienie opcji.
+* Wywo³anie diff3::	Sposób uruchamiania @code{diff3} i zestawienie opcji.
+* Wywo³anie patch::	Sposób uruchamiania @code{patch} i zestawienie opcji.
+* Wywo³anie sdiff::	Sposób uruchamiania @code{sdiff} i zestawienie opcji.
+
+* Niekompletne linie::	Linie z brakuj±cym zakoñczeniem znakiem nowej linii.
+* Plany::		Je¶li s±dzisz, ¿e znalaz³e¶ b³±d lub niedoci±gniêcie.
+
+* Indeks pojêæ::	Skorowidz pojêæ.
+@end menu
+
+
+@node Od t³umacza, Ogólny opis, , Top
+@unnumbered Od t³umacza
+Niniejszy przek³ad powsta³
+w ramach @uref{http://ptm.linux.pl/, Projektu T³umaczenia Manuali}
+z wykorzystaniem istniej±cych t³umaczeñ stron podrêcznika systemowego
+man do programów @code{diff} i @code{patch}, które wykonali:
+Przemek Borys (@email{pborys@@p-soft.silesia.linux.org.pl})
+oraz Adam Byrtek (@email{alpha@@irc.pl}).
+
+Wykorzystany fragment Ksiêgi Drogi i Cnoty Lao-Tsy -- na podstawie przek³adów
+Tadeusza ¯bikowskiego (@cite{Literatura na ¦wiecie}, 1987, nr 1)
+oraz anonimowego L.Z. (http://www.nnk.art.pl/kluseczka/tao_te_king.html).
+
+Obecnie (@value{TRANSLATED}), zawarty w podrêczniku systemowym man opis
+GNU @code{patch} jest bardziej aktualny.  Do czasu aktualizacji niniejszego
+dokumentu wszelkie w±tpliwo¶ci zwi±zane ze szczegó³ami dzia³ania @code{patch}
+najlepiej rozstrzygaæ zagl±daj±c do podrêcznika systemowego.
+
+Zg³oszenia b³êdów, komentarze i sugestie
+proszê przesy³aæ na listê dyskusyjn± Projektu: @email{ptm@@amg.net.pl}.
+
+W.Kotwica (@email{wkotwica@@post.pl})
+
+@unnumberedsec Rozpowszechnianie
+To jest nieoficjalne t³umaczenie warunków rozpowszechniania na jêzyk polski.
+Nie zosta³o ono opublikowane przez Free Software Foundation
+i pod wzglêdem prawnym nie stanowi warunków rozpowszechniania -- ustanawia
+je wy³±cznie oryginalny tekst angielski.  Jednak t³umacz ma nadziejê, ¿e
+pomo¿e ono lepiej zrozumieæ warunki rozpowszechniania osobom mówi±cym
+po polsku.
+
+This is an unofficial translation of the distribution terms into
+Polish language. It was not published by the Free Software Foundation, and
+does not legally state the distribution terms--only the original English text
+does that. However, the translator hopes that it will help Polish language
+speakers understand distribution terms better.
+
+Zezwala siê na tworzenie i rozpowszechnianie wiernych kopii
+tego podrêcznika, pod warunkiem, ¿e na wszystkich kopiach zostanie zachowana
+informacja o prawach autorskich i niniejsze zezwolenie.
+
+Zezwala siê na kopiowanie i rozpowszechnianie zmienionych wersji
+tego podrêcznika na warunkach jak dla wiernych kopii, pod warunkiem, ¿e
+ca³a praca pochodna bêdzie rozpowszechniana na warunkach zezwolenia
+identycznego jak niniejsze.
+
+Zezwala siê na kopiowanie i rozpowszechnianie t³umaczeñ tego
+podrêcznika na inny jêzyk, pod wy¿ej podanymi warunkami dla zmienionych
+wersji, z wyj±tkiem tego, ¿e niniejsze zezwolenie mo¿e byæ ustanowione
+w t³umaczeniu zaakceptowanym przez Fundacjê.
+
+@node Ogólny opis, Porównanie, Od t³umacza , Top
+@unnumbered Ogólny opis
+@cindex ogólny opis @code{diff} i @code{patch}
+
+U¿ytkownicy komputerów czêsto maj± powód, by pytaæ jak ró¿ni± siê od siebie
+dwa pliki.  Byæ mo¿e jeden z plików jest nowsz± wersj± drugiego.  Albo mo¿e
+oba pochodz± od identycznych kopii, ale zosta³y zmienione przez ró¿ne osoby.
+
+Do pokazania ró¿nic pomiêdzy dwoma plikami lub odpowiadaj±cymi sobie plikami
+w dwu katalogach korzystamy z polecenia @code{diff}.  Wypisuje ono
+ró¿nice pomiêdzy plikami, wiersz po wierszu, w jednym z kilku dostêpnych
+formatów, które mo¿na wybraæ opcjami wiersza poleceñ.  Taki komplet ró¿nic
+jest czêsto zwany @dfn{ró¿nic±} (@dfn{diff}) lub @dfn{³at±} (@dfn{patch}).
+Dla plików, które s± identyczne normalnie @code{diff} nie tworzy ¿adnego
+wyj¶cia; dla plików binarnych (nie-tekstowych), @code{diff} normalnie zg³asza
+tylko, ¿e s± ró¿ne.
+
+Do pokazania offsetów (pozycji w pliku) i numerów linii, gdzie dwa pliki siê
+ró¿ni± korzystamy z polecenia @code{cmp}.  Mo¿e ono tak¿e pokazaæ, jeden obok
+drugiego, wszystkie znaki, którymi pliki siê ró¿ni±.  Innym sposobem
+porównania dwu plików znak po znaku jest polecenia Emacs-a
+@kbd{M-x compare-windows}.
+@xref{Other Window, , Other Window, emacs, The GNU Emacs Manual},
+gdzie opisano je dok³adniej.
+
+Do pokazania ró¿nic pomiêdzy trzema plikami korzystamy z polecenia
+@code{diff}.  Gdy dwie osoby niezale¿nie od siebie nanios³y zmiany w tym
+samym pierwowzorze, @code{diff3} potrafi zg³osiæ ró¿nice pomiêdzy orygina³em,
+a zmienionymi wersjami i utworzyæ scalony plik, zawieraj±cy poprawki obu
+osób z ostrze¿eniami o konfliktach.
+
+Do interaktywnego scalania dwu plików korzystamy z polecenia @code{sdiff}.
+
+Zbiór ró¿nic utworzony przez @code{diff} mo¿na wykorzystaæ do przekazania
+aktualizacji plików tekstowych (jak np. kod ¼ród³owy programów) innym osobom.
+Metoda ta jest szczególnie przydatna gdy ró¿nice s± niewielkie w stosunku
+do ca³o¶ci plików.  Maj±c wyj¶cie polecenia @code{diff}, mo¿na skorzystaæ
+z programu @code{patch} by uaktualniæ, @dfn{za³ataæ}, dany egzemplarz pliku.
+Je¶li spojrzymy na @code{diff} jak na odejmowanie jednego pliku od drugiego
+w celu uzyskania ich ró¿nicy, to mo¿emy traktowaæ @code{patch} jak dodawanie
+ró¿nicy do jednego pliku by otrzymaæ drugi.
+
+Ten podrêcznik najpierw koncentruje siê na tworzeniu ró¿nic, a potem
+pokazuje, jak u¿yæ je do aktualizacji plików.
+
+GNU @code{diff} napisali Mike Haertel, David Hayes, Richard
+Stallman, Len Tower i Paul Eggert.  Wayne Davison zaprojektowa³
+i zaimplementowa³ zunifikowany format wyj¶ciowy.  Podstawowy algorym opisano
+w ``An O(ND) Difference Algorithm and its Variations'', Eugene W. Myers,
+@cite{Algorithmica} Vol.@: 1 No.@: 2, 1986, pp.@: 251--266; oraz w ``A File
+Comparison Program'', Webb Miller i Eugene W. Myers,
+@cite{Software---Practice and Experience} Vol.@: 15 No.@: 11, 1985,
+pp.@: 1025--1040.
+@c From: "Gene Myers" <gene@cs.arizona.edu>
+@c They are about the same basic algorithm; the Algorithmica
+@c paper gives a rigorous treatment and the sub-algorithm for
+@c delivering scripts and should be the primary reference, but
+@c both should be mentioned.
+Algorytm ten zosta³ niezale¿nie odkryty, jak opisano w
+``Algorithms for Approximate String Matching'',
+E. Ukkonen, @cite{Information and Control} Vol.@: 64, 1985, pp.@: 100--118.
+@c From: "Gene Myers" <gene@cs.arizona.edu>
+@c Date: Wed, 29 Sep 1993 08:27:55 MST
+@c Ukkonen should be given credit for also discovering the algorithm used
+@c in GNU diff.
+
+GNU @code{diff3} jest napisa³ Randy Smith.  GNU @code{sdiff} napisa³ Thomas
+Lord.  GNU @code{cmp} napisali Torbjorn Granlund i David MacKenzie.
+
+@code{patch} zosta³ napisany g³ównie przez Larry'ego Wall;
+rozszerzenia GNU napisali g³ównie Wayne Davison i David MacKenzie.
+Czê¶ci tego podrêcznika zosta³y zaadaptowane z podrêcznika systemowego man,
+który napisa³ Larry Wall, za jego zgod±.
+
+@node Porównanie, Formaty wyj¶ciowe, Ogólny opis, Top
+@chapter Co to znaczy porównanie
+@cindex wprowadzenie
+
+Ró¿nice pomiêdzy dwoma plikami mo¿na postrzegaæ na kilka sposobów.
+Z pewnego punktu widzenia ró¿nice s± pewnym ci±giem linii, które usuniêto,
+wstawiono lub zmieniono w pliku, by otrzymaæ inny plik.  @code{diff}
+porównuje pliki linia po linii, odnajduje grupy ró¿ni±cych siê linii
+i informuje o ka¿dej takiej grupie.  Ró¿ni±ce siê linie potrafi wy¶wietliæ
+w ró¿nych formatach, do ró¿nych zastosowañ.
+
+GNU @code{diff} mo¿e pokazaæ, czy pliki siê ró¿ni±, bez wyszczególniania
+ró¿nic.  Umo¿liwia te¿ pominiêcie pewnych rodzajów ró¿nic, które nie s± dla
+nas istotne.  Najczê¶ciej takimi ró¿nicami s± zmiany liczby bia³ych znaków
+(odstêpów) miêdzy s³owami czy liniami.  @code{diff} pozwala te¿ na
+nieuwzglêdnianie ró¿nic w wielko¶ci liter czy zmian w liniach pasuj±cych
+do wskazanego wyra¿enia regularnego.  Opcje te mo¿na sumowaæ: na przyk³ad,
+mo¿emy ignorowaæ zarówno zmiany ilo¶ci bia³ych znaków, jak i wielko¶ci liter.
+
+Z innego punktu widzenia ró¿nice pomiêdzy plikami to pewien ci±g par znaków,
+które s± albo identyczne albo ró¿ne od siebie.  @code{cmp} podaje ró¿nice
+miêdzy dwoma plikami znak po znaku, a nie linia po linii.  Wskutek tego, do
+porównywania plików binarnych jest przydatniejszy ni¿ @code{diff}.  Przy
+plikach tekstowych przydaje siê g³ównie wtedy, gdy chcemy wiedzieæ tylko, czy
+dwa pliki s± identyczne czy nie.
+
+Dla porównania skutków, jakie mo¿e mieæ rozwa¿anie zmian znak po znaku
+w porównaniu z analizowaniem ich linia po linii, zastanówmy siê, co siê
+stanie gdy na pocz±tku pliku do³o¿ymy pojedynczy znak nowej linii.
+Je¶li nasz plik porównamy nastêpnie z plikiem, w którym nie ma tego znaku,
+a który poza tym jest identyczny, @code{diff} poinformuje, ¿e do pliku
+zosta³a dodana pusta linia, podczas gdy @code{cmp} zamelduje, ¿e prawie
+wszystkie znaki obu plików siê ró¿ni±.
+
+@code{diff3} normalnie porównuje linia po linii trzy pliki wej¶ciowe,
+znajduje grupy linii, które siê ró¿ni± i powiadamia o ka¿dej takiej grupie.
+Jego wyj¶cie zaprojektowano tak, by ³atwo by³o sprawdziæ dwa ró¿ne zbiory
+zmian wykonanych na tym samym pliku.
+
+@menu
+* Porcje::		Grupy ró¿ni±cych siê linii.
+* Odstêpy::		Pomijanie ró¿nic o odstêpy.
+* Puste linie::		Pomijanie ró¿nic o puste linie.
+* Wielko¶æ liter::	Pomijanie ró¿nic w wielko¶ci liter.
+* Pomijanie podanych::	Pomijanie ró¿nic pasuj±cych do wyra¿enia regularnego.
+* Krótko::		Podsumowywanie, które pliki siê ró¿ni±.
+* Binarnie::		Porównywanie plików binarnych lub wymuszanie
+			porównañ tekstowych.
+@end menu
+
+@node Porcje, Odstêpy, , Porównanie
+@section Porcje
+@cindex porcje
+
+Przy porównywaniu dwu plików @code{diff} znajduje ci±gi linii wspólnych
+obu plikom, poprzeplatane grupami linii ró¿ni±cych siê zwanych kawa³kami,
+porcjami, fragmentami (@dfn{hunks}).    Porównanie dwu identycznych plików
+zwraca jeden ci±g wspólnych linii i ¿adnych porcji, gdy¿ ¿adne linie
+nie ró¿ni± siê od siebie.  Porównanie dwu ca³kowicie odmiennych plików nie
+daje w ogóle wspólnych linii tylko jedn± wielk± porcjê, która zawiera
+wszystkie linie obu plików.  Ogólnie, istnieje wiele sposobów dopasowywania
+linii z danych dwu plików.  @code{diff} próbuje zminimalizowaæ ca³kowity
+rozmiar porcji odnajduj±c d³ugie ci±gi wspólnych linii przeplecione ma³ymi
+porcjami ró¿nych linii.
+
+Na przyk³ad, za³ó¿my, ¿e plik @file{F} zawiera trzy linie @samp{a}, @samp{b},
+@samp{c}, a plik @file{G} zawiera te same trzy linie w odwrotnej kolejno¶ci
+@samp{c}, @samp{b}, @samp{a}.  Je¶li @code{diff} jako wspóln± liniê
+znajduje @samp{c}, to polecenie @samp{diff F G} daje w wyniku:
+
+@example
+1,2d0
+< a
+< b
+3a2,3
+> b
+> a
+@end example
+
+@noindent
+Je¶li natomiast, zamiast tego, @code{diff} zauwa¿a, ¿e wspóln± lini±
+jest @samp{b}, to tworzy takie wyj¶cie:
+
+@example
+1c1
+< a
+---
+> c
+3c3
+< c
+---
+> a
+@end example
+
+@noindent
+Mo¿liwe jest te¿ trafienie na @samp{a} jako wspóln± liniê.
+@code{diff} nie zawsze znajduje optymalne dopasowanie miêdzy plikami --
+idzie na skróty, by dzia³aæ szybciej.  Jednak tworzone przezeñ wyj¶cie
+jest zwykle bliskie najkrótszemu mo¿liwemu.  Mo¿na wyrównaæ ten kompromis
+opcj± @samp{--minimal} (@pxref{Wydajno¶æ diff}).
+
+@node Odstêpy, Puste linie, Porcje, Porównanie
+@section Pomijanie ró¿nic w rozmieszczeniu odstêpów
+@cindex spacje i tabulacje, pomijanie ró¿nic w odstêpach
+@cindex tabulacje i spacje, pomijanie ró¿nic w odstêpach
+@cindex odstêpy, pomijanie ró¿nic
+
+Opcje @samp{-b} i @samp{--ignore-space-change} ignoruj± bia³e znaki na koñcu
+linii i uwa¿aj± wszystkie inne sekwencje jednego lub wiêcej bia³ych znaków
+(odstêpów) za równowa¿ne.  Uruchomiony z tymi opcjami @code{diff} uwa¿a
+poni¿sze dwie linie za równowa¿ne (u¿yty tu @samp{$} oznacza koniec linii):
+
+@example
+Here lyeth  muche rychnesse  in lytell space.   -- John Heywood$
+Here lyeth muche rychnesse in lytell space. -- John Heywood   $
+@end example
+
+Opcje @samp{-w} i @samp{--ignore-all-space} s± mocniejsze ni¿ @samp{-b}.
+Ignoruj± ró¿nicê nawet je¶li w jednym z plików jest odstêp w miejscu, gdzie
+w drugim go nie ma.  @dfn{Bia³e znaki} obejmuj± tabulacjê, znak nowej linii,
+tabulacjê pionow±, wysuw strony, powrót karetki i spacjê.
+Niektóre z definicji ustawieñ regionalnych (locale) mog± jako bia³e znaki
+definiowaæ inne dodatkowe znaki.
+Uruchomiony z tymi opcjami @code{diff} uwa¿a poni¿sze dwie linie za
+równowa¿ne (u¿yty tu @samp{$} oznacza koniec linii, a @samp{^M} - powrót
+karetki):
+
+@example
+Here lyeth  muche  rychnesse in lytell space.--  John Heywood$
+  He relyeth much erychnes  seinly tells pace.  --John Heywood   ^M$
+@end example
+
+@node Puste linie, Wielko¶æ liter, Odstêpy, Porównanie
+@section Pomijanie ró¿nic o puste linie
+@cindex puste linie, pomijanie ró¿nic
+
+Opcje @samp{-B} i @samp{--ignore-blank-lines} ignoruj± wstawienia czy
+usuniêcia pustych linii.  Normalnie dotycz± tylko linii, które s± ca³kiem
+puste; nie maj± wp³ywu na linie wygl±daj±ce na puste, lecz zawieraj±ce
+znaki spacji czy tabulacji.  Z tymi opcjami, na przyk³ad, plik zawieraj±cy
+@example
+1.  Punkt to to, co nie posiada czê¶ci.
+
+2.  Linia ma nieskoñczon± d³ugo¶æ.
+-- Euklides, Elementy, I
+@end example
+@noindent
+jest uwa¿any za identyczny z plikiem zawieraj±cym
+@example
+1.  Punkt to to, co nie posiada czê¶ci.
+2.  Linia ma nieskoñczon± d³ugo¶æ.
+
+
+-- Euklides, Elementy, I
+@end example
+
+@node Wielko¶æ liter, Pomijanie podanych, Puste linie, Porównanie
+@section Pomijanie ró¿nic w wielko¶ci liter
+@cindex wielko¶æ liter, pomijanie ró¿nic
+
+GNU @code{diff} mo¿e traktowaæ ma³e litery jako równowa¿ne ich du¿ym
+odpowiednikom, wiêc, na przyk³ad, uwa¿a wszystkie @samp{Funky Stuff},
+@samp{funky STUFF} i @samp{fUNKy stuFf} za takie same.
+Wymuszamy to stosuj±c opcjê @samp{-i} lub @samp{--ignore-case}.
+
+@node Pomijanie podanych, Krótko, Wielko¶æ liter, Porównanie
+@section Pomijanie linii pasuj±cych do wyra¿enia regularnego.
+@cindex wyra¿enia regularne, pomijanie
+@cindex regexp, pomijanie
+
+Wstawienia i usuniêcia linii pasuj±cych do zadanego wyra¿enia regularnego
+ignorujemy korzystaj±c z opcji @samp{-I @var{regexp}}
+(lub @samp{--ignore-matching-lines=@var{regexp}}.  Wyra¿enia, które zawieraj±
+metaznaki pow³oki powinny byæ cytowane, by uchroniæ je przed rozwiniêciem
+przez pow³okê.  Na przyk³ad, @samp{diff -I '^[0-9]'} pomija wszystkie zmiany
+w liniach zaczynaj±cych siê od cyfry.
+
+Jednak @samp{-I} pomija wstawienia i usuniêcia linii zawieraj±cych
+dane wyra¿enie regularne tylko wtedy je¶li ka¿da ze zmienionych linii
+w porcji -- ka¿de wstawienie i ka¿de usuniêcie --  pasuje do tego wyra¿enia.
+Inaczej mówi±c, dla ka¿dej nie daj±cej siê zignorowaæ zmiany @code{diff}
+wypisuje pe³ny zbiór zmian w jej otoczeniu, ³±cznie z ignorowanymi.
+
+Stosuj±c wiêcej ni¿ jedn± opcjê @samp{-I} mo¿emy wskazaæ wiêcej ni¿ jedno
+wyra¿enie regularne do ignorowania linii.  @code{diff} usi³uje dopasowaæ
+ka¿d± liniê do ka¿dego wyra¿enia, poczynaj±c od ostatniego podanego.
+
+@node Krótko, Binarnie, Pomijanie podanych, Porównanie
+@section Podsumowywanie, które pliki siê ró¿ni±
+@cindex podsumowywanie, które pliki siê ró¿ni±
+@cindex krótkie zestawienia ró¿nic
+
+Gdy chcemy siê tylko dowiedzieæ, czy pliki s± ró¿ne, a nie obchodzi nas,
+jakie to s± ró¿nice, stosujemy podsumowuj±cy, skrócony format wyj¶ciowy.
+W tym formacie, zamiast pokazywaæ ró¿nice miêdzy plikami, @code{diff}
+po prostu informuje, czy pliki siê ró¿ni± czy nie.  Formaty sumaryczny
+wybieraj± opcje @samp{-q} i @samp{--brief}.
+
+Format podsumowuj±cy jest szczególnie przydatny przy porównywaniu zawarto¶ci
+dwu katalogów.  Jest te¿ znacznie szybszy ni¿ wykonywanie zwyk³ych porównañ
+linia po linii, poniewa¿ @code{diff} mo¿e przestaæ analizowaæ plik jak tylko
+zauwa¿y jak±¶ ró¿nicê.
+
+Krótkie wskazanie czy dwa pliki siê ró¿ni± mo¿na te¿ uzyskaæ stosuj±c
+@code{cmp}.  Dla plików, które s± identyczne @code{cmp} nie tworzy ¿adnego
+wyj¶cia.  Gdy pliki siê ró¿ni±, domy¶lnie, wypisuje offset bajtowy
+i numer linii, gdzie wystêpuje pierwsza ró¿nica.  Do pominiêcia tej
+informacji mo¿na u¿yæ opcji @samp{-s}.  Wówczas @code{cmp} nie tworzy ¿adnego
+wyj¶cia, a informuje czy pliki siê ró¿ni± wy³±cznie za pomoc± swego kodu
+zakoñczenia (@pxref{Wywo³anie cmp}).
+
+@c Fix this.
+W przeciwieñstwie do @code{diff}, @code{cmp} nie potrafi porównywaæ
+katalogów; umie tylko porównaæ dwa pliki.
+
+@node Binarnie, , Krótko, Porównanie
+@section Pliki binarne i wymuszanie porównañ tekstowych
+@cindex binarne pliki a diff
+@cindex tekstowe a binarne, typ plików a diff
+
+Je¶li @code{diff} stwierdzi, ¿e który¶ z dwu porównywanych plików jest
+binarny (plik nie-tekstowy), normalnie traktuje tak± parê plików tak samo,
+jakby wybrano podsumowuj±cy format wyj¶cia (@pxref{Krótko}), i zg³asza tylko,
+¿e pliki binarne s± ró¿ne.  Jest to spowodowane tym, ¿e porównania linia po
+linii dla plików binarnych nie maj± zwykle sensu.
+
+@code{diff} okre¶la, czy plik jest tekstowy czy binarny przez sprawdzenie
+pewnej ilo¶ci jego pierwszych bajtów; dok³adna liczba badanych bajtów
+zale¿y od systemu, ale typowo jest to kilka tysiêcy.  Je¶li ka¿dy bajt w tej
+czê¶ci pliku jest niezerowy (nie równy null), to @code{diff} uwa¿a plik za
+tekstowy, w przeciwnym razie - za binarny.
+
+Czasami chcemy zmusiæ @code{diff}, by traktowa³ pliki jako tekstowe.
+Na przyk³ad, byæ mo¿e porównujemy pliki tekstowe, które zawieraj± znaki null.
+Wówczas @code{diff} b³êdnie zdecydowa³by, ¿e s± one plikami nie-tekstowymi.
+Albo porównujemy dokumenty zapisane w formacie stosowanym przez system
+przetwarzania tekstu, który u¿ywa znaków null do wskazania specjalnego
+formatowania.  Mo¿na zmusiæ @code{diff} do uwa¿ania wszystkich plików
+za tekstowe i porównywania ich linia po linii stosuj±c opcjê @samp{-a}
+lub @samp{--text}.  Je¿eli pliki, które porównujemy przy wykorzystaniu
+tej opcji w rzeczywisto¶ci nie zawieraj± tekstu, to i tak prawdopodobnie
+bêd± zawieraæ trochê znaków nowej linii, a wyj¶cie z @code{diff} bêdzie
+siê sk³adaæ z porcji pokazuj±cych ró¿nice pomiêdzy d³ugimi liniami jakich¶
+tam znaków zawartych w pliku.
+
+Mo¿na te¿ zmusiæ @code{diff}, by traktowa³ pliki jako binarne i informowa³
+tylko czy siê ró¿ni± (ale nie jak).  U¿ywamy do tego opcji @samp{--brief}.
+
+W systemach operacyjnych rozró¿niaj±cych pliki tekstowe i binarne @code{diff}
+normalnie czyta i zapisuje wszystkie dane jako tekst.  Do wymuszenia odczytu
+i zapisu binarnego s³u¿y opcja @samp{--binary}.  Ta opcja nie ma ¿adnego
+efektu na systemach zgodnych z POSIX, jak GNU czy tradycyjne Uniksy.
+Jednak wiele systemów operacyjnych komputerów osobistych oznacza koniec
+linii dwuznakow± sekwencj±: znakiem powrotu karetki plus znak nowej linii.
+Na takich systemach @code{diff} normalnie ignoruje powroty karetki na wej¶ciu
+i generuje je na koñcu ka¿dej linii wyj¶ciowej, ale z opcj± @samp{--binary}
+traktuje powrót karetki jak ka¿dy inny znak wej¶ciowy i nie dok³ada go na
+koñcu tworzonych linii.  Mo¿e to byæ przydatne do operowania na plikach
+nie-tekstowych, które maj± byæ wymieniane z systemami POSIX-owymi.
+
+Chc±c porównaæ dwa pliki bajt po bajcie, korzystamy z programu @code{cmp}
+z opcj± @samp{-l}, pokazuj±c± warto¶ci wszystkich ró¿ni±cych siê bajtów.
+Stosuj±c GNU @code{cmp} mo¿na równie¿ skorzystaæ z opcji @samp{-c},
+pokazuj±cej reprezentacjê ASCII tych bajtów.
+@xref{Wywo³anie cmp}, gdzie podano szczegó³y.
+
+Je¶li @code{diff3} s±dzi, ¿e który¶ z porównywanych plików jest binarny
+(nie-tekstowy), normalnie zg³asza b³±d, gdy¿ porównania takie na ogó³
+s± nieprzydatne.  @code{diff3} do rozstrzygniêcia, czy plik jest binarny
+u¿ywa tego samego testu.  Tak jak w @code{diff}, je¶li pliki wej¶ciowe
+zawieraj± jakie¶ nie-tekstowe znaki, ale poza tym s± plikami tekstowymi,
+mo¿emy za pomoc± opcji @samp{-a} lub @samp{--text} zmusiæ @code{diff3},
+by traktowa³ wszystkie pliki jak tekstowe i porównywa³ je linia po linii.
+
+@node Formaty wyj¶ciowe, Porównywanie katalogów, Porównanie, Top
+@chapter Formaty wyj¶ciowe @code{diff}
+@cindex wyj¶cie, formaty
+@cindex format wyj¶cia @code{diff}
+
+@code{diff} ma kilka wzajemnie wykluczaj±cych siê opcji steruj±cych formatem
+wyj¶ciowym.  W poni¿szych sekcjach opisano wszystkie formaty, ilustruj±c
+jak @code{diff} raportuje ró¿nice miêdzy dwoma przyk³adowymi plikami
+wej¶ciowymi.
+
+@menu
+* Przyk³adowe wej¶cie diff::	Pliki wej¶ciowe do przyk³adów @code{diff}.
+* Normalny::			Pokazanie ró¿nic bez okalaj±cego tekstu.
+* Kontekstowy::	 		Pokazanie ró¿nic z okalaj±cym je tekstem.
+* Dwukolumnowy::        	Pokazanie ró¿nic obok siebie, w dwu kolumnach.
+* Skrypty::  			Generowanie skryptów dla innych programów.
+* If-then-else::     		Scalanie plików z u¿yciem if-then-else.
+@end menu
+
+@node Przyk³adowe wej¶cie diff, Normalny, , Formaty wyj¶ciowe
+@section Dwa przyk³adowe pliki wej¶ciowe
+@cindex @code{diff}, przyk³adowe wej¶cie
+@cindex przyk³adowe pliki wej¶ciowe dla @code{diff}
+
+Oto dwa przyk³adowe pliki, z których korzystamy w licznych przyk³adach
+do pokazania wyj¶cia uzyskiwanego z @code{diff} i tego, jak zmienia siê ono
+w zale¿no¶ci od ró¿nych opcji.
+
+To jest plik @file{lao}:
+
+@example
+Tao, które mo¿na wyraziæ s³owami, nie jest prawdziwym tao.
+Nazwa, któr± mo¿na je okre¶liæ, nie jest niezmienn± nazw±.
+Bezimienne jest pocz±tkiem nieba i ziemi,
+Nazwane jest matk± wszystkich rzeczy.
+Przeto, kto trwale pozbawion jest pragnieñ wszelakich,
+  potrafi dojrzeæ subteln± istotê tao,
+za¶, kto niezmiennie tkwi w pêtach swych pragnieñ,
+  mo¿e tylko ujrzeæ zewnêtrzn± pozorno¶æ rzeczy.
+Te dwie strony tao wywodz± siê
+ze wspólnego ¼ród³a,
+  lecz nosz± odmienne nazwy.
+@end example
+
+To jest plik @file{tsy}:
+
+@example
+Bezimienne jest pocz±tkiem nieba i ziemi,
+nazwane jest matk± wszystkich rzeczy.
+
+Przeto, kto trwale pozbawion jest pragnieñ wszelakich,
+  potrafi dojrzeæ subteln± istotê tao,
+za¶, kto niezmiennie tkwi w pêtach swych pragnieñ,
+  mo¿e tylko ujrzeæ zewnêtrzn± pozorno¶æ rzeczy.
+Te dwie strony tao wywodz± siê
+ze wspólnego ¼ród³a,
+  lecz nosz± odmienne nazwy.
+To, co w nich wspólne, nazywamy wielk± tajemnic±,
+tajemnic± nad tajemnicami,
+bram± do poznania wszelakich cudowno¶ci.
+@end example
+
+W tym przyk³adzie, pierwsza porcja sk³ada siê tylko z dwu pierwszych linii
+@c              opposing the second
+z @file{lao}, druga zawiera czwart± liniê @file{lao} porównan±
+z drug± i trzeci± lini± @file{tsy}, a ostatnia porcja - ostatnie trzy
+linie @file{tsy}.
+
+@node Normalny, Kontekstowy, Przyk³adowe wej¶cie diff, Formaty wyj¶ciowe
+@section Pokazanie ró¿nic bez kontekstu
+@cindex normalny format wyj¶ciowy
+@cindex @samp{<}, format wyj¶ciowy
+
+``Normalny'' format wyj¶cia @code{diff} pokazuje ka¿d± porcjê ró¿nic bez
+otaczaj±cych j± linii kontekstu.  Czasem takie wyj¶cie najczytelniej
+pokazuje, jak siê zmieni³y linie, bez rozpraszaj±cych s±siednich
+niezmienionych linii (choæ podobne rezultaty mo¿na osi±gn±æ z formatem
+kontekstowym lub zunifikowanym stosuj±c 0 linii kontekstu).  Format ten
+jednak¿e przesta³ ju¿ byæ szeroko u¿ywany do rozsy³ania ³at; w tym
+zastosowaniu przewy¿sza go format kontekstowy (@pxref{Format kontekstowy})
+i format zunifikowany (@pxref{Format zunifikowany}).  Format normalny jest
+formatem domy¶lnym z powodu zgodno¶ci ze starszymi wersjami @code{diff}
+i standardem Posix.
+
+@menu
+* Szczegó³y normalnego::   Szczegó³owy opis normalnego formatu wyj¶ciowego.
+* Przyk³ad normalnego::	   Przyk³adowe wyj¶cie w formacie normalnym.
+@end menu
+
+@node Szczegó³y normalnego, Przyk³ad normalnego, , Normalny
+@subsection Szczegó³owy opis normalnego formatu wyj¶ciowego
+
+Normalny format wyj¶ciowy sk³ada siê z co najmniej jednej porcji ró¿nic.
+Ka¿da pokazuje jeden obszar, w którym pliki siê ró¿ni±.  Porcje formatu
+normalnego wygl±daj± tak:
+
+@example
+@var{polecenie-zmiany}
+< @var{linia-pliku-¼ród³owego}
+< @var{linia-pliku-¼ród³owego}@dots{}
+---
+> @var{linia-pliku-docelowego}
+> @var{linia-pliku-docelowego}@dots{}
+@end example
+
+Wystêpuj± trzy rodzaje poleceñ zmiany.  Ka¿de sk³ada siê z numeru linii
+lub zakresu oddzielonych przecinkami linii z pierwszego pliku, pojedynczego
+znaku wskazuj±cego rodzaj zmiany, jaka powinna zostaæ wykonana, i numeru
+linii lub zakresu oddzielonych przecinkami linii z drugiego pliku.
+Wszystkie numery linii s± numerami pierwotnych linii plików.
+Typy poleceñ zmiany:
+
+@table @samp
+@item @var{l}a@var{r}
+Dodanie (add) linii z zakresu @var{r} drugiego pliku po linii @var{l}
+pierwszego pliku.  Na przyk³ad, @samp{8a12,15} oznacza do³±czenie linii
+12--15 pliku 2 po linii 8 pliku 1; albo, je¶li zmieniamy plik 2 na plik 1,
+usuniêcie linii 12--15 pliku 2.
+
+@item @var{f}c@var{t}
+Zast±pienie (change - zmiana) linii z zakresu @var{f} pierwszego pliku
+liniami z zakresu @var{t} drugiego pliku.  Przypomina po³±czenie dodawania
+z usuwaniem, lecz jest bardziej zwiêz³e.  Na przyk³ad, @samp{5,7c8,10}
+@c               file 1 to read as lines 8--10
+oznacza zmianê linii 5--7 pliku 1 na zawarto¶æ linii 8--10
+pliku 2; albo, je¶li zmieniamy plik 2 na plik 1, zmiana linii 8--10 pliku 2
+na tre¶æ linii 5--7 pliku 1.
+
+@item @var{r}d@var{l}
+Usuniêcie (delete) linii z zakresu @var{r} z pierwszego pliku.  Linia @var{l}
+wskazuje miejsce, gdzie pojawi³yby siê one w drugim pliku, gdyby nie zosta³y
+usuniête.  Na przyk³ad, @samp{5,7d3} oznacza usuniêcie linii 5--7 pliku 1;
+albo, je¶li zmieniamy plik 2 na plik 1, do³±czenie linii 5--7 pliku 1
+po linii 3 pliku 2.
+@end table
+
+@node Przyk³ad normalnego, , Szczegó³y normalnego, Normalny
+@subsection Przyk³ad formatu normalnego
+
+Oto wynik dzia³ania polecenia @samp{diff lao tsy}
+(@pxref{Przyk³adowe wej¶cie diff}, gdzie podano pe³n± postaæ u¿ytych plików).
+Zauwa¿, ¿e pokazuje ono tylko te linie, które s± ró¿ne w obu plikach.
+
+@example
+1,2d0
+< Tao, które mo¿na wyraziæ s³owami, nie jest prawdziwym tao.
+< Nazwa, któr± mo¿na je okre¶liæ, nie jest niezmienn± nazw±.
+4c2,3
+< Nazwane jest matk± wszystkich rzeczy.
+---
+> nazwane jest matk± wszystkich rzeczy.
+> 
+11a11,13
+> To, co w nich wspólne, nazywamy wielk± tajemnic±,
+> tajemnic± nad tajemnicami,
+> bram± do poznania wszelakich cudowno¶ci.
+@end example
+
+@node Kontekstowy, Dwukolumnowy, Normalny, Formaty wyj¶ciowe
+@section Pokazanie ró¿nic wewn±trz ich kontekstu
+@cindex context, format wyj¶ciowy
+@cindex kontekstowy, format wyj¶ciowy
+@cindex @samp{!}, format wyj¶ciowy
+
+Zazwyczaj, gdy ogl±damy ró¿nice miêdzy plikami, chcemy te¿ widzieæ
+czê¶ci plików w pobli¿u ró¿ni±cych siê linii. Pomaga to zrozumieæ dok³adnie,
+co siê zmieni³o.  Czê¶ci plików s±siaduj±ce z danymi liniami nazywane s±
+@dfn{kontekstem} @dfn{context}.
+
+GNU @code{diff} obs³uguje dwa formaty wyj¶ciowe pokazuj±ce kontekst wokó³
+ró¿ni±cych siê linii: @dfn{format kontekstowy} (@dfn{context format})
+i @dfn{format zunifikowany} (@dfn{unified format}).  Opcjonalnie mo¿e
+pokazaæ, w jakiej funkcji lub sekcji pliku znaleziono ró¿ni±ce siê linie.
+
+Do rozpowszechniania nowych wersji plików w postaci wyj¶cia z @code{diff}
+powinni¶my u¿ywaæ jednego z formatów pokazuj±cych kontekst, by odbiorcy
+mogli zaaplikowaæ ró¿nice nawet je¶li poczynili w swoich w³asnych plikach
+niewielkie zmiany.  W tym przypadku @code{patch} nak³ada ³atê szukaj±c
+w plikach linii kontekstu wokó³ linii ró¿nic. Je¶li linie kontekstu s±
+faktycznie nieco dalej, ni¿ wskazuje plik ró¿nicowy, to @code{patch} umie
+dopasowaæ odpowiednio numery linii i nadal poprawnie zastosowaæ ³atê.
+@xref{Niedoskona³e}, gdzie szerzej opisano wykorzystanie @code{patch} do
+@c                      imperfect diffs.
+nak³adania niedok³adnie pasuj±cych ³at.
+
+@menu
+* Format kontekstowy::	Format wyj¶ciowy pokazuj±cy otaczaj±ce linie.
+* Format zunifikowany::	Bardziej skondensowany format wyj¶ciowy z kontekstem.
+* Sekcje::		Pokazanie, w których sekcjach plików s± ró¿nice.
+* Nazwy zastêpcze::	Pokazanie w nag³ówkach kontekstowych zastêpczych
+			nazw plików.
+@end menu
+
+@node Format kontekstowy, Format zunifikowany, , Kontekstowy
+@subsection Format kontekstowy
+
+Kontekstowy format wyj¶cia pokazuje wokó³ linii, które siê ró¿ni± kilka
+linii kontekstu.  Jest to standardowy format do dystrybucji uaktualnieñ
+kodu ¼ród³owego.
+Wybiera siê go za pomoc± opcji @samp{-C @var{linie}},
+@samp{--context@r{[}=@var{linie}@r{]}} lub @samp{-c}.  Argument @var{linie},
+pobierany przez czê¶æ z nich, wskazuje, ile linii kontekstu ma byæ pokazane.
+Je¶li nie podamy @var{linie}, zostanie u¿yta warto¶æ domy¶lna - trzy.
+Do prawid³owego dzia³ania @code{patch} potrzebuje na ogó³ co najmniej dwu
+linii kontekstu.
+
+@menu
+* Szczegó³y kontekstowego::	Szczegó³owy opis formatu kontekstowego.
+* Przyk³ad kontekstowego::	Przyk³adowe wyj¶cie w formacie kontekstowym.
+* Mniej kontekstu::		Inny przyk³ad z mniejszym kontekstem.
+@end menu
+
+@node Szczegó³y kontekstowego, Przyk³ad kontekstowego, , Format kontekstowy
+@subsubsection Szczegó³owy opis formatu kontekstowego
+
+Format kontekstowy zaczyna siê od dwulinijkowego nag³ówka, który wygl±da tak:
+
+@example
+*** @var{plik-¼ród³owy} @var{czas-modyfikacji-pliku-¼ród³owego}
+--- @var{plik-docelowy} @var{czas-modyfikacji-pliku-docelowego}
+@end example
+
+@noindent
+Zawarto¶æ nag³ówka zmieniamy opcj± @samp{-L @var{etykieta}} lub
+@samp{--label=@var{etykieta}}; zob. @ref{Nazwy zastêpcze}.
+
+Dalej nastêpuje przynajmniej jedna porcja ró¿nic; ka¿da z nich pokazuje
+jeden obszar, w którym pliki siê ró¿ni±.  Porcje w formacie kontekstowym
+wygl±daj± tak:
+
+@example
+***************
+*** @var{zakres-linii-pliku-¼ród³owego} ****
+  @var{linia-pliku-¼ród³owego}
+  @var{linia-pliku-¼ród³owego}@dots{}
+--- @var{zakres-linii-pliku-docelowego} ----
+  @var{linia-pliku-docelowego}
+  @var{linia-pliku-docelowego}@dots{}
+@end example
+
+Linie kontekstu wokó³ linii, którymi ró¿ni± siê pliki zaczynaj± siê dwiema
+spacjami.  Linie, którymi ró¿ni± siê pliki zaczynaj± siê jednym z poni¿szych
+znaczników, po którym nastêpuje znak spacji:
+
+@table @samp
+@item !
+Linia, bêd±ca czê¶ci± grupy linii, które siê zmieni³y miêdzy oboma plikami.
+W tej samej porcji istnieje grupa odpowiadaj±cych im linii drugiego pliku,
+tak¿e oznaczonych wykrzyknikiem @samp{!}.
+
+@item +
+``Wstawiona'' linia w drugim pliku, która nie ma odpowiednika w pierwszym
+pliku.
+
+@item -
+``Usuniêta'' linia w pierwszym pliku, która nie ma odpowiednika w drugim
+pliku.
+@end table
+
+Je¶li wszystkie zmiany w porcji s± wstawieniami, linie pliku
+@var{pliku-¼ród³owego} s± pomijane.  Je¶li wszystkie zmiany s± usuniêciami,
+pomijane s± linie @var{pliku-docelowego}.
+
+@node Przyk³ad kontekstowego, Mniej kontekstu, Szczegó³y kontekstowego, Format kontekstowy
+@subsubsection Przyk³ad formatu kontekstowego
+
+Oto wynik dzia³ania polecenia @samp{diff -c lao tsy}
+(@pxref{Przyk³adowe wej¶cie diff}, gdzie podano pe³n± postaæ u¿ytych plików).
+Zauwa¿, ¿e przed i po ka¿dej ró¿ni±cej siê linii pokazane s± trzy
+(co najwy¿ej) linie z ni± s±siaduj±ce.  S± to linie kontekstu.
+Zauwa¿ te¿, ¿e pierwsze dwie porcje id± razem, gdy¿ ich zawarto¶æ siê
+nak³ada.
+
+@example
+*** lao	Sat Jan 26 23:30:39 1991
+--- tsy	Sat Jan 26 23:30:50 1991
+***************
+*** 1,7 ****
+- Tao, które mo¿na wyraziæ s³owami, nie jest prawdziwym tao.
+- Nazwa, któr± mo¿na je okre¶liæ, nie jest niezmienn± nazw±.
+  Bezimienne jest pocz±tkiem nieba i ziemi,
+! Nazwane jest matk± wszystkich rzeczy.
+  Przeto, kto trwale pozbawion jest pragnieñ wszelakich,
+    potrafi dojrzeæ subteln± istotê tao,
+  za¶, kto niezmiennie tkwi w pêtach swych pragnieñ,
+--- 1,6 ----
+  Bezimienne jest pocz±tkiem nieba i ziemi,
+! nazwane jest matk± wszystkich rzeczy.
+! 
+  Przeto, kto trwale pozbawion jest pragnieñ wszelakich,
+    potrafi dojrzeæ subteln± istotê tao,
+  za¶, kto niezmiennie tkwi w pêtach swych pragnieñ,
+***************
+*** 9,11 ****
+--- 8,13 ----
+  Te dwie strony tao wywodz± siê
+  ze wspólnego ¼ród³a,
+    lecz nosz± odmienne nazwy.
++  To, co w nich wspólne, nazywamy wielk± tajemnic±,
++  tajemnic± nad tajemnicami,
++  bram± do poznania wszelakich cudowno¶ci.
+@end example
+
+@node Mniej kontekstu, , Przyk³ad kontekstowego, Format kontekstowy
+@subsubsection Przyk³ad formatu kontekstowego z mniejszym kontekstem
+
+Oto wynik dzia³ania polecenia @samp{diff --context=1 lao tsy}
+(@pxref{Przyk³adowe wej¶cie diff}, gdzie podano pe³n± postaæ u¿ytych plików).
+Zauwa¿, ¿e tutaj zg³aszana jest co najwy¿ej jedna linia kontekstu.
+
+@example
+*** lao	Sat Jan 26 23:30:39 1991
+--- tsy	Sat Jan 26 23:30:50 1991
+***************
+*** 1,5 ****
+- Tao, które mo¿na wyraziæ s³owami, nie jest prawdziwym tao.
+- Nazwa, któr± mo¿na je okre¶liæ, nie jest niezmienn± nazw±.
+  Bezimienne jest pocz±tkiem nieba i ziemi,
+! Nazwane jest matk± wszystkich rzeczy.
+  Przeto, kto trwale pozbawion jest pragnieñ wszelakich,
+--- 1,4 ----
+  Bezimienne jest pocz±tkiem nieba i ziemi,
+! nazwane jest matk± wszystkich rzeczy.
+! 
+  Przeto, kto trwale pozbawion jest pragnieñ wszelakich,
+***************
+*** 11 ****
+--- 10,13 ----
+    lecz nosz± odmienne nazwy.
++  To, co w nich wspólne, nazywamy wielk± tajemnic±,
++  tajemnic± nad tajemnicami,
++  bram± do poznania wszelakich cudowno¶ci.
+@end example
+
+@node Format zunifikowany, Sekcje, Format kontekstowy, Kontekstowy
+@subsection Format zunifikowany
+@cindex zunifikowany format wyj¶ciowy
+@cindex @samp{+-}, format wyj¶ciowy
+
+Zunifikowany format wyj¶ciowy jest odmian± formatu kontekstowego, bardziej
+zwart±, gdy¿ pomija zbyteczne linie kontekstu.
+Wybiera siê go za pomoc± opcji @samp{-U @var{linie}},
+@samp{--unified@r{[}=@var{linie}@r{]}} lub @samp{-u}.  Argument @var{linie},
+pobierany przez czê¶æ z nich, wskazuje, ile linii kontekstu ma byæ pokazane.
+Je¶li nie podamy @var{linie}, zostanie u¿yta warto¶æ domy¶lna - trzy.
+
+Obecnie tylko GNU @code{diff} potrafi utworzyæ taki format i tylko GNU
+@code{patch} umie automatycznie stosowaæ ³aty tego formatu.  Do poprawnego
+dzia³ania @code{patch} zwykle potrzebuje przynajmniej dwu linii kontekstu.
+
+@menu
+* Szczegó³y zunifikowanego::	Szczegó³owy opis formatu zunifikowanego.
+* Przyk³ad zunifikowanego::	Przyk³adowe wyj¶cie w formacie zunifikowanym.
+@end menu
+
+@node Szczegó³y zunifikowanego, Przyk³ad zunifikowanego, , Format zunifikowany
+@subsubsection Szczegó³owy opis formatu zunifikowanego
+
+Format zunifikowany zaczyna siê od dwulinijkowego nag³ówka, który wygl±da 
+tak:
+
+@example
+--- @var{plik-¼ród³owy} @var{czas-modyfikacji-pliku-¼ród³owego}
++++ @var{plik-docelowy} @var{czas-modyfikacji-pliku-docelowego}
+@end example
+
+@noindent
+Zawarto¶æ nag³ówka zmieniamy opcj± @samp{-L @var{etykieta}} lub
+@samp{--label=@var{etykieta}}; zob. @ref{Nazwy zastêpcze}.
+
+Dalej nastêpuje co najmniej jedna porcja ró¿nic; ka¿da z nich pokazuje
+jeden obszar, w którym pliki siê ró¿ni±.  Porcje w formacie zunifikowanym
+wygl±daj± tak:
+
+@example
+@@@@ @var{zakres-linii-pliku-¼ród³owego} @var{zakres-linii-pliku-
+docelowego} @@@@
+ @var{linia-z-jednego-z-plików}
+ @var{linia-z-jednego-z-plików}@dots{}
+@end example
+
+Linie wspólne obu plikom zaczynaj± siê od znaku spacji.  Linie, które
+faktycznie odró¿niaj± od siebie pliki maj± w lewej kolumnie jeden
+z poni¿szych znaczników:
+
+@table @samp
+@item +
+Linia zosta³a tu dodana do pierwszego pliku.
+
+@item -
+Linia zosta³a tu usuniêta a pierwszego pliku.
+@end table
+
+@node Przyk³ad zunifikowanego, , Szczegó³y zunifikowanego, Format zunifikowany
+@subsubsection Przyk³ad formatu zunifikowanego
+
+Oto wynik dzia³ania polecenia @samp{diff -u lao tsy}
+(@pxref{Przyk³adowe wej¶cie diff}, gdzie podano pe³n± postaæ u¿ytych plików):
+
+@example
+--- lao	Sat Jan 26 23:30:39 1991
++++ tsy	Sat Jan 26 23:30:50 1991
+@@@@ -1,7 +1,6 @@@@
+-Tao, które mo¿na wyraziæ s³owami, nie jest prawdziwym tao.
+-Nazwa, któr± mo¿na je okre¶liæ, nie jest niezmienn± nazw±.
+ Bezimienne jest pocz±tkiem nieba i ziemi,
+-Nazwane jest matk± wszystkich rzeczy.
++nazwane jest matk± wszystkich rzeczy.
++
+ Przeto, kto trwale pozbawion jest pragnieñ wszelakich,
+   potrafi dojrzeæ subteln± istotê tao,
+ za¶, kto niezmiennie tkwi w pêtach swych pragnieñ,
+@@@@ -9,3 +8,6 @@@@
+ Te dwie strony tao wywodz± siê
+ ze wspólnego ¼ród³a,
+   lecz nosz± odmienne nazwy.
++To, co w nich wspólne, nazywamy wielk± tajemnic±,
++tajemnic± nad tajemnicami,
++bram± do poznania wszelakich cudowno¶ci.
+@end example
+
+@node Sekcje, Nazwy zastêpcze, Format zunifikowany, Kontekstowy
+@subsection Pokazanie, w których sekcjach plików s± ró¿nice
+@cindex nag³ówki sekcji
+@cindex sekcje, nag³ówki
+
+Czasem chcieliby¶my wiedzieæ, w której czê¶ci pliku wypad³a ka¿da ze zmian.
+Je¶li pliki s± kodem ¼ród³owym, mo¿emy przez to rozumieæ, która funkcja siê
+zmieni³a.  Je¶li pliki s± dokumentami, mo¿emy mieæ na my¶li, który rozdzia³
+czy dodatek siê zmieni³.  GNU @code{diff} potrafi to pokazaæ wy¶wietlaj±c
+najbli¿sz± liniê nag³ówka sekcji poprzedzaj±c± linie ró¿nic.
+Jakie linie s± ``nag³ówkami sekcji'' okre¶la siê za pomoc± wyra¿enia
+regularnego.
+
+@menu
+* Podane nag³ówki::    Pokazanie nag³ówków pasuj±cych do wyra¿enia regularnego.
+* Nag³ówki funkcji C:: Pokazanie nag³ówków funkcji C.
+@end menu
+
+@node Podane nag³ówki, Nag³ówki funkcji C, , Sekcje
+@subsubsection Pokazanie linii pasuj±cych do wyra¿enia regularnego.
+@cindex podawanie nag³ówków
+@cindex wyra¿enie regularne dopasowuj±ce nag³ówki
+@cindex regexp dopasowuj±ce nag³ówki
+
+W celu wskazania, w których sekcjach plików, nie bêd±cych kodem ¼ród³owym C
+czy podobnych jêzyków, wystêpuj± ró¿nice korzystamy z opcji
+@samp{-F @var{regexp}} lub @samp{--show-function-line=@var{regexp}}.
+@code{diff} uwa¿a linie pasuj±ce do argumentu @var{regexp} za pocz±tek
+kolejnej sekcji pliku.  Oto sugerowane wyra¿enia regularne dla kilku
+popularnych jêzyków programowania:
+
+@c Please add to this list, e.g. Fortran, Pascal.
+@table @samp
+@item ^[A-Za-z_]
+C, C++, Prolog
+@item ^(
+Lisp
+@item ^@@\(chapter\|appendix\|unnumbered\|chapheading\)
+Texinfo
+@end table
+
+Opcja dopasowywania nag³ówka nie wybiera automatycznie formatu wyj¶ciowego.
+By z niej skorzystaæ, trzeba wybraæ format kontekstowy
+(@pxref{Format kontekstowy}) lub zunifikowany (@pxref{Format zunifikowany}).
+U¿yta przy innych formatach wyj¶ciowych nie ma ¿adnych skutków.
+
+Opcje @samp{-F} i @samp{--show-function-line} dla ka¿dej z porcji ró¿nic
+szukaj± najbli¿szej niezmienionej linii, która j± poprzedza i pasuje
+do zadanego wyra¿enia regularnego.  Nastêpnie dodaj± tê liniê na koniec linii
+gwiazdek w formacie kontekstowym lub linii z @samp{@@@@} w zunifikowanym.
+Je¶li nie istnieje pasuj±ca linia, to wyj¶cie wyprowadzane dla tej porcji
+pozostaje bez zmian.  Je¶li linia ma ponad 40 znaków, to wypisywane jest
+tylko 40 pocz±tkowych znaków.  Dla takich linii mo¿na podaæ wiêcej ni¿ jedno
+wyra¿enie regularne.  @code{diff} usi³uje dopasowaæ ka¿d± liniê do ka¿dego
+wyra¿enia, poczynaj±c od ostatniego podanego.  To znaczy, ¿e mo¿na stosowaæ
+równocze¶nie opcje @samp{-p} i @samp{-F}.
+
+@node Nag³ówki funkcji C, , Podane nag³ówki, Sekcje
+@subsubsection Pokazanie nag³ówków funkcji C
+@cindex nag³ówki funkcji C
+@cindex C, nag³ówki funkcji
+@cindex funkcje C, nag³ówki
+
+W celu wskazania, w których funkcjach C czy podobnych jêzyków,
+wystêpuj± ró¿nice korzystamy z opcji @samp{-p} lub
+@samp{--show-c-function}.  Ta opcja, inaczej ni¿ @samp{-F}, automatycznie
+domy¶lnie stosuje kontekstowy format wyj¶ciowy (@pxref{Format kontekstowy}),
+z domy¶ln± liczb± linii kontekstu.  Liczbê tê mo¿na przes³oniæ w³asn±
+warto¶ci± za pomoc± @samp{-C @var{linie}} w innym miejscu wiersza poleceñ.
+Mo¿na te¿ zast±piæ zarówno domy¶lny format, jak i ilo¶æ linii kontekstu,
+stosuj±c w wierszu poleceñ dodatkowo @samp{-U @var{linie}}.
+
+Opcje @samp{-p} i @samp{--show-c-function} s± równowa¿ne
+@samp{-F'^[_a-zA-Z$]'} je¶li podano format zunifikowany lub
+@samp{-c -F'^[_a-zA-Z$]'} w przeciwnym razie  (@pxref{Podane nag³ówki}).
+GNU @code{diff} udostêpnia je ze wzglêdu na wygodê u¿ywania.
+
+@node Nazwy zastêpcze, , Sekcje, Kontekstowy
+@subsection Pokazanie zastêpczych nazw plików
+@cindex zastêpcze nazwy plików
+@cindex nazwy plików, zastêpcze
+
+Porównuj±c dwa pliki o nic nie mówi±cych lub niewiele mówi±cych nazwach
+zapewne chcieliby¶my, by @code{diff} w nag³ówku formatu kontekstowego czy
+zunifikowanego pokaza³ jakie¶ ich nazwy zastêpcze.
+S³u¿y do tego opcja @samp{-L @var{etykieta}} lub
+@samp{--label=@var{etykieta}}.  Przy pierwszym podaniu tej opcji, jej
+argument zastêpuje w nag³ówku nazwê i datê pierwszego pliku.  Drugie u¿ycie
+opcji zastêpuje argumentem nazwê i datê drugiego pliku.  Je¶li opcjê podamy
+wiêcej ni¿ dwa razy, @code{diff} zg³osi b³±d.  Opcja @samp{-L} nie ma wp³ywu
+na nazwy plików w nag³ówku @code{pr} (tworzonym gdy korzystamy z opcji
+@samp{-l} lub @samp{--paginate} (@pxref{Stronicowanie}).
+
+Oto dwie pierwsze linie wyj¶cia polecenia @samp{diff -C2 -Lpierwotny
+-Lzmieniony lao tsy}:
+
+@example
+*** pierwotny
+--- zmieniony
+@end example
+
+@node Dwukolumnowy, Skrypty, Kontekstowy, Formaty wyj¶ciowe
+@section Pokazanie ró¿nic obok siebie
+@cindex obok siebie
+@cindex dwukolumnowe, wyj¶cie
+@cindex kolumnowe, wyj¶cie
+
+@code{diff} potrafi utworzyæ wykaz ró¿nic umieszczonych obok siebie.
+Pliki s± wypisywane w dwu kolumnach, z odstêpem miêdzykolumnowym.
+@c                             the gutter
+Odstêp miêdzy kolumnami zawiera jeden z poni¿szych znaczników:
+
+@table @asis
+@item bia³y znak
+Odpowiednie linie s± wspólne.  To znaczy, albo linie s± identyczne, albo
+ró¿nica jest ignorowana z powodu jednej z opcji @samp{--ignore}
+(@pxref{Odstêpy}).
+
+@item @samp{|}
+Odpowiednie linie ró¿ni± siê i s± albo obie kompletne albo obie niekompletne.
+
+@item @samp{<}
+Pliki siê ró¿ni± i tylko pierwszy z nich zawiera tê liniê.
+
+@item @samp{>}
+Pliki siê ró¿ni± i tylko drugi z nich zawiera tê liniê.
+
+@item @samp{(}
+Tylko pierwszy plik zawiera tê liniê, ale ró¿nica jest ignorowana.
+
+@item @samp{)}
+Tylko drugi plik zawiera tê liniê, ale ró¿nica jest ignorowana.
+
+@item @samp{\}
+Odpowiednie linie ró¿ni± siê, a tylko pierwsza linia jest niekompletna.
+
+@item @samp{/}
+Odpowiednie linie ró¿ni± siê, a tylko druga linia jest niekompletna.
+@end table
+
+Normalnie, linia wyj¶ciowa jest niekompletna wtedy i tylko wtedy gdy linie,
+z jakich siê sk³ada s± niekompletne @xref{Niekompletne linie}.  Jednak, gdy
+linia wyj¶ciowa reprezentuje dwie ró¿ni±ce siê linie, jedna z nich mo¿e byæ
+niekompletna, a druga nie.  W tym przypadku linia wyj¶ciowa jest kompletna,
+ale odstêp miêdzy jej kolumnami jest oznakowany @samp{\} je¶li niekompletna
+jest pierwsza linia lub @samp{/} je¶li druga.
+
+Format dwukolumnowy jest czasem ³atwiejszy w czytaniu, ale ma ograniczenia.
+Tworzy du¿e szersze wyj¶cie ni¿ zwykle i obcina linie, które siê nie
+@c                               relies on lining up output 
+mieszcz±.  Ponadto, znacznie bardziej ni¿ zwyk³e formaty, opiera siê
+na wyrównywaniu wyj¶cia, przez co wyniki wygl±daj± szczególnie ¼le gdy
+korzystamy z czcionek zmiennej szeroko¶ci, niestandardowych tabulatorów czy
+znaków niedrukowalnych.
+
+Do interaktywnego scalania ró¿nic pokazanych obok siebie u¿ywa siê programu
+@code{sdiff}.  @xref{Interaktywne scalanie}, gdzie bli¿ej opisano scalanie
+plików.
+
+@menu
+* Format dwukolumnowy::		Sterowanie wyj¶ciem formatu dwukolumnowego.
+* Przyk³ad dwukolumnowy::	Przyk³ad wyj¶cia dwukolumnowego.
+@end menu
+
+@node Format dwukolumnowy, Przyk³ad dwukolumnowy, , Dwukolumnowy
+@section Sterowanie formatem dwukolumnowym
+@cindex side-by-side, format wyj¶ciowy
+@cindex dwukolumnowy format wyj¶ciowy
+@cindex kolumnowy format wyj¶ciowy
+
+Format o liniach obok siebie wybierany jest opcj± @samp{-y} lub
+@samp{--side-by-side}.  Poniewa¿ linie wyj¶ciowe zawieraj± dwie linie wej¶cia
+obok siebie, s± szersze ni¿ zwykle.  Normalnie maj± 130 kolumn, co powinno
+siê zmie¶ciæ w tradycyjnej linii drukarki.  D³ugo¶æ linii wyj¶ciowych ustawia
+siê opcj± @samp{-W @var{kolumny}} lub @samp{--width=@var{kolumny}}.
+Linia wyj¶ciowa podzielona jest na dwie po³ówki jednakowej d³ugo¶ci,
+rozdzielone niewielk± przestrzeni± do zaznaczania ró¿nic.  Prawa po³ówka
+wyrównana jest do tabulatora, tak, ¿e tabulacje s± wyrównane.  Linie
+wej¶ciowe, które s± zbyt d³ugie, by zmie¶ciæ siê w po³ówce linii wyj¶ciowej
+s± w wyniku obcinane.
+
+Opcja @samp{--left-column} dla dwu wspólnych linii wypisuje tylko lew±
+kolumnê.  Opcja @samp{--suppress-common-lines} ca³kowicie eliminuje wspólne
+linie.
+
+@node Przyk³ad dwukolumnowy, , Format dwukolumnowy, Dwukolumnowy
+@subsection Przyk³ad formatu dwukolumnowego
+
+Oto wynik dzia³ania polecenia @samp{diff -y -W 72 lao tsy}
+(@pxref{Przyk³adowe wej¶cie diff}, gdzie podano pe³n± postaæ u¿ytych plików).
+
+@example
+Tao, które mo¿na wyraziæ s³owami   <
+Nazwa, któr± mo¿na je okre¶liæ,    <
+Bezimienne jest pocz±tkiem nieba        Bezimienne jest pocz±tkiem nieba
+Nazwane jest matk± wszystkich rz   |    nazwane jest matk± wszystkich rz
+                                   >
+Przeto, kto trwale pozbawion jes        Przeto, kto trwale pozbawion jes
+  potrafi dojrzeæ subteln± istot          potrafi dojrzeæ subteln± istot
+za¶, kto niezmiennie tkwi w pêta        za¶, kto niezmiennie tkwi w pêta
+  mo¿e tylko ujrzeæ zewnêtrzn± p          mo¿e tylko ujrzeæ zewnêtrzn± p
+Te dwie strony tao wywodz± siê          Te dwie strony tao wywodz± siê
+ze wspólnego ¼ród³a,                    ze wspólnego ¼ród³a,
+  lecz nosz± odmienne nazwy.              lecz nosz± odmienne nazwy.
+                                   >    To, co w nich wspólne, nazywamy
+                                   >      tajemnic± nad tajemnicami,
+                                   >    bram± do poznania wszelakich cud
+@end example
+
+@node Skrypty, If-then-else, Dwukolumnowy, Formaty wyj¶ciowe
+@section Tworzenie skryptów edycyjnych
+@cindex formaty wyj¶ciowe tworz±ce skrypty
+@cindex skryptowe formaty wyj¶ciowe
+
+Kilka trybów wyprowadzania wyj¶cia tworzy skrypty poleceñ redaguj±ce
+@var{plik-¼ród³owy} tak, by otrzymaæ @var{plik-docelowy}.
+
+@menu
+* Skrypty ed::	Stosowanie @code{diff} do tworzenie poleceñ dla @code{ed}.
+* Forward ed::	Tworzenie skryptów @code{ed} skierowanych w przód.
+* RCS::	      	Specjalny format wyj¶cia @code{diff} u¿ywany przez RCS.
+@end menu
+
+@node Skrypty ed, Forward ed, , Skrypty
+@subsection Skrypty @code{ed}
+@cindex skrypt @code{ed}, format wyj¶ciowy
+@cindex @code{ed}, skryptowy format wyj¶ciowy
+
+@code{diff} mo¿e tworzyæ polecenia, które kieruj± edytorem tekstu @code{ed}
+tak, aby przekszta³ci³ pierwszy plik w drugi.  Dawno temu by³ to jedyny tryb
+wyj¶ciowy nadaj±cy siê do automatycznej zmiany jednego pliku w drugi.
+Obecnie, z @code{patch}, jest on niemal przestarza³y.  Do wyboru tego
+formatu wyj¶ciowego s³u¿y opcja @samp{-e} lub @samp{--ed}.
+
+Podobnie jak format normalny (@pxref{Normalny}), ten format wyj¶ciowy nie
+pokazuje kontekstu.  Inaczej ni¿ format normalny, nie zawiera
+informacji niezbêdnych do odwrotnego zastosowania ró¿nicy (do utworzenia
+pierwszego pliku je¶li mamy tylko drugi plik i ró¿nicê).
+
+Je¶li plik  @file{d} zawiera wyj¶cie polecenia @samp{diff -e stary nowy},
+to polecenia @samp{(cat d && echo w) | ed - stary} modyfikuje @file{stary}
+tak, by zrobiæ z niego kopiê @file{nowego}.  Bardziej ogólnie: je¶li
+@file{d1}, @file{d2}, @dots{}, @file{dN} zawieraj±, odpowiednio, wyniki z
+@samp{diff -e stary nowy1}, @samp{diff -e nowy1 nowy2}, @dots{},
+@samp{diff -e nowyN-1 nowyN}, to polecenie @samp{(cat d1 d2 @dots{}
+dN && echo w) | ed - stary} modyfikuje @file{stary} tak, by zrobiæ z niego
+kopiê @file{nowyN}.
+
+@menu
+* Szczegó³y ed::	Szczegó³owy opis formatu @code{ed}.
+* Przyk³ad ed::		Przyk³adowy skrypt @code{ed}.
+@end menu
+
+@node Szczegó³y ed, Przyk³ad ed, , Skrypty ed
+@subsubsection Szczegó³owy opis formatu @code{ed}
+
+Format wyj¶ciowy @code{ed} sk³ada siê z co najmniej jednej porcji ró¿nic.
+Zmiany najbli¿sze koñca pliku wystêpuj± jako pierwsze, tak ¿e polecenia
+zmieniaj±ce ilo¶æ linii nie maj± wp³ywu na sposób interpretacji przez
+@code{ed} numerów nastêpnych poleceñ.  W formacie @code{ed} porcje wygl±daj±
+tak:
+
+@example
+@var{polecenie-zmiany}
+@var{linia-pliku-docelowego}
+@var{linia-pliku-docelowego}@dots{}
+.
+@end example
+
+Poniewa¿ @code{ed} u¿ywa pojedynczej kropki w linii do wskazania koñca
+wej¶cia, GNU @code{diff} chroni linie zmian zawieraj±ce pojedyncz± kropkê.
+Wpisuje zamiast niej dwie kropki, a nastêpnie dodaje kolejne polecenie
+@code{ed} zmieniaj±ce dwie kropki w jedn±.  Format @code{ed} nie potrafi
+przedstawiæ niekompletnej linii, wiêc je¶li drugi plik koñczy siê zmienion±
+niekompletn± lini±, @code{diff} zg³asza b³±d, a nastêpnie udaje, ¿e dodano
+znak nowej linii.
+
+Istniej± trzy typy poleceñ zmiany.  Ka¿de sk³ada siê z numeru linii
+(lub zakresu oddzielonych przecinkami linii) w pierwszym pliku i pojedynczego
+znaku wskazuj±cego na rodzaj zmian do wykonania.  Wszystkie numery linii
+s± pierwotnymi numerami linii pliku.  Typy poleceñ zmiany:
+
+@table @samp
+@item @var{l}a
+Dodanie (add) tekstu z drugiego pliku po linii numer @var{l} w pierwszym
+pliku.  Na przyk³ad, @samp{8a} oznacza dodanie wymienionych ni¿ej linii
+po ósmej linii pliku 1.
+
+@item @var{r}c
+Zast±pienie (change - zmiana) linii z zakresu @var{r} pierwszego pliku
+liniami wymienionymi ni¿ej.  Przypomina po³±czenie dodawania z usuwaniem,
+lecz jest bardziej zwiêz³e.  Na przyk³ad, @samp{5,7c} oznacza zmianê linii
+5--7 pliku 1 tak, by by³y równe tekstowi z pliku 2.
+
+@item @var{r}d
+Usuniêcie (delete) linii z zakresu @var{r} z pierwszego pliku.  Na przyk³ad,
+@samp{5,7d} oznacza usuniêcie linii 5--7 pliku 1.
+@end table
+
+@node Przyk³ad ed, , Szczegó³y ed, Skrypty ed
+@subsubsection Przyk³ad skryptu @code{ed}
+
+Oto wynik dzia³ania polecenia @samp{diff -e lao tsy}
+(@pxref{Przyk³adowe wej¶cie diff}, gdzie podano pe³n± postaæ u¿ytych plików):
+
+@example
+11a
+To, co w nich wspólne, nazywamy wielk± tajemnic±,
+tajemnic± nad tajemnicami,
+bram± do poznania wszelakich cudowno¶ci.
+.
+4c
+nazwane jest matk± wszystkich rzeczy.
+
+.
+1,2d
+@end example
+
+@node Forward ed, RCS, Skrypty ed, Skrypty
+@subsection Skrypty @code{ed} skierowane w przód (forward @code{ed})
+@cindex skrypt @code{ed} w przód, format wyj¶ciowy
+@cindex @code{ed} w przód, skryptowy format wyj¶ciowy
+@cindex forward @code{ed}, skryptowy format wyj¶ciowy
+
+@code{diff} mo¿e tworzyæ wyj¶cie podobne do skryptu @code{ed}, ale z porcjami
+uporz±dkowanymi w przód (od pocz±tku pliku ku koñcowi).  Format poleceñ jest
+nieco zmieniony: znaki poleceñ wystêpuj± przed liniami, których dotycz±,
+w zakresach numery linii s± oddzielane spacjami, w porcjach nie próbuje siê
+usuwaæ niejednoznaczno¶ci linii sk³adaj±cych siê z pojedynczej kropki.
+Podobnie jak format @code{ed}, format @code{ed} uporz±dkowany w przód
+(forward) nie potrafi przedstawiæ niekompletnych linii.
+
+Wyj¶cie typu forward @code{ed} jest niezbyt przydatne, gdy¿ ani @code{ed}
+ani @code{patch} nie potrafi± nak³adaæ ³at w tym formacie.
+Istnieje on g³ównie z uwagi na zgodno¶æ ze starszymi wersjami @code{diff}.
+Do wyboru tego formatu wyj¶ciowego s³u¿y opcja @samp{-f}
+lub @samp{--forward-ed}.
+
+
+@node RCS, , Forward ed, Skrypty
+@subsection Skrypty RCS
+@cindex skrypt RCS, format wyj¶ciowy
+@cindex RCS, skryptowy format wyj¶ciowy
+
+Format wyj¶ciowy RCS zaprojektowano specjalnie do stosowania z systemem
+kontroli wersji RCS (Revision Control System), bêd±cym zestawem wolnych
+programów u¿ywanych do organizacji i zarz±dzania ró¿nymi wersjami plików.
+Do wyboru tego formatu wyj¶ciowego s³u¿y opcja @samp{-n} lub @samp{--rcs}.
+Przypomina format forward @code{ed} (@pxref{Forward ed}), ale potrafi
+przedstawiæ dowolne zmiany zawarto¶ci pliku, gdy¿ unika problemów tamtego
+formatu (z niekompletnymi liniami i liniami sk³adaj±cymi siê z jednej
+kropki).  Zamiast koñczyæ partie tekstu lini± z³o¿on± z pojedynczej kropki,
+ka¿de z poleceñ okre¶la liczbê linii, których dotyczy: zamiast poleceñ
+@samp{c} u¿ywane s± kombinacje @samp{a} i @samp{d}.  Oprócz tego, je¶li
+drugi plik koñczy siê zmienion± niekompletn± lini±, to wyj¶cie równie¿
+koñczy siê niekompletn± lini±.
+
+Oto wynik dzia³ania polecenia @samp{diff -n lao tsy}
+(@pxref{Przyk³adowe wej¶cie diff}, gdzie podano pe³n± postaæ u¿ytych plików):
+
+@example
+d1 2
+d4 1
+a4 2
+nazwane jest matk± wszystkich rzeczy.
+
+a11 3
+To, co w nich wspólne, nazywamy wielk± tajemnic±,
+tajemnic± nad tajemnicami,
+bram± do poznania wszelakich cudowno¶ci.
+@end example
+
+@node If-then-else, , Skrypty, Formaty wyj¶ciowe
+@section Scalanie plików za pomoc± If-then-else
+@cindex scalaj±cy format wyj¶ciowy
+@cindex if-then-else, format wyj¶ciowy
+@cindex C if-then-else, format wyj¶ciowy
+@cindex @code{ifdef}, format wyj¶ciowy
+
+@code{diff} mo¿na wykorzystaæ do scalenia dwu plików z kodem ¼ród³owym C.
+Wyj¶cie w tym formacie zawiera wszystkie linie obu plików.  Linie wspólne
+obu plikom s± wypisywane tylko raz; czê¶ci ró¿ni±ce pliki s± rozdzielane
+dyrektywami preprocesora C @code{#ifdef @var{nazwa}} lub
+@code{#ifndef @var{nazwa}}, @code{#else}, and @code{#endif}.
+Podczas kompilacji takiego wyj¶cia po¿±dan± wersjê wybieramy albo definiuj±c
+albo pozostawiaj±c niezdefiniowane makro @var{nazwa}.
+
+Do scalania plików wywo³uje siê @code{diff} z opcj± @samp{-D @var{nazwa}}
+lub @samp{--ifdef=@var{nazwa}}.  Argument @var{nazwa} jest identyfikatorem C,
+jaki ma zostaæ u¿yty w dyrektywach @code{#ifdef} i @code{#ifndef}.
+
+Na przyk³ad, je¶li zmienimy wyst±pienie @code{wait (&s)} na
+@code{waitpid (-1, &s, 0)}, a nastêpnie scalimy stary i nowy plik za pomoc±
+opcji @samp{--ifdef=HAVE_WAITPID}, to czê¶æ kodu objêta zmianami mo¿e
+wygl±daæ mniej wiêcej tak:
+
+@example
+    do @{
+#ifndef HAVE_WAITPID
+        if ((w = wait (&s)) < 0  &&  errno != EINTR)
+#else /* HAVE_WAITPID */
+        if ((w = waitpid (-1, &s, 0)) < 0  &&  errno != EINTR)
+#endif /* HAVE_WAITPID */
+            return w;
+    @} while (w != child);
+@end example
+
+Mo¿na te¿ okre¶laæ formaty dla jêzyków innych ni¿ C, stosuj±c formaty
+grup linii i formaty linii, jak opisano w kolejnych sekcjach.
+
+@menu
+* Formaty grup linii::		Formaty ogólne grup linii if-then-else.
+* Formaty linii::		Formaty poszczególnych linii w grupie.
+* Szczegó³y If-then-else::	Szczegó³owy opis formatu if-then-else.
+* Przyk³adowy If-then-else::	Przyk³adowy format wyj¶ciowy if-then-else.
+@end menu
+
+@node Formaty grup linii, Formaty linii, , If-then-else
+@subsection Formaty grup linii
+@cindex formaty grup linii
+@cindex formaty dla grup linii if-then-else
+
+Formaty grup linii pozwalaj± na podanie formatów stosownych dla wielu
+aplikacji, które dopuszczaj± wej¶cie typu if-then-else, ³±cznie z jêzykami
+programowania i jêzykami formatowania tekstu.
+Format grup linii okre¶la format wyj¶ciowy dla ci±g³ej grupy podobnych linii.
+
+Na przyk³ad, poni¿sze polecenie porównuje TeX-owe pliki @file{stary}
+i @file{nowy} i wypisuje scalony plik, w którym stare miejsca ujête s±
+pomiêdzy linie @samp{\begin@{em@}}-@samp{\end@{em@}}, a nowe miêdzy linie
+@samp{\begin@{bf@}}-@samp{\end@{bf@}}.
+
+@example
+diff \
+   --old-group-format='\begin@{em@}
+%<\end@{em@}
+' \
+   --new-group-format='\begin@{bf@}
+%>\end@{bf@}
+' \
+   stary nowy
+@end example
+
+Poni¿sze polecenie jest równowa¿ne powy¿szemu przyk³adowi, ale trochê
+@c        it spells out the default line group formats.
+rozwleklejsze, gdy¿ przytacza dla jasno¶ci domy¶lne formaty grup linii.
+
+@example
+diff \
+   --old-group-format='\begin@{em@}
+%<\end@{em@}
+' \
+   --new-group-format='\begin@{bf@}
+%>\end@{bf@}
+' \
+   --unchanged-group-format='%=' \
+   --changed-group-format='\begin@{em@}
+%<\end@{em@}
+\begin@{bf@}
+%>\end@{bf@}
+' \
+   stary nowy
+@end example
+
+Oto bardziej rozbudowany przyk³ad, w którym wypisywana jest lista ró¿nic
+z nag³ówkami zawieraj±cymi numery linii i opisy w ``zwyk³ym angielskim''.
+[t³um.: bardziej skomplikowana polszczyzna nie daje siê wt³oczyæ w tak
+proste konstrukcje]
+
+@example
+diff \
+   --unchanged-group-format='' \
+   --old-group-format='-------- %dn line%(n=1?:s) deleted at %df:
+%<' \
+   --new-group-format='-------- %dN line%(N=1?:s) added after %de:
+%>' \
+   --changed-group-format='-------- %dn line%(n=1?:s) changed at %df:
+%<-------- to:
+%>' \
+   old new
+@end example
+
+Do podania formatu grupy linii u¿ywa siê @code{diff} z jedn± z wymienionych
+ni¿ej opcji.  Mo¿na podaæ do czterech formatów grup linii, po jednym dla
+ka¿dego rodzaju grup.  @var{format} powinien byæ cytowany, gdy¿ zwykle
+zawiera metaznaki pow³oki.
+
+@table @samp
+@item --old-group-format=@var{format}
+Te grupy to porcje zawieraj±ce linie tylko z pierwszego pliku.
+Domy¶lny format grup starych linii jest taki sam, jak format grup
+linii zmienionych, je¶li takowy zosta³ podany; w przeciwnym razie format
+ten wypisuje grupê linii dos³ownie, bez zmian czy dodatków.
+
+@item --new-group-format=@var{format}
+Te grupy to porcje zawieraj±ce linie tylko z drugiego pliku.
+Domy¶lny format grup nowych linii jest taki sam, jak format grup
+linii zmienionych, je¶li takowy zosta³ podany; w przeciwnym razie format
+ten wypisuje grupê linii dos³ownie, bez zmian czy dodatków.
+
+@item --changed-group-format=@var{format}
+Te grupy s± porcjami zawieraj±cymi linie z obu plików.
+Domy¶lny format grup zmienionych linii jest z³±czeniem (konkatenacj±)
+formatów grup nowych i starych linii.
+
+@item --unchanged-group-format=@var{format}
+Te grupy zawieraj± sk³adaj± siê z linii wspólnych obu plikom.
+Domy¶lnym formatem grup niezmienionych linii jest format wypisuj±cy
+grupê linii dos³ownie.
+@end table
+
+W formatach okre¶laj±cych sposób wypisania grupy linii zwyk³e znaki oznaczaj±
+same siebie; specyfikacje konwersji zaczynaj± siê od znaku procentu @samp{%}
+i maj± jedn± z poni¿szych postaci:
+
+@table @samp
+@item %<
+oznacza linie z pierwszego pliku, ³±cznie z koñcowym znakiem nowej linii.
+Ka¿da linia jest formatowana zgodnie z formatem starych linii
+(@pxref{Formaty linii}).
+
+@item %>
+oznacza linie z drugiego pliku, ³±cznie z koñcowym znakiem nowej linii.
+Ka¿da linia jest formatowana zgodnie z formatem nowych linii
+
+@item %=
+oznacza linie wspólne dla obu plików, ³±cznie z koñcowym znakiem nowej linii.
+Ka¿da linia jest formatowana zgodnie z formatem linii niezmienionych.
+
+@item %%
+oznacza pojedynczy dos³owny znak procentu @samp{%}.
+
+@item %c'@var{C}'
+gdzie @var{C} jest pojedynczym znakiem, oznacza @var{C}.
+Nie mo¿e to byæ odwrotny uko¶nik ani apostrof.
+Na przyk³ad, @samp{%c':'} oznacza dwukropek,, nawet wewn±trz czê¶ci then
+formatu if-then-else, któr± dwukropek normalnie koñczy.
+
+@item %c'\@var{O}'
+gdzie @var{O} jest ³añcuchem 1, 2 lub 3 cyfr ósemkowych, oznacza znak
+o kodzie ósemkowym @var{O}.
+Na przyk³ad, @samp{%c'\0'} oznacza znak null.
+
+@item @var{F}@var{n}
+gdzie @var{F} jest specyfikacj± konwersji @code{printf}, a @var{n} jest
+jedn± z ni¿ej wymienionych liter, oznacza warto¶æ okre¶lon± przez @var{n}
+sformatowan± za pomoc± @var{F}.
+
+@table @samp
+@item e
+Numer linii dla linii bezpo¶rednio poprzedzaj±cej dan± grupê w starym pliku.
+
+@item f
+Numer linii dla pierwszej linii w grupie w starym pliku.
+Równy @var{e} + 1.
+
+@item l
+Numer linii dla ostatniej linii w grupie w starym pliku.
+
+@item m
+Numer linii dla linii wystêpuj±cej bezpo¶rednio po grupie w starym pliku.
+Równy @var{l} + 1.
+
+@item n
+Liczba linii w grupie w starym pliku.
+Równy @var{l} - @var{f} + 1.
+
+@item E, F, L, M, N
+Podobnie, dla linii w nowym pliku.
+
+@end table
+
+Specyfikacj± konwersji @code{printf} mo¿e byæ @samp{%d}, @samp{%o},
+@samp{%x} lub @samp{%X}, okre¶laj±ce odpowiednio: wyj¶cie dziesiêtne,
+ósemkowe, szesnastkowe ma³ymi literami lub szesnastkowe du¿ymi literami.
+Po znaku procentu @samp{%} mog± siê pojawiæ kolejno nastêpuj±ce opcje:
+@samp{-} okre¶laj±cy wyrównanie do lewej, liczba ca³kowita podaj±ca
+minimaln± szeroko¶æ pola i kropka z nastêpuj±c± po niej opcjonaln± liczb±
+ca³kowit± podaj±c± minimaln± ilo¶æ cyfr [u³amkowych].
+Na przyk³ad, @samp{%5dN} wypisuje liczbê nowych linii w danej grupie
+w polu o szeroko¶ci z znaków, stosuj±c u¿ywany przez @code{printf}
+format @code{"%5d"}.
+
+@item (@var{A}=@var{B}?@var{T}:@var{E})
+Je¿eli @var{A} jest równe @var{B}, to @var{T}, w przeciwnym razie @var{E}.
+@var{A} i @var{B} s± albo obie sta³ymi podanymi dziesiêtnie albo pojedynczymi
+literami, interpretowanymi jak wy¿ej.
+Ta specyfikacja formatu jest równowa¿na @var{T} je¶li warto¶æ @var{A} jest
+równa warto¶ci @var{B}; w przeciwnym razie jest równowa¿na @var{E}.
+
+Na przyk³ad, @samp{%(N=0?no:%dN) line%(N=1?:s)} jest równowa¿ne formatowi
+@samp{no lines} je¶li @var{N} (liczba linii w grupie w nowym pliku)
+@c          B³±d orygina³u:  in the group in the the
+jest równe 0, formatowi @samp{1 line} je¶li @var{N} jest równe 1,
+a formatowi @samp{%dN lines} w pozosta³ych przypadkach.
+@end table
+
+@node Formaty linii, Szczegó³y If-then-else, Formaty grup linii, If-then-else
+@subsection Formaty linii
+@cindex formaty linii
+
+Formaty linii reguluj±, w jaki sposób ka¿da z linii pobranych z pliku
+wej¶ciowego zostanie wypisana jako czê¶æ grupy linii w formacie if-then-else.
+
+Na przyk³ad, poni¿szej polecenie wypisuje tekst z umieszczonym po lewej
+jednokolumnowym wska¼nikiem zmian.  I tak: pierwsza kolumn± wyj¶cia jest
+@samp{-} dla linii usuniêtych, @samp{|} dla dodanych, a spacja dla
+niezmienionych.  Formaty zawieraj± znaki nowej linii tam, gdzie s± one
+po¿±dane w wyj¶ciu.
+
+@example
+diff \
+   --old-line-format='-%l
+' \
+   --new-line-format='|%l
+' \
+   --unchanged-line-format=' %l
+' \
+   stary nowy
+@end example
+
+Do podania formatu linii u¿ywa siê jednej z poni¿szych opcji.  Wskazany
+@var{format} powinien byæ cytowany, gdy¿ czêsto zawiera metaznaki pow³oki.
+
+@table @samp
+@item --old-line-format=@var{format}
+formatuje linie tylko z pierwszego pliku.
+
+@item --new-line-format=@var{format}
+formatuje linie tylko z drugiego pliku.
+
+@item --unchanged-line-format=@var{format}
+formatuje linie wspólne obu plikom.
+
+@item --line-format=@var{format}
+formatuje wszystkie linie; w efekcie nadaje warto¶æ równocze¶nie
+wszystkim trzem powy¿szym opcjom.
+@end table
+
+W formacie okre¶laj±cym sposób wypisania linii zwyk³e znaki oznaczaj±
+same siebie;
+specyfikacje konwersji zaczynaj± siê od znaku procentu @samp{%} i maj± jedn±
+z poni¿szych postaci:
+
+@table @samp
+@item %l
+oznacza zawarto¶æ danej linii, bez koñcz±cego j± znaku nowej linii
+(je¶li jest takowy).  Ten format ignoruje czy linia jest niekompletna czy
+poprawnie zakoñczona.
+@xref{Niekompletne linie}.
+
+@item %L
+oznacza zawarto¶æ danej linii, ³±cznie z koñcz±cym j± znakiem nowej linii
+(je¶li jest takowy).  Je¿eli linia jest niekompletna, to zachowuje tê
+niekompletno¶æ.
+
+@item %%
+oznacza dos³owny znak procentu @samp{%}.
+
+@item %c'@var{C}'
+gdzie @var{C} jest pojedynczym znakiem, oznacza @var{C}.
+@var{C} nie mo¿e byæ odwrotnym uko¶nikiem ani apostrofem.
+Na przyk³ad, @samp{%c':'} oznacza dwukropek.
+
+@item %c'\@var{O}'
+gdzie @var{O} jest ³añcuchem 1, 2 lub 3 cyfr ósemkowych, oznacza znak
+o kodzie ósemkowym @var{O}.
+Na przyk³ad, @samp{%c'\0'} oznacza znak null.
+
+@item @var{F}n
+gdzie @var{F} jest specyfikacj± konwersji @code{printf},
+oznacza numer linii sformatowany za pomoc± @var{F}.
+Na przyk³ad, @samp{%.5dn} wypisuje numer linii u¿ywaj±c formatu
+@code{"%.5d"} dla @code{printf}.
+@xref{Formaty grup linii}, gdzie bli¿ej omówiono specyfikacje konwersji
+printf.
+
+@end table
+
+Domy¶lnym formatem linii jest @samp{%l}, po którym wystêpuje znak nowej
+linii.
+
+Je¿eli wej¶cie zawiera znaki tabulacji i jest istotne, by w wyj¶ciu by³y
+one odpowiednio wyrównane, powinni¶my upewniæ siê, ¿e @samp{%l} lub @samp{%L}
+w formacie linii wystêpuje bezpo¶rednio po tabulatorze (np.@: poprzedzaj±c
+@samp{%l} czy @samp{%L} tabulacj±) albo u¿yæ opcji @samp{-t} lub
+@samp{--expand-tabs}.
+
+Razem wziête, formaty linii i formaty grup linii pozwalaj± na okre¶lenie
+wielu ró¿nych formatów.  Na przyk³ad, poni¿sze polecenie korzysta z formatu
+zbli¿onego do normalnego formatu @code{diff}.  Mo¿na je sobie dostosowaæ,
+by uzyskaæ precyzyjn± kontrolê nad wyj¶ciem produkowanym przez @code{diff}.
+
+@example
+diff \
+   --old-line-format='< %l
+' \
+   --new-line-format='> %l
+' \
+   --old-group-format='%df%(f=l?:,%dl)d%dE
+%<' \
+   --new-group-format='%dea%dF%(F=L?:,%dL)
+%>' \
+   --changed-group-format='%df%(f=l?:,%dl)c%dF%(F=L?:,%dL)
+%<---
+%>' \
+   --unchanged-group-format='' \
+   old new
+@end example
+
+@node Szczegó³y If-then-else, Przyk³adowy If-then-else, Formaty linii, If-then-else
+@subsection Szczegó³owy opis formatu If-then-else
+
+Do linii wspólnych dla obu plików, @code{diff} stosuje format niezmienionych
+grup linii.  Dla ka¿dej porcji ró¿nic w formacie scalonego wyj¶cia, je¶li
+porcja zawiera tylko linie z pierwszego pliku, @code{diff} stosuje format
+grup starych linii; je¶li porcja zawiera tylko linie z drugiego pliku,
+@code{diff} stosuje format grup nowych linii; w pozosta³ych przypadkach
+stosowany jest format grup zmienionych.
+
+Formaty starych, nowych i zmienionych linii okre¶laj±, odpowiednio, format
+wyj¶ciowy linii z pierwszego pliku, linii z drugiego pliku i linii wspólnych
+dla obu plików.
+
+Opcja @samp{--ifdef=@var{nazwa}} jest równowa¿na nastêpuj±cej sekwencji
+opcji zapisanej w sk³adni pow³oki:
+
+@example
+--old-group-format='#ifndef @var{nazwa}
+%<#endif /* not @var{nazwa} */
+' \
+--new-group-format='#ifdef @var{nazwa}
+%>#endif /* @var{nazwa} */
+' \
+--unchanged-group-format='%=' \
+--changed-group-format='#ifndef @var{nazwa}
+%<#else /* @var{nazwa} */
+%>#endif /* @var{nazwa} */
+'
+@end example
+
+Nale¿y uwa¿nie sprawdziæ wyj¶cie utworzone przez @code{diff} pod
+k±tem poprawno¶ci zagnie¿d¿eñ.  Na przyk³ad, stosuj±c opcjê
+@c              HQ: B³±d orygina³u:  using the the @samp{-D @var{name}}
+@samp{-D @var{nazwa}} lub @samp{--ifdef=@var{nazwa}}, powinno siê sprawdziæ,
+¿e je¶li ró¿ni±ce siê linie zawieraj± któr±¶ z dyrektyw preprocesora C:
+@samp{#ifdef}, @samp{#ifndef}, @samp{#else}, @samp{#elif} lub @samp{#endif},
+to s± dyrektywy te poprawnie zagnie¿d¿one i powi±zane.  Je¶li tak nie jest,
+poprawki musz± byæ dokonane rêcznie.  Tak czy owak warto uwa¿nie sprawdzaæ
+powsta³y kod, by upewniæ siê, ¿e faktycznie robi to, czego chcemy.
+W zale¿no¶ci od sposobu utworzenia plików wej¶ciowych, wyj¶cie mo¿e zawieraæ
+powielony lub w inny sposób niepoprawny kod.
+
+Wystêpuj±ca w @code{patch} opcja @samp{-D @var{nazwa}} zachowuje siê tak,
+jak opcja @samp{-D @var{nazwa}} programu @code{diff}, z wyj±tkiem tego, ¿e
+dzia³a na pliku i ³acie, by utworzyæ scalony plik.  @xref{Opcje patch}.
+
+@node Przyk³adowy If-then-else, , Szczegó³y If-then-else, If-then-else
+@subsection Przyk³ad formatu If-then-else
+
+Oto wynik dzia³ania polecenia @samp{diff -DDWA lao tsy}
+(@pxref{Przyk³adowe wej¶cie diff}, gdzie podano pe³n± postaæ u¿ytych plików):
+
+@example
+#ifndef DWA
+Tao, które mo¿na wyraziæ s³owami, nie jest prawdziwym tao.
+Nazwa, któr± mo¿na je okre¶liæ, nie jest niezmienn± nazw±.
+#endif /* not DWA */
+Bezimienne jest pocz±tkiem nieba i ziemi,
+#ifndef DWA
+Nazwane jest matk± wszystkich rzeczy.
+#else /* DWA */
+nazwane jest matk± wszystkich rzeczy.
+
+#endif /* DWA */
+Przeto, kto trwale pozbawion jest pragnieñ wszelakich,
+  potrafi dojrzeæ subteln± istotê tao,
+za¶, kto niezmiennie tkwi w pêtach swych pragnieñ,
+  mo¿e tylko ujrzeæ zewnêtrzn± pozorno¶æ rzeczy.
+Te dwie strony tao wywodz± siê
+ze wspólnego ¼ród³a,
+  lecz nosz± odmienne nazwy.
+#ifdef DWA
+To, co w nich wspólne, nazywamy wielk± tajemnic±,
+tajemnic± nad tajemnicami,
+bram± do poznania wszelakich cudowno¶ci.
+#endif /* DWA */
+@end example
+
+@node Porównywanie katalogów, Dostosowywanie wyj¶cia, Formaty wyj¶ciowe, Top
+@chapter Porównywanie katalogów
+
+@code{diff} mo¿na wykorzystaæ do porównania niektórych lub wszystkich plików
+z zadanych dwu drzew katalogowych.  Gdy oba argumenty programu okre¶laj±ce
+nazwy plików s± katalogami, porównuje on ka¿dy z plików, który zawieraj±
+oba katalogi.  Nazwy plików s± badane w kolejno¶ci alfabetycznej.
+Normalnie @code{diff} milczy, je¶li dana para plików nie ró¿ni siê, ale
+je¶li pos³u¿ymy siê opcj± @samp{-s} lub @samp{--report-identical-files},
+to pary plików identycznych bêd± sygnalizowane.  Normalnie @code{diff}
+zg³asza tylko podkatalogi wspólne dla obu zadanych katalogów bez porównywania
+plików z podkatalogów, ale je¶li pos³u¿ymy siê opcj± @samp{-r} lub
+@samp{--recursive}, to bêd± porównywane wszystkie odpowiadaj±ce sobie
+pary plików w drzewach katalogowych, tyle poziomów w g³±b, ile zawieraj±.
+
+Dla plików, które istniej± tylko w jednym z katalogów, @code{diff}
+normalnie nie pokazuje zawarto¶ci pliku: zg³asza tylko, ¿e plik istnieje
+w danym katalogu, a nie istnieje w drugim.  Mo¿na sprawiæ by program dzia³a³
+tak, jakby plik w drugim katalogu istnia³, ale by³ pusty, po to, ¿eby zosta³a
+wypisana ca³a zawarto¶æ istniej±cego pliku.  (Zostanie wypisany albo jako
+wstawienie albo jako usuniêcie, w zale¿no¶ci od tego czy jest w pierwszym
+czy w drugim z podanych katalogów.)  U¿ywa siê w tym celu opcji @samp{-N}
+lub @samp{--new-file}.
+
+Je¶li starszy katalog zawiera jakie¶ wielkie pliki, których nie ma w nowszym
+katalogu, mo¿na zmniejszyæ ³atê zamiast opcji @samp{-N} wykorzystuj±c
+@samp{-P} lub @samp{--unidirectional-new-file}.  Dzia³a podobnie jak
+@samp{-N}, ale wstawia tylko zawarto¶æ plików, które wystêpuj± w drugim
+katalogu, lecz nie w pierwszym (to znaczy, plików, które zosta³y do³o¿one).
+Na pocz±tku pliku ³aty powinno siê dopisaæ instrukcje dla u¿ytkownika, który
+bêdzie nak³ada³ ³atê, by przez jej u¿yciem skasowa³ usuniête w starej wersji
+pliki.  @xref{Tworzenie ³at}, gdzie dok³adniej omówiono tworzenie ³at
+w celu rozpowszechniania.
+
+Do ignorowania niektórych plików podczas porównywania katalogów s³u¿y opcja
+@samp{-x @var{wzorzec}} lub @samp{--exclude=@var{wzorzec}}.  Ignoruje ona
+wszystkie pliki i podkatalogi, których g³ówna czê¶æ nazwy pasuje do wzorca
+pow³oki @var{wzorzec}.  Inaczej ni¿ w pow³oce, kropka na pocz±tku g³ównej
+czê¶ci nazwy pasuje do maski na pocz±tku wzorca.  @var{wzorzec} powinien
+byæ ujêty w znaki cytowania, ¿eby pow³oka go nie rozwinê³a.  Na przyk³ad,
+opcja @samp{-x '*.[ao]'} ignoruje wszystkie pliki o nazwach koñcz±cych
+siê na @samp{.a} lub @samp{.o}.
+
+Je¶li podamy j± wiêcej ni¿ raz, dzia³anie tej opcji kumuluje siê.
+Na przyk³ad, u¿ycie opcji @samp{-x 'RCS' -x '*,v'} powoduje ignorowanie
+plików i podkatalogów o nazwie @samp{RCS} lub nazwie koñcz±cej siê
+na @samp{,v}.
+
+Je¶li chcemy podaæ tê opcjê wielokrotnie, wygodniej jest zamiast tego
+zapisaæ wzorce w pliku, po jednym w linii, i skorzystaæ z opcji
+@samp{-X @var{plik}} lub @samp{--exclude-from=@var{plik}}.
+
+Je¶li porównywali¶my dwa katalogi i przerwali¶my sprawdzanie w trakcie
+pracy, mo¿emy pó¼niej kontynuowaæ je od miejsca, w którym je porzucili¶my.
+Robi siê to stosuj±c opcjê @samp{-S @var{plik}} lub
+@samp{--starting-file=@var{plik}}.  Porównuje ona tylko @var{plik}
+i wszystkie alfabetycznie wystêpuj±ce po nim pliki z katalogu najwy¿szego
+poziomu.
+
+@node Dostosowywanie wyj¶cia, Wydajno¶æ diff, Porównywanie katalogów, Top
+@chapter Upiêkszanie wyj¶cia @code{diff}
+
+@code{diff} dostarcza kilku sposobów dostosowania wygl±du tworzonego wyj¶cia.
+Mo¿na je stosowaæ do dowolnego formatu wyj¶ciowego.
+
+@menu
+* Tabulatory::		Zachowywanie wyrównania tabulatorów.
+* Stronicowanie::	Numerowanie stron i datowanie wyj¶cia @code{diff}.
+@end menu
+
+@node Tabulatory, Stronicowanie, , Dostosowywanie wyj¶cia
+@section Zachowywanie wyrównania do tabulatorów
+@cindex tabulatory, wyrównywanie
+@cindex wyrównywanie tabulatorów
+
+W niektórych formatach wyj¶ciowych @code{diff} linie tekstu poprzedzone s±
+jednym b±d¼ dwoma znakami, wskazuj±cymi czy tekst zosta³ wstawiony, usuniêty
+czy zmieniony.  Do³o¿enie tych znaków mo¿e spowodowaæ, ¿e tabulacje przesun±
+@c                        throwing off the alignment of columns
+siê na nastêpn± pozycjê tabulacyjn±, burz±c wyrównanie kolumn w linii. 
+GNU @code{diff} zapewnia dwie metody uzyskania poprawnego ustawienia
+kolumn wyrównanych tabulacjami.
+
+Pierwszy sposób polega na konwersji, przed ich wypisaniem, wszystkich znaków
+tabulacji na poprawn± liczbê spacji.  Metodê tê wybiera siê opcj± @samp{-t}
+lub @samp{--expand-tabs}.  Program zak³ada, ¿e pozycje tabulacyjne
+(tabulatory) ustawione s± co 8 kolumn.  Chc±c u¿yæ tej postaci wyj¶cia
+z @code{patch}, trzeba podaæ mu opcjê @samp{-l}
+lub @samp{--ignore-white-space}
+(@pxref{Zmienione odstêpy}, gdzie podano szczegó³y).
+
+Inn± metod± poprawnego ustawienia tabulacji jest dodanie na pocz±tku linii,
+po znaku wskazuj±cym rodzaj zmiany, znaku tabulacji zamiast spacji.
+Dziêki temu wszystkie nastêpne tabulacje bêd± na pewno w tym samym
+po³o¿eniu wzglêdem tabulatorów, w którym by³y w pierwotnych plikach,
+zatem wyj¶cie bêdzie poprawnie wyrównane.  Wad± tego rozwi±zania jest to,
+¿e niekiedy z d³ugich linii powstaj± linie zbyt d³ugie, by zmie¶ci³y siê
+w pojedynczym wierszu ekranu czy na papierze.  Poza tym, nie dzia³a ono
+z formatem zunifikowanym, w którym nie ma spacji po znaku wskazuj±cym typ
+zmiany.  Metodê tê wybiera siê opcj± @samp{-T} lub @samp{--initial-tab}.
+
+@node Stronicowanie, , Tabulatory, Dostosowywanie wyj¶cia
+@section Stronicowanie wyj¶cia @code{diff}
+@cindex stronicowanie wyj¶cia @code{diff}
+
+W d³ugim pliku wyj¶ciowym wygodnie mieæ numeracjê stron i datê utworzenia.
+Robi± to opcje @samp{-l} i @samp{--paginate}, przepuszczaj±c wyj¶cie
+z @code{diff} przez program @code{pr}.  Tak móg³by wygl±daæ nag³ówek strony
+dla @samp{diff -lc lao tsy}:
+
+@example
+Mar 11 13:37 1991  diff -lc lao tsy Page 1
+@end example
+
+@node Wydajno¶æ diff, Porównanie trzech plików, Dostosowywanie wyj¶cia, Top
+@chapter Kompromisy wydajno¶ci @code{diff}
+@cindex wydajno¶æ @code{diff}
+
+GNU @code{diff} pracuje ca³kiem wydajnie; jednak, w pewnych warunkach
+mo¿na spowodowaæ, by dzia³a³ szybciej lub tworzy³ zbiór zmian o mniejszych
+rozmiarach.  S± dwie metody wp³ywania na wydajno¶æ GNU @code{diff} przez
+zmianê sposobu, w jaki porównuje pliki.
+
+Wydajno¶æ mo¿na rozpatrywaæ z ró¿nych punktów widzenia.  Te opcje poprawiaj±
+jeden aspekt wydajno¶ci kosztem innego lub poprawiaj± wydajno¶æ w pewnych
+przypadkach choæ szkodz± jej w innych.
+
+Sposób, w jaki GNU @code{diff} okre¶la, które linie siê zmieni³y, zawsze
+prowadzi do zbioru ró¿nic bliskiego minimalnemu.  Do celów praktycznych
+to zwykle wystarcza.
+Je¶li otrzymane wyj¶cie jest bardzo du¿e, mo¿na spowodowaæ, by program
+u¿y³ zmodyfikowanego algorytmu, który czasem daje mniejszy zbiór ró¿nic.
+Wykonuje to opcja @samp{-d} lub @samp{--minimal}.  Mo¿e ona jednak
+spowodowaæ tak¿e, ¿e @code{diff} bêdzie pracowaæ wolniej niz zwykle,
+wiêc nie jest to zachowanie domy¶lne.
+
+Gdy porównywane pliki s± du¿e, a maj± ma³e grupy zmian rozrzucone
+po ca³ej zawarto¶ci, u¿ywa siê opcji @samp{-H} lub
+@samp{--speed-large-files}, wprowadzaj±cej inn± zmianê do algorytmu
+u¿ywanego przez @code{diff}.  Je¶li pliki wej¶ciowe maj± sta³e ma³e
+zagêszczenie zmian, to opcja ta przyspiesza porównania, nie zmieniaj±c
+tworzonego wyj¶cia.
+Je¶li nie, to program mo¿e utworzyæ wiêkszy zbiór ró¿nic;
+jednak wyj¶cie bêdzie nadal poprawne.
+
+Normalnie @code{diff} odrzuca przedrostek i przyrostek wspólny obu plikom
+przed prób± znalezienia minimalnego zbioru ró¿nic.  Dziêki temu program
+dzia³a szybciej, ale sporadycznie mo¿e tworzyæ wyj¶cie, które nie jest
+minimalne.  Opcja @samp{--horizon-lines=@var{linie}} przeciwdzia³a odrzucaniu
+przez @code{diff} ostatnich @var{linie} linii przedrostka i pierwszych
+@var{lines} linii przyrostka pliku.  Daje to programowi dodatkowe okazje
+do znalezienia minimalnego wyj¶cia.
+
+@node Porównanie trzech plików, Scalanie diff3, Wydajno¶æ diff, Top
+@chapter Porównanie trzech plików
+@cindex porównywanie trzech plików
+@cindex format wyj¶cia @code{diff3}
+
+Program @code{diff3} stosuje siê do porównywania trzech plików i pokazania
+ró¿nic miêdzy nimi.  (Mo¿e te¿ scalaæ pliki -- zob. @ref{Scalanie diff3}).
+
+``Normalny'' format wyj¶ciowy @code{diff3} pokazuje ka¿d± porcjê ró¿nic bez
+otaczaj±cego j± kontekstu.  Porcje s± oznaczone zale¿nie od tego, czy s±
+dwu- czy trójstronne, a linie opatrzone komentarzem wskazuj±cym ich
+po³o¿enie w plikach wej¶ciowych.
+
+@xref{Wywo³anie diff3}, gdzie bli¿ej opisano sposób uruchamiania @code{diff3}.
+
+@menu
+* Przyk³adowe wej¶cie diff3::	Plik wej¶ciowy do przyk³adów @code{diff3}.
+* Szczegó³y normalnego diff3::	Szczegó³owy opis normalnego formatu wyj¶ciowego..
+* Porcje diff3::   		Format normalnego wyj¶cia diff3.
+* Przyk³adowy normalny diff3::	Przyk³adowe wyj¶cie w formacie normalnym.
+@end menu
+
+@node Przyk³adowe wej¶cie diff3, Szczegó³y normalnego diff3, , Porównanie trzech plików
+@section Trzeci przyk³adowy plik wej¶ciowy
+@cindex @code{diff3}, przyk³adowe wej¶cie
+@cindex przyk³adowe pliki wej¶ciowe dla @code{diff3}
+
+Oto trzeci przyk³adowy plik wej¶ciowy, który bêdzie u¿ywany w przyk³adach
+do pokazania wyj¶cia uzyskiwanego z @code{diff3} i tego, jak zmienia siê ono
+w zale¿no¶ci od ró¿nych opcji.  Pierwsze dwa pliki to te same, których
+u¿ywali¶my przy omawianiu @code{diff} (@pxref{Przyk³adowe wej¶cie diff}).
+A to trzeci plik przyk³adowy, o nazwie @file{tao}:
+
+@example
+Tao, które mo¿na wyraziæ s³owami, nie jest prawdziwym tao.
+Nazwa, któr± mo¿na je okre¶liæ, nie jest niezmienn± nazw±.
+Bezimienne jest pocz±tkiem nieba i ziemi,
+nazwane jest matk± wszystkich rzeczy.
+
+Przeto, kto trwale pozbawion jest pragnieñ wszelakich,
+  potrafi dojrzeæ subteln± istotê tao,
+za¶, kto niezmiennie tkwi w pêtach swych pragnieñ,
+  mo¿e tylko ujrzeæ skoñczono¶æ rzeczy.
+Te dwie strony tao wywodz± siê
+ze wspólnego ¼ród³a,
+  lecz nosz± odmienne nazwy.
+
+  -- Lao-tsy, Tao-te-king (Ksiêga Drogi i Cnoty)
+@end example
+
+@node Szczegó³y normalnego diff3, Porcje diff3, Przyk³adowe wej¶cie diff3, Porównanie trzech plików
+@section Szczegó³owy opis normalnego formatu wyj¶ciowego @code{diff3}
+
+Ka¿da porcja zaczyna siê od linii oznaczonej @samp{====}.  Porcje
+trójstronne maj± zwyk³e linie @samp{====}, a dwustronne -- z do³±czonym
+@samp{1}, @samp{2} lub @samp{3}, okre¶laj±cym, które z trzech plików
+wej¶ciowych ró¿ni± siê w tej porcji.  Porcje sk³adaj± siê z kopii dwu lub
+trzech zbiorów linii wej¶ciowych, z których ka¿dy poprzedzony jest jednym
+lub dwoma poleceniami identyfikuj±cymi pochodzenie linii.
+
+Normalnie, ka¿d± kopiê linii wej¶ciowej poprzedzaj± dwie spacje,
+do odró¿nienia jej od poleceñ.  Ale z opcj± @samp{-T} lub
+@samp{--initial-tab}, @code{diff3} u¿ywa tabulacji zamiast dwu spacji;
+wyrównuje to poprawnie tabulacje.
+@xref{Tabulatory}, gdzie podano szczegó³y.
+
+Polecenia przyjmuj± poni¿sz± postaæ:
+
+@table @samp
+@item @var{plik}:@var{l}a
+Ta porcja pojawia siê po linii @var{l} pliku @var{plik} i nie zawiera
+¿adnych linii tego pliku.  Zmieniaj±c ten plik, by zawiera³ to, co pozosta³e
+pliki, nale¿y dopisaæ doñ linie porcji (wziête z tych plików).
+Na przyk³ad, @samp{1:11a} oznacza, ¿e dana porcja wystêpuje po linii 11
+pierwszego pliku i nie zawiera linii z tego pliku.
+
+@item @var{plik}:@var{r}c
+Ta porcja sk³ada siê z linii z zakresu @var{r} pliku @var{plik}.
+Zakres @var{r} jest par± rozdzielonych przecinkiem numerów linii lub
+pojedynczym numerem je¶li zakres zawiera jedn± liniê.  Zmieniaj±c ten plik,
+by zawiera³ to, co pozosta³e pliki, nale¿y zmieniæ wskazane linie tak, by
+by³y liniami wziêtymi z tych plików.
+Na przyk³ad, @samp{2:11,13c} oznacza, ¿e dane porcja zawiera linie
+od 11 do 13 z drugiego pliku.
+@end table
+
+Je¶li ostatnia linia zbioru linii wej¶ciowych jest niekompletna
+(@pxref{Niekompletne linie}), to w tworzonym wyj¶ciu jest ona wyró¿niona,
+w stosunku pe³nej linii, przez nastêpn± liniê, która zaczyna siê od @samp{\}.
+
+@node Porcje diff3, Przyk³adowy normalny diff3, Szczegó³y normalnego diff3, Porównanie trzech plików
+@section Porcje @code{diff3}
+@cindex porcje @code{diff3}
+@cindex @code{diff3}, porcje
+
+Grupy linii, które siê ró¿ni± w dwu lub trzech plikach wej¶ciowych s± zwane
+@dfn{porcjami diff3} (@dfn{diff3 hunks}), przez analogiê do porcji
+@code{diff} (@pxref{Porcje}).  Je¿eli w porcji @code{diff3} wszystkie trzy
+pliki wej¶ciowe ró¿ni± siê od siebie, to porcjê tak± nazywamy @dfn{porcj±
+trójstronn±} (@dfn{three-way hunk}); je¶li ró¿ni± siê tylko dwa pliki,
+to jest to @dfn{porcja dwustronna} (@dfn{two-way hunk}).
+
+Tak jak w @code{diff}, mo¿liwe jest kilka rozwi±zañ.  Przy porównywaniu
+plików @samp{A}, @samp{B} i @samp{C}, @code{diff3} normalnie tworzy
+porcje @code{diff3} scalaj±c porcje dwustronne wypisywane przez dwa
+polecenia: @samp{diff A B} i @samp{diff A C}.  Niekoniecznie minimalizuje
+to rozmiar wyj¶cia, lecz wyj±tki powinny wystêpowaæ rzadko.
+
+Na przyk³ad, za³ó¿my, ¿e @file{F} sk³ada siê z trzech linii: @samp{a},
+@samp{b}, @samp{f}, @file{G} sk³ada siê z @samp{g}, @samp{b}, @samp{g},
+za¶ @file{H} -- z @samp{a}, @samp{b}, @samp{h}.
+Wynik dzia³ania @samp{diff3 F G H} wygl±da tak:
+
+@example
+====2
+1:1c
+3:1c
+  a
+2:1c
+  g
+====
+1:3c
+  f
+2:3c
+  g
+3:3c
+  h
+@end example
+
+@noindent
+poniewa¿ znaleziono dwustronn± porcjê zawieraj±c± @samp{a} w pierwszym
+i trzecim pliku, a @samp{g} w drugim pliku, potem pojedyncz± liniê
+@samp{b} wspóln± dla wszystkich plików, a nastêpnie trójstronn± porcjê
+zawieraj±c± ostatni± liniê z ka¿dego z plików.
+
+@node Przyk³adowy normalny diff3, , Porcje diff3, Porównanie trzech plików
+@section Przyk³ad normalnego formatu wyj¶ciowego @code{diff3}
+
+Oto wynik dzia³ania polecenia @samp{diff3 lao tsy tao}
+(@pxref{Przyk³adowe wej¶cie diff3}, gdzie podano pe³n± postaæ u¿ytych plików).
+Zauwa¿, ¿e pokazuje ono tylko te linie, które s± ró¿ne w obu plikach.
+
+@example
+====2
+1:1,2c
+3:1,2c
+  Tao, które mo¿na wyraziæ s³owami, nie jest prawdziwym tao.
+  Nazwa, któr± mo¿na je okre¶liæ, nie jest niezmienn± nazw±.
+2:0a
+====1
+1:4c
+  Nazwane jest matk± wszystkich rzeczy.
+2:2,3c
+3:4,5c
+  nazwane jest matk± wszystkich rzeczy.
+  
+====3
+1:8c
+2:7c
+    mo¿e tylko ujrzeæ zewnêtrzn± pozorno¶æ rzeczy.
+3:9c
+    mo¿e tylko ujrzeæ skoñczono¶æ rzeczy.
+====
+1:11a
+2:11,13c
+  To, co w nich wspólne, nazywamy wielk± tajemnic±,
+  tajemnic± nad tajemnicami,
+  bram± do poznania wszelakich cudowno¶ci.
+3:13,14c
+  
+    -- Lao-tsy, Tao-te-king (Ksiêga Drogi i Cnoty)
+@end example
+
+@node Scalanie diff3, Interaktywne scalanie, Porównanie trzech plików, Top
+@chapter Scalanie wed³ug wspólnego przodka
+@cindex scalanie wed³ug wspólnego przodka
+
+Gdy dwie osoby wprowadzi³y zmiany na kopiach tego samego pliku, @code{diff3}
+potrafi utworzyæ scalone wyj¶cie, które zawiera oba zestawy poprawek razem
+z ostrze¿eniami o konfliktach.
+
+Mo¿na sobie wyobraziæ programy o nazwach typu @code{diff4} i @code{diff5}
+do porównywania wiêcej ni¿ trzech plików równocze¶nie, ale w praktyce rzadko
+pojawia siê taka potrzeba.  Do po³±czenia wiêcej ni¿ dwu zestawów zmian
+danego pliku mo¿na u¿yæ @code{diff3}, scalaj±c po dwa zestawy zmian na raz.
+
+@code{diff3} potrafi wcieliæ zmiany z dwu zmienionych wersji do wspólnej
+pierwotnej wersji.  Pozwala to na scalanie zestawów zmian reprezentowanych
+przez dwa nowsze pliki.  Podaje siê wówczas wspóln±, pierwotn± wersjê jako
+drugi argument, a dwie nowsze -- jako pierwszy i trzeci, w ten sposób:
+
+@example
+diff3 @var{mój} @var{starszy} @var{twój}
+@end example
+
+@noindent
+Kolejno¶æ argumentów ³atwo zapamiêtaæ gdy zauwa¿ymy, ¿e wystêpuj±
+w kolejno¶ci alfabetycznej.
+
+@cindex konflikt
+@cindex zak³adka
+@cindex nak³adanie siê
+Mo¿emy to interpretowaæ jako odejmowanie @var{starszego} od @var{twojego}
+i dodanie wyniku do @var{mojego}, albo jako ujêcie w @var{moim} zmian,
+które przekszta³ci³yby @var{starszy} w @var{twój}.  Takie scalanie jest
+precyzyjnie zdefiniowane dopóki @var{mój} i @var{twój} pasuj± do siebie
+w s±siedztwie takiej zmiany.  Nie sprawdza siê jednak gdy wszystkie trzy
+pliki ró¿ni± siê od siebie lub gdy ró¿ni siê tylko @var{starszy};
+mówimy wówczas o @dfn{konflikcie}.  Kiedy wszystkie trzy pliki s± ró¿ne,
+konflikt taki nazywamy @dfn{zak³adk±} (@dfn{overlap}).
+
+@code{diff3} dostarcza kilku sposobów obs³ugi zak³adek i konfliktów.
+Mo¿na je pomin±æ, wybraæ tylko zak³adki albo oznaczyæ konflikty specjalnymi
+liniami @samp{<<<<<<<} i @samp{>>>>>>>}.
+
+@code{diff3} potrafi wypisaæ wyniki scalania w postaci skryptu @code{ed},
+który mo¿na zastosowaæ do pierwszego pliku, by uzyskaæ scalone wyj¶cie.
+Jednak zwykle jest lepiej, gdy @code{diff3} bezpo¶rednio tworzy scalone
+wyj¶cie.  Obchodzimy wówczas pewne problemy z @code{ed}.
+
+@menu
+* Jakie zmiany::		Wybór zmian do wcielenia.
+* Oznaczanie konfliktów::	Oznaczanie konfliktów.
+* Pomijanie ed::		Bezpo¶rednie tworzenie scalonego wyj¶cia.
+* Scalanie niekompletnych linii::  Jak @code{diff3} scala niekompletne linie.
+* Zachowywanie zmienionego pliku:: Emulowanie zachowania System V.
+@end menu
+
+@node Jakie zmiany, Oznaczanie konfliktów, , Scalanie diff3
+@section Wybór zmian, jakie maj± zostaæ wcielone
+@cindex nak³adaj±ca siê zmiana, wybór
+@cindex zak³adka, wybór
+@cindex niescalona zmiana
+@cindex niedo³±czona zmiana
+
+Za pomoc± opcji @samp{-e} lub @samp{--ed} wybieramy do scalania
+w @var{moim} wszystkie niescalone zmiany miêdzy @var{starszym} a @var{twoim}.
+Opcj± @samp{-3} lub @samp{--easy-only} wybieramy scalanie tylko
+nienak³adaj±cych siê niescalonych zmian, a opcj± @samp{-x} lub
+@samp{--overlap-only} tylko zmian, które siê nak³adaj±.
+
+W opcjach @samp{-e}, @samp{-3} i @samp{-x} wybierane s± tylko
+@dfn{niescalone zmiany}, tj.@: zmiany, gdzie ró¿ni± siê @var{mój} i @var{twój};
+ignorowane s± zmiany miêdzy @var{starszym} a @var{twoim}, gdzie @var{mój}
+i @var{twój} s± identyczne, gdy¿ zak³ada siê, ¿e takie zmiany zosta³y ju¿
+@c                 assumption
+scalone.  Je¿eli takie za³o¿enie nie jest bezpieczne, powinni¶my u¿yæ opcji
+@samp{-A} lub @samp{--show-all} (@pxref{Oznaczanie konfliktów}).
+
+Oto wyj¶cie polecenia @code{diff3} z ka¿d± z tych trzech opcji
+
+(@pxref{Przyk³adowe wej¶cie diff3}, gdzie podano pe³n± postaæ u¿ytych plików).
+Zauwa¿, ¿e @samp{-e} daje sumê roz³±cznych zbiorów zmian wypisywanych
+przez @samp{-3} i @samp{-x}.
+
+Wynik dzia³ania @samp{diff3 -e lao tsy tao}:
+@example
+11a
+
+  -- Lao-tsy, Tao-te-king (Ksiêga Drogi i Cnoty)
+.
+8c
+  mo¿e tylko ujrzeæ skoñczono¶æ rzeczy.
+.
+@end example
+
+Wynik dzia³ania @samp{diff3 -3 lao tsy tao}:
+@example
+8c
+  mo¿e tylko ujrzeæ skoñczono¶æ rzeczy.
+.
+@end example
+
+Wynik dzia³ania @samp{diff3 -x lao tsy tao}:
+@example
+11a
+
+  -- Lao-tsy, Tao-te-king (Ksiêga Drogi i Cnoty)
+.
+@end example
+
+@node Oznaczanie konfliktów, Pomijanie ed, Jakie zmiany, Scalanie diff3
+@section Oznaczanie konfliktów
+@cindex oznaczanie konfliktów
+@cindex konflikty, oznaczanie
+@cindex @samp{<<<<<<<} do oznaczania konfliktów
+
+@code{diff3} mo¿e zaznaczaæ konflikty w scalonym wyj¶ciu, ujmuj±c je miêdzy
+specjalne linie znacznikowe.  Konflikt pomiêdzy dwoma plikami @var{A}
+a @var{B} oznaczany jest tak:
+
+@example
+<<<<<<< @var{A}
+@r{linie z @var{A}}
+=======
+@r{linie z @var{B}}
+>>>>>>> @var{B}
+@end example
+
+Konflikt miêdzy trzema plikami @var{A}, @var{B} i @var{C} jest oznaczany tak:
+
+@example
+<<<<<<< @var{A}
+@r{linie z @var{A}}
+||||||| @var{B}
+@r{linie z @var{B}}
+=======
+@r{linie z @var{C}}
+>>>>>>> @var{C}
+@end example
+
+Opcja @samp{-A} lub @samp{--show-all} dzia³a tak, jak opcja @samp{-e},
+z wyj±tkiem tego, ¿e ujmuje konflikty miêdzy linie znacznikowe i wypisuje
+wszystkie zmiany miêdzy @var{starszym} a @var{twoim}, a nie tylko zmiany
+niescalone.  Zatem, przy przyk³adowych plikach wej¶ciowych
+(@pxref{Przyk³adowe wej¶cie diff3}), @samp{diff3 -A lao tsy tao} wstawia nawiasy
+ostrok±tne wokó³ konfliktów, gdzie ró¿ni siê tylko @file{tsy}:
+
+@example
+<<<<<<< tsy
+=======
+Tao, które mo¿na wyraziæ s³owami, nie jest prawdziwym tao.
+Nazwa, któr± mo¿na je okre¶liæ, nie jest niezmienn± nazw±.
+>>>>>>> tao
+@end example
+
+A konflikty trójstronne wypisuje tak:
+
+@example
+<<<<<<< lao
+||||||| tsy
+To, co w nich wspólne, nazywamy wielk± tajemnic±,
+tajemnic± nad tajemnicami,
+bram± do poznania wszelakich cudowno¶ci.
+=======
+
+  -- Lao-tsy, Tao-te-king (Ksiêga Drogi i Cnoty)
+>>>>>>> tao
+@end example
+
+Opcja @samp{-E} lub @samp{--show-overlap} wypisuje mniej informacji ni¿
+@samp{-A} (@samp{--show-all}), gdy¿ podaje tylko zmiany niescalone, a nigdy
+nie wypisuje zawarto¶ci drugiego pliku.  St±d te¿ @samp{-E} dzia³a jak
+@samp{-e}, prócz tego, ¿e ujmuje w znaczniki pierwszy i trzeci plik
+z trójstronnych nak³adaj±cych siê zmian.  Podobnie, @samp{-X} dzia³a
+jak @samp{-x}, poza tym, ¿e ujmuje w znaczniki wszystkie (niekoniecznie
+nak³adaj±ce siê) zmiany.  Na przyk³ad, dla powy¿szej trójstronnej
+nak³adaj±cej siê zmiany, opcje @samp{-E} i @samp{-X} wypisz±:
+
+@example
+<<<<<<< lao
+=======
+
+  -- Lao-tsy, Tao-te-king (Ksiêga Drogi i Cnoty)
+>>>>>>> tao
+@end example
+
+Porównuj±c dwa pliki o nic nie mówi±cych lub niewiele mówi±cych nazwach,
+zapewne chcieliby¶my, by @code{diff3} w nawiasach @samp{<<<<<<<},
+@samp{|||||||} i @samp{>>>>>>>} pokaza³ jakie¶ ich nazwy zastêpcze.
+S³u¿y do tego opcja @samp{-L @var{etykieta}} lub
+@samp{--label=@var{etykieta}}. Mo¿e zostaæ podana do trzech razy, po jednym
+na ka¿dy plik wej¶ciowy.   Zatem @samp{diff3 -A -L X -L Y -L Z A B C}
+dzia³a tak, jak @samp{diff3 -A A B C}, poza tym, ¿e wyj¶cie wygl±da, jakby
+zosta³o otrzymane z plików o nazwach @samp{X}, @samp{Y} i @samp{Z}, a nie
+@samp{A}, @samp{B} i @samp{C}.
+
+@node Pomijanie ed, Scalanie niekompletnych linii, Oznaczanie konfliktów, Scalanie diff3
+@section Bezpo¶rednie tworzenie scalonego wyj¶cia
+@cindex scalaj±cy format @code{diff3}
+
+Z opcj± @samp{-m} lub @samp{--merge} @code{diff3} wprost wypisuje scalony
+plik.  Jest to efektywniejsze ni¿ stosowanie do jego utworzenia programu
+@code{ed} i dzia³a nawet z plikami nie-tekstowymi, które @code{ed} by
+odrzuci³.  Je¶li podamy @samp{-m} bez opcji skryptu @code{ed}, to przyjmowane
+jest @samp{-A} (@samp{--show-all}).
+
+Na przyk³ad, polecenie @samp{diff3 -m lao tsy tao}
+(@pxref{Przyk³adowe wej¶cie diff3}, gdzie pokazano pliki wej¶ciowe) wypisze:
+
+@example
+<<<<<<< tsy
+=======
+Tao, które mo¿na wyraziæ s³owami, nie jest prawdziwym tao.
+Nazwa, któr± mo¿na je okre¶liæ, nie jest niezmienn± nazw±.
+>>>>>>> tao
+Bezimienne jest pocz±tkiem nieba i ziemi,
+Nazwane jest matk± wszystkich rzeczy.
+Przeto, kto trwale pozbawion jest pragnieñ wszelakich,
+  potrafi dojrzeæ subteln± istotê tao,
+za¶, kto niezmiennie tkwi w pêtach swych pragnieñ,
+  mo¿e tylko ujrzeæ skoñczono¶æ rzeczy.
+Te dwie strony tao wywodz± siê
+ze wspólnego ¼ród³a,
+  lecz nosz± odmienne nazwy.
+<<<<<<< lao
+||||||| tsy
+To, co w nich wspólne, nazywamy wielk± tajemnic±,
+tajemnic± nad tajemnicami,
+bram± do poznania wszelakich cudowno¶ci.
+=======
+
+  -- Lao-tsy, Tao-te-king (Ksiêga Drogi i Cnoty)
+>>>>>>> tao
+@end example
+
+@node Scalanie niekompletnych linii, Zachowywanie zmienionego pliku, Pomijanie ed, Scalanie diff3
+@section Jak @code{diff3} scala niekompletne linie
+@cindex scalanie niekompletnych linii
+@cindex niekompletne linie, scalanie
+
+Z @samp{-m}, niekompletne linie (@pxref{Niekompletne linie}) s± po prostu
+kopiowane na wyj¶cie, tak jak je zastano. Je¶li scalane wyj¶cie koñczy siê
+konfliktem, a jeden z plików wej¶ciowych koñczy siê niekompletn± lini±,
+to nastêpuj±ce po niej znaczniki @samp{|||||||}, @samp{=======} lub
+@samp{>>>>>>>} pojawi± siê gdzie¶ indziej ni¿ na pocz±tku linii, gdy¿
+zostan± dopisane do niekompletnej linii.
+
+Bez @samp{-m}, je¶li podano opcjê skryptu @code{ed} a zosta³a napotkana
+niekompletna linia, @code{diff3} generuje ostrze¿enie i dzia³a tak, jakby
+znak nowej linii by³ obecny.
+
+@node Zachowywanie zmienionego pliku, , Scalanie niekompletnych linii, Scalanie diff3
+@section Zachowywanie zmienionego pliku
+@cindex zgodno¶æ @code{diff3} z System V
+@cindex System V, zgodno¶æ @code{diff3}
+
+Tradycyjny uniksowy @code{diff3} tworzy skrypt @code{ed} bez koñcowych
+@c      HQ: b³±d orygina³u:   trailing @samp{w} and and @samp{q}
+poleceñ @samp{w} i @samp{q}, które zapisuj± zmiany pliku.
+@code{diff3} z System V generuje te dodatkowe polecenia.  GNU @code{diff3}
+normalnie zachowuje siê tak, jak tradycyjna uniksowa wersja, ale z opcj±
+@samp{-i} dzia³a jak @code{diff3} z System V i dok³ada @samp{w} i @samp{q}.
+
+Opcja @samp{-i} wymaga jednej z opcji tworz±cych skrypt @code{ed}:
+@samp{-AeExX3}, i jest nie wspó³pracuje z opcj± scalania wyj¶cia @samp{-m}.
+
+@node Interaktywne scalanie, Scalanie z patch, Scalanie diff3, Top
+@chapter Interaktywne scalanie za pomoc± @code{sdiff}
+@cindex ró¿nice, scalanie
+@cindex scalanie ró¿nic
+@cindex interaktywne scalanie
+
+Za pomoc± @code{sdiff}, mo¿na interaktywnie scaliæ dwa pliki, na podstawie
+ich porównania w formacie dwukolumnowym @samp{-y} (@pxref{Dwukolumnowy}).
+Do podania, gdzie ma zostaæ umieszczony scalony tekst u¿ywamy opcji
+@samp{-o @var{plik}} lub @samp{--output=@var{plik}}.
+@xref{Wywo³anie sdiff}, gdzie szczegó³owo opisano opcje @code{sdiff}.
+
+Inn± metod± interaktywnego scalania plików jest u¿ycie pakietu @code{emerge}
+dla Emacs Lisp.
+@xref{emerge, , emerge, emacs, The GNU Emacs Manual}, gdzie podano szczegó³y.
+
+@menu
+* Zestawienie opcji sdiff::	Zestawienie opcji @code{sdiff}.
+* Polecenia scalania::	 	Interaktywne scalanie dwu plików.
+@end menu
+
+@node Zestawienie opcji sdiff, Polecenia scalania, , Interaktywne scalanie
+@section Podawanie opcji @code{diff} dla @code{sdiff}
+@cindex format wyj¶cia @code{sdiff}
+
+Poni¿sze opcje @code{sdiff} maj± to samo znaczenie, co w @code{diff}.
+@xref{Opcje diff}, gdzie podano ich zastosowanie.
+
+@example
+-a -b -d -i -t -v
+-B -H -I @var{regexp}
+
+--ignore-blank-lines  --ignore-case
+--ignore-matching-lines=@var{regexp}  --ignore-space-change
+--left-column  --minimal  --speed-large-files
+--suppress-common-lines  --expand-tabs
+--text  --version  --width=@var{columns}
+@end example
+
+Z powodów historycznych @code{sdiff} dla niektórych opcji posiada nazwy
+alternatywne.  Opcja @samp{-l} jest równowa¿na @samp{--left-column}.
+Podobnie, @samp{-s} jest równowa¿ne @samp{--suppress-common-lines}.
+Znaczenie opcji @samp{-w} i @samp{-W} jest w @code{sdiff} zamienione
+w stosunku do @code{diff}: dla @code{sdiff}, @samp{-w @var{kolumny}} jest
+równowa¿nikiem @samp{--width=@var{kolumny}}, a @samp{-W} -- równowa¿nikiem
+@samp{--ignore-all-space}.  @code{sdiff} bez opcji @samp{-o} jest równowa¿ne
+@code{diff} z opcj± @samp{-y} lub @samp{--side-by-side}
+(@pxref{Dwukolumnowy}).
+
+@node Polecenia scalania, , Zestawienie opcji sdiff, Interaktywne scalanie
+@section Polecenia scalania
+@cindex scalanie, polecenia
+@cindex polecenia scalania
+@cindex scalanie interaktywne
+
+Grupy wspólnych linii (pokazywanych z pustym miejscem miêdzy kolumnami)
+kopiowane s± z pierwszego pliku na wyj¶cie.  Po ka¿dej grupie
+ró¿ni±cych siê linii, @code{sdiff} wypisuje znak zachêty @samp{%}
+i oczekuje na jedno z poni¿szych poleceñ.  Po ka¿dym z nich nale¿y
+nacisn±æ @key{RET}.
+
+@table @samp
+@item e
+Odrzucenie obu wersji.
+Wywo³uje edytor tekstów z pustym plikiem tymczasowym, a nastêpnie kopiuje
+powsta³y plik na wyj¶cie.
+
+@item eb
+Skleja obie wersje, przesy³a wynik do edycji w pliku tymczasowym,
+nastêpnie kopiuje zmieniony wynik na wyj¶cie.
+
+@item el
+Podaje do edycji kopiê lewej wersji, nastêpnie kopiuje wynik na wyj¶cie.
+
+@item er
+Podaje do edycji kopiê prawej wersji, nastêpnie kopiuje wynik na wyj¶cie.
+
+@item l
+Kopiuje lew± wersjê na wyj¶cie.
+
+@item q
+Koñczy dzia³anie programu.
+
+@item r
+Kopiuje praw± wersjê na wyj¶cie.
+
+@item s
+Kopiuje wspólnie linie bez powiadamiania.
+
+@item v
+Kopiuje wspólne linie komunikuj±c o tym.  Zachowanie domy¶lne.
+@end table
+
+Wywo³ywany edytor tekstów okre¶lony jest zmienn± ¶rodowiska @code{EDITOR},
+je¶li jest ustawiona.  Domy¶lny edytor zale¿y od systemu.
+
+@node Scalanie z patch, Tworzenie ³at, Interaktywne scalanie, Top
+@chapter Scalanie za pomoc± @code{patch}
+
+@code{patch} pobiera wyj¶cie z porównania dokonanego przez @code{diff}
+i wprowadza ró¿nice do kopii oryginalnego pliku, tworz±c za³atan± wersjê.
+Za pomoc± @code{patch} mo¿na dystrybuowaæ tylko zmiany jakiego¶ zestawu
+plików, zamiast rozpowszechniania ca³o¶ci plików.  Odbiorcy mog± zastosowaæ
+@code{³atê} do aktualizacji swoich egzemplarzy plików do naszych zmian.
+@code{patch} automatycznie rozpoznaje typ pliku ró¿nicy, pomija ewentualne
+pocz±tkowe i koñcowe nag³ówki i korzysta z nag³ówka do stwierdzenia, który
+plik nale¿y za³ataæ.  Umo¿liwia to naszym odbiorcom podawanie artyku³ów czy
+wiadomo¶ci zawieraj±cych listing ró¿nic wprost do @code{patch}.
+
+@code{patch} wykrywa typowe problemy, jak np. ³aty odwrócone, i ostrzega
+o nich.  Zachowuje oryginalne wersje ³atanych plików i zapisuje wszystkie
+³aty, których nie da³o siê na³o¿yæ.  Potrafi tak¿e prowadziæ plik
+@c            b³±d orygina³u??: file to ensures that your correspondents
+@code{patchlevel.h}, by zagwarantowaæ, ¿e odbiorcy zastosuj± ³aty w poprawnej
+kolejno¶ci.
+
+@code{patch} przyjmuje ze swego standardowego wej¶cia ci±g ró¿nic, zwykle
+rozdzielonych nag³ówkami, podaj±cymi jaki plik ma byæ za³atany.  Stosuje
+porcje @code{diff} (@pxref{Porcje}) jedn± po drugiej.  Je¶li porcja nie pasuje
+dok³adnie do oryginalnego pliku, wówczas, staraj±c siê jak najlepiej
+go za³ataæ, stosuje algorytm heurystyczny.  Je¶li nie uda siê znale¼æ
+przybli¿onego dopasowania, program odrzuca tê porcjê i przechodzi
+do nastêpnej.  Normalnie @code{patch} ka¿dy ³atany plik @var{f} zastêpuje
+jego now± wersj±, pierwotn± zachowuje w @samp{@var{f}.orig}, za¶ odrzucone
+porcje (je¶li wyst±pi³y) w @samp{@var{f}.rej}.
+
+@xref{Wywo³anie patch}, gdzie podano szczegó³owy opis opcji @code{patch}.
+@xref{Kopie zapasowe}, gdzie dok³adniej opisano, w jaki sposób @code{patch} nazywa
+pliki kopii zapasowych.  @xref{Odrzucenia}, gdzie dok³adniej opisano, gdzie
+@code{patch} umieszcza odrzucone porcje.
+
+@menu
+* Wej¶cie patch::	Wybór typu wej¶cia @code{patch}.
+* Niedoskona³e::     	Praca z niedoskona³ymi ³atami.
+* Puste pliki::		Usuwanie pustych plików po za³ataniu.
+* Wielokrotne ³aty::	Specjalna obs³uga wielu ³at w pliku.
+* Komunikaty patch::	Komunikaty i pytania tworzone przez @code{patch}.
+@end menu
+
+@node Wej¶cie patch, Niedoskona³e, , Scalanie z patch
+@section Wybór formatu wej¶ciowego @code{patch}
+@cindex format wej¶cia @code{patch}
+
+@code{patch} normalnie ustala, którego formatu @code{diff} u¿ywa plik ³aty
+badaj±c jego zawarto¶æ.  Dla plików ³at zawieraj±cych szczególnie myl±cy
+tekst pocz±tkowy do wymuszenia poprawnej interpretacji formatu ró¿nicy
+mo¿e zaj¶æ potrzeba u¿ycia jednej z ni¿ej wymienionych opcji.  Podane tu
+formaty wyj¶ciowe s± jedynymi, jakie potrafi rozpoznaæ @code{patch}.
+
+@table @samp
+@item -c
+@itemx --context
+ró¿nica kontekstowa.
+
+@item -e
+@itemx --ed
+skrypt @code{ed}.
+
+@item -n
+@itemx --normal
+normalny format ró¿nicowy.
+
+@item -u
+@itemx --unified
+ró¿nica zunifikowana.
+@end table
+
+@node Niedoskona³e, Puste pliki, Wej¶cie patch, Scalanie z patch
+@section Nak³adanie niedoskona³ych ³at
+@c                @cindex imperfect patch application
+@c                 niepe³nych ???  - uwaga!! -ni¿ej te¿!!
+@cindex nak³adanie niedoskona³ych ³at
+@cindex niedoskona³e ³aty, nak³adanie
+
+@code{patch} usi³uje pomin±æ ewentualny tekst pocz±tkowy z pliku ³aty,
+na³o¿yæ ró¿nicê, a nastêpnie pomin±æ tekst koñcowy.  Dziêki temu mo¿na
+przekazaæ artyku³ z grupy dyskusyjnej czy wiadomo¶æ pocztow± wprost
+do @code{patch}, i powinno to dzia³aæ.  Je¶li ca³o¶æ ró¿nicy jest wciêta
+o sta³± ilo¶æ bia³ych znaków, wciêcie jest ignorowane automatycznie.
+
+Jednak pewne inne rodzaje niedoskona³o¶ci wej¶cia wymagaj± interwencji
+u¿ytkownika.
+
+@menu
+* Zmienione odstêpy::	Gdy tabulacje i spacje nie pasuj± dok³adnie.
+* Odwrócone ³aty::	Poprawne nak³adanie odwróconych ³at.
+* Niedok³adne::		Pomoc @code{patch} w znalezieniu lepszych dopasowañ.
+@end menu
+
+@node Zmienione odstêpy, Odwrócone ³aty, , Niedoskona³e
+@subsection Nak³adanie ³at przy zmienionych odstêpach
+@cindex bia³e znaki w ³atach
+
+Czasami programy pocztowe, edytory czy inne programy wymieniaj± spacje
+na tabulacje lub odwrotnie.  Je¶li zdarzy siê to plikowi ³aty albo
+wej¶ciowemu, to mog± one wygl±daæ tak samo jak wcze¶niej, ale @code{patch}
+nie bêdzie móg³ ich poprawnie dopasowaæ.  Je¶li pojawi siê taki problem,
+nale¿y zastosowaæ opcjê @samp{-l} lub @samp{--ignore-white-space}, która
+@c                                      loosely
+powoduje, ¿e program mniej rygorystycznie porównuje bia³e znaki, tak ¿e
+dowolny ci±g bia³ych znaków z pliku ³aty pasuje do dowolnego ci±gu bia³ych
+znaków pliku wej¶ciowego.  Znaki nie bêd±ce bia³ymi znakami w dalszym ci±gu
+musz± pasowaæ dok³adnie.  Ka¿da linia kontekstu musi nadal odpowiadaæ
+odpowiedniej linii w pliku wej¶ciowym.
+
+@node Odwrócone ³aty, Niedok³adne, Zmienione odstêpy, Niedoskona³e
+@subsection Nak³adanie odwróconych ³at
+@cindex ³aty odwrócone
+@cindex odwrócone ³aty
+
+Zdarza siê, ¿e ludzie uruchamiaj± @code{diff} z nowym plikiem jako pierwszym
+parametrem, zamiast jako drugim.  Tworzy to ³atê, która jest ``odwrócona''
+(``reversed'').  W celu na³o¿enia takiej ³aty nale¿y podaæ @code{patch}
+opcjê @samp{-R} lub @samp{--reverse}.  Program próbuje wówczas zamieniæ
+@c                     to swap each hunk around 
+znaczenie ka¿dej porcji przed jej na³o¿eniem.  Odrzucenia wychodz±
+w formacie zamienionym.  Opcja @samp{-R} nie dzia³a ze skryptami @code{ed},
+gdy¿ zawieraj± zbyt ma³o danych do zrekonstruowania operacji odwrotnej.
+
+Czêsto @code{patch} potrafi siê domy¶leæ, ¿e ³ata jest odwrócona.  Je¶li
+pierwszej porcji z ³aty nie udaje siê na³o¿yæ, program odwraca tê porcjê,
+by sprawdziæ, czy da siê jej u¿yæ w ten sposób.  Je¶li tak, to pyta
+u¿ytkownika, czy chce on uaktywnienia opcji @samp{-R}.  Je¿eli siê nie
+da -- ³ata bêdzie nak³adana dalej w normalny sposób.  Ta metoda nie jest
+w stanie wykryæ ³aty odwróconej je¶li ró¿nica ma format normalny,
+a pierwszym poleceniem jest dopisanie (a powinno to byæ usuniêcie).
+Jest tak dlatego, ¿e dopisanie zawsze dzia³a, gdy¿ pusty kontekst pasuje
+wszêdzie. Szczê¶liwym trafem, wiele ³at raczej dodaje lub zmienia linie
+ni¿ je usuwa, wiêc wiêkszo¶æ odwróconych ró¿nic typu normal zaczyna siê
+od usuniêcia, które siê nie udaje, dziêki czemu @code{patch} mo¿e zauwa¿yæ
+odwrócenie.
+
+Je¶li nak³adamy ³atê, która ju¿ wcze¶niej zosta³a na³o¿ona, @code{patch}
+s±dzi, ¿e jest to ³ata odwrócona i proponuje jej zdjêcie.  Mo¿na to
+interpretowaæ jako zaplanowan± cechê programu.  Je¿eli zrobili¶my to
+niechc±cy i nie chcemy zdejmowaæ ³aty, wystarczy odpowiedzieæ @samp{n}
+na tê propozycjê i nastêpuj±ce po niej pytanie ``na³o¿yæ mimo to''
+(``apply anyway'') -- lub nacisn±æ @kbd{C-c}, by przerwaæ proces
+@code{patch}.
+
+@node Niedok³adne, , Odwrócone ³aty, Niedoskona³e
+@subsection Pomoc @code{patch} w znalezieniu niedok³adnych dopasowañ
+@c                  inexact patches
+@cindex niedok³adne ³aty
+@cindex ³aty, niedok³adne
+@cindex wspó³czynnik rozmycia przy ³ataniu
+@cindex fuzz factor, ³atanie
+
+Dla ró¿nic kontekstowych, i w mniejszym stopniu normalnych, @code{patch}
+potrafi wykryæ wyst±pienie w ³acie niepoprawnych numerów linii i próbuje
+znale¼æ w³a¶ciwe miejsca do na³o¿enia poszczególnych porcji.  Jako pierwsz±
+próbê bierze liniê o numerze podanym w ³acie plus lub minus ewentualne
+przesuniêcie zastosowane przy nak³adaniu poprzedniej porcji.  Je¶li nie trafi
+w poprawne miejsce, to przegl±da plik w przód i wstecz szukaj±c zestawu
+linii pasuj±cych do kontekstu podanego w porcji.
+
+@code{patch} pocz±tkowo szuka miejsca, do którego pasuj± wszystkie linie
+kontekstu.  Je¶li nie mo¿e go znale¼æ i ma do czynienia z ró¿nic± kontekstow±
+lub zunifikowan±, za¶ maksymalny wspó³czynnik rozmycia ma warto¶æ co
+najmniej 1, to wykonuje kolejne wyszukiwanie ignoruj±c pierwsz± i ostatni±
+liniê kontekstu.  Je¶li siê i to zawiedzie, a maksymalny wspó³czynnik
+rozmycia jest równy co najmniej 2, to wykonuje nastêpne wyszukiwanie,
+tym razem ignoruj±c dwie pierwsze i dwie ostatnie linie kontekstu.
+Dalej postêpuje podobnie je¶li wspó³czynnik rozmycia jest wiêkszy.
+
+Opcja @samp{-F @var{linie}} lub @samp{--fuzz=@var{linie}} nadaje maksymalnemu
+wspó³czynnikowi rozmycia warto¶æ @var{linie}.  Opcja ta ma zastosowanie tylko
+ró¿nic kontekstowych i zunifikowanych.  Powoduje ignorowanie do @var{linie}
+linii podczas szukania miejsca do zainstalowania porcji.  Nale¿y pamiêtaæ,
+¿e wiêkszy wspó³czynnik rozmycia podnosi ryzyko b³êdnego za³atania.
+Domy¶lnie wspó³czynnik rozmycia wynosi 2. Nie mo¿na mu przypisaæ warto¶ci
+wiêkszej ni¿ ilo¶æ linii kontekstu w pliku ró¿nicy, zwykle 3.
+
+Je¿eli @code{patch} nie mo¿e znale¼æ miejsca, w którym powinien zainstalowaæ
+porcjê ³aty, zapisuje tak± porcjê do pliku odrzuceñ (@pxref{Odrzucenia},
+gdzie dok³adniej opisano, jak nazywane s± pliku odrzuceñ).  Odrzucone porcje
+zapisywane s± w formacie kontekstowym, niezale¿nie od postaci ³aty
+wej¶ciowej.
+Je¶li ma ona format normalny lub skryptu @code{ed}, wiele kontekstów bêdzie
+po prostu pustych.  Numery linii w pliku odrzuceñ mog± byæ inne ni¿ w ³acie.
+Pokazuj± przybli¿one miejsca w nowym pliku, do których, jak przypuszcza
+@code{patch}, nale¿± wadliwe porcje.  Numery linii nie odnosz± siê do
+po³o¿enia w starym pliku.
+
+Po zakoñczeniu obróbki ka¿dej porcji, @code{patch} informuje, czy uda³o siê
+j± zaaplikowaæ czy nie. A je¶li nie, to w której linii (w nowym pliku)
+powinna siê ona, wed³ug niego, znale¼æ.  Je¶li numer tej linii jest inny
+ni¿ numer linii podany w pliku ró¿nicy, pokazywane jest przesuniêcie
+(offset).  Pojedyncze du¿e przesuniêcie @emph{mo¿e} wskazywaæ na to,
+¿e @code{patch} zainstalowa³ porcjê w z³ym miejscu.  Je¶li do dopasowania
+program skorzysta³ ze wspó³czynnika rozmycia, to równie¿ o tym powiadamia,
+gdy¿ wówczas tak¿e powinni¶my byæ troszkê podejrzliwi.
+
+@code{patch} nie umie stwierdziæ, czy w skrypcie @code{ed} wy³±czono numery
+linii.  Potrafi wykryæ b³êdne numery linii w ró¿nicy normalnej tylko wtedy,
+gdy znajdzie polecenie zmiany lub usuniêcia.  Mo¿e mieæ takie same k³opoty
+z ró¿nic± kontekstow± stosuj±c wspó³czynnik rozmycia równy liczbie linii
+kontekstu pokazanych w ró¿nicy (standardowo 3) lub wiêkszy.
+W tych przypadkach powinno siê zapewne obejrzeæ ró¿nicê kontekstow±
+miêdzy oryginalnym plikiem wej¶ciowym a za³atanym, by stwierdziæ czy zmiany
+maj± sens.  Bezb³êdna kompilacja pliku jest ca³kiem dobr± wskazówk±, ¿e
+³atê na³o¿ono poprawnie, ale nie daje gwarancji.
+
+@code{patch} zwykle tworzy poprawne wyniki, nawet je¶li musi wielokrotnie
+@c              make many guesses.
+korzystaæ z szacunków.  Jednak wyniki s± na pewno dobre tylko wtedy,
+gdy ³ata jest nak³adana na dok³adn± kopiê pliku, z którego zosta³a
+wygenerowana.
+
+@node Puste pliki, Wielokrotne ³aty, Niedoskona³e, Scalanie z patch
+@section Usuwanie pustych plików
+@cindex puste pliki, usuwanie
+@cindex usuwanie pustych plików
+
+Czasem podczas porównywania dwu katalogów zdarza siê, ¿e pierwszy
+z nich zawiera plik, którego nie ma w drugim.  Je¶li podamy @code{diff}
+opcjê @samp{-N} lub @samp{--new-file}, to wypisze ró¿nicê, która usuwa
+zawarto¶æ tego pliku.  Domy¶lnie, @code{patch} po przetworzeniu takiej
+ró¿nicy pozostawia pusty plik.  U¿ycie @code{patch} z opcj± @samp{-E} lub
+@samp{--remove-empty-files} powoduje usuniêcie plików wyj¶ciowych, które
+po na³o¿eniu ³aty s± puste.
+
+@node Wielokrotne ³aty, Komunikaty patch, Puste pliki, Scalanie z patch
+@section Wiele ³at w pliku
+@cindex wielokrotne ³aty
+
+Je¿eli plik ³aty zawiera wiêcej ni¿ jedn± ³atê, to @code{patch} usi³uje
+zastosowaæ ka¿d± z nich tak, jakby pochodzi³y z osobnych plików ³at.
+Oznacza to, ¿e program okre¶la nazwê pliku do za³atania osobno dla ka¿dej
+³aty i bada tekst przed ka¿d± z nich szukaj±c nazw plików i wymaganych
+wstêpnie numerów wersji (@pxref{Tworzenie ³at}, gdzie jest wiêcej
+na ten temat).
+
+Dla drugiej i kolejnych ³at w pliku mo¿na podaæ opcje i zastêpcz± nazwê
+oryginalnego pliku oddzielaj±c ich listy argumentów znakiem plus @samp{+}.
+Lista argumentów dla drugiej i nastêpnych ³at nie mo¿e jednak wskazywaæ
+nowego pliku ³aty, gdy¿ nie ma to sensu.
+
+Na przyk³ad, chc±c nakazaæ @code{patch} wyciêcie pierwszych trzech uko¶ników
+z nazwy pierwszej ³aty w pliku, a niewycinanie ich w ogóle z kolejnych, oraz
+u¿ycie @file{code.c} jako pierwszego pliku wej¶ciowego, stosujemy:
+
+@example
+patch -p3 code.c + -p0 < plik³aty
+@end example
+
+Opcja @samp{-S} lub @samp{--skip} powoduje, ¿e program ignoruje aktualnie
+rozpatrywan± ³atê, ale dalej szuka kolejnej ³aty w pliku.
+Zatem, do zignorowania pierwszej i trzeciej ³aty w pliku ³at u¿ywamy:
+
+@example
+patch -S + + -S + < plik³aty
+@end example
+
+@node Komunikaty patch, , Wielokrotne ³aty, Scalanie z patch
+@section Komunikaty i pytania programu @code{patch}
+@cindex komunikaty i pytania programu @code{patch}
+@cindex diagnostyka programu @code{patch}
+@cindex komunikaty @code{patch}
+
+@code{patch} mo¿e dawaæ rozmaite komunikaty, szczególnie, je¶li ma k³opoty
+@c                      In a few situations
+z odczytaniem i zrozumieniem podanego mu wej¶cia.  W nielicznych sytuacjach,
+gdy nie jest pewien, jak post±piæ, normalnie prosi o podanie z klawiatury
+dodatkowych informacji.  Istniej± opcje wy³±czaj±ce wypisywanie komunikatów
+(je¶li b³êdy nie s± krytyczne) i oczekiwanie na dane z klawiatury.
+
+Komunikat @samp{Hmm...} wskazuje, ¿e @code{patch} w³a¶nie czyta tekst z pliku
+³ataj±cego, usi³uj±c stwierdziæ, czy jest w nim ³ata, a je¶li tak, to jakiego
+rodzaju.
+
+Opcja @samp{-s}, @samp{--quiet} lub @samp{--silent} zakazuje wysy³ania
+na terminal wszelkiego wyj¶cia, chyba ¿e pojawi siê b³±d.
+
+S± dwa sposoby powstrzymania @code{patch} od zadawania pytañ.
+Opcja opcj± @samp{-f} lub @samp{--force} wymusza za³o¿enie, ¿e u¿ytkownik
+dok³adnie wie co robi.  Program dzia³a wówczas wed³ug poni¿szych regu³:
+
+@itemize @bullet
+@item
+pomija ³aty, które nie zawieraj± w nag³ówkach nazw plików;
+
+@item
+³ata pliki nawet mimo tego, ¿e maj± z³± wersjê w stosunku do
+wyznaczonej lini± @samp{Prereq:} ³aty;
+
+@item
+zak³ada, ¿e ³aty nie s± odwrócone, nawet je¶li na takowe wygl±daj±.
+@end itemize
+
+Opcja @samp{-t} lub @samp{--batch} jest podobna do @samp{-f}, gdy¿
+równie¿ eliminuje pytania, ale powoduje przyjêcie nieco innych za³o¿eñ:
+
+@itemize @bullet
+@item
+pomija ³aty, które nie zawieraj± w nag³ówkach nazw plików
+(tak samo, jak @samp{-f});
+
+@item
+pomija ³aty dla plików ze z³ymi wersjami @samp{Prereq:};
+
+@item
+zak³ada, ¿e ³aty s± odwrócone, je¶li na takie wygl±daj±.
+@end itemize
+
+@code{patch} koñczy dzia³anie z niezerowym kodem zakoñczenia je¶li
+utworzy³ jakie¶ pliki odrzuceñ.  Nak³adaj±c w pêtli zestaw ³at,
+powinno siê sprawdzaæ kod zakoñczenia, by nie na³o¿yæ pó¼niejszej ³aty
+na plik tylko czê¶ciowo za³atany.
+
+@node Tworzenie ³at, Wywo³anie cmp, Scalanie z patch, Top
+@chapter Wskazówki, jak tworzyæ rozsy³ane ³aty
+@cindex tworzenie ³at, wskazówki
+@cindex wskazówki, tworzenie ³at
+
+Oto kilka rzeczy, o których powiniene¶ pamiêtaæ, je¶li zamierzasz
+rozsy³aæ ³aty aktualizuj±ce jaki¶ pakiet oprogramowania.
+
+Upewnij siê, ¿e poprawnie poda³e¶ nazwy plików, albo w nag³ówku ró¿nicy
+kontekstowej, albo lini± @samp{Index:}.  Je¶li ³atasz pliki w podkatalogu,
+upewnij siê, ¿e powiadomi³e¶ u¿ytkownika, by poda³ opcjê @samp{-p} lub
+@samp{--strip}.  Uwa¿aj by nie wysy³aæ ³at odwrotnych, gdy¿ powoduje to,
+¿e ludzie zastanawiaj± siê czy ju¿ na³o¿yli ³atê.
+
+Mo¿esz oszczêdziæ ludziom wielu problemów zwi±zanych z na³o¿eniem ³aty,
+która powinna byæ zastosowana po innych, wcze¶niejszych ³atach.
+Wystarczy, ¿e pierwsza ró¿nica w wysy³anym pliku bêdzie aktualizowaæ
+plik o nazwie typu @file{patchlevel.h}, zawieraj±cy poziom ³aty
+(patch level).
+Je¶li plik wej¶ciowy bêdzie zawiera³ nieodpowiedni numer, @code{patch}
+natychmiast zaprotestuje.
+
+@c An even clearer way to prevent this
+Znacznie czystsz± metod± zapobie¿enia temu problemowi jest wstawienie
+przed ró¿nic± linii z napisem @samp{Prereq:}.  Je¶li pocz±tkowy tekst
+w pliku zawiera liniê zaczynaj±c± siê od @samp{Prereq:}, to @code{patch}
+pobiera z tej linii nastêpne s³owo (zwykle numer wersji).  Nastêpnie
+sprawdza, czy nastêpny plik wej¶ciowy je zawiera, przy czym przed tym
+s³owem i po nim powinien wystêpowaæ albo bia³y znak albo znak nowej linii.
+Je¶li program nie znajdzie tego s³owa w ³atanym pliku, to przed
+kontynuacj± dzia³ania prosi o potwierdzenie.  Utrudnia to przypadkowe
+na³o¿enie ³at w z³ej kolejno¶ci.
+
+Poniewa¿ @code{patch} nie obs³uguje poprawnie niekompletnych linii,
+przy ka¿dym wypuszczeniu nowej wersji upewniaj siê, ¿e wszystkie pliki
+¼ród³owe twojego programu koñcz± siê znakiem nowej linii.
+
+Tworzenie ³aty zmieniaj±cej starsz± wersjê pakietu w nowsz± zacznij
+od utworzenia kopii starszej wersji w jakim¶ katalogu tymczasowym.
+Zwykle robi siê to rozpakowuj±c archiwum @code{tar} lub @code{shar}
+tej wersji.
+
+Czasem mo¿na zredukowaæ rozmiar ³aty przemianowuj±c lub przesuwaj±c
+niektóre pliki przed jej utworzeniem.  Je¶li starsza wersja pakietu
+zawiera jakie¶ pliki, których nie ma w nowszej, lub je¶li pomiêdzy
+obiema wersjami zmieniono nazwy jakich¶ plików, powiniene¶ przygotowaæ
+dla u¿ytkownika listê poleceñ @code{rm} lub @code{mv}, które powinien
+wykonaæ w katalogu starej wersji przed na³o¿eniem ³aty.  Nastêpnie
+w katalogu tymczasowym uruchom je sam.
+
+Je¶li masz jakie¶ pliki, których nie musisz w³±czaæ do ³aty, gdy¿ ³atwo
+mo¿na je odtworzyæ z innych (na przyk³ad, @file{TAGS} czy wyj¶cie z
+@code{yacc} b±d¼ @code{makeinfo}), zast±p ich wersje w tymczasowym katalogu
+nowszymi, za pomoc± @code{rm} i @code{ln} lub @code{cp}.
+
+Teraz mo¿esz utworzyæ ³atê. Standardem de-facto formatu @code{diff}
+stosowanym w dystrybucji ³at jest format kontekstowy o dwu liniach
+kontekstu, tworzony przez podanie @code{diff} opcji @samp{-C 2}.
+Nie stosuj mniej ni¿ dwu linii kontekstu, gdy¿ @code{patch} na ogó³
+do poprawnego dzia³ania potrzebuje co najmniej dwu.  Wywo³uj±c @code{diff}
+u¿yj opcji @samp{-P} na wypadek, gdyby nowsza wersja pakietu zawiera³a
+pliki, których nie by³o w starszej.  Upewnij siê, ¿e jako pierwszy
+podajesz tymczasowy katalog, a nowszy jako drugi.
+
+Na pocz±tku ³aty dodaj obja¶nienie dla u¿ytkownika, jakie polecenia
+@code{rm} czy @code{mv} powinien uruchomiæ przed jej u¿yciem. Teraz
+ju¿ mo¿esz usun±æ tymczasowy katalog.
+
+@node Wywo³anie cmp, Wywo³anie diff, Tworzenie ³at, Top
+@chapter Wywo³anie @code{cmp}
+@cindex wywo³anie @code{cmp}
+@cindex @code{cmp}, wywo³anie
+
+Polecenie @code{cmp} porównuje dwa pliki i, je¶li siê ró¿ni±, wskazuje
+numer bajtu i linii, gdzie wystêpuje pierwsza ró¿nica.
+Posiada nastêpuj±ce argumenty:
+
+@example
+cmp @var{opcje}@dots{} @var{plik1} @r{[}@var{plik2}@var{]}
+@end example
+
+Nazwa pliku @samp{-} oznacza zawsze standardowe wej¶cie.
+@code{cmp} u¿ywa te¿ standardowego wej¶cia je¶li pominiêto jedn±
+z nazw plików.
+
+Zwracany kod zakoñczenia 0 oznacza, ¿e nie odnaleziono ró¿nic,
+1 napotkanie ró¿nic, a 2 k³opoty.
+
+@menu
+* Opcje cmp::		Zestawienie opcji @code{cmp}.
+@end menu
+
+@node Opcje cmp, , , Wywo³anie cmp
+@section Opcje @code{cmp}
+@cindex @code{cmp}, opcje
+@cindex opcje @code{cmp}
+
+Poni¿ej znajduje siê podsumowanie wszystkich opcji akceptowanych przez
+GNU @code{cmp}.  Wiêkszo¶æ opcji posiada dwie równowa¿ne formy, jedn±
+z nich jest pojedyncza litera poprzedzona kresk± @samp{-}, a drug± pe³na
+nazwa poprzedzona przez @samp{--}.  Wiele pojedynczych liter opcji (pod
+warunkiem, ¿e nie wymagaj± argumentu) mo¿na po³±czyæ w pojedyncze s³owo:
+@samp{-cl} jest równowa¿ne @samp{-c -l}.
+
+@table @samp
+@item -c
+@itemx --print-chars
+Wypisuje ró¿ni±ce siê znaki.  Znaki steruj±ce pokazywane s± w postaci
+@samp{^} plus litera, a znaki z ustawionym bardziej znacz±cym bitem (high bit)
+poprzedzane s± przedrostkiem @samp{M-} (oznaczaj±cym ``meta'').
+
+@item -i @var{ile}
+@item --ignore-initial=@var{ile}
+Ignoruje wszelkie ró¿nice w @var{ile} pocz±tkowych bajtach ka¿dego z plików.
+Traktuje pliki zawieraj±ce mniej ni¿ @var{ile} bajtów jakby by³y puste.
+
+@item -l
+@itemx --verbose
+Dla ka¿dej ró¿nicy wypisuje numer bajtu (dziesiêtnie) i warto¶ci ró¿ni±cych
+siê bajtów (ósemkowo).
+
+@item --quiet
+@itemx -s
+@itemx --silent
+Nic nie wypisuje.  Zwraca tylko kod zakoñczenia wskazuj±cy, czy pliki
+siê ró¿ni±.
+
+@item -v
+@item --version
+Wypisuje numer wersji @code{cmp}.
+@end table
+
+@node Wywo³anie diff, Wywo³anie diff3, Wywo³anie cmp, Top
+@chapter Wywo³anie @code{diff}
+@cindex wywo³anie @code{diff}
+@cindex @code{diff}, wywo³anie
+
+Format uruchomienia polecenia @code{diff}:
+
+@example
+diff @var{opcje}@dots{} @var{plik1} @var{plik2}
+@end example
+
+W najprostszym przypadku @code{diff} porównuje zawarto¶æ dwóch plików,
+@var{plik1} i @var{plik2}.  Nazwa pliku @samp{-} oznacza tekst odczytywany
+ze standardowego wej¶cia.  W specjalnym przypadku: @samp{diff --} porównuje
+kopiê standardowego wyj¶cia ze samym sob±.
+
+Je¶li @var{plik1} jest katalogiem a @var{plik2} nie, @code{diff} porównuje
+plik z katalogu @var{plik1}, którego nazwa jest taka sama, jak @var{plik2},
+i odwrotnie.  Plik nie bêd±cy katalogiem nie mo¿e byæ @samp{-}.
+
+Je¶li zarówno @var{plik1} jak i @var{plik2} s± katalogami, @code{diff}
+porównuje odpowiednie pliki w obu katalogach, w kolejno¶ci alfabetycznej.
+To porównanie nie jest rekurencyjne, chyba ¿e podano opcjê @samp{-r} lub
+@samp{--recursive}.  @code{diff} nigdy nie porównuje zawarto¶ci katalogu
+tak, jakby by³ on plikiem.  Podany plik nie mo¿e byæ standardowym wej¶ciem,
+poniewa¿ standardowe wej¶cie nie ma nazwy i nie dotyczy go zapis ``plik
+o tej samej nazwie''.
+
+Opcje @code{diff} na ogó³ zaczynaj± siê od @samp{-}, wiêc zwykle nazwy
+plików @var{plik1} oraz @var{plik2} nie mog± zaczynaæ siê od @samp{-},
+jednak argument @samp{--} traktuje pozosta³e argumenty jako nazwy plików,
+nawet je¶li zaczynaj± siê one od @samp{-}.
+
+Zwracany kod zakoñczenia 0 oznacza, ¿e nie odnaleziono ró¿nic,
+1 napotkanie ró¿nic, a 2 k³opoty.
+
+@menu
+* Opcje diff::	Zestawienie opcji @code{diff}.
+@end menu
+
+@node Opcje diff, , , Wywo³anie diff
+@section Opcje @code{diff}
+@cindex @code{diff}, opcje
+@cindex opcje @code{diff}
+
+Poni¿ej znajduje siê podsumowanie wszystkich opcji akceptowanych przez
+GNU @code{diff}.  Wiêkszo¶æ opcji posiada dwie równowa¿ne formy, jedn±
+z nich jest pojedyncza litera poprzedzona kresk± @samp{-}, a drug± pe³na
+nazwa poprzedzona przez @samp{--}.  Wiele pojedynczych liter opcji (pod
+warunkiem, ¿e nie wymagaj± argumentu) mo¿na po³±czyæ w pojedyncze s³owo:
+@samp{-ac} jest równowa¿ne @samp{-a -c}.  Opcje w formie pe³nej nazwy mog±
+byæ skracane do dowolnego unikalnego przedrostka.
+Nawiasy kwadratowe (@samp{[} i @samp{]}) oznaczaj±, ¿e opcja pobiera
+opcjonalny argument.
+
+@table @samp
+@item -@var{linie}
+Wypisuje ilo¶æ linii kontekstu podan± w @var{linie} (warto¶æ ca³kowita).
+Ta opcja nie ustala formatu wyj¶ciowego.  Nie ma ¿adnego efektu je¶li
+wystêpuje bez opcji @samp{-c} (@pxref{Format kontekstowy}) lub @samp{-u}
+(@pxref{Format zunifikowany}).  Ta opcja jest przestarza³a.  Do prawid³owego
+dzia³ania @code{patch} standardowo potrzebuje co najmniej dwóch linii
+kontekstu.
+
+@item -a
+@itemx --text
+Traktuje wszystkie pliki jak tekstowe i porównuje je linia po linii,
+nawet je¶li nie wygl±daj± one na pliki tekstowe.  @xref{Binarnie}.
+
+@item -b
+@itemx --ignore-space-change
+Ignoruje zmiany w ilo¶ci odstêpów (bia³ych znaków).  @xref{Odstêpy}.
+
+@item -B
+@itemx --ignore-blank-lines
+Ignoruje zmiany, które jedynie wstawiaj± lub usuwaj± puste linie.
+@xref{Puste linie}.
+
+@item --binary
+Czyta i zapisuje dane w trybie binarnym.  @xref{Binarnie}.
+
+@item -q
+@itemx --brief
+Informuje jedynie o tym, czy pliki siê ró¿ni±, bez podawania szczegó³ów
+na temat ró¿nic.  @xref{Krótko}.
+
+@item -c
+U¿ywa kontekstowego formatu wyj¶ciowego.  @xref{Format kontekstowy}.
+
+@item -C @var{linie}
+@itemx --context@r{[}=@var{linie}@r{]}
+U¿ywa kontekstowego formatu wyj¶ciowego, pokazuj±c @var{linie} (warto¶æ
+ca³kowita) linii kontekstu, lub trzy je¶li nie podano liczby @var{linii}.
+Do prawid³owego dzia³ania @code{patch} potrzebuje co najmniej dwóch linii
+kontekstu.
+
+@item --changed-group-format=@var{format}
+U¿ywa formatu wyj¶ciowego @var{format} do wypisania grupy linii
+zawieraj±cych ró¿ni±ce siê linie z obu plików.
+Pomocne w tworzeniu plików wynikowych o konstrukcji typu if-then-else.
+@xref{Formaty grup linii}.
+
+@item -d
+@itemx --minimal
+Zmienia algorytm na taki, który mo¿e czasami znale¼æ mniejsz± liczbê zmian.
+Spowalnia to dzia³ania @code{diff} (czasami bardzo znacznie).
+@xref{Wydajno¶æ diff}.
+
+@item -D @var{nazwa}
+@itemx --ifdef=@var{nazwa}
+Tworzy po³±czone wyj¶cie w formacie @samp{#ifdef}, zale¿nym od makra
+preprocesora @var{nazwa}.  @xref{If-then-else}.
+
+@item -e
+@itemx --ed
+Tworzy wyj¶cie, które jest poprawnym skryptem @code{ed}.  @xref{Skrypty ed}.
+
+@item -x @var{wzorzec}
+@itemx --exclude=@var{wzorzec}
+Podczas porównywania katalogów ignoruje pliki i podkatalogi, których
+nazwy pasuj± do wzorca @var{wzorzec}.  @xref{Porównywanie katalogów}.
+
+@item -X @var{plik}
+@itemx --exclude-from=@var{plik}
+Podczas porównywania katalogów ignoruje pliki i podkatalogi, których
+nazwa pasuje do jednego z wzorców podanych w @var{pliku}.
+@xref{Porównywanie katalogów}.
+
+@item -t
+@itemx --expand-tabs
+Rozszerza tabulatory do spacji na wyj¶ciu, aby zachowaæ oryginalne
+wyrównanie tabulatorów pliku wej¶ciowego.  @xref{Tabulatory}.
+
+@item -f
+@itemx --forward-ed
+Tworzy wyj¶cie, które wygl±da prawie tak jak skrypt @code{ed}, ale
+zawiera modyfikacje w kolejno¶ci pojawiania siê zmian w pliku.
+@xref{Forward ed}.
+
+@item -F @var{regexp}
+@itemx --show-function-line= regexp
+W formacie kontekstowym lub zunifikowanym dla ka¿dej porcji ró¿nic pokazuje
+ostatni± poprzedzaj±c± liniê, która pasuje do wyra¿enia regularnego
+@var{regexp}.  @xref{Podane nag³ówki}.
+
+@item -h
+Ta opcja aktualnie nie ma ¿adnego efektu, ale istnieje dla zgodno¶ci
+z systemem Unix.
+
+@item -H
+@itemx --speed-large-files
+U¿ywa algorytmów heurystycznych aby przyspieszyæ przeszukiwanie du¿ych
+plików ze znaczn± liczb± rozrzuconych ma³ych zmian.
+@xref{Wydajno¶æ diff}.
+
+@item --horizon-lines=@var{linie}
+Nie odrzuca ostatnich @var{linie} linii wspólnego przedrostka oraz
+pierwszych @var{linie} linii wspólnego przyrostka.  @xref{Wydajno¶æ diff}.
+
+@item -i
+@itemx --ignore-case
+Ignoruje zmiany zmian w wielko¶ci liter, du¿e i ma³e litery s± uznawane
+za równowa¿ne.  @xref{Wielko¶æ liter}.
+
+@item -I @var{regexp}
+@itemx --ignore-matching-lines=@var{regexp}
+Ignoruje zmiany, które jedynie wstawiaj± lub usuwaj± linie pasuj±ce do
+wyra¿enia regularnego @var{regexp}.  @xref{Pomijanie podanych}.
+
+@item -w
+@itemx --ignore-all-space
+Ignoruje wszystkie odstêpy (bia³e znaki) przy porównywaniu plików.
+@xref{Odstêpy}.
+
+@item -T
+@itemx --initial-tab
+Wyprowadza tabulator zamiast spacji przed tekstem linii w formacie
+normalnym lub kontekstowym. Powoduje to normalny wygl±d tabulatorów w linii.
+@xref{Tabulatory}.
+
+@item -l
+@itemx --paginate
+Przesy³a wyj¶cie przez @code{pr}, aby podzieliæ je na strony.
+@xref{Stronicowanie}.
+
+@item -L @var{etykieta}
+@itemx --label=@var{etykieta}
+U¿ywa tekstu @var{etykieta} w miejsce nazwy plików w nag³ówku formatu
+kontekstowego (@pxref{Format kontekstowy}) i zunifikowanego
+(@pxref{Format zunifikowany}).  @xref{RCS}.
+
+@item --left-column
+Wy¶wietla jedynie lew± kolumnê z dwóch wspólnych w formacie jedna obok
+drugiej.  @xref{Format dwukolumnowy}.
+
+@item --line-format=@var{format}
+U¿ywa formatu @var{format} do wyprowadzenia wszystkich linii.
+To samo, co równoczesne u¿ycie wszystkich opcji formatowania linii
+(@samp{--old-line-format}, @samp{--new-line-format},
+@samp{--unchanged-line-format}) z tym samym formatem.
+Pomocne w tworzeniu plików wynikowych o konstrukcji typu if-then-else.
+@xref{Formaty linii}.
+
+@item -n
+@itemx --rcs
+Wyprowadza ró¿nice w formacie RCS, tak jak @samp{-f}, z tym wyj±tkiem,
+¿e ka¿da komenda wyszczególnia numer linii, której dotyczy.  @xref{RCS}.
+
+@item -N
+@itemx --new-file
+Je¶li podczas porównywania katalogów plik istnieje jedynie w jednym
+z katalogów, bêdzie traktowany tak, jakby by³ obecny w drugim katalogu,
+ale pusty.  @xref{Porównywanie katalogów}.
+
+@item --new-group-format=@var{format}
+U¿ywa formatu @var{format} do wyprowadzenia grupy linii wziêtej jedynie
+z drugiego pliku.  Pomocne w tworzeniu plików wynikowych o konstrukcji
+typu if-then-else.  @xref{Formaty grup linii}.
+
+@item --new-line-format=@var{format}
+U¿ywa formatu @var{format} do wyprowadzenia linii wziêtej jedynie
+z drugiego pliku.  Pomocne w tworzeniu plików wynikowych o konstrukcji
+typu if-then-else.  @xref{Formaty linii}.
+
+@item --old-group-format=@var{format}
+U¿ywa formatu @var{format} do wyprowadzenia grupy linii wziêtej jedynie
+z pierwszego pliku.  Pomocne w tworzeniu plików wynikowych o konstrukcji
+typu if-then-else.  @xref{Formaty grup linii}.
+
+@item --old-line-format=@var{format}
+U¿ywa formatu @var{format} do wyprowadzenia linii wziêtej jedynie
+z pierwszego pliku.  Pomocne w tworzeniu plików wynikowych o konstrukcji
+typu if-then-else.  @xref{Formaty linii}.
+
+@item -p
+@itemx --show-c-function
+Pokazuje, do jakiej funkcji C nale¿y ka¿da ze zmian.
+@xref{Nag³ówki funkcji C}.
+
+@item -P
+@itemx --unidirectional-new-file
+Je¶li podczas porównywania katalogów plik istnieje jedynie w drugim katalogu,
+bêdzie traktowany tak, jakby by³ obecny w pierwszym katalogu, ale pusty.
+@xref{Porównywanie katalogów}.
+
+@item -r
+.B \-\-recursive
+Rekurencyjnie porównuje wszystkie podkatalogi, je¶li porównywane
+s± katalogi.  @xref{Porównywanie katalogów}.
+
+@item -s
+@itemx --report-identical-files
+Informuje, je¶li oba pliki s± identyczne.
+@xref{Porównywanie katalogów}.
+
+@item -S @var{plik}
+@itemx --starting-file= plik
+Podczas porównywania katalogów rozpoczyna od pliku @var{plik}.
+Opcja ta jest u¿yteczna podczas wznawiania przerwanego porównania.
+@xref{Porównywanie katalogów}.
+
+@item --sdiff-merge-assist
+Wy¶wietla dodatkowe informacji pomocne dla @code{sdiff}.  @code{sdiff}
+korzysta z tej opcji gdy uruchamia @code{diff}. U¿ytkownicy nie powinni
+korzystaæ z tej opcji bezpo¶rednio.
+
+@item -y
+@itemx --side-by-side
+U¿ywa formatu wyj¶ciowego jeden obok drugiego.  @xref{Format dwukolumnowy}.
+
+@item --suppress-common-lines
+Nie wypisuje wspólnych linii w formacie jedna obok drugiej.
+@xref{Format dwukolumnowy}.
+
+@item -u
+U¿ywa zunifikowanego formatu wyj¶ciowego.  @xref{Format zunifikowany}.
+
+@item --unchanged-group-format=@var{format}
+U¿ywa formatu @var{format} do wyprowadzenia grupy wspólnych linii, wziêtych
+z obu plików.  Pomocne w tworzeniu plików wynikowych o konstrukcji typu
+if-then-else.  @xref{Formaty grup linii}.
+
+@item --unchanged-line-format=@var{format}
+U¿ycie formatu @var{format} do wyprowadzenia linii wspólnej dla obu plików.
+Pomocne w tworzeniu plików wynikowych o konstrukcji typu
+if-then-else.  @xref{Formaty linii}.
+
+@item -U @var{linie}
+@itemx --unified@r{[}=@var{linie}@r{]}
+U¿ywa zunifikowanego formatu wyj¶ciowego, wypisuj±c @var{linie} (warto¶æ
+ca³kowita) linii kontekstu , lub trzy je¶li nie podano @var{linii}.
+Do prawid³owego dzia³ania @code{patch} potrzebuje co najmniej
+
+@item -v
+@itemx --version
+Wypisuje numer wersji @code{diff}.
+
+@item -w
+@itemx --ignore-all-space
+Ignoruje wszystkie odstêpy (bia³e znaki) przy porównywaniu plików.
+@xref{Odstêpy}.
+
+@item -W @var{kolumny}
+@itemx --width=@var{kolumny}
+U¿ywa szeroko¶ci wyj¶cia @var{kolumny} w formacie jedna obok drugiej.
+@xref{Format dwukolumnowy}.
+@end table
+
+@node Wywo³anie diff3, Wywo³anie patch, Wywo³anie diff, Top
+@chapter Wywo³anie @code{diff3}
+@cindex wywo³anie @code{diff3}
+@cindex @code{diff3}, wywo³anie
+
+Polecenie @code{diff3} porównuje trzy pliki i podaje opisy ró¿nic pomiêdzy
+nimi.  Posiada nastêpuj±ce argumenty:
+
+@example
+diff3 @var{opcje}@dots{} @var{mój} @var{starszy} @var{twój}
+@end example
+
+Porównywanymi plikami s± @var{mój}, @var{starszy} i @var{twój}.
+Co najwy¿ej jedn± z tych trzech nazw mo¿e byæ @samp{-},
+mówi±ca @code{diff3} by zamiast tego pliku czyta³ standardowe wej¶cie.
+
+Zwracany kod zakoñczenia 0 oznacza pomy¶lnie ukoñczon± pracê @code{diff3},
+1 napotkanie konfliktów, a 2 k³opoty.
+
+@menu
+* Opcje diff3::		Zestawienie opcji @code{diff3}.
+@end menu
+
+@node Opcje diff3, , , Wywo³anie diff3
+@section Opcje @code{diff3}
+@cindex @code{diff3}, opcje
+@cindex opcje @code{diff3}
+
+Poni¿ej podano podsumowanie wszystkich opcji akceptowanych przez
+GNU @code{diff3}.  Mo¿na ³±czyæ kilka opcji jednoliterowych (chyba
+¿e pobieraj± argument) w pojedynczy argument wiersza poleceñ.
+
+@table @samp
+@item -a
+@itemx --text
+Traktuje wszystkie pliki jak tekstowe i porównuje je linia po linii,
+nawet je¶li nie wygl±daj± na tekstowe.  @xref{Binarnie}.
+
+@item -A
+@itemx --show-all
+Nanosi wszystkie zmiany powsta³e miêdzy @var{starszy} a @var{twój}
+do pliku @var{mój}, ujmuj±c wynik³e konflikty pomiêdzy linie zawieraj±ce
+ci±gi nawiasów ostrych (@samp{>}, @samp{<}).  @xref{Oznaczanie konfliktów}.
+
+@item -e
+@itemx --ed
+Tworzy skrypt programu @code{ed}, który nanosi zmiany pomiêdzy
+@var{starszy} a @var{twój} do pliku @var{mój}.  @xref{Jakie zmiany}.
+
+@item -E
+@itemx --show-overlap
+Jak @samp{-e}, ale dodatkowo obejmuje nak³adaj±ce siê zmiany parami linii
+nawiasów ostrych.  @xref{Oznaczanie konfliktów}.
+Z opcj± @samp{-E}, nak³adaj±ca siê zmiana wygl±da tak:
+
+@example
+<<<<<<< @var{mój}
+@r{linie z @var{mój}}
+=======
+@r{linie z @var{twój}}
+>>>>>>> @var{twój}
+@end example
+
+@item -3
+@itemx --easy-only
+Jak @samp{-e}, z wyj±tkiem tego, ¿e wypisuje tylko zmiany nienak³adaj±ce siê.
+@xref{Jakie zmiany}.
+
+@item -i
+Na koñcu skryptu @code{ed} generuje polecenia @samp{w} i @samp{q},
+by by³ zgodny z System V.  Opcja ta musi byæ u¿yta z jedn± z opcji
+@samp{-AeExX3}, a nie mo¿e byæ ³±czona z @samp{-m}.
+@xref{Zachowywanie zmienionego pliku}.
+
+@item -T
+@itemx --initial-tab
+Zamiast dwu spacji przed tekstem linii normalnego formatu wypisuje
+tabulacjê.  Powoduje to, ¿e wyrównanie tabulacji w linii wygl±da normalnie.
+@xref{Tabulatory}.
+
+@item -L @var{etykieta}
+@itemx --label=@var{etykieta}
+W liniach nawiasów ostrych wypisywanych przez opcje
+@samp{-A}, @samp{-E} i @samp{-X} u¿ywa etykiety @var{etykieta} w miejscu
+nazwy pliku.  Opcjê tê mo¿na podaæ do trzech razy, po jednym dla ka¿dego
+pliku wej¶ciowego.  Domy¶lne etykiety s± nazwami plików wej¶ciowych.
+Zatem @samp{diff3 -L X -L Y -L Z -m A B C} dzia³a jak @samp{diff3 -m A B C},
+z wyj±tkiem tego, ¿e wynik wygl±da jakby pochodzi³ z plików o nazwach
+@samp{X}, @samp{Y} i @samp{Z}, a nie z plików nazywaj±cych siê @samp{A},
+@samp{B} i @samp{C}.  @xref{Oznaczanie konfliktów}.
+
+@item -m
+@itemx --merge
+Za po¶rednictwem skryptu edycyjnego wprowadza zmiany do pierwszego pliku
+i wysy³a wynik na standardowe wyj¶cie.  W przeciwieñstwie do przesy³ania
+potokiem wyj¶cia z @code{diff3} do @code{ed}, dzia³a nawet z plikami
+binarnymi i niekompletnymi liniami.  Je¶li nie podano ¿adnej z opcji
+skryptu edycyjnego, to przyjmowana jest @samp{-A}.  @xref{Pomijanie ed}.
+
+@item -x
+@itemx --overlap-only
+Jak @samp{-e}, ale wypisuje tylko zmiany nak³adaj±ce siê.
+@xref{Jakie zmiany}.
+
+@item -X
+Jak @samp{-E}, ale wypisuje tylko zmiany, które siê nak³adaj±.
+Inaczej mówi±c, jak @samp{-x}, tylko obejmuje zmiany w nawiasy ostre,
+jak w @samp{-E}.  @xref{Oznaczanie konfliktów}.
+
+@item -v
+@itemx --version
+Wypisuje numer wersji @code{diff3}.
+@end table
+
+@node Wywo³anie patch, Wywo³anie sdiff, Wywo³anie diff3, Top
+@chapter Wywo³anie @code{patch}
+@cindex wywo³anie @code{patch}
+@cindex @code{patch}, wywo³anie
+
+Normalnie @code{patch} jest wywo³ywany tak:
+
+@example
+patch <@var{plik³ataj±cy}
+@end example
+
+Pe³ny format wywo³ania @code{patch} jest nastêpuj±cy:
+
+@example
+patch @var{opcje}@dots{} @r{[}@var{plikoryginalny}
+@r{[}@var{plik³ataj±cy}@r{]}@r{]} @r{[}+ @var{opcje}@dots{}
+@r{[}@var{plikoryginalny}@r{]}@r{]}@dots{}
+@end example
+
+Je¶li @var{plik³ataj±cy} jest pominiêty lub jest my¶lnikiem @samp{-}, to
+³ata (czyli wyj¶cie @code{diff}) bêdzie czytana ze standardowego wej¶cia.
+
+Jako argumenty @var{plikoryginalny} mo¿na podaæ kilka plików pierwotnych.
+Wówczas ka¿dy z nich, wraz z opcjami do jego interpretacji, oddzielany jest
+od pozosta³ych znakiem plus @samp{+}.  @xref{Wielokrotne ³aty}, gdzie
+podano szczegó³y.
+
+Je¿eli w wierszu poleceñ nie zostanie podany plik wej¶ciowy, to @code{patch}
+usi³uje wydedukowaæ, który plik zmieniaæ, z @dfn{poprzedzaj±cego tekstu}
+(tekstu, jaki ewentualnie wystêpuje w ³acie przed wyj¶ciem @code{diff}).
+W nag³ówku ró¿nicy kontekstowej b±d¼ zunifikowanej szuka w liniach
+zaczynaj±cych siê od @samp{***}, @samp{---} lub @samp{+++}; wybiera z nich
+najkrótsz± nazwê istniej±cego pliku.  W pozosta³ych przypadkach, je¶li
+w poprzedzaj±cym ró¿nice tek¶cie istnieje linia @samp{Index:}, to usi³uje
+u¿yæ nazwy pliku z tej linii.  Je¿eli @code{patch} nie potrafi wydedukowaæ
+nazwy istniej±cego pliku z poprzedzaj±cego tekstu, to prosi u¿ytkownika
+o podanie nazwy pliku do za³atania.
+
+Je¶li plik wej¶ciowy nie istnieje lub jest przeznaczony tylko dla odczytu,
+a istniej± odpowiednie pliki RCS lub SCCS, to program usi³uje pobraæ (get)
+lub zaktualizowaæ (check out) plik przed przetwarzaniem.
+
+Domy¶lnie, @code{patch} wersja za³atana jest podstawiana na miejsce
+orygina³u, po uprzednim przemianowaniu go na plik kopii zapasowej
+(@pxref{Kopie zapasowe}, gdzie opisano, jak @code{patch} nazywa kopie zapasowe).
+Mo¿na te¿ okre¶liæ, gdzie powinien byæ umieszczony wynik ³atania.
+Robi siê to opcj± @samp{-o @var{plik-wyj¶ciowy}}
+lub @samp{--output=@var{plik-wyj¶ciowy}}.
+
+@menu
+* Katalogi patch::	Zmiana katalogu i ucinanie nazw katalogów.
+* Kopie zapasowe::	Nazwy plików kopii zapasowych.
+* Odrzucenia::		Nazwy plików odrzuceñ.
+* Opcje patch::		Sumaryczne zestawieni opcji @code{patch}.
+@end menu
+
+@node Katalogi patch, Kopie zapasowe, , Wywo³anie patch
+@section Nak³adanie ³at w innych katalogach
+@cindex katalogi i ³atanie
+@cindex ³atanie katalogów
+
+Opcja @samp{-d @var{katalog}} lub @samp{--directory=@var{katalog}}
+polecenia @code{patch} powoduje, ¿e podany @var{katalog} jest traktowany
+jak katalog bie¿±cy przy interpretacji zarówno nazw plików w pliku ³aty,
+jak i nazw plików podanych jako argumenty innych opcji (jak @samp{-B} czy
+@samp{-o}).  Na przyk³ad, podczas pracy z czytnikiem grup dyskusyjnych mo¿na
+za³ataæ plik w katalogu @file{/usr/src/emacs} wprost z artyku³u zawieraj±cego
+³atê, w ten sposób:
+
+@example
+| patch -d /usr/src/emacs
+@end example
+
+Czasami nazwy plików podane w ³acie zawieraj± na pocz±tku katalogi, ale
+przechowujemy swoje pliki w katalogu innym ni¿ ten, który podano w ³acie.
+W takiej sytuacji mo¿na pos³u¿yæ siê opcj± @samp{-p@r{[}@var{liczba}@r{]}}
+lub @samp{--strip@r{[}=@var{liczba}@r{]}}, do ustalenia liczby uko¶ników
+obcinanych z nazw plików.  Liczba ta podaje programowi, ile uko¶ników, razem
+z nazwami katalogów miêdzy nimi, powinien odci±æ z pocz±tku nazwy pliku.
+@samp{-p} bez podania @var{liczby} jest równowa¿ne @samp{-p0}.  Domy¶lnie,
+@code{patch} ucina wszystkie pocz±tkowe katalogi, pozostawiaj±c tylko
+g³ówn± nazwê pliku, z wyj±tkiem sytuacji, gdy w ³acie podano wzglêdn± nazwê
+pliku a wszystkie jej pocz±tkowe katalogi ju¿ istniej±.  Wówczas wystêpuj±ce
+na pocz±tku nazwy katalogi nie s± odcinane.
+(@dfn{Wzglêdna} nazwa pliku to taka, która nie rozpoczyna siê od uko¶nika.)
+
+Po odciêciu ewentualnych uko¶ników, @code{patch} szuka pliku w bie¿±cym
+katalogu albo, je¶li u¿yto opcji @samp{-d @var{katalog}}, w katalogu przez
+ni± wskazanym.
+
+Na przyk³ad, za³ó¿my nazw± pliku w ³acie jest @file{/gnu/src/emacs/etc/NEWS}.
+U¿ycie opcji @samp{-p} lub @samp{-p0} daje niezmienion± nazwê, @samp{-p1}
+daje @file{gnu/src/emacs/etc/NEWS} (bez pocz±tkowego uko¶nika), @samp{-p4}
+daje @file{etc/NEWS}, a niepodanie @samp{-p} w ogóle -- @file{NEWS}.
+
+@node Kopie zapasowe, Odrzucenia, Katalogi patch, Wywo³anie patch
+@section Nazwy plików kopii zapasowych
+@cindex kopie zapasowe, nazwy
+
+Normalnie @code{patch} przemianowuje pierwotny plik wej¶ciowy na kopiê
+zapasow± dopisuj±c do jego nazwy rozszerzenie @samp{.orig} (lub @samp{~}
+w systemach nie obs³uguj±cych d³ugich nazw plików).  Opcja @samp{-b
+@var{przyrostek-kopii}} lub @samp{--suffix=@var{przyrostek-kopii}} u¿ywa
+zamiast nich @var{przyrostka-kopii}, jako rozszerzenia kopii zapasowej.
+
+Przyrostek kopii mo¿na te¿ okre¶liæ za pomoc± zmiennej ¶rodowiska
+@code{SIMPLE_BACKUP_SUFFIX}, która jest przes³aniana przez te opcje.
+
+@code{patch} mo¿e te¿ tworzyæ kopie numerowane, tak jak robi to GNU Emacs.
+W tej metodzie, zamiast posiadania pojedynczej kopii dla ka¿dego pliku,
+@code{patch} tworzy nowy plik kopii bezpieczeñstwa za ka¿dym razem gdy ³ata
+plik.  Na przyk³ad, kopie pliku o nazwie @file{sink} bêd± siê nazywaæ,
+kolejno, @file{sink.~1~}, @file{sink.~2~}, @file{sink.~3~}, itd.
+
+Opcja @samp{-V @var{metoda}} lub @samp{--version-control=@var{metoda}}
+jako argument przyjmuje metodê tworzenia nazw plików zapasowych.
+Rodzaje robionych kopii zapasowych mo¿na równie¿ podaæ w zmiennej
+¶rodowiskowej @code{PATCH_VERSION_CONTROL} (lub, je¶li nie jest ustawiona,
+zmienn± @code{VERSION_CONTROL}), która jest przes³aniana przez tê opcjê.
+Warto¶æ @var{metody} jest podobna jak zmiennej @code{version-control}
+GNU Emacsa (@pxref{Backups, , Backups, emacs, The GNU Emacs Manual}, gdzie bli¿ej
+omówiono wersje kopii w Emacsie).  Oba te programy rozpoznaj± te¿
+ich bardziej opisowe synonimy.  Poprawne warto¶ci to (przyjmowane s±
+rozró¿nialne skróty):
+
+@table @samp
+@item t
+@itemx numbered
+Tworzy zawsze numerowane kopie zapasowe.
+
+@item nil
+@itemx existing
+Tworzy numerowane kopie zapasowe plików, które ju¿ je maj±, a zwyk³e kopie
+dla pozosta³ych. Tak jest domy¶lnie.
+
+@item never
+@itemx simple
+Zawsze robi zwyk³e kopie zapasowe.
+@end table
+
+Mo¿na tak¿e nakazaæ @code{patch} u¿ycie przedrostka, jak na przyk³ad
+nazwy katalogu, do tworzenia nazw plików zapasowych.  Opcja @samp{-B
+@var{przedrostek-kopii}} lub @samp{--prefix=@var{przedrostek-kopii}} tworzy
+pliki zapasowe poprzedzaj±c ich nazwy @var{przedrostkiem-kopii}.
+je¶li zostanie ona u¿yta, to @code{patch} ignoruje podan± równocze¶nie
+opcjê @samp{-b}.
+
+Je¿eli plik kopii ju¿ istnieje, program tworzy now± nazwê pliku zapasowego
+zmieniaj±c pierwsz± zmieniaj±c pierwsz± ma³± literê ostatniej sk³adowej
+nazwy pliku na du¿±.  Je¶li nie ma ju¿ wiêcej ma³ych liter, usuwa
+pierwszy znak z nazwy.  Proces ten jest powtarzany, a¿ nie znajdzie siê
+nazwa pliku, który jeszcze nie istnieje.
+
+Je¶li opcj± @samp{-o} zostanie podana nazwa pliku wyj¶ciowego, to tworzona
+jest kopia zapasowa tego pliku, a nie pliku wej¶ciowego.
+
+@node Odrzucenia, Opcje patch, Kopie zapasowe, Wywo³anie patch
+@section Nazwy plików odrzuceñ
+@cindex odrzucenia, nazwy plików
+
+Nazwy plików odrzuceñ (plików zawieraj±cych ³aty, dla których @code{patch}
+nie znalaz³ miejsca do na³o¿enia) s± normalnie nazwami odpowiedniego pliku
+wyj¶ciowego z dopisan± koñcówk± @samp{.rej} (lub @samp{#} w systemach, które
+nie obs³uguj± d³ugich nazw plików).
+
+Mo¿na tak¿e nakazaæ @code{patch}, by umie¶ci³ wszystkie odrzucone ³aty
+w jednym pliku.  Opcja @samp{-r @var{plik-odrzuceñ}} lub
+@samp{--reject-file=@var{plik-odrzuceñ}} umieszcza wszystkie odrzucone
+ró¿nice w @var{pliku-odrzuceñ}, a nie w domy¶lnych plikach odrzuceñ.
+
+@node Opcje patch, , Odrzucenia, Wywo³anie patch
+@section Opcje @code{patch}
+@cindex @code{patch}, opcje
+@cindex opcje @code{patch}
+
+Oto zestawienie wszystkich opcji akceptowanych przez @code{patch}.
+Starsze wersje @code{patch} nie przyjmuj± opcji o pe³nej nazwie
+(zaczynaj±cych siê od @samp{--}) ani opcji @samp{-t}, @samp{-E}
+lub @samp{-V}.
+
+Kilka opcji jednoliterowych, które nie pobieraj± argumentu mo¿na ³±czyæ
+w pojedynczy argument wiersza poleceñ (z jednym tylko my¶lnikiem).
+Nawiasy kwadratowe (@samp{[} i @samp{]}) oznaczaj±, ¿e opcja pobiera
+opcjonalny argument.
+
+@table @samp
+@item -b @var{przyrostek-kopii}
+@itemx --suffix=@var{przyrostek-kopii}
+U¿ywa @var{przyrostka-kopii} jako rozszerzenia kopii zapasowych zamiast
+@samp{.orig} lub @samp{~}.  @xref{Kopie zapasowe}.
+
+@item -B @var{przedrostek-kopii}
+@itemx --prefix=@var{przedrostek-kopii}
+U¿ywa @var{przedrostka-kopii} jako przedrostka nazwy pliku zapasowego.
+Je¶li podano tê opcjê, to opcja @samp{-b} jest ignorowana.  @xref{Kopie zapasowe}.
+
+@item -t
+@itemx --batch
+Nie zadaje ¿adnych pytañ.  @xref{Komunikaty patch}.
+
+@item -c
+@itemx --context
+Interpretuje plik ³aty jako ró¿nicê kontekstow±.  @xref{Wej¶cie patch}.
+
+@item -d @var{katalog}
+@itemx --directory=@var{katalog}
+Powoduje, ¿e podany @var{katalog} jest traktowany jak katalog bie¿±cy
+przy interpretacji zarówno nazw plików w pliku ³aty, jak i nazw plików
+podanych jako argumenty innych opcji.  @xref{Katalogi patch}.
+
+@item -D @var{nazwa}
+@itemx --ifdef=@var{nazwa}
+@c  Make merged if-then-else output using @var{format} HQ: ??? 
+Tworzy scalone wyj¶cie, ze zmianami oznaczonymi przez @samp{#ifdef...#endif}.
+@var{nazwa} bêdzie symbolem ró¿nicuj±cym.  @xref{If-then-else}.
+
+@item --debug=@var{liczba}
+@itemx -x @var{liczba}
+Ustawia wewnêtrzne flagi debuggowe. Ma to znaczenie tylko dla ³ataczy
+programu @code{patch}.
+
+@item -e
+@itemx --ed
+Wymusza interpretacjê pliku z ³at± jako skryptu @code{ed}.
+@xref{Wej¶cie patch}.
+
+@item -E
+@itemx --remove-empty-files
+Powoduje, ¿e usuwane s± pliki wyj¶ciowe, które po zaaplikowaniu ³at s± puste.
+@xref{Puste pliki}.
+
+@item -f
+@itemx --force
+Wymusza za³o¿enie, ¿e u¿ytkownik dok³adnie wie co robi i powoduje
+niezadawanie pytañ.  @xref{Komunikaty patch}.
+
+@item -F @var{linie}
+@itemx --fuzz=@var{linie}
+Ustawia wspó³czynnik maksymalnego rozmycia na @var{linie} linii.
+@xref{Niedok³adne}.
+
+@item -N
+@itemx --forward
+Powoduje ignorowanie ³at, które wydaj± siê byæ odwrócone lub ju¿
+zaaplikowane.  Zobacz te¿ @samp{-R}.  @xref{Odwrócone ³aty}.
+
+@item -l
+@itemx --ignore-white-space
+Powoduje, ¿e dowolny ci±g bia³ych znaków w pliku ³aty pasuje do dowolnego
+ci±gu bia³ych znaków w pliku wej¶ciowym.  @xref{Zmienione odstêpy}.
+
+@item -n
+@itemx --normal
+Powoduje, ¿e plik z ³at± jest interpretowany jak ró¿nica typu `normal'.
+@xref{Wej¶cie patch}.
+
+@item -o @var{pliku-wyj¶ciowego}
+@itemx --output=@var{pliku-wyj¶ciowego}
+U¿ywa @var{pliku-wyj¶ciowego} jako nazwy pliku wyj¶ciowego.
+@xref{Opcje patch}.
+
+@item -p@r{[}@var{liczba}@r{]}
+@itemx --strip@r{[}=@var{liczba}@r{]}
+Wyznacza @var{liczbê} pocz±tkowych uko¶ników odcinanych z nazwy pliku.
+@xref{Katalogi patch}.
+
+@item -s
+@itemx --quiet
+@itemx --silent
+Powoduje, ¿e @code{patch} dzia³a cicho, chyba ¿e pojawi siê b³±d.
+@xref{Komunikaty patch}.
+
+@item -r @var{plik-odrzuceñ}
+@itemx --reject-file=@var{plik-odrzuceñ}
+U¿ywa @var{pliku-odrzuceñ} jako nazwy dla pliku odrzuconych poprawek.
+@xref{Odrzucenia}.
+
+@item -R
+@itemx --reverse
+Zak³ada, ¿e dana ³ata zosta³a utworzona przy zamienionych miejscami
+plikach: starym i nowym.  @xref{Odwrócone ³aty}.
+
+@item -S
+@itemx --skip
+Powoduje ignorowanie tej ³aty z pliku z ³at±, lecz kontynuowanie
+szukania nastêpnej.  @xref{Wielokrotne ³aty}.
+
+@item -u
+@itemx --unified
+Wymusza interpretacjê ³aty jako zunifikowanej ró¿nicy kontekstowej.
+@xref{Wej¶cie patch}.
+
+@item -V @var{metoda}
+@itemx --version=control=@var{metoda}
+Okre¶la rodzaj tworzonych kopii zapasowych.  @xref{Kopie zapasowe}.
+
+@item --help
+Wypisuje listê rozpoznawanych przez @code{patch} opcji, po czym
+koñczy dzia³anie.
+
+@item -v
+@itemx --version
+Wypisuje numer wersji programu @code{patch}.
+@end table
+
+@node Wywo³anie sdiff, Niekompletne linie, Wywo³anie patch, Top
+@chapter Wywo³anie @code{sdiff}
+@cindex wywo³anie @code{sdiff}
+@cindex @code{sdiff}, wywo³anie
+
+Polecenie @code{sdiff} scala dwa pliki i interaktywnie wypisuje wynik.
+Ma nastêpuj±ce argumenty:
+
+@example
+sdiff -o @var{plik-wyj¶ciowy} @var{opcje}@dots{} @var{plik1} @var{plik2}
+@end example
+
+Scala to @var{plik1} z @var{plik2}, umieszczaj±c wynik
+w @var{pliku-wyj¶ciowym}. Je¶li @var{plik1} jest katalogiem a @var{plik2}
+nie, to @code{sdiff} bêdzie porównywa³ znajduj±cy siê w katalogu @var{plik1}
+plik o tej samej nazwie, co @var{plik2}, i odwrotnie.  Oba argumenty
+@var{plik1} i @var{plik2} nie mog± byæ równocze¶nie katalogami.
+
+Opcje @code{sdiff} zaczynaj± siê od @samp{-}, wiêc normalnie nazwy
+@var{plik1} ani @var{plik2} nie mog± siê zaczynaæ od kreski.
+Jednak u¿ycie argumentu @samp{--} powoduje, ¿e wystêpuj±ce po nim
+argumenty wiersza poleceñ s± traktowane jak nazwy plików, nawet je¶li
+zaczynaj± siê kresk±. Nie mo¿na u¿yæ @samp{-} jako pliku wej¶ciowego.
+
+Zwracany kod zakoñczenia 0 oznacza, ¿e nie odnaleziono ró¿nic,
+1 napotkanie ró¿nic, a 2 k³opoty.
+
+@code{sdiff} bez @samp{-o} (lub @samp{--output}) tworzy ró¿nicê wy¶wietlan±
+w równoleg³ych kolumnach.  Sk³adnia ta jest przestarza³a; zamiast niej nale¿y
+stosowaæ @samp{diff --side-by-side}.
+
+@menu
+* Opcje sdiff::		Zestawienie opcji @code{diff}.
+@end menu
+
+@node Opcje sdiff, , , Wywo³anie sdiff
+@section Opcje @code{sdiff}
+@cindex @code{sdiff}, opcje
+@cindex opcje @code{sdiff}
+
+Poni¿ej znajduje siê podsumowanie wszystkich opcji akceptowanych przez
+GNU @code{sdiff}.  Wiêkszo¶æ opcji posiada dwie równowa¿ne formy, jedn±
+z nich jest pojedyncza litera poprzedzona kresk± @samp{-}, a drug± pe³na
+nazwa poprzedzona przez @samp{--}.  Wiele pojedynczych liter opcji (pod
+warunkiem, ¿e nie wymagaj± argumentu) mo¿na po³±czyæ w pojedyncze s³owo.
+Opcje w formie pe³nej nazwy mog± byæ skracane do dowolnego unikalnego
+przedrostka.
+
+@table @samp
+@item -a
+@itemx --text
+Traktuje wszystkie pliki jako pliki tekstowe i porównuje je linia po linii,
+nawet je¶li nie wygl±daj± one na pliki tekstowe.  @xref{Binarnie}.
+
+@item -b
+@itemx --ignore-space-change
+Ignoruje zmiany w ilo¶ci odstêpów (bia³ych znaków).  @xref{Odstêpy}.
+
+@item -B
+@itemx --ignore-blank-lines
+Ignorowanie zmian, które jedynie dodaj± lub usuwaj± puste linie.
+@xref{Puste linie}.
+
+@item -d
+@itemx --minimal
+Zmiana algorytmu na taki, który mo¿e czasami znale¼æ mniejsz± liczbê zmian.
+Spowalnia to dzia³ania @code{sdiff} (czasami bardzo znacznie).
+@xref{Wydajno¶æ diff}.
+
+@item -H
+@itemx --speed-large-files
+U¿ywa algorytmów heurystycznych aby przyspieszyæ przeszukiwanie du¿ych
+plików ze znaczn± liczb± rozrzuconych ma³ych zmian.
+@xref{Wydajno¶æ diff}.
+
+@item -t
+@itemx --expand-tabs
+Rozszerza tabulatory do spacji na wyj¶ciu, aby zachowaæ oryginalne
+u³o¿enie tabulatorów pliku wej¶ciowego.  @xref{Tabulatory}.
+
+@item -i
+@itemx --ignore-case
+Ignoruje zmiany w wielko¶ci liter, du¿e i ma³e litery s± uznawane za
+równowa¿ne.
+@xref{Wielko¶æ liter}.
+
+@item -I @var{regexp}
+@itemx --ignore-matching-lines=@var{regexp}
+Ignoruje zmiany, które jedynie dodaj± lub usuwaj± linie pasuj±ce do
+wyra¿enia regularnego @var{regexp}.  @xref{Pomijanie podanych}.
+
+@item -W
+@itemx --ignore-all-space
+Ignoruje wszystkie odstêpy przy porównywaniu plików.
+Warto pamiêtaæ, ¿e, z przyczyn historycznych, opcja ta nazywa siê
+@samp{-w} w programie @code{diff}, za¶ @samp{-W} w @code{sdiff}.
+@xref{Odstêpy}.
+
+@item -l
+@itemx --left-column
+Wypisuje jedynie lew± kolumnê z dwóch wspólnych w formacie jedna obok
+drugiej.  @xref{Format dwukolumnowy}.
+
+@item -o @var{plik}
+@itemx --output=@var{plik}
+Wstawia scalone wyj¶cie do @var{pliku}.  Wymagana do scalania.
+
+@item -s
+@itemx --suppress-common-lines
+Powoduje, ¿e wspólne linie nie bêd± wypisywane.
+@xref{Format dwukolumnowy}.
+
+
+@item -w @var{kolumny}
+@itemx --width=@var{kolumny}
+U¿ycie szeroko¶ci wyj¶cia @var{kolumny} w formacie jedna obok drugiej.
+Warto pamiêtaæ, ¿e, z przyczyn historycznych, opcja ta nazywa siê
+@samp{-W} w programie @code{diff}, za¶ @samp{-w} w @code{sdiff}.
+
+@item -v
+@itemx --version
+Wypisuje numer wersji programu @code{sdiff}.
+@end table
+
+@node Niekompletne linie, Plany, Wywo³anie sdiff, Top
+@chapter Niekompletne linie
+@cindex niekompletne linie
+@cindex pe³ne linie
+@cindex nowe linie, sposób traktowania przez @code{diff}
+
+Je¶li plik wej¶ciowy koñczy siê znakiem innym ni¿ znak nowej linii, ostatni±
+jego liniê nazywamy @dfn{niekompletn± lini±}, gdy¿ nie jest zakoñczona
+znakiem nowej linii.  Wszystkie pozosta³e nazywamy @dfn{pe³nymi liniami}
+i koñcz± siê one znakiem nowej linii.  Niekompletne linie nie pasuj± do
+pe³nych, chyba ¿e ró¿nice, co do bia³ych znaków s± ignorowane.
+(@pxref{Odstêpy}).
+
+Normalnie niekompletna linia odró¿niana jest w produkowanym wyj¶ciu
+od pe³nej przez nastêpn± liniê, zaczynaj±c± siê wówczas od @samp{\}.
+Jednak format RCS (@pxref{RCS}) wypisuje niekompletn± liniê w postaci
+niezmienionej, bez koñczenia jej znakiem nowej linii czy zmiany w kolejnej.
+Format dwukolumnowy normalnie przedstawia niekompletne linie tak, jak
+wystêpuj±, ale w niektórych przypadkach stosuje znacznik miêdzykolumnowy
+@samp{\} lub @samp{/}.  Format linii if-then-else zachowuje niekompletno¶æ
+linii przy @samp{%L}, a usuwa znak nowej linii przy @samp{%l};
+@xref{Formaty linii}.  Na koniec, w formatach wyj¶ciowych @code{ed}
+i @code{ed} uporz±dkowanym w przód (forward @code{ed}) @code{diff}
+nie potrafi przedstawiæ niekompletnej linii, wiêc udaje, ¿e by³ znak
+nowej linii i zg³asza b³±d.
+
+Na przyk³ad, za³ó¿my, ¿e @file{F} i @file{G} s± jednobajtowymi plikami, które
+zawieraj± tylko, odpowiednio, @samp{f} i @samp{g}.  Wówczas @samp{diff F G}
+wypisze
+
+@example
+1c1
+< f
+\ No newline at end of file
+---
+> g
+\ No newline at end of file
+@end example
+
+@noindent
+(faktyczny komunikat mo¿e byæ inny, w zale¿no¶ci jêzyka ustawionego
+za po¶rednictwem mechanizmu locale.)
+@samp{diff -n F G} wypisze poni¿sze bez koñcowego znaku nowej linii:
+
+@example
+d1 1
+a1 1
+g
+@end example
+
+@samp{diff -e F G} zg³osi dwa b³êdy i wypisze:
+
+@example
+1c
+g
+.
+@end example
+
+@node Plany, Indeks pojêæ, Niekompletne linie, Top
+@chapter Przysz³e plany
+
+A oto kilka pomys³ów na ulepszenie GNU @code{diff} i @code{patch}.
+W projekcie GNU wskaza³ kilka ulepszeñ jako potencjalne projekty
+programistyczne dla ochotników.  Mo¿esz te¿ dopomóc zg³aszaj±c znalezione
+w programach b³êdy.
+
+Je¶li jeste¶ programist± i zechcia³by¶ wnie¶æ co¶ do projektu GNU,
+zastanów siê, proszê, nad zg³oszeniem siê do jednego z tych projektów.
+Je¶li powa¿nie rozwa¿asz pracê, napisz proszê
+do @samp{gnu@@prep.ai.mit.edu}, by skoordynowaæ dzia³ania z innymi
+ochotnikami.
+
+@menu
+* Niedoci±gniêcia::	Sugerowane projekty usprawnieñ.
+* B³êdy::		Zg³aszanie b³êdów.
+@end menu
+
+@node Niedoci±gniêcia, B³êdy, , Plany
+@section Sugerowane projekty usprawnienia GNU @code{diff} i @code{patch}
+@cindex projekty zwi±zane z katalogami
+
+Powinno siê móc u¿yæ GNU @code{diff} do wygenerowania ³aty z pary dowolnych
+drzew katalogowych, a maj±c tak± ³atê i jedno z takich drzew - zastosowaæ
+@code{patch} do utworzenia wiernej kopii drugiego.  Niestety, niektórych
+zmian w drzewie katalogów nie da siê przedstawiæ za pomoc± obecnych formatów
+³at. Ponadto, @code{patch} nie rozpoznaje niektórych z istniej±cych formatów.
+Z powodu tych wad zasugerowano poni¿sze projekty.
+
+@menu
+* Zmiana struktury::	Obs³uga zmian struktury katalogu.
+* Pliki specjalne::	Obs³uga dowi±zañ symbolicznych, plików urz±dzeñ itd.
+* Niezwyk³e nazwy::	Obs³uga nazw plików zawieraj±cych niezwyk³e znaki.
+* Narzucone ograniczenia::	£atanie plików nie-tekstowych.
+* Du¿e pliki::		Obs³uga plików nie mieszcz±cych siê w pamiêci.
+* Ignorowanie zmian::	Ignorowanie pewnych zmian, pokazywanie pozosta³ych.
+@end menu
+
+@node Zmiana struktury, Pliki specjalne, , Niedoci±gniêcia
+@subsection Obs³uga zmian struktury katalogu
+@cindex katalogi, zmiany struktury
+
+@code{diff} i @code{patch} nie obs³uguj± niektórych zmian struktury katalogu.
+Na przyk³ad, za³ó¿my, ¿e jedno drzewo katalogowe zawiera katalog o nazwie
+@samp{D}, w którym znajduj± siê jakie¶ pliki, a inne drzewo zawiera plik
+o tej samej nazwie @samp{D}.  @samp{diff -r} nie wypisuje wystarczaj±cej
+informacji, by @code{patch} móg³ wykonaæ przekszta³cenie poddrzewa
+katalogowego w plik.
+
+Powinna istnieæ metoda wskazania, ¿e plik zosta³ usuniêty bez konieczno¶ci
+przytaczania ca³ej jego zawarto¶ci w pliku ³aty.  Powinno byæ te¿ mo¿liwe
+wskazanie programowi @code{patch}, ¿e jaki¶ plik zmieni³ nazwê, nawet je¶li
+nie ma sposobu, w jaki @code{diff} móg³by wygenerowaæ tak± informacjê.
+
+Problemy te mo¿na rozwi±zaæ poszerzaj±c format wyj¶ciowy @code{diff}
+tak, by odzwierciedla³ zmiany w strukturze katalogu i rozbudowuj±c
+@code{patch} tak, by rozumia³ owe rozszerzenia.
+
+@node Pliki specjalne, Niezwyk³e nazwy, Zmiana struktury, Niedoci±gniêcia
+@subsection Pliki nie bêd±ce ani katalogami ani zwyk³ymi plikami
+@cindex pliki specjalne
+
+Niektóre pliki nie s± ani katalogami ani zwyk³ymi plikami - s± to
+niecodzienne pliki, jak dowi±zania symboliczne, pliki specjalne urz±dzeñ,
+potoki nazwane i gniazda.  Obecnie @code{diff} traktuje dowi±zania
+symboliczne jak zwyk³e pliki, a inne pliki specjalne tak jak zwyk³e pliki
+je¶li wskazano je na najwy¿szym poziomie, ale tylko zg³asza ich istnienie
+@c                          @code{patch}, czy @code{diff} ?!!
+przy porównywaniu katalogów.  Znaczy to, ¿e @code{patch} nie potrafi
+przedstawiæ zmian takich plików.  Na przyk³ad, je¶li zmienimy wskazanie
+pliku symbolicznego, to @code{diff} wypisze ró¿nicê pomiêdzy dwoma
+wskazywanymi przezeñ plikami, a nie zmianê dowi±zania.
+
+@c This might not be a good idea; is it wise for root to install devices
+@c this way?
+@code{diff} powinien opcjonalnie w specjalny sposób zg³aszaæ zmiany 
+plików specjalnych, za¶ @code{patch} nale¿a³oby poszerzyæ, by rozumia³
+takie rozszerzenie.
+
+@node Niezwyk³e nazwy, Narzucone ograniczenia, Pliki specjalne, Niedoci±gniêcia
+@subsection Nazwy plików zawieraj±ce niezwyk³e znaki
+@cindex nazwy plików z niezwyk³ymi znakami
+
+Je¶li nazwa pliku zawiera jaki¶ niezwyk³y znak, jak na przyk³ad znak nowej
+linii czy odstêpu, @samp{diff -r} tworzy ³atê, której @code{patch} nie
+potrafi przeanalizowaæ.  Problem le¿y po stronie formatu wyj¶cia @code{diff},
+a samego @code{patch}, gdy¿ odpowiednio udziwnione nazwy plików mog±
+spowodowaæ, ¿e @code{diff} utworzy ³atê poprawn± sk³adniowo, ale ³ataj±c±
+niew³a¶ciwe pliki.  Do poprawnego obs³ugiwania wszelkich mo¿liwych nazw
+plików trzeba by odpowiednio poszerzyæ format wyj¶cia tworzonego przez
+@code{diff}.
+
+@node Narzucone ograniczenia, Du¿e pliki, Niezwyk³e nazwy, Niedoci±gniêcia
+@subsection Narzucone ograniczenia
+@cindex binarne pliki, ³atanie
+@cindex ³atanie plików binarnych
+
+GNU @code{diff} potrafi analizowaæ dowolnie d³ugie linie i pliki koñcz±ce
+siê niekompletnymi liniami.  Jednak @code{patch} nie umie ³ataæ takich
+plików.  Wewnêtrzne ograniczenie d³ugo¶ci linii dla @code{patch} powinno
+zostaæ usuniête a program poszerzony tak, by poprawnie analizowa³ zg³aszanie
+przez @code{diff} niekompletnych linii.
+
+@node Du¿e pliki, Ignorowanie zmian, Narzucone ograniczenia, Niedoci±gniêcia
+@subsection Obs³uga plików nie mieszcz±cych siê w pamiêci
+@cindex pliki, bardzo du¿e
+@cindex bardzo du¿e pliki
+
+@code{diff} dzia³ wczytuj±c oba pliki do pamiêci. Metoda ta zawodzi je¶li
+pliki s± zbyt du¿e, a @code{diff} powinien mieæ zabezpieczenie.
+
+Jednym ze sposobów takiego zabezpieczenia jest sekwencyjne przegl±dniêcie
+plików w celu wyliczenia skrótów (kodów mieszaj±cych) linii i przypisanie
+linii do klasy równowa¿no¶ci w oparciu tylko o skrót.  Potem porównanie
+tych plików w zwyk³y sposób.  Da to trochê fa³szywych dopasowañ.
+
+Nastêpnie ponowne przegl±dniêcie sekwencyjnie obu plików, ze sprawdzeniem
+czy ka¿de z dopasowañ wystêpuje w rzeczywisto¶ci.  Je¶li linie faktycznie
+nie pasuj± do siebie, to zaznaczenie obu ``pasuj±cych'' jako zmienionych.
+Nastêpnie utworzenie skryptu edycyjnego, tak jak zwykle.
+
+Procedury wyj¶cia musia³yby byæ zmienione, by sekwencyjnie przegl±da³y
+pliki szukaj±c tekstu do wypisania.
+
+@node Ignorowanie zmian,, Du¿e pliki, Niedoci±gniêcia
+@subsection Ignorowanie pewnych zmian
+
+By³oby mi³o mieæ mo¿liwo¶æ podania dwu ³añcuchów, jednego z @var{pliku1}
+i jednego z @var{pliku2}, które by³yby uwa¿ane za pasuj±ce do siebie.
+Wówczas, je¶li tymi dwoma ³añcuchami by³yby @samp{foo} i @samp{bar},
+to je¿eli dwie linie ró¿ni³yby siê tylko tym, ¿e w miejscu @samp{foo}
+w pierwszym pliku wystêpowa³oby @samp{bar} w drugim, to linie by³yby
+traktowane jak identyczne.
+
+Nie wiadomo dok³adnie, jak ogólna mog³aby byæ, czy powinna byæ,
+ta cecha, ani jaka powinna byæ dla niej sk³adnia.
+
+@node B³êdy, , Niedoci±gniêcia, Plany
+@section Zg³aszanie b³êdów
+@cindex zg³aszanie b³êdów
+@cindex b³êdy, zg³aszanie
+
+Je¶li uwa¿asz, ¿e znalaz³e¶ b³±d w GNU @code{cmp}, @code{diff},
+@code{diff3}, @code{sdiff} lub @code{patch}, proszê zg³o¶ go pisz±c
+na adres @samp{bug-gnu-utils@@prep.ai.mit.edu}.  Wy¶lij mo¿liwie
+najdok³adniejszy opis problemu, ³±cznie z przyk³adowymi plikami wej¶ciowymi,
+które spowodowa³y b³±d, je¶li s± istotne.
+
+Poniewa¿ Larry Wall od po³owy 1998 nie wypu¶ci³ nowej wersji @code{patch},
+a od tego czasu zosta³a zmieniona wersja GNU tego programu, proszê wysy³aæ
+zg³oszenia b³êdów dotycz±ce @code{patch} zarówno do
+@samp{bug-gnu-utils@@prep.ai.mit.edu}, jak i do @samp{lwall@@netlabs.com}.
+
+@node Indeks pojêæ, , Plany, Top
+@unnumbered Skorowidz pojêæ
+
+@printindex cp
+
+@shortcontents
+@contents
+@bye

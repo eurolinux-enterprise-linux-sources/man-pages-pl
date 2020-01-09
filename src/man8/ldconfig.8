@@ -1,0 +1,143 @@
+.\" {PTM/PB/0.1/24-06-1999/"."}
+.TH ldconfig 8 "30 Marca 1995"
+.SH NAZWA
+ldconfig \- okre¶l powi±zania konsolidacyjne czasu uruchamiania
+.SH SK£ADNIA
+ldconfig
+[
+.B \-DvnNX
+]
+.IR katalog \ ...
+.PD 0
+.PP
+.PD
+ldconfig
+.B \-l
+[
+.B \-Dv
+]
+.IR biblioteka \ ...
+.PD 0
+.PP
+.PD
+ldconfig
+.B \-p
+.SH OPIS
+.B ldconfig
+tworzy potrzebne linki i cache (dla u¿ytku linkera
+.IR ld.so )
+do wiêkszo¶ci aktualnych bibliotek dzielonych, które znajdzie w podanych
+katalogach, w pliku
+.IR /etc/ld.so.conf ,
+oraz w zaufanych katalogach
+.RI ( /usr/lib
+oraz
+.IR /lib ).
+.I ldconfig
+sprawdza nag³ówki i nazwy plików badanych bibliotek. W ten sposób okre¶la,
+które wersje powinny mieæ odnowione linki.
+.PP
+.I ldconfig
+powinien normalnie byæ uruchamiany przez superu¿ytkownika, gdy¿ mo¿e wymagaæ
+praw zapisu do katalogów posiadanych przez nadzorcê. Zazwyczaj jest uruchamiany
+automatycznie podczas bootowania z /etc/rc, lub rêcznie, przy ka¿dej
+instalacji nowych DLL-i (Dynamic Link Libraries).
+.SH OPCJE
+.TP
+.B \-D
+Tryb ¶ledzenia.
+Wymusza
+.B \-N
+oraz
+.BR \-X .
+.TP
+.B \-v
+Tryb gadatliwy.
+Wydrukuj bie¿±cy numer wersji, nazwê ka¿dego skanowanego katalogu i ka¿dy
+tworzony link.
+.TP
+.B \-n
+Przetwórz tylko katalogi podane w linii komend. Nie przetwarzaj katalogów
+zaufanych
+.RI ( /usr/lib
+i
+.IR /lib )
+ani tych, podanych w
+.IR /etc/ld.so.conf .
+Wymusza
+.BR \-N .
+.TP
+.B \-N
+Nie przebudowuj cache.
+O ile nie podano
+.BR \-X ,
+linki s± wci±¿ odnawiane.
+.TP
+.B \-X
+Nie odnawiaj linków.
+O ile nie podano
+.BR \-N ,
+cache jest wci±¿ przebudowywane.
+.TP
+.B \-l
+Tryb biblioteki.
+Linkuj rêcznie pojedyncze biblioteki.
+Przeznaczone tylko dla ekspertów.
+.TP
+.B \-p
+Drukuj listê katalogów i biblioteki, przechowywane w bie¿±cym cache.
+.SH PRZYK£ADY
+Posiadanie w pliku
+.I /etc/rc
+linii
+.RS
+
+/sbin/ldconfig -v
+
+.RE
+skonfiguruje prawid³owe linki do bibliotek dzielonych i przebuduje cache.
+.TP
+Podanie w linii komend
+.RS
+
+# /sbin/ldconfig -n /lib
+
+.RE
+po zainstalowaniu nowego DLL, odnowi linki symboliczne z /lib.
+
+.SH PLIKI
+.PD 0
+.TP 20
+.B /lib/ld.so
+Linker czasu uruchamiania.
+.TP 20
+.B /etc/ld.so.conf
+Plik, zawieraj±cy listê katalogów, oddzielonych dwukropkami, spacjami,
+tabulacjami, lub nowymi liniami. Katalogi wskazuj±, gdzie szukaæ bibliotek.
+.TP 20
+.B /etc/ld.so.cache
+Plik, zawieraj±cy uporz±dkowan± listê bibliotek, znalezionych w katalogach z
+.BR /etc/ld.so.conf .
+.TP
+.B lib*.so.version
+Biblioteki dzielone.
+.PD
+.SH ZOBACZ TAK¯E
+.BR ldd (1),
+.BR ld.so (8).
+.SH B£ÊDY
+.LP
+Funkcjonalno¶æ
+.BR ldconfig
+w po³±czeniu z
+.BR ld.so 
+jest dostêpna tylko dla plików wykonywalnych, skompilowanych z libc w wersji
+co najmniej 4.4.3.
+.PP
+.BR ldconfig ,
+jako proces u¿ytkownika, musi byæ uruchamiany rêcznie i nie ma narzêdzi
+dynamicznego okre¶lania i relinkowania bibliotek dzielonych dla
+.BR ld.so
+po zainstalowaniu nowego DLL.
+.SH AUTORZY
+David Engel oraz Mitch D'Souza

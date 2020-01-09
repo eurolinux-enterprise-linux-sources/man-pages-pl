@@ -1,0 +1,51 @@
+.TH INITSCRIPT 5 "December 24, 1999" "" "Linux System Administrator's Manual"
+.SH NAZWA
+initscript \- skrypt wykonuj±cy polecenia zawarte w inittab.
+.SH SK£ADNIA
+/bin/sh /etc/initscript id poziom dzia³anie proces
+.SH OPIS
+Je¶li w systemie znajduje siê skrypt \fI/etc/initscript\fP, \fBinit\fP
+spróbuje nim wykonaæ polecenia zawarte w \fIinittab\fP.
+Mo¿na go wykorzystaæ np. do ustawienia domy¶lnych warto¶ci \fBulimit\fP i
+\fBumask\fP dla ka¿dego procesu.
+.SH PRZYK£ADY
+Poni¿ej znajduje siê przyk³adowy skrypt startowy, który móg³ zostaæ 
+zainstalowany w systemie jako \fI/etc/initscript.sample\fP.
+.RS
+.sp
+.nf
+.ne 7
+
+#
+# initscript   Wykonywany przez init(8) dla ka¿dego wywo³anego 
+#              przez niego programu w ten sposób:
+#
+#	/bin/sh /etc/initscript <id> <poziom> <dzia³anie> <proces>
+#
+
+# Ustawiamy bezpieczn± warto¶æ umask i ustawiamy zrzuty rdzenia:
+umask 022
+ulimit -c 2097151
+PATH=/bin:/sbin:/usr/bin:/usr/sbin
+export PATH
+
+# Zwiêkszamy twardy limit deskryptora pliku dla wszystkich 
+# procesów do 8192. Miêkki limit wci±¿ wynosi 1024, jednak ka¿dy
+# nieuprzywilejowany proces mo¿e zwiêkszyæ swój miêkki limit a¿ do
+# warto¶ci twardego limitu za pomoc± "ulimit -Sn xxx"
+# (niezbêdne jest j±dro 2.2.13
+  
+ulimit -Hn 8192
+
+# Wykonujemy program.
+eval exec "$4"
+
+.sp
+.RE
+.SH PLIKI
+/etc/inittab,
+/etc/initscript.
+.SH AUTOR
+Miquel van Smoorenburg ,<miquels@cistron.nl>
+.SH "ZOBACZ TAK¯E"
+init(8), inittab(5).

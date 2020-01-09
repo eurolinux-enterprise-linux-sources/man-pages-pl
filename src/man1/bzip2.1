@@ -1,0 +1,384 @@
+.\" T³umaczenie  Maciej Wojciechowski     wojciech@staszic.waw.pl
+.PU
+.TH bzip2 1 "" "" "wersja 1.0"
+.SH NAZWA
+bzip2, bunzip2 \- sortuj±cy bloki kompresor/dekompresor plików, v1.0
+.br
+bzcat \- dekompresuje pliki na standardowe wyj¶cie
+.br
+bzip2recover \- odzyskuje dane ze zniszczonych archiwów bzip2
+.SH SK£ADNIA
+.ll +8
+.B bzip2
+.RB [ \-cdfkqstvzVL123456789 ]
+.RI [ nazwy_plików \&...]
+.ll -8
+.br
+.B bunzip2
+.RB [ \-fkvsVL ]
+.RI [ nazwy_plików \&...]
+.br
+.B bzcat
+.RB [ \-s ]
+.RI [ nazwy_plików \&...]
+.br
+.B bzip2recover
+.I nazwa_pliku
+.SH OPIS
+.I bzip2
+kompresuje pliki u¿ywaj±c algorytmu sortowania bloków Burrowsa-Wheelera i 
+kodu Huffmana. Kompresja jest generalnie sporo lepsza od konwencjonalnych 
+kompresorów opartych o metodê LZ77/LZ78, i jest porównywalna z 
+osi±gniêciami statystycznych kompresorów z rodziny PPM.
+
+Opcje linii poleceñ s± w wiêkszo¶ci bardzo podobne do tych z
+.IR "GNU gzip" ,
+ale nie s± identyczne.
+
+.I bzip2
+oczekuje listy plików towarzysz±cych parametrom linii poleceñ. Ka¿dy plik jest 
+zastêpowany przez swoj± skompresowan± wersjê, z nazw± 
+"oryginalny_plik.bz2". Ka¿dy skompresowany plik ma ten sam czas modyfikacji, 
+uprawnienia i, je¶li to mo¿liwe, w³a¶ciciela co orygina³, po to, aby te 
+ustawienia mog³y zostaæ odtworzone podczas dekompresji. Utrzymywanie nazwy 
+plików nie jest do koñca dok³adne w tym sensie, ¿e nie ma mo¿liwo¶ci 
+przetrzymywania daty, uprawnieñ, w³a¶ciciela i nazw plików na systemach, na 
+których brakuje tych mo¿liwo¶ci lub maj± ograniczenia co do d³ugo¶ci nazwy, 
+tak np. jak MS-DOS.
+
+.I bzip2
+i
+.I bunzip2
+standardowo nie nadpisuj± istniej±cych ju¿ plików. Je¶li chcesz aby to 
+robi³y, musisz u¿yæ parametru \-f.
+
+Je¶li nie podano ¿adnej nazwy pliku,
+.I bzip2
+kompresuje ze standardowego wej¶cia na standardowe wyj¶cie. Odmiawia wówczas
+wypisywania skompresowanego wyj¶cie na terminal, gdy¿ by³oby to
+ca³kiem niezrozumia³e i przez to bez wiêkszego sensu.
+
+.I bunzip2
+(lub
+.IR bzip2 \-d ) 
+dekompresuje wszystkie podane pliki. Pliki, które nie by³y 
+utworzone przez
+.I bzip2
+zostan± wykryte i zignorowane, a na ekranie pojawi siê komunikat 
+ostrzegawczy.
+.I bzip2
+próbuje zgadn±æ nazwê dla dekompresowanego pliku w nastêpuj±cy sposób:
+.nf
+       nazwa_pliku.bz2    staje siê   nazwa_pliku
+       nazwa_pliku.bz     staje siê   nazwa_pliku
+       nazwa_pliku.tbz2   staje siê   nazwa_pliku.tar
+       nazwa_pliku.tbz    staje siê   nazwa_pliku.tar
+       inna_nazwa	  staje siê   inna_nazwa.out
+.fi
+Je¶li plik nie ma jednego z nastêpuj±cych rozpoznawalnych rozszerzeñ,
+.IR .bz2 , 
+.IR .bz , 
+.I .tbz2
+lub
+.IR .tbz ,
+to
+.I bzip2 
+napisze, ¿e nie mo¿e zgadn±æ nazwy pierwotnego pliku, i u¿yje
+oryginalnej nazwy z dodanym rozszerzeniem
+.IR .out .
+
+Tak jak kompresja, nie posiadaj±ca ¿adnych plików, powoduje kompresjê ze 
+standardowego wej¶cia na standardowe wyj¶cie.
+
+.I bunzip2 
+poprawnie zdekompresuje plik, który jest po³aczeniem dwóch lub wiêcej 
+skompresowanych plików. Rezultatem jest po³±czony odpowiedni 
+nieskompresowany plik. Obs³ugiwane jest równie¿ sprawdzanie spójno¶ci
+(\-t) po³±czonych skompresowanych plików.
+
+Mo¿esz równie¿ kompresowaæ lub dekompresowaæ pliki na standardowe wyj¶cie 
+u¿ywaj±c parametru \-c. W ten w³a¶nie sposób mo¿na przeprowadzaæ kompresjê
+wielu plików równocze¶nie.
+Powsta³e wyniki s± przesy³ane sekwencyjnie na standardowe wyj¶cie.
+W ten sposób kompresja wielu plików generuje strumieñ 
+zawieraj±cy reprezentacje kilku skompresowanych plików. Taki strumieñ mo¿e 
+byæ zdekompresowany poprawnie tylko przez 
+.I bzip2
+w wersji 0.9.0 lub pó¼niejszej. Wcze¶niejsze wersje
+.I bzip2
+zatrzymaj± siê po zdekmpresowaniu pierwszego pliku w strumieniu.
+
+.I bzcat
+(lub
+.I bzip2 -dc) 
+dekompresuje wszystkie wybrane pliki na standardowe wyj¶cie.
+
+.I bzip2
+czyta argumenty ze zmiennych ¶rodowiskowych
+.I BZIP2
+i
+.I BZIP,
+w podanej kolejno¶ci, i przetwarza je przed jakimikolwiek argumentami 
+przeczytanymi z linii poleceñ. To dobra metoda na specyfikowanie 
+standardowych ustawieñ.
+
+Kompresja stosowana jest zawsze, nawet je¶li skompresowany plik jest 
+nieznaczniej wiêkszy od pliku oryginalnego. Pliki mniejsze ni¿ mniej wiêcej 
+sto bajtów staj± siê wiêksze, poniewa¿ mechanizm kompresji ma sta³y 
+nag³ówek wynosz±cy oko³o 50 bajtów. Przypadkowe dane (w³±czaj±c wyj¶cie 
+wiêkszo¶ci kompresorów plików) d± kodowane na mniej wiêcej 8.05 bitu na 
+bajt, daj±c zysk oko³o 0.5%.
+
+Jako samosprawdzenie dla twojej ochrony
+.I bzip2
+u¿ywa 32-bitowego CRC aby upewniæ siê, ¿e zdekompresowana wersja pliku jest 
+identyczna z oryginaln±. To strze¿e przed stratami w skompresowanych danych 
+i przed niewykrytymi b³êdami w 
+.I bzip2
+(na szczê¶cie bardzo rzadkich). Mo¿liwo¶æ niewykrycia utraty danych 
+jest mikroskopijna, mniej wiêcej jedna szansa na cztery biliony dla ka¿dego 
+pliku. Uwa¿aj jednak, gdy¿ sprawdzenie jest dokonywane przed dekompresj±, 
+wiêc dowiesz siê tylko tego, ¿e co¶ jest nie w porz±dku. Nie pomo¿e ci to odzyskaæ 
+oryginalnych nieskompresowanych danych. Mo¿esz u¿yæ
+.I bzip2recover
+aby spróbowaæ odzyskaæ dane z uszkodzonych plików.
+
+Zwracane warto¶ci: 0 dla normalnego wyj¶cia, 1 dla problemów technicznych 
+(plik nie znaleziony, niew³a¶ciwy parametr, b³±d wyj¶cia/wyj¶cia itp.), 2 dla 
+zasygnalizowania b³êdu skompresowanego pliku, 3 dla wewnêtrznego b³êdu (np. 
+bug), który zmusi³ \fIbzip2\fP do przerwania.
+
+.SH OPCJE
+.TP
+.B \-c --stdout
+Kompresuje lub dekompresuje na standardowe wyj¶cie.
+.TP
+.B \-d --decompress
+Wymusza dekompresjê.
+.IR bzip2 , 
+.I bunzip2 
+i
+.I bzcat 
+s± tak naprawdê tymi samymi programami i decyzja jakie akcje bêd± wykonane 
+jest wykonywana na podstawie nazwy jaka zosta³a u¿yta. Ten parametr ma wy¿szy 
+priorytet i wymusza na \fIbzip2\fP dekompresjê.
+.TP
+.B \-z --compress
+Podobne do \-d: wymusza kompresjê, bez wzglêdu na sposób wywo³ania.
+.TP
+.B \-t --test
+Sprawdza integralno¶æ wybranego pliku(ów), ale nie dekompresuje ich. Wymusza
+to próbn± dekompresjê i mówi, jaki jest rezultat.
+.TP
+.B \-f --force
+Wymusza zastêpowanie plików wyj¶ciowych. Normalnie, \fIbzip2\fP nie 
+zastêpuje istniej±cych plików wyj¶ciowych. Wymusza równie¿ na \fIbzip2\fP 
+³amanie dowi±zañ twardych, czego normalnie nie robi.
+.TP
+.B \-k --keep
+Zatrzymaj (nie kasuj) pliki wej¶ciowe przy kompresji lub dekompresji.
+.TP
+.B \-s --small
+Zredukuj u¿ycie pamiêci na kompresjê, dekompresjê i testowanie. Pliki s± 
+dekompresowane i testowane przy u¿yciu zmodyfikowanego algorytmu, który 
+potrzebuje tylko 2.5 bajtu na blok bajtów. Oznacza to, ¿e ka¿dy plik mo¿e 
+byæ zdekompresowany przy u¿yciu oko³o 2300k pamiêci, jednak trac±c oko³o po³owê 
+normalnej szybko¶ci.
+
+Podczas kompresji, \-s wybiera bloki wielko¶ci 200k, których limity 
+pamiêci wynosz± mniej wiêcej tyle samo, w zamian za jako¶æ kompresji. W 
+skrócie, je¶li twój komputer ma ma³o pamiêci (8 megabajtów lub mniej), 
+u¿ywaj opcji \-s do wszystkiego. Zobacz \fBzarz±dzanie pamiêci±\fP poni¿ej.
+.TP
+.B \-q --quiet
+Wy³±cza wszystkie nieistotne komunikaty ostrzegawcze.
+Nie s± eliminowane komunikaty dotycz±ce b³êdów wej¶cia/wyj¶cia i innych
+zdarzeñ krytycznych.
+.TP
+.B \-v --verbose
+Tryb gadatliwy -- pokazuje stopieñ kompresji dla ka¿dego pliku. Nastêpne 
+\fB\-v\fP zwiêkszaj± stopieñ gadatliwo¶ci, powoduj±c wy¶wietlanie du¿ej 
+ilo¶ci informacji, przydatnych g³ównie przy diagnostyce.
+.TP
+.B \-L --license -V --version
+Wy¶wietla wersjê programu i warunki licencji.
+.TP
+.B \-1 to \-9
+Ustawia wielko¶æ bloku na 100 k, 200 k .. 900 k przy kompresji. Nie ma 
+¿adnego znaczenia przy dekompresji. Zobacz \fBzarz±dzanie pamiêci±\fP 
+poni¿ej.
+.TP
+.B \--
+Traktuje wszystkie nastêpuj±ce po nim argumenty jako nazwy plików, nawet je¶li 
+zaczynaj± siê one od my¶lnika. Mo¿esz wiêc kompresowaæ i dekompresowaæ 
+pliki, których nazwa zaczyna siê od my¶lnika, na przyk³ad: bzip2 \-- 
+\-mój_plik.
+.TP
+.B \--repetitive-fast --repetitive-best
+Te parametry nie maj± znaczenia w wersjach 0.9.5 i wy¿szych. Umo¿liwia³y one 
+pewn± infantyln± kontrolê nad zachowaniem algorytmu sortuj±cego we 
+wcze¶niejszych wersjach, co by³o czasami u¿yteczne. Wersje 0.9.5 i wy¿sze 
+maj± usprawniony algorytm, który powoduje bezu¿yteczno¶æ tej funkcji.
+
+.SH ZARZ¡DZANIE PAMIÊCI¡
+.I bzip2 
+kompresuje du¿e pliki w blokach. Rozmiar bloku ma wp³yw zarówno na stopieñ 
+osi±ganej kompresji, jak równie¿ na ilo¶æ pamiêci potrzebnej do kompresji 
+i dekompresji. Parametry od \-1 do \-9 wybieraj± rozmiar bloku odpowiednio
+od 100,000 bajtów a¿ do 900,000 bajtów (standardowo). W czasie dekompresji, 
+rozmiar bloku u¿ytego do kompresji jest odczytywany z nag³ówku pliku 
+skompresowanego i
+.I bunzip2
+sam zajmuje odpowiedni± do dekompresji ilo¶æ pamiêci. Poniewa¿ rozmiar
+bloków jest przetrzymywany w pliku skompresowanym, parametry od \-1 do \-9 
+nie maj± przy dekompresji ¿adnego znaczenia.
+
+Wymagania kompresji i dekompresji w bajtach, mog± byæ wyliczone przez:
+
+       Kompresja :   400k + ( 8 x rozmiar bloku )
+
+       Dekompresja :  100k + ( 4 x rozmiar bloku ) lub
+                      100k + ( 2.5 x rozmiar bloku )
+
+Wiêksze bloki daj± du¿e zmniejszenie zwrotów marginalnych. Wiêkszo¶æ 
+kompresji pochodzi z pierwszych stu lub dwustu kilobajtów rozmiaru bloku.
+Warto o tym pamiêtaæ u¿ywaj±c \fIbzip2\fP na wolnych 
+komputerach. Warto równie¿ podkre¶liæ, ¿e rozmiar pamiêci potrzebnej do 
+dekompresji jest wybierany poprzez ustawienie odpowiedniej 
+wielko¶ci bloku przy kompresji.
+
+Dla plików skompresowanych standardowym blokiem wielko¶ci 900k, 
+\fIbunzip2\fP bêdzie wymaga³ oko³o 3700 kilobajtów do dekompresji. Aby 
+umo¿liwiæ dekompresjê na komputerze wyposa¿onym jedynie w 4 megabajty 
+pamiêci, \fIbunzip2\fP ma opcjê, która mo¿e zmniejszyæ wymagania prawie do 
+po³owy, tzn. oko³o 2300 kilobajtów. Prêdko¶æ dekompresji jest równie¿ bardzo 
+zmiejszona, wiêc u¿ywaj tej opcji tylko wtedy, kiedy jest to konieczne. Tym 
+parametrem jest -s.
+
+Generalnie, próbuj i u¿ywaj najwiêkszych rozmiarów bloków, je¶li ilo¶æ 
+pamiêci ci na to pozwala. Prêdko¶æ kompresji i dekompresji w zasadzie nie 
+zale¿y od wielko¶ci u¿ytego bloku.
+
+Inna wa¿na rzecz dotyczy plików, które mieszcz± siê w pojedyñczym bloku -- 
+oznacza to wiêkszo¶æ plików na które siê natkniesz u¿ywaj±c du¿ych bloków. 
+Rozmiar realny pamiêci zabieranej jest proporcjonalny do wielko¶ci pliku, 
+je¶li plik jest mniejszy ni¿ blok. Na przyk³ad, kompresja pliku o 
+wielko¶ci 20,000 bajtów z parametrem -9 wymusi na kompresorze odnalezienie 
+7600 k pamiêci, ale zajêcie tylko 400k + 20000 * 8 = 560 kilobajtów z 
+tego. Podobnie, dekompresor odnajdzie 3700k, ale zajmie tylko 100k + 20000 
+* 4 = 180 kilobajtów.
+
+Tu jest tabela, która podsumowuje maksymalne u¿ycie pamiêci dla ró¿nych 
+rozmiarów bloków. Podano te¿ ca³kowity rozmiar skompresowanych 14 
+plików tekstowych (Calgary Text Compressione Corpus) zajmuj±cych razem 
+3,141,622 bajtów. Ta kolumna daje pewne pojêcie o tym, jaki wp³yw na 
+kompresjê ma wielko¶æ bloków. Ta tabela uzmys³awia równie¿ przewagê u¿ycia 
+wiêkszych bloków dla wiêkszych plików, poniewa¿ "Corpus" jest zdominowany 
+przez mniejsze pliki.
+.nf
+             U¿ycie       U¿ycie        U¿ycie         Corpus
+   Parametr kompresji   dekompresji   dekompresji -s    Size
+
+     -1      1200k         500k          350k          914704
+     -2      2000k         900k          600k          877703
+     -3      2800k         1300k         850k          860338
+     -4      3600k         1700k        1100k          846899
+     -5      4400k         2100k        1350k          845160
+     -6      5200k         2500k        1600k          838626
+     -7      6100k         2900k        1850k          834096
+     -8      6800k         3300k        2100k          828642
+     -9      7600k         3700k        2350k          828642
+.fi
+.SH ODZYSKIWANIE DANYCH ZE ZNISZCZONYCH PLIKÓW BZIP2
+.I bzip2
+kompresuje pliki w blokach, zazwyczaj 900 kilbajtowych. Ka¿dy blok jest 
+trzymany osobno. Je¶li b³êdy transmisji lub no¶nika uszkodz± plik 
+wieloblokowy .bz2, mo¿liwe jest odtworzenie danych zawartych w 
+niezniszczonych blokach pliku.
+
+Ka¿dy blok jest reprezentowany przez 48-bitowy wzorzec, który umo¿liwia 
+znajdowanie przyporz±dkowañ bloków z rozs±dn± pewno¶ci±. Ka¿dy blok 
+ma równie¿ swój 32-bitowy CRC, wiêc bloki uszkodzone mog± byæ ³atwo 
+odseparowane od poprawnych.
+
+.I bzip2recover
+jest oddzielnym programem, którego zadaniem jest poszukiwanie bloków w 
+plikach .bz2 i zapisywanie ich do w³asnego pliku .bz2. Mo¿esz potem u¿yæ 
+\fIbzip2\fP \-t aby sprawdziæ spójno¶æ wyj¶ciowego pliku i zdekompresowaæ 
+te, które nie s± uszkodzone.
+
+.I bzip2recover
+pobiera pojedynczy argument, nazwê uszkodzonego pliku, i tworzy pewn± liczbê 
+plików "rec0001plik.bz2", "rec0002plik.bz2", itd., przetrzymuj±ce odzyskane 
+bloki. Wyj¶ciowe nazwy plików s± tak tworzone, aby ³atwo by³o potem u¿ywaæ 
+ich razem za pomoc± gwiazdek -- na przyk³ad, "bzip2 -dc rec*plik.bz2 > 
+odzyskany_plik" -- wylistuje pliki we w³a¶ciwej kolejno¶ci.
+
+.I bzip2recover
+powinien byæ u¿ywany najczê¶ciej z du¿ymi plikami .bz2, jako i¿ one 
+zawieraj± najczê¶ciej du¿o bloków. Jest czystym bezsensem u¿ywaæ go na 
+uszkodzonym jedno-blokowym pliku, poniewa¿ uszkodzony blok nie mo¿e byæ 
+odzyskany. Je¶li chcesz zminimalizowaæ jakiekolwiek mo¿liwe straty danych 
+poprzez no¶nik lub transmisjê, powiniene¶ zastanowiæ siê nad u¿yciem 
+mniejszych bloków.
+
+.SH OPISY WYNIKÓW
+Etap sortuj±cy kompresji ³±czy razem podobne ci±gi znaków w pliku. Przez 
+to, pliki zawieraj±ce bardzo d³ugie ci±gi powtarzaj±cych siê symboli, jak 
+"aabaabaabaab ..." (powtórzone kilkaset razy) mog± byæ kompresowane wolniej 
+ni¿ normalnie. Wersje 0.9.5 i wy¿sze zachowuj± siê du¿o lepiej w tej 
+sytuacji ni¿ wersje poprzednie. Ró¿nica stopnia kompresji pomiêdzy 
+najgorszym i najlepszym przypadkiem kompresji wynosi oko³o 10:1. Dla 
+wcze¶niejszych wersji by³o to nawet oko³o 100:1. Je¶li chcesz, mo¿esz u¿yæ
+parametru \-vvvv aby monitorowaæ postêpy bardzo szczegó³owo.
+
+Prêdko¶æ dekompresji nie jest zmieniana przez to zjawisko.
+
+.I bzip2
+zazwyczaj rezerwuje kilka megabajtów pamiêci do dzia³ania a 
+potem wykorzystuje j± w sposób zupe³nie przypadkowy.
+Oznacza to, ¿e zarówno prêdko¶æ kompresji jak i dekompresji jest w 
+du¿ej czê¶ci zale¿na od prêdko¶ci, z jak± twój komputer mo¿e naprawiaæ braki 
+bufora podrêcznego. Z tego powodu, wprowadzone zosta³y ma³e zmiany kody aby 
+zmniejszyæ straty, które da³y nieproporcjonalnie du¿y wzrost osi±gniêæ.
+My¶lê, ¿e
+.I bzip2
+bêdzie dzia³a³ najlepiej na komputerach z du¿ymi buforami podrêcznymi.
+
+.SH ZAKAMARKI
+Wiadomo¶ci o b³êdach wej¶cia/wyj¶cia nie s± a¿ tak pomocne, jak mog³yby byæ.
+.I bzip2
+stara siê wykryæ b³±d wej¶cia/wyj¶cia i wyj¶æ "czysto", ale 
+szczegó³y tego, jaki to problem mog± byæ czasami bardzo myl±ce.
+
+Ta strona podrêcznika odnosi siê do wersji 1.0 programu \fIbzip2\fP.
+Skompresowane pliki utworzone przez tê wersjê s± kompatybilne zarówno z 
+w przód jak i wstecznie z poprzednimi publicznymi wydaniami, 
+wersjami 0.1pl2, 0.9.0 i 0.9.5 ale z ma³ymi wyj±tkami: 0.9.0 i wy¿sze potrafi± 
+poprawnie dekompresowaæ wiele skompresowanych plików z³±czonych w jeden. 
+0.1pl2 nie potrafi tego; zatrzyma siê ju¿ po dekompresji pierwszego pliku w 
+strumieniu.
+
+.I bzip2recover
+u¿ywa 32-bitowych liczb do reprezentacji pozycji bitu w skompresowanym 
+pliku, wiêc nie mo¿e przetwarzaæ skompresowanych plików d³u¿szych ni¿ 512 
+megabajtów. Mo¿na to ³atwo naprawiæ.
+
+.SH AUTOR
+Julian Seward, jseward@acm.org.
+
+http://www.muraroa.demon.co.uk
+http://sourceware.cygnus.com/bzip2
+
+Idee zawarte w \fIbzip2\fP s± podzielone (przynajmniej) pomiêdzy 
+nastepuj±cy ludzi: Michael Burrows i David Wheeler (transformacja
+sortuj±c± bloki), David Wheeler (znów, koder Huffmana), Peter Fenwick 
+(struktura kodowania modelu w oryginalnym \fIbzip2\fP, i wiele 
+udoskonaleñ), i Alistair Moffar, Radford Neal i Ian Witten (arytmetyczny 
+koder w oryginalnym \fIbzip2\fP). Jestem im bardzo wdziêczny za ich pomoc, 
+wsparcie i porady. Zobacz stronê manuala w ¼ród³owej dystrybucji po 
+wska¼niki do ¼róde³ dokumentacji. Christian von Roques zachêci³ mnie do 
+wymy¶lenia szybszego algorytmu sortuj±cego, po to ¿eby przyspieszyæ 
+kompresjê. Bela Lubkin zachêci³a mnie do polepszenia najgorszych wyników 
+kompresji. Wiele ludzi przys³a³o ³atki, pomog³o w ró¿nych problemach, 
+po¿yczy³o komputerów, da³o rady i by³o ogólnie pomocnych.

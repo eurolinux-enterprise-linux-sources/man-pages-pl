@@ -1,0 +1,106 @@
+.\" @(#)getrpcent.3n	2.2 88/08/02 4.0 RPCSRC; from 1.11 88/03/14 SMI
+.\"
+.\" T³umaczenie wersji man-pages 1.50 - czerwiec 2002 PTM
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\"
+.TH GETRPCENT 3 1987-12-14 
+.SH NAZWA
+getrpcent, getrpcbyname, getrpcbynumber \- odcztanie wpisu dotycz±cego RPC
+.SH SK£ADNIA
+.nf
+.ft B
+#include <netdb.h>
+.LP
+.ft B
+struct rpcent *getrpcent()
+.LP
+.ft B
+struct rpcent *getrpcbyname(name)
+char *name;
+.LP
+.ft B
+struct rpcent *getrpcbynumber(number)
+int number;
+.LP
+.ft B
+setrpcent (stayopen)
+int stayopen;
+.LP
+.ft B
+endrpcent ()
+.fi
+.SH OPIS
+.LP
+Funkcje
+.BR getrpcent() ,
+.B getrpcbyname()
+i
+.B getrpcbynumber()
+zwracaj± wska¼nik do obiektu o podanej ni¿ej strukturze, zawieraj±cego pola
+otrzymane w wyniku roz³o¿enia linii bazy danych programów RPC
+.BR /etc/rpc .
+.RS
+.LP
+.nf
+.ft B
+struct	rpcent {
+	char	*r_name;	/* nazwa serwera dla programu RPC */
+	char	**r_aliases;	/* lista aliasów */
+	long	r_number;	/* numer programu RPC */
+};
+.ft R
+.fi
+.RE
+.LP
+Polami tej struktury s±:
+.RS
+.PD 0
+.TP 20
+.B r_name
+Nazwa serwera dla danego programu RPC.
+.TP 20
+.B r_aliases
+Zakoñczona zerem lista alternatywnych nazw tego programu RPC.
+.TP  20
+.B r_number
+Numer programu RPC dla danej us³ugi.
+.PD
+.RE
+.LP
+.B getrpcent()
+odczytuje nastêpn± liniê pliku, otwieraj±c go, je¶li jest to potrzebne.
+.LP
+.B setrpcent()
+otwiera i przewija plik. Je¶li flaga
+.I stayopen
+ma warto¶æ niezerow±, to plik sieciowej bazy danych nie bêdzie zamykany po
+ka¿dym wywo³aniu
+.B getrpcent()
+(ani bezpo¶rednim, ani po¶rednim - poprzez wywo³anie jednej z pozosta³ych 
+funkcji \*(lqgetrpc\*(rq ).
+.LP
+.B endrpcent
+zamyka plik.
+.LP
+.B getrpcbyname()
+i
+.B getrpcbynumber()
+przeszukuj± sekwencyjnie plik, zaczynaj±c od jego pocz±tku, a¿ do napotkania
+pasuj±cej nazwy lub numeru programu RPC, albo do napotkania koñca pliku.
+.SH PLIKI
+.PD 0
+.TP 20
+.B /etc/rpc
+.PD
+.SH "ZOBACZ TAK¯E"
+.BR rpc (5),
+.BR rpcinfo (8),
+.BR ypserv (8)
+.SH DIAGNOSTYKA
+.LP
+W przypadku b³êdu lub napotkania koñca pliku, zwracany jest wska¼nik
+.SM NULL\fR.
+.SH B£ÊDY
+.LP
+Wszystkie informacje s± umieszczane w statycznym obszarze pamiêci, zatem
+musz± zostaæ skopiowane, je¶li maj± byæ zachowane.

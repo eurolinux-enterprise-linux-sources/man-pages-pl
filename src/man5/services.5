@@ -1,0 +1,212 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" This manpage is Copyright (C) 1996 Austin Donnelly <and1000@cam.ac.uk>,
+.\"  with additional material (c) 1995 Martin Schulze <joey@infodrom.north.de>
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\"   This manpage was made by merging two independently written manpages,
+.\"   one written by Martin Schulze (18 Oct 95), the other written by
+.\"   Austin Donnelly, (9 Jan 96).
+.\"
+.\" Thu Jan 11 12:14:41 1996 Austin Donnelly  <and1000@cam.ac.uk>
+.\"   * Merged two services(5) manpages
+.\"
+.\" Polish translation nov.1996 piotr.pogorzelski@ippt.gov.pl
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Mar 2002,
+.\"              manpages 1.48
+.\"
+.TH SERVICES 5 1996-01-11 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+services \- lista us³ug sieci Internet
+.SH OPIS
+.B services
+jest plikiem tekstowym umo¿liwiaj±cym wzajemne przyporz±dkowanie pomiêdzy
+przyjaznymi nazwami us³ug a odpowiednimi numerami portów i rodzajami
+protoko³ów. Ka¿da aplikacja sieciowa powinna konsultowac z tym plikiem
+numer portu (i protoko³u) dla okre¶lonej us³ugi.
+Funkcje biblioteki C
+.BR getservent (3),
+.BR getservbyname (3),
+.BR getservbyport (3),
+.BR setservent (3)
+i
+.BR endservent (3)
+obs³uguj± zapytania dotycz±ce zawarto¶ci tego pliku od programów.
+
+Numery portów s± przydzielane przez IANA (Internet Assigned Numbers 
+Authority), ich aktualna polityka to przydzielanie numeru portu jednocze¶nie
+dla obu protoko³ów: TCP i UDP. Dlatego wiêkszo¶æ us³ug w pliku services
+posiada podwójne rekordy, nawet w przypadku us³ug dzia³aj±cych tylko po TCP.
+
+Numery portów poni¿ej 1024 (tzw. niskie porty, porty o niskich numerach)
+mog± byæ otwierane jedynie przez administratora (patrz
+.BR bind (2),
+.BR tcp (7)
+i 
+.BR udp (7)).
+Oznacza to, ¿e klient ³±cz±cy siê z niskim numerem portu mo¿e mieæ pewno¶æ,
+¿e program obs³ugi na tym porcie jest standardowym programem
+systemowym, a nie dowolnym programem u¿ytkownika danego komputera.
+Popularne numery portów okre¶lone przez IANA s± zwykle umieszczane
+w tym w³a¶nie przedziale portów administratora.
+
+Obecno¶æ pozycji dotycz±cej us³ugi w pliku
+.B services
+nie oznacza, ¿e dana us³uga jest aktualnie obs³ugiwana przez maszynê.
+Konfiguracjê obs³ugiwanych us³ug internetowych mo¿na znale¼æ w
+pliku
+.BR inetd.conf (5).
+Nale¿y równie¿ pamiêtaæ, ¿e nie wszystkie us³ugi sieciowe s± uruchamiane przez
+.BR inetd (8),
+a zatem plik
+.BR inetd.conf (5)
+nie zawiera wszystkich us³ug ¶wiadczonych przez dany komputer.
+W szczególno¶ci serwery news (NNTP) i poczty (SMTP) s± zwykle
+uruchamiane z systemowych skryptów startowych.
+
+Po³o¿enie pliku 
+.B services
+jest zdefiniowane jako
+.B _PATH_SERVICES
+w pliku
+.IR /usr/include/netdb.h .
+Zwykle jest to
+.IR /etc/services .
+
+Ka¿dy wiersz tego pliku opisuje jedn± us³ugê i ma nastêpuj±c± postaæ:
+.IP
+\f2nazwa-us³ugi\ \ \ port\f3/\f2protokó³\ \ \ \f1[\f2aliasy ...\f1]
+.TP
+gdzie:
+.TP 10
+.I nazwa-us³ugi
+jest to przyjazna dla cz³owieka nazwa, pod któr± us³uga jest znana i pod któr±
+jest poszukiwana. Rozró¿nia siê ma³e i wielkie litery. Czêsto program kliencki
+jest nazywany tak jak
+.IR nazwa-us³ugi .
+.TP
+.I port
+numer portu (liczba dziesiêtna), z którego ma dana us³uga korzystaæ.
+.TP
+.I protokó³
+rodzaj protoko³u, jaki ma byæ wykorzystywany. To pole powinno zawieraæ
+jeden z protoko³ów zdefiniowanych w pliku
+.BR protocols (5).
+Zwykle jest to
+.B tcp
+lub
+.BR udp .
+.TP
+.I aliasy
+jest to opcjonalna lista rozdzielonych spacjami lub znakami tabulacji innych
+nazw tej samej us³ugi (ale zajrzyj te¿ do sekcji B£ÊDY, poni¿ej).
+Tu te¿ rozró¿nia siê ma³e i wielkie litery.
+.PP
+
+Poszczególne pola mog± byæ rozdzielane spacjami lub znakami tabulacji.
+
+Komentarze rozpoczynaj± siê od znaku krzy¿yka # a¿ do koñca wiersza.
+Puste wiersze s± pomijane.
+
+.I nazwa-us³ugi
+powinna siê rozpoczynaæ w pierwszej kolumnie pliku, poniewa¿
+pocz±tkowe spacje nie s± pomijane.
+.I nazwa-us³ugi
+mo¿e siê sk³adaæ z dowolnych widocznych znaków, z wyj±tkiem spacji i znaku
+tabulacji. Jednak¿e w celu zmniejszenia k³opotów z przeno¶no¶ci± powinny byæ
+u¿yta znaki z bardziej ograniczonych zakresów. Np. a-z, 0-9 i my¶lnik (\-)
+wydaje siê byæ rozs±dnym wyborem.
+
+Wiersze nie odpowiadaj±ce temu formatowi nie powinny znajdowaæ siê w pliku.
+(Obecnie s± one pomijane przez funkcje 
+.BR getservent (3),
+.BR getservbyname (3)
+i
+.BR getservbyport (3).
+Jednak¿e nie nale¿y polegaæ na tym zachowaniu.)
+
+Jako cecha zgodno¶ci z poprzednimi wersjami, uko¶nik (/) pomiêdzy numerem
+.I portu
+a nazw±
+.I protoko³u
+mo¿e byæ w rzeczywisto¶ci równie¿ przecinkiem (,). Jednak
+stosowanie przecinka w nowych instalacjach nie jest zalecane.
+
+Plik ten mo¿e byæ rozpowszechniany w sieci za po¶rednictwem takich
+ogólnosieciowych us³ug nazewnictwa, jak Yellow Pages/NIS lub BIND/Hesiod.
+
+Przyk³adowy plik
+.B services
+móg³by wygl±daæ tak:
+.RS
+.nf
+.sp
+.ta 3i
+netstat         15/tcp
+qotd            17/tcp          quote
+msp             18/tcp          # message send protocol
+msp             18/udp          # message send protocol
+chargen         19/tcp          ttytst source
+chargen         19/udp          ttytst source
+ftp             21/tcp
+# 22 - unassigned
+telnet          23/tcp
+.sp
+.fi
+.RE
+.SH B£ÊDY
+Ze wzglêdu na sposób, w jaki jest napisana funkcja
+.BR getservent (3)
+istnieje ograniczenie liczby aliasów do 35.
+
+Wiersze d³u¿sze ni¿
+.B BUFSIZ
+(obecnie 1024) bêd± ignorowane przez funkcje
+.BR getservent (3),
+.BR getservbyname (3)
+i
+.BR getservbyport (3).
+Spowoduje to równie¿ b³êdne zinterpretowanie nastêpnego wiersza.
+.SH PLIKI
+.TP
+.I /etc/services
+lista us³ug sieci Internet
+.TP
+.I /usr/include/netdb.h
+definicja sta³ej
+.B _PATH_SERVICES
+.SH "ZOBACZ TAK¯E"
+.BR listen (2),
+.BR endservent (3),
+.BR getservbyname (3),
+.BR getservbyport (3),
+.BR getservent (3),
+.BR setservent (3),
+.BR inetd.conf (5),
+.BR protocols (5),
+.BR inetd (8).
+
+Przydzielone numery mo¿na znale¼æ w RFC 1700 (inaczej, STD0002)
+
+Przewodnik po us³udze Yellow Pages
+
+Przewodnik po us³udze BIND/Hesiod

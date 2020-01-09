@@ -1,0 +1,143 @@
+.\" {PTM/WK/2000-II}
+.TH DOSFSCK 8 "31 grudnia 1997" "Linux" "Polecenia konserwacji"
+.SH NAZWA
+dosfsck \- sprawd¼ i napraw systemy plików MS-DOS
+.SH SK£ADNIA
+.TP 9
+.B dosfsck
+.RB [ \-aAflrtvVwy ]
+.RB [[ \-d
+.IR ¶cie¿ka ]...]
+.RB [ \-u
+.IR ¶cie¿ka ]...]
+.I urz±dzenie
+.SH OPIS
+.B dosfsck
+weryfikuje spójno¶æ systemów plików MS-DOS i opcjonalnie próbuje je naprawiæ.
+Mog± byæ skorygowane nastêpuj±ce k³opoty z systemem plików (w tej kolejno¶ci):
+.IP \-
+FAT zawiera nieprawid³owe numery klastrów. Klaster zmieniany jest na EOF.
+.PD 0
+.IP \-
+£añcuch klastrów ³añcucha zawiera pêtlê. Pêtla jest przerywana.
+.IP \-
+Z³e klastry (b³êdy odczytu). Klastry s± znakowane jako b³êdne i usuwane
+z zawieraj±cych je plików. Ta kontrola jest opcjonalna.
+.IP \-
+Katalogi z du¿± liczb± z³ych wpisów (prawdopodobnie uszkodzone).
+Katalog mo¿e zostaæ wyrzucony.
+.IP \-
+Pliki . i .. nie s± katalogami. Mog± zostaæ wyrzucone lub mo¿na zmieniæ
+im nazwê.
+.IP \-
+Katalogi . i .. w katalogu g³ównym. S± wyrzucane.
+.IP \-
+Z³e nazwy plików. Mo¿na zmieniæ im nazwê.
+.IP \-
+Powielone pozycje katalogu. Mog± zostaæ wyrzucone lub mo¿na zmieniæ im nazwê.
+.IP \-
+Katalogi z niezerowym polem rozmiaru. Rozmiar jest ustawiany na zero.
+.IP \-
+Katalog . nie wskazuje na katalog macierzysty. Wska¼nik pocz±tkowy jest
+dostosowywany.
+.IP \-
+Katalog .. nie wskazuje na rodzica katalogu macierzystego. Wska¼nik pocz±tkowy
+jest dostosowywany.
+.IP \-
+Numer pocz±tkowego klastra pliku jest niepoprawny. Plik jest obcinany.
+.IP \-
+Plik zawiera b³êdne lub niezajête klastry. Plik jest obcinany.
+.IP \-
+£añcuch klastrów pliku jest d³u¿szy ni¿ wskazywany przez pola rozmiaru.
+Plik jest obcinany.
+.IP \-
+Dwa lub wiêcej plików wspó³dzieli ten sam klaster(y). Wszystkie pliki oprócz
+jednego s± obcinane. Je¶li plikiem obcinanym jest katalog, który by³ ju¿
+przeczytany, to po obciêciu kontrola systemu plików rozpoczynana jest od nowa.
+.IP \-
+£añcuch klastrów pliku jest krótszy ni¿ wskazywany przez pola rozmiaru.
+Plik jest obcinany.
+.IP \-
+Klastry s± zaznaczone jako zajête, ale nie nale¿± do pliku. S± oznaczane jako
+wolne.
+.PD
+.LP
+Dodatkowo, wykrywane, ale nie naprawiane, s± nastêpuj±ce problemy:
+.IP \-
+Nieprawid³owe parametry w sektorze startowym (boot sector).
+.PD 0
+.IP \-
+Brak wpisów . i .. w katalogach ró¿nych od katalogu g³ównego.
+.PD
+.LP
+Gdy \fBdosfsck\fP sprawdza system plików, zbiera wszystkie zmiany w pamiêci
+i wykonuje je tylko po zakoñczeniu s± wszystkich sprawdzeñ. Mo¿na to wy³±czyæ
+opcj± \fB\-w\fP.
+.SH OPCJE
+.IP \fB\-a\fP
+Automatycznie naprawia system plików. Nie jest konieczna ¿adna interwencja
+u¿ytkownika. ka¿dorazowo, gdy istnieje wiêcej ni¿ jeden sposób rozwi±zania
+problemu, wybierane jest podej¶cie najmniej niszcz±ce.
+.IP \fB\-A\fP
+Pos³uguje siê wariacj± Atari systemu plików MS-DOS. Jest to domy¶lne, je¿eli
+\fBdosfsck\fP uruchamiany jest na Atari, to opcja ta wy³±cza format Atari.
+W formacie Atari istnieje kilka pomniejszych ró¿nic: niektóre pola sektora
+startowego s± nieco inaczej interpretowane, a specjalne wpisy FAT dla
+koñca pliku i b³êdnego sektora mog± byæ inne. Pod MS-DOS dla EOF u¿ywane jest
+0xfff8 a Atari domy¶lnie pos³uguje siê 0xffff, ale oba systemy rozpoznaj±
+wszystkie warto¶ci od 0xfff8...0xffff jako koniec pliku (end-of-file).
+MS-DOS dla b³êdnych sektorów u¿ywa tylko 0xfff7, podczas gdy na Atari do tego
+cel wykorzystywane s± 0xfff0...0xfff7 (ale warto¶ci± standardow± jest nadal
+0xfff7).
+.IP \fB\-d\fP
+Usuwa (drop) okre¶lony plik. Je¶li istnieje wiêcej ni¿ jeden plik o tej nazwie,
+to usuwany jest pierwszy.
+.IP \fB\-f\fP
+Odzyskuje nieu¿ywane ³añcuchy klastrów do plików. Domy¶lnie nieu¿ywane
+klastry dodawane s± do wolnej przestrzeni dyskowej, z wyj±tkiem pracy w trybie
+automatycznym (\fB-a\fP).
+.IP \fB\-l\fP
+Pokazuje ¶cie¿kowe nazwy przetwarzanych plików.
+.IP \fB\-r\fP
+Interaktywnie naprawia system plików. U¿ytkownik pytany jest o radê ka¿dorazowo,
+gdy istnieje wiêcej ni¿ jeden sposób naprawy niespójno¶ci. Jest to zachowanie
+domy¶lne.
+.IP \fB\-t\fP
+Zaznacza niedaj±ce siê odczytaæ klastry jako b³êdne.
+.IP \fB-u\fP
+Próbuje odzyskaæ usuniêty podany plik. \fBdosfsck\fP usi³uje zaalokowaæ
+³añcuch ci±g³ych, niezaalokowanych klastrów rozpoczynaj±cy siê od klastra
+startowego odzyskiwanego pliku.
+.IP \fB\-v\fP
+Tryb gadatliwy. Generuje nieco wiêcej informacji na wyj¶ciu.
+.IP \fB\-V\fP
+Wykonuje przebieg weryfikacyjny. Po pierwszym przebiegu sprawdzenie systemu
+plików jest powtarzane. Drugi przebieg nie powinien nigdy zg³osiæ ¿adnych
+daj±cych siê naprawiæ b³êdów. Mo¿e on trwaæ znacz±co d³u¿ej ni¿ pierwszy,
+gdy¿ pierwszy przebieg móg³ utworzyæ d³ug± listê zmian, która musi byæ
+przegl±dniêta dla ka¿dego odczytu dyskowego.
+.IP \fB\-w\fP
+Zmiany na dysk zapisuje natychmiast.
+.IP \fB\-y\fP
+To samo, co \fB\-a\fP (automatycznie naprawia system plików), dla zgodno¶ci
+z innymi narzêdziami fsck.
+.LP
+Je¿eli nie wystêpuj± \fB\-a\fP ani \fB\-r\fP, to system plików jest tylko
+sprawdzany, ale nie naprawiany.
+.SH "KOD ZAKOÑCZENIA"
+.IP 0
+Nie wykryto daj±cych siê naprawiæ b³êdów.
+.IP 1
+Wykryto daj±ce siê naprawiæ b³êdy lub \fBdosfsck\fP stwierdzi³ wewnêtrzn±
+niespójno¶æ.
+.IP 2
+B³±d u¿ytkowania. \fBdosfsck\fP nie siêga³ do systemu plików.
+.SH B£ÊDY
+Nie tworzy plików . i .., tam gdzie s± niezbêdne. Nie usuwa ca³kowicie
+pustych katalogów. Powinien dawaæ wiêcej komunikatów diagnostycznych.
+Odzyskiwanie skasowanych plików powinno pos³ugiwaæ siê bardziej wyrafinowanym
+algorytmem.
+.\".SH "ZOBACZ TAK¯E"
+.\"fs(5)
+.SH AUTOR
+Werner Almesberger <werner.almesberger@lrc.di.epfl.ch>

@@ -1,0 +1,58 @@
+.\"$Id: groupmems.8,v 1.1 2001/11/13 23:35:15 ankry Exp $
+.\" Copyright 2000, International Business Machines
+.\" George Kraft IV, gk4@us.ibm.com, 3/23/2000
+.TH GROUPMEMS 8
+.SH NAZWA
+groupmems \- administrowanie cz³onkami podstawowej grupy u¿ytkownika
+.SH SK£ADNIA
+.TP 10
+\fBgroupmems\fR \fB-a\fR \fInazwa_u¿ytkownika\fR | \fB-d\fR \fInazwa_u¿ytkownika\fR |
+\fB-l\fR | \fB-D\fR | [\fB-g\fR \fInazwa_grupy\fR]
+.SH OPIS
+Program narzêdziowy \fBgroupmems\fR umo¿liwia u¿ytkownikowi administrowanie
+list± cz³onków jego/jej w³asnej grupy bez konieczno¶ci posiadania uprawnieñ
+superu¿ytkownika. Program ten jest przeznaczony dla systemów, których
+u¿ytkownicy posiadaj± swoje w³asne grupy podstawowe (np. guest / guest).
+.P
+Jedynie superu¿ytkownik, jako administrator, mo¿e za pomoc± \fBgroupmems\fR
+zmieniaæ przynale¿no¶æ do innych grup.
+.IP "\fB-a \fInazwa_u¿ytkownika\fR"
+Dodaje nowego u¿ytkownika do listy cz³onków grupy.
+.IP "\fB-d \fInazwa_u¿ytkownika\fR"
+Usuwa u¿ytkownika z listy cz³onków grupy.
+.IP "\fB-l\fR"
+Wypisuje listê cz³onków grupy.
+.IP "\fB-D\fR"
+Usuwa wszystkich u¿ytkowników z listy cz³onków grupy.
+.IP "\fB-g \fInazwa_grupy\fR"
+Superu¿ytkownik mo¿e podaæ grupê, której lista cz³onków ma zostaæ zmieniona.
+.SH USTAWIENIA
+Program \fBgroupmems\fR powinien posiadaæ uprawnienia \fB2770\fR oraz nale¿eæ
+do u¿ytkownika \fBroot\fR i grupy \fBgroups\fR. Administrator systemu mo¿e
+za dodaj±c u¿ytkowników do grupy groups zabroniæ im lub pozwoliæ na
+korzystanie z programu \fBgroupmems\fR w celu zarz±dzania listami cz³onków
+ich w³asnych grup.
+.P
+     $ groupadd -r groups
+.br
+     $ chmod 2770 groupmems
+.br
+     $ chown root.groups groupmems
+.br
+     $ groupmems -g groups -a gk4
+.SH PLIKI
+/etc/group
+.br
+/etc/gshadow
+.SH "ZOBACZ TAK¯E"
+.BR chfn (1),
+.BR chsh (1),
+.BR useradd (8),
+.BR userdel (8),
+.BR usermod (8),
+.BR passwd (1),
+.BR groupadd (8),
+.BR groupdel (8)
+.SH AUTOR
+George Kraft IV (gk4@us.ibm.com)
+.\" EOF

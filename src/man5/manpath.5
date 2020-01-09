@@ -1,0 +1,125 @@
+.\" {PTM/WK/1999-XII}
+.\" Translation update: Robert Luberda <robert@debian.org>, May 2003, man-db 2.4.1
+.\" $Id: manpath.5,v 1.2 2003/05/29 10:59:27 robert Exp $
+.\"
+.\" Man page for format of the manpath.config data file
+.\"
+.\" Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
+.\"
+.\" You may distribute under the terms of the GNU General Public
+.\" License as specified in the file COPYING that comes with the
+.\" man-db distribution.
+.\"
+.\" Sat Oct 29 13:09:31 GMT 1994  Wilf. (G.Wilford@ee.surrey.ac.uk)
+.\"
+.TH manpath 5 "7 wrze¶nia 2001" "2.4.1" "/etc/man_db.config"
+.SH NAZWA
+manpath \- format pliku /etc/man_db.config
+.SH OPIS
+Plik konfiguracyjny ¶cie¿ek przeszukiwania stron man stosowany
+jest przez narzêdzia obs³ugi stron man do oszacowania ¶cie¿ek manpath
+u¿ytkowników na bie¿±co, podczas wykonywania programu.
+Wskazuje, jakie hierarchie stron man (manpaths) powinny byæ traktowane
+jako globalne oraz przypisuje im katalogi, które bêd± u¿yte do sk³adowania
+plików cat.
+
+Je¿eli jest ju¿ ustawiona zmienna ¶rodowiska
+.RB $ MANPATH ,
+to informacja zawarta w /etc/man_db.config nie bêdzie jej uniewa¿niaæ.
+.\" override
+.SH FORMAT
+Obecnie rozpoznawane s± nastêpuj±ce typy pól:
+.TP
+.BI # \ komentarz
+Wiersze puste b±d¼ rozpoczynaj±ce siê znakiem
+.B #
+zostan± uznane za komentarze i zignorowane.
+.TP
+.BI MANDATORY_MANPATH \ element_manpath
+Wiersze tej postaci wskazuj± ¶cie¿ki man, które powinna zawieraæ ka¿da
+automatycznie utworzona warto¶æ zmiennej
+.RB $ MANPATH .
+Zwykle obejmuje to
+.IR /usr/man .
+.TP
+.BI MANPATH_MAP \ element_path\ element_manpath
+Wiersze tej postaci ustawiaj± odwzorowania
+.RB $ PATH
+na
+.RB $ MANPATH .
+Dla ka¿dego
+.I elementu_path
+znalezionego w ¶cie¿ce
+.RB $ PATH
+u¿ytkownika do zmiennej
+.BR $ MANPATH
+zostanie dodany
+.IR element_manpath .
+.TP
+\fBMANDB_MAP \fIelement_manpath \fR\|[\| \fIelement_catpath\fR \|]
+Wiersze tej postaci wskazuj±, które ¶cie¿ki man powinny byæ traktowane
+jako systemowe, i opcjonalnie, gdzie powinny byæ sk³adowane ich pliki cat.
+Ten typ pola jest szczególnie wa¿ny, gdy
+.B man
+jest programem setuid, gdy¿ (je¿eli jest umieszczony w systemowym pliku
+konfiguracyjnym /etc/man_db.config, a nie w pliku konfiguracyjnym
+u¿ytkownika .manpath) mówi, do których hierarchii (katalogów) stron man
+siêgaæ jako u¿ytkownik setuid, a do których jako u¿ytkownik wywo³uj±cy
+program.
+
+Systemowe hierarchie stron man s± zwykle sk³adowane wewn±trz katalogu
+.I /usr
+jak na przyk³ad
+.IR /usr/man ,
+.I /usr/local/man
+czy
+.IR /usr/X11R6/man .
+
+Je¶li strony cat z danej ¶cie¿ki
+.I element_manpath
+maj± nie byæ przechowywane albo maj± byæ sk³adowane w tradycyjnym miejscu,
+to
+.I element_catpath
+mo¿na pomin±æ.
+
+Tradycyjne umieszczanie stron cat nie jest mo¿liwe dla hierarchii stron man
+zamontowanych jako read-only. Z tego powodu mo¿na podaæ dowoln±
+poprawn± hierarchiê katalogów dla ich sk³adowania. W celu przestrzegania
+.B Linuksowego FSSTND
+(File System Standard Group - ustalenia standardu struktury drzewa
+katalogów Linuksa) mo¿na pos³u¿yæ siê s³owem kluczowym
+.RB ` FSSTND '
+w miejscu faktycznego katalogu.
+
+Niestety, niezbêdne jest podanie
+.B wszystkich
+systemowych ¶cie¿ek drzew man, ³±cznie ze ¶cie¿kami kolejnych systemów, jak
+np.
+.I /usr/man/sun
+czy te¿ ¶cie¿ki
+.BR "NLS locale" ,
+takie jak
+.IR /usr/man/de_DE.88591 .
+
+Poniewa¿ informacja jest analizowana wiersz po wierszu, w kolejno¶ci zapisu,
+ka¿da ¶cie¿ka manpath bêd±ca podhierarchi± innej hierarchii powinna byæ
+podana jako pierwsza. W przeciwnym razie zostan± wykonane niepoprawne
+dopasowania.
+Na przyk³ad
+.I /usr/man/de_DE.88591
+musi wyst±piæ przed
+.IR /usr/man .
+.TP
+.BI DEFINE \ klucz\ warto¶æ
+Linie tej postaci definiuj± ró¿norodne zmienne konfiguracyjne \-
+domy¶lny plik konfiguracyjny zawiera zmienne u¿ywane przez programy u¿ytkowe
+przegl±darki stron man.
+Zawieraj± one domy¶lne ¶cie¿ki do ró¿nych programów (takich jak
+.I grep
+i
+.IR tbl )
+oraz domy¶lne argumenty wywo³añ tych programów.
+.SH B£ÊDY
+Je¿eli nie s± ¶ci¶le przestrzegane powy¿sze regu³y, to narzêdzia
+przegl±dania stron man nie bêd± dzia³aæ w po¿±dany sposób.
+.\" The rules are overly complicated.

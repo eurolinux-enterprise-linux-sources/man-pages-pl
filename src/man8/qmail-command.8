@@ -1,0 +1,139 @@
+.\" Translation (C) 1999 Pawel Wilk <siefca@pl.qmail.org>
+.\" {PTM/PW/0.1/14-11-1999/"podawany przez u¿ytkownika program dostarczaj±cy pocztê"}
+.TH qmail-command 8
+.SH NAZWA
+qmail-command \- podawany przez u¿ytkownika program dostarczaj±cy pocztê
+.SH SK£ADNIA
+w \fB.qmail\fP\fIdod\fP :
+.B |\fIkomenda
+.SH OPIS
+.B qmail-local
+bêdzie, na twoje ¿±danie,
+wysuwa³ ka¿d± nadchodz±c± wiadomo¶æ pocztow± poprzez wybrany przez ciebie program.
+
+Gdy nadejdzie wiadomo¶æ pocztowa,
+.B qmail-local
+wykona
+.B sh -c \fIkomendê
+z twojego katalogu domowego.
+Wiadomo¶æ bêdzie udostêpniona na standardowym wej¶ciu
+.IR komendy
+
+.B OSTRZE¯ENIE:
+Wiadomo¶æ pocztowa nie zaczyna siê zazwyczaj nale¿±c± do
+.BR qmail-local
+lini±
+.B Return-Path
+czy te¿
+.B Delivered-To
+
+Zauwa¿, ¿e
+.B qmail-local
+u¿ywa tego samego deskryptora pliku dla ka¿dego dostarczania
+wyspecyfikowanego w twoim pliku
+.B .qmail
+, tak wiêc nie jest to bezpieczne dla
+.I komendy
+by wytwarza³a proces potomny, który
+czyta wiadomo¶æ w tle podczas gdy rodzic koñczy pracê.
+.SH "KODY WYJ¦CIA"
+Kody wyj¶cia
+.IR komendy
+s± interpretowane nastêpuj±co:
+0 oznacza, ¿e dostarczanie powiod³o siê;
+99 oznacza, ¿e dostarczanie powiod³o siê, lecz
+.B qmail-local
+powinien zignorowaæ dalsze instrukcje dorêczania;
+100 oznacza, ¿e dostarczanie zawiod³o ca³kowicie (twardy b³±d);
+111 oznacza, ¿e dostarczanie zawiod³o, lecz powinno byæ powtórzone raz jeszcze
+za chwilê (miêkki b³±d).
+
+Obecnie kody 64, 65, 70, 76, 77, 78, i 112 s± rozwa¿ane jako b³êdy twarde,
+a reszta jako b³êdy miêkkie, ale
+.I komenda
+powinna wstrzymywaæ siê od polegania na tym.
+.SH "ZMIENNE ¦RODOWISKOWE"
+.B qmail-local
+u¿ywa ró¿nych u¿ytecznych zmiennych ¶rodowiskowych przekazywanych do
+.IR komendy .
+.B OSTRZE¯ENIE:
+Zmienne te nie s± cytowane.
+Mog± zawieraæ znaki specjalne.
+S± pod kontrol± potencjalnie podstêpnego zdalnego u¿ytkownika.
+
+.B SENDER
+kopertowy adres nadawcy.
+.B NEWSENDER
+jest kopertowym adresem nadawcy przesy³aj±cego pocztê dalej,
+tak jak to jest opisane w
+.BR dot-qmail(5) .
+.B RECIPIENT
+jest kopertowym adresem odbiorcy, okre¶lanym te¿ w tej pomocy jako
+.IR local@domain (lokalny@domena).
+.B USER
+to
+.IR u¿ytkownik .
+.B HOME
+to twój katalog domowy, okre¶lany te¿ w tej pomocy jako
+.IR homedir .
+.B HOST
+jest
+.I domenow±
+czê¶ci± adresu odbiorcy.
+.B LOCAL
+jest czê¶ci±
+.I lokaln± .
+.B EXT
+jest rozszerzeniem (dodatkiem do) adresu,
+.IR dod .
+
+.B HOST2
+jest czê¶ci± zmiennej
+.B HOST
+poprzedzaj±c± ostatni± kropkê;
+.B HOST3
+jest czê¶ci± zmiennej
+.B HOST
+poprzedzaj±c± kropkê przedostatni±;
+.B HOST4
+jest czê¶ci± zmiennej
+.B HOST
+poprzedzaj±c± kropkê trzeci± od koñca.
+
+.B EXT2
+jest porcj±
+.B EXT
+nastêpuj±c± po pierwszym my¶lniku;
+.B EXT3
+jest porcj± po drugim my¶lniku;
+.B EXT4
+jest porcj± po trzecim my¶lniku;
+.B DEFAULT
+jest porcj± odpowiadaj±c± czê¶ci
+.B domy¶lnej (default)
+nazwy pliku
+.BR .qmail\- ...
+
+.B DEFAULT
+nie jest ustawiona je¶li nazwa pliku nie koñczy siê na
+.BR default .
+
+.B DTLINE
+i
+.B RPLINE
+s± zazwyczaj liniami
+.B Delivered-To
+i
+.B Return-Path ,
+w³±czaj±c w to znaki nowej linii.
+.B UFLINE
+jest lini±
+.B From_
+w stylu UUCP, któr± to
+.B qmail-local
+dodaje do plików
+.IR mbox -format .
+.SH "PATRZ TE¯"
+dot-qmail(5),
+envelopes(5),
+qmail-local(8)

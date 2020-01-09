@@ -1,0 +1,185 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright (c) 1992 Drew Eckhardt (drew@cs.colorado.edu), March 28, 1992
+.\" Copyright (c) 1998 Andries Brouwer (aeb@cwi.nl)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified by Michael Haardt <michael@moria.de>
+.\" Modified Wed Jul 21 21:53:01 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified Tue Jul  9 13:59:51 1996 by Andries Brouwer <aeb@cwi.nl>
+.\" Modified Wed Nov  6 03:49:07 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified Sun May 18 10:34:09 1997 by Michael Haardt <michael@cantor.informatik.rwth-aachen.de>
+.\" Translation (c) 1998 Przemek Borys <pborys@dione.ids.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\"
+.TH CHOWN 2 1997-05-18 "Linux 2.1.81" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+chown, fchown, lchown \- zmiana w³a¶ciciela pliku
+.SH SK£ADNIA
+.B #include <sys/types.h>
+.br
+.B #include <unistd.h>
+.sp
+.BI "int chown(const char *" path ", uid_t " owner ", gid_t " group );
+.br
+.BI "int fchown(int " fd ", uid_t " owner ", gid_t " group );
+.br
+.BI "int lchown(const char *" path ", uid_t " owner ", gid_t " group );
+.SH OPIS
+Zmieniony zostaje w³a¶ciciel pliku okre¶lonego przez
+.I path
+lub przez deskryptor
+.IR fd .
+Tylko superu¿ytkownik mo¿e zmieniaæ w³a¶ciciela pliku. W³a¶ciciel pliku mo¿e
+zmieniaæ tylko grupê pliku na dowoln± grupê, której jest cz³onkiem.
+Superu¿ytkownik mo¿e zmieniaæ grupê bez ograniczeñ.
+
+Je¶li
+.I owner
+lub
+.I group
+jest podane jako \-1, to ten identyfikator nie jest wtedy zmieniany.
+
+Je¿eli w³a¶ciciel lub grupa pliku uruchamialnego s± zmieniane przez
+u¿ytkownika nie posiadaj±cego praw superu¿ytkownika, to atrybuty S_ISUID
+i S_ISGID pliku zostan± wyzerowane. Standard POSIX nie precyzuje, czy
+atrybuty te powinny byæ równie¿ zerowane, kiedy to u¿ytkownik root wywo³uje
+funkcjê
+.IR chown ;
+zachowanie Linuksa w tym wypadku zale¿y od wersji j±dra.
+W przypadku pliku, który nie ma praw uruchamiawania dla grupy (z wyzerowanym
+bitem S_IXGRP), bit S_ISGID oznacza obowi±zkowe blokowanie i nie jest
+zerowany przez
+.IR chown .
+
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu zwracane jest zero. W wypadku b³êdu zwracane jest
+\-1 i odpowiednio ustawiane
+.IR errno .
+.SH B£ÊDY
+Dla niektórych systemów plików mog± byæ zwracane inne b³êdy ni¿ opisane
+poni¿ej. Najogólniejsze b³êdy
+.B chown
+to:
+
+.TP
+.B EPERM
+Efektywny UID nie odpowiada w³a¶cicielowi pliku i nie jest zerem albo
+.I owner
+lub
+.I group
+zosta³y podane nieprawid³owo.
+.TP
+.B EROFS
+Podany plik znajduje siê na systemie plików przeznaczonym tylko do odczytu.
+.TP
+.B EFAULT
+.I path
+wskazuje poza dostêpn± dla u¿ytkownika przestrzeñ adresow±.
+.TP
+.B ENAMETOOLONG
+.I path
+jest zbyt d³ugie.
+.TP
+.B ENOENT
+Plik nie istnieje.
+.TP
+.B ENOMEM
+Brak pamiêci j±dra.
+.TP
+.B ENOTDIR
+Sk³adnik ¶cie¿ki nie jest katalogiem.
+.TP
+.B EACCES
+Brak praw do przeszukiwania dla sk³adnika ¶cie¿ki.
+.TP
+.B ELOOP
+Podczas rozwi±zywania
+.I path
+napotkano zbyt wiele dowi±zañ symbolicznych.
+.PP
+Ogólne b³êdy dla
+.B fchown
+to:
+.TP
+.B EBADF
+Deskryptor pliku jest nieprawid³owy.
+.TP
+.B ENOENT
+Zobacz wy¿ej.
+.TP
+.B EPERM
+Zobacz wy¿ej.
+.TP
+.B EROFS
+Zobacz wy¿ej.
+.TP
+.B EIO
+Niskopoziomowy b³±d we/wy podczas modyfikacji i-wêz³a.
+.SH UWAGI
+W wersjach j±dra Linuksa poni¿ej 2.1.81 (i ró¿nych od 2.1.46)
+.B chown
+nie pod±¿a za dowi±zaniami symbolicznymi.
+Od wersji 2.1.81 Linuksa
+.B chown
+pod±¿a za dowi±zaniami symbolicznymi, zosta³a tak¿e dodana nowa funkcja
+systemowa
+.BR lchown ,
+która nie pod±¿a za dowi±zaniami symbolicznymi.
+Od wersji 2.1.86 Linuksa, ta nowa funkcja (maj±ca tak± sam± semantykê
+jak stare
+.BR chown )
+ma taki sam numer funkcji, a
+.B chown
+otrzyma³a nowy numer.
+.LP
+Prototyp dla
+.B fchown
+jest dostêpny jedynie, gdy zdefiniowane jest
+.B _BSD_SOURCE
+(bezpo¶rednio, albo po¶rednio - nie definiuj±c _POSIX_SOURCE czy
+kompiluj±c z w³±czon± flag± -ansi).
+.SH "ZGODNE Z"
+Funkcja
+.B chown
+jest zgodna z SVr4, SVID, POSIX, X/OPEN. Wersja 4.4BSD mo¿e byæ u¿ywana
+tylko przez superu¿ytkownika (to znaczy normalni u¿ytkownicy nie mog±
+"podarowaæ" nikomu plików).
+SVr4 dokumentuje b³êdy EINVAL, EINTR, ENOLINK i EMULTIHOP, lecz nie
+dokumentuje ENOMEM. POSIX.1 nie dokumentuje b³êdów ENOMEM i ELOOP.
+.PP
+Funkcja
+.B fchown
+jest zgodna z 4.4BSD oraz SVr4.
+SVr4 dokumentuje dodatkowe b³êdy EINVAL, EIO, EINTR i ENOLINK.
+.SH OGRANICZENIA
+Semantyka \fBchown\fP() jest pogwa³cona na systemach plików NFS, z w³±czonym
+mapowaniem UID. Dodatkowo, semantyka wszystkich wywo³añ systemowych, które
+uzyskuj± dostêp do zawarto¶ci plików jest dla NFS pogwa³cona, bo \fBchown\fP()
+mo¿e spowodowaæ natychmiastowe uniewa¿nienie dostêpu do ju¿ otwartych plików.
+Buforowanie po stronie klienta mo¿e spowodowaæ opó¼nienie mo¿liwo¶ci uzyskania
+dostêpu do pliku przez u¿ytkowników innych stacji klienckich w stosunku do
+chwili dokonania zmiany w³a¶ciciela umo¿liwiaj±cej ten dostêp.
+.SH "ZOBACZ TAK¯E"
+.BR chmod (2),
+.BR flock (2)

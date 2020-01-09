@@ -1,0 +1,118 @@
+.\" Translation (c) 1999 Pawe³ Wilk <siefca@pl.qmail.org>
+.\" {PTM/PW/0.1/10-11-1999/"przypisuje adresy pocztowe do u¿ytkowników"}
+.TH qmail-users 5
+.SH NAZWA
+qmail-users \- przypisz adresy pocztowe do u¿ytkowników
+.SH PRZEGL¡D
+Plik
+.B /var/qmail/users/assign
+przypisuje adresy do u¿ytkowników. Na przyk³ad,
+
+.EX
+   =big.siefczyk:big:503:78:/home/big:::
+.EE
+
+mówi, ¿e ca³a poczta dla u¿ytkownika
+.B big.siefczyk
+powinna byæ dostarczana do u¿ytkownika
+.BR big ,
+z warto¶ciami uid 503 i gid 78,
+pod³ug regu³ dostarczania okre¶lonych w pliku
+.BR /home/big/.qmail 
+oczywi¶cie.
+
+Przypisania przetworzone przez program
+.B qmail-newu
+bêd± u¿yte przez
+.B qmail-lspawn
+by kontrolowaæ dostarczanie poczty przez
+.BR qmail-local .
+Obejrzyj te¿ sobie
+.BR qmail-newu (8).
+Zmiany w pliku
+.B /var/qmail/users/assign
+nie przynion± efektów dopóki program
+.B qmail-newu
+nie zostanie wywo³any i nie przetworzy ich.
+.SH STRUKTURA
+.B /var/qmail/users/assign
+jest seri± przypisañ, jedno na liniê.
+
+Koñczy siê lini± zawieraj±c± pojedyncz± kropeczkê.
+Linie nie mog± zawieraæ znaków NUL.
+.SH "PROSTE PRZYPISANIA"
+Przypisaniem prosty jest linia w stylu
+
+.EX
+   =lokalny:u¿ytkownik:uid:gid:katalogdomowy:kreska:dod:
+.EE
+
+Gdzie
+.I lokalny
+to adres;
+.IR u¿ytkownik ,
+.IR uid ,
+i
+.I gid
+to nazwa konta, UID i GID
+u¿ytkownika zwanego
+.IR lokalny ;
+a wiadomo¶ci do tego
+and messages to
+.I lokalnego
+w³a¶nie bêd± kontrolowane przez jego plik
+.IR katalogdomowy\fB/.qmail\fIkreskadod .
+
+Je¶li wyst±pi wiêcej przypisañ dla tego samego
+.I lokalnego
+adresu,
+.B qmail-lspawn
+u¿yje sobie pierwszego (a resztê mówi±c brzydko oleje - przyp. t³.).
+
+.I lokalny
+jest interpretowany bez wzglêdu na wielko¶æ liter.
+.SH "PRZYPISANIA OGÓLNE"
+Przypisaniem ogólnym (meta-przypisaniem) jest linia w stylu
+
+.EX
+   +lok:u¿ytkownik:uid:gid:katalogdomowy:kreska:przed:
+.EE
+
+Przypisanie to odnosi siê do ka¿dego adresu rozpoczynaj±cego siê na
+.IR lok ,
+w³±czaj±c samo
+.I lok .
+Oznacza to samo co
+
+.EX
+   =lokdod:u¿ytkownik:uid:gid:katalogdomowy:kreska:przeddod:
+.EE
+
+dla ka¿dego mo¿liwego ci±gu wstawionego w miejsce
+.IR dod .
+Bardziej precyzyjne przypisania ogólne przes³aniaj± mniej specyficzne
+przypisania, i a przypisanie proste przes³ania jakiekolwiek przypisanie
+ogólne.
+Na przyk³ad:
+
+.EX
+   +:alias:7790:2108:/var/qmail/alias:-::
+   +big-:big:507:100:/home/big:-::
+   =big:big:507:100:/home/big:::
+.EE
+
+Adres
+.B big
+jest obs³ugiwany przez liniê trzeci±;
+adres
+.B big-direct
+przez drug±;
+adresy
+.B kupanaprzyk³ad
+czy
+.B wstaw-se-co-chcesz
+przez liniê pierwsz±.
+.SH "ZOBACZ TAK¯E
+qmail-pw2u(8),
+qmail-newu(8),
+qmail-lspawn(8)

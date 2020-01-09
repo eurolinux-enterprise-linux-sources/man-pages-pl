@@ -1,0 +1,79 @@
+.\" {PTM/PB/0.1/28-06-1999/"."}
+.\" poszerzenie i aktualizacja do GNU sh-utils 2.0 PTM/WK/2000-V
+.ig
+Transl.note: based on source, GNU man page true.1 and sh-utils.info
+
+Copyright (C) 1994, 95, 96 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+..
+.TH TRUE "1" FSF "maj 2000" "Narzêdzia pow³okowe GNU 2.0"
+.SH NAZWA
+true \- nic nie rób, z powodzeniem
+.SH SK£ADNIA
+.B true
+.SH OPIS
+Ta strona podrêcznika man opisuje polecenie \fBtrue\fP w wersji GNU.
+.PP
+.B true
+nie robi nic, poza zwróceniem kodu zakoñczenia o warto¶ci 0, oznaczaj±cym
+``powodzenie''. Mo¿e byæ u¿ywane jako wype³niacz miejsca w skryptach
+pow³okowych, wymagaj±cych polecenia koñcz±cego siê powodzeniem, chocia¿
+wbudowane polecenie pow³oki `:' (dwukropek) robi to samo, szybciej.
+Ta wersja
+.B true
+zaimplementowana jest jako program C, i z tego powodu jest bezpieczniejsza
+i szybsza ni¿ implementacja w postaci skryptu pow³oki. Mo¿e byæ bezpiecznie
+stosowana jako fikcyjna pow³oka przeznaczona do wy³±czania kont.
+.SH OPCJE
+Je¿eli ustawiona jest zmienna ¶rodowiska
+.BR POSIXLY_CORRECT ,
+to
+.B true
+ignoruje
+.I wszelkie
+argumenty wiersza poleceñ, nawet
+.B --help
+i
+.BR --version ,
+gdy¿ inne postêpowanie zmieni³oby oczekiwane zachowanie, na którym mo¿e
+polegaæ czê¶æ programistów.
+Je¿eli
+.B POSIXLY_CORRECT
+nie jest ustawione, to wywo³ane z jednym argumentem
+.B true
+rozpoznaje nastêpuj±ce opcje:
+.TP
+.B \-\-help
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach,
+koñczy pracê.
+.TP
+.B \-\-version
+Wy¶wietla numer wersji programu i koñczy pracê.
+.SH "ZG£ASZANIE B£ÊDÓW"
+B³êdy proszê zg³aszaæ, w jêz.ang., do <bug-sh-utils@gnu.org>..
+.SH COPYRIGHT
+Copyright \(co 1999 Free Software Foundation, Inc.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH ZOBACZ TAK¯E
+.BR false (1),
+.BR test (1),
+.BR expr (1),
+.BR sh-utils (1).
+.SH OD T£UMACZA
+Zaktualizowano i poszerzono wg dokumentacji Texinfo dla narzêdzi pow³okowych
+GNU wersji 2.0.

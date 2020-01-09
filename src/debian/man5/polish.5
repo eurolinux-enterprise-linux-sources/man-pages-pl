@@ -1,0 +1,51 @@
+.\" {PTM/PR/0.1/24-07-1999/"lista polskich s³ów"}
+.\" Translation 1999 by Piotr Roszatycki
+.\" $Id: polish.5,v 1.2 2003/01/20 14:49:05 robert Exp $
+.\" Last update: Robert Luberda <robert@debian.org>, Jan 2003, ipolish 20011004-2.5
+.\"
+.TH WORDS 5 "29 wrze¶nia 1998" "Linux" "Podrêcznik programisty linuksowego"
+.SH NAZWA
+polish \- lista polskich s³ów
+.SH OPIS
+.B /usr/share/dict/polish
+to plik ASCII zawieraj±cy alfabetyczn± listê s³ów, po jednym s³owie
+w jednej linii.
+.SH PLIKI
+.I /etc/dictionaries-common/words
+to symboliczne dowi±zanie do pliku
+.IR /usr/share/dict/<jêzyk> .
+.I /usr/share/dict/words
+to symboliczne dowi±zanie do pliku
+.IR /etc/dictionaries-common/words .
+To dowi±zanie powinno byæ u¿ywane przez oprogramowanie, które
+korzysta z systemowej listy s³ów.
+Zajrzyj do
+.BR select-default-wordlist (8)
+po wiêcej informacji.
+.PP
+Katalog 
+.I /usr/share/dict
+mo¿e zawieraæ listy s³ów dla wielu jêzyków, gdzie nazwa jêzyka jest
+okre¶lona w jêzyku angielskim, np.
+.I /usr/share/dict/french
+i
+.IR /usr/share/dict/danish ,
+je¿eli istniej±, to zawieraj± odpowiednio listê s³ów francuskich i duñskich.
+Lista s³ów powinna byæ zakodowana w standardzie ISO 8859-x.
+.SH "ZOBACZ TAK¯E"
+.BR ispell (1),
+.BR select-default-wordlist (8)
+oraz
+.I Filesystem Hierarchy
+.IR Standard .
+.SH HISTORIA
+Listy s³ów nie s± specyfik± systemu i mog± pochodziæ z ró¿nych ¼róde³.
+.PP
+Jako systemowa lista s³ów u¿ywany by³ plik
+.IR /usr/dict/words .
+Ze wzglêdów kompatybilno¶ci, oprogramowanie powinno sprawdzaæ
+tê lokalizacjê, gdy
+.I /usr/share/dict/words
+nie istnieje.
+.SH AUTOR
+Listy s³ów mog± mieæ ró¿nych autorów.

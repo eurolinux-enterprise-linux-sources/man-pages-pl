@@ -1,0 +1,57 @@
+.TH tapeout 1 "14 listopada 2001" "Wersja 0.95.3"
+.SH NAZWA
+tapeout \- nagrywa plik z obrazem spectrumowej ta¶my na kasetê
+.SH SK£ADNIA
+.B tapeout
+.I czêstotliwo¶æ_próbkowania
+.I plik_ta¶my
+.RI [ blok_startowy
+.RI [ plik_wynikowy ]]
+.SH OPIS
+Ten program pozwala skopiowaæ plik ta¶my (
+.I .tap 
+lub 
+.I .tzx
+) na kasetê magnetofonow± przy u¿yciu
+karty d¼wiêkowej.
+.PP
+Trzeba po³±czyæ wyj¶cie z karty d¼wiêkowej (
+.B line out
+) z gniazdem (
+.B mic
+) w magnetofonie, w³±czyæ nagrywanie
+i uruchomiæ ten program.
+.SH LINIA KOMEND
+.TP
+.B czêstotliwo¶æ_próbkowania
+Czêstotliwo¶æ próbkowania dla wyj¶cia.  Im wy¿sza tym lepsza jako¶æ.
+Powinna byæ przynajmniej 16000.
+.TP
+.B plik_ta¶my
+Nazwa pliku do zinterpretowania i odegrania przez kartê d¼wiêkow±.
+Plik taki powinien mieæ rozszerzenie 
+.I .tap
+albo 
+.I .tzx
+.TP
+.B blok_startowy
+Wskazuje odk±d odgrywaæ plik z ta¶m±.  Domy¶lnie jest 0.
+.TP
+.B plik_wynikowy
+Je¶li podany, program zapisuje w tym pliku zamiast u¿ywaæ karty d¼wiêkowej.
+.SH ZOBACZ TAK¯E
+xspect (1), vgaspect (1)
+.PP
+http://www.inf.bme.hu/~mszeredi/spectemu/spectemu.html
+.SH B£ÊDY
+Wiele parametrów jest niezmienialnych (np. pauza pomiêdzy blokami na ta¶mie).
+.PP
+Nieinteraktywny (z wyj±tkiem Ctrl\-c).
+.SH AUTOR
+Miklos Szeredi (EMAIL: mszeredi@inf.bme.hu)
+.SH PRAWA AUTORSKIE
+Copyright (C) 1998 Miklos Szeredi
+.SH LICENCJA
+GPL
+.SH T£UMACZENIE
+Witold Filipczyk <juandon@poczta.onet.pl>

@@ -1,0 +1,163 @@
+.\" 2000 PTM Przemek Borys
+.TH lspci 8 "20 May 2000" "pciutils-2.1.8" "Linuksowe narzêdzia PCI"
+.IX lspci
+.SH NAZWA
+lspci \- wymieñ wszystkie urz±dzenia PCI
+.SH SK£ADNIA
+.B lspci
+.RB [ opcje ]
+.SH OPIS
+.B lspci
+jest narzêdziem do wy¶wietlania informacji o wszystkich szynach PCI systemu
+i pod±czonych do nich urz±dzeniach.
+
+Aby korzystaæ z nowych w³a¶ciwo¶ci tego programu, potrzebujesz j±dra
+Linuksowego 2.1.82 lub nowszego, wspieraj±cego interfejs /proc/bus/pci.
+W przypadku starszych j±der, narzêdzia PCI bêd± musia³y u¿ywaæ
+bezpo¶redniego dostêpu do sprzêtu, który jest mo¿liwy tylko z poziomu roota
+i powoduje niezliczone sytuacje wy¶cigów i inne problemy.
+
+Je¶li chcesz zg³aszaæ b³êdy o sterownikach PCI lub o samym
+.BR lspci ,
+to proszê za³±cz wynik wywo³ania "lspic -vvx".
+
+.SH OPCJE
+.TP
+.B -v
+Nakazuje
+.B lspci
+bycie gadatliwym i wy¶wietlanie szczegó³owych informacji o wszystkich
+urz±dzeniach.
+.TP
+.B -vv
+Nakazuje
+.B lspci
+bycie bardzo gadatliwym i wy¶wietlanie jeszcze wiêcej informacji (w³a¶ciwie
+wszystkich, które mo¿na zdobyæ od urz±dzenia PCI). Dok³adne znaczenie tych
+danych nie jest wyja¶nione w tym podrêczniku; je¶li potrzebujesz wiedzieæ
+wiêcej, zobacz
+.I /usr/include/linux/pci.h
+lub specyfikacje PCI.
+.TP
+.B -n
+Pokazuje dystrybutora PCI oraz kody urz±dzenia jako numerki, bez rozwijania ich
+w bazie danych ID PCI.
+.TP
+.B -x
+Pokazuje szesnastkowy zrzut pierwszych 64 bajtów przestrzeni konfiguracyjnej
+PCI (standardowy nag³ówek). Przydatne do debuggowania sterowników i samego
+.BR lspci . 
+.TP
+.B -xxx
+Pokazuje szesnastkowy zrzut ca³ej przestrzeni konfiguracyjnej PCI. Dostêpne
+tylko dla roota, gdy¿ czê¶æ urz±dzeñ PCI
+.B za³amuje siê
+gdy próbujesz odczytaæ niezdefiniowane obszary przestrzeni konfiguracyjnej
+(zachowanie to prawdopodobnie nie narusza standardu PCI, lecz jest
+co najmniej bardzo g³upie).
+.TP
+.B -b
+Widok szynocentryczny. Pokazuje wszystkie numery IRQ i adresy widziane przez
+karty na szynie PCI, zamiast punktu widzenia j±dra.
+.TP
+.B -t
+Pokazuje drzewiasty diagram zawieraj±cy wszystkie szyny, mosty, urz±dzenia i
+po³±czenia miêdzy nimi.
+.TP
+.RI "\fB-s\fR [[" szyna ]\fB:\fR][ slot ][\fB.\fR[ funkcja ]]
+Pokazuje urz±dzenia tylko w okre¶lonej szynie, slocie i funkcji. Ka¿dy
+komponent adresu urz±dzenia mo¿na pomin±æ lub oznaczyæ gwiazdk±, co oznacza
+dowoln± warto¶æ. Wszystkie numerki s± szesnastkowe. Np. "0:" oznacza
+wszystkie urz±dzenia na szynie 0, "0" oznacza wszystkie funkcje urz±dzenia
+na dowolnej szynie, "0.3" wybiera trzeci± funkcjê urz±dzenia 0 na wszystkich
+szynach, a ".4" pokazuje czwart± funkcjê ka¿dego urz±dzenia.
+.TP
+.RI "\fB-d\fR [" vendor ]\fB:\fR[ device ]
+Pokazuje tylko urz±dzenia o okre¶lonym ID urz±dzenia i dystrybutora. Obydwa ID
+s± podawane szesnastkowo i mog± byæ pominiête lub okre¶lone jako "*"
+(dowolne).
+.TP
+.BI -i " plik "
+u¿ywa
+.I pliku
+jako bazy ID PCI zamiast /usr/share/pci.ids.
+.TP
+.BI -p " katalog"
+U¿ywa
+.I katalogu
+jako katalogu zawieraj±cego informacje o szynie PCI zamiast /proc/bus/pci.
+.TP
+.B -m
+Wyrzuca dane o urz±dzeniu PCI w formacie odczytywalnym przez maszynê
+(obs³ugiwany jest zarówno format normalny jak i gadatliwy). Opcja stworzona
+do ³atwego prztwarzania danych przez skrypty.
+.TP
+.B -M
+Wywo³uje tryb mapowania szyny, który skanuje szczegó³owo szynê aby znale¼æ
+wszystkie urz±dzenia (nawet te spoza ¼le skonfigurowanych mostów itp.).
+Zauwa¿, ¿e jest to przeznaczone tylko do diagnostyki i mo¿e za³amaæ maszynê
+(tylko w wypadku b³êdogennych urz±dzeñ, lecz niestety takie istniej±).
+Mo¿liwo¶æ ta jest dostêpna tylko dla roota. U¿ywanie -M w metodach dostêpu
+PCI, które nie dotykaj± bezpo¶rednio sprzêtu nie ma sensu, gdy¿ rezultaty s±
+take same jak w zwyk³ych trybach listowania.
+.TP
+.B --version
+Pokazuje wersjê
+.BR lspci .
+Opcja ta powinna byæ u¿ywana samodzielnie.
+
+.SH OPCJE PCILIB
+Narzêdzia PCI u¿ywaj± PCILIB (przeno¶nej biblioteki, daj±cej niezale¿ne od
+platformy funkcje dostêpu do obszaru konfiguracyjnego PCI) do rozmawiania z
+kartami PCI. Nastêpuj±ce opcje steruj± parametrami biblioteki, szczególnie
+jej metodami dostêpu. Domy¶lnie PCILIB u¿ywa pierwszej dostêpnej metody
+dostêpu i nie wy¶wietla danych debuggowych. Ka¿demu prze³±cznikowi
+towarzyszy lista konfiguracji sprzêtowych/programowych, w których jest
+obs³ugiwany.
+
+.TP
+.BI -P " katalog"
+U¿ywa dostêpu konfiguracyjnego w stylu Linuksa 2.1 do katalogu
+.I katalog
+zamiast do /proc/bus/pci.
+(tylko Linux 2.1 lub nowsze)
+.TP
+.B -H1
+U¿ywa bezpo¶redniego dostêpu do sprzêtu poprzez mechanizm 1 konfiguracji
+Intela. (tylko dla i386 i kompatybilnych)
+.TP
+.B -H2
+U¿ywa bezpo¶redniego dostêpu do sprzêtu poprzez mechanizm 2 konfiguracji
+Intela. Uwaga: mechanizm ten jest w stanie zaadresowaæ jedynie pierwszych 16
+urz±dzeñ szyny i wydaje siê byæ bardzo niewiarygodny w niektórych
+przypadkach. (tylko dla i386 i kompatybilnych)
+.TP
+.B -S
+U¿ywa wywo³añ systemowych dostêpu do PCI. (tylko Linux na Alfie i
+UltraSparku)
+.TP
+.BI -F " plik"
+Wyci±ga wszystkie informacje z podanego pliku zawieraj±cego wyj¶cie lspci
+-x. Jest to przydatne do analizowania przekazanych przez u¿ytkowników
+raportów o b³êdach, gdy¿ mo¿na wy¶wietliæ konfiguracjê sprzêtow± w dowolnym
+stylu bez mêczenia u¿ytkownika o nowe zrzuty. (wszystkie systemy).
+.TP
+.B -G
+Zwiêksza w bibliotece poziom debugowania. (wszystkie systemy)
+
+.SH PLIKI
+.TP
+.B /usr/share/pci.ids
+Lista znanych ID PCI (dystrybutorzy, urz±dzenia, klasy i podklasy).
+.TP
+.B /proc/bus/pci
+Interfejs do przestrzeni konfiguracyjnej szyny PCI udostêpniony w j±drach
+Linuksa po wersji 2.1.82. Zawiera podkatalogi wg szyn z plikami przestrzeni
+konfiguracyjnej kart i plikami urz±dzeñ zawieraj±cymi listy wszystkich
+urz±dzeñ PCI.
+
+.SH ZOBACZ TAK¯E
+.BR setpci (8)
+
+.SH AUTOR
+Narzêdziami opiekuje siê Martin Mares <mj@suse.cz>.

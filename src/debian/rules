@@ -1,0 +1,131 @@
+#!/usr/bin/make -f
+# Sample debian/rules that uses debhelper.
+# This file is public domain software, originally written by Joey Hess.
+#
+# This version is for a multibinary package. It also allows you to build any
+# of the binary packages independantly, via binary-<package> targets.
+
+# Uncomment this to turn on verbose mode. 
+#export DH_VERBOSE=1
+
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
+UPSTR_VERSION=$(shell dpkg-parsechangelog | \
+		sed -n -e '/^Version:/s/^[^:]*: *\(.*\)-[^-]*$$/\1/p')
+
+DESTDIR=$(CURDIR)/debian/tmp/usr/share/man/pl
+
+
+build: build-stamp
+build-stamp:
+	dh_testdir
+
+	# Add here commands to compile the package.
+	#$(MAKE)
+
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+
+	# Add here commands to clean up after the build process.
+	#-$(MAKE) clean
+	#-$(MAKE) distclean
+
+	rm -f debian/README debian/translators
+	
+	dh_clean
+
+install: DH_OPTIONS=
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	# Add here commands to install the package into debian/tmp.
+	cp -a FAQ debian/README
+	cp -a zasoby/robotnicy debian/translators
+
+	bash debian/install.sh $(DESTDIR)
+	for p in `dh_listpackages` ; do \
+		mkdir -m 0755 -p $(CURDIR)/debian/$$p/usr/share/linda/overrides/ ; \
+		echo 'Tag: only-nonenglish-man' >  $(CURDIR)/debian/$$p/usr/share/linda/overrides/$$p ; \
+	done;		
+
+	dh_install
+
+# This single target is used to build all the packages, all at once, or
+# one at a time. So keep in mind: any options passed to commands here will
+# affect _all_ packages. Anything you want to only affect one package
+# should be put in another target, such as the install target.
+binary-common:
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs ChangeLog
+	dh_installdocs
+#	dh_installexamples
+#	dh_installmenu
+#	dh_installdebconf
+#	dh_installlogrotate
+#	dh_installemacsen
+#	dh_installpam
+#	dh_installmime
+#	dh_installinit
+#	dh_installman
+#	dh_installcron
+#	dh_installinfo
+#	dh_undocumented
+#	dh_strip
+	dh_link
+	dh_compress
+	dh_fixperms
+#	dh_makeshlibs
+	dh_installdeb
+#	dh_perl
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+# Build architecture independant packages using the common target.
+binary-indep: build install
+	 $(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
+
+# Build architecture dependant packages using the common target.
+binary-arch: build install
+#	$(MAKE) -f debian/rules DH_OPTIONS=-a binary-common
+
+# Any other binary targets build just one binary package at a time.
+binary-%: build install
+	make -f debian/rules binary-common DH_OPTIONS=-p$*
+
+
+binary: binary-indep binary-arch
+
+### build the package
+cvs-build:
+	chmod a+x debian/rules
+	rm -rf debian/cvs-build
+	mkdir -p -m755 debian/cvs-build/manpages-pl-$(UPSTR_VERSION).orig && \
+	tar c --exclude CVS --exclude cvs-build --exclude '.#*' . \
+		| tar xf - -C  debian/cvs-build/manpages-pl-$(UPSTR_VERSION).orig && \
+	cd debian/cvs-build && \
+	chmod -R a+rX,go-w . && \
+	tar cvf manpages-pl_$(UPSTR_VERSION).orig.tar --owner=0 --group=0 \
+		manpages-pl-$(UPSTR_VERSION).orig && \
+	gzip -9 manpages-pl_$(UPSTR_VERSION).orig.tar && \
+	mv manpages-pl-$(UPSTR_VERSION).orig manpages-pl-$(UPSTR_VERSION) && \
+	cd manpages-pl-$(UPSTR_VERSION) && \
+	if [ -x /usr/bin/debuild ]; then debuild -rfakeroot -uc -us; \
+		else dpkg-buildpackage -uc -us; fi && \
+	cd .. && \
+	rm -rf manpages-pl-$(UPSTR_VERSION) && \
+	echo "Built packages: " && \
+	cd ../.. && \
+	ls debian/cvs-build/*.deb
+	
+.PHONY: build clean binary-indep binary-arch binary install cvs-build

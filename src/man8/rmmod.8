@@ -1,0 +1,110 @@
+.\" T³umaczenie wersji z modutils-2.4.10 - pa¼dziernik 2001 PTM
+.\" czê¶ciowo oparte na rmmod.1 z PTM autorstwa Marcina Mazurka
+.\" Andrzej Krzysztofowicz <ankry@green.mif.pg.gda.pl>
+.\"
+.\" Copyright (c) 1996 Free Software Foundation, Inc.
+.\" This program is distributed according to the Gnu General Public License.
+.\" See the file COPYING in the kernel source directory
+.\" $ Id: rmmod.8 1.3 Sun, 06 May 2001 14:52:26 +1000 kaos $
+.\"
+.TH RMMOD 8 "12 listopada 2000" Linux "Wsparcie dla modu³ów"
+.SH NAZWA
+rmmod \- usuwa za³adowany modu³
+.SH SK£ADNIA
+.B rmmod
+[ \-aehrsvV ] modu³ ...
+.SH OPIS
+.B rmmod
+usuwa za³adowany modu³ z dzia³aj±cego j±dra systemu.
+.PP
+.B rmmod
+próbuje usun±æ zbiór modu³ów z j±dra, pod warunkiem, ¿e nie s± one u¿ywane i 
+nie odwo³uj± siê do nich inne modu³y.
+.PP
+Je¶li w lini poleceñ podano wiêcej ni¿ jeden modu³, wymienione modu³y bêd±
+usuniête w podanej kolejno¶ci. Pozwala to na usuwanie modu³ów powi±zanych.
+.PP
+W razie podania opcji '-r' podjeta zostanie próba rekurencyjnego usuniêcia
+modu³ów. Oznacza to, ¿e je¶li w linii poleceñ podany zostanie modu³
+znajduj±cy siê na wierzcho³ku stosu, to zostan± równie¿ usuniête wszystkie
+modu³y, z których korzysta dany modu³, o ile to bêdzie mo¿liwe. 
+.PP
+.SS OPCJE
+.TP
+.I "-a --all"
+Wykonuje autoczyszcenie: zaznacza nieu¿ywane modu³y jako "do usuniêcia" i
+usuwa ju¿ zaznaczone modu³y. Modu³y zostaj± usuniête, je¶li nie zosta³y u¿yte
+od czasu poprzedniego autoczyszczenia. Te dwa przebiegi zapobiegaj± usuniêciu
+modu³ów chwilowo nieu¿ywanych.
+.TP
+.I "-e --persist"
+Zachowuje trwa³e dane dla wymienionych modu³ów bez usuwania jakichkolwiek.
+Je¶li nie podano nazwy ¿adnego modu³u, to dane s± zachowywane dla wszystkich
+modu³ów zawieraj±cych trwa³e dane. S± one zachowywane jedynie, gdy zarówno
+j±dro, jak i modutils obs³uguj± trwa³e dane a /proc/ksyms zawiera wpis
+.br
+__insmod_\fInazwamodu³u\fP_P\fInazwa_przechowalni\fP
+.TP
+.I "-h --help"
+Wypisuje tekst pomocy.
+.TP
+.I "-r --stacks"
+Usuwa stos modu³ów.
+.TP
+.I "-s --syslog"
+Wyprowadza wszystko do \fBsyslog\fP(3) zamiast na terminal.
+.TP
+.I "-v --verbose"
+W³±cza wy¶wietlanie du¿ej ilo¶ci informacji.
+.TP
+.I "-V --version"
+Wypisuje wersjê modutils.
+.SH "TRWA£E DANE"
+Je¶li modu³ zawiera trwa³e dane (zobacz
+.IR insmod (8)
+i
+.IR modules.conf (5)),
+to usuniêcie modu³u zawsze powoduje zapisanie tych danych do pliku o nazwie
+podanej w symbolu __insmod _P. Trwa³e dane mo¿na równie¿ zachowaæ w dowolnej
+chwili poprzez rmmod\ -e. Nie spowoduje to usuniêcia ¿adnego modu³u.
+.PP
+Gdy trwa³e dane s± zapisywane do pliku, s± one poprzedzone wygenerowan± lini±
+komentarza,
+.br
+#% \fIwersja_kernela czas\fR
+.br
+Wygenerowane linie komentarza zaczynaj± siê od '#%', wszystkie wygenerowane
+komentarze s± usuwane z istniej±cego pliku, inne komentarze s± zachowane.
+Warto¶ci zachowywanych danych s± zapisywane do pliku z zachowaniem
+istniej±cej kolejno¶ci komentarzy i przypisañ. Nowe warto¶ci s± dopisywane
+na koñcu pliku. Je¶li plik zawiera warto¶ci, które nie istniej± w module,
+to te warto¶ci zostan± zachowane, ale bêd± poprzedzone wygenerowanym
+komentarzem ostrzegaj±cym, ¿e nie by³y u¿ywane. Ostatnia operacja pozwala
+u¿ytkownikowi na prze³aczanie pomiêdzy kernelami bez utraty trwa³ych danych
+i bez otrzymywania komunikatów o b³êdach.
+.PP
+.B Uwaga:
+Wspierane s± jedynie komentarze, dla których '#' jest pierwszym ró¿nym od
+spacji znakiem linii. Wszystkie niepuste linie, które nie zaczynaj± sie od
+'#' stanowi± opcje modu³u, po jednej w linii. Z linii opcji usuwane s±
+pocz±tkowe spacje, reszta linii jest przekazywana do programu insmod jako
+opcja, ³±cznie z wszelkimi znakami na koñcu linii.
+.SH "ZOBACZ TAK¯E"
+insmod(8), lsmod(8), ksyms(8), modprobe(8)
+.SH HISTORIA
+.lp
+Wsparcie dla modu³ów zosta³o zapocz±tkowane przez Anonima
+.br
+Pierwsza wersja Linuksowa przygotowana przez Basa Laarhovena <bas@vimec.nl>
+.br
+Wersja 0.99.14 przygotowana przez Jona Tombsa <jon@gtex02.us.es>
+.br
+Rozbudowana przez Bjorna Ekwalla <bj0rn@blox.se>
+.br
+Aktualizowna do 2.1.17 przez Richarda Hendersona <rth@tamu.edu>
+.br
+Aktualizowna do 2.2.2 przez Bjorna Ekwalla <bj0rn@blox.se>
+.br
+Aktualizowna do modutils 2.3.20 przez Keitha Owensa <kaos@ocs.com.au>
+.br
+Trwa³e dane dla modu³ów 2.3.22 przez Keitha Owensa <kaos@ocs.com.au>.

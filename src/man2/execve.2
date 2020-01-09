@@ -1,0 +1,210 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright (c) 1992 Drew Eckhardt (drew@cs.colorado.edu), March 28, 1992
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified by Michael Haardt <michael@moria.de>
+.\" Modified Wed Jul 21 22:47:01 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified 21 Aug 1994 by Michael Chastain <mec@shell.portal.com>:
+.\"   Fixed typoes.
+.\" Modified Fri Jan 31 16:24:28 1997 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified Fri Nov 12 22:57:27 1999 by Urs Thuermann <urs@isnogud.escape.de>
+.\"
+.\" Translation (c) 1998 Przemek Borys <pborys@dione.ids.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\"
+.TH EXECVE 2 1997-09-03 "Linux 2.0.30" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+execve \- uruchomienie programu
+.SH SK£ADNIA
+.B #include <unistd.h>
+.sp
+.BI "int execve(const char *" filename ", char *const " argv
+.BI "[], char *const " envp []);
+.SH OPIS
+\fBexecve()\fP uruchamia program wskazany przez \fIfilename\fP.
+\fIfilename\fP musi byæ albo wykonywalnym programem binarnym, albo skryptem
+pow³oki, rozpoczynaj±cym siê od linii postaci "\fB#! \fIinterpreter \fR[arg]".
+W tym drugim przypadku, interpreter musi byæ prawid³ow± ¶cie¿k± do programu,
+a nie skryptem, który by³by uruchomiany jako
+\fBinterpreter\fR [arg] \fIfilename\fR.
+
+\fIargv\fP jest tablic± ³añcuchów przekazywanych jako argumenty nowego
+programu. \fIenvp\fP jest tablic± ³añcuchów postaci \fBklucz=warto¶æ\fR,
+która jest przekazywana jako ¶rodowisko do nowego programu. Zarówno
+\fIargv\fP, jak i \fIenvp\fP musz± byæ zakoñczone wska¼nikiem pustym (NULL).
+Tablica argumentów oraz ¶rodowisko s± dostêpne w funkcji main wywo³ywanego
+programu, je¿eli jest ona zdefiniowana jako \fBint main(int argc, char
+*argv[], char *envp[])\fR.
+
+\fBexecve()\fP nie powraca po pomy¶lnym wywo³aniu, a segmenty text, data, bss
+oraz segment stosu procesu wywo³uj±cego zostaj± nadpisane przez odpowiedniki
+³adowanego programu. Wywo³ywany program dziedziczy PID procesu wywo³uj±cego
+i wszelkie deskryptory otwartych plików, które nie s± ustawione jako
+"close on exec". Sygna³y oczekuj±ce na proces wywo³uj±cy zostaj± wyczyszczone.
+Sygna³om, które by³y przechwytywane przez proces wywo³uj±cy, zostaje
+przypisana ich domy¶lna obs³uga. Sygna³ SIHCHLD (je¿eli jest ustawiony na
+SIG_IGN) mo¿e, ale nie musi byæ przestawiony na SIG_DFL.
+
+Je¶li obecny program jest ptrace'owany, wysy³a siê mu \fBSIGTRAP\fP
+po pomy¶lnym \fBexecve()\fP.
+
+Je¿eli plik programu wskazywany przez \fIfilename\fP ma ustawiony bit
+set-uid, to efektywny identyfikator u¿ytkownika procesu wywo³uj±cego jest
+ustawiany na w³a¶ciciela pliku programu. Podobnie, je¿eli dla pliku programu
+ustawiony jest bit set-gid, to efektywnemu identyfikatorowi grupy procesu
+wywo³uj±cego jest przypisywana grupa pliku programu.
+
+Je¶li program wykonywalny jest skonsolidowany dynamicznie w formacie a.out
+z bibliotekami dzielonymi, na pocz±tku uruchamieina wywo³ywany jest
+konsolidator dynamiczny
+.BR ld.so (8),
+który ³aduje wszystkie biblioteki do rdzenia i konsoliduje z nimi program
+wykonywalny.
+
+Je¿eli program jest skonsolidowany dynamicznie jako ELF, to do za³adowania
+potrzebnych bibliotek wspó³dzielonych u¿ywany jest interpreter okre¶lony
+w segmencie PT_INTERP. Tym interpreterem jest zazwyczaj
+\fI/lib/ld-linux.so.1\fR, w wypadku programów skonsolidowanych z bibliotek±
+libc w wersji 5, albo \fI/lib/ld-linux.so.2\fR - dla programów
+skonsolidowanych z bibliotek± GNU libc w wersji 2.
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu \fBexecve()\fP nie wraca, w wypadku b³êdu zwracane
+jest \-1 i odpowiednio ustawiane
+.I errno .
+.SH B£ÊDY
+.TP
+.B EACCES
+Plik lub interpreter skryptu nie jest zwyk³ym plikiem.
+.TP
+.B EACCES
+Brak praw wykonywania dla pliku, skryptu lub intepretera ELF.
+.TP
+.B EACCES
+System plików jest zamontowany jako
+.IR noexec .
+.TP
+.B EPERM
+System plików jest zamontowany jako
+.IR nosuid ,
+u¿ytkownik nie jest superu¿ytkownikiem, a plik ma ustawiony bit SUID lub SGID.
+.TP
+.B EPERM
+Proces jest ¶ledzony (trace), u¿ytkownik nie jest superu¿ytkownikiem, a plik
+ma ustawiony bit SUID lub SGID.
+.TP
+.B E2BIG
+Lista argumentów jest zbyt d³uga.
+.TP
+.B ENOEXEC
+Nie rozpoznano formatu pliku binarnego, plik ten jest skompilowany dla innej
+architektury albo wyst±pi³ jaki¶ inny b³±d w formacie, który powoduje, ¿e
+program nie mo¿e byæ uruchomiony.
+.TP
+.B EFAULT
+.I filename
+wskazuje poza dostêpn± dla u¿ytkownika przestrzeñ adresow±.
+.TP
+.B ENAMETOOLONG
+.I filename
+jest zbyt d³ugie.
+.TP
+.B ENOENT
+Plik
+.IR filename ,
+skrypt, lub intepreter ELF nie istnieje albo nie mo¿na znale¼æ biblioteki
+wspó³dzielonej potrzebnej do uruchomienia pliku lub interpretera.
+.TP
+.B ENOMEM
+Brak dostêpnej pamiêci j±dra.
+.TP
+.B ENOTDIR
+Sk³adnik ¶cie¿ki
+.IR filename ,
+¶cie¿ki skryptu lub ¶cie¿ki interpretera ELF nie jest katalogiem.
+.TP
+.B EACCES
+Brak praw do przeszukiwania dla sk³adnika ¶cie¿ki
+.I filename
+lub ¶cie¿ki interpretera skryptu.
+.TP
+.B ELOOP
+Podczas rozwi±zywania
+.IR filename ,
+nazwy skryptu lub interpretera ELF napotkano zbyt wiele dowi±zañ
+symbolicznych.
+.TP
+.B ETXTBSY
+Plik wykonywalny by³ otwarty do zapisu przez jeden lub wiêcej procesów.
+.TP
+.B EIO
+Wyst±pi³ b³±d wej¶cia-wyj¶cia.
+.TP
+.B ENFILE
+Zosta³ osi±gniête ograniczenie liczby otwartych plików w systemie.
+.TP
+.B EMFILE
+Proces osi±gn±³ ju¿ maksymaln± liczbê otwartych plików.
+.TP
+.B EINVAL
+Plik wykonywalny w formacie ELF ma wiêcej ni¿ jeden segment PT_INTERP
+(tzn. ma wiêcej ni¿ jeden interpreter).
+.TP
+.B EISDIR
+Intepreter ELF jest katalogiem.
+.TP
+.B ELIBBAD
+Nie zosta³ rozpoznany format intepretera ELF.
+.SH "ZGODNE Z"
+SVr4, SVID, X/OPEN, BSD 4.3. POSIX nie dokumentuje zachowania #!, lecz poza
+tym jest zgodny. SVr4 dokumentuje dodatkowe b³êdy EAGAIN, EINTR, ELIBACC,
+ENOLINK, EMULTIHOP; POSIX nie dokumentuje b³êdów ETXTBSY, EPERM, EFAULT,
+ELOOP, EIO, ENFILE, EMFILE, EINVAL, EISDIR i ELIBBAD.
+.SH UWAGI
+Procesy ustawiaj±ce SUID lub SGID nie mog± byæ traktowane \fBptrace()\fP.
+
+Linux ignoruje bity SUID i SGID dla skryptów.
+
+Efect zamontowania systemu plików
+.I nosuid
+jest ró¿ny dla ró¿nych wersji j±dra Linuksa:
+niektóre odmówi± uruchomienia programów SUID/SGID, gdy spowodowa³oby to
+udostêpnienie u¿ytkownikowi mo¿liwo¶ci, którymi w danym momencie nie
+dysponuje (i zwróc± EPERM), inne po prostu zignoruj± bity SUID/SGID
+i wykonaj± exec pomy¶lnie.
+
+Maksymalna d³ugo¶æ pierwszej linii skryptu pow³oki, zawieraj±cej #! wynosi 127
+znaków.
+.\" .SH BUGS
+.\" Some Linux versions have failed to check permissions on ELF
+.\" interpreters.  This is a security hole, because it allows users to
+.\" open any file, such as a rewinding tape device, for reading.  Some
+.\" Linux versions have also had other security holes in \fBexecve()\fP,
+.\" that could be exploited for denial of service by a suitably crafted
+.\" ELF binary. There are no known problems with 2.0.34 or 2.2.15.
+.SH "ZOBACZ TAK¯E"
+.BR chmod (2),
+.BR fork (2),
+.BR execl (3),
+.BR environ (5),
+.BR ld.so (8)

@@ -1,0 +1,38 @@
+.\" {PTM/WK/1999-11-21}
+.\" Copyright 1992, 1993 Rickard E. Faith (faith@cs.unc.edu)
+.\" May be distributed under the GNU General Public License
+.TH SYNC 8 "20 listopada 1993" "Linux 0.99" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+sync \- opró¿nij bufory Linuksowego systemu plików
+.SH SK£ADNIA
+.B sync
+.SH OPIS
+.B sync
+wykonuje
+.BR sync (2),
+które opró¿nia na dysk bufory systemu plików.
+.B sync
+powinno byæ wywo³ywane przed zatrzymaniem procesora w niecodzienny sposób
+(tj. przed spowodowaniem awarii "kernel panic" podczas odpluskwiania kodu
+nowego j±dra). Ogólnie, procesor powinien byæ zatrzymywany przy pomocy
+poleceñ
+.BR reboot "(8) lub " halt (8),
+które bêd± usi³owaæ system w stan bezruchu przed wywo³aniem
+
+Od Linusa: "Zauwa¿, ¿e
+.B sync
+gwarantuje jedynie umieszczenie zaplanowanie zapisu buforowanych bloków;
+faktycznie mo¿e up³yn±æ trochê czasu przed ostatecznym zapisaniem wszystkich
+bloków. Je¿eli wykonujesz
+.B sync
+maj±c zamiar wkrótce potem wy³±czyæ maszynê, proszê we¼ to pod uwagê i odczekaj
+(np. przez "sleep") kilka sekund. [Polecenie
+.BR reboot (8)
+podejmuje te ¶rodki bezpieczeñstwa.]
+.SH ZOBACZ TAK¯E
+.BR sync (2),
+.BR update (8),
+.BR reboot (8),
+.BR halt (8)
+.SH AUTOR
+Linus Torvalds (torvalds@cs.helsinki.fi)

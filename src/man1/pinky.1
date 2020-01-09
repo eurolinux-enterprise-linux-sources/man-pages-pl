@@ -1,0 +1,80 @@
+.\" {PTM/WK/2000-VI} - w oparciu o kod ¼ród³owy
+.TH EXPR "1" FSF "maj 2000" "Narzêdzia pow³okowe GNU 2.0"
+.SH NAZWA
+pinky \- odchudzony finger, podaje informacjê o u¿ytkownikach
+.SH SK£ADNIA
+.B pinky
+.RB [ opcja ...]
+.RI [ u¿ytkownik ...]
+.SH OPIS
+.B pinky
+jest odchudzonym programem typu \fBfinger\fP. Wypisuje informacjê o zadanych
+u¿ytkownikach.
+Je¶li nie zosta³y podane ¿adne argumenty, \fBpinky\fP wypisze informacje o
+ka¿dym u¿ytkowniku zalogowanym w danej chwili w systemie.
+.PP
+Ka¿dy z wypisywanych wierszy zawiera: nazwê zg³oszeniow±
+u¿ytkownika (login name), jego pe³n± nazwê, terminal, na którym pracuje,
+czas bezczynno¶ci (iddle), czas zalogowania siê i nazwê hosta.
+Czas bezczynno¶ci podawany jest w godzinach i minutach, chyba ¿e przekroczy
+dobê, wówczas w pe³nych dniach. Czas zalogowania wy¶wietlany jest w postaci
+standardowej, zwracanej przez funkcjê \fIctime\fP(3).
+.PP
+Przy d³ugim formacie wy¶wietlania informacja o ka¿dym z u¿ytkowników
+umieszczana jest w kilku wierszach i poza nazw± zg³oszeniow± i pe³n±
+obejmuje równie¿: pow³okê i katalog domowy u¿ytkownika oraz zawarto¶ci
+plików \fI.project\fP i \fI.plan\fP z katalogu domowego.
+.SH OPCJE
+.TP
+.B \-l
+Wy¶wietlanie w d³ugim formacie.
+.TP
+.B \-b
+Pomija informacjê o pow³oce i katalogu domowym u¿ytkownika.
+U¿ywana w d³ugim formacie.
+.TP
+.B \-h
+Pomija wy¶wietlanie zawarto¶ci pliku \fI.project\fP u¿ytkownika.
+U¿ywana w d³ugim formacie.
+.TP
+.B \-p
+Pomija wy¶wietlanie zawarto¶ci pliku \fI.plan\fP u¿ytkownika.
+U¿ywana w d³ugim formacie.
+.TP
+.B \-s
+Wy¶wietlanie w formacie krótkim. Jest to opcja domy¶lna.
+.TP
+.B \-f
+Pomija wiersz z nag³ówkami kolumn, stosowana przy formacie krótkim.
+.TP
+.B \-w
+Pomija pe³n± nazwê u¿ytkownika, stosowana przy formacie krótkim.
+.TP
+.B \-i
+Pomija pe³n± nazwê u¿ytkownika i nazwê zdalnego hosta, stosowana przy
+formacie krótkim.
+.TP
+.B \-q
+Pomija pe³n± nazwê u¿ytkownika, nazwê zdalnego hosta i czas bezczynno¶ci,
+stosowana przy formacie krótkim.
+.TP
+.B \-\-help
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach, koñczy
+pracê.
+.TP
+.B \-\-version
+Wy¶wietla numer wersji programu i koñczy pracê.
+.SH ZGODNO¦Æ
+.B pinky
+nie obs³uguje jeszcze u¿ywanej przez program \fBfinger\fP opcji \fB\-m\fP,
+s³u¿±cej do wy³±czania poszukiwañ podanych jako argumenty nazw u¿ytkowników
+równie¿ w polu pe³nej, prawdziwej nazwy. Wyszukiwanie tych ci±gów odbywa siê
+zarówno w¶ród nazw zg³oszeniowych jak i pe³nych.
+.PP
+Nie jest tak¿e obs³ugiwana notacja u¿ytkownik@host, s³u¿±ca do poszukiwania
+u¿ytkowników na odleg³ym systemie.
+.SH ZOBACZ TAK¯E
+.BR chfn (1),
+.BR passwd (1),
+.BR w (1),
+.BR who (1),

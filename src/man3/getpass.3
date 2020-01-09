@@ -1,0 +1,100 @@
+.\" Copyright (c) 2000 Andries Brouwer (aeb@cwi.nl)
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.TH GETPASS 3 2000-12-05 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+getpass \- wczytanie has³a
+.SH SK£ADNIA
+.B #include <unistd.h>
+.sp
+.B "char *getpass( const char *" prompt );
+.SH OPIS
+Funkcja ta jest przestarza³a. Nie nale¿y jej u¿ywaæ.
+.PP
+Funkcja
+.BR getpass ()
+otwiera
+.I /dev/tty
+(terminal steruj±cy procesu), wyprowadza napis
+.IR prompt ,
+wy³±cza echo, odczytuje jedn± liniê ("has³o"), odtwarza stan terminala
+i zamyka
+.IR /dev/tty .
+.SH "WARTO¦Æ ZWRACANA"
+Funkcja
+.B getpass
+zwraca wska¼nik do statycznego bufora zawieraj±cego has³o (pierwsze PASS_MAX
+bajtów) bez koñcz±cego znaku nowej linii, zakoñczone znakiem NUL.
+Bufor ten mo¿e zostaæ nadpisany przez pó¼niejsze wywo³ania funkcji.
+W przypadku b³êdu, odtwarzany jest stan terminala, odpowiednio ustawiane
+.IR errno ,
+i zwracane NULL.
+.SH B£ÊDY
+Funkcja mo¿e zakoñczyæ siê niepomy¶lnie, gdy
+.TP
+.B ENXIO
+Proces nie posiada terminala steruj±cego.
+.SH UWAGI
+Dla libc4 i libc5 tekst zachêty ("prompt") nie jest wypisywany na
+.IR /dev/tty ,
+ale na
+.IR stderr .
+Ponadto, je¶li nie mo¿na otworzyæ
+.IR /dev/tty ,
+to has³o jest odczytywane z
+.IR stdin .
+Bufor statyczny ma d³ugo¶æ 128, wiêc zwracanych jest tylko pierwszych 127
+bajtów has³a. Podczas odczytywania has³a wy³±czone jest generowanie sygna³ów
+(SIGINT, SIGQUIT, SIGSTOP, SIGTSTOP), a odpowiadaj±ce im znaki (zwykle
+control-C, control-\e, control-Z i control-Y) s± przesy³ane jako czê¶æ has³a.
+Pocz±wszy od libc 5.4.19, wy³±czona jest edycja linii, tak wiêc równie¿
+cofanie (backspace) i jemu podobne bêd± widziane jako czê¶æ has³a.
+.PP
+Dla glibc2, je¶li nie mo¿na otworzyæ
+.IR /dev/tty ,
+to tekst zachêty jest wypisywany na
+.IR stderr ,
+a has³o jest odczytywane z
+.IR stdin .
+Nie ma natomiast ograniczenia na d³ugo¶æ has³a. Wy³±czona jest edycja linii.
+.PP
+Zgodnie z SUSv2, je¶li warto¶æ PASS_MAX jest mniejsza ni¿ 8, to musi byæ
+zdefiniowana w
+.IR <limits.h> ,
+a w ka¿dym przypadku mo¿na j± otrzymaæ za pomoc±
+.IR sysconf(_SC_PASS_MAX) .
+Jednak¿e, POSIX.2 odchodzi od sta³ych PASS_MAX i _SC_PASS_MAX oraz od funkcji
+.B getpass ().
+Libc4 i libc5 nigdy nie wspiera³y PASS_MAX ani _SC_PASS_MAX.
+Glibc2 akceptuje _SC_PASS_MAX i zwraca BUFSIZ (np. 8192).
+.SH PLIKI
+.I /dev/tty
+.SH "ZOBACZ TAK¯E"
+.BR crypt (3)
+.SH HISTORIA
+Funkcja
+.B getpass
+pojawi³a siê w Wersji 7 AT&T UNIX.
+.SH USTERKI
+Proces wywo³uj±cy funkcjê powinien wyzerowaæ has³o natychmiast, gdy tylko
+bêdzie to mo¿liwe, aby unikn±æ pozostawania jawnego has³a widocznym
+w przestrzeni adresowej procesu.

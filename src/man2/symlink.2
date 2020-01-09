@@ -1,0 +1,153 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" 1999 PTM Przemek Borys
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Mar 2002,
+.\"              manpages 1.48
+.\"
+.\" This manpage is Copyright (C) 1992 Drew Eckhardt;
+.\"                               1993 Michael Haardt, Ian Jackson.
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Sat Jul 24 12:01:10 1993 by Rik Faith
+.\" Added correction due to Nick Duffek <nsd@bbc.com>, aeb, 960426
+.\" Modified Wed Nov  6 04:07:10 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified Fri Jan 31 17:51:14 1997 by Eric S. Raymond <esr@thyrsus.com>
+.\"
+.TH SYMLINK 2 1997-08-21 "Linux 2.0.30" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+symlink \- tworzenie nowej nazwy dla pliku
+.SH SK£ADNIA
+.B #include <unistd.h>
+.sp
+.BI "int symlink(const char *" oldpath ", const char *" newpath );
+.SH OPIS
+.B symlink
+tworzy dowi±zanie symboliczne o nazwie
+.I newpath
+które zawiera ³añcuch znakowy
+.IR oldpath .
+
+Dowi±zania symboliczne s± interpretowane w czasie dzia³ania, tak jakby
+zawarto¶æ dowi±zania by³a podstawiana do ¶cie¿ki, przegl±danej by znale¼æ
+plik lub katalog.
+
+Dowi±zania symboliczne mog± zawieraæ sk³adniki
+.BR .. ,
+które (je¶li u¿ywane na pocz±tku dowi±zania) odnosz± siê do katalogów
+nadrzêdnych katalogu, w którym dane dowi±zanie siê znajduje.
+
+Dowi±zanie symboliczne (znane równie¿ pod nazw± miêkiego dowi±zania) mo¿e
+wskazywaæ na plik istniej±cy, lub nie istniej±cy; ten drugi przypadek znany
+jest pod pojêciem wisz±cego dowi±zania.
+
+Prawa dostêpu dla dowi±zania symbolicznego s± nieistotne; jego w³a¶cicielstwo
+jest ignorowane podczas pod±¿ania za nim, lecz sprawdzane podczas usuwania lub
+przemianowywania, gdy dowi±zanie jest w katalogu z ustawionym bitem `sticky'.
+
+Je¶li ¶cie¿ka
+.I newpath
+istnieje to
+.I nie
+bêdzie nadpisana.
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu zwracane jest zero. Po b³êdzie zwracane jest \-1
+i odpowiednio ustawiane
+.IR errno .
+.SH B£ÊDY
+.TP
+.B EPERM
+System plików zawieraj±cy
+.IR pathname
+nie zezwala na tworzenie dowi±zañ symbolicznych.
+.TP
+.B EFAULT
+.IR oldpath " lub " newpath 
+wskazuje poza dostêpn± dla u¿ytkownika przestrzeñ adresow±.
+.TP
+.B EACCES
+Zapis do katalogu zawieraj±cego
+.I newpath
+nie jest dozwolony dla efektywnego UID procesu wywo³uj±cego tê funkcjê lub
+jeden z katalogów w
+.I newpath
+nie pozwala na przeszukiwanie (wykonywanie).
+.TP
+.B ENAMETOOLONG
+.IR oldpath " lub " newpath " by³o zbyt d³ugie."
+.TP
+.B ENOENT
+Sk³adnik
+.IR newpath ,
+który powinien byæ katalogiem, nie istnieje lub jest wisz±cym dowi±zaniem
+symbolicznym lub
+.I oldpath
+jest ³añcuchem pustym.
+.TP
+.B ENOTDIR
+Sk³adnik u¿yty jako katalog w
+.IR newpath
+w rzeczywisto¶ci nie jest katalogiem.
+.TP
+.B ENOMEM
+Brak pamiêci j±dra.
+.TP
+.B EROFS
+Plik
+.I newpath
+znajduje siê na systemie plików tylko dla odczytu.
+.TP
+.B EEXIST
+.I newpath
+ju¿ istnieje.
+.TP
+.B ELOOP
+Podczas rozwi±zywania
+.I newpath
+napotkano zbyt wiele dowi±zañ symbolicznych.
+.TP
+.B ENOSPC
+Na urz±dzeniu, zawieraj±cym plik nie ma miejsca na kolejny wpis w katalogu.
+.TP
+.B EIO
+Wyst±pi³ b³±d we/wy.
+.SH UWAGI
+Nie jest dokonywane sprawdzenie
+.IR oldpath .
+
+Usuniêcie nazwy, na któr± wskazuje dowi±zanie symboliczne, w rzeczywisto¶ci
+spowoduje skasowanie pliku (chyba ¿e ma jeszcze inne twarde dowi±zania).
+Je¶li zachowanie to nie jest porz±dane, nale¿y u¿ywaæ
+.BR link .
+.SH "ZGODNE Z"
+SVr4, SVID, BSD 4.3 X/OPEN. SVr4 dokumentuje dodatkowe kody b³êdów
+EDQUOT i ENOSYS.
+Zobacz
+.BR open (2)
+po wiele plików o tej samej nazwie oraz NFS.
+.SH "ZOBACZ TAK¯E"
+.BR readlink (2),
+.BR link (2),
+.BR unlink (2),
+.BR rename (2),
+.BR open (2),
+.BR lstat (2),
+.BR ln (1)

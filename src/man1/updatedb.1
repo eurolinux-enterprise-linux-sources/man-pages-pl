@@ -1,0 +1,91 @@
+.\" {PTM/WK/1999-XII}
+.TH UPDATEDB 1L \" -*- nroff -*-
+.SH NAZWA
+updatedb \- aktualizuj bazê danych z nazwami plików
+.SH SK£ADNIA
+.B updatedb
+.RI [ opcje ]
+.SH OPIS
+Ta strona podrêcznika opisuje polecenie \fBupdatedb\fP w wersji GNU, s³u¿±ce
+do aktualizacji baz danych z nazwami plików u¿ywanych przez GNU
+.BR locate .
+.P
+Bazy danych nazw plików zawieraj± listy plików istniej±cych w szczególnych
+drzewach katalogów w momencie ostatniej aktualizacji baz. Nazwa pliku bazy
+domy¶lnej okre¶lana jest w trakcie konfiguracji i instalacji \fBlocate\fP
+i \fBupdatedb\fP. Czêsto¶æ, z jak± aktualizowane s± bazy, oraz katalogi,
+dla których zawieraj± zapisy, zale¿± od tego, jak czêsto i z jakimi argumentami
+uruchamiane jest \fBupdatedb\fP.
+.P
+W ¶rodowiskach sieciowych czêsto sensowne jest tworzenie bazy na korzeniu
+ka¿dego z systemów plików, zawieraj±cej wpisy dla tego systemu. Nastêpnie
+dla ka¿dego systemu plików
+.B updatedb
+uruchamiane jest na tym serwerze, dla którego jest on po³o¿ony dysku
+lokalnym. Zapobiega to za¶miecaniu sieci.
+U¿ytkownicy mog± wybraæ bazy, które przeszukuje \fBlocate\fP, pos³uguj±c siê
+zmienn± ¶rodowiskow± lub opcj± wiersza poleceñ; zobacz \fBlocate\fP(1L).
+Bazy danych nie mog± byæ ³±czone (sklejane).
+.P
+Format bazy danych z nazwami plików zmieni³ siê pocz±wszy od wersji 4.0 GNU
+.B find
+i
+.BR locate ,
+tak by umo¿liwiæ maszynom o ró¿nym porz±dku bajtów wspó³dzielenie baz.
+Nowa wersja
+.B locate
+potrafi odczytywaæ zarówno stare jak i nowe formaty baz danych.
+Jednak stare wersje
+.B locate
+i
+.B find
+daj± niepoprawne wyniki przy u¿yciu bazy danych o nowym formacie.
+.SH OPCJE
+.TP
+.B \-\-localpaths='\fI¶cie¿ka1 ¶cie¿ka2...\fP'
+Niesieciowe katalogi, jakie maj± byæ umieszczone w bazie danych.
+Domy¶lnie /.
+.TP
+.B \-\-netpaths='\fI¶cie¿ka1 ¶cie¿ka2...\fP'
+Katalogi sieciowe (NFS, AFS, RFS, etc.), jakie maj± byæ umieszczone
+w bazie danych.
+Domy¶lnie ¿adne.
+.TP
+.B \-\-prunepaths='\fI¶cie¿ka1 ¶cie¿ka2...\fP'
+Katalogi, jakie nie powinny zostaæ umieszczone w bazie, a sk±din±d by³yby.
+Domy¶lnie  /tmp /usr/tmp /var/tmp /afs.
+.TP
+.B \-\-output=\fIplikbazy\fP
+Nazwa tworzonego pliku bazy.
+Domy¶lnie /var/lib/locatedb.
+.TP
+.B \-\-localuser=\fIu¿ytkownik\fP
+U¿ytkownik, w imieniu którego bêd± przeszukiwane katalogi niesieciowe,
+przy wykorzystaniu \fBsu\fP(1). Domy¶lne jest przeszukiwanie katalogów
+niesieciowych jako bie¿±cy u¿ytkownik.
+Mo¿esz tak¿e ustawiæ tego u¿ytkownika wykorzystuj±c zmienn± ¶rodowiskow±
+\fBLOCALUSER\fP.
+.TP
+.B \-\-netuser=\fIu¿ytkownik\fP
+U¿ytkownik, w imieniu którego bêd± przeszukiwane katalogi sieciowe,
+przy wykorzystaniu \fBsu\fP(1). Domy¶lnie \fBnobody\fP.
+Mo¿esz tak¿e ustawiæ tego u¿ytkownika wykorzystuj±c zmienn± ¶rodowiskow±
+\fBNETUSER\fP.
+.TP
+.B \-\-old\-format
+Tworzy bazê danych w starym formacie zamiast w nowym.
+.TP
+.B \-\-help
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach, koñczy
+pracê.
+.TP
+.B \-\-version
+Wy¶wietla numer wersji programu i koñczy pracê.
+.SH ZOBACZ TAK¯E
+.BR find (1L),
+.BR locate(1L),
+.BR locatedb(5L),
+.BR xargs (1L).
+.br
+.B Znajdowanie plików
+(dokumentacji Info on-line lub drukowanej)

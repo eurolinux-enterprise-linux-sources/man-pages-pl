@@ -1,0 +1,87 @@
+.\" {PTM/WK/2000-V}
+.ds VE LPRng-3.6.12
+.TH LPBANNER 1 \*(VE "LPRng"
+.ig
+lpbanner.1,v 3.33 1998/03/29 18:37:49 papowell Exp
+..
+.SH NAZWA
+lpbanner \- tekstowa strona nag³ówkowa
+.br
+pclbanner \- strona nag³ówkowa w formacie pcl
+.br
+psbanner \- strona nag³ówkowa w formacie PostScript
+.SH SK£ADNIA
+.TP 10
+.B lpbanner
+.RB [ \-l
+.IR length ]
+.RB [ \-w
+.IR width ]
+.RB [ \-P
+.IR printer ]
+.br
+.RB [ \-L
+.IR bannername ]
+.RB [ \-n
+.IR loginname ]
+.RB [ \-h
+.IR host ]
+.br
+.RB [ \-J
+.IR jobtitle ]
+.RB [ \-C
+.IR class ]
+.RB [ \-? \fIoption\fP
+.IR args ]
+.RB [ all ]
+.SH OPIS
+.PP
+Program
+.B lpbanner
+s³u¿y do wydruku prostej strony nag³ówkowej na drukarce o sta³ej
+szeroko¶ci znaków,
+.B pclbanner
+tworzy nag³ówek PCL, za¶
+.B psbanner
+tworzy nag³ówek w formacie PostScript.
+Ca³o¶æ informacji, jaka ma zostaæ wydrukowana jest przesy³ana przy pomocy
+argumentów wiersza poleceñ.
+Dla zachowania zgodno¶ci z szacownymi programami kolejkowania wydruku,
+czyta wiersz formularzowy ze standardowego wej¶cia, ale ignoruje tê informacjê.
+.SH OPCJE
+.IP "\fB\-w \fIwidth\fR" 5
+Szeroko¶æ strony w znakach (domy¶lnie 132).
+.IP "\fB\-l \fIlength\fR" 5
+D³ugo¶æ strony w wierszach (domy¶lnie 60).
+.IP "\fB\-P \fIprinter\fR" 5
+Kolejka drukarki dla wydruku nag³ówka.
+.IP "\fB\-L \fIbannername\fR" 5
+Nazwa u¿ywana w nag³ówku jako nazwa g³ówna.
+.IP "\fB\-n \fIloginname\fR" 5
+Nazwa u¿ywana w nag³ówku jako nazwa zg³oszeniowa u¿ytkownika (login name).
+.IP "\fB\-h \fIhost\fR" 5
+Nazwa u¿ywana w nag³ówku jako nazwa hosta.
+.IP "\fB\-J \fIjobtitle\fR" 5
+£añcuch u¿ywany w nag³ówku jako g³ówny tytu³.
+.IP "\fB\-C \fIclass\fR" 5
+£añcuch u¿ywany w nag³ówku jako klasa.
+.IP "\fB\-? \fIvalue\fR" 5
+Inne opcje i argumenty zapewniane przez LPRng s± ignorowane.
+.SH "ZOBACZ TAK¯E"
+.BR lpd.conf (5),
+.BR lpc (8),
+.BR lpd (8),
+.BR lpr (1),
+.BR lpq (1),
+.BR lprm (1),
+.BR printcap (5),
+.BR lpd.perms (5),
+.BR pr (1).
+.SH "HISTORIA"
+LPRng jest rozszerzonym systemem buforowania wydruku o funkcjonalno¶ci podobnej
+do oprogramowania Berkeley LPR. List± dyskusyjn± o LPRng jest lprng@lprng.com;
+subskrypcja przez wys³anie listu do lprng-request@lprng.com ze s³owem
+`subscribe` w tre¶ci.
+Oprogramowanie to jest dostêpne z ftp://ftp.astart.com/pub/LPRng.
+.SH "AUTOR"
+Patrick Powell <papowell@astart.com>.

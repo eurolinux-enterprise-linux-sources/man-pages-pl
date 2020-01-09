@@ -1,0 +1,42 @@
+.\" 2002 PTM Przemek Borys <pborys@dione.ids.pl>
+.\" Copyright (c) Bruno Haible <haible@clisp.cons.org>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" References consulted:
+.\"   GNU glibc-2 source code and manual
+.\"   Dinkumware C library reference http://www.dinkumware.com/
+.\"   OpenGroup's Single Unix specification http://www.UNIX-systems.org/online.html
+.\"   ISO/IEC 9899:1999
+.\"
+.TH WCSCSPN 3  1999-07-25 "GNU" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+wcscspn \- szuka w ³añcuchu szerokich znaków dowolnego znaku z zadanego
+zbioru
+.SH SK£ADNIA
+.nf
+.B #include <wchar.h>
+.sp
+.BI "size_t wcscspn(const wchar_t *" wcs ", const wchar_t *" reject );
+.fi
+.SH OPIS
+Funkcja \fBwcscspn\fP jest szerokoznakowym odpowiednikiem funkcji
+\fBstrcspn\fP(3). Okre¶la ona d³ugo¶æ najd³u¿szego pocz±tkowego segmentu
+\fIwcs\fP, który w ca³o¶ci sk³ada siê ze znaków nie wymienionych w
+\fIreject\fP. Innymi s³owy, szukane jest pierwsze wyst±pienie szerokiego
+znaku wymienionego w \fIreject\fP.
+.SH "WARTO¦Æ ZWRACANA"
+Funkcja \fBwcscspn\fP zwraca liczbê szerokich znaków w najd³u¿szym
+pocz±tkowym segmencie \fIwcs\fP, sk³adaj±cym siê w ca³o¶ci ze znaków nie
+wymienionych w \fIreject\fP. Innymi s³owy, zwracana jest pozycja pierwszego 
+znaku \fIwcs\fP, nale¿±cego do zbioru znaków z \fIreject\fP lub warto¶æ
+\fIwcslen(wcs\fP, je¶li takiego znaku nie ma.
+.SH "ZGODNE Z"
+ISO/ANSI C, UNIX98
+.SH "ZOBACZ TAK¯E"
+.BR strcspn (3),
+.BR wcspbrk (3),
+.BR wcsspn (3)

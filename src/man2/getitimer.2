@@ -1,0 +1,152 @@
+.\" Copyright 7/93 by Darren Senn <sinster@scintilla.santa-clara.ca.us>
+.\" Based on a similar page Copyright 1992 by Rick Faith
+.\" May be freely distributed
+.\" Modified Tue Oct 22 00:22:35 EDT 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Translation (c) 1998 Przemek Borys <pborys@dione.ids.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Mar 2002,
+.\"              manpages 1.48
+.\"
+.TH GETITIMER 2 1993-08-05 "Linux 0.99.11" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+getitimer, setitimer \- pobranie i ustawienie warto¶ci czasomierza
+.SH SK£ADNIA
+.PD 0
+.HP
+.B #include <sys/time.h>
+.sp
+.HP
+.B int getitimer(int
+.IB which ,
+.B struct itimerval
+.BI * value );
+.HP
+.B int setitimer(int
+.IB which ,
+.B const struct itimerval
+.BI * value ,
+.B struct itimerval
+.BI * ovalue );
+.PD
+.SH OPIS
+System zaopatruje ka¿dy proces w trzy czasomierze, z których ka¿dy
+odlicza czas siê w innej domenie czasowej. Gdy up³ynie czas wa¿no¶ci ustawiony
+dla którego¶ z czasomierzy, do procesu wysy³any jest sygna³, a czasomierz jest
+(potencjalnie) restartowany.
+.TP
+.B ITIMER_REAL
+odlicza czas rzeczywisty i dostarcza
+.B SIGALRM
+po up³ywie czasu wa¿no¶ci.
+.TP
+.B ITIMER_VIRTUAL
+odlicza czas wykonywania siê procesu i dostarcza
+.B SIGVTALRM
+po up³ywie czasu wa¿no¶ci.
+.TP
+.B ITIMER_PROF
+odlicza zarówno czas wykonywania siê procesu, jak i czas wykonywania przez
+system zlecenie procesu. W powi±zaniu z
+.BR ITIMER_VIRTUAL ,
+ten czasomierz zwykle jest u¿ywany do parametryzowania czasu u¿ywanego przez
+aplikacjê zarówno w przestrzeni u¿ytkownika, jak i j±dra.
+Po up³ywie czasu wa¿no¶ci dostarczany jest
+.BR SIGPROF .
+.LP
+Warto¶ci czasomierza s± zdefiniowane za pomoc± nastêpujych struktur:
+.PD 0
+.RS .5i
+.nf
+struct itimerval {
+    struct timeval it_interval; /* nastêpna warto¶æ */
+    struct timeval it_value;    /* obecna warto¶æ */
+};
+struct timeval {
+    long tv_sec;                /* sekundy */
+    long tv_usec;               /* mikrosekundy */
+};
+.fi
+.RE
+.PD
+.LP
+Funkcja
+.BR getitimer (2)
+wype³nia strukturê wskazywan± przez
+.I value
+aktualnym ustawieniem czasomierza wskazywanego przez
+.I which
+(jeden z
+.BR ITIMER_REAL ,
+.B ITIMER_VIRTUAL
+lub
+.BR ITIMER_PROF ).
+Do pola
+.B it_value
+jest wpisywana ilo¶æ czasu, który pozosta³ czasomierzowi lub zero, je¶li
+czasomierz jest wy³±czony. Podobnie, do
+.B it_interval
+jest wpisywana warto¶æ inicjalizacyjna.
+Funkcja
+.BR setitimer (2)
+ustawia dla wskazanego czasomierza warto¶ci zawarte w
+.IR value .
+Je¶li
+.I ovalue
+jest niezerowe, to jest tam zapisywana stara warto¶æ czasomierza.
+.LP
+Czasomierz odlicza od
+.I it_value
+do zera, generuje sygna³ i inicjalizuje siê na
+.IR it_interval .
+Czasomierz ustawiony na zero
+.RI ( it_value
+jest zerowe, lub up³yn±³ czasu wa¿no¶ci czasomierza, a
+.I it_interval
+jest zerowe) zatrzymuje siê.
+.LP
+Przy okre¶laniu czasu dzia³ania czasomierza istotne s± zarówno
+.I tv_sec
+jak i
+.IR tv_usec .
+.LP
+Wa¿no¶æ czasomierzy nigdy nie up³ywa przed zadanym czasem, natomiast dzieje
+siê to o krótki, sta³y czas, zale¿ny od rozdzielczo¶ci zegara systemowego
+(obecnie 10ms), pó¼niej. W chwili up³ywu czasu wa¿no¶ci generowany jest
+sygna³, a czasomierz jest resetowany. Je¶li czas wa¿no¶ci up³ywa, gdy proces
+jest aktywny (jest to zawsze prawda dla
+.BR ITIMER_VIRT ),
+to sygna³ zostanie dostarczony natychmiast po wygenerowaniu. W przeciwnym
+wypadku dostarczenie bêdzie opó¼nione o krótki okres czasu, zale¿ny od
+obci±¿enia systemu.
+.LP
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu zwracane jest zero. Po b³êdzie zwracane jest \-1
+i odpowiednio ustawiane
+.IR errno .
+.SH B£ÊDY
+.TP
+.B EFAULT
+.I value
+lub
+.I ovalue
+nie jest prawid³owym wska¼nikiem.
+.TP
+.B EINVAL
+.I which
+nie jest jednym z
+.BR ITIMER_REAL ,
+.B ITIMER_VIRT
+lub
+.BR ITIMER_PROF .
+.SH "ZGODNE Z"
+SVr4, 4.4BSD (Ta funkcja pierwotnie pojawi³a siê w 4.2BSD).
+.SH "ZOBACZ TAK¯E"
+.BR gettimeofday (2),
+.BR sigaction (2),
+.BR signal (2)
+.SH USTERKI
+Pod Linuksem, generowanie i dostarczanie sygna³u s± oddzielnymi zdarzeniami
+i dla ka¿dego sygna³u mo¿e byæ tylko jedno zaleg³e zdarzenie. Zatem mo¿liwe
+jest, ¿e podczas patologicznie du¿ego obci±¿enia czas wa¿no¶ci
+.B ITIMER_REAL
+mo¿e up³yn±æ wcze¶niej, ni¿ sygna³ poprzedniego przeterminowania zostanie
+dostarczony. Drugi sygna³ w takiej sytuacji zostanie utracony.

@@ -1,0 +1,25 @@
+.\" {PTM/WK/0.1/15-07-1999/"zamontuj (do³±cz) dysk MSDOS"}
+.TH mmount 1 "15 lipca 1999" mtools-3.9.4
+.SH NAZWA
+mmount - zamontuj (do³±cz) dysk MSDOS
+.SH SK£ADNIA
+.B mmount
+.I napêdDOS
+.RI [ argumenty_montowania ]
+.SH OPIS
+Polecenie \fBmmount\fR s³u¿y do montowania (do³±czania) dysków DOSu. Jest
+dostêpne wy³±cznie w Linuksie i przydaje siê tylko wtedy, gdy j±dro systemu
+pozwala na konfiguracjê geometrii dysku.
+.PP
+\fBmmount\fR odczytuje sektor startowy (boot-sector) dysku DOS, konfiguruje
+jego geometriê i ostatecznie montuje go przesy³aj±c \fIargumenty_montowania\fR
+do polecenia \fBmount\fR. Je¶li nie podano argumentów
+montowania, u¿ywana jest nazwa urz±dzenia. Dyski zabezpieczone przed zapisem
+s± automatycznie montowane w trybie read-only.
+.SH UWAGI
+Niniejsza, polska wersja dokumentacji, powsta³a jako t³umaczenie pliku
+Texinfo pakietu mtools wersji 3.9.6. W stosunku do automatycznie generowanej
+z Textinfo dokumentacji oryginalnej dokonano przesuniêcia sekcji opisuj±cej
+konwersjê dokumentacji do \fBmtools\fR(1). Tam te¿ znajdziesz notê prawn±
+dotycz±c± rozpowszechniania, modyfikacji i t³umaczenia dokumentacji pakietu
+mtools

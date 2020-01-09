@@ -1,0 +1,204 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\" 
+.\" 2000 PTM Przemek Borys
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Mar 2002,
+.\"              manpages 1.48
+.\" 
+.\" (c) 1993 by Thomas Koenig (ig25@rz.uni-karlsruhe.de)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" License.
+.\"
+.\" Modified Sat Jul 24 13:32:44 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified Mon Jun 23 14:09:52 1997 by aeb - add EINTR.
+.\" Modified Tue Jul  7 12:26:42 1998 by aeb - changed return value wait3
+.\"
+.TH WAIT4 2 1997-06-23 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+wait3, wait4 \- oczekiwanie na zakoñczenie procesu (styl BSD)
+.SH SK£ADNIA
+.nf
+.B #include <sys/types.h>
+.B #include <sys/time.h>
+.B #include <sys/resource.h>
+.B #include <sys/wait.h>
+.sp 2
+.BI "pid_t wait3(int *" "status" ", int " opcje ,
+.BI "      struct rusage *" ruzycie );
+.sp
+.BI "pid_t wait4(pid_t " pid ", int *" status ", int " opcje ,
+.BI "      struct rusage *" ruzycie );
+.fi
+.SH OPIS
+Funkcja
+.B wait3
+zawiesza wykonywanie bie¿±cego procesu a¿ jego potomek nie zakoñczy
+dzia³ania, lub a¿ nie zostanie dostarczony sygna³, którego akcj± jest
+zakoñczenie bie¿±cego procesu lub wywo³anie funkcji obs³ugi sygna³u.
+Je¶li potomek zakoñczy³ dzia³anie przed wywo³aniem tej funkcji (tzw.
+"zombie" - proces duch), zakoñczy ona dzia³anie natychmiast. Wszelkie zasoby
+systemowe u¿ywane przez potomka s± zwalniane.
+
+Funkcja
+.B wait4
+zawiesza wykonywanie bie¿±cego procesu a¿ potomek, okre¶lony przez argument
+.I pid
+nie zakoñczy dzia³ania, lub a¿ nie zostanie dostarczony sygna³, którego
+akcj± jest zakoñczenie bie¿±cego procesu lub wywo³anie funkcji obs³ugi
+sygna³u. Je¶li potomek okre¶lony przez
+.I pid
+ju¿ zakoñczy³ dzia³anie (proces duch), funkcja koñczy dzia³anie natychmiast.
+Wszelkie zasoby systemowe u¿ywane przez potomka s± zwalniane.
+
+Warto¶æ
+.I pid
+mo¿e byæ jednym z:
+.IP "< \-1"
+oznacza oczekiwanie na dowolnego potomka, którego identyfikator grupy
+procesów jest równy modu³owi warto¶ci
+.IR pid .
+.IP \-1
+co oznacza oczekiwanie na dowolny proces potomny; jest to równowa¿ne
+wywo³aniu
+.BR wait3 .
+.IP 0
+oznacza oczekiwanie na dowolnego potomka, którego identyfikator grupy
+procesów jest równy identyfikatorowi procesu wo³aj±cego.
+.IP "> 0"
+oznacza oczekiwanie na potomka, którego PID jest równy warto¶ci
+.IR pid .
+.PP
+Warto¶æ argumentu
+.I opcje
+jest bitowym OR zera lub wiêcej spo¶ród nastêpuj±cych sta³ych:
+.TP
+.B WNOHANG
+oznacza zwrócenie warto¶ci natychmiast w wypadku gdy nie ma potomka, na
+którego mo¿na by czekaæ.
+.TP
+.B WUNTRACED
+oznacza równie¿ nieobs³ugiwanie zatrzymanych potomków oraz tych, których
+status nie zosta³ zg³oszony.
+.PP
+Je¶li
+.I status
+nie wynosi
+.BR NULL ,
+.B wait3
+i
+.B wait4
+zapisuj± w miejscu wskazywanym przez
+.IR status
+informacje o stanie.
+.PP
+Stan ten mo¿e byæ okre¶lony za pomoc± nastêpuj±cych makr (pobieraj±cych jako
+argument bufor stanu (warto¶æ \fBint\fR), \(em  nie wska¼nik do tego bufora:
+.TP
+.BI WIFEXITED( status )
+jest niezerowe, gdy potomek zakoñczy³ pracê normalnie.
+.TP
+.BI WEXITSTATUS( status )
+wyra¿a ostatnich osiem znacz±cych bitów kodu powrotu zakoñczonego potomka
+(który móg³ byæ ustawiony jako argument funkcji
+.B exit
+lub jako argument instrukcji
+.B return
+w programie g³ównym. Makro to mo¿e byæ przetwarzane tylko je¶li
+.B WIFEXITED
+zwróci³o warto¶æ niezerow±.
+.TP
+.BI WIFSIGNALED( status )
+zwraca prawdê, je¶li potomek zakoñczy³ dzia³anie z powodu nieprzechwyconego
+sygna³u.
+.TP
+.BI WTERMSIG( status )
+zwraca numer sygna³u, który spowodowa³ zakoñczenie procesu potomnego.
+Makro to mo¿e byæ wyliczane tylko po zwróceniu przez
+.B WIFSIGNALED
+warto¶ci niezerowej.
+.TP
+.BI WIFSTOPPED( status )
+zwraca prawdê, je¶li proces potomny, który spowodowa³ wyj¶cie jest obecnie
+zatrzymany. Jest to mo¿liwe tylko je¶li wywo³anie wykonano z u¿yciem
+.BR WUNTRACED .
+.TP
+.BI WSTOPSIG( status )
+zwraca numer sygna³u, który spowodowa³ zatrzymanie potomka. Makro to mo¿e byæ
+wyliczane tylko po zwróceniu przez
+.B WIFSTOPPED
+warto¶ci niezerowej.
+.PP
+Je¶li
+.I ruzycie
+nie jest równe
+.BR NULL ,
+zdefiniowana w
+.I <sys/resource.h>
+struktura
+.BR "struct rusage" ,
+na któr±
+.I ruzycie
+wskazuje, zostanie wype³niona informacjami o wykorzystywaniu zasobów.
+Szczegó³y znajduj± siê w
+.BR getrusage (2).
+.SH "WARTO¦Æ ZWRACANA"
+Identyfikator zakoñczonego procesu lub \-1 w przypadku b³êdu (w szczególno¶ci,
+gdy nie istnieje proces potomny zadanego rodzaju, na który mo¿na by
+oczekiwaæ), lub zero je¶li u¿yto
+.B WNOHANG
+i nie by³ dostêpny ¿aden potomek. W ostatnich dwóch przypadkach zostanie
+odpowiednio ustawione
+.IR errno .
+.SH B£ÊDY
+.TP
+.B ECHILD
+Nie istnieje ¿aden odpowiedni proces potomny, na który mo¿na by oczekiwaæ.
+.TP
+.B EINTR
+Je¶li nie ustawiono
+.B WNOHANG
+a zosta³ przechwycony niezablokowany sygna³ lub
+.BR SIGCHLD .
+.TP
+.SH UWAGI
+Do³±czenie
+.I <sys/time.h>
+nie jest obecnie wymagane, lecz zwiêksza przeno¶no¶æ.
+(Faktycznie,
+.I <sys/resource.h>
+zawiera definje struktury
+.I rusage
+z polami typu
+.I struct timeval
+zdefiniowanego w
+.IR <sys/time.h> .)
+.LP
+Prototyp dla tych funkcji jest dostêpny jedynie, gdy zdefiniowano
+.B _BSD_SOURCE
+(jawnie lub po¶rednio, nie definiuj±c _POSIX_SOURCE lub kompiluj±c
+z opcj± -ansi).
+.SH "ZGODNE Z"
+SVr4, POSIX.1
+.SH "ZOBACZ TAK¯E"
+.BR signal (2),
+.BR getrusage (2),
+.BR wait (2),
+.BR signal (7)

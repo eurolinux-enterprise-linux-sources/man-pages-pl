@@ -1,0 +1,23 @@
+.\" Translation (C) 1999 Pawel Wilk <siefca@pl.qmail.org>
+.\" {PTM/PW/0.1/5-12-1999/"odk³ada pocztê do zdalnego dostarczenia"}
+.TH qmail-rspawn 8
+.SH NAZWA
+qmail-rspawn \- od³ó¿ pocztê do zdalnego dostarczenia
+.SH SK£ADNIA
+.B qmail-rspawn
+.SH OPIS
+.B qmail-rspawn
+czyta seriê komend dotycz±cych zdalnego dostarczenia z deskryptora 0,
+wywo³uje
+.B qmail-remote
+by przeprowadziæ dorêczanie,
+a potem wypisuje rezultaty do deskryptora 1.
+
+.B qmail-rspawn
+wywo³uje
+.B qmail-remote
+asynchronicznie,
+wiêc rezultaty mog± byæ uporz±dkowane w innej kolejno¶ci co komendy.
+.SH "ZOBACZ TAK¯E"
+qmail-send(8),
+qmail-remote(8)

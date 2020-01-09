@@ -1,0 +1,158 @@
+.\" Translation (C) 1999 Pawel Wilk <siefca@pl.qmail.org>
+.\" {PTM/PW/0.1/5-12-1999/"kolejkuje wiadomo¶æ pocztow± w celu jej dostarczenia"}
+.TH qmail-queue 8
+.SH NAZWA
+qmail-queue \- kolejkuj wiadomo¶æ pocztow± w celu jej dostarczenia
+.SH SK£ADNIA
+.B qmail-queue
+.SH OPIS
+.B qmail-queue
+czyta wiadomo¶æ pocztow± z deskryptora 0.
+Potem czyta informacje kopertowe z deskryptora 1.
+Umieszcza wiadomo¶æ w kolejce wychodz±cej
+dla pó¼niejszego dostarczenia przez
+.BR qmail-send .
+
+Informacja kopertowa to
+kopertowy adres nadawcy
+poprzedzony list± kopertowych odbiorców.
+Adres nadawcy jest poprzedzony liter± F
+i zakoñczony znakiem o kodzie 0.
+Ka¿dy adres odbiorcy jest poprzedzony liter± T
+i zakoñczony znakiem o kodzie 0.
+Lista adresów odbiorców jest zakoñczona dodatkowym bajtem 0.
+Je¶li
+.B qmail-queue
+ujrzy znak koñca pliku przed dodatkowym bajtem 0
+to przerywa dzia³anie bez umieszczenia wiadomo¶ci w kolejce.
+
+Ka¿dy kopertowy adres odbiorcy
+powinien zawieraæ nazwê u¿ytkownika,
+znak @,
+i w pe³ni kwalifikowan± nazwê domenow± (FQDN).
+
+.B qmail-queue
+zawsze dodaje liniê
+.B Received
+na górze wiadomo¶ci.
+Poza tym,
+.B qmail-queue
+nie sprawdza wiadomo¶ci
+i nie wprowadza ¿adnych ograniczeñ co do jej zawarto¶ci.
+Jakkolwiek, odbiorca zapewne oczekuje pojawienia siê odpowiedniego nag³ówka
+tak jak to opisano w
+.BR qmail-header(5) .
+.SH "OGRANICZENIA SYSTEMU PLIKÓW"
+.B qmail-queue
+nak³ada dwa warunki na strukturê kolejki:
+ka¿dy podkatalog
+.B mess
+musi znajdowaæ siê w tym samym systemie plików co
+katalog
+.B pid
+; a ka¿dy podkatalog
+.B todo
+musi znajdowaæ siê w tym samym systemie plików co katalog
+.B intd .
+.SH "KODY WYJ¦CIA"
+.B qmail-queue
+nie wypisuje diagnostyki.
+Zwraca
+0 je¶li
+wiadomo¶æ zosta³a pomy¶lnie umieszczona w kolejce.
+Zwraca 1 do 99
+je¶li wyst±pi³ b³±d.
+
+Wszystkie kody b³êdów
+.B qmail-queue
+zawieraj±ce siê pomiêdzy 11 a 40
+wskazuj± na b³êdy permanentne:
+.TP 5
+.B 11
+Zbyt d³ugi adres.
+.TP
+.B 31
+Serwer poczty ca³kowicie odmawia przes³ania wiadomo¶ci do jakichkolwiek 
+odbiorców.
+(Nie u¿ywane przez
+.BR qmail-queue ,
+ale mo¿liwe do u¿ycia przez programy oferuj±ce ten sam interfejs.)
+.PP
+Wszystkie pozosta³e kody b³êdów zwracane przez
+.B qmail-queue
+wskazuj± na b³êdy tymczasowe:
+.TP 5
+.B 51
+Brak pamiêci.
+.TP
+.B 52
+Przekroczony czas oczekiwania.
+.TP
+.B 53
+B³±d zapisu; np. brak miejsca na dysku.
+.TP
+.B 54
+Nie mo¿na odczytaæ wiadomo¶ci lub koperty.
+.TP
+.B 55
+Nie mo¿na odczytaæ pliku konfiguracyjnego.
+(Nie u¿ywane przez
+.BR qmail-queue .)
+.TP
+.B 56
+Problem w ustanawianiu po³±czenia sieciowego z tego hosta.
+(Nie u¿ywane przez
+.BR qmail-queue .)
+.TP
+.B 61
+Problem z katalogiem domowym qmail.
+.TP
+.B 62
+Problem z katalogiem kolejki wiadomo¶ci.
+.TP
+.B 63
+Problem z queue/pid.
+.TP
+.B 64
+Problem z queue/mess.
+.TP
+.B 65
+Problem z queue/intd.
+.TP
+.B 66
+Problem z queue/todo.
+.TP
+.B 71
+Serwer poczty tymczasowo odmawia przes³ania wiadomo¶ci to jakiegokolwiek odbiorcy. 
+(Nie u¿ywane przez
+.BR qmail-queue .)
+.TP
+.B 72
+Przekroczony czas oczekiwania na po³±czenie z serwerem poczty.
+(Nie u¿ywane przez
+.BR qmail-queue .)
+.TP
+.B 73
+Odmowa po³±czenia ze strony serwera poczty.
+(Nie u¿ywane przez
+.BR qmail-queue .)
+.TP
+.B 74
+Po³±czenie z serwerem ustanowione poprawnie,
+lecz b³±d w komunikacji.
+(Nie u¿ywane przez
+.BR qmail-queue .)
+.TP
+.B 81
+Usterka wewnêtrzna; np. b³±d segmentacji.
+.TP
+.B 91
+B³±d w formacie koperty.
+.SH "ZOBACZ TAK¯E"
+addresses(5),
+envelopes(5),
+qmail-header(5),
+qmail-inject(8),
+qmail-qmqpc(8),
+qmail-send(8),
+qmail-smtpd(8)

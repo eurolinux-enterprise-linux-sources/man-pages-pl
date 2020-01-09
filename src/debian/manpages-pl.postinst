@@ -1,0 +1,15 @@
+#!/bin/sh
+
+ if [ "$1" = "configure" ]; then
+     if dpkg --compare-versions "$2" le 1.59.990908-3; then
+	dpkg-divert --package manpages-pl --rename --remove \
+	    /usr/share/man/pl/man8/rpm.8.gz >/dev/null 2>&1 || true
+     fi
+     echo ""
+     echo "To enable these manpages set LC_MESSAGES to 'pl_PL'."
+     echo "Man will then search for Polish manpages under /usr/share/man/pl."
+     echo ""
+ fi
+
+#DEBHELPER#
+

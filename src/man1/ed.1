@@ -1,0 +1,975 @@
+.\" 1999 PTM Przemek Borys (total eclipse today! :)
+.TH ED 1 "10 listopada 1994"
+.SH NAZWA
+ed, red \- edytor tekstu
+.SH SK£ADNIA
+ed [-] [-Gs] [-p \fI³añcuch\fR] [\fIplik\fR]
+.LP
+red [-] [-Gs] [-p \fI³añcuch\fR] [\fIplik\fR]
+.SH OPIS
+.B ed
+jest zorientowanym liniowo edytorem tekstu.
+Jest o u¿ywany do tworzenia, wy¶wietlania, modyfikowania i innych dzia³añ na
+plikach tekstowych.
+.B red
+to
+.BR ed 
+zastrze¿ony (restricted):
+mo¿e edytowaæ tylko pliki z bie¿±cego katalogu i nie mo¿e wykonywaæ komend
+pow³oki.
+
+Po wywo³aniu z argumentem
+.IR pliku ,
+jego kopia jest odczytywana do bufora edytora.
+Wszelkie zmiany robione s± na tej kopii, nie na
+.I pliku
+jako takim.
+Podczas koñczenia pracy z
+.BR ed ,
+wszelkie zmiany, których nie zachowano komend±
+.I `w'
+s± tracone.
+
+Edycja jest dokonywana w dwóch ró¿nych trybach:
+.I komend
+i
+.IR wprowadzania .
+Po uruchomieniu,
+.B ed
+jest w trybie komend.
+W trybie tym ze standardowego wej¶cia czytane s± komendy, a nastêpnie s± one
+wykonywane na zawarto¶ci bufora edytora. Przyk³adowa komenda mo¿e wygl±daæ
+tak:
+.sp
+.RS
+,s/\fIold\fR/\fInew\fR/g
+.RE
+.sp
+co zamienia wszystkie pojawienia siê napisu
+.I old
+na
+.IR new .
+
+Po podaniu komendy wprowadzania, takiej jak
+.I `a'
+(append--dopisz),
+.I `i'
+(insert--wstaw) lub
+.I `c'
+(change-zmieñ),
+.B ed
+wchodzi w tryb wprowadzania. Jest to podstawowe narzêdzie wprowadzania
+tekstu do pliku. W trybie tym nie ma dostêpnych ¿adnych komend.
+Zamiast tego, standardowe wej¶cie jest bezpo¶rednio zapisywane do bufora
+edytora. Linie sk³adaj± siê z tekstu, a¿ do (³±cznie) znaku
+.IR "nowej linii" .
+Tryb wprowadzania jest przerywany wprowadzeniem pojedynczej kropki w linii.
+
+Wszystkie komendy
+.B ed
+operuj± na ca³ych liniach, lub zakresach linii; np.
+komenda
+.I `d'
+kasuje (delete) linie; komenda
+.I `m'
+przenosi linie, itp.
+Mo¿na te¿ modyfikowaæ tylko czê¶æ linii, korzystaj±c z narzêdzi podmiany,
+podanych np. w powy¿szym przyk³adzie. Jednak nawet tu, komenda
+.I `s'
+tyczy siê do ca³ych linii naraz.
+
+W ogólno¶ci, komendy
+.B ed
+sk³adaj± siê z zera lub wiêcej adresów linii, za którymi nastêpuje
+pojedynczy znak komendy i czêsto dodatkowe parametry; komendy maj± wiêc
+strukturê:
+.sp
+.RS
+.I [adres [,adres]]komenda[parametry]
+.RE
+.sp
+Adresy wskazuj± liniê, lub zakres linii, których dotyczy komenda. Je¶li
+podano mniej adresów ni¿ potrzeba komendzie, u¿ywane s± adresy domy¶lne.
+
+.SS OPCJE
+.TP 8
+-G
+Wymusza kompatybilno¶æ wsteczn±. Dotyczy komend
+.IR `G' ,
+.IR `V' ,
+.IR `f' ,
+.IR `l' ,
+.IR `m' ,
+.IR `t' ,
+and
+.IR `!!' .
+.TP 8
+-s
+Powstrzymuje diagnostykê. Powinno byæ u¿ywane je¶li standardowe wej¶cie 
+.BR ed 'a
+jest ze skryptu.
+
+.TP 8
+.RI \-p \ ³añcuch
+Podaje znak zachêty komend. Mo¿e to byæ w³±czane, lub wy³±czane komend±
+.IR `P' .
+
+.TP 8
+.I plik
+Okre¶la nazwê odczytywanego pliku. Je¶li
+.I plik
+jest poprzedzony wykrzyknikiem (!), to jest interpretowany jak komenda
+pow³oki. W tym wypadku to, co jest czytane, jest standardowym wyj¶ciem
+.I pliku
+wywo³anego przez
+.IR sh (1).
+Aby odczytaæ plik, którego nazwa rozpoczyna siê od wykrzyknika, poprzed¼ go
+odwrotnym uko¶nikiem (\e).
+Domy¶lna nazwa pliku jest ustawiana na
+.I file
+tylko je¶li nie jest poprzedzona wykrzyknikiem.
+
+.SS ADRESOWANIE LINIOWE
+Adres reprezentuje numer linii w buforze.
+.B ed
+obs³uguje
+.IR "adres bie¿±cy" ,
+który jest zazwyczaj przekazywany komendom jako domy¶lny (w wypadku
+niepodania tego argumentu).
+Podczas pierwszego odczytu pliku, adres bie¿±cy jest ustawiany na ostatni±
+liniê. Ogólnie, adres bie¿±cy jest ustawiany na ostatni± liniê, dotkniêt±
+przez komendê.
+
+Adres linii jest konstruowany z jednej z baz z poni¿szej listy, za któr±
+opcjonalnie mo¿e nastêpowaæ offset numeryczny. Offsety mog± zawieraæ dowolne
+kombinacje cyfr, operatorów (np.
+.IR + ,
+.I -
+i
+.IR ^ )
+i bia³ych spacji.
+Adresy s± czytane od lewej do prawej, a ich warto¶ci s± obliczane wzglêdem
+adresu bie¿±cego.
+
+Wyj±tkiem regu³y, ¿e adresy reprezentuj± numery jest adres
+address
+.I 0
+(zero).
+Oznacza to "przed pierwsz± lini±,"
+i jest legalne tam gdzie ma sens.
+
+Zakres adresów to dwa adresy, oddzielone przecinkiem lub ¶rednikiem. Warto¶æ
+pierwszego adresu w zakresie nie mo¿e byæ wiêksza od drugiego. Je¶li w
+zakresie podany jest tylko jeden adres, to drugi adres jest ustawiany na
+podany.
+Je¶li podano
+.IR n- krotn±
+parê adresów, gdzie
+.I n > 2,
+to zakres jest okre¶lany przez ostatnie dwa adresy zestawu.
+Je¶li oczekiwany jest tylko jeden adres, to u¿ywany jest ostatni.
+
+Ka¿dy adres w zakresie przecinkowym jest interpretowany wzglêdem adresu
+bie¿±cego. W zakresie ¶rednikowym, pierwszy adres jest u¿ywany do ustawienia
+adresu bie¿±cego, a drugi wzglêdem pierwszego.
+
+
+Rozpoznawane s± nastêpuj±ce symbole adresowe.
+
+.TP 8
+\&.
+Adres bie¿±cej linii w buforze.
+
+.TP 8
+$
+Adres ostatniej linii w buforze.
+
+.TP 8
+n
+.IR n ta
+linia w buforze, 
+gdzie
+.I n
+jest liczb± w zakresie
+.I [0,$].
+
+.HP
+-
+.TP 8
+^
+Poprzednia linia.
+Jest to równowa¿ne
+.I -1
+i mo¿e byæ powtarzane z rosn±cym efektem.
+
+.HP
+-\fIn\fR
+.TP 8
+^\fIn\fR
+.IR n ta
+linia poprzednia, gdzie
+.I n
+jest liczb± nieujemn±.
+
+.TP 8
++
+Nastêpna linia.
+Jest to równowa¿ne
+.I +1
+i mo¿e byæ powtarzane z rosn±cym efektem.
+
+.HP
++\fIn\fR
+.TP 8
+bia³a spacja \fIn\fR
+.IR n ta
+nastêpna linia, gdzie
+.I n
+jest liczb± nieujemn±.
+.IR "Bia³a spacja" ,
+za któr± nastêpuje liczba
+.I n
+jest interpretowana jako
+.IR +n .
+
+.HP
+,
+.TP 8
+%
+Zakres od pierwszej do ostatniej linii. Jest to równowa¿ne
+.I 1,$.
+
+.TP 8
+;
+Zakres od bie¿±cej do ostatniej linii. Jest to równowa¿ne
+.I .,$.
+
+.TP 8
+.RI / re/
+Nastêpna linia, zawieraj±ca wyra¿enie regularne
+.IR re .
+Poszukiwanie gdy jest to konieczne, zakrêca na pocz±tek bufora i leci
+dalej a¿ do linii bie¿±cej.
+// powtarza ostatnie szukanie.
+
+.TP 8
+.RI ? re?
+Poprzednia linia zawieraj±ca wyra¿enie regularne
+.IR re .
+Poszukiwanie gdy jest to konieczne, zakrêca na koniec bufora i leci a¿ do
+linii bie¿±cej.
+?? powtarza ostatnie szukanie.
+
+.TP 8
+.RI \' lc
+Linia poprzednio zaznaczona przez komendê
+.I `k'
+(marK), gdzie
+.I lc
+jest ma³± liter±.
+
+.SS WYRA¯ENIA REGULARNE
+Wyra¿enia regularne s± wzorcami, u¿ywanymi w wybieraniu tekstu.
+Na przyk³ad, komenda
+.B ed
+.sp
+.RS
+g/\fInapis\fR/
+.RE
+.sp
+drukuje wszystkie linie, zawieraj±ce
+.IR napis .
+Wyra¿enia regularne s± u¿ywane te¿ przez komendê
+.IR `s' ,
+gdzie wybieraj± stary tekst, zastêpowany nowym.
+
+W dodatku do podawania napisów, wyra¿enia regularne mog± reprezentowaæ klasy
+³añcuchów znakowych. £añcuchy tak reprezentowane bêd± odpowiadaæ wyra¿eniom
+regularnym. Je¶li jest mo¿liwe, by wyra¿enie regularne dopasowa³o kilka
+napisów w linii, to wybierane jest dopasowanie najbardziej z lewej.
+
+Do konstruowania wyra¿eñ regularnych u¿ywane s± nastêpuj±ce symbole:
+
+.TP 8
+c
+Dowolny znak
+.I c
+nie wymieniony ni¿ej, ³±cznie z `{', '}', `(', `)', `<' i `>' oznacza samego
+siebie.
+
+.TP 8
+\e\fIc\fR
+Znak
+.IR c
+ zacytowany lewym uko¶nikiem, inny ni¿ `{', '}', `(', `)', `<', `>',
+`b', 'B', `w', `W', `+' i `?' oznacza w³a¶nie ten znak.
+
+.TP 8
+\fR.\fR
+Oznacza pojedynczy znak. (dowolny)
+
+.TP 8
+.I [klasa-znaków]
+Oznacza pojedynczy znak z
+.IR "klasy znaków" .
+Aby do
+.IR "klasy znaków"
+w³±czyæ `]', musi to byæ pierwszy znak.
+Zakres znaków mo¿na przekazaæ, rozdzielaj±c jego koñce znakiem `-', np.
+`a-z', który oznacza wszystkie ma³e litery. Do podawania zestawów znaków w
+.I klasie znaków
+mo¿na u¿ywaæ nastêpuj±cych litera³ów:
+.sp
+.nf
+\ \ [:alnum:]\ \ [:cntrl:]\ \ [:lower:]\ \ [:space:]
+.PD 0
+\ \ [:alpha:]\ \ [:digit:]\ \ [:print:]\ \ [:upper:]
+.PD 0
+\ \ [:blank:]\ \ [:graph:]\ \ [:punct:]\ \ [:xdigit:]
+.fi
+.sp
+Gdy znak `-' pojawia siê jako pierwszy lub ostatni znak
+.IR "klasy-znaków" ,
+to dopasowuje sam siebie.
+Wszystkie inne znaki
+.I "klasy-znaków"
+odpowiadaj± same sobie.
+.sp
+Wzorce w
+.I "klasie-znaków"
+postaci
+.sp
+\ \ [.\fIcol-elm\fR.] lub
+.PD 0
+\ \ [=\fIcol-elm\fR=]
+.sp
+gdzie
+.I col-elm
+jest
+.I elementem porównawczym
+s± interpretowane wed³ug
+.IR locale (5)
+(nie jest to obecnie obs³ugiwane).
+Zobacz
+.IR regex (3)
+dla obja¶nieñ tych konstrukcji. 
+
+.TP 8
+[^\fIklasa-znaków\fR]
+Odpowiada dowolnemu pojedynczemu znakowi, innemu ni¿ nowa linia, który nie
+jest w
+.IR klasie-znaków .
+.IR klasa-znaków
+jest definiowana podobnie jak wy¿ej.
+
+.TP 8
+^
+Je¶li `^' jest pierwszym znakiem wyra¿enia regularnego, to zaczepia
+wyra¿enie regularne na pocz±tku linii.
+W przeciwnym wypadku oznacza `^'.
+
+.TP 8
+$
+Je¶li `$' jest ostatnim znakiem wyra¿enia regularnego, to doczepia wyra¿enie
+regularne do koñca linii. W przeciwnym wypadku oznacza `$'.
+
+.TP 8
+\e(\fIre\fR\e)
+Definiuje podwyra¿enie
+.IR re .
+Podwyra¿enia mog± byæ zagnie¿d¿ane.
+Kolejne wsteczne odniesienia postaci `\e\fIn\fR', gdzie
+.I n
+jest cyfr± z zakresu [1,9], rozwijaj± siê do tekstu dopasowanego przez
+.IR n te
+podwyra¿enie.
+Na przyk³ad, wyra¿enie regularne `\e(a.c\e)\e1' odpowiada napisowi
+`abcabc', lecz nie `abcadc'.
+Podwyra¿enia s± porz±dkowane wzglêdem ich lewego ogranicznika.
+
+.TP 8
+*
+Odpowiada dopasowaniu poprzedzaj±cego znaku lub podwyra¿enia zero lub wiêcej
+razy. je¶li '*' jest pierwszym znakiem wyra¿enia regularnego, lub
+podwyra¿enia, to oznacza '*'. Operator `*' daje czasem nieoczekiwane
+rezultaty. Na przyk³ad wyra¿enie `b*' dopasowuje pocz±tek napisu
+`abbb', wed³ug podnapisu `bbb'.
+
+.HP
+\fR\e{\fIn,m\fR\e}\fR
+.HP
+\fR\e{\fIn,\fR\e}\fR
+.TP 8
+\fR\e{\fIn\fR\e}\fR
+Odpowiada poprzedzaj±cemu jednoznakowemu wyra¿eniu regularnemu, lub 
+podwyra¿eniu, dopasowanemu przynajmniej
+.I n
+i najwiêcej
+.I m
+razy.
+Je¶li
+.I m
+jest pominiête, to jest tylko dolne ograniczenie.
+Je¶li pominiêty jest te¿ przecinek, dopasowanie wymaga dok³adnie
+.I n
+powtórzeñ. Je¶li która¶ z tych postaci pojawi siê na pocz±tku, to jest
+interpretowana literalnie. Np.
+`\e{2\e}' odpowiada `{2}', itd.
+
+.HP
+\e<
+.TP 8
+\fR\e>\fR
+Zaczepia wyra¿enie znakowe, lub podwyra¿enie do pocz±tku (\e<) lub koñca
+(\e>) \fIs³owa\fR, czyli w ASCII maksymalnego ³añcucha znaków
+alfanumerycznych, ³±cznie z podkre¶leniem (_).
+
+
+.LP
+Nastêpuj±ce rozszerzone operatory s± poprzedzane lewym uko¶nikiem, aby
+odró¿niæ je od tradycyjnej sk³adni
+.BR ed .
+
+.HP
+\fR\e`\fR
+.TP 8
+\fR\e'\fR
+Bezwarunkowo dopasowuje pocz±tek (\e`) lub koniec (\e') linii.
+
+.TP 8
+\fR\e?\fR
+Opcjonalnie odpowiada pojedynczemu znakowi, lub podwyra¿eniu, które go
+poprzedza. Np. wyra¿enie `a[bd]\e?c'
+odpowiada `abc', `adc' i `ac'.  Je¶li \e? pojawia siê na pocz±tku linii, to
+jest traktowane literalnie jako `?'.
+
+.TP 8
+\fR\e+\fR
+Odpowiada pojedynczemu znakowi, lub podwyra¿eniu, poprzedzaj±cemu go, a
+powtarzaj±cemu siê jeden, lub wiêcej razy. Tak wiêc wyra¿enie regularne
+`a+' jest skrótem `aa*'.  Je¶li \e+ pojawi siê na pocz±tku linii, to
+odpowiada literalnemu `+'.
+
+
+.TP 8
+\fR\eb\fR
+Odpowiada pocz±tkowi lub koñcowi (³añcuch zerowy) s³owa. Tak wiêc wyra¿enie
+regularne `\ebhello\eb' jest równowa¿ne `\e<hello\e>'.  Jednak, `\eb\eb'
+jest prawid³owym wyra¿eniem, podczas gdy `\e<\e>' nim nie jest.
+
+.TP 8
+\fR\eB\fR
+Odpowiada (³añcuchowi zerowemu) w s³owie.
+
+.TP 8
+\fR\ew\fR
+Odpowiada dowolnemu znakowi w s³owie.
+
+.TP 8
+\fR\eW\fR
+Odpowiada dowolnemu znakowi nie bêd±cemu w s³owie.
+
+.SS KOMENDY
+Wszystkie komendy
+.B ed
+to pojedyncze znaki, choæ niektóre wymagaj± dodatkowych parametrów.
+Je¶li parametry komendy rozci±gaj± siê na kilka linii, to ka¿da linia poza
+ostatni±, powinna byæ zakoñczona lewym uko¶nikiem (\e).
+
+Ogólnie, na liniê dozwolona jest najwiêcej jedna komenda.
+Jednak wiêkszo¶æ komend przyjmuje przyrostek drukowania, który mo¿e byæ
+dowolnym z
+.I `p'
+(drukuj-print),
+.I `l'
+(listuj-list) ,
+lub
+.I `n'
+(wyliczaj-eNumerate),
+który drukuje ostatni± liniê, dotkniêt± przez komendê.
+
+Przerwanie (zwykle ^C) ma znaczenie przerywania bie¿±cej komendy i
+powracania do trybu komend.
+
+.B ed
+rozpoznaje nastêpuj±ce komendy. Komendy pokazane s± wraz z domy¶lnymi
+adresami, lub zakresami, dostarczanymi gdy nie zosta³y podane
+(w nawiasach).
+
+.TP 8
+(.)a
+Dokleja do adresowanej linii bufora liniê, która mo¿e byæ adresem zerowym.
+Tekst jest wstawiany w trybie wprowadzania. Adres bie¿±cy jest ustawiany na
+ostatni± wprowadzon± liniê.
+
+.TP 8
+(.,.)c
+Zmienia linie w buforze. Adresowane linie s± kasowane, a w ich miejsce jest
+wklejany tekst. Tekst wprowadzany jest w trybie wprowadzania. Bie¿±cy adres
+jest ustawiany na ostatni± wstawion± liniê.
+
+.TP 8
+(.,.)d
+Kasuje adresowane linie z bufora. Je¶li za skasowanym zakresem jest linia,
+to bie¿±cy adres jest na ni± ustawiany. W przeciwnym wypadku, jest ustawiany
+na liniê przed skasowanym zakresem.
+
+.TP 8
+.RI e \ plik
+Edytuje
+.IR plik ,
+i ustawia domy¶ln± nazwê pliku.
+Je¶li
+.I plik
+nie jest podany, u¿ywana jest domy¶lna nazwa pliku.
+Wszelkie linie bufora s± kasowane przed odczytem nowego pliku.
+Bie¿±cy adres jest ustawiany na ostatni± odczytan± liniê.
+
+.TP 8
+.RI e \ !komenda
+Edytuje standardowe wyj¶cie
+.IR `!komendy' ,
+(zobacz
+.RI ! komenda
+ni¿ej).
+Domy¶lna nazwa pliku nie jest zmieniana.
+Wszelkie linie bufora s± kasowane przed odczytaniem wyj¶cia
+.IR komendy .
+Bie¿±cy adres jest ustawiany na ostatni± odczytan± liniê.
+
+.TP 8
+.RI E \ plik
+Edytuje bezwarunkowo
+.IR plik .
+Jest to podobne do komendy
+.I e
+lecz niezapisane zmiany s± niszczone bez ostrze¿enia. Bie¿±cy adres jest
+ustawiany na ostatni± odczytan± liniê.
+
+.TP 8
+.RI f \ plik
+Ustawia domy¶ln± nazwê pliku na
+.IR plik .
+Je¶li
+.I plik
+nie jest podany, drukowana jest niecytowana domy¶lna nazwa pliku.
+
+.TP 8
+.RI (1,$)g /re/lista-komend
+Aplikuje
+.I list-komend
+do ka¿dej linii, odpowiadaj±cej wyra¿eniu regularnemu
+.IR re .
+Bie¿±cy adres jest ustawiany na obecnie dopasowan± liniê przed wykonaniem
+.IR listy-komend .
+Na koñcu komendy
+.I `g'
+adres bie¿±cy jest ustawiany na ostatni± liniê, dotkniêt± przez 
+.IR listê-komend .
+
+Ka¿da komenda w
+.I li¶cie komend
+musi byæ w oddzielnej li¶cie, a ka¿da linia poza ostatni± musi byæ
+zakoñczona lewym uko¶nikiem (\e).
+Dozwolone s± wszystkie komendy poza
+.IR `g' ,
+.IR `G' ,
+.IR `v' ,
+i
+.IR `V' .
+Nowa linia w
+.I li¶cie-komend
+jest równowa¿na komendzie
+.IR `p' .
+
+.TP 8
+.RI (1,$)G /re/
+Interaktywnie edytuje linie odpowiadaj±ce wyra¿eniu regularnemu
+.IR re.
+Dla ka¿dej linii, linia jest drukowana i ustawiany jest adres bie¿±cy, a
+u¿ytkownik jest pytany o wstawienie
+.IR listy-komend .
+Na koñcu dzia³ania komendy
+.IR `G' ,
+adres bie¿±cy jest ustawiany na ostatni± liniê, dotkniêt± przez
+.IR listê-komend .
+
+Format
+.I listy-komend
+jest taki sam jak w
+.IR `g' .
+Samotna nowa linia dzia³a jak zerowa lista komend.
+Pojedynczy `&' powtarza ostatni± niezerow± listê komend.
+
+.TP 8
+H
+W³±cza drukowanie wyja¶nieñ b³êdów.
+Domy¶lnie nie s± one drukowane. Zalecanym jest, by skrypty rozpoczyna³y siê
+t± komend±. Umo¿liwia to debuggowanie.
+
+.TP 8
+h
+Drukuje obja¶nienie ostatniego b³êdu.
+
+.TP 8
+(.)i
+Wstawia tekst do bufora przed liniê bie¿±c±.
+Tekst jest wstawiany w trybie wstawiania. Bie¿±cy adres jest ustawiany na
+ostatni± wstawion± liniê.
+
+.TP 8
+(.,.+1)j
+£±czy adresowane linie. Adresowane linie s± kasowane z bufora i zamieniane
+przez pojedyncz± liniê, zawieraj±c± po³±czony tekst. Adres bie¿±cy jest
+ustawiany na wynikow± liniê.
+
+.TP 8
+.RI (.)k lc
+Zaznacza liniê ma³± liter±
+.IR lc .
+Linia mo¿e byæ wtedy adresowana jako
+.IR 'lc .
+Znaczenie nie jest czyszczone a¿ do skasowania lub zmodyfikowania linii.
+
+.TP 8
+(.,.)l
+Drukuje niedwuznacznie adresowane linie. Je¶li jest wywo³any z terminala,
+.B ed
+pauzuje na koñcu ka¿dej strony, a¿ do wprowadzenia nowej linii. Bie¿±cy
+adres jest ustawiany na ostatni± drukowan± liniê.
+
+.TP 8
+(.,.)m(.)
+Przenosi linie w buforze. Adresowane linie s± przenoszone za prawostronny
+adres docelowy, który mo¿e byæ adresem 
+.IR 0
+(zero).
+Bie¿±cy adres jest ustawiany na ostatni± przeniesion± liniê.
+
+.TP 8
+(.,.)n
+Drukuje adresowane linie wraz z ich numerami linii. Bie¿±cy adres jest
+ustawiany na ostatni± drukowan± liniê.
+
+.TP 8
+(.,.)p
+Drukuje adresowane linie. Je¶li jest wywo³any z terminala,
+.B ed
+pauzuje na koñcu ka¿dej strony a¿ do wprowadzenia nowej linii.
+Bie¿±cy adres jest ustawiany na ostatni± drukowan± liniê.
+
+.TP 8
+P
+W³±cza i wy³±cza znak zachêty komend.
+O ile nie by³ on okre¶lony opcj± linii komend,
+\fI-p napis\fR, to jest domy¶lnie wy³±czony.
+
+.TP 8
+q
+Koñczy pracê z ed.
+
+.TP 8
+Q
+Koñczy pracê bezwarunkowo.
+Jest to podobne do komendy
+.I q
+lecz niezapisane zmiany s± niszczone bez ostrze¿enia.
+
+.TP 8
+.RI ($)r \ plik
+Odczytuje
+.I file
+za adresowan± liniê. Je¶li
+.I plik
+nie jest podany, u¿ywana jest domy¶lna nazwa pliku. Je¶li nie by³o wcze¶niej
+domy¶lnej nazwy pliku, domy¶lna nazwa pliku jest ustawiana na
+.IR plik .
+W przeciwnym wypadku, domy¶lna nazwa pliku jest niezmieniana.
+Bie¿±cy adres jest ustawiany na ostatni± odczytan± liniê.
+
+.TP 8
+.RI ($)r \ !komenda
+Wczytuje za adresowan± lini± wyj¶cie
+.IR `!komendy' ,
+(zobacz
+.RI ! komenda
+ni¿ej).
+Domy¶lna nazwa pliku jest niezmieniona.
+Bie¿±cy adres jest ustawiany na ostatni± wczytan± liniê.
+
+.HP
+.RI (.,.)s /re/zamiana/
+.HP
+.RI (.,.)s  /re/zamiana/\fRg\fR
+.HP
+.RI (.,.)s  /re/zamiana/n
+.br
+Zamienia tekst w adresowanych liniach, odpowiadaj±cy wyra¿eniu regularnemu
+.I re
+na
+.IR zamianê .
+Domy¶lnie zamieniane jest tylko pierwsze dopasowanie linii.
+Po podaniu przyrostka
+.I `g'
+(global) zamieniane jest ka¿de dopasowanie.
+Przyrostek
+.IR `n' ,
+gdzie
+.I n
+jest liczb± dodatni±, powoduje ¿e zmieniane jest tylko
+.IR n -te
+dopasowanie.
+B³êdem jest, je¶li nie dokonano ¿adnych podstawieñ na ¿adnej z adresowanych
+linii. Bie¿±cy adres jest ustawiany na ostatni± dotkniêt± liniê.
+
+.I re
+i
+.I zamiana
+mog± byæ rozdzielane dowolnym znakiem innym ni¿ spacja i nowa linia
+(zobacz komendê
+.IR `s' ,
+ni¿ej).
+Je¶li jeden, lub dwa z ostatnich ograniczników s± pominiête, to ostatnia
+dotkniêta linia jest drukowana tak, jakby podano przyrostek
+.IR `p' .
+
+Niecytowany `&' w
+.I zamianie
+jest zamieniany na aktualnie dopasowany tekst.
+Sekwencja
+\fI`\em'\fR,
+gdzie
+.I m
+jest liczb± w zakresie [1,9] jest zamieniana
+.IR m -t±
+referencj± wsteczn± wyra¿enia dopasowanego tekstu.
+Je¶li
+.I zamiana
+sk³ada siê z pojedynczego `%', to u¿ywana jest
+.I zamiana
+z ostatniego podstawienia.
+W
+.I zamianie
+mo¿na osadzaæ nowe linie po ich zacytowaniu lewym uko¶nikiem (\e).
+
+.TP 8
+(.,.)s
+Powtarza ostatnie podstawienie.
+Ta postaæ komendy
+.I `s'
+przyjmuje przyrostek licznika
+.IR `n' ,
+lub dowoln± kombinacjê znaków
+.IR `r' ,
+.IR `g' ,
+i
+.IR `p' .
+Je¶li podano przyrostek licznika
+.IR `n' ,
+to zmieniane jest tylko
+.IR n -te
+dopasowanie.
+Przyrostek
+.I `r'
+powoduje, ¿e zamiast ostatnie podstawienia, u¿ywane jest
+wyra¿enie regularne ostatniego szukania.
+Przyrostek
+.I `g'
+w³±cza przyrostek global ostatniego podstawienia.
+Przyrostek
+.I `p'
+w³±cza przyrostek drukowania ostatniego podstawienia. Bie¿±cy adres jest
+ustawiany na ostatni± dotkniêt± liniê.
+
+.TP 8
+(.,.)t(.)
+Kopiuje adresowane linie za adres, wskazany z prawej strony, który mo¿e byæ
+adresem
+.IR 0
+(zero).
+Bie¿±cy adres jest ustawiany na ostatni± kopiowan± liniê.
+
+.TP 8
+u
+Cofa ostatni± komendê i odtwarza bie¿±cy adres na taki, jaki by³ przed ni±.
+Komendy globalne
+.IR `g' ,
+.IR `G' ,
+.IR `v' ,
+i
+.IR `V' .
+s± traktowane jako pojedyncze.
+.I `u'
+jest samo dla siebie inwersj±.
+
+.TP 8
+.RI (1,$)v /re/lista-komend
+Aplikuje
+.I listê-komend
+na ka¿dej z adresowanych linii, nie pasuj±cych do wyra¿enia regularnego
+.IR re .
+Jest to podobne do komendy
+.IR `g' .
+
+.TP 8
+.RI (1,$)V /re/
+Edytuje interaktywnie adresowane linie, nie odpowiadaj±ce wyra¿eniu
+regularnemu
+.IR re.
+Jest to podobne do komendy
+.IR `G' .
+
+.TP 8
+.RI (1,$)w \ plik
+Zapisuje adresowane linie do
+.IR pliku .
+Wszelkie poprzednie zawarto¶ci
+.I pliku
+s± tracone bez ostrze¿enia.
+Je¶li nie ma domy¶lnej nazwy pliku, to jest ona ustawiana na
+.IR plik ,
+a w przeciwnym wypadku nie jest zmieniana. Je¶li nie podano nazwy pliku,
+u¿ywana jest nazwa domy¶lna. Bie¿±cy adres nie jest zmieniany.
+
+.TP 8
+.RI (1,$)wq \ plik
+zapisuje adresowane linie do
+.IR pliku ,
+a nastêpnie wykonuje komendê
+.IR `q' .
+
+.TP 8
+.RI (1,$)w \ !komenda
+Zapisuje adresowane linie na standardowe wej¶cie 
+.IR `!komendy' ,
+(zobacz
+.RI ! komenda
+ni¿ej).
+Domy¶lna nazwa pliku i bie¿±cy adres nie s± zmieniane.
+
+.TP 8
+.RI (1,$)W \ plik
+Dokleja adresowane linie do koñca
+.IR pliku .
+Jest to podobne do komendy
+.IR `w' ,
+lecz poprzednia zawarto¶æ pliku nie jest niszczona.
+Bie¿±cy adres nie jest zmieniany.
+
+.TP 8
+(.)x
+Kopiuje (wstawia) zawarto¶æ bufora wycinania za adresowan± liniê. Bie¿±cy
+adres jest ustawiany na ostatni± skopiowan± liniê.
+
+.TP 8
+(.,.)y
+Kopiuje (wyszarpuje) adresowane linie do bufora wycinania.
+Bufor wycinania jest nadpisywany przez dalsze wywo³ania
+.IR `y' ,
+.IR `s' ,
+.IR `j' ,
+.IR `d' ,
+lub
+.IR `c' .
+Bie¿±cy adres nie jest zmieniany.
+
+.TP 8
+.RI (.+1)z n
+Przewija
+.I n
+linii naraz, rozpoczynaj±c od adresowanej linii. Je¶li
+.I n
+nie jest podane, u¿ywany jest bie¿±cy rozmiar okna. Bie¿±cy adres jest
+ustawiany na ostatni± drukowan± liniê.
+
+.TP 8
+.RI ! komenda
+Wykonuje
+.I komendê
+poprzez
+.IR sh (1).
+Je¶li pierwszy znak
+.I komendy
+to `!', to jest on zamieniany tekstem poprzedniej
+.IR `!komendy' .
+.B ed
+nie przetwarza
+.I komendy
+w poszukiwaniu cytatów lewouko¶nikowych. Jedna
+niecytowany
+.I `%'
+jest zamieniany domy¶ln± nazw± pliku.
+Gdy pow³oka koñczy wykonywanie, na standardowym wyj¶ciu drukowany jest `!'.
+Bie¿±ca linia nie jest zmieniana.
+
+.TP 8
+(.,.)#
+Rozpoczyna komentarz; reszta linii, a¿ do nowej linii jest ignorowana.
+Je¶li po adresie linii nastêpuje ¶rednik, to bie¿±cy adres jest ustawiany na
+ten adres. W przeciwnym wypadku adres nie jest zmieniany.
+
+.TP 8
+($)=
+Drukuje numer linii adresowanej linii.
+
+.TP 8
+(.+1)newline
+Drukuje adresowan± liniê i ustawia bie¿±cy adres na tê liniê.
+
+.SH PLIKI
+.TP 20
+/tmp/ed.*
+Plik buforowy
+.PD 0
+.TP 20
+ed.hup
+Plik, do którego
+.B ed
+zapisuje gdy terminal jest zawieszany.
+
+.SH ZOBACZ TAK¯E
+
+.IR vi (1),
+.IR sed (1),
+.IR regex (3),
+.IR sh (1).
+
+USD:12-13
+
+B. W. Kernighan and P. J. Plauger,
+.I Software Tools in Pascal ,
+Addison-Wesley, 1981.
+
+.SH OGRANICZENIA
+.B ed
+przetwarza argumenty
+.I plikowe
+z cytatami lewouko¶nikowymi, np. wszystkie znaki poprzedzone lewym
+uko¶nikiem w nazwie pliku s± interpretowane literalnie.
+
+Je¶li plik tekstowy nie jest zakoñczony znakiem nowej linii,
+.B ed
+podczas odczytu/zapisu dopisuje go. W przypadku pliku binarnego,
+.B ed
+tego nie robi.
+
+.\" per line overhead: 4 ints
+
+.SH DIAGNOSTYKA
+Po b³êdzie, je¶li wej¶cie
+.BR ed 'a
+nastêpuje z pliku regularnego, lub "dokumentu tutaj" (dokumentu w³±czonego) to 
+koñczy; w przeciwnym wypadku drukuje `?' i powraca do trybu komend.
+Wyja¶nienie ostatniego b³êdu jest drukowane po komendzie
+.I `h'
+(help).
+
+Próba zakoñczenia
+.B ed
+lub edycji innego pliku przed zapisaniem zmodyfikowanego bufora powoduje
+b³±d. Je¶li komenda jest wstawiona drugi raz, powiedzie siê, lecz zmiany
+bufora bêd± utracone.
+
+.B ed
+koñczy dzia³anie z zerem, je¶li nie by³o b³êdów. W przeciwnym wypadku z
+warto¶ci± >0.

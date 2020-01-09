@@ -1,0 +1,519 @@
+.\"
+.\"	$Id: ipfw.4,v 1.5 2001/10/07 11:03:28 wojtek2 Exp $
+.\"
+.\"
+.\"	Copyright (c) 1995,1996 by X/OS Experts in Open Systems BV.
+.\"	All rights reserved.
+.\"
+.\"	Author: Jos Vos <jos@xos.nl>
+.\"
+.\"		X/OS Experts in Open Systems BV
+.\"		Kruislaan 419
+.\"		NL-1098 VA  Amsterdam
+.\"		The Netherlands
+.\"
+.\"		E-mail: info@xos.nl
+.\"		WWW:    http://www.xos.nl/
+.\"
+.\"
+.\"	This program is free software; you can redistribute it and/or modify
+.\"	it under the terms of the GNU General Public License as published by
+.\"	the Free Software Foundation; either version 2 of the License, or
+.\"	(at your option) any later version.
+.\"
+.\"	This program is distributed in the hope that it will be useful,
+.\"	but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\"	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\"	GNU General Public License for more details.
+.\"
+.\"	You should have received a copy of the GNU General Public License
+.\"	along with this program; if not, write to the Free Software
+.\"	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+.\"
+.\" {PTM/PO/0.2/28-09-1998/"zapora ogniowa IP i zliczanie ruchu"}
+.\"
+.TH IPFW 4 "16 lutego 1996" "" ""
+.SH NAZWA
+ipfw \- zapora ogniowa (firewall) IP i zliczanie ruchu
+.SH SK£ADNIA
+.BR "#include <sys/types.h>"
+.br
+.BR "#include <sys/socket.h>"
+.br
+.BR "#include <netinet/in.h>"
+.br
+.BR "#include <linux/ip.h>"
+.br
+.BR "#include <linux/tcp.h>"
+.br
+.BR "#include <linux/udp.h>"
+.br
+.BR "#include <linux/icmp.h>"
+.br
+.BR "#include <linux/if.h>"
+.br
+.BR "#include <linux/ip_fw.h>"
+.sp 0.75
+.BR "int setsockopt (int socket, IPPROTO_IP, int command, void *data, int length)"
+.SH OPIS
+Us³ugi firewalla IP i zliczania ruchu wbudowane w j±dro Linuksa
+udostêpniaj± mechanizm zliczania pakietów IP i budowania zapór
+ogniowych (firewall) opartych o filtry pakietów.
+Administrowanie tymi funkcjami opiera siê o cztery przechowywane przez
+j±dro listy, z których ka¿da mo¿e zawieraæ zero lub wiêcej regu³.
+Regu³a zawiera szczegó³owe informacje o adresach ¼ród³owych i
+docelowych, protoko³ach, numerach portów i kilku innych cechach.
+Pakiet dopasowany bêdzie do regu³y, je¶li jego parametry bêd±
+zgadzaæ siê z jej definicj±. Istniej± cztery kategorie regu³:
+.TP
+Zliczaj±ce
+
+Regu³y te stosowane s± do wszystkich pakietów IP, które s± wysy³ane
+b±d¼ odbierane przez jeden z lokalnych interfejsów sieciowych.  Cechy
+ka¿dego pakietu bêd± porównane ze wszystkimi regu³ami na tej li¶cie, a
+ka¿de dopasowanie spowoduje zwiêkszenie zwi±zanych z dan± regu³±
+liczników pakietów i bajtów.
+.TP
+Zapora wej¶ciowa
+
+Regu³y te decyduj± o udzielaniu dostêpu nadchodz±cym z zewn±trz
+pakietom IP.  Wszystkie pakiety wchodz±ce przez jeden z lokalnych
+interfejsów sieciowych sprawdzane s± pod k±tem dopasowania regu³
+zapory wej¶ciowej.  Pierwsza regu³a, do której pasuj± parametry
+pakietu, zadecyduje o udzieleniu dostêpu oraz zmieni liczniki bajtów i
+pakietów zwi±zane z t± regu³±. Je¶li pakiet nie zostanie dopasowany do
+¿adnej regu³y, zastosowana zostanie domy¶lna regu³a dostêpowa.
+.TP
+Zapora wyj¶ciowa
+
+Regu³y te definiuj± uprawnienia wychodz±cych pakietów IP. Wszystkie
+pakiety gotowe do wys³ania przez jeden z lokalnych interfejsów
+sieciowych sprawdzane s± pod wzglêdem zgodno¶ci z regu³ami zapory
+wyj¶ciowej.  Pierwsza dopasowana do pakietu regu³a zadecyduje o
+prawach dostêpu i spowoduje aktualizacjê liczników bajtów i pakietów z
+ni± zwi±zanych. Je¶li pakiet nie zostanie dopasowany do ¿adnej regu³y,
+zastosowana zostanie domy¶lna regu³a dostêpowa.
+
+.TP
+Zapora pakietów przekazywanych
+
+Regu³y te definiuj± uprawnienia przekazywanych pakietów IP.  Wszystkie
+pakiety wys³ane przez zewnêtrzny komputer, posiadaj±ce inny komputer
+jako stacjê docelow±, sprawdzane s± pod wzglêdem dopasowania do regu³
+zapory pakietów przekazywanych. Pierwsza dopasowana do pakietu regu³a
+zadecyduje o prawach dostêpu i spowoduje aktualizacjê liczników bajtów
+i pakietów z ni± zwi±zanych. Je¶li pakiet nie zostanie dopasowany do
+¿adnej regu³y, zastosowana zostanie domy¶lna regu³a dostêpowa.
+
+.PP
+Ka¿da regu³a zaporowa (nie regu³a zliczaj±ca), posiada zasadê, która
+okre¶la, jakie czynno¶ci maj± byæ wykonane je¶li parametry pakietu
+pasowaæ bêd± do definicji regu³y. Istniej± 4 ró¿ne zasady:
+.I accept
+(pozwala pakietom swobodnie przechodziæ przez zaporê), 
+.I masquerade
+(pozwala pakietom przechodziæ przez zaporê przy wykorzystaniu maskowania (masquerading); ta zasada ma zastosowanie jedynie do regu³ przekazuj±cych),
+.I reject
+(odrzuca pakiet i w charakterze powiadomienia odsy³a nadawcy komunikat ICMP host unreachable (komputer niedostêpny)),
+and
+.I deny
+(ignoruje pakiet bez odsy³anie jakiegokolwiek powiadomienia).  Przy
+wszystkich trzech typach zapór istnieje zasada domy¶lna, która
+stosowana jest wzglêdem wszystkich pakietów, które nie dopasuj± siê do
+¿adnej z regu³.
+.PP
+Regu³y przekazuj±ce definiuj± równie¿, czy pakiety bêd± maskowane w
+trakcie przekazywania. W tym przypadku przed przekazaniem pakietu
+adres nadawcy w pakiecie IP jest zastêpowany adresem lokalnego
+komputera, a port ¼ród³owy w nag³ówku TCP lub UDP jest zastêpowany
+przez numer stworzonego tymczasowo portu lokalnego.  Poniewa¿ te
+ustawienia przechowywane s± w j±drze, pakiety zwrotne (przysy³ane do
+tymczasowego portu na komputerze lokalnym) rozpoznawane s±
+automatycznie. Adres docelowy i numer portu tych pakietów zostanie
+zast±piony przez oryginalny adres i numer portu, które zosta³y
+zapamiêtane przy przekazywaniu pierwszego maskowanego pakietu.
+.PP
+Ten paragraf opisuje sposób, w jaki pakiet przechodzi przez regu³y
+zapory i zliczania. Pakiety odebrane przez jeden z lokalnych
+interfejsów sieciowych przechodz± przez nastêpuj±ce zestawy regu³:
+.RS
+.I zliczaj±ce
+(urz±dzenie wej¶ciowe)
+.br
+.I zapora wej¶ciowa
+(urz±dzenie wej¶ciowe)
+.RE
+W tym przypadku, urz±dzenie (adres interfejsu), które jest u¿ywane
+przy sprawdzaniu dopasowania pakietu IP do regu³y, jest wy¶wietlone w
+nawiasach. Je¶li pakiet ma byæ przekazany do zewnêtrznej stacji, przejdzie równie¿ przez:
+.RS
+.I zeporê pakietów przekazywanych
+(urz±dzenie wej¶ciowe)
+.RE
+W nastêpnym kroku opcjonalnie pakiet zostanie zamaskowany.
+Odpowiedzi na pakiety zamaskowane nie bêd± przechodziæ przez zaporê pakietów przekazywanych (przejd± jednak zarówno przez wej¶ciow±, jak i wyj¶ciow± zaporê).
+Wszystkie pakiety wysy³ane z jednego z lokalnych interfejsów sieciowych, tworzone lokalnie, b±d¼ przekazywane, bêd± przechodziæ przez:
+.RS
+.I zaporê wyj¶ciow±
+(urz±dzenie wyj¶ciowe)
+.br
+.I zliczanie
+(urz±dzenie wyj¶ciowe)
+.RE
+Nale¿y zauwa¿yæ, ¿e pakiety maskowane bêd± przechodziæ przez zaporê
+wyj¶ciow± i regu³y zliczaj±ce z nowymi nag³ówkami pakietów (po
+przej¶ciu przez zaporê wej¶ciow± i przekazuj±c± z oryginalnymi
+nag³ówkami). Odpowiedzi na maskowane pakiety bêd± równie¿ posiadaæ
+ró¿ne nag³ówki w trakcie przechodzenia przez regu³y wej¶ciowe i
+wyj¶ciowe.
+.PP
+Sterowanie zapor± i zliczaniem mo¿e siê odbywaæ za po¶rednictwem wywo³añ funkcji 
+.IR setsockopt (2).
+Istniej±ce regu³y mo¿na sprawdziæ zagl±daj±c do trzech plików w katalogu
+.I /proc/net
+:
+.IR ip_acct ,
+.IR ip_input ,
+.IR ip_output ,
+oraz
+.IR ip_forward .
+Bie¿±ce ustawienia zwi±zane z sesjami maskowanymi mo¿na znale¼æ w pliku
+.I ip_masquerade
+w tym samym katalogu (zauwa¿my, ¿e regu³y okre¶laj±ce sesje, które powinny byæ maskowane znajduj± siê w pliku
+.IR ip_forward ).
+.SH POLECENIA
+Polecenia zmiany list regu³ lub zasad domy¶lnych musz± byæ podane jako parametry funkcji systemowej
+.IR setsockopt (2)
+, pracuj±cej na surowym gniazdku IP.  Wiêkszo¶æ poleceñ wymaga
+przekazania pewnych dodatkowych danych.  Wska¼nik do tych danych i
+d³ugo¶æ danych s± przekazywane jako parametry warto¶ci i d³ugo¶ci
+opcji 
+.IR setsockopt .
+Dostêpne s± nastêpuj±ce polecenia:
+.PP
+.B IP_ACCT_APPEND
+.br
+.B IP_FW_APPEND_IN
+.br
+.B IP_FW_APPEND_OUT
+.br
+.B IP_FW_APPEND_FWD
+.RS
+Dodanie regu³y do jednej z list regu³ zliczaj±cych lub zaporowych.
+Zale¿nie od polecenia, regu³a jest dodawana odpowiednio do listy regu³
+zliczaj±cych, wej¶ciowych, wyj¶ciowych, przekazuj±cych.  Nowa regu³a
+dodawana jest na koñcu listy. Dane przekazywane z tymi poleceniami
+maj± strukturê
+.I ip_fw
+, definiuj±c± tre¶æ nowej regu³y.
+.RE
+.PP
+.B IP_ACCT_INSERT
+.br
+.B IP_FW_INSERT_IN
+.br
+.B IP_FW_INSERT_OUT
+.br
+.B IP_FW_INSERT_FWD
+.RS
+Polecenia te s± równowa¿ne poleceniom dodawania, z tym wyj±tkiem, ¿e
+nowa regu³a wstawiana jest na pocz±tku listy.
+.RE
+.PP
+.B IP_ACCT_DELETE
+.br
+.B IP_FW_DELETE_IN
+.br
+.B IP_FW_DELETE_OUT
+.br
+.B IP_FW_DELETE_FWD
+.RS
+Usuniêcie regu³y z jednej z list regu³ zliczaj±cych lub zaporowych.
+Zale¿nie od polecenia, regu³a zostanie usuniêta odpowiednio z listy regu³ zliczaj±cych, wej¶ciowych, wyj¶ciowych lub przekazuj±cych.
+Przekazywane z tym poleceniem dane maj± strukturê
+.I ip_fw
+, definiuj±c± tre¶æ pakietu przeznaczonego do usuniêcia.
+Pierwsza regu³a spe³niaj±ca podane kryteria zostanie usuniêta z listy.
+.RE
+.PP
+.B IP_ACCT_ZERO
+.br
+.B IP_FW_ZERO_IN
+.br
+.B IP_FW_ZERO_OUT
+.br
+.B IP_FW_ZERO_FWD
+.RS
+Wyzerowyje liczniki pakietów i bajtów odpowiednio we wszystkich
+regu³ach list zliczaj±cych, wej¶ciowych, wyj¶ciowych i przekazuj±cych.
+Z nieznanych powodów, z tym poleceniem w charakterze danych musi byæ
+przekazana (dowolna) liczba ca³kowita.
+Aby dowiedzieæ siê, jak pojedynczo wy¶wietlaæ i zerowaæ zawarto¶æ poszczególnych liczników, zobacz opis plików
+.I /proc/net
+.RE
+.PP
+.B IP_ACCT_FLUSH
+.br
+.B IP_FW_FLUSH_IN
+.br
+.B IP_FW_FLUSH_OUT
+.br
+.B IP_FW_FLUSH_FWD
+.RS
+Usuniêcie wszystkich regu³ odpowiednio z listy regu³ zliczaj±cych,
+wej¶ciowych, wyj¶ciowych i przekazuj±cych.  Z nieznanych powodów,
+z tym poleceniem w charakterze danych musi byæ przekazana (dowolna)
+liczba ca³kowita.
+.RE
+.PP
+.B IP_FW_POLICY_IN
+.br
+.B IP_FW_POLICY_OUT
+.br
+.B IP_FW_POLICY_FWD
+.RS
+Zmiana domy¶lnej zasady odpowiednio dla zapory wej¶ciowej, wyj¶ciowej
+lub przekazuj±cej.  Nowa zasada przekazywana jest jako liczba
+ca³kowita o nastêpuj±cej dopuszczalnej warto¶ci:
+.B IP_FW_F_ACCEPT
+(zaakceptuj pakiet),
+.B IP_FW_F_ACCEPT | IP_FW_F_MASQ
+(zaakceptuj pakiet i dodatkowo u¿yj maskowania),
+.B IP_FW_F_ICMRPL
+(odrzuæ pakiet przez wys³anie komunikatu ICMP host unreachable do
+nadawcy) lub 0 (odrzuæ pakiet bez ¿adnego powiadomienia).  Zasada
+jest u¿ywana w przypadku gdy ¿adna z istniej±cych regu³ zaporowych na
+odpowiadaj±cej li¶cie nie pasuje do analizowanego pakietu.
+.RE
+.PP
+.B IP_FW_CHECK_IN
+.br
+.B IP_FW_CHECK_OUT
+.br
+.B IP_FW_CHECK_FWD
+.RS
+Sprawdzenie, czy pakiet by³by zaakceptowany (z maskowaniem
+lub bez), odrzucony z potwierdzeniem b±d¼ odrzucony bez potwierdzenia przez 
+zaporê wej¶ciow±
+.RB ( IP_FW_CHECK_IN ),
+zaporê wyj¶ciow±
+.RB ( IP_FW_CHECK_OUT ),
+lub zaporê przekazuj±c±
+.RB ( IP_FW_CHECK_FWD ).
+Przekazywane z poleceniem dane maj± strukturê
+.I ip_fwpkt
+, definiuj±c± nag³ówki pakietów i adres interfejsu.
+.RE
+.SH STRUKTURY
+Struktura
+.I ip_fw
+zawiera nastêpuj±ce pola, które nale¿y wype³niæ adekwatnie do
+procedury dodawania lub usuwania regu³y:
+.TP
+struct in_addr fw_src, fw_dst
+¬ród³owe i docelowe adresy IP.
+.TP
+struct in_addr fw_smsk, fw_dmsk 
+Maski dla ¼ród³owych i docelowych adresów IP. Zauwa¿my, ¿e maska
+0.0.0.0 oznaczaæ bêdzie dopasowanie wszystkich adresów.
+.TP
+struct in_addr fw_via
+Adres IP interfejsu, przez który pakiet jest odbierany przez system,
+lub który ma byæ przes³any przez system.  Adres 0.0.0.0 ma specjalne
+znaczenie: dopasowanie adresów wszystkich interfejsów.
+.TP
+char fw_vianame[IFNAMSIZ]
+Nazwa interfejsu, przez który pakiet jest odbierany przez system lub
+przez który ma byæ wys³any. Pusty ci±g znaków ma specjalne znaczenie:
+dopasowanie wszystkich nazw urz±dzeñ.
+.TP
+unsigned short fw_flg
+Flagi dla regu³y.
+Flagi dla ró¿nych opcji mog± byæ podane jako ich ró¿nica logiczna.
+.sp 0.75
+Protokó³ (obowi±zkowy).
+Mo¿liwe warto¶ci to 
+.B IP_FW_F_TCP
+(TCP),
+.B IP_FW_F_UDP
+(UDP),
+.B IP_FW_F_ICMP
+(ICMP),
+lub
+.B IP_FW_F_ALL
+(wszystkie protoko³y, co definiuje uniwersaln± regu³ê zliczania/zaporow±).
+.sp 0.75
+Zasada, któr± nale¿y u¿yæ w przypadku dopasowania pakietu.
+Mo¿e ni± byæ
+.B IP_FW_F_ACCEPT
+(zaakceptuj pakiet),
+.B IP_FW_F_ACCEPT | IP_FW_F_MASQ
+(zaakceptuj pakiet i opcjonalnie zastosuj maskowanie), lub
+.B IP_FW_F_ICMRPL
+(odrzuæ pakiet odsy³aj±c odbiorcy komunikat ICMP host unreachable).
+Je¶li nie podana jest ¿adna z tych flag, pakiet jest odrzucany bez
+powiadomienia nadawcy.
+Zauwa¿my, ¿e zasada ta jest ignorowana w regu³ach zliczaj±cych.
+.sp 0.75
+Mo¿na ustawiæ kilka dodatkowych opcji:
+.B IP_FW_F_BIDIR
+(regu³a dwukierunkowa, dzia³aj±ca w obie strony),
+.B IP_FW_F_TCPACK
+(regu³a pasuje tylko wtedy, gdy w nag³ówku TCP ustawiony jest bit ACK),
+.B IP_FW_F_TCPSYN
+(regu³a pasuje tylko wtedy, gdy w nag³ówku TCP bit SYN jest ustawiony, a bit ACK jest wyzerowany),
+.BR IP_FW_F_SRNG
+oraz
+.BR IP_FW_F_DRNG
+(opis tych flag poni¿ej).
+Opcji
+.B IP_FW_F_PRN
+mo¿na u¿yæ do wy¶wietlenia pewnych informacji o pasuj±cych pakietach
+za pomoc± funkcji
+.IR printk ().
+Opcja ta bêdzie skuteczna tylko wówczas, gdy j±dro jest skompilowane ze zdefiniowanym parametrem
+.B CONFIG_IP_FIREWALL_VERBOSE.
+.TP
+unsigned short fw_nsp, fw_ndp, fw_pts[IP_FW_MAX_PORTS] 
+Te pola okre¶laj± liczbê portów ¼ród³owych, docelowych i tablicê, w
+której przechowywane s± odpowiednie numery tych portów.
+Tablica zaczyna siê od portów ¼ród³owych, po których bezpo¶rednio nastêpuj± porty docelowe.
+Ca³kowita liczba portów jest ograniczona do warto¶ci
+.B IP_FW_MAX_PORTS
+(obecnie 10).  Zarówno lista portów ¼ród³owych, jak i docelowych
+zawieraæ mo¿e co najwy¿ej jeden zakres. W tym przypadku, pierwsze dwa
+numery portów z listy traktowane s± jako minimalna i maksymalna
+warto¶æ zakresu. Dla pakietów ICMP, porty ¼ród³owe traktowane s± jako
+typy ICMP, a porty docelowe s± pomijane.  Poniewa¿ drugi i nastêpne
+fragmenty pakietu TCP lub UDP nie zawieraj± numerów portów, traktowane
+s± tak, jakby mia³y oba porty równe zero.
+Flagi
+.BR IP_FW_F_SRNG
+i
+.BR IP_FW_F_DRNG
+w polu
+.I fw_flg
+okre¶laj± czy podany jest zakres ¼ród³owy i/lub docelowy.
+.TP
+unsigned char fw_tosand, fw_tosxor
+Owe 8-bitowe maski okre¶laj±, w jaki sposób pole TOS w nag³ówku IP
+powinno byæ zmieniane, gdy pakiet jest akceptowany przez regu³ê
+zaporow± (z maskowaniem lub bez).
+Pole TOS jest najpierw bitowo sumowane z
+.I fw_tosand
+, a wynik jest poddawany operacji ró¿nicy symetrycznej (xor) z 
+.IR fw_tosxor .
+Pola te s± pomijane w regu³ach zliczania i w regu³ach zaporowych,
+które odrzucaj± pakiet z powiadomieniem lub bez.
+.PP
+Struktura
+.I ip_fwpkt
+, wykorzystywania przy sprawdzaniu pakietu, zawiera nastêpuj±ce pola:
+.TP
+struct iphdr fwp_iph
+Nag³ówek IP. Zajrzyj do
+.I <linux/ip.h>
+po szczegó³owy opis struktury
+.I iphdr.
+.PP
+struct tcphdr fwp_protoh.fwp_tcph
+.br
+struct udphdr fwp_protoh.fwp_udph
+.br
+struct icmphdr fwp_protoh.fwp_icmph
+.RS
+Nag³ówek TCP, UDP, lub ICMP, po³±czone w unii o nazwie
+.IR fwp_protoh .
+Zajrzyj do
+.IR <linux/tcp.h> ,
+.IR <linux/udp.h> ,
+lub
+.I <linux/icmp.h>
+po szczegó³owy opis odpowiednich struktur.
+.RE
+.TP
+struct in_addr fwp_via
+Adres interfejsu, przez który udaje siê, ¿e pakiet jest wysy³any lub odbierany.
+.SH "WARTO¦Æ ZWRACANA"
+Zero, je¶li operacja jest skuteczna.
+-1, je¶li wyst±pi³ b³±d. Odpowiednio ustawiana jest warto¶æ
+.IR errno .
+Lista mo¿liwych komunikatów b³êdu znajduje siê na stronie
+.IR setsockopt (2).
+Je¶li u¿yte jest jedno z dwóch poleceñ sprawdzania pakietu, zwracane jest zero je¶li pakiet by³by zaakceptowany (bez maskowania). W przeciwnym wypadku, zwracana jest -1, a 
+.I errno
+uzyskuje warto¶æ
+.B ECONNRESET
+(pakiet by³by przyjêty z u¿yciem maskowania),
+.B ETIMEDOUT
+(pakiet by³by odrzucony z powiadomieniem), lub
+.B ECONNREFUSED
+(pakiet by³by odrzucony bez powiadomienia).
+.SH "WY¦WIETLANIE REGU£"
+W katalogu
+.I /proc/net
+znajduj± siê 4 wpisy, umo¿liwiaj±ce wy¶wietlenie aktywnych regu³ w
+ka¿dej z nastêpuj±cych kategorii:
+.I ip_acct
+(regu³y zliczania ruchu IP),
+.I ip_input
+(regu³y zapory wej¶ciowej IP),
+.I ip_output
+(regu³y wyj¶ciowej zapory IP), oraz
+.I ip_forward
+(regu³y zapory przekazuj±cej IP).  Odczyt tych plików zwróci wiersz
+nag³ówkowy i jeden wiersz dla ka¿dej zdefiniowanej regu³y. Dla
+wszystkich trzech typów zapory, linia nag³ówkowa zawiera na koñcu
+dziesiêtn± reprezentacjê odpowiedniej zasady (jedna z
+.BR IP_FW_F_ACCEPT ,
+.B IP_FW_F_ACCEPT |
+.BR IP_FW_F_MASQ ,
+.BR IP_FW_F_ICMPRPL ,
+lub 0).
+.PP
+Ka¿da nastêpna linia pokazuje zawarto¶æ regu³y w nastêpuj±cej
+kolejno¶ci: adres ¼ród³owy i maska, adres docelowy i maska, adres
+interfejsu, flagi, numer portu ¼ród³owego i docelowego, liczniki
+pakietów i bajtów, listê portów, maskê sumy logicznej dla TOS i maskê
+ró¿nicy symetrycznej dla TOS. Adresy IP i maski s± wy¶wietlone jako 8
+cyfr heksadecymalnych, maski TOS jako 2 cyfry heksadecymalne
+poprzedzone odpowiednio A i X. Pozosta³e warto¶ci wy¶wietlone s± w
+formacie dziesiêtnym.  Poszczególne pola rozdzielone s± spacjami,
+znakiem '/' (adres i odpowiadaj±ca mu maska), lub znakiem '->' (pary
+adresów/masek ¼ród³owych i docelowych).
+.PP
+Pliki mo¿na równie¿ otwieraæ w trybie odczyt/zapis (tylko root mo¿e to
+zrobiæ).  W tym przypadku, liczniki pakietów i bajtów we wszystkich
+regu³ach danej kategorii bêd± wyzerowane po wy¶wietleniu ich bie¿±cej
+warto¶ci.
+.PP
+Plik
+.I /proc/net/ip_masquerade
+zawiera wszystkie ustawienia j±dra zwi±zane z maskowaniem.  Po wierszu
+nag³ówkowym, ka¿da maskowana sesja jest opisana w osobnej linii za
+pomoc± nastêpuj±cych po sobie wpisów, rozdzielonych spacj± lub znakiem
+':' (pary adres/numer portu): nazwa protoko³u ("TCP" lub "UDP"),
+¼ród³owy adres IP i numer portu, docelowy adres IP i numer portu, nowy
+adres portu, pocz±tkowy numer sekwencyjny do dodawania warto¶ci
+ró¿nicowej, warto¶æ ró¿nicowa, poprzednia warto¶æ ró¿nicowa, oraz czas
+wyga¶niêcia w jednostce jiffie (1/HZ sekundy).  Wszystkie adresy i
+warto¶ci numeryczne podane s± w formacie heksadecymalnym, z wyj±tkiem
+ostatnich trzech wpisów, które s± w formacie dziesiêtnym.
+.SH PLIKI
+.I /proc/net/ip_acct
+.br
+.I /proc/net/ip_input
+.br
+.I /proc/net/ip_output
+.br
+.I /proc/net/ip_forward
+.br
+.I /proc/net/ip_masquerade
+.\" .SH B£ÊDY
+.SH ZOBACZ TAK¯E
+setsockopt(2), socket(2), ipfwadm(8)
+.\" .SH AUTOR
+.\" Jos Vos <jos@xos.nl>
+.\" .br
+.\" X/OS Experts in Open Systems BV, Amsterdam, The Netherlands
+

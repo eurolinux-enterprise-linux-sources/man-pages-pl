@@ -1,0 +1,140 @@
+.\" {PTM/GSN/0.5/23-02-1999/"po³±cz pliki i wypisz na standardowe wyj¶cie"}
+.\" poszerzenie i aktualizacja do GNU textutils 2.0 PTM/WK/2000-IV
+.ig
+Transl.note: based on GNU man page cat.1 and textutils.info
+ 
+Copyright 1994, 95, 96, 1999 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+..
+.TH CAT "1" FSF "sierpieñ 1999" "Narzêdzia tekstowe GNU 2.0"
+.SH NAZWA
+cat \- po³±cz pliki i wypisz na standardowe wyj¶cie
+.SH SK£ADNIA
+.TP 5
+.B cat
+.RB [ \-benstuvAET ]
+.RB [ \-\-number ]
+.RB [ \-\-number-nonblank ]
+.br
+.RB [ \-\-squeeze-blank ]
+.RB [ \-\-show-nonprinting ]
+.RB [ \-\-show-ends ]
+.br
+.RB [ \-\-show-tabs ]
+.RB [ \-\-show-all ]
+.RB [ \-\-help ]
+.RB [ \-\-version ]
+.br
+.RI [ plik ...]
+.SH OPIS
+Dokumentacja niniejsza nie jest ju¿ utrzymywana i mo¿e byæ niedok³adna
+lub niekompletna.  Autorytatywnym ¼ród³em jest obecnie dokumentacja
+Texinfo.  Dostêp do niej uzyskasz wpisuj±c w wierszu poleceñ:
+.RS
+.B pinfo cat
+.RE
+lub
+.RS
+.BR "info cat" .
+.RE
+.PP
+Ta strona podrêcznika opisuje polecenie \fBcat\fP w wersji GNU.
+.PP
+.B cat
+wypisuje na standardowe wyj¶cie zawarto¶æ ka¿dego podanego pliku, lub
+standardowego wej¶cia je¶li nie podano ¿adnego lub podano plik zwany `\-'.
+.SH OPCJE
+.TP
+.BR \-A ", " \-\-show-all
+Równowa¿na
+.BR \-vET .
+.TP
+.BR \-B ", " \-\-binary
+Tylko w systemach MS-DOS i MS-Windows -- czyta i zapisuje pliki w trybie
+binarnym. Domy¶lnie `cat' w tych systemach pos³uguje siê trybem binarnym
+tylko przy przekierowaniu standardowego wyj¶cia do pliku lub potoku;
+ta opcja przes³ania takie ustawienie. U¿ywane jest binarne wej¶cie/wyj¶cie
+plików, zatem pliki zachowuj± swój format (tekstowy Uniksowy
+w przeciwieñstwie do DOS-owego tekstowego i binarnego), gdy¿ `cat' czêsto
+wykorzystywany jest jako program do kopiowania plików. Pewne opcje (zobacz
+ni¿ej) powoduj±, ¿e `cat' czyta i zapisuje pliki w trybie tekstowym, gdy¿
+nie jest istotna pierwotna zawarto¶æ pliku (np. gdy `cat' numeruje linie
+lub ma zaznaczyæ ich koñce). Dlatego opcje te dzia³aj± zgodnie z oczekiwaniem
+u¿ytkowników DOS/Windows; na przyk³ad, tekstowe pliki DOS-owe maj± linie
+zakoñczone par± znaków CR-LF, co nie bêdzie przetwarzane przez \fB-b\fP
+jako pusta linia, chyba ¿e plik jest czytany w trybie tekstowym.
+.TP
+.BR \-b ", " \-\-number-nonblank
+Numeruje wszystkie niepuste linie wyj¶cia, poczynaj±c od 1.
+W MS-DOS i MS-Windows opcja ta powoduje, ¿e `cat' czyta i zapisuje pliki
+w trybie tekstowym.
+.TP
+.B \-e
+Równowa¿na
+.BR \-vE .
+.TP
+.BR \-E ", " \-\-show-ends
+Wy¶wietla '$' po koñcu ka¿dej linii.
+W MS-DOS i MS-Windows opcja ta powoduje, ¿e `cat' czyta i zapisuje pliki
+w trybie tekstowym.
+.TP
+.BR \-n ", " \-\-number
+Numeruje wszystkie linie wyj¶cia, poczynaj±c od 1.
+W MS-DOS i MS-Windows opcja ta powoduje, ¿e `cat' czyta i zapisuje pliki
+w trybie tekstowym.
+.TP
+.BR \-s ", " \-\-squeeze-blank
+Zastêpuje powielone s±siaduj±ce linie puste pojedyncz± lini± pust±.
+W MS-DOS i MS-Windows opcja ta powoduje, ¿e `cat' czyta i zapisuje pliki
+w trybie tekstowym.
+.TP
+.B \-t
+Równowa¿na
+.BR \-vT .
+.TP
+.BR \-T ", " \-\-show-tabs
+Wy¶wietla znaki tabulacji jako '^I'.
+.TP
+.B \-u
+Ignorowana; dla zgodno¶ci z Uniksem.
+.TP
+.BR \-v ", " \-\-show-nonprinting
+Wy¶wietla znaki kontrolne, z wyj±tkiem nowej strony i tabulacji, u¿ywaj±c
+notacji z '^', i poprzedzaj±c znaki z ustawionym ósmym bitem przez `M-'.
+W MS-DOS i MS-Windows opcja ta powoduje, ¿e `cat' czyta pliki i standardowe
+wej¶cie w DOS-owym trybie binarnym, zatem widoczne s± tak¿e znaki CR na koñcu
+ka¿dej z linii.
+.TP
+.B "\-\-help"
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach, koñczy pracê.
+.TP
+.B "\-\-version"
+Wy¶wietla numer wersji programu i koñczy pracê.
+.SH "ZG£ASZANIE B£ÊDÓW"
+B³êdy proszê zg³aszaæ, w jêz. ang., do <bug-textutils@gnu.org>.
+.SH COPYRIGHT
+Copyright \(co 1999 Free Software Foundation, Inc.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH ZOBACZ TAK¯E
+.BR tac (1),
+.BR nl (1),
+.BR od (1),
+.BR textutils (1).
+.SH OD T£UMACZA
+Zaktualizowano i poszerzono wg dokumentacji Texinfo dla narzêdzi tekstowych
+GNU wersji 2.0.

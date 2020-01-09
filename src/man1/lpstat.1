@@ -1,0 +1,240 @@
+.\" {PTM/WK/2000-VI}
+.\" @(#)lpstat.1 1.29 95/10/09 SMI; from SVr4
+.\" Copyright 1989 AT&T
+.\" Copyright (c) 1995, Sun Microsystems, Inc.
+.\" All Rights Reserved
+.\" Portions Copyright (c) 1992, X/Open Company Limited
+.\" All Rights Reserved
+.TH lpstat 1 "7 lutego 1994"
+.SH NAZWA
+lpstat \- wypisuje informacjê o stanie us³ug drukowania LP
+.SH SK£ADNIA
+.TP 8
+.B lpstat
+.RB [ \-d ]
+.RB [ \-r ]
+.RB [ \-R ]
+.RB [ \-s ]
+.RB [ \-t ]
+.RB [ \-a
+.RI [ lista ]]
+.RB [ \-c
+.RI [ lista ]]
+.br
+.RB [ \-f
+.RI [ lista ]
+.RB [ \-l ]]
+.RB [ \-o
+.RI [ lista ]]
+.RB [ \-S
+.RI [ lista ]
+.RB [ \-l ]]
+.br
+.RB [ \-p
+.RI [ lista ]
+.RB [ \-D ]
+.RB [ \-l ]]
+.RB [ \-P ]
+.RB [ \-u
+.RI [ lista-login-ID ]]
+.br
+.RB [ \-v
+.RI [ lista ]]
+.RI [ lista ]
+.SH OPIS
+.IX "lpstat command" "" "\fLlpstat\fP \(em print information about the status of the LP print service"
+.IX "LP print services" "print information about the status" "" "print information about the status \(em \fLlpstat\fP"
+.IX "printers" "print information about the status" "" "print information about the status \(em \fLlpstat\fP"
+Polecenie \f3lpstat\fP wypisuje informacje o bie¿±cym stanie us³ugi
+druku
+.SM LP.
+Zaimplementowano je jako interfejs do programu
+.BR lpq (1)
+z LPRng,
+i nie posiada ono pe³nej funkcjonalno¶ci zwyk³ego programu
+.\" native lpstat program
+.BR lpstat .
+.PP
+Je¿eli nie podano ¿adnych opcji, to \fBlpstat\fP wypisuje stan wszystkich
+¿±dañ druku nale¿±cych do danego u¿ytkownika i utworzonych przez \fBlp\fP
+na domy¶lnej drukarce.
+(zobacz
+.BR lp (1)
+i
+.BR lpr (1)).
+Argumenty nie bêd±ce \fIopcjami\fP przyjmowane s± za \fIidentyfikatory
+¿±dañ\fP (request-ID, takie jak zwracane przez \fBlp\fP) lub za nazwy
+drukarek.
+Polecenie \fBlpstat\fP wypisuje stan takich ¿±dañ.
+\fIOpcje\fP mog± pojawiaæ siê w dowolnej kolejno¶ci i mog± byæ powtarzane
+lub mieszane z innymi argumentami.
+Po niektórych z ni¿ej wymienionych liter kluczowych mo¿e wystêpowaæ
+opcjonalna
+.IR lista ,
+przybieraj±ca jedn± z dwu postaci:
+.IP
+lista pozycji oddzielonych od siebie przecinkiem,
+.IP
+ujêta w cudzys³owy lista pozycji rozdzielonych odstêpami.
+.PP
+Na przyk³ad:
+.PP
+.RS
+\fB przyklad% lpstat \-u "user1 user2 user3"\fP
+.RE
+.PP
+Podanie s³owa \fBall\fP po dowolnej z liter kluczowych przyjmuj±cych jako
+argument \fIlistê\fP powoduje, ¿e zostanie wypisana ca³o¶æ informacji
+odpowiedniej dla tej litery.
+Na przyk³ad, polecenie:
+.PP
+.RS
+.B przyklad% lpstat \-o all
+.RE
+.PP
+wypisuje stan wszystkich ¿±dañ wydruku.
+.PP
+Pominiêcie \fIlisty\fP wystêpuj±cych po takich literach kluczowych
+powoduje, ¿e zostanie wypisana ca³o¶æ informacji odpowiedniej dla danej
+litery.
+Na przyk³ad, polecenie:
+.PP
+.RS
+.B przyklad% lpstat \-o
+.RE
+.PP
+wypisuje stan wszystkich ¿±dañ wydruku.
+.SH OPCJE
+Obs³ugiwane s± nastêpuj±ce opcje:
+.TP
+.BR \-a " [\fIlista\fP]"
+Zg³asza drukarki docelowe przyjmuj± ¿±dania.
+.I lista
+jest list± nazw drukarek.
+.TP
+.BR \-c " [\fIlista\fP]"
+Wypisuje nazwy wszystkich klas i ich cz³onków.
+.I lista
+jest list± nazw klas.
+(Ten sam efekt co \fB\-o\fP.)
+.TP
+.B \-d
+Wypisuje domy¶lne systemowe miejsce przeznaczenia dla ¿±dañ wydruku.
+.TP
+.BR \-f " [\fIlista\fP] [" \-l ]
+Wypisuje listê drukarek obs³uguj±cych podane formularze.
+Ta opcja jest ignorowana.
+.TP
+.BR \-o " [\fIlista\fP]"
+Wypisuje stan ¿±dañ wydruku:
+.I lista
+jest list± mieszan±, zawieraj±c± nazwy drukarek, klas
+i identyfikatorów ¿±dañ.
+Literê kluczow± \fB\-o\fP mo¿na pomin±æ.
+.TP
+.BR \-p " [\fIlist\fP]"
+Wypisuje stan drukarek.
+.I lista
+jest list± nazw drukarek.
+(Ten sam efekt co \fB\-o\fP.)
+.TP
+.B \-P
+Wypisuje rodzaje papieru. Ignorowane.
+.TP
+.B \-r
+Wypisuje stan programu planowania ¿±dañ
+.SM LP .
+.TP
+.B \-R
+Wypisuje liczbê pokazuj±c± pozycjê w kolejce druku ka¿dego z zadañ. Ignorowane.
+.TP
+.B \-s
+Wypisuje podsumowanie stanu. Tworzy krótkie zestawienie stanu.
+.TP
+.BR \-S " [\fIlista\fP] [" \-l ]
+Wykazuje lub weryfikuje zestawy znaków dla drukarek. Ignorowane.
+.TP
+.B \-t
+Wypisuje ca³o¶æ informacji o stanie.
+.TP
+.BR \-u " [\fIlista-login-ID\fP]"
+Wypisuje stan ¿±dañ wydruku dla u¿ytkowników o zadanych identyfikatorach.
+(Ten sam efekt co \fB\-o\fP.)
+.TP
+.BR \-v " [\fIlista\fP]"
+Wypisuje nazwy ¶cie¿kowe urz±dzeñ wyj¶ciowych.
+Ignorowane.
+.SH ¦RODOWISKO
+W podrêczniku
+.BR environ (5)
+znajdziesz opis poni¿szych zmiennych ¶rodowiska, wp³ywaj±cych na dzia³anie
+.BR lpstat :
+.TP 8
+.SB LPDEST
+Okre¶la kolejkê druku. Je¿eli zmienna
+.SB LPDEST
+nie jest ustawiona, to zastosowana zostanie zmienna
+.SB PRINTER\s0\f1.
+Opcja
+.BI \-P \0dest
+ma pierwszeñstwo nad
+.SB LPDEST\s0\f1.
+Je¿eli nie podano
+.B \-P
+a
+.SB LPDEST
+zawiera warto¶æ nie bêd±c± poprawnym urz±dzeniem lub nazw± okre¶laj±c±
+miejsce przeznaczenia, to wyniki bêd± niezdefiniowane.
+.TP
+.SB PRINTER
+Okre¶la urz±dzenie wyj¶ciowe lub miejsce przeznaczenia.
+Je¿eli nie ustawiono
+.SB LPDEST
+ani
+.SB PRINTER\s0\f1,
+to stosowane jest nieokre¶lone urz±dzenie wyj¶ciowe.
+Opcja
+.BI \-P \0dest
+i zmienna ¶rodowiska
+.SB LPDEST
+maj± pierwszeñstwo nad
+.SB PRINTER\s0\f1.
+Je¿eli nie podano
+.BR \-P ,
+.SB LPDEST
+nie jest ustawione, za¶
+.SB PRINTER
+zawiera warto¶æ nie bêd±c± poprawnym urz±dzeniem lub nazw± okre¶laj±c±
+miejsce przeznaczenia, to wyniki bêd± niezdefiniowane.
+.SH "KOD ZAKOÑCZENIA"
+.B lpstat
+zwraca poni¿sze kody zakoñczenia:
+.TP
+.B 0
+Wykonanie pomy¶lne.
+.TP
+.B >0
+Wyst±pi³ b³±d.
+.SH "ZOBACZ TAK¯E"
+.BR lpd.conf (5),
+.BR lpc (8),
+.BR lpd (8),
+.BR lpr (1),
+.BR lpq (1),
+.BR lprm (1),
+.BR printcap (5),
+.BR lpd.perms (5),
+.BR pr (1).
+.SH DIAGNOSTYKA
+Wiêkszo¶æ komunikatów diagnostycznych jest oczywista. Je¶li dok³adny powód
+niepowodzenia pozostaje niejasny, nale¿y w³±czyæ poziom debugowania (-D5)
+i uruchomiæ ponownie. Informacja diagnostyczna pomo¿e uchwyciæ dok³adn±
+przyczynê.
+.SH "HISTORIA"
+LPRng jest rozszerzonym systemem buforowania wydruku o funkcjonalno¶ci podobnej
+do oprogramowania Berkeley LPR. List± dyskusyjn± o LPRng jest lprng@lprng.com;
+subskrypcja przez wys³anie listu do lprng-request@lprng.com ze s³owem
+`subscribe` w tre¶ci.
+Oprogramowanie to jest dostêpne z ftp://ftp.astart.com/pub/LPRng.
+.SH "AUTOR"
+Patrick Powell <papowell@astart.com>.

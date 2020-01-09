@@ -1,0 +1,49 @@
+.\" {PTM/PB/0.1/01-06-1999/"drukuj statystyki ppp"}
+.\" Translation (c) 1999 Przemek Borys <pborys@dione.ids.pl>
+.\"	@(#) $Id: pppstats.8,v 1.3 1999/08/18 08:13:03 wojtek2 Exp $
+.TH PPPSTATS 8 "2 Maj 1995"
+.SH NAZWA
+pppstats \- drukuj statystyki PPP
+.SH SK£ADNIA
+.B pppstats
+.RB [ -v ]
+.RB [ -r ]
+.RB [ -c ]
+.RB [ -i
+.IR sec ]
+.RI [ unit# ]
+.ti 12
+.SH OPIS
+.B pppstats
+drukuje statystyki zwi±zane z PPP.
+.PP
+Flaga
+.B -v
+powoduje, ¿e
+.B pppstats
+wy¶wietla dodatkowe statystyki, takie jak liczba przetossowanych pakietów
+(to znaczy, które odrzuci³ kod dekompresji nag³ówka VJ TCP).
+.PP
+Flaga
+.B -r
+powoduje, ¿e
+.B pppstats
+wy¶wietla ogólny stopieñ kompresji pakietów. Stopieñ jest miêdzy 0 a 1,
+gdzie zero oznacza, ¿e dane s± niekompresowalne.
+.PP
+Flaga
+.B -c
+jest u¿ywana do podawania alternatywnego trybu wy¶wietlania, który pokazuje
+statystyki kompresji pakietów: ilo¶æ pakietów i bajtów przed kompresj± (lub po
+dekompresji), po kompresji, a tak¿e niekompresowalnych (pakietów, które nie
+skurczy³y siê podczas kompresji i zosta³y przetransmitowane w postaci
+nieskompresowanej); pokazuje te¿ najaktualniejszy stopieñ kompresji. Stopieñ ten
+odzwierciedla chwilow± wydajno¶æ kodu kompresji zamiast ogólnego stopinia,
+osi±gniêty od w³±czenia kompresji.
+.PP
+Flaga
+.B -i
+jest u¿ywana do podawania interwa³ów miêdzy drukami. Domy¶lnym jest 5
+sekund.
+.PP
+\fIunit#\fR okre¶la, z którego interfejsu generowaæ statystyki.

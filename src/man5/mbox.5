@@ -1,0 +1,203 @@
+.\" PTM/WK/2001-VI
+.TH mbox 5
+.SH "NAZWA"
+mbox \- plik zawieraj±cy wiadomo¶ci pocztowe
+.SH "WPROWADZENIE"
+Najpopularniejszym formatem przechowywania wiadomo¶ci pocztowych jest format
+.IR mbox .
+.I mbox
+jest pojedynczym plikiem zawieraj±cym zero lub wiêcej listów.
+.SH "FORMAT WIADOMO¦CI"
+List zakodowany w formacie
+.I mbox
+zaczyna siê od linii
+.BR From_ ,
+po której wystêpuje ci±g linii innych ni¿ From_
+a koñczy pust± lini±.
+Linia
+.B From_
+oznacza dowoln± liniê zaczynaj±c± siê znakami
+F, r, o, m, spacja:
+
+.EX
+     From god@heaven.af.mil Sat Jan  3 01:05:34 1996
+.br
+     Return-Path: <god@heaven.af.mil>
+.br
+     Delivered-To: djb@silverton.berkeley.edu
+.br
+     Date: 3 Jan 1996 01:05:34 -0000
+.br
+     From: God <god@heaven.af.mil>
+.br
+     To: djb@silverton.berkeley.edu (D. J. Bernstein)
+.br
+
+.br
+     How's that mail system project coming along?
+.br
+
+.EE
+
+Ostatnia linijka jest ca³kiem pusta (bez spacji czy tabulacji).
+Zauwa¿, ¿e puste linie mog± siê te¿ pojawiæ w dowolnym innym miejscu listu.
+
+Linia
+.B From_
+zawsze ma postaæ
+.B From
+.I nadkopert
+.I data
+.IR dalsze_info .
+.I nadkopert
+jest jednym wyrazem, bez spacji czy tabulacji. Jest to zwykle nadawca
+z koperty (envelope sender) listu.
+.I data
+jest dat± dostarczenia listu.
+Zawiera zawsze dok³adnie 24 znaki w formacie
+.BR asctime .
+.I dalsze_info
+jest opcjonalne i mo¿e zawieraæ dowolne informacje.
+
+Pomiêdzy lini±
+.B From_
+a pust± lini± jest wiadomo¶æ w formacie RFC 822 ,
+jak to opisano w
+.BR qmail-header(5) ,
+podlegaj±c±
+.BR "cytowaniu >From" ,
+jak opisano poni¿ej.
+.SH "JAK LIST JEST DOSTARCZANY"
+Oto, w jaki sposób program dopisuje list do pliku
+.IR mbox .
+
+Najpierw tworzy liniê
+.B From_
+z danym nadawc± kopertowym listu i bie¿±c± dat±.
+Je¶li nadawca kopertowy jest pusty (tzn. je¶li jest to poczta odbita),
+to zamiast tego program u¿ywa nazwy
+.BR MAILER-DAEMON .
+Je¶li nazwa nadawcy kopertowego zawiera spacje, tabulacje lub znaki nowej
+linii, to s± one zamieniane na my¶lniki.
+
+Nastêpnie program kopiuje wiadomo¶æ, do ka¿dej linii stosuj±c
+.B "cytowanie >From" .
+Takie postêpowanie zapewnia, i¿ powsta³e linie nie bêd± liniami
+.BR From_ :
+program poprzedza znakiem wiêkszo¶ci
+.B >
+wszystkie linie
+.BR From_ ,
+.BR >From_ ,
+.BR >>From_ ,
+.BR >>>From_ ,
+itd.
+
+Na koniec do wiadomo¶ci dopisywana jest pusta linia.
+Je¶li ostatnia linia by³a lini± czê¶ciow± [tj. nie zakoñczon± znakiem nowej
+linii - t³um.], to zapisywane s± dwa znaki nowej linii. W przeciwnym razie
+- jeden.
+.SH "JAK LIST JEST CZYTANY"
+Czytnik przegl±da plik
+.I mbox
+szukaj±c linii
+.BR From_ .
+Ka¿da taka linia oznacza pocz±tek wiadomo¶ci. Czytnik nie powinien próbowaæ
+wykorzystywaæ tego, ¿e ka¿da linia
+.B From_
+(poza pocz±tkiem pliku) jest poprzedzana lini± pust±.
+
+Po znalezieniu listu, czytnik wydziela z linii
+.B From_
+nazwê nadawcy kopertowego (mo¿e byæ uszkodzona) i datê dostarczenia.
+Nastêpnie czyta a¿ do nastêpnej linii
+.B From_
+lub do koñca pliku, zale¿y co wyst±pi wcze¶niej.
+Odcina ostatni± pust± liniê i usuwa cytowania z linii
+.BR >From_ ,
+.B >>From_
+i tak dalej.
+Wynikiem jest wiadomo¶æ zgodna z RFC 822.
+.SH "POPULARNE ODMIANY MBOX"
+Istnieje wiele odmian formatu
+.IR mbox .
+Wariant opisany powy¿ej jest formatem
+.IR mboxrd ,
+spopularyzowanym przez Rahula Dhesi w czerwcu 1995.
+
+Oryginalny format
+.I mboxo
+cytuje tylko linie
+.BR From_ ,
+nie
+.BR >From_ .
+W rezultacie nie sposób powiedzieæ, czy
+
+.EX
+     From: djb@silverton.berkeley.edu (D. J. Bernstein)
+.br
+     To: god@heaven.af.mil
+.br
+
+.br
+     >From now through August I'll be doing beta testing.
+.br
+     Thanks for your interest.
+.EE
+
+by³o cytowane w oryginalnym li¶cie.
+Czytnik
+.I mboxrd
+zawsze usunie cytowanie.
+
+Format
+.I mboxcl
+przypomina
+.IR mboxo ,
+ale zawiera pole Content-Length z liczb± bajtów wiadomo¶ci.
+Format
+.I mboxcl2
+jest taki jak
+.IR mboxcl ,
+ale nie ma ¿adnego cytowania
+.BR >From .
+Te formaty s± stosowane przez programy przesy³aj±ce pocztê w SVR4.
+.I mboxcl2
+nie mo¿e byæ bezpiecznie czytane przez czytniki
+.IR mboxrd .
+.SH "NIE SKONKRETYZOWANE SZCZEGÓ£Y"
+Istnieje wiele mechanizmów blokowania plików
+.IR mbox .
+.B qmail-local
+zawsze u¿ywa
+.B flock
+na systemach, które go maj±, w przeciwnym razie
+.BR lockf .
+
+Data dostarczenia w linii
+.B From_
+nie podaje strefy czasowej.
+.B qmail-local
+zawsze tworzy datê dostarczenia w GMT, dziêki czemu pliki
+.I mbox
+mo¿na bezpiecznie przenosiæ z jednej strefy czasowej do innej.
+
+Je¶li mtime [czas modyfikacji] niepustego pliku
+.I mbox
+jest wiêksze ni¿ atime [czas dostêpu], to plik zawiera nowe listy.
+Je¶li mtime jest wiêksze ni¿ atime, to nowa poczta zosta³a przeczytana.
+Je¿eli mtime jest równe atime, nie da siê w ¿aden sposób stwierdziæ czy
+w pliku s± nowe wiadomo¶ci, gdy¿ uruchomienie
+.B qmail-local
+zabiera du¿o mniej ni¿ sekundê.
+Jednym z rozwi±zañ jest sztuczne nadawanie przez czytnik czasowi atime
+warto¶ci mtime plus 1. Wówczas plik zawiera nowe listy wtedy i tylko wtedy,
+gdy atime jest mniejsze b±d¼ równe mtime.
+
+Niektóre czytniki umieszczaj± w ka¿dej wiadomo¶ci pole
+.BR Status ,
+wskazuj±ce, które listy zosta³y ju¿ przeczytane.
+.SH "ZOBACZ TAK¯E"
+.BR maildir (5),
+.BR qmail-header (5),
+.BR qmail-local (8)

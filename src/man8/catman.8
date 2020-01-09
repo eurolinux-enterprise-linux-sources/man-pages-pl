@@ -1,0 +1,110 @@
+.\" {PTM/WK/1999-XII}
+.\" Translation update: Robert Luberda <robert@debian.org>, May 2003, man-db 2.4.1
+.\" $Id: catman.8,v 1.3 2003/05/29 10:59:27 robert Exp $
+.\"
+.\" Man page for catman
+.\"
+.\" Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
+.\"
+.\" You may distribute under the terms of the GNU General Public
+.\" License as specified in the file COPYING that comes with the
+.\" man-db distribution.
+.\"
+.\" Sat Dec 10 14:17:29 GMT 1994  Wilf. (G.Wilford@ee.surrey.ac.uk)
+.\"
+.pc
+.TH catman 8 "7 wrze¶nia 2001" "2.4.1" "Narzêdzia przegl±darki stron man"
+.SH NAZWA
+catman \- tworzy lub aktualizuje preformatowane strony podrêcznika man
+.SH SK£ADNIA
+.B catman
+.RB [\| \-dhV \|]
+.RB [\| \-M
+.IR ¶cie¿ka \|]
+.RI [\| sekcja \|]
+\&.\|.\|.
+.SH OPIS
+.B catman
+s³u¿y do tworzenia i aktualizacji zestawu preformatowanych stron man
+podrêcznika znanych jako strony cat (cat pages).
+Strony cat s± na ogó³ du¿o szybsze do wy¶wietlenia ni¿ pierwotne strony man,
+ale wymagaj± dodatkowego miejsca na ich sk³adowanie. Decyzja o obs³udze
+stron cat nale¿y do lokalnego administratora, który musi zapewniæ odpowiednie
+katalogi do ich przechowywania.
+
+Opcje polecenia
+.B catman
+opisuj± hierarchie stron podrêcznika man oraz sekcje, jakie maj± podlegaæ
+preformatowaniu. Domy¶lnymi hierarchiami (drzewami katalogów) s± te, które
+okre¶lono jako 'globalne' w pliku konfiguracyjnym man-db. Domy¶lne
+sekcje okre¶la albo podzielona dwukropkami zawarto¶æ zmiennej ¶rodowiska
+.RB $ MANSECT ,
+albo zestaw standardowy wkompilowany w
+.BR man ,
+je¿eli
+.RB $ MANSECT
+jest niezdefiniowana.
+Wywo³anie
+.B catman
+z zestawem rozdzielonych bia³ymi znakami nazw sekcji uniewa¿nia powy¿sze
+ustawienia domy¶lne.
+
+.B catman
+do ustalenia, które z plików powinny zostaæ sformatowane, korzysta z
+.B indeksów
+baz danych (index database cache) zwi±zanych z ka¿d± z hierarchii.
+.SH OPCJE
+.TP
+.B \-d, \-\-debug
+Wy¶wietla informacjê diagnostyczn± (debug).
+.TP
+.BI \-M\  ¶cie¿ka ,\ \-\-manpath= ¶cie¿ka
+Okre¶la alternatywn±, rozdzielon± przecinkami, ¶cie¿kê przeszukiwañ
+hierarchii stron man (manpath).
+Domy¶lnie s± to wszystkie ¶cie¿ki wskazane jako 'globalne' w pliku
+konfiguracyjnym man-db.
+.TP
+.B \-h, \-\-help
+Wy¶wietla komunikat pomocy i koñczy pracê.
+.TP
+.B \-V, \-\-version
+Wy¶wietla informacjê o wersji.
+.SH ¦RODOWISKO
+.TP
+.B MANSECT
+Je¿eli ustawiona jest
+.RB $ MANSECT ,
+to jej warto¶æ jest list± oddzielonych dwukropkami sekcji i s³u¿y do
+okre¶lania, które sekcje podrêcznika man i w jakiej kolejno¶ci bêd±
+przeszukiwane.
+.TP
+.B MANPATH
+Je¿eli ustawiona jest
+.RB $ MANPATH ,
+to jej warto¶æ jest interpretowana jako wskazana do u¿ycia ¶cie¿ka
+przeszukiwañ hierarchii stron man. ¦cie¿ka zawiera rozdzielone dwukropkami
+nazwy hierarchii (katalogów).
+.SH PLIKI
+.TP
+.I /etc/man_db.config
+plik konfiguracyjny man-db.
+.TP
+.I /usr/man/index.(bt|db|dir|pag)
+Tradycyjny globalny
+.I indeks
+bazy danych.
+.TP
+.I /var/catman/index.(bt|db|dir|pag)
+Alternatywny lub zgodny z FSSTND [standardem organizacji katalogów]
+globalny
+.I indeks
+bazy danych.
+.SH "ZOBACZ TAK¯E"
+.BR man (1),
+.BR manpath (5),
+.BR mandb (8).
+.SH AUTOR
+.nf
+Wilf. (G.Wilford@ee.surrey.ac.uk).
+Fabrizio Polacco (fpolacco@debian.org).
+.fi

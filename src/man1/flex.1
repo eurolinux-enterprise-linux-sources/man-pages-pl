@@ -1,0 +1,3847 @@
+.\" 2000 PTM Przemek Borys
+.TH FLEX 1 "Kwiecieñ 1995" "Wersja 2.5"
+.SH NAZWA
+flex \- szybki generator analizatora leksykalnego
+.SH SK£ADNIA
+.B flex
+.B [\-bcdfhilnpstvwBFILTV78+? \-C[aefFmr] \-ooutput \-Pprefix \-Sskeleton]
+.B [\-\-help \-\-version]
+.I [filename ...]
+.SH WPROWADZENIE
+Podrêcznik ten opisuje narzêdzie
+.IR flex .
+Jest ono przeznaczone do generowania programów, dokonywuj±cych dopasowywania
+wzorców na tek¶cie. Podrêcznik zawiera zarówno sekcje przewodnikowe jak i
+informacyjne.
+.nf
+
+    Opis
+	krótki przegl±d mo¿liwo¶ci narzêdzia
+
+    Proste Przyk³ady
+
+    Format Pliku Wej¶ciowego
+
+    Wzorce
+	rozszerzone wyra¿enia regularne u¿ywane przez flex
+
+    Sposób Dopasowywania Wej¶cia
+	regu³y okre¶lania, co dopasowano
+
+    Akcje
+	jak podawaæ, co robiæ po dopasowaniu wzorca
+
+    Generowany Skaner
+	szczegó³y o skanerze, tworzonym przez fleksa; jak kontrolowaæ ¼ród³o
+	wej¶ciowe 
+
+    Warunki Startowe
+        wprowadzanie do skanerów kontekstu i obs³uga "mini-skanerów"
+
+    Wielokrotne Bufory Wej¶ciowe
+	jak obs³ugiwaæ wiele ¼róde³ wej¶ciowych; jak skanowaæ z ³añcuchów
+	zamiast z plików
+
+    Regu³y Koñca Pliku
+	specjalne regu³y dopasowywane do koñca wej¶cia
+
+    Ró¿ne Makra
+	ogó³ makr dostêpnych z poziomu akcji
+
+    Warto¶ci Dostêpne U¿ytkownikowi
+	ogó³ warto¶ci dostêpnych z poziomu akcji
+
+    £±czenie z Yacc
+	³±czenie skanerów flex z analizatorami yacc
+
+    Opcje
+	opcje linii poleceñ fleksa i dyrektywa "%option"
+
+    Kwestie wydajno¶ciowe
+	jak przyspieszaæ skanery
+
+    Generowanie Skanerów C++
+	eksperymentalna w³a¶ciwo¶æ generowania klas skanerów C++
+
+    Niezgodno¶ci z Lex i POSIX
+	czym flex ró¿ni siê od standardów AT&T lex i POSIX lex
+
+    Diagnostyka
+	obja¶nienie komunikatów o b³êdach, generowanych przez flex (lub
+	skanery)
+
+    Pliki
+	pliki u¿ywane przez flex
+
+    Niedostatki / B³êdy
+	znane problemy fleksa
+
+    Zobacz Tak¿e
+	pozosta³a dokumentacja i zwi±zane z fleksem narzêdzia
+
+    Autor
+	informacja kontaktu z autorem
+
+.fi
+.SH OPIS
+.I flex
+jest narzêdziem przeznaczonym do generowania
+.I skanerów:
+programów, rozpoznaj±cych wzorce leksykalne tekstu.
+.I flex
+odczytuje podane pliki wej¶ciowe (lub stdin gdy nie s± podane) i pobiera z
+nich opis generowanego skanera. Opis sk³ada siê z par wyra¿eñ regularnych i
+kodu C. Pary te nazywane s±
+.IR regu³ami .
+.I flex
+jako wyj¶cie generuje plik ¼ród³owy C o nazwie
+.BR lex.yy.c .
+Definiuje on funkcjê
+.B yylex().
+Plik ten musi kompilowany i konsolidowany z bibliotek±
+.BR \-lfl .
+Po uruchomieniu pliku wykonywalnego, program analizuje wej¶cie w
+poszukiwaniu wyra¿eñ regularnych. Gdy tylko takie siê znajdzie, wykonywany
+jest odpowiedni fragment kodu C.
+.SH PROSTE PRZYK£ADY
+.PP
+Przedstawmy teraz trochê prostych przyk³adów aby obyæ siê z u¿ywaniem
+.I flex.
+Nastêpuj±cy plik wej¶ciowy
+.I flex
+okre¶la skaner, który za ka¿dym razem gdy napotka ³añcuch
+"username", podmieni go nazw± u¿ytkownika:
+.nf
+
+    %%
+    username    printf( "%s", getlogin() );
+
+.fi
+Domy¶lnie tekst, którego 
+.I flex
+nie mo¿e dopasowaæ jest kopiowany na wyj¶cie. Skaner bêdzie wiêc kopiowa³
+swój plik wej¶ciowy na wyj¶cie, podmieniaj±c wszelkie pojawienia "username".
+W tym przyk³adzie wej¶cia mamy tylko jedn± regu³ê. Wzorcem jest "username",
+a akcj± jest "printf".
+Znaki "%%" oznaczaj± pocz±tek regu³.
+.PP
+Oto kolejny prosty przyk³ad:
+.nf
+
+            int num_lines = 0, num_chars = 0;
+
+    %%
+    \\n      ++num_lines; ++num_chars;
+    .       ++num_chars;
+
+    %%
+    main()
+            {
+            yylex();
+            printf( "# of lines = %d, # of chars = %d\\n",
+                    num_lines, num_chars );
+            }
+
+.fi
+Ten skaner zlicza liczbê znaków i liczbê linijek swojego wej¶cia (nie daje
+¿adnego wyj¶cia, nie licz±c koñcowego raportu). Pierwsza linia deklaruje
+dwie zmienne globalne, "num_lines" i "num_chars", które s± dostêpne
+wewn±trz funkcji
+.B yylex()
+i
+.BR main() ,
+zadeklarowanej po drugim "%%". Mamy tu dwie regu³y: pierwsza
+dopasowuje siê do nowej linii ("\\n") i inkrementuje licznik linii oraz
+znaków; druga dopasowuje siê do dowolnego znaku innego ni¿ nowa linia
+(wyra¿enie regularne ".") i zwiêksza licznik liczby znaków.
+.PP
+A oto trochê bardziej skomplikowany przyk³ad:
+.nf
+
+    /* skaner dla zabawkowego Pascalo-podobnego jêzyka */
+
+    %{
+    /* potrzebujemy tego do wywo³ania atof() */
+    #include <math.h>
+    %}
+
+    DIGIT    [0-9]
+    ID       [a-z][a-z0-9]*
+
+    %%
+
+    {DIGIT}+    {
+                printf( "Liczba ca³kowita: %s (%d)\\n", yytext,
+                        atoi( yytext ) );
+                }
+
+    {DIGIT}+"."{DIGIT}*        {
+                printf( "Liczba zmiennoprzecinkowa: %s (%g)\\n", yytext,
+                        atof( yytext ) );
+                }
+
+    if|then|begin|end|procedure|function        {
+                printf( "S³owo kluczowe: %s\\n", yytext );
+                }
+
+    {ID}        printf( "Identyfikator: %s\\n", yytext );
+
+    "+"|"-"|"*"|"/"   printf( "Operator: %s\\n", yytext );
+
+    "{"[^}\\n]*"}"     /* zjedz jednolinijkowe komentarze */
+
+    [ \\t\\n]+          /* zjedz bia³e spacje */
+
+    .           printf( "Nierozpoznany znak: %s\\n", yytext );
+
+    %%
+
+    main( argc, argv )
+    int argc;
+    char **argv;
+        {
+        ++argv, --argc;  /* pomiñ nazwê programu */
+        if ( argc > 0 )
+                yyin = fopen( argv[0], "r" );
+        else
+                yyin = stdin;
+        
+        yylex();
+        }
+
+.fi
+S± to pocz±tki prostego skanera dla jêzyka podobnego do Pascala. Rozró¿nia
+poszczególne rodzaje
+.I tokenów
+i informuje co zobaczy³.
+.PP
+Szczegó³y tego przyk³adu zostan± wyja¶nione w nastêpnych sekcjach.
+.SH FORMAT PLIKU WEJ¦CIOWEGO
+Plik wej¶ciowy
+.I fleksa
+sk³ada siê z trzech sekcji, rozdzielanych liniami z ³añcuchem
+.BR %% :
+.nf
+
+    definicje
+    %%
+    regu³y
+    %%
+    kod u¿ytkownika
+
+.fi
+Sekcja
+.I definicji
+zawiera definicje prostych
+.IR nazw ,
+upraszczaj±cych pó¼niej specyfikacjê skanera. Zawiera te¿ deklaracje
+.IR "warunków pocz±tkowych" ,
+które obja¶niono w dalszej sekcji.
+.PP
+Definicje nazw maj± postaæ:
+.nf
+
+    nazwa definicja
+
+.fi
+gdzie "nazwa" jest s³owem, rozpoczynaj±cym siê od litery lub podkre¶lenia ('_').
+Pozosta³e znaki mog± byæ literami, cyframi, podkre¶leniami lub my¶lnikami.
+Definicja jest pobierana od momentu pojawienia siê pierwszego znaku, który
+nie jest spacj± i który znajduje siê za nazw±. Definicja rozci±ga siê do
+koñca linii. Do takiej definicji mo¿na siê nastêpnie odwo³ywaæ przy u¿yciu
+konwencji "{nazwa}", która jest automatycznie rozwijana w "(definicjê)". Na
+przyk³ad
+.nf
+
+    DIGIT    [0-9]
+    ID       [a-z][a-z0-9]*
+
+.fi
+definiuje "DIGIT" jako wyra¿enie regularne, pasuj±ce do pojedynczej cyfry, a
+"ID" jako wyra¿enie regularne odpowiadaj±ce literze z doklejonymi ewentualnymi
+literami lub cyframi.
+Pó¼niejsze odniesienie do
+.nf
+
+    {DIGIT}+"."{DIGIT}*
+
+.fi
+jest równowa¿ne
+.nf
+
+    ([0-9])+"."([0-9])*
+
+.fi
+i dopasowuje jedn± lub wiêcej cyfr, po których wystêpuje kropka i ewentualnie
+nastêpne cyfry.
+.PP
+Sekcja
+.I regu³
+wej¶cia
+.I fleksa
+zawiera szereg regu³ w postaci:
+.nf
+
+    wzorzec   akcja
+
+.fi
+Przed wzorcem nie mo¿e wyst±piæ wciêcie, a akcja musi rozpoczynaæ siê w tej samej
+linii.
+.PP
+Dla dalszego opisu akcji patrz dalej.
+.PP
+W koñcu, sekcja kodu u¿ytkownika jest zwyczajnie kopiowana do
+.B lex.yy.c
+(bez dokonywania w niej zmian).
+Jest to u¿ywane do funkcji pomocniczych, które wo³aj± lub s± wo³ane przez
+skaner. Obecno¶æ tej sekcji jest opcjonalna; je¶li nie istnieje, to ostatni
+.B %%
+pliku wej¶ciowego mo¿e byæ pominiêty.
+.PP
+Je¶li w sekcjach definicji lub regu³ znajduje siê jaki¶
+.I wciêty
+(indentowany) tekst lub tekst ujêty w
+.B %{
+i
+.BR %} ,
+to jest on kopiowany dos³ownie na wyj¶cie (po usuniêciu %{}).
+Znaki %{} musz± pojawiæ siê samodzielnie w liniach bez wciêæ.
+.PP
+W sekcji regu³, tekst wciêty lub tekst %{}, znajduj±cy siê przed pierwsz±
+regu³± mo¿e s³u¿yæ deklarowaniu zmiennych lokalnych dla procedury
+skanuj±cej oraz (po deklaracjach) kodu, który ma byæ wywo³ywany za ka¿dym
+uruchomieniem procedury skanuj±cej.
+Pozosta³e przypadki wciêtego tekstu lub tekstu %{} sekcji regu³ s± nadal
+kopiowane na wyj¶cie, lecz ich znaczenie nie jest dok³adnie zdefiniowane i
+mog± spowodowaæ b³êdy kompilacji (w³a¶ciwo¶æ ta jest obecna dla zgodno¶ci z
+.IR POSIX ;
+zobacz ni¿ej inne tego typu w³a¶ciwo¶ci).
+.PP
+W sekcji definicji na wyj¶cie kopiowane s± równie¿ nie-wciête bloki 
+komentarza, ujête miêdzy znaki "/*" i "*/".
+.SH WZORCE
+Wzorce wej¶ciowe s± pisane z u¿yciem rozszerzonego zestawu wyra¿eñ
+regularnych. S± to:
+.nf
+
+    x          dopasowuje znak 'x'
+    .          dowolny znak poza now± lini±
+    [xyz]      "klasa znaków"; w tym przypadku wzorzec odpowiada
+                 zarówno 'x', 'y' jak i 'z'
+    [abj-oZ]   "klasa znaków" z zakresem; odpowiada ona
+                 'a', 'b', dowolnej literze od 'j' do 'o' oraz 'Z'
+    [^A-Z]     zanegowana "klasa znaków" tj. dowolny znak poza 
+                 wymienionymi w klasie. W tym wypadku dowolny znak oprócz
+		 du¿ych liter
+    [^A-Z\\n]  dowolny znak oprócz du¿ych liter lub nowej linii
+    r*         zero lub wiêcej r'ów, gdzie r jest wyra¿eniem regularnym
+    r+         jeden lub wiêcej r'ów
+    r?         zero lub jeden r (tj. "opcjonalny r")
+    r{2,5}     od dwu do piêciu r
+    r{2,}      dwa lub wiêcej r
+    r{4}       dok³adnie 4 r
+    {nazwa}    rozwiniêcie definicji "nazwa" (patrz wy¿ej)
+    "[xyz]\\"foo"
+               ³añcuch literalny: [xyz]"foo
+    \\X        Je¶li X to 'a', 'b', 'f', 'n', 'r', 't' lub 'v',
+		 to nastêpuje interpretacja ANSI-C \\x. W przeciwnym
+		 wypadku u¿ywany jest literalny 'X' (u¿ywane do cytowania
+		 operatorów--np. '*').
+    \\0        znak NUL (kod ASCII 0)
+    \\123      znak o warto¶ci ósemkowej 123
+    \\x2a      znak o warto¶ci szesnastkowej 2a
+    (r)        dopasuj r; nawiasy s± u¿ywane do przeci±¿ania priorytetów
+	         (patrz ni¿ej)
+
+
+    rs         wyra¿enie regularne r, za którym nastêpuje wyra¿enie
+		 regularne s; nazywa siê to "³±czeniem"
+
+
+    r|s        r lub s
+
+
+    r/s        r, lecz tylko je¶li za nim nastêpuje s. Tekst dopasowywany
+		 przez s jest za³±czany do okre¶lania czy ta regu³a mia³a
+		 "najd³u¿sze dopasowanie", lecz potem jest zwracany do
+		 wej¶cia przed wykonaniem akcji. Tak wiêc akcja widzi tylko
+		 tekst dopasowany przez r. Ten rodzaj wzorca jest nazywany
+		 "doklejonym kontekstem". (Istniej± pewne kombinacje r/s,
+		 których flex nie potrafi w³a¶ciwie dopasowaæ; zobacz uwagi
+		 w dalszej sekcji Niedostatki / B³êdy w okolicach
+		 "niebezpiecznego kontekstu doklejonego".)
+    ^r         r, lecz tylko na pocz±tku linii (tj. zaraz po rozpoczêciu
+		 skanowania, lub po wyskanowaniu nowej linii).
+    r$         r, lecz tylko na koñcu linii (tj. tu¿ przed now± lini±).
+		 Równowa¿ne "r/\\n".
+
+	       Zauwa¿, ¿e notacja nowej linii fleksa jest dok³adnie tym,
+	       co by³o u¿ywane jako '\\n' przez kompilator C, u¿yty do 
+	       kompilacji fleksa; w praktyce na niektórych systemach DOS
+	       musisz wyfiltrowaæ \\r lub jawnie u¿ywaæ r/\\r\\n zamiast
+	       "r$".
+
+
+    <s>r       r, lecz tylko dla warunku pocz±tkowego s (zobacz ni¿ej
+		 dyskusjê o warunkach pocz±tkowych)
+    <s1,s2,s3>r
+               to samo, lecz je¶li dowolny z warunków pocz±tkowych s1,
+                 s2 lub s3
+    <*>r       r w dowolnym warunku pocz±tkowym, nawet wykluczaj±cym
+
+
+    <<EOF>>    koniec pliku
+    <s1,s2><<EOF>>
+               koniec pliku w warunkach pocz±tkowych s1 lub s2
+
+.fi
+Zauwa¿, ¿e w obrêbie klasy znaków wszystkie operatory wyra¿eñ regularnych
+trac± swoje znaczenie specjalne (nie licz±c cytowania '\\', znaków klasy '-',
+']' oraz '^' na pocz±tku klasy).
+.PP
+Wymienione wy¿ej wyra¿enia regularne s± pogrupowane zgodnie z priorytetami,
+licz±c od najwy¿szego do najni¿szego (z góry na dó³). Te, które zgrupowano
+razem maj± jednakowy priorytet. Na przyk³ad,
+.nf
+
+    foo|bar*
+
+.fi
+jest równowa¿ne
+.nf
+
+    (foo)|(ba(r*))
+
+.fi
+poniewa¿ operator '*' ma wy¿szy priorytet ni¿ ³±czenie, a ³±czenie ma wy¿szy
+priorytet ni¿ alternatywa ('|'). Wzorzec ten pasuje wiêc
+.I albo
+do ³añcucha "foo"
+.I albo
+do "ba", po którym mo¿e nast±piæ zero lub wiêcej r.
+W celu dopasowania "foo" lub zero lub wiêcej "bar"'ów, u¿yj:
+.nf
+
+    foo|(bar)*
+
+.fi
+a ¿eby dopasowaæ zero lub wiêcej "foo"-lub-"bar"'ów:
+.nf
+
+    (foo|bar)*
+
+.fi
+.PP
+Poza znakami i zakresami znaków, klasy znaków mog± te¿ zawieraæ specjalne
+.I wyra¿enia.
+Wyra¿enia te s± ujmowane w ograniczniki
+.B [:
+i
+.B :]
+(które musz± dodatkowo pojawiaæ siê wewn±trz '[' i ']' klasy znaków; inne
+elementy w klasie znaków te¿ mog± siê pojawiæ).
+Prawid³owymi wyra¿eniami s±:
+.nf
+
+    [:alnum:] [:alpha:] [:blank:]
+    [:cntrl:] [:digit:] [:graph:]
+    [:lower:] [:print:] [:punct:]
+    [:space:] [:upper:] [:xdigit:]
+
+.fi
+Wyra¿enia te oznaczaj± zestaw znaków, odpowiadaj±cy równowa¿nemu standardowi
+funkcji 
+.B isXXX
+jêzyka C. Przyk³adowo
+.B [:alnum:]
+oznacza wszystkie znaki, dla których
+.B isalnum(3)
+zwraca prawdê - tj. wszelkie znaki alfabetyczne lub numeryczne.
+Niektóre systemy nie udostêpniaj±
+.BR isblank(3) .
+Flex definiuje
+.B [:blank:]
+jako spacjê lub tabulacjê.
+.PP
+Na przyk³ad nastêpuj±ce klasy s± sobie równowa¿ne:
+.nf
+
+    [[:alnum:]]
+    [[:alpha:][:digit:]
+    [[:alpha:]0-9]
+    [a-zA-Z0-9]
+
+.fi
+Je¶li twój skaner jest niewra¿liwy na wielko¶æ znaków (flaga
+(flaga
+.BR \-i ),
+to
+.B [:upper:]
+i
+.B [:lower:]
+s± równowa¿ne
+.BR [:alpha:] .
+.PP
+Trochê uwag o wzorcach:
+.IP -
+Zanegowana klasa znaków, taka jak wy¿ej wymienione przyk³adowe "[^A-Z]"
+.IR "bêdzie pasowaæ do nowej linii" ,
+chyba ¿e "\\n" (lub równowa¿na sekwencja specjalna) jest jednym z jawnie
+obecnych w klasie znaków (np. "[^A-Z\\n]"). Odbiega to od sposobu traktowania
+zanegowanych klas znaków przez inne narzêdzia operuj±ce na wyra¿eniach
+regularnych, lecz niestety niespójno¶æ jest ugruntowana historycznie.
+Dopasowywanie nowej linii oznacza, ¿e wzorzec w rodzaju [^"]* mo¿e dopasowaæ
+siê do ca³ego wej¶cia, chyba ¿e istnieje w nim drugi cudzys³ów.
+.IP -
+Regu³a mo¿e mieæ najwy¿ej jedn± instancjê dowi±zanego kontekstu (operatory
+'/' lub '$'). Wzorce warunku pocz±tkowego '^' oraz "<<EOF>>" mog± pojawiæ
+siê tylko na pocz±tku wzorca i dodatkowo, podobnie jak '/' i '$', nie mog±
+byæ grupowane w nawiasy. Znak '^', który nie pojawia siê na pocz±tku regu³y,
+lub '$', nie znajduj±cy siê na koñcu traci swoje specjalne znaczenie.
+.IP
+Nastêpuj±ce wzorce s± niedozwolone:
+.nf
+
+    foo/bar$
+    <sc1>foo<sc2>bar
+
+.fi
+Zauwa¿, ¿e pierwszy z nich mo¿e byæ zapisany jako "foo/bar\\n".
+.IP
+Nastêpuj±ce wzorce powoduj±, ¿e '$' lub '^' s± traktowane jak zwyk³e znaki:
+.nf
+
+    foo|(bar$)
+    foo|^bar
+
+.fi
+Je¶li oczekiwan± warto¶ci± jest "foo" lub "bar-z-now±-lini±", to u¿yæ mo¿na
+nastêpuj±cego wzorca (akcja specjalna | jest wyja¶niona ni¿ej):
+.nf
+
+    foo      |
+    bar$     /* tu rozpoczyna siê akcja */
+
+.fi
+Podobna sztuczka powinna zadzia³aæ dla dopasowywania foo lub
+bar-na-pocz±tku-linii.
+.SH JAK DOPASOWYWANE JEST WEJ¦CIE
+Po uruchomieniu skanera, analizuje on swoje wej¶cie w poszukiwaniu ³añcuchów
+odpowiadaj±cych któremu¶ z jego wzorców. Je¶li znajdzie wiêcej ni¿ jeden
+pasuj±cy wzorzec, wybiera ten, który pasuje do najwiêkszej ilo¶ci tekstu (w
+regu³ach z dowi±zanym kontekstem oznacza to te¿ d³ugo¶æ czê¶ci dowi±zanej,
+mimo faktu, ¿e zostanie ona zwrócona na wej¶cie. Je¶li znajdzie dwa lub
+wiêcej dopasowañ o tej samej d³ugo¶ci, to wybierana jest pierwsza regu³a.
+.PP
+Po okre¶leniu dopasowania, tekst dopasowania (zwany dalej
+.IR tokenem )
+jest udostêpniany we wska¼nikowej zmiennej globalnej
+.BR yytext ,
+a jego d³ugo¶æ w globalnej zmiennej ca³kowitej
+.BR yyleng .
+Wykonywana jest te¿ odpowiadaj±ca wzorcowi
+.I akcja
+(szczegó³owy opis akcji jest dalej), a nastêpnie pozosta³a czê¶æ wej¶cia
+jest dopasowywana do kolejnego wzorca.
+.PP
+Je¶li dopasowanie nie zostanie znalezione, wykonana zostanie
+.IR "regu³a domy¶lna" :
+nastêpny znak wej¶cia jest uwa¿any za dopasowany i kopiowany na stdout.
+Tak wiêc najprostszym poprawnym plikiem wej¶ciowym
+.I fleksa
+jest:
+.nf
+
+    %%
+
+.fi
+Generuje to skaner, który po prostu kopiuje swoje wej¶cie (jeden znak naraz)
+na wyj¶cie.
+.PP
+Zauwa¿, ¿e
+.B yytext
+mo¿e byæ definiowane na dwa sposoby: jako 
+.I wska¼nik
+do znaków lub jako
+.I tablica
+znaków.
+U¿ywanie konkretnej definicji mo¿na kontrolowaæ, w³±czaj±c do pliku
+wej¶ciowego w pierwszej sekcji specjalne dyrektywy
+.B %pointer
+lub
+.BR %array .
+Domy¶lnie u¿ywana jest dyrektywa
+.BR %pointer ,
+chyba ¿e u¿ywa siê opcji
+.B -l
+zgodno¶ci z leksem i wtedy 
+.B yytext
+staje siê tablic±.
+Korzy¶ci± z u¿ywania 
+.B %pointer
+jest zwiêkszenie szybko¶ci skanowania i zlikwidowanie przepe³nieñ bufora
+przy dopasowywaniu du¿ych tokenów (chyba ¿e zabraknie pamiêci dynamicznej).
+Wad± jest ograniczenie sposobu modyfikowania przez akcje zmiennej
+.B yytext
+(zobacz nastêpn± sekcjê) i to, ¿e wywo³ania funkcji
+.B unput()
+niszcz± aktualn± zawarto¶æ
+.BR yytext ,
+co mo¿e przyprawiaæ o ból g³owy podczas portowania skanerów miêdzy
+ró¿nymi wersjami 
+.IR lex .
+.PP
+Zalet±
+.B %array
+jest mo¿liwo¶æ modyfikowania
+.B yytext
+i to, ¿e wo³anie
+.B unput()
+nie niszczy
+.BR yytext .
+Poza tym, istniej±ce programy
+.I lex
+czasami zewnêtrznie zagl±daj± do
+.B yytext
+przy u¿yciu deklaracji w postaci:
+.nf
+    extern char yytext[];
+.fi
+Definicja ta jest b³êdna przy u¿yciu z
+.BR %pointer ,
+lecz prawid³owa dla
+.BR %array .
+.PP
+.B %array
+definiuje
+.B yytext
+jako tablicê
+.B YYLMAX
+znaków, co domy¶lnie jest do¶æ du¿± warto¶ci±. Mo¿esz zmieniaæ rozmiar przez
+proste #definiowanie
+.B YYLMAX
+na inn± warto¶æ w pierwszej sekcji wej¶ciowego pliku
+.IR fleksa .
+Jak wspomniano wy¿ej, dla
+.B %pointer
+yytext wzrasta dynamicznie, by przechowywaæ du¿e tokeny. Chocia¿
+oznacza to, ¿e skaner
+.B %pointer
+mo¿e zbieraæ du¿e tokeny (jak np. ca³e bloki komentarzy), to zakop sobie w
+pamiêci, ¿e za ka¿dym razem gdy skaner zmienia rozmiar
+.B yytext
+to musi równie¿ reskanowaæ ca³y token od pocz±tku, wiêc mo¿e siê to okazaæ
+powolne.
+.B yytext
+w chwili obecnej
+.I nie
+zwiêksza dynamicznie rozmiaru je¶li wywo³anie
+.B unput()
+powoduje wepchniêcie z powrotem zbyt du¿ego bloku tekstu. Zamiast
+tego pojawia siê b³±d wykonania.
+.PP
+Zauwa¿ te¿, ¿e postaci
+.B %array
+nie mo¿na u¿ywaæ z klasami skanerów C++
+(zobacz opcjê
+.B c++
+poni¿ej).
+.SH AKCJE
+Ka¿dy wzorzec regu³y ma odpowiadaj±c± mu akcjê, która mo¿e byæ dowoln±
+instrukcj± jêzyka C. Wzorzec koñczy siê na pierwszym niecytowanym znaku
+bia³ej spacji; reszta linijki jest akcj±. Je¶li akcja jest pusta, to token
+wej¶ciowy jest zwyczajnie odrzucany. Na przyk³ad oto program, kasuj±cy
+wszystkie pojawienia ³añcucha "wytnij mnie":
+.nf
+
+    %%
+    "wytnij mnie"
+
+.fi
+(Wszystkie pozosta³e znaki wej¶cia zostan± skopiowane na wyj¶cie, gdy¿
+dopasuj± siê do regu³y domy¶lnej.)
+.PP
+Oto program, który kompresuje wielokrotne spacje i tabulacje do pojedynczej
+spacji. Program wycina te¿ wszystkie bia³e spacje z koñca linii:
+.nf
+
+    %%
+    [ \\t]+        putchar( ' ' );
+    [ \\t]+$       /* ignoruj ten token */
+
+.fi
+.PP
+Je¶li akcja zawiera znak '{', to rozci±ga siê ona a¿ do zamykaj±cego '}',
+nawet na przestrzeni wielu linii.
+.I flex 
+ma pewne wiadomo¶ci o ³añcuchach C i komentarzach, wiêc nie zostanie
+og³upione przez klamry, które mog± siê w nich znajdowaæ. Poza tym dozwolone
+s± te¿ akcje, które zaczynaj± siê od
+.B %{
+i zawieraj± tekst akcji a¿ do nastêpnego
+.B %}
+(niezale¿nie od zwyczajnych klamer wewn±trz akcji).
+.PP
+Akcja sk³adaj±ca siê wy³±cznie z pionowej kreski ('|') oznacza
+"taka sama, jak akcja nastêpnej regu³y". Dla zobrazowania patrz ni¿ej.
+.PP
+Akcje mog± zawieraæ kod C, w³±czaj±c w to instrukcje
+.BR return ,
+przeznaczone do zwracania warto¶ci do procedury, która wywo³a³a
+.BR yylex() .
+Przy ka¿dym wywo³aniu
+.B yylex()
+kontynuuje przetwarzanie tokenów od miejsca, w którym ostatnio przerwa³
+a¿ do osi±gniêcia koñca pliku lub wywo³ania return.
+.PP
+Akcje mog± spokojnie modyfikowaæ zmienn±
+.BR yytext ;
+nie mog± jej jednak wyd³u¿aæ (dodawanie znaków do jej koñca nadpisze dalsze
+znaki strumienia wej¶ciowego). Odmiennie jest natomiast przy u¿ywaniu
+.B %array
+(patrz wy¿ej); wtedy
+.B yytext
+mo¿na spokojnie modyfikowaæ w dowolny sposób.
+.PP
+Podobnie do powy¿szej zmiennej, mo¿na spokojnie modyfikowaæ
+.BR yyleng ,
+lecz nale¿y uwa¿aæ by nie robiæ tego je¶li akcja u¿ywa 
+.B yymore()
+(patrz ni¿ej).
+.PP
+Istnieje wiele dyrektyw specjalnych, które mo¿na zawrzeæ w akcji:
+.IP -
+.B ECHO
+kopiuje wej¶cie yytext na wyj¶cie skanera.
+.IP -
+.B BEGIN
+z doklejon± nazw± warunku pocz±tkowego umieszcza skaner w odpowiednim
+warunku pocz±tkowym (patrz ni¿ej).
+.IP -
+.B REJECT
+Kieruje skaner na dzia³anie w "drugiej najlepszej" regule, która zosta³a
+dopasowana do wzorca wej¶ciowego (lub prefiksu wej¶cia). Regu³a jest
+wybierana wed³ug zasad opisanych w "Jak dopasowywane jest wej¶cie", po czym
+nastêpuje odpowiednie ustawienie
+.B yytext
+oraz
+.BR yyleng . 
+Mo¿e to byæ albo ta regu³a, która dopasowa³a siê do takiej samej ilo¶ci
+tekstu, jak poprzednia, lecz wyst±pi³a pó¼niej w pliku wej¶ciowym fleksa,
+albo taka, która dopasowa³a siê do mniejszej ilo¶ci tekstu.
+Na przyk³ad, nastêpuj±cy przyk³ad bêdzie liczy³ s³owa wej¶ciowe i wo³a³
+funkcjê special() dla ka¿dego "frob":
+.nf
+
+            int word_count = 0;
+    %%
+
+    frob        special(); REJECT;
+    [^ \\t\\n]+   ++word_count;
+
+.fi
+Bez dyrektywy
+.BR REJECT ,
+s³owa "frob" wej¶cia nie by³yby zliczane jako s³owa, gdy¿ skaner normalnie
+wykonuje tylko jedn± akcjê na token. Dozwolonych jest wiele komend
+.BR REJECT ,
+z których ka¿da wyszukuje najbardziej pasuj±cego nastêpcê. Na przyk³ad
+poni¿szy skaner skanuj±c token "abcd" zapisze na wyj¶ciu "abcdabcaba":
+.nf
+
+    %%
+    a        |
+    ab       |
+    abc      |
+    abcd     ECHO; REJECT;
+    .|\\n     /* zjedz nietrafione znaki */
+
+.fi
+(Pierwsze trzy regu³y maj± wspóln± akcjê z czwart±, gdy¿ u¿ywaj± akcji specjalnej '|'.)
+.B REJECT
+jest do¶æ kosztown± w³a¶ciwo¶ci± je¶li chodzi o wydajno¶æ skanera; je¶li
+jest u¿ywane w której¶ z akcji skanera, to spowolni
+.I wszystkie
+dopasowania skanera. Co wiêcej,
+.B REJECT
+nie mo¿e byæ u¿ywany z opcjami
+.I -Cf
+i
+.I -CF
+(zobacz ni¿ej).
+.IP
+Zauwa¿ te¿, ¿e, w przeciwieñstwie do innych akcji specjalnych,
+.B REJECT
+jest
+.IR odga³êzieniem ;
+kod akcji wystêpuj±cy bezpo¶rednio po nim
+.I nie
+zostanie wykonany.
+.IP -
+.B yymore()
+mówi skanerowi, ¿e przy nastêpnym dopasowaniu regu³y, odpowiadaj±cy token
+powinien byæ
+.I doklejony
+do bie¿±cej warto¶ci
+.BR yytext .
+Na przyk³ad, przy wej¶ciu "mega-kludge", poni¿szy przyk³ad na wyj¶ciu
+wypisze "mega-mega-kludge":
+.nf
+
+    %%
+    mega-    ECHO; yymore();
+    kludge   ECHO;
+
+.fi
+Pierwsze "mega-" jest dopasowane i wydrukowane na wyj¶cie. Nastêpnie
+dopasowane jest "kludge", lecz poprzednie "mega-" wci±¿ znajduje siê na
+pocz±tku
+.B yytext
+i komenda
+.B ECHO
+dla "kludge" wydrukuje w rzeczywisto¶ci "mega-kludge".
+.PP
+Dwie uwagi na temat
+.BR yymore() .
+Po pierwsze,
+.B yymore()
+zale¿y od warto¶ci
+.IR yyleng ,
+odzwierciedlaj±cej rozmiar bie¿±cego tokenu. Zatem je¶li u¿ywasz 
+.BR yymore() ,
+nie modyfikuj tej zmiennej.
+Po drugie, obecno¶æ
+.B yymore()
+w akcji skanera wp³ywa na pewne pogorszenie wydajno¶ci w szybko¶ci
+dokonywania przez skaner dopasowañ.
+.IP -
+.B yyless(n)
+zwraca wszystkie poza pierwszymi
+.I n
+znakami bie¿±cego tokenu z powrotem do strumienia wej¶ciowego, sk±d
+zostan± one powtórnie przeskanowane przy dopasowywaniu nastêpnego wzorca.
+.B yytext
+i
+.B yyleng
+s± odpowiednio dostrajane (tj.
+.B yyleng
+bêdzie teraz równe
+.IR n ).
+Na przyk³ad, przy wej¶ciu "foobar", nastêpuj±cy kod wypisze "foobarbar":
+.nf
+
+    %%
+    foobar    ECHO; yyless(3);
+    [a-z]+    ECHO;
+
+.fi
+Podanie
+.B yyless
+argumentu zerowego powoduje reskanowanie ca³ego obecnego ³añcucha
+wej¶ciowego. O ile nie zmienisz sposobu kolejnego przetwarzania przez skaner
+wej¶cia (przy u¿yciu np.
+.BR BEGIN ),
+spowoduje to nieskoñczon± pêtlê.
+.PP
+Zwróæ uwagê, ¿e
+.B yyless
+jest makrem i mo¿e byæ u¿ywane tylko z pliku wej¶ciowego fleksa, a nie z
+innych plików ¼ród³owych.
+.IP -
+.B unput(c)
+wstawia znak
+.I c
+z powrotem do strumienia wej¶ciowego. Bêdzie to nastêpny skanowany znak.
+Poni¿sza akcja pobierze bie¿±cy token i spowoduje, ¿e zostanie reskanowany
+po ujêciu w nawiasy.
+.nf
+
+    {
+    int i;
+    /* Kopiuj yytext, gdy¿ unput() niszczy jego zawarto¶æ */
+    char *yycopy = strdup( yytext );
+    unput( ')' );
+    for ( i = yyleng - 1; i >= 0; --i )
+        unput( yycopy[i] );
+    unput( '(' );
+    free( yycopy );
+    }
+
+.fi
+Zwróæ uwagê, ¿e skoro ka¿dy
+.B unput()
+wstawia dany znak na
+.I pocz±tek
+strumienia, to wstawianie znaków musi odbywaæ siê ty³em-na-przód.
+.PP
+Wa¿nym potencjalnym problemem u¿ywania
+.B unput()
+jest fakt, ¿e je¶li u¿ywasz dyrektywy
+.B %pointer
+(domy¶lne), wywo³anie
+.B unput()
+.I niszczy
+zawarto¶æ
+.I yytext,
+poczynaj±c od znaku najbardziej z prawej, id±c w lewo za ka¿dym wywo³aniem.
+Je¶li potrzebujesz zachowaæ warto¶æ yytext po u¿yciu tej funkcji,
+(jak w powy¿szym przyk³adzie),
+musisz skopiowaæ jej zawarto¶æ gdzie indziej lub zbudowaæ skaner z u¿yciem
+.BR %array .
+.PP
+Na koniec, zauwa¿ te¿, ¿e nie mo¿esz wstawiaæ tak znaków
+.BR EOF .
+Nie mo¿na t± metod± zaznaczaæ koñca pliku w strumieniu.
+.IP -
+.B input()
+odczytuje nastêpny znak ze strumienia wej¶ciowego. Na przyk³ad, poni¿sze jest
+jednym ze sposobów po¿erania komentarzy jêzyka C:
+.nf
+
+    %%
+    "/*"        {
+                register int c;
+
+                for ( ; ; )
+                    {
+                    while ( (c = input()) != '*' &&
+                            c != EOF )
+                        ;    /* ze¿ryj tekst komentarza */
+
+                    if ( c == '*' )
+                        {
+                        while ( (c = input()) == '*' )
+                            ;
+                        if ( c == '/' )
+                            break;    /* znalaz³em koniec */
+                        }
+
+                    if ( c == EOF )
+                        {
+                        error( "EOF w komentarzu" );
+                        break;
+                        }
+                    }
+                }
+
+.fi
+(Zauwa¿, ¿e je¶li skaner jest skompilowany z u¿yciem
+.BR C++ ,
+to
+.B input()
+nazywa siê
+.BR yyinput() .
+Jest tak w celu zapobie¿enia zderzeniu nazwy ze strumieniem
+.B C++
+poprzez nazwê
+.IR input .)
+.IP -
+.B YY_FLUSH_BUFFER
+wypró¿nia wewnêtrzny bufor skanera. Przy nastêpnym razie gdy skaner bêdzie
+dopasowywa³ siê do tokenu, najpierw nape³ni na nowo bufor z u¿yciem
+.B YY_INPUT
+(zobacz ni¿ej Generowany Skaner).  Akcja ta jest szczególnym przypadkiem
+bardziej ogólnej funkcji
+.BR yy_flush_buffer() ,
+opisanej ni¿ej w sekcji Wielokrotne Bufory Wej¶ciowe.
+.IP -
+.B yyterminate()
+mo¿e byæ u¿ywane zamiast instrukcji return akcji. Koñczy dzia³anie skanera i
+zwraca 0 do wywo³uj±cego skaner, wskazuj±c, ¿e "wszystko zrobione".
+Domy¶lnie,
+.B yyterminate()
+jest wywo³ywane równie¿ po napotkaniu koñca pliku. Jest to makro i mo¿e byæ
+redefiniowane.
+.SH GENEROWANY SKANER
+Wynikiem dzia³ania fleksa jest plik
+.BR lex.yy.c ,
+zawieraj±cy procedurê skanuj±c±
+.B yylex()
+oraz zestaw tablic, u¿ywanych przez niego do dopasowywania tokenów i parê
+procedur i makr. Domy¶lnie
+.B yylex()
+jest deklarowany jako
+.nf
+
+    int yylex()
+        {
+        ... tu ró¿ne definicje i akcje ...
+        }
+
+.fi
+(Je¶li twoje ¶rodowisko obs³uguje prototypy funkcji, to bêdzie to
+"int yylex( void )".) Definicjê tê mo¿na zmieniæ definiuj±c
+makro "YY_DECL". Na przyk³ad
+.nf
+
+    #define YY_DECL float lexscan( a, b ) float a, b;
+
+.fi
+informuje fleksa, by nadaæ procedurze skanuj±cej nazwê
+.I lexscan
+i ¿e procedura ta ma zwracaæ typ float i pobieraæ dwa argumenty (te¿ typu
+float). Zwróæ uwagê, ¿e je¶li podajesz argumenty procedurze skanuj±cej,
+u¿ywaj±c deklaracji w niezaprototypowanym stylu K&R, musisz zakoñczyæ
+definicjê ¶rednikiem (;).
+.PP
+Przy ka¿dym wywo³aniu
+.BR yylex() ,
+nastêpuje skanowanie tokenów z globalnego pliku wej¶ciowego
+.I yyin
+(który domy¶lnie wskazuje na stdin). Wczytywanie trwa a¿ do osi±gniêcia
+koñca pliku, lub a¿ do napotkania w której¶ z akcji instrukcji
+.IR return .
+.PP
+Je¶li skaner osi±ga koniec pliku, to kolejne wywo³ania s± niezdefiniowane.
+Sposobem na skorygowanie tego jest przekierowanie
+.I yyin
+na nowy plik wej¶ciowy (w tym wypadku skanowanie nastêpuje z nowego pliku)
+lub wywo³anie
+.BR yyrestart() .
+.B yyrestart()
+pobiera jeden argument: wska¼nik
+.B FILE *
+(który mo¿e byæ nil, je¶li ustawi³e¶
+.B YY_INPUT
+na skanowanie ze ¼ród³a innego ni¿
+.I yyin),
+i inicjalizuje
+.I yyin
+na pocz±tek tego pliku. W zasadzie nie ma ró¿nicy miêdzy zwyk³ym
+przypisaniem
+.I yyin
+do nowego pliku i u¿yciem
+.BR yyrestart() ;
+Procedura ta jest dostêpna z uwagi na kompatybilno¶æ z poprzednimi wersjami
+.IR flex ,
+a tak¿e dlatego, ¿e mo¿e byæ u¿ywana do prze³±czania plików wej¶ciowych w
+¶rodku skanowania.
+Mo¿e byæ te¿ u¿ywana do porzucania bie¿±cego bufora wej¶ciowego poprzez
+wywo³anie z argumentem
+.IR yyin ;
+lepszym rozwi±zaniem jest jednak u¿ycie
+.B YY_FLUSH_BUFFER
+(patrz wy¿ej).
+Zauwa¿, ¿e
+.B yyrestart()
+.I nie
+resetuje warunku pocz±tkowego na
+.B INITIAL
+(zobacz ni¿ej Warunki Pocz±tkowe).
+.PP
+Je¶li
+.B yylex()
+koñczy skanowanie z powodu wywo³ania instrukcji
+.I return
+w jednej z akcji, skaner mo¿e byæ wo³any ponownie i wznowi dzia³anie tam,
+gdzie skoñczy³.
+.PP
+Domy¶lnie (i dla celów wydajno¶ci) skaner zamiast pojedynczych
+.I getc()
+wykonuje odczyty blokowe z
+.IR yyin .
+Sposób pobierania wej¶cia mo¿e byæ kontrolowany przez definiowanie makra
+.BR YY_INPUT .
+Sekwencja wywo³uj±ca YY_INPUT to "YY_INPUT(buf,wynik,max_rozmiar)".  Jej
+wynikiem jest umieszczenie co najwy¿ej
+.I max_rozmiar
+znaków w tablicy znakowej
+.I buf
+i zwrócenie w zmiennej ca³kowitej
+.I wynik
+albo liczby wczytanych znaków albo sta³ej YY_NULL (0 w systemach uniksowych),
+okre¶laj±cej EOF. Domy¶lnie, YY_INPUT czyta z globalnego wska¼nika "yyin".
+.PP
+Przyk³adowa definicja YY_INPUT (w sekcji definicji pliku wej¶ciowego):
+.nf
+
+    %{
+    #define YY_INPUT(buf,wynik,max_rozmiar) \\
+        { \\
+        int c = getchar(); \\
+        wynik = (c == EOF) ? YY_NULL : (buf[0] = c, 1); \\
+        }
+    %}
+
+.fi
+Definicja ta zmieni przetwarzanie wej¶cia tak, by naraz pojawia³ siê tylko
+jeden znak.
+.PP
+W momencie, gdy skaner uzyska od YY_INPUT warunek koñca pliku, to wo³a
+funkcjê
+.BR yywrap() .
+Je¶li
+.B yywrap()
+zwróci zero, to zak³ada, ¿e funkcja posz³a dalej i skonfigurowa³a
+.I yyin
+do wskazywania na nowy plik, a skanowanie trwa dalej. Je¶li zwróci warto¶æ
+niezerow±, skaner koñczy dzia³anie, zwracaj±c 0 do funkcji wywo³uj±cej.
+Zauwa¿, ¿e w ka¿dym przypadku warunek pocz±tkowy pozostaje niezmieniony;
+.I nie
+przechodzi on w
+.BR INITIAL .
+.PP
+Je¶li nie chcesz podawaæ w³asnej wersji
+.BR yywrap() ,
+to musisz albo u¿yæ opcji
+.B %option noyywrap
+(wtedy skaner zachowuje siê, jakby 
+.B yywrap()
+zwraca³o 1), albo konsolidowaæ z
+.BR \-lfl ,
+uzyskuj±c tak domy¶ln± wersjê funkcji, zawsze zwracaj±cej 1.
+.PP
+Do skanowania z buforów pamiêciowych (a nie z plików) przeznaczone s± trzy
+procedury:
+.BR yy_scan_string() ,
+.B yy_scan_bytes()
+oraz
+.BR yy_scan_buffer() .
+Zobacz ni¿ej dyskusjê w sekcji Wielokrotne Bufory Wej¶ciowe.
+.PP
+Swoje wyj¶cie
+.B ECHO
+skaner zapisuje do globalnego strumienia
+.I yyout
+(domy¶lnie stdout), który mo¿na przedefiniowaæ dziêki zwyk³emu
+przypisaniu tej zmiennej do innego wska¼nika
+.BR FILE .
+.SH WARUNKI POCZ¡TKOWE
+.I flex
+daje mechanizm warunkowej aktywacji regu³. Regu³y rozpoczynaj±ce siê od
+"<sc>" w³±cz± siê tylko je¶li skaner znajduje siê w warunku pocz±tkowym
+"sc". Na przyk³ad,
+.nf
+
+    <STRING>[^"]*        { /* zjedz cia³o ³añcucha ... */
+                ...
+                }
+
+.fi
+bêdzie aktywne tylko je¶li skaner jest w warunku pocz±tkowym "STRING", a 
+.nf
+
+    <INITIAL,STRING,QUOTE>\\.        { /* obs³u¿ cytowanie ... */
+                ...
+                }
+
+.fi
+bêdzie aktywne tylko je¶li obecnym warunkiem pocz±tkowym jest albo
+"INITIAL", albo "STRING" albo "QUOTE".
+.PP
+Warunki pocz±tkowe s± deklarowane w sekcji definicji wej¶cia przy u¿yciu
+niewciêtych linii, zaczynaj±cych siê od
+.B %s
+lub
+.BR %x ,
+za którymi nastêpuje lista nazw.
+Pierwsza postaæ deklaruje
+.I w³±czaj±ce
+warunki pocz±tkowe, a druga
+.IR wykluczaj±ce . 
+Warunek pocz±tkowy w³±cza siê przy u¿yciu akcji
+.BR BEGIN .
+Regu³y u¿ywaj±ce danego warunku pocz±tkowego bêd± aktywne a¿ do wywo³ania
+nastêpnej akcji
+.BR BEGIN .
+Je¶li warunek pocz±tkowy jest
+.I w³±czaj±cy ,
+to regu³y bez warunków pocz±tkowych bêd± równie¿ aktywne.
+Je¶li jest
+.IR wykluczaj±cy ,
+to wykonywane bêd±
+.I tylko
+regu³y odpowiadaj±ce warunkowi pocz±tkowemu.
+Zestaw regu³ opieraj±cych siê na tym samym wykluczaj±cym warunku
+pocz±tkowym, opisuje skaner, który jest niezale¿ny od wszelkich innych regu³
+wej¶cia fleksa.
+Z uwagi na to, warunki wykluczaj±ce u³atwiaj± tworzenie "mini-skanerów",
+które skanuj± czê¶ci wej¶cia, odmienne syntaktycznie od reszty (np.
+komentarze).
+.PP
+W rozró¿nieniu warunków w³±czaj±cych i wykluczaj±cych istnieje wci±¿ pewna
+niejasno¶æ: oto przyk³ad, ilustruj±cy ich powi±zanie. Zestaw regu³:
+.nf
+
+    %s przyklad
+    %%
+
+    <przyklad>foo  rob_cos();
+
+    bar            cos_innego();
+
+.fi
+jest równowa¿ny
+.nf
+
+    %x przyklad
+    %%
+
+    <przyklad>foo   rob_cos();
+
+    <INITIAL,przyklad>bar    cos_innego();
+
+.fi
+Bez u¿ycia kwalifikatora
+.BR <INITIAL,przyklad> ,
+wzorzec
+.I bar
+w drugim przyk³adzie nie by³by aktywny (tj. nie dopasowa³by siê) w warunku
+pocz±tkowym
+.BR przyklad .
+Je¶li u¿yliby¶my do kwalifikowania \fIbar\fR tylko
+.BR <przyklad> ,
+to by³oby aktywny tylko w warunku pocz±tkowym
+.BR przyklad , 
+ale nie w 
+.BR INITIAL ,
+podczas gdy w pierwszym przyk³adzie jest aktywny w obydwu, gdy¿
+warunek pocz±tkowy
+.B przyklad
+jest w nim
+.I w³±czaj±cy
+.BR (%s) .
+.PP
+Zauwa¿ te¿, ¿e specjalny specyfikator
+.B <*>
+pasuje do dowolnego warunku pocz±tkowego. Tak wiêc, powy¿sze mo¿na zapisaæ
+równie¿ nastêpuj±co:
+.nf
+
+    %x przyklad
+    %%
+
+    <przyklad>foo   rob_cos();
+
+    <*>bar    cos_innego();
+
+.fi
+.PP
+Regu³a domy¶lna (wykonywania
+.B ECHO
+na ka¿dym niedopasowanym znaku) pozostaje aktywna w warunkach pocz±tkowych.
+Jest to w sumie równowa¿ne:
+.nf
+
+    <*>.|\\n     ECHO;
+
+.fi
+.PP
+.B BEGIN(0)
+zwraca do stanu oryginalnego, w którym aktywne s± tylko regu³y bez warunku
+pocz±tkowego. Stan ten jest oznaczany jako warunek pocz±tkowy "INITIAL",
+wiêc mo¿na go ustawiæ równie¿ poprzez
+.BR BEGIN(INITIAL) .
+(Nawiasy wokó³ nazwy warunku pocz±tkowego nie s± wymagane, lecz s± w dobrym
+tonie.)
+.PP
+Akcje
+.B BEGIN
+mog± byæ podawane jako kod wciêty na pocz±tku sekcji regu³. Na przyk³ad,
+nastêpuj±cy kod spowoduje, ¿e skaner wejdzie w warunek pocz±tkowy "SPECIAL"
+za ka¿dym razem, gdy wywo³ane zostanie
+.B yylex()
+a zmienna globalna
+.I enter_special
+bêdzie ustawiona na prawdê:
+.nf
+
+            int enter_special;
+
+    %x SPECIAL
+    %%
+            if ( enter_special )
+                BEGIN(SPECIAL);
+
+    <SPECIAL>blahblahblah
+    ...i kolejne rugu³y...
+
+.fi
+.PP
+Dla zilustrowania wykorzystania warunków pocz±tkowych, oto skaner, który
+daje dwie ró¿ne interpretacje ³añcucha "123.456". Domy¶lnie bêdzie traktowa³
+go jako 3 elementy, liczbê ca³kowit± 123, kropkê i liczbê ca³kowit± "456".
+Je¶li jednak ³añcuch zostanie poprzedzony lini± z napisem
+"expect-floats", to bêdzie go traktowa³ jako pojedynczy element
+zmiennoprzecinkowy (123.456).
+.nf
+
+    %{
+    #include <math.h>
+    %}
+    %s expect
+
+    %%
+    expect-floats        BEGIN(expect);
+
+    <expect>[0-9]+"."[0-9]+      {
+                printf( "znalaz³em zmiennoprzecinkow±, = %f\\n",
+                        atof( yytext ) );
+                }
+    <expect>\\n           {
+                /* jest to koniec linii, wiêc
+                 * potrzebujemy kolejnego "expect-number"
+                 * przed rozpoznawaniem dalszych liczb
+                 */
+                BEGIN(INITIAL);
+                }
+
+    [0-9]+      {
+                printf( "znalaz³em ca³kowit±, = %d\\n",
+                        atoi( yytext ) );
+                }
+
+    "."         printf( "znalaz³em kropkê\\n" );
+
+.fi
+Oto skaner, który rozpoznaje komentarze C podczas zliczania linii.
+.nf
+
+    %x comment
+    %%
+            int line_num = 1;
+
+    "/*"         BEGIN(comment);
+
+    <comment>[^*\\n]*        /* zjedz wszystko, co nie jest '*'     */
+    <comment>"*"+[^*/\\n]*   /* zjedz '*'-ki, po których nie ma '/' */
+    <comment>\\n             ++line_num;
+    <comment>"*"+"/"        BEGIN(INITIAL);
+
+.fi
+Skaner ten mo¿e mieæ problemy z dopasowaniem maksymalnej ilo¶ci tekstu w
+ka¿dej z regu³. Ogólnie, przy pisaniu szybkich skanerów, próbuj dopasowywaæ
+w ka¿dej regule tyle, ile siê da.
+.PP
+Zauwa¿, ¿e nazwy warunków pocz±tkowych s± tak naprawdê warto¶ciami
+ca³kowitymi i mog± byæ tak przechowywane. Tak wiêc powy¿sze mo¿na
+rozwin±æ w nastêpuj±cym stylu:
+.nf
+
+    %x comment foo
+    %%
+            int line_num = 1;
+            int comment_caller;
+
+    "/*"         {
+                 comment_caller = INITIAL;
+                 BEGIN(comment);
+                 }
+
+    ...
+
+    <foo>"/*"    {
+                 comment_caller = foo;
+                 BEGIN(comment);
+                 }
+
+    <comment>[^*\\n]*        /* zjedz wszystko co nie jest '*'   */
+    <comment>"*"+[^*/\\n]*   /* zjedz '*', po których nie ma '/' */
+    <comment>\\n             ++line_num;
+    <comment>"*"+"/"        BEGIN(comment_caller);
+
+.fi
+Co wiêcej, mo¿esz mieæ dostêp do bie¿±cego warunku pocz±tkowego poprzez
+makro
+.B YY_START
+(o warto¶ci ca³kowitej).
+Na przyk³ad, powy¿sze przypisania do
+.I comment_caller
+mo¿na by zapisaæ jako
+.nf
+
+    comment_caller = YY_START;
+
+.fi
+Flex jako alias do
+.B YY_START
+daje
+.B YYSTATE
+(gdy¿ jest to nazwa, u¿ywana przez AT&T
+.IR lex ).
+.PP
+Zauwa¿, ¿e warunki pocz±tkowe nie maj± w³asnej przestrzeni nazw; %s i %x-y
+deklaruj± nazwy podobnie jak #define.
+.PP
+Na deser, oto przyk³ad dopasowywania cytowanych w stylu C napisów przy
+u¿yciu wykluczaj±cych warunków pocz±tkowych, w³±cznie z rozwijanymi
+sekwencjami specjalnymi (lecz bez sprawdzania czy ³añcuch nie jest za
+d³ugi):
+.nf
+
+    %x str
+
+    %%
+            char string_buf[MAX_STR_CONST];
+            char *string_buf_ptr;
+
+
+    \\"      string_buf_ptr = string_buf; BEGIN(str);
+
+    <str>\\"        { /* zobaczy³em zamykaj±cy cytat - gotowe */
+            BEGIN(INITIAL);
+            *string_buf_ptr = '\\0';
+            /* zwróæ typ i warto¶æ tokenu sta³ej ³añcuchowej do
+             * analizatora
+             */
+            }
+
+    <str>\\n        {
+            /* b³±d - niezakoñczona sta³a ³añcuchowa */
+            /* generuj komunikat o b³êdzie */
+            }
+
+    <str>\\\\[0-7]{1,3} {
+            /* ósemkowa sekwencja specjalna */
+            int result;
+
+            (void) sscanf( yytext + 1, "%o", &result );
+
+            if ( result > 0xff )
+                    /* b³±d, sta³a poza zakresem */
+
+            *string_buf_ptr++ = result;
+            }
+
+    <str>\\\\[0-9]+ {
+            /* generuj b³±d - z³a sekwencja specjalna; co¶ jak
+             * '\\48' lub '\\0777777'
+             */
+            }
+
+    <str>\\\\n  *string_buf_ptr++ = '\\n';
+    <str>\\\\t  *string_buf_ptr++ = '\\t';
+    <str>\\\\r  *string_buf_ptr++ = '\\r';
+    <str>\\\\b  *string_buf_ptr++ = '\\b';
+    <str>\\\\f  *string_buf_ptr++ = '\\f';
+
+    <str>\\\\(.|\\n)  *string_buf_ptr++ = yytext[1];
+
+    <str>[^\\\\\\n\\"]+        {
+            char *yptr = yytext;
+
+            while ( *yptr )
+                    *string_buf_ptr++ = *yptr++;
+            }
+
+.fi
+.PP
+Czêsto, np. w niektórych przyk³adach powy¿ej mo¿na skoñczyæ pisz±c grupê
+regu³, rozpoczynaj±cych siê od tych samych warunków pocz±tkowych. Flex
+u³atwia ca³o¶æ wprowadzaj±c pojêcie
+.I zakresu
+warunku pocz±tkowego.
+Zakres rozpoczyna siê od:
+.nf
+
+    <SCs>{
+
+.fi
+gdzie
+.I SCs
+jest list± jednego lub wiêcej warunków pocz±tkowych. Wewn±trz zakresu
+warunku pocz±tkowego ka¿da regu³a dostaje automatycznie przedrostek
+.I <SCs>
+a¿ do napotkania
+.IR '}' ,
+który odpowiada startowemu
+.I '{'.
+W ten sposób na przyk³ad
+.nf
+
+    <ESC>{
+        "\\\\n"   return '\\n';
+        "\\\\r"   return '\\r';
+        "\\\\f"   return '\\f';
+        "\\\\0"   return '\\0';
+    }
+
+.fi
+jest równowa¿ne:
+.nf
+
+    <ESC>"\\\\n"  return '\\n';
+    <ESC>"\\\\r"  return '\\r';
+    <ESC>"\\\\f"  return '\\f';
+    <ESC>"\\\\0"  return '\\0';
+
+.fi
+Zakresy warunków pocz±tkowych mog± byæ zagnie¿d¿ane.
+.PP
+Do obs³ugi stosów warunków pocz±tkowych s± przeznaczone trzy procedury:
+.TP
+.B void yy_push_state(int new_state)
+wrzuca bie¿±cy warunek pocz±tkowy na stos warunków pocz±tkowych i prze³±cza
+siê w stan
+.IR new_state ,
+zupe³nie jak po u¿yciu
+.B BEGIN new_state
+(pamiêtaj, ¿e nazwy warunków pocz±tkowych s± równie¿ liczbami ca³kowitymi).
+.TP
+.B void yy_pop_state()
+zdejmuje warto¶æ ze stosu i prze³±cza siê na ni± przez
+.BR BEGIN .
+.TP
+.B int yy_top_state()
+zwraca wierzcho³ek stosu bez zmiany zawarto¶ci stosu.
+.PP
+Stos warunków pocz±tkowych ro¶nie dynamicznie i nie ma ¿adnych wbudowanych
+ograniczeñ. Po wyczerpaniu pamiêci, wykonywanie programu jest przerywane.
+.PP
+Aby korzystaæ ze stosów warunków pocz±tkowych, skaner musi zawieraæ
+dyrektywê
+.B %option stack
+(zobacz ni¿ej rozdzia³ Opcje).
+.SH WIELOKROTNE BUFORY WEJ¦CIOWE
+Niektóre skanery (te, obs³uguj±ce pliki do³±czane "include") wymagaj±
+odczytu z wielu strumieni wej¶ciowych. Poniewa¿ skanery
+.I flex
+wykonuj± sporo buforowania, nie mo¿na jednoznacznie zdecydowaæ sk±d bêdzie
+wykonywany nastêpny odczyt przez proste napisanie
+.BR YY_INPUT ,
+które jest wra¿liwe na kontekst skanowania.
+.B YY_INPUT
+wywo³ywane jest tylko gdy skaner osi±ga koniec swojego bufora, który mo¿e
+byæ daleko po wyskanowaniu instrukcji takiej jak "include", wymagaj±cej
+prze³±czenia ¼ród³a wej¶cia.
+.PP
+Aby za³atwiæ niektóre z tych problemów,
+.I flex
+daje mechanizm tworzenia i prze³±czania miêdzy wielokrotnymi buforami
+wej¶ciowymi. Bufor wej¶ciowy jest tworzony z u¿yciem funkcji
+.nf
+
+    YY_BUFFER_STATE yy_create_buffer( FILE *file, int size )
+
+.fi
+która pobiera wska¼nik
+.I FILE
+i rozmiar size, a nastêpnie tworzy bufor zwi±zany z danym plikiem, którego
+wielko¶æ (w znakach) jest okre¶lona parametrem rozmiaru.
+(w razie w±tpliwo¶ci u¿yj
+.B YY_BUF_SIZE
+jako rozmiaru). Funkcja zwraca uchwyt
+.BR YY_BUFFER_STATE ,
+który mo¿e byæ potem przekazywany do innych procedur (zobacz ni¿ej). Typ
+.B YY_BUFFER_STATE
+jest wska¼nikiem do struktury
+.B struct yy_buffer_state
+wiêc mo¿na bezpiecznie inicjalizowaæ zmienne YY_BUFFER_STATE na
+.B ((YY_BUFFER_STATE) 0)
+i odnosiæ siê do struktury w celu poprawnego zadeklarowania buforów
+wej¶ciowych w plikach ¼ród³owych innych ni¿ ten od twojego skanera. Zauwa¿,
+¿e wska¼nik
+.I FILE
+w wywo³aniu
+.B yy_create_buffer
+jest u¿ywany tylko jako warto¶æ
+.I yyin
+widzianego przez
+.BR YY_INPUT ;
+je¶li redefiniujesz
+.B YY_INPUT
+tak, ¿eby nie u¿ywa³o
+.IR yyin ,
+to mo¿esz spokojnie przekazaæ tu zerowy wska¼nik
+.IR FILE .
+Zadany bufor do skanowania wybiera siê za pomoc±:
+.nf
+
+    void yy_switch_to_buffer( YY_BUFFER_STATE new_buffer )
+
+.fi
+co prze³±cza bufor wej¶ciowy skanera tak, ¿e kolejne tokeny bêd± pochodzi³y
+z bufora
+.I new_buffer.
+Zauwa¿, ¿e
+.B yy_switch_to_buffer()
+mo¿e byæ u¿ywane przez yywrap() do zestawiania ró¿nych rzeczy we wznowionym
+skanowaniu zamiast otwierania nowego pliku i ustawiania na nim
+.IR yyin .
+Zauwa¿ te¿, ¿e prze³±czanie ¼róde³ wej¶ciowych przez
+.B yy_switch_to_buffer()
+lub
+.B yywrap()
+.I nie
+zmienia warunku pocz±tkowego.
+.nf
+
+    void yy_delete_buffer( YY_BUFFER_STATE buffer )
+
+.fi
+u¿ywane jest do odzyskania miejsca zwi±zanego z buforem (
+.B buffer
+mo¿e byæ warto¶ci± nil, ale wtedy funkcja ta nic nie robi.)
+Mo¿na te¿ czy¶ciæ bie¿±c± zawarto¶æ bufora, stosuj±c:
+.nf
+
+    void yy_flush_buffer( YY_BUFFER_STATE buffer )
+
+.fi
+Funkcja ta niszczy zawarto¶æ bufora, wiêc przy nastêpnej próbie dopasowania
+tokenu z bufora, skaner najpierw wype³ni bufor na nowo u¿ywaj±c
+.BR YY_INPUT .
+.PP
+.B yy_new_buffer()
+jest synonimem
+.BR yy_create_buffer() ,
+udostêpnionym dla zgodno¶ci z C++ narzêdziami
+.I new
+i
+.IR delete ,
+s³u¿±cymi do tworzenia i niszczenia obiektów dynamicznych.
+.PP
+Na koniec makro
+.B YY_CURRENT_BUFFER
+zwraca uchwyt
+.B YY_BUFFER_STATE
+do bie¿±cego bufora.
+.PP
+A oto przyk³ad u¿ywania tych w³a¶ciwo¶ci w skanerze, rozwijaj±cym pliki
+za³±czane (w³a¶ciwo¶æ
+.B <<EOF>>
+jest opisywana ni¿ej):
+.nf
+
+    /* stan "incl" jest u¿ywany do wybierania nazwy za³±czanego pliku
+     */
+    %x incl
+
+    %{
+    #define MAX_INCLUDE_DEPTH 10
+    YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
+    int include_stack_ptr = 0;
+    %}
+
+    %%
+    include             BEGIN(incl);
+
+    [a-z]+              ECHO;
+    [^a-z\\n]*\\n?        ECHO;
+
+    <incl>[ \\t]*      /* zjedz bia³± spacjê */
+    <incl>[^ \\t\\n]+   { /* mam nazwê pliku za³±cznika */
+            if ( include_stack_ptr >= MAX_INCLUDE_DEPTH )
+                {
+                fprintf( stderr, "Zbyt zagnie¿d¿one za³±czniki" );
+                exit( 1 );
+                }
+
+            include_stack[include_stack_ptr++] =
+                YY_CURRENT_BUFFER;
+
+            yyin = fopen( yytext, "r" );
+
+            if ( ! yyin )
+                error( ... );
+
+            yy_switch_to_buffer(
+                yy_create_buffer( yyin, YY_BUF_SIZE ) );
+
+            BEGIN(INITIAL);
+            }
+
+    <<EOF>> {
+            if ( --include_stack_ptr < 0 )
+                {
+                yyterminate();
+                }
+
+            else
+                {
+                yy_delete_buffer( YY_CURRENT_BUFFER );
+                yy_switch_to_buffer(
+                     include_stack[include_stack_ptr] );
+                }
+            }
+
+.fi
+Do zestawiania buforów wej¶ciowych dla skanowania ³añcuchów z pamiêci
+zamiast plików istniej± trzy procedury. Ka¿da z nich tworzy nowy bufor
+wej¶ciowy do skanowania ³añcucha i zwraca odpowiadaj±cy uchwyt
+.B YY_BUFFER_STATE
+(który powiniene¶ skasowaæ stosuj±c
+.B yy_delete_buffer()
+po zakoñczeniu dzia³ania). Prze³±czaj± one te¿ przetwarzanie na nowy bufor
+przy u¿yciu
+.BR yy_switch_to_buffer() ,
+wiêc nastêpne wywo³anie
+.B yylex()
+rozpocznie skanowanie ³añcucha.
+.TP
+.B yy_scan_string(const char *str)
+skanuje ³añcuch zakoñczony zerem.
+.TP
+.B yy_scan_bytes(const char *bytes, int len)
+skanuje
+.I len
+bajtów (dopuszczalne zera w ¶rodku) pocz±wszy od pozycji
+.I bytes.
+.PP
+Zauwa¿, ¿e obydwie funkcje tworz± i skanuj±
+.I kopie
+oryginalnych danych. (Jest to po¿±dane, gdy¿
+.B yylex()
+modyfikuje zawarto¶æ skanowanego bufora.) Kopiowania mo¿na unikn±æ,
+stosuj±c:
+.TP
+.B yy_scan_buffer(char *base, yy_size_t size)
+które skanuje bufor na miejscu, zaczynaj±c od
+.IR base ,
+a w d³ugo¶ci
+.I size
+bajtów, z których dwa bajty
+.I musz±
+byæ znakami
+.B YY_END_OF_BUFFER_CHAR
+(ASCII NUL).
+Ostatnie dwa bajty nie s± skanowane; tak wiêc skanowanie przebiega od
+.B base[0]
+do
+.B base[size-2]
+w³±cznie.
+.IP
+Je¶li nie ustawisz odpowiednio
+.I base
+to 
+.B yy_scan_buffer()
+zwraca wska¼nik nil zamiast tworzyæ nowy bufor wej¶ciowy.
+.IP
+Typ
+.B yy_size_t
+jest typem ca³kowitym, na który rzutuje siê wyra¿enie ca³kowite, okre¶laj±ce
+rozmiar bufora.
+.SH REGU£Y END-OF-FILE
+Specjalna regu³a "<<EOF>>" okre¶la akcje, które nale¿y wykonaæ po
+osi±gniêciu koñca pliku i gdy yywrap() zwraca zero (tj. wskazuje brak dalszych
+plików do przetworzenia). Akcja musi siê zakoñczyæ zrobieniem jednej z
+czterech rzeczy:
+.IP -
+przypisaniem
+.I yyin
+do nowego pliku wej¶ciowego (w poprzednich wersjach fleksa po dokonaniu
+przypisania nale¿a³o wywo³aæ specjaln± akcjê
+.B YY_NEW_FILE;
+nie jest to ju¿ wymagane);
+.IP -
+wywo³aniem instrukcji
+.IR return ;
+.IP -
+wywo³aniem specjalnej akcji
+.BR yyterminate() ;
+.IP -
+prze³±czeniem na nowy bufor za pomoc± 
+.BR yy_switch_to_buffer() .
+.PP
+Regu³y <<EOF>> nie mog± byæ u¿ywane z innymi wzorcami; mog± one byæ
+kwalifikowane jedynie list± warunków pocz±tkowych. Je¶li podana jest
+niekwalifikowana regu³a <<EOF>>, to dotyczy ona
+.I wszystkich
+warunków pocz±tkowych, które nie maj± jeszcze akcji <<EOF>>. Aby podaæ
+regu³ê <<EOF>> tylko dla pocz±tkowego warunku pocz±tkowego u¿yj
+.nf
+
+    <INITIAL><<EOF>>
+
+.fi
+.PP
+Te regu³y przydatne s± do ³apania rzeczy takich, jak niezamkniête
+cytaty. Przyk³ad:
+.nf
+
+    %x quote
+    %%
+
+    ...inne regu³y cytatowe...
+
+    <quote><<EOF>>   {
+             error( "nie zamkniêty cytat" );
+             yyterminate();
+             }
+    <<EOF>>  {
+             if ( *++filelist )
+                 yyin = fopen( *filelist, "r" );
+             else
+                yyterminate();
+             }
+
+.fi
+.SH RÓ¯NE MAKRA
+Mo¿na zdefiniowaæ makro
+.BR YY_USER_ACTION ,
+które s³u¿y do podania akcji wykonywanej zawsze przed akcj±
+dopasowanej regu³y. Na przyk³ad mo¿e byæ #definiowane do wywo³ywania
+procedury konwertuj±cej yytext na ma³e litery.
+Gdy wywo³ywane jest
+.BR YY_USER_ACTION ,
+zmienna
+.I yy_act
+okre¶la numer dopasowanej regu³y (regu³y s± numerowane od 1). Za³ó¿my, ¿e
+chcesz wyprofilowaæ jak czêsto jest u¿ywana ka¿da z regu³. Rozwi±zaniem jest
+nastêpuj±cy kawa³ek kodu:
+.nf
+
+    #define YY_USER_ACTION ++ctr[yy_act]
+
+.fi
+gdzie
+.I ctr
+jest tablic± przechowuj±c± zawarto¶æ ró¿nych regu³. Zauwa¿, ¿e makro
+.B YY_NUM_RULES
+daje ogóln± liczbê regu³ (³±cznie z regu³± domy¶ln±, nawet je¶li u¿ywasz
+.B \-s),
+wiêc poprawn± deklaracj±
+.I ctr
+jest:
+.nf
+
+    int ctr[YY_NUM_RULES];
+
+.fi
+.PP
+Makro
+.B YY_USER_INIT
+s³u¿y do podania akcji, która bêdzie wykonywana zawsze przed
+pierwszym skanem (i przed wewnêtrznymi inicjalizacjami skanera). Na przyk³ad
+mo¿na to wykorzystaæ do wo³ania procedury czytaj±cej tablice danych lub
+otwieraj±cej plik raportowy.
+.PP
+Makro
+.B yy_set_interactive(is_interactive)
+mo¿e byæ u¿ywane do sterowania czy bie¿±cy bufor jest uwa¿any za
+.IR interaktywny .
+Bufor interaktywny jest przetwarzany wolniej, lecz musi byæ u¿ywany gdy
+wej¶cie rzeczywi¶cie jest interaktywne. Zapobiega to problemom zwi±zanym z
+oczekiwaniem na wype³nienie buforów
+(zobacz ni¿ej dyskusjê flagi
+.BR \-I ).
+Warto¶æ niezerowa w wywo³aniu makra zaznacza bufor jako interaktywny, a zero
+to wy³±cza. Zauwa¿, ¿e u¿ycie tego makra przes³ania
+.B %option always-interactiv
+lub
+.B %option never-interactive
+(zobacz ni¿ej Opcje).
+Przed rozpoczêciem skanowania bufora, który jest (lub nie jest)
+interaktywny, nale¿y wywo³aæ funkcjê
+.BR yy_set_interactive() .
+.PP
+Makro
+.B yy_set_bol(at_bol)
+mo¿e byæ wykorzystywane do sterowania czy bie¿±cy kontekst skanuj±cy bufora
+dla nastêpnego dopasowania tokena jest dokonywany jak gdyby od pocz±tku
+linii. Niezerowa warto¶æ argumentu powoduje, ¿e regu³y zakotwiczone w '^'
+staj± siê aktywne, a warto¶æ zerowa je dezaktywuje.
+.PP
+Makro
+.B YY_AT_BOL()
+zwraca prawdê je¶li nastêpny token skanowany z bie¿±cego bufora bêdzie mia³
+aktywne regu³y '^'. W przeciwnym wypadku zwraca fa³sz.
+.PP
+W niektórych generowanych skanerach akcje s± zebrane wszystkie w jedn±
+wielk± instrukcjê switch i s± rozdzielone makrem
+.BR YY_BREAK ,
+które mo¿na redefiniowaæ. Domy¶lnie jest to po prostu "break".
+Redefiniowanie
+.B YY_BREAK
+umo¿liwia u¿ytkownikom C++ zadeklarowanie, by makro nie robi³o niczego
+(uwa¿aj±c przy tym szczególnie, by ka¿da regu³a koñczy³a siê instrukcj±
+"break" lub "return"!). Mo¿na tak zapobiec cierpieniom spowodowanym
+ostrze¿eniami o tym, ¿e przez zakoñczenie akcji regu³y instrukcj± return,
+.B YY_BREAK
+jest nieosi±galne.
+.SH WARTO¦CI DOSTÊPNE DLA U¯YTKOWNIKA
+Sekcja ta zestawia ró¿ne warto¶ci dostêpne dla u¿ytkownika w akcjach
+regu³owych.
+.IP -
+.B char *yytext
+zawiera bie¿±cy tekst tokenu. Mo¿e byæ modyfikowany, lecz nie mo¿e byæ
+wyd³u¿any (nie mo¿na doklejaæ dodatkowych znaków na koñcu).
+.IP
+Je¶li w pierwszej sekcji opisu skanera pojawi siê dyrektywa specjalna
+.B %array
+to
+.B yytext
+zostanie zadeklarowane jako
+.BR char yytext[YYLMAX] ,
+gdzie
+.B YYLMAX
+jest makrodefinicj±, któr± mo¿na przedefiniowaæ w pierwszej sekcji (warto¶æ
+domy¶lna to ogólnie 8KB). U¿ywanie
+.B %array
+daje wolniejsze skanery, lecz warto¶æ
+.B yytext
+staje siê odporna na wywo³ania
+.I input()
+i
+.IR unput() ,
+które potencjalnie niszcz± jego warto¶æ kiedy
+.B yytext
+jest wska¼nikiem znakowym. Przeciwn± dyrektyw± do
+.B %array
+jest
+.BR %pointer ,
+która jest dyrektyw± domy¶ln±.
+.IP
+Dyrektywy
+.B %array
+nie mo¿na u¿ywaæ do generowania klas skanera C++
+(flaga
+.BR \-+ ).
+.IP -
+.B int yyleng
+przechowuje d³ugo¶æ bie¿±cego tokenu.
+.IP -
+.B FILE *yyin
+jest plikiem, z którego
+.I flex
+domy¶lnie odczytuje wej¶cie. Mo¿e byæ redefiniowany, lecz taki zabieg ma
+sens tylko nim rozpocznie siê skanowanie lub po napotkaniu EOF. Zmienianie
+tej warto¶ci w ¶rodku skanowania mo¿e daæ nieoczekiwane rezultaty
+spowodowane buforowaniem wej¶cia. Zamiast tego u¿yj wtedy
+.BR yyrestart() .
+Po zakoñczeniu skanowania przez napotkanie koñca pliku, mo¿na przypisaæ
+warto¶æ
+.I yyin
+do nowego pliku wej¶ciowego i wywo³aæ ponownie skaner by dokoñczy³
+skanowanie.
+.IP -
+.B void yyrestart( FILE *new_file )
+mo¿e byæ wo³ane do wskazywania
+.I yyin
+na nowy plik wej¶ciowy. Prze³±czenie na nowy plik jest natychmiastowe
+(wszelkie poprzednio buforowane wej¶cie jest tracone). Zauwa¿, ¿e wo³anie
+.B yyrestart()
+z argumentem
+.I yyin
+porzuca bie¿±cy bufor wej¶ciowy i kontynuuje skanowanie tego samego pliku
+wej¶ciowego.
+.IP -
+.B FILE *yyout
+jest plikiem, do którego kierowane jest wyj¶cie akcji
+.BR ECHO .
+U¿ytkownik mo¿e mu przypisaæ inn± warto¶æ.
+.IP -
+.B YY_CURRENT_BUFFER
+zwraca uchwyt
+.B YY_BUFFER_STATE
+do bie¿±cego bufora.
+.IP -
+.B YY_START
+zwraca warto¶æ ca³kowit±, odpowiadaj±c± bie¿±cemu warunkowi pocz±tkowemu.
+Warto¶ci tej mo¿na u¿ywaæ dalej z
+.B BEGIN
+do powrotu do tego warunku.
+.SH £¡CZENIE Z YACC
+Jednym z podstawowych zastosowañ
+.I fleksa
+jest wspó³towarzyszenie generatorowi analizatorów
+.IR yacc .
+Analizatory sk³adni
+.I yacc
+oczekuj± wywo³ania procedury o nazwie
+.B yylex()
+celem znalezienia kolejnego tokenu wej¶ciowego. Procedura powinna zwróciæ
+typ nastêpnego tokenu oraz wstawiæ zwi±zan± z nim warto¶æ do globalnej
+zmiennej
+.B yylval.
+Aby u¿ywaæ
+.I fleksa
+z
+.I yaccem,
+nale¿y yaccowi przekazaæ  opcjê
+.BR \-d ,
+co ka¿e mu generowaæ plik
+.B y.tab.h
+zawieraj±cy definicje wszystkich
+.BR %tokenów (%tokens)
+pojawiaj±cych siê w wej¶ciu
+.IR yacc .
+Plik ten jest nastêpnie za³±czany do skanera
+.IR fleksowego .
+Na przyk³ad je¶li jednym z tokenów jest "TOK_NUMBER", to czê¶æ skanera mo¿e
+wygl±daæ tak:
+.nf
+
+    %{
+    #include "y.tab.h"
+    %}
+
+    %%
+
+    [0-9]+        yylval = atoi( yytext ); return TOK_NUMBER;
+
+.fi
+.SH OPCJE
+.I flex
+ma nastêpuj±ce opcje:
+.TP
+.B \-b
+Generuje informacje zapasowe do
+.I lex.backup.
+Oto lista stanów skanera, które wymagaj± kopii zapasowych oraz znaki
+wej¶ciowe dla których to zachodzi. Dodaj±c regu³y mo¿na usun±æ stany
+zapasowe. Je¶li wyeliminowane zostan±
+.I wszystkie
+stany zapasowe, a u¿yte bêdzie
+.B \-Cf
+lub
+.BR \-CF ,
+wygenerowany skaner bêdzie dzia³a³ szybciej (zobacz flagê
+.BR \-p ).
+Opcj± to powinni siê martwiæ jedynie u¿ytkownicy wyciskaj±cy ostatnie poty
+ze swoich skanerów. (Zobacz sekcjê o Rozwa¿aniach nad Wydajno¶ci±.)
+.TP
+.B \-c
+nieu¿ywana i niezalecana opcja dla zgodno¶ci z POSIX-em.
+.TP
+.B \-d
+powoduje, ¿e generowany skaner dzia³a w trybie
+.IR debug .
+Za ka¿dym razem po rozpoznaniu wzorca, gdy globalna zmienna
+.B yy_flex_debug
+jest niezerowa (co jest domy¶lne), skaner zapisze na stderr liniê w postaci:
+.nf
+
+    --accepting rule at line 53 ("dopasowany tekst")
+
+.fi
+Numer linii odnosi siê do po³o¿enia regu³y w pliku definiuj±cym skaner (tj.
+w pliku, potraktowanym fleksem). Komunikaty s± równie¿ generowane gdy skaner
+robi kopie zapasowe, przyjmuje domy¶ln± regu³ê, dochodzi do koñca bufora
+(lub napotyka NUL; w tym momencie obydwa [zdarzenia] wygl±daj± jednakowo z
+punktu widzenia skanera) lub osi±ga koniec pliku.
+.TP
+.B \-f
+okre¶la
+.IR "szybki skaner" .
+Nie dokonywana jest kompresja tabel i pomijane jest stdio. W efekcie kod
+jest du¿y, lecz szybki. Opcja ta jest równowa¿na
+.B \-Cfr
+(zobacz ni¿ej).
+.TP
+.B \-h
+generuje zestawienie "pomocy" opcji fleksa na stdout i koñczy dzia³anie.
+.B \-?
+i
+.B \-\-help
+s± równowa¿nikami
+.B \-h.
+.TP
+.B \-i
+nakazuje fleksowi generowania skanera niewra¿liwego na wielko¶æ znaków.
+Wielko¶æ liter we wzorcach zostanie zignorowany, a tokeny wej¶cia bêd±
+dopasowywane niezale¿nie od wielko¶ci. Dopasowany tekst znajduj±cy siê w
+.I yytext
+bêdzie mia³ zachowan± oryginaln± wielko¶æ liter.
+.TP
+.B \-l
+w³±cza maksymaln± zgodno¶æ z oryginaln± implementacj±
+.I leksa
+z AT&T. Zauwa¿, ¿e nie oznacza to pe³nej zgodno¶ci. U¿ycie tej opcji
+kosztuje sporo wydajno¶ci i eliminuje z u¿ycia opcje
+.BR \-+ , -f , -F , -Cf
+lub
+.BR -CF .
+Dla szczegó³ów o zapewnianej zgodno¶ci, zobacz ni¿ej sekcjê o niezgodno¶ciach
+miêdzy Leksem i POSIX-em. Opcja ta powoduje te¿ z#definiowanie nazwy
+.B YY_FLEX_LEX_COMPAT
+w generowanym skanerze.
+.TP
+.B \-n
+kolejna ignorowana opcja dodana dla zgodno¶ci z POSIX-em.
+.TP
+.B \-p
+generuje raport o wydajno¶ci na stderr. Raport sk³ada siê z komentarzy o
+w³a¶ciwo¶ciach pliku wej¶ciowego
+.IR fleksa ,
+wiêc powoduje znaczn± utratê wydajno¶ci skanera. Je¶li podasz tê flagê
+dwukrotnie, uzyskasz te¿ komentarze o w³a¶ciwo¶ciach, które doprowadzi³y do
+drugorzêdnych utrat wydajno¶ci.
+.IP
+Zauwa¿, ¿e u¿ycie
+.BR REJECT ,
+.BR "%option yylineno" ,
+i zmiennego wisz±cego kontekstu (variable trailing context) (zobacz  ni¿ej
+sekcjê o Niedostatkach / B³êdach) powoduje znaczn± utratê wydajno¶ci; u¿ywanie
+.IR yymore() ,
+operatora
+.B ^
+i flagi
+.B \-I
+powoduje pomniejsze utraty wydajno¶ci.
+.TP
+.B \-s
+powoduje, ¿e domy¶lna regu³a (powoduj±ca echo niedopasowanego wej¶cia
+skanera na stdout) nie jest wykonywana. Je¶li skaner napotka wej¶cie,
+którego nie mo¿e dopasowaæ do regu³, przerywa dzia³anie z b³êdem. Opcja ta
+jest przydatna do znajdowania dziur w zbiorze regu³ skanera.
+.TP
+.B \-t
+nakazuje
+.I fleksowi
+zapisanie wygenerowanego skanera na standardowe wyj¶cie zamiast do pliku
+.BR lex.yy.c .
+.TP
+.B \-v
+nakazuje
+.I fleksowi
+pisanie na 
+.I stderr
+zestawienia statystyk dotycz±cych generowanego skanera.
+Wiêkszo¶æ statystyk jest pozbawiona znaczenia dla typowego u¿ytkownika, lecz
+pierwsza z linijek wskazuje wersjê fleksa (to samo co zg³asza opcja \-V), a
+nastêpna linia flagi u¿yte do generowania skanera, z domy¶lnymi w³±cznie.
+.TP
+.B \-w
+powstrzymuje komunikaty o ostrze¿eniach.
+.TP
+.B \-B
+nakazuje fleksowi generowanie skanera
+.IR wsadowego ,
+czyli odwrotno¶æ skanerów
+.IR interaktywnych ,
+generowanych przez
+.B \-I
+(zobacz ni¿ej). Ogólnie, opcji
+.B \-B
+u¿ywa siê maj±c
+.IR pewno¶æ ,
+¿e skaner nigdy nie bêdzie u¿ywany interaktywnie i chc±c wycisn±æ jeszcze
+.I troszeczkê
+wiêcej wydajno¶ci. Je¶li chcesz zyskaæ wiêcej wydajno¶ci, powiniene¶ u¿yæ
+opcji
+.B \-Cf
+lub
+.B \-CF
+(opisanych ni¿ej), które w³±czaj±
+.B \-B
+i tak automatycznie.
+.TP
+.B \-F
+mówi, ¿e nale¿y u¿yæ reprezentacji tablicy
+.ul
+szybkiego skanera (i stdio ma byæ pominiête). Reprezentacja ta jest mniej
+wiêcej tak szybka jak reprezentacja pe³nej tablicy
+.BR (-f) ,
+i dla niektórych zestawów wzorców bêdzie znacznie mniejsza (a dla innych
+wiêksza). Ogólnie, je¶li wzorzec zawiera zarówno "s³owa kluczowe" jak i
+³api±c±-wszystko regu³ê "identyfikatora", tak jak poni¿szy zestaw:
+.nf
+
+    "case"    return TOK_CASE;
+    "switch"  return TOK_SWITCH;
+    ...
+    "default" return TOK_DEFAULT;
+    [a-z]+    return TOK_ID;
+
+.fi
+to lepiej u¿yæ reprezentacji pe³nej tablicy. Je¶li obecna jest tylko regu³a
+"identyfikatora" i u¿ywasz potem hasza lub podobnej rzeczy do wykrywania
+s³ów kluczowych, to lepiej u¿yæ opcji
+.BR -F .
+.IP
+Opcja ta odpowiada
+.B \-CFr
+(zobacz ni¿ej).  Nie mo¿na jej u¿ywaæ z
+.BR \-+ .
+.TP
+.B \-I
+nakazuje
+.I fleksowi
+generowanie skanera
+.IR interaktywnego .
+Skaner interaktywny patrzy naprzód do wyboru dopasowania jedynie je¶li musi.
+Okazuje siê, ¿e patrzenie o jeden dodatkowy znak dalej, nawet je¶li skaner
+ma ju¿ do¶æ do dopasowania tokenu jest trochê szybsze ni¿ wersja minimalna.
+Lecz skanery patrz±ce naprzód daj± dziadowsk± wydajno¶æ interaktywn±; na
+przyk³ad gdy u¿ytkownik wpisze now± liniê, to nie jest ona rozpoznawana jako
+token nowej linii dopóki nie wprowadzony zostanie 
+.I nastêpny
+token, co oznacza czêsto wpisanie ca³ej kolejnej linii.
+.IP
+Skanery
+.I fleksa
+s± domy¶lnie
+.IR interaktywne ,
+chyba ¿e u¿yjesz opcji kompresji tablicy
+.B \-Cf
+lub
+.BR \-CF " (zobacz ni¿ej)."
+Jest tak dlatego, ¿e je¶li oczekujesz wysokiej wydajno¶ci, to powiniene¶
+u¿yæ jednej z tych opcji, a je¶li tego nie zrobi³e¶,
+.I flex
+zak³ada, ¿e jeste¶ gotów po¶wiêciæ trochê wydajno¶ci na rzecz intuicyjnego
+zachowania interaktywnego. Zauwa¿ te¿, ¿e 
+.I nie mo¿esz
+u¿yæ
+.B \-I
+w po³±czeniu z
+.B \-Cf
+lub
+.BR \-CF .
+Z tej przyczyny opcja ta nie jest w rzeczywisto¶ci wymagana; jest domy¶lnie
+w³±czona dla tych przypadków, dla których jest dopuszczalna.
+.IP
+Opcj±
+.B \-B
+mo¿esz wymusiæ by skaner
+.I nie
+by³ interaktywny
+(zobacz powy¿ej).
+.TP
+.B \-L
+nakazuje
+.I fleksowi
+nie generowaæ dyrektyw
+.BR #line .
+Bez tej opcji
+.I flex
+przyprawia generowany skaner dyrektywami #line, wiêc komunikaty o b³êdach w
+akcjach bêd± poprawnie po³o¿one wzglêdem oryginalnego pliku wej¶ciowego
+.I fleksa
+(je¶li b³êdy wynikaj± z kodu w pliku wej¶ciowym) lub [wzglêdem] 
+.B lex.yy.c
+(je¶li b³êdy s± win±
+.I fleksa
+-- powiniene¶ zg³osiæ takie b³êdy pod adres e-mail podany poni¿ej.)
+.TP
+.B \-T
+powoduje, ¿e
+.I flex
+dzia³a w trybie
+.IR ¶ledzenia .
+Bêdzie generowa³ na stderr wiele komunikatów o postaci wej¶cia i
+wynikaj±cych zeñ niedeterministycznych i deterministycznych automatach
+skoñczonych. Opcja ta jest u¿ywana zwykle w opiece nad
+.IR fleksem .
+.TP
+.B \-V
+drukuje numer wersji na
+.I stdout
+i koñczy dzia³anie.
+.B \-\-version
+jest synonimem
+.BR \-V .
+.TP
+.B \-7
+nakazuje
+.I fleksowi
+generowanie skanera 7-bitowego, tj. takiego który mo¿e rozpoznawaæ w swoim
+wej¶ciu tylko znaki 7-bitowe. Zalet± u¿ywania
+.B \-7
+jest to, ¿e tablice skanera bêd± o po³owê mniejsze ni¿ wygenerowane opcj±
+.B \-8
+(zobacz ni¿ej). Wad± jest to, ¿e skanery takie czêsto siê zawieszaj± lub
+za³amuj± je¶li na ich wej¶ciu znajdzie siê znak 8-bitowy.
+.IP
+Zauwa¿ jednak, ¿e je¶li generujesz skaner z u¿yciem opcji kompresji tablic
+.B \-Cf
+lub
+.BR \-CF ,
+to u¿ycie
+.B \-7
+zachowa jedynie niewielki rozmiar przestrzeni tablic, a spowoduje, ¿e skaner
+bêdzie znacz±co mniej przeno¶ny.
+Domy¶lnym zachowaniem
+.I fleksa
+jest generowanie skanerów 8-bitowych, chyba ¿e u¿yto opcji
+.B \-Cf
+lub
+.BR \-CF ,
+i wtedy
+.I flex
+generuje domy¶lnie skaner 7-bitowy, chyba ¿e twoja maszyna zawsze by³a
+skonfigurowana na generowanie skanerów 8-bitowych (co czêsto siê zdarza poza
+USA). To, czy flex wygenerowa³ skaner 7 czy 8 bitowy, mo¿na okre¶liæ,
+sprawdzaj±c zestawienie flag w wyj¶ciu
+.BR \-v ,
+co opisano wy¿ej.
+.IP
+Zauwa¿, ¿e je¶li u¿ywasz
+.B \-Cfe
+lub
+.BR \-CFe ,
+flex wci±¿ domy¶lnie generuje skaner 8-bitowy, gdy¿ po kompresji pe³ne
+tablice 8-bitowe nie s± wiele wiêksze od 7-bitowych.
+.TP
+.B \-8
+nakazuje
+.I fleksowi
+generowanie skanera 8-bitowego, tj. takiego, który rozpoznaje znaki
+8-bitowe. Flaga ta jest wymagana jedynie dla skanerów wygenerowanych z
+u¿yciem
+.B \-Cf
+lub
+.BR \-CF ,
+gdy¿ w innych wypadkach jest ona przyjmowana jako domy¶lna.
+.IP
+.TP
+.B \-+
+okre¶la, ¿e chcesz by fleks wygenerowa³ klasê skanera w C++. Zobacz sekcjê o
+generowaniu skanerów C++.
+.TP 
+.B \-C[aefFmr]
+steruje poziomem kompresji tablic, balansuj±c miêdzy ma³ymi a szybkimi
+skanerami.
+.IP
+.B \-Ca
+("wyrównaj") nakazuje fleksowi po¶wiêciæ rozmiar tablic w wygenerowanych
+skanerach na rzecz szybko¶ci, gdy¿ elementy tablic mog± byæ lepiej wyrównane
+pod k±tem dostêpu do pamiêci i obliczeñ. Na niektórych architekturach RISC
+pobieranie i operowanie na d³ugich s³owach jest efektywniejsze ni¿ na
+mniejszych jednostkach, takich jak krótkie s³owa. Opcja ta mo¿e podwoiæ
+rozmiar tablic u¿ywanych przez twój skaner.
+.IP
+.B \-Ce
+Nakazuje
+.I fleksowi
+budowanie klas
+.IR równowa¿no¶ci ,
+tj. zestawów znaków o identycznych w³a¶ciwo¶ciach leksykalnych (np. je¶li
+jedynym wyst±pieniem cyfr w pliku wej¶ciowym fleksa jest klasa znaków
+"[0-9]", to cyfry z przedzia³y od 0 do 9 zostan± wstawione do tej samej
+klasy równowa¿no¶ci. Klasy takie zwykle znacznie redukuj± ostateczne
+rozmiary tablic/obiektów (zwykle 2-5 razy) i s± ca³kiem tanie od strony
+wydajno¶ciowej (jedno podgl±dniêcie w tablicy na skanowany znak).
+.IP
+.B \-Cf
+okre¶la, ¿e nale¿y generowaæ
+.I pe³ne
+tablice skanera -
+.I flex
+nie ma ich kompresowaæ poprzez branie korzy¶ci z podobnych funkcji przej¶æ
+dla ró¿nych stanów.
+.IP
+.B \-CF
+okre¶la, ¿e nale¿y u¿yæ alternatywnej, szybkiej reprezentacji skanera
+(opisanej pod flag±
+.BR \-F ).
+Opcja ta nie mo¿e byæ u¿ywana z
+.BR \-+ .
+.IP
+.B \-Cm
+nakazuje
+.I fleksowi
+budowanie klas
+.I meta-równowa¿no¶ci,
+które s± zbiorami klas równowa¿no¶ci (lub znaków, je¶li klasy równowa¿no¶ci
+nie s± u¿ywane), które s± czêsto u¿ywane wspólnie. Klasy takie s± czêsto
+dobr± rzecz± podczas u¿ywania skompresowanych tablic, lecz maj± one ju¿
+umiarkowany wp³yw na wydajno¶æ (dwa lub jeden test "if" i jedno
+podgl±dniêcie tablicy na skanowany znak).
+.IP
+.B \-Cr
+powoduje, ¿e generowany skaner
+.I omija
+u¿ycie standardowej biblioteki I/O dla wej¶cia. Zamiast wo³aæ
+.B fread()
+lub
+.BR getc() ,
+skaner bêdzie u¿ywaæ wywo³ania systemowego
+.BR read() ,
+zyskuj±c tak trochê na wydajno¶ci (w skali zale¿nej od systemu). W
+rzeczywisto¶ci jest to bez znaczenia, chyba ¿e u¿ywasz te¿
+.B \-Cf
+lub
+.BR \-CF .
+Wykorzystanie
+.B \-Cr
+mo¿e te¿ spowodowaæ dziwne zachowanie je¶li np. odczytasz z
+.I yyin
+z pomoc± stdio przed wywo³aniem skanera (skaner pominie tekst pozostawiony
+przez twoje odczyty w buforze wej¶ciowym stdio).
+.IP
+.B \-Cr
+nie dzia³a je¶li zdefiniujesz
+.B YY_INPUT
+(zobacz wy¿ej Generowany Skaner).
+.IP
+Samotne
+.B \-C
+okre¶la, ¿e tablice skanera powinny byæ kompresowane, lecz nie nale¿y u¿ywaæ
+klas równowa¿no¶ci i klas metarównowa¿no¶ci.
+.IP
+Opcje
+.B \-Cf
+lub
+.B \-CF
+i
+.B \-Cm
+nie maj± sensu razem - nie ma sytuacji dla klas metarównowa¿no¶ci je¶li
+tablica nie jest kompresowana. Poza tym opcje mo¿na swobodnie ³±czyæ.
+.IP
+Domy¶lnym ustawieniem jest
+.B \-Cem,
+które okre¶la, ¿e
+.I flex
+powinien generowaæ klasy równowa¿no¶ci i metarównowa¿no¶ci. Ustawienie to
+daje najwy¿szy stopieñ kompresji tablic. Kosztem wiêkszych tablic mo¿na
+uzyskaæ szybciej wykonuj±ce siê skanery. Nastêpuj±ce zestawienie jest mniej
+wiêcej prawdziwe:
+.nf
+
+    najwolniejsze i najmniejsze
+          -Cem
+          -Cm
+          -Ce
+          -C
+          -C{f,F}e
+          -C{f,F}
+          -C{f,F}a
+    najszybsze i najwiêksze
+
+.fi
+Zauwa¿, ¿e skanery z najmniejszymi tablicami s± zwykle najszybciej
+generowane i kompilowane, wiêc podczas prac rozwojowych prawdopodobnie
+najchêtniej u¿yjesz domy¶lnej, maksymalnej kompresji.
+.IP
+.B \-Cfe
+jest czêsto dobrym kompromisem miêdzy szybko¶ci± a rozmiarem dla skanerów
+gotowych do wdro¿enia (production scanners).
+.TP
+.B \-ooutput
+nakazuje fleksowi zapisanie skanera do pliku
+.B output
+zamiast do
+.BR lex.yy.c .
+Je¶li po³±czysz
+.B \-o
+z opcj±
+.BR \-t ,
+to skaner jest zapisywany na stdout, lecz jego dyrektywy
+.B #line
+(zobacz wy¿ej opcjê
+.BR \\-L ),
+odnosz± siê do pliku
+.BR output .
+.TP
+.B \-Pprefiks
+zmienia domy¶lny przedrostek
+.I "yy"
+u¿ywany przez 
+.I fleksa
+dla wszystkich zmiennych i funkcji globalnych na
+.IR prefiks .
+Na przyk³ad
+.B \-Pfoo
+zmienia nazwê
+.B yytext
+na
+.BR footext .
+Zmienia to te¿ nazwê domy¶lnego pliku wyj¶ciowego z
+.B lex.yy.c
+na
+.BR lex.foo.c .
+A oto wszystkie nazwy, których dotyczy takie zachowanie:
+.nf
+
+    yy_create_buffer
+    yy_delete_buffer
+    yy_flex_debug
+    yy_init_buffer
+    yy_flush_buffer
+    yy_load_buffer_state
+    yy_switch_to_buffer
+    yyin
+    yyleng
+    yylex
+    yylineno
+    yyout
+    yyrestart
+    yytext
+    yywrap
+
+.fi
+(Je¶li u¿ywasz skanera C++, to dotyczyæ to bêdzie tylko
+.B yywrap
+i
+.BR yyFlexLexer .)
+Wewn±trz samego skanera mo¿na wci±¿ u¿ywaæ jednej i drugiej konwencji
+nazywania; jednak z zewn±trz dozwolone s± tylko nazwy zmodyfikowane.
+.IP
+Opcja ta umo¿liwia ³atwe ³±czenie w ca³o¶æ ró¿nych programów
+.I fleksa
+w jeden plik wykonywalny. Zauwa¿ jednak, ¿e u¿ywanie tej opcji zmienia te¿
+nazwê
+.BR yywrap() ,
+wiêc \fImusisz\fR teraz albo udostêpniæ w³asn± wersjê tej procedury dla
+swojego skanera, albo u¿yæ
+.BR "%option noyywrap" ,
+gdy¿ konsolidacja z
+.B \-lfl
+nie daje ju¿ funkcji domy¶lnej.
+.TP
+.B \-Sskeleton_file
+przes³ania domy¶lny plik szkieletowy, na podstawie którego
+.I flex
+buduje swoje skanery. Nie bêdziesz u¿ywaæ tej opcji, chyba ¿e zajmujesz siê
+rozwojem fleksa.
+.PP
+.I flex
+daje te¿ mechanizm kontrolowania opcji z samej specyfikacji skanera, zamiast
+linii poleceñ. Dzia³a to przez w³±czanie dyrektyw
+.B %option
+w pierwszej sekcji specyfikacji skanera. W jednej dyrektywie
+.B %option
+mo¿na podawaæ wiele opcji, a w samej pierwszej sekcji pliku wej¶ciowego
+fleksa mo¿na u¿ywaæ wielu dyrektyw.
+.PP
+Wiêkszo¶æ opcji jest podawana po prostu jako nazwy, poprzedzone opcjonalnie
+s³owem "no" (bez bia³ych spacji w ¶rodku), które neguje ich znaczenie.
+Czê¶æ jest równowa¿na flagom fleksa lub ich negacjom:
+.nf
+
+    7bit            -7
+    8bit            -8
+    align           -Ca
+    backup          -b
+    batch           -B
+    c++             -+
+
+    caseful lub
+    case-sensitive  przeciwne do -i (domy¶lne)
+
+    case-insensitive lub
+    caseless        -i
+
+    debug           -d
+    default         przeciwne do -s
+    ecs             -Ce
+    fast            -F
+    full            -f
+    interactive     -I
+    lex-compat      -l
+    meta-ecs        -Cm
+    perf-report     -p
+    read            -Cr
+    stdout          -t
+    verbose         -v
+    warn            przeciwne do -w
+                    (dla -w u¿yj "%option nowarn")
+
+    array           równowa¿ne "%array"
+    pointer         równowa¿ne "%pointer" (domy¶lne)
+
+.fi
+Niektóre
+.B %opcje
+daj± w³a¶ciwo¶ci niedostêpne gdzie indziej:
+.TP
+.B always-interactive
+nakazuje fleksowi generowanie skanera, który zawsze uwa¿a swoje wej¶cie za
+"interaktywne". Normalnie przy ka¿dym pliku wej¶ciowym skaner wo³a
+.B isatty()
+do okre¶lenia czy wej¶cie skanera jest interaktywne i powinno byæ czytane
+po znaku. Po u¿yciu tej opcji wywo³anie takie nie jest robione.
+.TP
+.B main
+nakazuje fleksowi udostêpniæ domy¶lny program
+.B main()
+dla skanera, który po prostu wo³a
+.BR yylex() .
+Opcja ta implikuje
+.B noyywrap
+(zobacz ni¿ej).
+.TP
+.B never-interactive
+nakazuje fleksowi generowanie skanera, który zawsze uwa¿a swoje wej¶cie za
+"nieinteraktywne" (znów, nie jest wo³ane
+.BR isatty() ).
+Opcja ta jest przeciwna do
+.B always-interactive.
+.TP
+.B stack
+w³±cza u¿ywanie stosów warunków pocz±tkowych (zobacz wy¿ej Warunki
+Pocz±tkowe).
+.TP
+.B stdinit
+je¶li jest ustawione (np.
+.BR "%option stdinit" )
+to zachodzi inicjalizacja
+.I yyin
+i
+.I yyout
+na
+.I stdin
+i
+.IR stdout ,
+zamiast domy¶lnych
+.I nil.
+Niektóre istniej±ce programy
+.I lex
+zale¿± od tego zachowania, nawet je¶li nie jest ono zgodne z ANSI C,
+które nie wymagaj± sta³ych czasu kompilacji
+.I stdin
+i
+.IR stdout .
+.TP
+.B yylineno
+nakazuje
+.I fleksowi
+generowanie skanera, który przechowuje liczbê obecnie odczytanych linii w
+zmiennej globalnej
+.B yylineno.
+Opcja ta jest wymuszana przez
+.BR "%option lex-compat" .
+.TP
+.B yywrap
+je¶li nie jest ustawione (np.
+.BR "%option noyywrap" ),
+to skaner nie wo³a
+.B yywrap()
+na koñcu pliku, lecz po prostu przyjmuje, ¿e nie ma ju¿ plików do skanowania
+(dopóki u¿ytkownik nie wska¿e yyin na nowy plik i nie wywo³a
+.B yylex()
+ponownie).
+.PP
+.I flex
+skanuje akcje regu³ w celu okre¶lenia czy u¿ywasz w³a¶ciwo¶ci
+.B REJECT
+lub
+.BR yymore() .
+Opcje
+.B reject
+i
+.B yymore
+mog± przes³oniæ jego decyzjê na tak±, jak± ustawisz przy u¿yciu opcji,
+zarówno ustawiaj±c je (np.
+.BR "%option reject" )
+do wskazania, ¿e w³a¶ciwo¶æ jest rzeczywi¶cie u¿ywana, lub
+wy³±czaj±c je, wskazuj±c, ¿e w³a¶ciwo¶æ nie jest u¿ywana (np.
+.BR "%option noyymore" ).
+.PP
+Trzy opcje pobieraj± warto¶ci ³añcuchowe, offsetowane znakiem '=':
+.nf
+
+    %option outfile="ABC"
+
+.fi
+jest równowa¿ne
+.BR -oABC ,
+a
+.nf
+
+    %option prefix="XYZ"
+
+.fi
+jest równowa¿ne
+.BR -PXYZ .
+Poza tym,
+.nf
+
+    %option yyclass="foo"
+
+.fi
+dotyczy tylko skanerów C++ (opcja
+.BR \-+ ).
+Mówi to fleksowi, ¿e
+.B foo
+jest wyprowadzone jako podklasa
+.B yyFlexLexer,
+wiêc
+.I flex
+bêdzie umieszcza³ twoje akcje w funkcji sk³adowej
+.B foo::yylex()
+zamiast w
+.BR yyFlexLexer::yylex() .
+Powoduje to te¿ generowanie funkcji sk³adowej
+.BR yyFlexLexer::yylex() ,
+emituj±cej po wywo³aniu b³±d dzia³ania (przez wywo³anie
+.BR yyFlexLexer::LexerError()) .
+Dla dalszych informacji zobacz te¿ ni¿ej Generowanie Skanerów C++.
+.PP
+Istniej± opcje dla purystów, nie chc±cych widzieæ w swoich skanerach
+niepotrzebnych procedur. Ka¿da z nastêpuj±cych opcji (np.
+(np.,
+.BR "%option nounput" ),
+powoduje, ¿e dana procedura nie pojawia siê w wygenerowanym skanerze:
+.nf
+
+    input, unput
+    yy_push_state, yy_pop_state, yy_top_state
+    yy_scan_buffer, yy_scan_bytes, yy_scan_string
+
+.fi
+(chocia¿
+.B yy_push_state()
+i podobne i tak nie pojawi± siê dopóki nie u¿yjesz
+.BR %option stack) .
+.SH ROZWA¯ANIA NAD WYDAJNO¦CI¡
+Podstawowym zadaniem przy projektowaniu
+.I fleksa
+by³o zapewnienie, ¿e bêdzie generowa³ wydajne skanery. Zosta³
+zoptymalizowany do dobrej wspó³pracy z wielkimi zestawami regu³. Poza
+omawianymi ju¿ wp³ywami opcji kompresji
+.BR \-C ,
+istnieje jeszcze kilka akcji/opcji wp³ywaj±cych na wydajno¶æ. S± to, od
+najkosztowniejszej do najmniej kosztownej:
+.nf
+
+    REJECT
+    %option yylineno
+    arbitralny wisz±cy kontekst
+
+    zestawy wzorców, wymagaj±ce cofania
+    %array
+    %option interactive
+    %option always-interactive
+
+    '^' operator rozpoczêcia linii
+    yymore()
+
+.fi
+z których pierwsze trzy s± bardzo kosztowne, a ostatnie dwa w miarê tanie.
+Zauwa¿ te¿, ¿e
+.B unput()
+jest implementowane jako wywo³anie procedurowe, które prawdopodobnie
+wykonuje sporo pracy, podczas gdy
+.B yyless()
+jest tanim makrem; wiêc je¶li wstawiasz z powrotem nadmiarowy wyskanowany
+tekst, u¿yj
+.BR yyless() .
+.PP
+.B REJECT
+powinno byæ unikane za wszelk± cenê z punktu widzenia wydajno¶ci.
+Jest to szczególnie kosztowna opcja.
+.PP
+Pozbycie siê cofania jest trudne i mo¿e czêsto prowadziæ do b³êdów w
+skomplikowanych skanerach. W praktyce zaczyna siê od u¿ycia flagi
+.B \-b 
+do wygenerowania pliku
+.IR lex.backup .
+Na przyk³ad dla wej¶cia
+.nf
+
+    %%
+    foo        return TOK_KEYWORD;
+    foobar     return TOK_KEYWORD;
+
+.fi
+plik ten wygl±da tak:
+.nf
+
+    State #6 is non-accepting -
+     associated rule line numbers:
+           2       3
+     out-transitions: [ o ]
+     jam-transitions: EOF [ \\001-n  p-\\177 ]
+
+    State #8 is non-accepting -
+     associated rule line numbers:
+           3
+     out-transitions: [ a ]
+     jam-transitions: EOF [ \\001-`  b-\\177 ]
+
+    State #9 is non-accepting -
+     associated rule line numbers:
+           3
+     out-transitions: [ r ]
+     jam-transitions: EOF [ \\001-q  s-\\177 ]
+
+    Compressed tables always back up.
+
+.fi
+Pierwszych kilka linii mówi, ¿e istnieje stan skanera, w którym mo¿e on
+przyj±æ 'o', lecz nie mo¿e przyj±æ innego znaku i ¿e w tym stanie aktualnie
+skanowany tekst nie pasuje do ¿adnej regu³y. Stan ten pojawia siê podczas
+próby dopasowania regu³ z linijek 2 i 3 pliku wej¶ciowego. Je¶li skaner jest
+w tym stanie i odczyta cokolwiek innego ni¿ 'o', to bêdzie musia³ siê cofn±æ
+i okre¶liæ, która regu³a pasuje. Po chwili skrobania siê w g³owê mo¿na
+zauwa¿yæ, ¿e musi to byæ stan, gdy skaner zobaczy³ "fo". W tej sytuacji
+otrzymanie czegokolwiek innego ni¿ 'o' spowoduje cofniêcie do prostego
+dopasowania 'f' (regu³a domy¶lna).
+.PP
+Komentarz odno¶nie stanu #8 mówi, ¿e istnieje problem przy skanowaniu
+"foob". Rzeczywi¶cie, je¶li pojawi siê dowolny znak inny ni¿ 'a', to skaner
+bêdzie musia³ siê cofn±æ do przyjmowania "foo". Podobnie sprawa ma siê ze
+stanem #9, mówi±cym o "fooba", po którym nie nastêpuje 'r'.
+.PP
+Ostatni komentarz przypomina nam, ¿e usuwanie cofania nie ma sensu je¶li nie
+u¿ywamy
+.B \-Cf
+lub
+.BR \-CF ,
+gdy¿ nie daje to ¿adnego zysku wydajno¶ci na skanerach kompresowanych.
+.PP
+Sposobem usuwania cofania jest dodawanie regu³ dla "b³êdów":
+.nf
+
+    %%
+    foo         return TOK_KEYWORD;
+    foobar      return TOK_KEYWORD;
+
+    fooba       |
+    foob        |
+    fo          {
+                /* fa³szywy alarm, nie jest to s³owo kluczowe */
+                return TOK_ID;
+                }
+
+.fi
+.PP
+Eliminowanie cofania mo¿na przeprowadziæ równie¿ przy u¿yciu regu³y
+"³ap-wszystko":
+.nf
+
+    %%
+    foo         return TOK_KEYWORD;
+    foobar      return TOK_KEYWORD;
+
+    [a-z]+      return TOK_ID;
+
+.fi
+Jest to, tam gdzie mo¿na je zastosowaæ, najlepsze rozwi±zanie.
+.PP
+Komunikaty cofania czêsto uk³adaj± siê w kaskady. W skomplikowanych zbiorach
+regu³ mo¿na dostaæ setki komunikatów. Mimo to, je¶li mo¿na je zdeszyfrowaæ, to
+ich usuwanie wymaga tylko tuzina regu³ (³atwo siê jednak pomyliæ i spowodowaæ, ¿e
+regu³a obs³ugi b³êdu bêdzie pasowaæ do prawid³owego tokena. Mo¿liwe, ¿e przysz³e
+implementacje fleksa bêd± automatycznie zajmowa³y siê usuwaniem cofania).
+.PP
+Wa¿ne jest pamiêtanie, ¿e korzy¶ci z eliminacji tego problemu
+zyskujesz dopiero po zlikwidowaniu
+.I ka¿dej
+instancji cofania. Pozostawienie choæ jednej oznacza, ¿e nie zyskujesz
+niczego.
+.PP
+.I Zmienny
+wisz±cy kontekst (gdzie zarówno prowadz±ca jak i koñcz±ca czê¶æ nie maj±
+ustalonej d³ugo¶ci) wprowadza utratê wydajno¶ci zbli¿on± do
+.B REJECT
+(tzn. znaczn±). Dlatego gdy tylko mo¿na, to zapisz tak± regu³ê:
+.nf
+
+    %%
+    mouse|rat/(cat|dog)   run();
+
+.fi
+jako:
+.nf
+
+    %%
+    mouse/cat|dog         run();
+    rat/cat|dog           run();
+
+.fi
+lub jako
+.nf
+
+    %%
+    mouse|rat/cat         run();
+    mouse|rat/dog         run();
+
+.fi
+zwróæ uwagê, ¿e specjalna akcja '|'
+.I nie
+powoduje ¿adnych oszczêdno¶ci, a wrêcz mo¿e pogorszyæ sprawê (zobacz ni¿ej
+Niedostatki / B³êdy).
+.LP
+Innym obszarem, gdzie u¿ytkownik mo¿e zwiêkszaæ wydajno¶æ skanera jest to,
+¿e im d³u¿sze s± dopasowywane tokeny, tym szybciej dzia³a skaner. Jest tak
+dlatego, ¿e przetwarzanie d³ugich tokenów wiêkszo¶ci znaków wej¶ciowych
+zachodzi w wewnêtrznej (krótkiej) pêtli skanuj±cej i rzadko musi przechodziæ
+przez dodatkow± pracê zwi±zan± z ustawianiem ¶rodowiska skanuj±cego (np.
+.BR yytext )
+dla akcji. Przypomnij sobie skaner komentarzy C:
+.nf
+
+    %x comment
+    %%
+            int line_num = 1;
+
+    "/*"         BEGIN(comment);
+
+    <comment>[^*\\n]*
+    <comment>"*"+[^*/\\n]*
+    <comment>\\n             ++line_num;
+    <comment>"*"+"/"        BEGIN(INITIAL);
+
+.fi
+Mo¿na to przyspieszyæ nastêpuj±co:
+.nf
+
+    %x comment
+    %%
+            int line_num = 1;
+
+    "/*"         BEGIN(comment);
+
+    <comment>[^*\\n]*
+    <comment>[^*\\n]*\\n      ++line_num;
+    <comment>"*"+[^*/\\n]*
+    <comment>"*"+[^*/\\n]*\\n ++line_num;
+    <comment>"*"+"/"        BEGIN(INITIAL);
+
+.fi
+Teraz zamiast sytuacji, gdzie nowa linia wymaga przetwarzania nastêpnej
+akcji, rozpoznawanie nowych linii jest "rozrzucone" na inne regu³y.
+Umo¿liwia to zachowanie jak najd³u¿szego dopasowania. Zauwa¿, ¿e
+.I dodawanie
+regu³
+.I nie
+spowalnia skanera! Jego szybko¶æ jest niezale¿na od liczby regu³ i (w
+porównaniu do rozwa¿añ z pocz±tku sekcji) ich stopnia skomplikowania (z
+zastrze¿eniem do operatorów takich jak '*' i '|').
+.PP
+Ostateczny przyk³ad przyspieszania skanera: za³ó¿my, ¿e chcesz skanowaæ plik
+zawieraj±cy identyfikatory i s³owa kluczowe w liczbie jednego na liniê, bez
+¿adnych obcych znaków i chcesz rozpoznawaæ wszystkie s³owa kluczowe.
+Naturalnym odruchem pocz±tkowym jest:
+.nf
+
+    %%
+    asm      |
+    auto     |
+    break    |
+    ... etc ...
+    volatile |
+    while    /* to jest s³owo kluczowe */
+
+    .|\\n     /* a to nie... */
+
+.fi
+Aby wyeliminowaæ ¶ledzenie wstecz, wprowad¼ regu³ê ³ap-wszystko:
+.nf
+
+    %%
+    asm      |
+    auto     |
+    break    |
+    ... etc ...
+    volatile |
+    while    /* to s³owo kluczowe */
+
+    [a-z]+   |
+    .|\\n     /* a to nie... */
+
+.fi
+Obecnie, je¶li mamy zagwarantowane, ¿e mamy dok³adnie jedno s³owo w linii,
+mo¿emy zredukowaæ ca³kowit± liczbê dopasowañ o po³owê przez w³±czanie w
+rozpoznawanie tokenów ³apanie nowych linii.
+.nf
+
+    %%
+    asm\\n    |
+    auto\\n   |
+    break\\n  |
+    ... etc ...
+    volatile\\n |
+    while\\n  /* to s³owo kluczowe */
+
+    [a-z]+\\n |
+    .|\\n     /* a to nie... */
+
+.fi
+Trzeba byæ tu ostro¿nym, gdy¿ w³a¶nie wprowadzili¶my do skanera cofanie. W
+szczególno¶ci, je¶li
+.I my
+wiemy, ¿e w wej¶ciu nie bêdzie nigdy znaków innych ni¿ litery i nowe linie,
+to
+.I flex
+nie mo¿e tego wiedzieæ i bêdzie planowa³ ewentualno¶æ cofania podczas
+skanowania tokenu w rodzaju "auto", po którym nie nast±pi nowa linia lub
+litera. W poprzednim wypadku nast±pi³oby po prostu dopasowanie regu³y
+"auto", lecz teraz nie ma "auto", ale "auto\\n". Aby wyeliminowaæ mo¿liwo¶æ
+cofania, mo¿emy albo zduplikowaæ wszystkie regu³y bez koñcowych nowych
+linii albo, je¶li nie spodziewamy siê takiego wej¶cia i nie [interesuje nas]
+jego klasyfikacja, mo¿emy wprowadziæ regu³ê ³ap-wszystko, która nie zawiera
+nowej linii.
+.nf
+
+    %%
+    asm\\n    |
+    auto\\n   |
+    break\\n  |
+    ... etc ...
+    volatile\\n |
+    while\\n  /* to s³owo kluczowe */
+
+    [a-z]+\\n |
+    [a-z]+   |
+    .|\\n     /* a to nie... */
+
+.fi
+Po kompilacji z
+.BR \-Cf ,
+jest to prawie tak szybkie, jak tylko mo¿liwe dla
+.I fleksa
+dla tego problemu.
+.PP
+Ostatnia uwaga:
+.I flex
+jest wolny przy dopasowywaniu NUL-ów, szczególnie je¶li token zawiera ich
+wiele. 
+Najlepiej pisaæ regu³y, dopasowuj±ce
+.I krótkie
+fragmenty takich tekstów.
+.PP
+Kolejna ostatnia uwaga o wydajno¶ci: jak wspomniano wy¿ej w sekcji Jak
+Dopasowywane jest Wej¶cie, dynamiczne zmiany rozmiarów
+.B yytext
+do przyjmowania du¿ych tokenów jest powolne, gdy¿ obecnie wymaga by taki
+token by³ reskanowany od pocz±tku. Tak wiêc je¶li wydajno¶æ jest istotna, to
+powiniene¶ dopasowywaæ "du¿e" fragmenty tekstu, lecz nie "olbrzymie".
+Granic± miêdzy tymi pojêciami jest oko³o 8K znaków/token.
+.SH GENEROWANIE SKANERÓW C++
+.I flex
+daje dwie drogi tworzenia skanerów przeznaczonych dla C++. Pierwsz± z nich
+jest proste skompilowanie fleksowego skanera kompilatorem C++ zamiast
+kompilatora C. Nie powiniene¶ napotkaæ ¿adnych b³êdów kompilacji (je¶li siê
+pojawi±, to zg³o¶ to pod adres wskazany ni¿ej, w sekcji o autorze). Mo¿esz
+wówczas w akcjach swoich regu³ u¿ywaæ kodu C++ zamiast C. Zauwa¿, ¿e
+domy¶lnym ¼ród³em dla skanera pozostaje
+.IR yyin ,
+a domy¶lnym echem jest wci±¿
+.IR yyout .
+Obydwa urz±dzenia s± zmiennymi
+.IR "FILE *" ,
+a nie strumieniami C++.
+.PP
+Mo¿na te¿ u¿yæ
+.I fleksa
+do generowania klasy skanera C++. S³u¿y do tego opcja
+.B \-+
+(lub, równowa¿nie
+.BR "%option c++" ),
+co jest przyjmowane automatycznie je¶li nazwa pliku wykonywalnego fleksa
+koñczy siê plusem, jak np.
+.IR flex++ .
+Przy u¿yciu tej opcji, flex generuje skaner do pliku
+.B lex.yy.cc
+zamiast
+.BR lex.yy.c .
+Generowany skaner zawiera plik nag³ówkowy
+.IR FlexLexer.h ,
+który definiuje interfejsy do dwóch klas C++.
+.PP
+Pierwsza klasa,
+.BR FlexLexer ,
+daje abstrakcyjn± klasê bazow±, definiuj±c± ogólny interfejs klasy skanera.
+Daje nastêpuj±ce funkcje sk³adowe:
+.TP
+.B const char* YYText()
+zwraca tekst ostatnio dopasowanego tokenu, równowa¿nik
+.BR yytext .
+.TP
+.B int YYLeng()
+zwraca d³ugo¶æ ostatnio dopasowanego tokenu, równowa¿nik
+.BR yyleng .
+.TP
+.B int lineno() const
+zwraca numer aktualnej linii wej¶ciowej
+(zobacz
+.BR "%option yylineno" ),
+lub
+.B 1
+je¶li
+.B %option yylineno
+nie zosta³o u¿yte.
+.TP
+.B void set_debug( int flag )
+ustawia flagê debugguj±c± dla skanera, równowa¿nik przypisania do
+.B yy_flex_debug
+(zobacz wy¿ej sekcjê o opcjach). Zauwa¿, ¿e aby w³±czaæ w skanerze
+informacje diagnostyczne, musisz skompilowaæ go z u¿yciem
+.BR "%option debug" .
+.TP
+.B int debug() const
+zwraca bie¿±ce ustawienie flagi debugguj±cej.
+.PP
+Udostêpniane s± te¿ funkcje sk³adowe równowa¿ne
+.BR yy_switch_to_buffer() ,
+.B yy_create_buffer()
+(chocia¿ pierwszym argumentem jest wska¼nik
+.BR istream* ,
+a nie
+.BR FILE* ),
+.BR yy_flush_buffer() ,
+.B yy_delete_buffer()
+i
+.B yyrestart()
+(i znowu, pierwszym argumentem jest wska¼nik
+.BR istream* ).
+.PP
+Kolejn± klas± zdefiniowan± w
+.I FlexLexer.h
+jest
+.BR yyFlexLexer ,
+który jest klas± pochodn±
+.BR FlexLexer .
+Zaiwera nastêpuj±ce dodatkowe funkcje sk³adowe:
+.TP
+.B
+yyFlexLexer( istream* arg_yyin = 0, ostream* arg_yyout = 0 )
+buduje obiekt
+.B yyFlexLexer
+stosuj±c podane strumienie jako wej¶cie i wyj¶cie. Je¶li nie zostan±
+podane, to strumienie bêd± odpowiada³y odpowiednio
+.B cin
+i
+.BR cout .
+.TP
+.B virtual int yylex()
+odgrywa tê sam± rolê co
+.B yylex()
+dla normalnych skanerów fleksa: skanuje strumieñ wej¶ciowy, konsumuje tokeny
+a¿ akcja regu³y nie zwróci warto¶ci. Je¶li z
+.B yyFlexLexer
+wyprowadzisz podklasê
+.B S
+i zechcesz dostaæ siê do funkcji i zmiennych sk³adowych
+.B S
+z wnêtrza
+.BR yylex() ,
+to musisz u¿yæ
+.B %option yyclass="S"
+by poinformowaæ
+.IR fleksa ,
+¿e bêdziesz u¿ywaæ podklasy zamiast 
+.BR yyFlexLexer .
+W tym wypadku zamiast generowaæ
+.BR yyFlexLexer::yylex() ,
+.I flex
+generuje
+.B S::yylex()
+(oraz generuje prosty
+.BR yyFlexLexer::yylex() ,
+który wo³a
+.B yyFlexLexer::LexerError()
+po wywo³aniu).
+.TP
+.B
+virtual void switch_streams(istream* new_in = 0,
+.B
+ostream* new_out = 0)
+przypisuje
+.B yyin
+do
+.B new_in
+(je¶li jest nie-nil)
+oraz
+.B yyout
+do
+.B new_out
+(ditto), kasuj±c poprzedni bufor wej¶ciowy je¶li przypisywana jest nowa
+warto¶æ
+.B yyin .
+.TP
+.B
+int yylex( istream* new_in, ostream* new_out = 0 )
+najpierw prze³±cza strumienie wej¶ciowe poprzez
+.BR "switch_streams( new_in, new_out )" ,
+a nastêpnie zwraca warto¶æ
+.BR yylex() .
+.PP
+Poza tym,
+.B yyFlexLexer
+definiuje nastêpuj±ce chronione (protected) funkcje wirtualne, które mo¿na
+przedefiniowaæ w klasach pochodnych, by dostosowaæ skaner:
+.TP
+.B
+virtual int LexerInput( char* buf, int max_size )
+odczytuje maksymalnie
+.B max_size
+znaków do
+.B buf
+i zwraca liczbê odczytanych znaków. Aby wskazaæ koniec wej¶cia zwracane jest
+0 znaków. Zauwa¿, ¿e skanery "interaktywne" (zobacz flagi
+.B \-B
+oraz
+.BR \-I )
+definiuj± makro
+.BR YY_INTERACTIVE .
+Je¶li redefiniujesz
+.B LexerInput()
+i potrzebujesz braæ ró¿ne akcje, zale¿nie od tego czy skaner skanuje ¼ród³o
+interaktywne czy nie, to mo¿esz sprawdzaæ obecno¶æ tej nazwy poprzez
+.BR #ifdef .
+.TP
+.B
+virtual void LexerOutput( const char* buf, int size )
+zapisuje
+.B size
+znaków z bufora
+.B buf
+który, o ile jest zakoñczony zerem, mo¿e zawieraæ te¿ "wewnêtrzne" zera
+je¶li regu³y skanera mog± ³apaæ tekst z wewnêtrznymi zerami.
+.TP
+.B
+virtual void LexerError( const char* msg )
+zg³asza komunikat b³êdu krytycznego. Domy¶lna wersja tej funkcji zapisuje
+komunikat do strumienia
+.B cerr
+i koñczy dzia³anie programu.
+.PP
+Zauwa¿, ¿e obiekt
+.B yyFlexLexer
+zawiera swój
+.I pe³ny
+stan skanowania. Tak wiêc mo¿na u¿ywaæ takich obiektów do tworzenia 
+wielobie¿nych (reentrant) skanerów. Mo¿esz u¿ywaæ wielu instancji tej samej
+klasy
+.BR yyFlexLexer ,
+jak równie¿ mo¿esz w jednym programie ³±czyæ wiele klas skanerów w ca³o¶æ,
+u¿ywaj±c opisanej wy¿ej opcji
+.B \-P .
+.PP
+Dla skanerów C++ nie jest dostêpna w³a¶ciwo¶æ
+.BR %array ,
+trzeba wiêc u¿ywaæ
+.B %pointer
+(tj. warto¶ci domy¶lnej).
+.PP
+Oto przyk³ad prostego skanera C++:
+.nf
+
+        // Przyk³ad u¿ycia klasy skanera C++
+
+    %{
+    int mylineno = 0;
+    %}
+
+    string  \\"[^\\n"]+\\"
+
+    ws      [ \\t]+
+
+    alpha   [A-Za-z]
+    dig     [0-9]
+    name    ({alpha}|{dig}|\\$)({alpha}|{dig}|[_.\\-/$])*
+    num1    [-+]?{dig}+\\.?([eE][-+]?{dig}+)?
+    num2    [-+]?{dig}*\\.{dig}+([eE][-+]?{dig}+)?
+    number  {num1}|{num2}
+
+    %%
+
+    {ws}    /* pomiñ spacje i tabulacje */
+
+    "/*"    {
+            int c;
+
+            while((c = yyinput()) != 0)
+                {
+                if(c == '\\n')
+                    ++mylineno;
+
+                else if(c == '*')
+                    {
+                    if((c = yyinput()) == '/')
+                        break;
+                    else
+                        unput(c);
+                    }
+                }
+            }
+
+    {number}  cout << "number " << YYText() << '\\n';
+
+    \\n        mylineno++;
+
+    {name}    cout << "name " << YYText() << '\\n';
+
+    {string}  cout << "string " << YYText() << '\\n';
+
+    %%
+
+    int main( int /* argc */, char** /* argv */ )
+        {
+        FlexLexer* lexer = new yyFlexLexer;
+        while(lexer->yylex() != 0)
+            ;
+        return 0;
+        }
+.fi
+Je¶li chcesz tworzyæ wiele (ró¿nych) klas leksera, powiniene¶ u¿yæ flagi
+.B \-P
+(lub opcji
+.BR prefiks= )
+do zmiany nazwy ka¿dego
+.B yyFlexLexer
+na inny
+.BR xxFlexLexer .
+Nastêpnie mo¿esz za³±czaæ
+.B <FlexLexer.h>
+do swoich innych ¼róde³, raz na klasê leksera, zmieniaj±c najpierw nazwê
+.B yyFlexLexer
+w nastêpuj±cy sposób:
+.nf
+
+    #undef yyFlexLexer
+    #define yyFlexLexer xxFlexLexer
+    #include <FlexLexer.h>
+
+    #undef yyFlexLexer
+    #define yyFlexLexer zzFlexLexer
+    #include <FlexLexer.h>
+
+.fi
+o ile (na przyk³ad) u¿yjesz opcji
+.B %option prefix="xx"
+dla jednego ze swoich skanerów, a
+.B %option prefix="zz"
+dla drugiego.
+.PP
+WA¯NE: obecna postaæ klasy skanuj±cej jest
+.I eksperymentalna
+i mo¿e zmieniaæ siê miêdzy g³ównymi wydaniami.
+.SH NIEZGODNO¦CI Z LEX I POSIX
+.I flex
+jest przeróbk± narzêdzia
+.I lex
+z AT&T Unix (jednak¿e obie te implementacje nie maj± wspólnego kodu). Posiada pewne
+rozszerzenia i niezgodno¶ci, które s± istotne dla tych, którzy chc± pisaæ
+skanery dzia³aj±ce z oboma. Flex jest w pe³ni zgodny ze
+specyfikacj± POSIX
+.I lex
+poza szczegó³em, ¿e gdy u¿ywa
+.B %pointer
+(domy¶lne), to wywo³anie
+.B unput()
+niszczy zawarto¶æ
+.BR yytext ,
+co jest niezgodne ze specyfikacj± POSIX.
+.PP
+W sekcji tej omówimy wszystkie znane obszary niezgodno¶ci fleksa z AT&T lex
+i specyfikacj± POSIX.
+.PP
+.I fleksowa opcja
+.B \-l
+w³±cza maksymaln± zgodno¶æ z oryginalnym AT&T
+.IR lex ,
+okupuj±c to jednak znacznymi stratami wydajno¶ci generowanego skanera.
+Ni¿ej zaznaczymy, które niezgodno¶ci mo¿na pokonaæ u¿ywaj±c opcji
+.BR \-l .
+.PP
+.I flex
+jest w pe³ni zgodny z
+.I leksem
+poza nastêpuj±cymi wyj±tkami:
+.IP -
+Nieudokumentowana zmienna wewnêtrzna skanera
+.I lex
+o nazwie
+.B yylineno
+nie jest obs³ugiwana bez
+.B \-l
+lub
+.BR "%option yylineno" .
+.IP
+.B yylineno
+powinno byæ obs³ugiwane na poziomie buforowym, a nie na skanerowym
+(pojedyncza zmienna globalna).
+.IP
+.B yylineno
+nie jest czê¶ci± specyfikacji POSIX.
+.IP -
+Procedura
+.B input()
+nie jest redefiniowalna chocia¿ mo¿e byæ wo³ana do czytania znaków
+nastêpuj±cym po tym, co dopasowano do regu³y. Je¶li
+.B input()
+napotka koniec pliku, to wykonywane jest normalne przetwarzanie
+.BR yywrap() .
+``Prawdziwy'' koniec pliku jest sygnalizowany przez
+.B input()
+zwróceniem warto¶ci
+.IR EOF .
+.IP
+Wej¶cie jest natomiast sterowane przez definiowanie makra
+.BR YY_INPUT .
+.IP
+Ograniczenie
+.IR fleksa ,
+¿e
+.B input()
+nie mo¿e byæ redefiniowany jest zgodne ze specyfikacj± POSIX, która
+po prostu nie okre¶la innego ¿adnego sposobu sterowania wej¶ciem skanera ni¿
+poprzez dokonanie pocz±tkowego przypisania do 
+.I yyin.
+.IP -
+Procedura
+.B unput()
+nie jest redefiniowalna. Ograniczenie to jest zgodne z POSIX.
+.IP -
+Skanery
+.I fleksa
+nie s± tak wielobie¿ne (reentrant) jak skanery
+.IR lex . 
+W szczególno¶ci, je¶li masz interaktywny skaner i obs³ugê przerwañ, która robi
+d³ugi skok ze skanera, a skaner jest nastêpnie wo³any ponownie, to mo¿esz
+uzyskaæ nastêpuj±cy komunikat:
+.nf
+
+    fatal flex scanner internal error--end of buffer missed
+
+.fi
+Aby wej¶æ na nowo do skanera, u¿yj najpierw
+.nf
+
+    yyrestart( yyin );
+
+.fi
+Zauwa¿, ¿e wywo³anie to wyrzuci wszelkie buforowane wej¶cie; zwykle jednak
+nie jest to problem przy skanerach interaktywnych.
+.IP
+Zauwa¿ te¿, ¿e klasy skanerów C++
+.I s±
+wielobie¿ne (reentrant), wiêc u¿ywaj±c opcji C++ powiniene¶ ich u¿ywaæ. Zobacz
+sekcjê o generowaniu skanerów C++.
+.IP -
+.B output()
+nie jest obs³ugiwany. Wyj¶cie makra
+.B ECHO
+jest wykonywane do wska¼nika plikowego
+.I yyout
+(domy¶lnie
+.IR stdout ).
+.IP
+.B output()
+nie jest czê¶ci± specyfikacji POSIX.
+.IP -
+.I lex
+nie obs³uguje wykluczaj±cych warunków pocz±tkowych (%x), choæ znajduj± siê one w
+specyfikacji POSIX.
+.IP -
+Przy rozwijaniu definicji,
+.I flex
+ujmuje je w nawiasy.
+W leksie, nastêpuj±ce:
+.nf
+
+    NAME    [A-Z][A-Z0-9]*
+    %%
+    foo{NAME}?      printf( "Znalaz³em\\n" );
+    %%
+
+.fi
+nie dopasuje siê do ³añcucha "foo", gdy¿ makro jest rozwijane tak, ¿e regu³a
+odpowiada "foo[A-Z][A-Z0-9]*?", a pierwszeñstwo jest takie, ¿e '?' jest
+wi±zany z "[A-Z0-9]*". We fleksie regu³a zosta³aby rozwiniêta do
+"foo([A-Z][A-Z0-9]*)?" i ³añcuch "foo" zosta³by dopasowany.
+.IP
+Zauwa¿, ¿e je¶li definicja rozpoczyna siê od
+.B ^
+lub koñczy siê na
+.B $
+to
+.I nie
+jest rozwijana w nawiasach, aby umo¿liwiæ tym operatorom pojawienie siê w
+definicjach bez utraty ich znaczenia. Ale operatory
+.BR <s> ,
+.B /
+i
+.B <<EOF>>
+nie mog± byæ u¿ywane w definicji fleksa.
+.IP
+U¿ywanie
+.B \-l
+skutkuje
+.I leksowym
+zachowaniem braku nawiasów wokó³ definicji.
+.IP
+POSIX nakazuje ujmowanie definicji w nawiasy.
+.IP -
+Niektóre implementacje
+.I leksa
+umo¿liwiaj± rozpoczynanie akcji regu³ w osobnej linii je¶li wzorzec regu³y
+ma doklejon± bia³± spacjê:
+.nf
+
+    %%
+    foo|bar<tu spacja>
+      { foobar_action(); }
+
+.fi
+.I flex
+nie obs³uguje tej w³a¶ciwo¶ci.
+.IP -
+.I Leksowe
+.B %r
+(generuj skaner Ratfor) nie jest obs³ugiwane. Nie jest czê¶ci± specyfikacji
+POSIX.
+.IP -
+Po wywo³aniu
+.BR unput() ,
+.I yytext
+jest niezdefiniowane a¿ do dopasowania nastêpnego tokenu, chyba ¿e skaner
+u¿ywa
+.BR %array .
+Inaczej ma siê sprawa z
+.I leksem
+lub specyfikacj± POSIX. Opcja
+.B \-l
+za³atwia tê niezgodno¶æ.
+.IP -
+Pierwszeñstwo operatora
+.B {}
+(zakresu numerycznego) jest inne.
+.I lex
+interpretuje "abc{1,3}" jako "dopasuj 1, 2 lub 3 pojawienia 'abc'", a
+.I flex
+interpretuje to jako "dopasuj 'ab' z doklejonym jednym, dwoma lub trzema
+znakami 'c'". Interpretacja fleksowa jest zgodna ze specyfikacj± POSIX.
+.IP -
+Pierwszeñstwo operatora
+.B ^
+jest inne.
+.I lex
+interpretuje "^foo|bar" jako "dopasuj albo 'foo' z pocz±tku linii albo 'bar'
+gdziekolwiek", podczas gdy
+.I flex
+rozumie to jako "dopasuj 'foo' lub 'bar' je¶li pojawi± siê na pocz±tku
+linii". To drugie jest zgodne ze specyfikacj± POSIX.
+.IP -
+Specjalne deklaracje rozmiaru-tablicy, takie jak
+.BR %a ,
+obs³ugiwane przez
+.I lex
+nie s± wymagane przez skanery
+.IR fleksa ;
+.I flex
+je ignoruje.
+.IP -
+Nazwa
+.bd
+FLEX_SCANNER
+jest #definiowana, wiêc skanery mog± byæ pisane z przeznaczeniem do u¿ycia z 
+.I fleksem
+lub
+.IR leksem .
+Skanery zawieraj± równie¿
+.B YY_FLEX_MAJOR_VERSION
+i
+.B YY_FLEX_MINOR_VERSION
+wskazuj±c na wersjê
+.IR fleksa ,
+która wygenerowa³a skaner (na przyk³ad dla wydania 2.5 definiowane s±
+odpowiednio liczby 2 i 5).
+.PP
+Nastêpuj±ce w³a¶ciwo¶ci
+.I fleksa
+nie s± zawarte w specyfikacjach
+.I lex
+ani POSIX:
+.nf
+
+    Skanery C++
+    %option
+    zakresy warunków pocz±tkowych
+    stosy warunków pocz±tkowych
+    skanery interaktywne/nieinteraktywne
+    yy_scan_string() i koledzy
+    yyterminate()
+    yy_set_interactive()
+    yy_set_bol()
+    YY_AT_BOL()
+    <<EOF>>
+    <*>
+    YY_DECL
+    YY_START
+    YY_USER_ACTION
+    YY_USER_INIT
+    dyrektywy #line
+    %{} wokó³ akcji
+    wiele akcji w linii
+
+.fi
+plus prawie wszystkie flagi fleksa. Ostatnia w³a¶ciwo¶æ listy odnosi siê do
+faktu, ¿e we fleksie mo¿na wstawiaæ wiele akcji do jednej linii,
+rozdzielaj±c je ¶rednikami, podczas gdy w
+.IR leksie ,
+nastêpuj±ca instrukcja
+.nf
+
+    foo    handle_foo(); ++num_foos_seen;
+
+.fi
+jest (raczej niespodziewanie) obcinana do
+.nf
+
+    foo    handle_foo();
+
+.fi
+.I flex
+nie obcina akcji. Akcje które nie s± objête klamrami koñcz± siê zwyczajnie
+na koñcu linii.
+.SH DIAGNOSTYKA
+.PP
+.I warning, rule cannot be matched
+(ostrze¿enie, regu³a nie mo¿e byæ dopasowana) wskazuje, ¿e podana regu³a nie
+mo¿e byæ dopasowana gdy¿ wystêpuje za innymi regu³ami, które zawsze
+dopasuj± jej tekst. Na przyk³ad nastêpuj±ce foo nie mo¿e byæ dopasowane, gdy¿
+pojawia siê po regule ³ap-wszystko:
+.nf
+
+    [a-z]+    got_identifier();
+    foo       got_foo();
+
+.fi
+U¿ycie w skanerze
+.B REJECT
+powstrzyma to ostrze¿enie.
+.PP
+.IR warning ,
+.B \-s
+.I option given but default rule can be matched
+(ostrze¿enie, podano opcjê \-s, lecz dopasowana mo¿e byæ regu³a domy¶lna)
+oznacza, ¿e mo¿liwe jest (przypuszczalnie tylko w konkretnym warunku
+pocz±tkowym), ¿e regu³a domy¶lna (dopasowania dowolnego znaku) jest jedyn±,
+która dopasuje siê do konkretnego wej¶cia. Poniewa¿ podano
+.BR \-s ,
+zak³ada siê, ¿e nie jest to celowe.
+.PP
+.I reject_used_but_not_detected undefined
+lub
+.I yymore_used_but_not_detected undefined
+(niezdefiniowana fraza pierwsza lub druga) -
+te b³êdy pojawiaj± siê podczas kompilacji. Wskazuj± one, ¿e
+skaner u¿ywa
+.B REJECT
+lub
+.BR yymore() , 
+lecz
+.I flex
+nie poinformowa³ o tym fakcie. Znaczy to, ¿e
+.I flex
+przeskanowa³ pierwsze dwie sekcji w poszukiwaniu pojawienia siê tych akcji,
+ale ich nie znalaz³, bo jako¶ je przemyci³e¶ (np. przez plik #include). U¿yj
+.B %option reject
+lub
+.B %option yymore
+do wskazania fleksowi, ¿e naprawdê u¿ywasz tych w³a¶ciwo¶ci.
+.PP
+.I flex scanner jammed
+\- skaner skompilowany z
+.B \-s
+napotka³ ³añcuch wej¶ciowy, który nie zosta³ dopasowany do ¿adnej z jego
+regu³. B³±d ten mo¿e siê pojawiæ te¿ z powodu problemów wewnêtrznych.
+.PP
+.I token too large, exceeds YYLMAX
+(token zbyt du¿y, przekracza YYLMAX) -
+twój skaner u¿ywa
+.B %array
+a jedna z jego regu³ dopasowa³a siê do ³añcucha d³u¿szego ni¿ sta³a
+.B YYLMAX
+(domy¶lnie 8K). Mo¿esz zwiêkszyæ tê warto¶æ zwiêkszaj±c #definicjê sta³ej
+.B YYLMAX
+w sekcji definicji swojego wej¶cia
+.IR fleksa .
+.PP
+.I scanner requires \-8 flag to
+.I use the character 'x' 
+(skaner wymaga flagi \-8 do u¿ywania znaku 'x') -
+specyfikacja twojego skanera zawiera rozpoznawanie znaku 8-bitowego
+.IR 'x' ,
+a nie podana zosta³a flaga \-8, w wyniku czego skaner u¿y³ 7-bit z powodu
+wykorzystania opcji kompresji tablic
+.B \-Cf
+lub
+.BR \-CF .
+Dla szczegó³ów zobacz dyskusjê flagi
+.BR \-7 .
+.PP
+.I flex scanner push-back overflow
+\- u¿y³e¶
+.B unput()
+do wepchniêcia z powrotem tak d³ugiego tekstu, ¿e bufor skanera nie potrafi³
+przetrzymaæ wepchniêtego tekstu i bie¿±cego tokena w
+.B yytext.
+Idealny skaner powinien dynamicznie zmieniæ rozmiar bufora, lecz obecnie tak
+siê nie dzieje.
+.PP
+.I input buffer overflow, can't enlarge buffer because scanner uses REJECT
+(przekroczenie bufora wej¶ciowego nie mo¿e powiêkszyæ bufora gdy¿ skaner
+u¿ywa REJECT) -
+skaner pracowa³ nad dopasowaniem bardzo du¿ego tokenu i potrzebowa³
+rozszerzyæ bufor wej¶ciowy. Nie dzia³a to ze skanerami, u¿ywaj±cymi
+.B
+REJECT.
+.PP
+.I fatal flex scanner internal error--end of buffer missed
+(krytyczny b³±d wewnêtrzny skanera flex -- rozminiêto siê z koñcem bufora) -
+Mo¿e siê to pojawiæ w skanerze, który jest uruchomiony po d³ugim skoku z
+ramki aktywacji skanera. Przed powrotem do skanera u¿yj:
+.nf
+
+    yyrestart( yyin );
+
+.fi
+albo, jak wspomniano wy¿ej, prze³±cz siê na u¿ywanie skanerów C++.
+.PP
+.I too many start conditions in <> construct!
+(zbyt wiele warunków pocz±tkowych w konstrukcji <>) -
+w konstrukcji <> pojawi³o siê wiêcej warunków pocz±tkowych ni¿ istnieje w
+rzeczywisto¶ci (wiêc przynajmniej jeden z nich pojawi³ siê dwukrotnie).
+.SH PLIKI
+.TP
+.B \-lfl
+biblioteka, z któr± musz± byæ ³±czone skanery.
+.TP
+.I lex.yy.c
+generowany skaner (nazywany na niektórych systemach
+.IR lexyy.c ).
+.TP
+.I lex.yy.cc
+generowana klasa skanera C++, po u¿yciu
+.BR -+ .
+.TP
+.I <FlexLexer.h>
+plik nag³ówkowy definiuj±cy klasê bazow± skanera C++,
+.B FlexLexer
+i klasê pochodn±,
+.BR yyFlexLexer .
+.TP
+.I flex.skl
+skaner szkieletowy. Plik ten jest u¿ywany tylko przy budowaniu fleksa, nie
+przy jego uruchamianiu.
+.TP
+.I lex.backup
+informacje wspieraj±ce (backing-up) dla flagi
+.B \-b
+(nazywany jest mianem
+.I lex.bck
+na niektórych systemach).
+.SH NIEDOSTATKI / B£ÊDY
+.PP
+Niektóre wzorce wisz±cego kontekstu nie mog± byæ poprawnie dopasowane i
+generuj± komunikaty ostrzegawcze ("dangerous trailing context")
+(niebezpieczny wisz±cy kontekst). S± to wzorce, gdzie zakoñczenie pierwszej
+czê¶ci regu³y dopasowuje siê do pocz±tku drugiej czê¶ci, takie jak
+"zx*/xy*", gdzie 'x*' dopasowuje 'x' na pocz±tku wisz±cego kontekstu.
+(Zauwa¿, ¿e projekt POSIX-a okre¶la, ¿e dopasowany w takich wzorcach tekst jest
+niezdefiniowany.)
+.PP
+Dla niektórych regu³ wisz±cego kontekstu, czê¶ci które s± w rzeczywisto¶ci
+okre¶lonej d³ugo¶ci nie s± tak rozpoznawane. Prowadzi to do wspomnianej
+wy¿ej straty wydajno¶ci. W szczególno¶ci, czê¶ci u¿ywaj±ce '|' lub {n}
+(takie jak "foo{3}") zawsze s± uwa¿ane za zmienno-d³ugo¶ciowe.
+.PP
+£±czenie wisz±cego kontekstu z akcj± specjaln± '|' mo¿e spowodowaæ, ¿e
+.I ustalony
+(fixed) wisz±cy kontekst zostanie zmieniony w bardziej kosztowny, 
+.I zmienny
+wisz±cy kontekst. Na przyk³ad nastêpuj±ce:
+.nf
+
+    %%
+    abc      |
+    xyz/def
+
+.fi
+.PP
+U¿ywanie
+.B unput()
+uszkadza yytext i yyleng, chyba ¿e u¿yto dyrektywy
+.B %array
+lub opcji
+.BR \-l . 
+.PP
+Dopasowywanie wzorców NUL-i jest znacznie wolniejsze ni¿ dopasowywanie innych
+znaków.
+.PP
+Dynamiczne zmiany rozmiaru bufora s± wolne i wymagaj± reskanowania ca³ego
+tekstu dopasowanego dot±d przez bie¿±cy (zwykle du¿y) token.
+.PP
+Z powodu buforowania wej¶cia i czytania z wyprzedzeniem, nie mo¿na ³±czyæ
+z regu³ami fleksa wywo³añ <stdio.h>, np.
+.BR getchar() .
+Zamiast tego wo³aj
+.BR input() . 
+.PP
+Wpisy ca³ej tablicy (total table entries) wymieniane przez flagê
+.B \-v
+nie zawieraj± niektórych wpisów, potrzebnych do okre¶lania, która regu³a
+zosta³a dopasowana. Liczba wpisów je¶li skaner nie u¿ywa \fBREJECT\fR
+jest równa liczbie stanów DFA, a w przeciwnym wypadku jest trochê wiêksza.
+.PP
+.B REJECT
+nie mo¿e byæ u¿ywany z opcjami
+.B \-f
+lub
+.BR \-F .
+.PP
+Wewnêtrzne algorytmy
+.I fleksa
+wymagaj± udokumentowania.
+.SH ZOBACZ TAK¯E
+.PP
+lex(1), yacc(1), sed(1), awk(1).
+.PP
+John Levine, Tony Mason, and Doug Brown,
+.IR "Lex & Yacc" ,
+O'Reilly and Associates.  Upewnij siê, ¿e bierzesz 2-gie wydanie.
+.PP
+M. E. Lesk and E. Schmidt,
+.I LEX \- Lexical Analyzer Generator
+.PP
+Alfred Aho, Ravi Sethi and Jeffrey Ullman,
+.I Compilers: Principles, Techniques and Tools,
+Addison-Wesley (1986).  Opisuje techniki dopasowywania wzorców u¿ywane przez
+.I fleksa
+(deterministyczne automaty skoñczone).
+.SH AUTOR
+Vern Paxson, z pomoc± wielu pomys³ów i inspiracji od
+Vana Jacobsona.  Oryginaln± wersjê napisa³ Jef Poskanzer. 
+Reprezentacja szybkiej tablicy jest czê¶ciow± implementacj± projektu
+Vana Jacobsona. Implementacja zosta³a wykonana przez
+Kevina Gonga and Verna Paxsona.
+.PP
+Podziêkowania dla wielu beta testerów, komentatorów i kontrybutorów fleksa,
+z których szczególnie zas³u¿one s± nastêpuj±ce osoby:
+Francois Pinard,
+Casey Leedom,
+Robert Abramovitz,
+Stan Adermann, Terry Allen, David Barker-Plummer, John Basrai,
+Neal Becker, Nelson H.F. Beebe, benson@odi.com,
+Karl Berry, Peter A. Bigot, Simon Blanchard,
+Keith Bostic, Frederic Brehm, Ian Brockbank, Kin Cho, Nick Christopher,
+Brian Clapper, J.T. Conklin,
+Jason Coughlin, Bill Cox, Nick Cropper, Dave Curtis, Scott David
+Daniels, Chris G. Demetriou, Theo Deraadt,
+Mike Donahue, Chuck Doucette, Tom Epperly, Leo Eskin,
+Chris Faylor, Chris Flatters, Jon Forrest, Jeffrey Friedl,
+Joe Gayda, Kaveh R. Ghazi, Wolfgang Glunz,
+Eric Goldman, Christopher M. Gould, Ulrich Grepel, Peer Griebel,
+Jan Hajic, Charles Hemphill, NORO Hideo,
+Jarkko Hietaniemi, Scott Hofmann,
+Jeff Honig, Dana Hudes, Eric Hughes, John Interrante,
+Ceriel Jacobs, Michal Jaegermann, Sakari Jalovaara, Jeffrey R. Jones,
+Henry Juengst, Klaus Kaempf, Jonathan I. Kamens, Terrence O Kane,
+Amir Katz, ken@ken.hilco.com, Kevin B. Kenny,
+Steve Kirsch, Winfried Koenig, Marq Kole, Ronald Lamprecht,
+Greg Lee, Rohan Lenard, Craig Leres, John Levine, Steve Liddle,
+David Loffredo, Mike Long,
+Mohamed el Lozy, Brian Madsen, Malte, Joe Marshall,
+Bengt Martensson, Chris Metcalf,
+Luke Mewburn, Jim Meyering, R. Alexander Milowski, Erik Naggum,
+G.T. Nicol, Landon Noll, James Nordby, Marc Nozell,
+Richard Ohnemus, Karsten Pahnke,
+Sven Panne, Roland Pesch, Walter Pelissero, Gaumond
+Pierre, Esmond Pitt, Jef Poskanzer, Joe Rahmeh, Jarmo Raiha,
+Frederic Raimbault, Pat Rankin, Rick Richardson,
+Kevin Rodgers, Kai Uwe Rommel, Jim Roskind, Alberto Santini,
+Andreas Scherer, Darrell Schiebel, Raf Schietekat,
+Doug Schmidt, Philippe Schnoebelen, Andreas Schwab,
+Larry Schwimmer, Alex Siegel, Eckehard Stolz, Jan-Erik Strvmquist,
+Mike Stump, Paul Stuart, Dave Tallman, Ian Lance Taylor,
+Chris Thewalt, Richard M. Timoney, Jodi Tsai,
+Paul Tuinenga, Gary Weik, Frank Whaley, Gerhard Wilhelms, Kent Williams, Ken
+Yap, Ron Zellar, Nathan Zelle, David Zuhn,
+oraz ci, których nazwiska wylecia³y z moich zdolno¶ci archiwizowania poczty,
+lecz których wk³ad jest równie wa¿ny.
+.PP
+Keith Bostic, Jon Forrest, Noah Friedman,
+John Gilmore, Craig Leres, John Levine, Bob Mulcahy, G.T.
+Nicol, Francois Pinard, Rich Salz i Richard Stallman pomogli z ró¿nymi
+problemami dystrybucji.
+.PP
+Esmond Pitt and Earle Horton pomóg³ z wsparciem 8-bit;
+Benson Margulies i Fred Burke pomogli z wsparciem C++;
+Kent Williams i Tom Epperly pomogli z wsparciem klas C++;
+Ove Ewerlid pomóg³ z wsparciem NUL-ów;
+Eric Hughes pomóg³ z wielokrotnymi buforami.
+.PP
+Praca ta by³a pocz±tkowo wykonywana gdy by³em z Real Time Systems Group
+w Lawrence Berkeley Laboratory w Berkeley, CA. Wielkie dziêki
+do wszystkich za wsparcie, które uzyska³em.
+.PP
+Komentarze ¶lij do vern@ee.lbl.gov.

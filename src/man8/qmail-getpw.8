@@ -1,0 +1,118 @@
+.\" Translation (C) 1999 Pawel Wilk <siefca@pl.qmail.org>
+.\" {PTM/PW/0.1/14-06-1999/"podaje adresy u¿ytkowników"}
+.TH qmail-getpw 8
+.SH NAZWA
+qmail-getpw \- podaj adresy u¿ytkowników
+.SH SK£ADNIA
+.B qmail-getpw
+.I lokalny
+.SH OPIS
+W systemie
+.BR qmail ,
+ka¿dy u¿ytkownik w³ada poka¼n± tablic± lokalnych adresów.
+.B qmail-getpw
+znajduje u¿ytkownika, który zarz±dza poszczególnymi adresami,
+.IR lokalnymi .
+Wypisuje sze¶æ porcji informacji, 
+a ka¿da porcja zakoñczona jest znakiem NUL:
+.IR u¿ytkownik ;
+.IR uid ;
+.IR gid ;
+.IR katalogdomowy ;
+.IR kreska ;
+i
+.IR dod .
+Nazwa konta u¿ytkownika to
+.IR u¿ytkownik ;
+dziesiêtne warto¶ci UID i GID u¿ytkownika to
+.I uid
+i
+.IR gid ;
+katalog domowy u¿ytkownika to
+.IR katalogdomowy ;
+a wiadomo¶æ kierowana do
+.I lokalnego
+bêdzie obs³ugiwana przez
+.IR katalogdomowy\fB/.qmail\fIkreskadod .
+
+W przypadku k³opotów,
+.B qmail-getpw
+wychodzi zwracaj±c niezerowy kod b³êdu bez wypisywania czegokolwiek.
+
+.B OSTRZE¯ENIE:
+Funkcja systemowa
+.B getpwnam
+bêd±ca sercem
+.BR qmail-getpw ,
+nie jest wewnêtrznie pewna:
+zawodzi przy tymczasowych b³êdach i nieistniej±cych u¿ytkownikach.
+Przysz³e wersje
+.B getpwnam
+powinny zwracaæ ETXTBSY by wskazaæ na b³êdy tymczasowe
+i ESRCH by wskazaæ na u¿ytkowników, którzy nie istniej±.
+.SH "REGU£Y"
+.B qmail-getpw
+rozwa¿a czy konto nale¿y do u¿ytkownika u¿ywaj±c pliku
+.B /etc/passwd .
+By stwierdziæ, ¿e tak jest w istocie:
+(1) konto musi miê niezerowy numer UID,
+(2) musi istnieæ katalog domowy u¿ytkownika (i musi on byæ widoczny dla 
+.BR qmail-getpw ),
+i wreszcie
+(3) katalog domowy musi nale¿eæ do w³a¶ciciela konta.
+.B qmail-getpw
+ignoruje nazwy kont zawieraj±ce du¿e litery.
+.B qmail-getpw
+zak³ada te¿, ¿e wszystkie nazwy kont s± krótsze ni¿ 32 znaki.
+
+.B qmail-getpw
+daje ka¿demu u¿ytkownikowi kontrolê nad podstawowym adresem
+.I u¿ytkownika
+i wszystkimi adresami w formie
+.IR user\fB-\fIcokolwiek .
+Gdy
+.I lokalny
+jest zapisane jako
+.IR u¿ytkownik ,
+pola
+.I kreska
+i
+.I dod
+s± oba puste.
+Gdy
+.I lokalny
+jest zapisane jako
+.IR u¿ytkownik\fB-\fIcokolwiek ,
+pole
+.I kreska
+jest my¶lnikiem a
+.I dod
+jest
+.IR czymkolwiek .
+.I u¿ytkownik
+mo¿e byæ zapisany przy u¿yciu dowolnej kombinacji du¿ych i ma³ych liter
+na pocz±tku
+.IR lokalnego .
+
+£apacz ka¿dego u¿ytkownika,
+.BR alias ,
+kontroluje wszystkie pozosta³e adresy.
+
+W tym przypadku
+.I dod
+jest
+.I lokalnym
+a
+.I kreska
+my¶lnikiem.
+
+Mo¿esz przeci±¿yæ wszystkie
+decyzje programu
+.BR qmail-getpw
+u¿ywaj±c mechanizmu
+.B qmail-users ,
+który siê sprawdza, jest bardzo komfortowy i o wiele szybszy ni¿
+.BR qmail-getpw .
+.SH "ZOBACZ TAK¯E"
+qmail-users(5),
+qmail-lspawn(8)

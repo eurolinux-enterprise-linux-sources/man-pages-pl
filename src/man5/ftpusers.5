@@ -1,0 +1,50 @@
+.\" Copyright (c) 2000 Christoph J. Thompson <obituary@linuxbe.org>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" Translation: Andrzej M. Krzysztofowicz <ankry@mif.pg.gda.pl>, Mar 2002,
+.\"              manpages 1.48
+.\"
+.TH FTPUSERS 5 2000-08-27 "Linux" "Formaty plików"
+.SH NAZWA
+ftpusers \- lista u¿ytkowników, którzy nie mog± siê logowaæ poprzez demona FTP
+.SH OPIS
+Plik tekstowy
+.B ftpusers
+zawiera listê u¿ytkowników, którzy nie mog± siê logowaæ korzystaj±c z demona
+serwera Protoko³u Transmisji Plików (File Transfer Protocol - FTP). Plik ten
+s³u¿y nie tylko do celów administracji systemem, ale do zwiêkszenia
+bezpieczeñstwa w obrêbie ¶rodowiska sieci TCP/IP. Zazwyczaj zawiera on listê
+u¿ytkowników, którzy albo nie maj± powodu korzystaæ z FTP, albo maj± za du¿o
+uprawnieñ aby im na logowanie siê poprzez demona serwera FTP pozwoliæ.
+Do takich u¿ytkowników zazwyczaj nale¿±: root, daemon, bin, uucp i news.
+Je¶li dany demona serwera FTP nie korzysta z
+.BR ftpusers ,
+to zaleca siê przeczytanie jego dokumentacji, aby okre¶liæ, w jaki sposób
+zablokowaæ dostêp dla pewnych u¿ytkowników. O Washington University FTP server
+Daemon (wuftpd) i Professional FTP Daemon (proftpd) wiadomo, ¿e korzystaj± z
+.BR ftpusers .
+.SH FORMAT
+Format pliku
+.B ftpusers
+jest bardzo prosty. Sk³ada siê z jednej nazwy konta (nazwy u¿ytkownika)
+w wierszu. Linie zaczynaj±ce sie on # s± pomijane.
+.SH PLIKI
+.I /etc/ftpusers
+.SH "ZOBACZ TAK¯E"
+.BR passwd (5),
+.BR wuftpd (8),
+.BR proftpd (8)

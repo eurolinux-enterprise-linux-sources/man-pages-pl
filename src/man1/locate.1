@@ -1,0 +1,87 @@
+.\" {PTM/WK/1999-XII}
+.TH LOCATE 1L \" -*- nroff -*-
+.SH NAZWA
+locate \- wyszukuje pliki w okresowo aktualizowanej bazie danych
+.SH SK£ADNIA
+.TP
+.B locate
+.RB [ \-d
+.IR ¶cie¿ka ]
+.RB [ \-\-database= \fI¶cie¿ka\fP]
+.RB [ \-\-version ]
+.RB [ \-\-help ]
+.IR wzorzec ...
+.SH OPIS
+Ta strona podrêcznika opisuje polecenie
+.B locate
+w wersji GNU.
+.PP
+Dla ka¿dego z podanych wzorców
+.B locate
+przeszukuje jedn± lub wiêcej baz danych zawieraj±cych nazwy plików i wy¶wietla
+te nazwy, które zawieraj± wzorzec. Wzorce mog± zawieraæ metaznaki
+(znaki uogólniaj±ce/specjalne), takie jak u¿ywane w pow³oce: `*', `?' i `[]'.
+Metaznaki nie traktuj± specjalnie `/' ani `.'. Zatem, do wzorca `foo*bar' mo¿e
+byæ dopasowana do nazwa pliku zawieraj±ca `foo3/bar', za¶ do wzorca `*duck*'
+nazwa zawieraj±ca `lake/.ducky'. Wzorce posiadaj±ce znaki uogólniaj±ce
+powinny byæ cytowane, by uchroniæ je przed rozwiniêciem przez pow³okê.
+.P
+Je¿eli wzorzec jest zwyk³ym ³añcuchem tekstowym \(em nie zawiera
+metaznaków \(em to
+.B locate
+wy¶wietla wszystkie nazwy plików z bazy zawieraj±ce ten ³añcuch w dowolnym
+miejscu. Je¿eli wzorzec zawiera metaznaki, to 
+.B locate
+wy¶wietla tylko te nazwy plików, które dok³adnie pasuj± do wzorca.
+Na skutek tego, wzorce zawieraj±ce metaznaki powinny zwykle rozpoczynaæ siê
+od `*', a najczê¶ciej równie¿ koñczyæ siê tym znakiem. Wyj±tkami s± wzorce
+celowo dos³ownie dopasowuj±ce pocz±tek b±d¼ koniec nazwy pliku.
+.P
+Bazy danych z nazwami plików zawieraj± listy plików istniej±cych w systemie
+w momencie ostatniej aktualizacji baz. Administrator systemu mo¿e wybraæ
+nazwê pliku bazy domy¶lnej, czêsto¶æ, z jak± bazy s± aktualizowane oraz
+katalogi, dla których zawieraj± one zapisy; zobacz \fBupdatedb\fP(1L).
+.SH OPCJE
+.TP
+.BI \-d " ¶cie¿ka\fR, " \-\-database= ¶cie¿ka
+Zamiast przeszukiwania bazy danych o domy¶lnej nazwie, szuka w bazach
+okre¶lonych \fI¶cie¿k±\fP, która jest list± rozdzielonych dwukropkami
+nazw plików z bazami. Mo¿esz te¿ pos³u¿yæ siê zmienn± ¶rodowiska
+.B LOCATE_PATH
+ustawiaj±c± listê przeszukiwanych plików baz danych.
+Opcja anuluje ustawienie zmiennej ¶rodowiska, je¿eli u¿yto obydwu.
+.P
+Format bazy danych z nazwami plików zmieni³ siê pocz±wszy od wersji 4.0 GNU
+.B find
+i
+.BR locate ,
+tak by umo¿liwiæ maszynom o ró¿nym porz±dku bajtów wspó³dzielenie baz.
+Ta wersja
+.B locate
+potrafi automatycznie rozpoznawaæ i odczytywaæ bazy utworzone dla starszych
+wersji
+.B locate
+pochodz±cego z GNU, czy te¿ Unixowych wersji
+.B locate
+lub
+.BR find .
+.TP
+.TP
+.B \-\-help
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach, koñczy
+pracê.
+.TP
+.B \-\-version
+Wy¶wietla numer wersji programu i koñczy pracê.
+.SH ¦RODOWISKO
+.TP
+.B LOCATE_PATH
+Lista rozdzielonych dwukropkami nazw baz danych, jakie bêd± przeszukiwane.
+.SH ZOBACZ TAK¯E
+.BR find (1L),
+.BR locatedb (5L),
+.BR updatedb (1L),
+.BR xargs (1L).
+.br
+.B Znajdowanie plików
+(w dokumentacji Info on-line lub drukowanej)

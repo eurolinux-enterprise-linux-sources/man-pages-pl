@@ -1,0 +1,450 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright (c) 1992 Drew Eckhardt <drew@cs.colorado.edu>, March 28, 1992
+.\"            and Michael Kerrisk, 2001, 2002
+.\" May be distributed under the GNU General Public License.
+.\" Modified by Michael Haardt <michael@moria.de>
+.\" Modified 24 Jul 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified 21 Aug 1994 by Michael Chastain <mec@shell.portal.com>:
+.\"   New man page (copied from 'fork.2').
+.\" Modified 10 June 1995 by Andries Brouwer <aeb@cwi.nl>
+.\" Modified 25 April 1998 by Xavier Leroy <Xavier.Leroy@inria.fr>
+.\" Modified 26 Jun 2001 by Michael Kerrisk
+.\"     Mostly upgraded to 2.4.x
+.\"     Added prototype for sys_clone() plus description
+.\"    Added CLONE_THREAD with a brief description of thread groups
+.\"    Added CLONE_PARENT and revised entire page remove ambiguity
+.\"            between "calling process" and "parent process"
+.\"    Added CLONE_PTRACE and CLONE_VFORK
+.\"    Added EPERM and EINVAL error codes
+.\"    Renamed "__clone" to "clone" (which is the protype in <sched.h>)
+.\"    various other minor tidy ups and clarifications.
+.\" Modified 26 Jun 2001 by Michael Kerrisk <mtk16@ext.canterbiry.ac.nz>
+.\"    Updated notes for 2.4.7+ behaviour of CLONE_THREAD
+.\" Modified 15 Oct 2002 by Michael Kerrisk <mtk16@ext.canterbiry.ac.nz>
+.\"    Added description for CLONE_NEWNS, which was added in 2.4.19
+.\" Slightly rephrased, aeb.
+.\" Modified 1 Feb 2003 - added CLONE_SIGHAND restriction, aeb.
+.\"
+.\" Translation 1998 (c) Przemek Borys <pborys@dione.ids.pl>
+.\"             2001,2003 (c) A. Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl> - Apr 2003
+.\"              man-pages 1.55
+.\"
+.TH CLONE 2 2001-12-31 "Linux 2.4" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+clone \- utworzenie procesu potomnego
+.SH SK£ADNIA
+.B #include <sched.h>
+.sp
+.BI "int clone(int (*" "fn" ")(void *), void *" "child_stack" ", int " "flags" ", void *" "arg" );
+.sp
+.BI "_syscall2(int, " "clone" ", int, " "flags" ", void *, " "child_stack" )
+
+.SH OPIS
+.B clone
+tworzy nowy proces, podobnie jak
+.BR fork (2).
+.B clone
+jest funkcj± biblioteczn±
+posadowion± na wierzchu ni¿szego wywo³ania funkcji systemowej 
+.BR clone ,
+do której w dalszym ci±gu bêdziemy siê odnosiæ jako do
+.BR sys_clone .
+Opis
+.BR sys_clone
+jest podany pod koniec niniejszej strony.
+
+W odró¿nieniu od
+.BR fork (2),
+funkcje te
+pozwalaj± procesom potomnym wspó³dzieliæ czê¶ci ich kontekstu wykonania,
+takie jak obszar pamiêci, tablica deskryptorów plików czy tablica programów
+obs³ugi sygna³ów, z procesem wywo³uj±cym. (Nale¿y zauwa¿yæ, ¿e na tej stronie
+podrêcznika "proces wywo³uj±cy" normalnie odnosi siê do
+"procesu macierzystego". Zobacz opis
+.B CLONE_PARENT
+poni¿ej.)
+
+.B clone
+s³u¿y g³ównie do implementacji w±tków: zarz±dzanie wieloma w±tkami programu,
+które dzia³aj± równolegle we wspó³dzielonym obszarze pamiêci.
+
+Gdy za pomoc±
+.B clone
+tworzony jest proces potomny, uruchamia on aplikacjê funkcyjn±
+.IR fn ( arg ).
+(Ró¿ni siê to od
+.BR fork (2),
+gdzie proces potomny kontynuuje wykonanie od miejsca wywo³ania
+.BR fork (2).)
+Argument
+.I fn
+jest wska¼nikiem do funkcji, która jest wywo³ywana przez proces potomny na
+pocz±tku jego dzia³ania.
+Argument
+.I arg
+jest przekazywany do funkcji
+.IR fn .
+
+Gdy aplikacja funkcyjna
+.IR fn ( arg )
+powróci, proces potomny koñczy dzia³anie. Liczba ca³kowita zwrócona przez
+.I fn
+jest kodem zakoñczenia procesu potomnego. Proces potomny mo¿e równie¿
+zakoñczyæ siê jawnie wo³aj±c
+.BR exit (2)
+lub po otrzymaniu krytycznego sygna³u.
+
+Argument
+.I child_stack
+okre¶la po³o¿enie stosu u¿ywanego przez proces potomny.
+Poniewa¿ potomek i proces wywo³uj±cy mog± wspó³dzieliæ pamiêæ, nie jest
+mo¿liwe, aby proces potomny korzysta³ z tego samego stosu, co proces
+wywo³uj±cy. Proces wywo³uj±cy musi wiêc przydzieliæ obszar pamiêci
+przeznaczony na stos potomka i przekazaæ wska¼nik do tego obszaru w
+.BR clone .
+Stosy rosn± w dó³ na wszystkich procesorach, na których dzia³a Linux
+(z wyj±tkiem procesorów HP PA), wiêc
+.I child_stack
+zazwyczaj wskazuje na najwy¿szy adres obszaru pamiêci zarezerwowanego na
+stos potomka.
+
+Ni¿szy bajt
+.I flags
+zawiera numer sygna³u wysy³anego do rodzica, gdy proces potomny ginie.
+Je¶li okre¶lono inny sygna³ ni¿
+.BR SIGCHLD ,
+to proces macierzysty musi podaæ opcjê
+.B __WALL
+lub
+.B __WCLONE
+czekaj±c na potmka w
+.BR wait (2).
+Gdy sygna³ nie zostanie okre¶lony, to proces macierzysty nie zostanie
+zawiadomiony o zakoñczeniu pracy potomka.
+
+.I flags
+mo¿e równie¿ byæ bitowym OR jednej lub kilku nastêpuj±cych sta³ych
+okre¶laj±cych, co bêdzie wspó³dzielone pomiêdzy procesem wywo³uj±cym
+a procesem potomnym:
+
+.TP
+.B CLONE_PARENT
+(od Linuksa 2.4 w górê) Je¶li
+.B CLONE_PARENT
+bêdzie ustawione, to rodzic nowego procesu potomnego (zwrócony przez
+.BR getppid (2))
+bêdzie ten sam, co dla procesu wywo³uj±cego.
+
+Je¶li
+.B CLONE_PARENT
+nie zostanie ustawione, to (jak dla
+.BR fork (2))
+rodzicem potomka bêdzie proces wywo³uj±cy.
+
+Nale¿y zauwa¿yæ, ¿e to proces macierzysty, zwracany przez
+.BR getppid (2),
+zostanie powiadomiony o zakoñczeniu pracy przez potomka, wiêc je¶li
+.B CLONE_PARENT
+bêdzie ustawione, to zawiadomiony zostanie rodzic procesu wywo³uj±cego,
+a nie sam proces wywo³uj±cy
+
+.TP
+.B CLONE_FS
+Je¶li ustawione bêdzie
+.BR CLONE_FS ,
+to wywo³uj±cy i proces potomny bêd± wspó³dzieliæ informacje o systemie
+plików. Informacje te obejmuj± katalog g³ówny systemu plików, bie¿±cy katalog
+roboczy i umaskê. Dowolne z wywo³añ
+.BR chroot (2),
+.BR chdir (2)
+lub
+.BR umask (2)
+wykonane przez proces wywo³uj±cy lub proces potomny bêdzie obowi±zywaæ równie¿
+w drugim procesie.
+
+Je¶li
+.B CLONE_FS
+nie zostanie ustawione, to proces potomny bêdzie pracowaæ na kopii informacji
+o systemie plików procesu wywo³uj±cego z chwili wywo³ania
+.BR clone .
+Wywo³ania
+.BR chroot (2),
+.BR chdir (2),
+.BR umask (2)
+wykonane pó¼niej przez jeden z procesów nie bêd± mieæ wp³ywu na drugi proces.
+
+.TP
+.B CLONE_FILES
+Je¶li
+.B CLONE_FILES
+bêdzie ustawione, to proces wywo³uj±cy i procesy potomne bêd± wspó³dzieliæ
+tablicê deskryptorów plików. Deskryptory plików zawsze bêd± dotyczyæ tych
+samych plików w procesie wywo³uj±cym i w procesach potomnych. Dowolny
+deskryptor pliku utworzony przez proces wywo³uj±cy, jak te¿ przez proces
+potomny bêdzie obowi±zywaæ równie¿ w drugim procesie. Podobnie, je¶li jeden
+z procesów zamknie deskryptor pliku lub zmieni stowarzyszone z nim znaczniki,
+bêdzie to obowi±zywaæ równie¿ w drugim procesie.
+
+If
+.B CLONE_FILES
+nie zostanie ustawione, to proces potomny odziedziczy kopiê wszystkich
+deskryptorów plików otwartych w procesie macierzystym w chwili wywo³ania
+.BR clone .
+Operacje na deskryptorach plików przeprowadzone pó¼niej przez proces
+wywo³uj±cy lub przez proces potomny nie bêd± mia³y wp³ywu na drugi proces.
+
+.TP
+.B CLONE_NEWNS
+(pocz±wszy od Linuksa 2.4.19)
+Uruchamianie procesu potomnego w nowej przestrzeni nazw.
+
+Ka¿dy proces istnieje w jakiej¶ przestrzeni nazw.
+.I przestrzeñ nazw
+procesu s± to dane (zbiór montowañ) opisuj±ce hierarchiê plików widzian±
+przez proces. Po 
+.BR fork (2)
+lub
+.BR clone (2),
+gdy nie ustawiono znacznika
+.BR CLONE_NEWNS ,
+potomek ¿yje w tej samej przestrzeni nazw, co rodzic.
+Funkcje systemowe
+.BR mount (2)
+i
+.BR umount (2)
+zmieniaj± przestrzeñ nazw procesu wywo³uj±cego, a zatem tak¿e innych procesów
+¿yj±cych w tej samej przestrzeni nazw, lecz nie maj± wp³ywu na procesy w innej
+przestrzeni nazw.
+
+Po
+.BR clone (2),
+gdy ustawiono znacznik
+.BR CLONE_NEWNS ,
+sklonowany potomek jest uruchamiany w nowej przestrzeni nazw, inicjowanej
+jako kopia przestrzeni nazw rodzica.
+
+Znacznik
+.B CLONE_NEWNS
+mo¿e zostaæ podany jedynie przez proces uprzywilejowany.
+.\" The required capability is CAP_SYS_ADMIN. -- MTK, 15 Oct 02
+Zabronione jest podanie w tym samym wywo³aniu
+.B clone
+zarówno
+.BR CLONE_NEWNS ,
+jak i
+.BR CLONE_FS .
+
+.TP
+.B CLONE_SIGHAND
+Je¶li
+.B CLONE_SIGHAND
+bêdzie ustawione, to proces wywo³uj±cy i procesy potomne bêd± wspó³dzieliæ
+tablicê programów obs³ugi sygna³ów. Je¶li proces wywo³uj±cy lub proces potomny
+wywo³a
+.BR sigaction (2),
+aby zmieniæ zachowanie towarzysz±ce sygna³owi, zachowanie to zostanie
+zmienione równie¿ w drugim procesie. Jednak¿e, proces wywo³uj±cy i proces
+potomny wci±¿ bêd± posiadaæ osobne maski sygna³ów i zestawy sygna³ów
+oczekuj±cych. Zatem jeden z nich mo¿e zablokowaæ lub odblokowaæ niektóre
+sygna³y za pomoc±
+.BR sigprocmask (2)
+nie wp³ywajac na drugi proces.
+
+Je¶li
+.B CLONE_SIGHAND
+nie zostanie ustawione, to proces potomny odziedziczy kopiê programów obs³ugi
+sygna³ów od procesu wywo³uj±cego z chwili uruchomienia
+.BR clone .
+Wywo³ania
+.BR sigaction (2)
+przeprowadzone pó¼niej przez jeden z procesów nie bêd± mieæ wp³ywu na drugi
+proces.
+
+.TP
+.B CLONE_PTRACE
+Je¶li zostanie podane
+.BR CLONE_PTRACE ,
+a proces wywo³uj±cy bêdzie ¶ledzony, to ¶ledzenie obejmie równie¿ potomka
+(zobacz
+.BR ptrace (2)).
+
+.TP
+.B CLONE_VFORK
+Je¶li
+.B CLONE_VFORK
+bêdzie ustawione, wykonywanie procesu wywo³uj±cego zostanie wstrzymane
+do chwili, gdy potomek zwolni swoj± pamiêæ wirtualn± za pomoc±
+.BR execve (2)
+lub
+.BR _exit (2)
+(jak przy
+.BR vfork (2)).
+
+Je¶li
+.B CLONE_VFORK
+nie zostanie ustawione, wtedy zarówno proces wywo³uj±cy, jak i potomny
+podlegaj± po wywo³aniu
+.B clone
+szeregowaniu zadañ i aplikacja nie mo¿e zak³adaæ, ¿e ich wykonywanie bêdzie
+siê odbywaæ w okre¶lonej kolejno¶ci.
+
+.TP
+.B CLONE_VM
+Je¶li
+.B CLONE_VM
+bêdzie ustawione, to proces wywo³uj±cy i potomny bêd± dzia³aæ w tym samym
+obszarze pamiêci. W szczególno¶ci, zapisy do pamiêci wykonywane przez proces
+wywo³uj±cy lub przez proces potomny bêd± widoczne dla drugiego z procesów.
+Ponadto, dowolne mapowania pamiêci i usuniêcia mapowañ wykonane przez jeden
+z tych procesów za pomoc±
+.BR mmap (2)
+lub
+.BR munmap (2)
+bêd± dotyczyæ równie¿ drugiego procesu.
+
+Je¶li
+.B CLONE_VM
+nie zostanie ustawione, to proces potomny bêdzie dzia³aæ w kopii obszaru
+pamiêci procesu wywo³uj±cego, wykonanej w chwili wywo³ania
+.BR clone .
+Zapisy do pamiêci oraz mapowania i usuniêcia mapowañ wykonane przez jeden
+z tych procesów nie bêd± dotyczyæ drugiego z nich, tak jak w przypadku
+.BR fork (2).
+
+.TP
+.B CLONE_PID
+Je¶li
+.B CLONE_PID
+bêdzie ustawione, to proces potomny bêdzie tworzony z tym samym ID procesu,
+jaki ma proces wywo³uj±cy.
+
+Je¶li
+.B CLONE_PID
+nie zostanie ustawione, to proces potomny bêdzie mieæ unikalny ID procesu,
+inny ni¿ ID procesu wywo³uj±cego.
+
+Ten znacznik mo¿e byæ podany tylko przez proces uruchamiaj±cy system (PID 0).
+
+.TP
+.B CLONE_THREAD
+(Pocz±wszy od Linuksa 2.4)
+Je¶li
+.B CLONE_THREAD
+bêdzie ustawione, to potomek bêdzie umieszczony w tej samej grupie w±tków,
+do której nale¿y proces wywo³uj±cy.
+
+Je¶li
+.B CLONE_THREAD
+nie zostanie ustawione, to potomek bêdzie umieszczony w swojej w³asnej (nowej)
+grupie w±tków, której ID jest taki sam, jak ID procesu.
+
+(Grupy w±tków zosta³y dodane w Linuksie 2.4 dla obs³ugiwaæ w±tki POSIX-owe dla
+zbioru procesów wspó³dziel±cych ten sam PID. W Linuksie 2.4 wywo³ania funkcji
+.BR getpid (2)
+zwracaj± ID grupy w±tków procesu wywo³uj±cego.)
+
+.PP
+Funkcja systemowa
+.B sys_clone
+odpowiada w sposób bardziej zbli¿ony funkcji
+.BR fork (2),
+w której wykonanie procesu potomnego jest kontynuowane od miejsca wywo³ania.
+Zatem,
+.B sys_clone
+wymaga jedynie argumentów
+.I flags
+i
+.IR child_stack ,
+które maj± znaczenie takie samo, jak dla
+.BR clone .
+(Nale¿y zauwa¿yæ, ¿e kolejno¶æ tych argumentów jest inna ani¿eli dla
+.BR clone .)
+
+Inna ró¿nic± w przypadku
+.B sys_clone
+jest to, ¿e argument
+.I child_stack
+mo¿e byæ zerem. W tym przypadku, semantyka "kopiowania podczas zapisu"
+gwarantuje, ¿e proces potomny otrzyma osobn± kopiê stosu, gdy którykolwiek
+z procesów zmodyfikuje stos. W tym przypadku aby funkcja dzia³a³a prawid³owo,
+nie nale¿y podawaæ opcji
+.BR CLONE_VM .
+
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu, w w±tku rodzica zwracany jest PID potomka.
+W wypadku b³êdu, w kontek¶cie procesu wywo³uj±cego zwracane jest \-1,
+a proces potomny nie jest tworzony i odpowiednio ustawiane jest
+.I errno .
+
+.SH B£ÊDY
+.TP
+.B EAGAIN
+Dzia³a ju¿ zbyt wiele procesów.
+.TP
+.B ENOMEM
+Za ma³o pamiêci aby przydzieliæ struktuê zadania dla procesu potomnego,
+lub aby skopiowaæ niezbêdne fragmenty kontekstu procesu wywo³uj±cego.
+.TP
+.B EINVAL
+Zwracane przez
+.BR clone ,
+gdy podano dla
+.I child_stack
+warto¶æ zerow±.
+.TP
+.B EINVAL
+W
+.I flags
+podano jednocze¶nie
+.B CLONE_FS
+i
+.BR CLONE_NEWNS .
+.TP
+.B EINVAL
+Podano
+.B CLONE_THREAD
+a nie podano
+.BR CLONE_SIGHAND .
+(Pocz±wszy od Linuksa 2.5.35.)
+.TP
+.B EPERM
+.B CLONE_PID
+zosta³o podane przez proces o niezerowym PID.
+
+.SH USTERKI
+Dla wersji j±dra 2.1.97 nie nale¿y u¿ywaæ znacznika
+.BR CLONE_PID ,
+gdy¿ inne czê¶ci j±dra i wiêkszo¶æ oprogramowania systemowego wc±¿ zak³ada,
+¿e identyfikatory procesów s± unikalne.
+
+Brak wpisu dla
+.B clone
+w wersji 5 biblioteki libc. libc 6 (inaczej, glibc 2) udostêpnia
+.B clone
+zgodnie z opisem na niniejszej stronie podrêcznika.
+
+.SH UWAGI
+Dla wersji j±dra 2.4.7-2.4.18 znacznik CLONE_THREAD wymusza³ znacznik
+CLONE_PARENT.
+
+.SH "ZGODNE Z"
+Funkcje
+.B clone
+i
+.B sys_clone
+s± specyficzne dla Linuksa i nie powinny byæ u¿ywane w programach przeno¶nych.
+Pisz±c programy aplikacji wielow±tkowych (wiele w±tków zarz±dzaj±cych tym
+samym obszarem pamiêci), lepiej u¿ywaæ biblioteki wspomagaj±cej wielow±tkowe
+API zgodne z POSIX 1003.1c, takiej jak biblioteka LinuxThreads (zawarta
+w glibc2). Zobacz
+.BR pthread_create (3).
+
+Ta strona podrêcznika dotyczy j±der 2.0.x, 2.1.x, 2.2.x, 2.4.x,
+oraz glibc 2.0.x i 2.1.x.
+
+.SH "ZOBACZ TAK¯E"
+.BR fork (2)
+.BR wait (2),
+.BR pthread_create (3)

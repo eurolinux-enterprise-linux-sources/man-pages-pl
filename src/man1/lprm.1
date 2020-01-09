@@ -1,0 +1,183 @@
+.\" {PTM/WK/2000-VI}
+.ds VE LPRng-3.6.13
+.TH LPRM 1 \*(VE "LPRng"
+.ig
+lprm.1,v 3.39 1998/03/29 18:37:49 papowell Exp
+..
+.SH NAZWA
+lprm \- usuñ zadania z kolejki buforowania drukarki
+.SH SK£ADNIA
+.B lprm
+.RB [ \-a ]
+.RB [ \-D
+.IR debugopt ]
+.RB [ \-P
+.IR printer ]
+.RB [ \-V ]
+.RB [ \-U
+.IR user ]
+.ti +5n
+.RI [ jobid \|.\|.\|.]
+.RB [ all ]
+.SH OPIS
+.PP
+.B Lprm
+wysy³a do serwera LPD ¿±danie usuniêcia zadañ z kolejki druku.
+W
+.BR clean (1)
+znajdziesz opis interfejsu zgodnego z
+.BR lp (1).
+.B Lprm
+jest zwykle jedynym sposobem, w jaki u¿ytkownik mo¿e usun±æ zadanie.
+Zadania do usuniêcia okre¶lane s± numerem zadania lub nazw± u¿ytkownika.
+Je¿eli nie wyszczególniono zadañ, to zostanie wybrane pierwsze mo¿liwe
+do usuniêcia.
+Zwykle u¿ytkownicy mog± usuwaæ tylko w³asne zadania z maszyny,
+która zainicjowa³a pierwotne ¿±danie lpr.
+.PP
+W pierwszej kolejno¶ci w kolejce druku wyszukiwane s± te zadania, które
+u¿ytkownik ma prawo usun±æ.
+Je¿eli nie okre¶lono ¿adnych cech zadania, to zostanie usuniête tylko
+pierwsze z nich.
+Je¿eli u¿yto flagi
+.B \-a
+lub podano kolejkê druku
+.BR all ,
+to
+.B lprm
+przeszuka wszystkie dostêpne kolejki druku.
+.LP
+Specjalny okre¶lnik zadania
+.B all
+dopasowuje wszystkie zadania w kolejce druku. Jednak usuwane s± wy³±cznie
+zadania danego u¿ytkownika, chyba ¿e posiada on prawa
+.IR control .
+Na stronie podrêcznika
+.BR lpd (1)
+znajdziesz wiêcej szczegó³ów na temat praw kontroli.
+.PP
+Wyszczególnienie zadania mo¿e byæ numerem zadania, nazw± u¿ytkownika,
+identyfikatorem zadania lub wzorcem dopasowywania opartym o
+.IR glob .
+Dopasowanie to stosuje siê do informacji o identyfikatorze zadania.
+.PP
+.B Lprm
+zapowiada nazwy usuwanych plików, milczy za¶, je¶li w kolejce nie ma zadañ
+pasuj±cych do ¿±danej listy.
+Je¶li usuwane zadanie jest aktywne, serwer LPD zatrzyma jego wydruk
+a nastêpnie wznowi operacje drukowania.
+.SH PRZYK£ADY
+.TP 5
+Usuñ ostatnie wys³ane przez mnie zadanie:
+.sp
+lprm
+.TP 5
+Usuñ zadanie 25 z kolejki druku p1:
+.sp
+lprm -Pt1 25
+.TP 5
+Usuñ zadania 25 i 30 z kolejki druku p1:
+.sp
+lprm -Pt1 25 30
+.TP 5
+Usuñ z kolejki p1 wszystkie zadania u¿ytkownika john:
+.sp
+lprm -Pt1 john
+.TP 5
+Usuñ wszystkie zadania z kolejki p1:
+.sp
+lprm -Pt1 all
+.TP 5
+Usuñ wszystkie zadania ze wszystkich kolejek druku:
+.sp
+lprm -a all
+.TP 5
+Usun z kolejki p1 zadania z identyfikatorem nobody@system.
+Zauwa¿, ¿e apostrofy wokó³ wzorca s± konieczne, by wyeliminowaæ rozwijanie
+znaku uogólnienia przez pow³okê.
+.sp
+lprm -Pt1 'nobody@system*'
+.SH OPCJE
+.TP 5
+.B \-a
+Usuwa pliki ze wszystkich kolejek druku dostêpnych dla u¿ytkownika.
+.TP 5
+.BI \-P printer
+Okre¶la kolejkê drukarki. Je¿eli nie podano, to stosowana jest drukarka
+domy¶lna, któr± wskazuje warto¶æ zmiennej ¶rodowiskowej
+.BR PRINTER ,
+lub, je¶li jej nie zdefiniowano, pierwsza pozycja w bazie
+.IR printcap .
+.TP 5
+.BI \-U user
+Dostarcza serwerowi LPD zadany identyfikator u¿ytkownika, w imieniu którego
+zostanie wykonane usuwanie.
+Mo¿e to robiæ tylko ROOT lub u¿ytkownicy o identyfikatorach ujêtych
+w opcji konfiguracyjnej
+.I allow_user_setting
+lub printcap.
+Funkcja ta istnieje, by umo¿liwiæ systemom komunikacyjnym druku,
+takim jak SAMBA, wysy³anie ¿±dañ usuwania w imieniu u¿ytkowników.
+.TP 5
+.BI \-D debugopts
+Debugowanie sterowane jest opcj±
+.BR \-D .
+Opcja ta przyjmuje listê oddzielanych przecinkami ustawieñ. Maj± one jedn±
+z dwu postaci:
+.BR urz±dzenie=warto¶æ ,
+lub
+.B warto¶æ
+ustawiaj±ca ca³o¶ciow± warto¶æ domy¶ln±.
+.TP 5
+.B \-V
+Wypisuje informacjê o wersji programu i szczegó³owe informacje o wykonywanych
+dzia³aniach.
+.SH OSTRZE¯ENIA
+.PP
+U¿ytkownicy z prawami
+CONTROL (tj. - administracyjnymi) do kolejek druku mog± usun±æ ka¿de
+z zadañ lub wszystkie na raz.
+Domy¶lne s³owo specjalne
+.B all
+oznacza wszystkie zadania u¿ytkowników, nie za¶ tylko te, które przed³o¿y³
+wydaj±cy polecenie u¿ytkownik. Pozwala to administratorom na ³atwe
+opró¿nianie kolejki druku.
+.SH PLIKI
+.PP
+Nazwy plików u¿ywane przez LPRng ustawiane s± warto¶ciami w pliku
+konfiguracyjnym drukarek.
+Poni¿ej podano powszechnie u¿ywany zestaw warto¶ci domy¶lnych.
+.nf
+.ta \w'/var/spool/lpd/printcap.<hostname>           'u
+/etc/lpd.conf                        plik konfiguracyjny LPRng
+/etc/printcap                        plik opisu drukarek
+/etc/lpd.perms                       uprawnienia drukarek
+/var/spool/printer*                  katalogi buforowania
+/var/spool/printer*/printer          plik blokuj±cy sterowania kolejk±
+/var/spool/printer*/control.printer  sterowanie kolejk±
+/var/spool/printer*/active.printer   aktywne zadanie
+/var/spool/printer*/log.printer      plik dziennika drukarki
+.fi
+.SH "ZOBACZ TAK¯E"
+.BR lpd.conf (5),
+.BR lpc (8),
+.BR lpd (8),
+.BR lpr (1),
+.BR lpq (1),
+.BR lprm (1),
+.BR printcap (5),
+.BR lpd.conf (5),
+.BR pr (1).
+.SH DIAGNOSTYKA
+Wiêkszo¶æ komunikatów diagnostycznych jest oczywista. Je¶li dok³adny powód
+niepowodzenia pozostaje niejasny, nale¿y w³±czyæ poziom debugowania (-D5)
+i uruchomiæ ponownie. Informacja diagnostyczna pomo¿e uchwyciæ dok³adn±
+przyczynê.
+.SH "HISTORIA"
+LPRng jest rozszerzonym systemem buforowania wydruku o funkcjonalno¶ci podobnej
+do oprogramowania Berkeley LPR. List± dyskusyjn± o LPRng jest lprng@lprng.com;
+subskrypcja przez wys³anie listu do lprng-request@lprng.com ze s³owem
+`subscribe` w tre¶ci.
+Oprogramowanie to jest dostêpne z ftp://ftp.astart.com/pub/LPRng.
+.SH "AUTOR"
+Patrick Powell <papowell@astart.com>.

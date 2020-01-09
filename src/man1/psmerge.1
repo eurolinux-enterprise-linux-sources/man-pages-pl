@@ -1,0 +1,36 @@
+.TH PSMERGE 1 "PSUtils Wydanie 1 £ata 17"
+.SH NAZWA
+psmerge \- filtr, ³±cz±cy kilka plików postscriptowych w jeden
+.SH SK£ADNIA
+.B psmerge 
+[
+.B \-o\fIwyj¶cie.ps\fB
+]
+[
+.I plik.ps ...
+]
+.SH OPIS
+.I Psmerge
+³±czy dokumenty postscriptowe w jeden. Dzia³a jednak tylko w szczególnych
+przypadkach, kiedy pliki by³y utworzone t± sam± aplikacj±, z t± sam±
+konfiguracj± urz±dzenia i z za³adowanymi [tymi samymi?] zasobami (fonty,
+zestawy procedur, wzorce, pliki, itp).
+
+Jesli u¿yta jest opcja
+.BR \-o ,
+wyj¶cie zostanie zapisane do wskazanego pliku. W przeciwnym wypadku zostanie
+ono przekazane na stdout.
+
+.I Psmerge
+³±czy pliki skonkatenowane w jeden pojedynczy plik tak samo, jakby by³y one
+osobnymi plikami.
+.SH AUTOR
+Copyright (C) Angus J. C. Duggan 1991-1995
+.SH "ZOBACZ TAK¯E"
+psbook(1), psselect(1), pstops(1), epsffit(1), psnup(1), psresize(1), psmerge(1), fixscribeps(1), getafm(1), fixdlsrps(1), fixfmps(1), fixmacps(1), fixpsditps(1), fixpspps(1), fixtpps(1), fixwfwps(1), fixwpps(1), fixwwps(1), extractres(1), includeres(1)
+.SH ZNAKI TOWAROWE
+.B PostScript
+jest znakiem towarowym Adobe Systems Incorporated.
+.SH B£ÊDY
+.I psmerge
+przeznaczony jest do specyficznego u¿ytku; nie ³±czy wszystkich plików.

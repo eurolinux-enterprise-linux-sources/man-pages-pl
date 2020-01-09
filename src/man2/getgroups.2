@@ -1,0 +1,129 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright 1993 Rickard E. Faith (faith@cs.unc.edu)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Thu Oct 31 12:04:29 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Translation (c) 1998 Przemek Borys <pborys@dione.ids.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\"
+.TH GETGROUPS 2 1997-12-10 "Linux 2.0.32" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+getgroups, setgroups \- pobiera/ustawia listê identyfikatorów grup dodatkowych
+.SH SK£ADNIA
+.B #include <sys/types.h>
+.br
+.B #include <unistd.h>
+.sp
+.BI "int getgroups(int " size ", gid_t " list []);
+.sp
+.B #include <grp.h>
+.sp
+.BI "int setgroups(size_t " size ", const gid_t *" list );
+.SH OPIS
+.TP
+.B getgroups
+Zwraca w
+.I list
+maksymalnie
+.I size
+dodatkowych ID grup. Nie jest okre¶lone, czy efektywny ID grupy procesu
+wywo³uj±cego bêdzie znajdowaæ siê na zwróconej li¶cie. Tak wiêc, aplikacja
+powinna wywo³aæ równie¿
+.BR getegid (2)
+i dodaæ lub usun±æ otrzyman± warto¶æ.)
+Je¶li
+.I size
+jest równe zero, to
+.I list
+nie jest modyfikowane, lecz zwracana jest ogólna liczba dodatkowych grup
+procesu.
+.TP
+.B setgroups
+Ustawia dodatkowe grupy procesu. Jedynie superu¿ytkownik mo¿e tego dokonaæ.
+.SH "WARTO¦Æ ZWRACANA"
+.TP
+.B getgroups
+po pomy¶lnym zakoñczeniu zwraca liczbê grup dodatkowych.
+Po b³êdzie zwracane jest \-1 i odpowiednio ustawiane
+.IR errno .
+.TP
+.B setgroups
+po pomy¶lnym zakoñczeniu zwraca zero. Po b³êdzie zwracane jest  \-1
+i odpowiednio ustawiane
+.IR errno .
+.SH B£ÊDY
+.TP
+.B EFAULT
+.I list
+ma nieprawid³owy adres.
+.TP
+.B EPERM
+Dla
+.BR setgroups ,
+u¿ytkownik nie jest superu¿ytkownikiem.
+.TP
+.B EINVAL
+Dla
+.BR setgroups ,
+.I size
+jest wiêksze ni¿
+.B NGROUPS
+(32 dla Linuksa 2.0.32).
+Dla
+.BR getgroups ,
+.I size
+jest mniejsze ni¿ liczba grup dodatkowych, ale niezerowe.
+.SH UWAGI
+Proces mo¿e posiadaæ maksymalnie co najmniej NGROUPS_MAX grup dodatkowych
+oprócz efektywnego ID grupy. Zbiór grup dodatkowych jest dziedziczony po
+procesie rodzicielskim i mo¿e zostaæ zmieniony za pomoc±
+.BR setgroups .
+Maksymalna liczba grup dodatkowych mo¿e byæ odczytana za pomoc±
+.BR sysconf (3):
+.nf
+    long ngroups_max;
+    ngroups_max = sysconf(_SC_NGROUPS_MAX);
+.fi
+Maksymalna zwracana przez
+.B getgroups
+warto¶æ nie mo¿e byæ wiêksza ni¿ powiêkszona o jeden warto¶æ otrzymana
+w powy¿szy sposób.
+.LP
+Prototyp dla
+.B setgroups
+jest dostêpny jedynie, gdy zdefiniowane jest
+.B _BSD_SOURCE
+(bezpo¶rednio, albo po¶rednio - nie definiuj±c _POSIX_SOURCE czy
+kompiluj±c z w³±czon± flag± -ansi).
+.SH "ZGODNE Z"
+SVr4, SVID (tylko wydanie 4; wywo³añ tych nie by³o w SVr3),
+X/OPEN, 4.3BSD.  Funkcja
+.B getgroups
+istnieje w POSIX.1. Poniewa¿
+.B setgroups
+wymaga przywilejów, nie jest opisana w POSIX.1.
+.SH "ZOBACZ TAK¯E"
+.BR initgroups (3),
+.BR getgid (2),
+.BR setgid (2)

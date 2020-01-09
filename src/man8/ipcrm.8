@@ -1,0 +1,128 @@
+.\" {PTM/PB/0.1/02-03-1998/"udostêpnij dane o urz±dzeniach ipc"}
+.\" Translation 1999 Przemek Borys <pborys@dione.ids.pl>
+.\" Translation update: Robert Luberda <robert@debian.org>, Mar 2005, util-linux 2.12p
+.\" $Id: ipcrm.8,v 1.4 2005/03/17 10:55:38 robert Exp $
+.\"
+.\" Copyright 2002 Andre C. Mazzone (linuxdev@karagee.com)
+.\" May be distributed under the GNU General Public License
+.TH IPCRM 8 "ostatnia zmiana: 19 marca 2002" "ipcrm" "Podrêcznik programisy linuksowego"
+.SH NAZWA
+ipcrm \- usuwa kolejkê komunikatów, zbiór semaforów lub id pamiêci wspó³dzielonej
+.SH SK£ADNIA
+.B ipcrm
+[
+.B \-M
+.I klucz
+|
+.B \-m
+.I id
+|
+.B \-Q
+.I klucz
+|
+.B \-q
+.I id
+|
+.B \-S
+.I klucz
+|
+.B \-s
+.I id
+] ...
+
+przestarza³e u¿ycie:
+
+.BI ipcrm
+[
+.B shm
+|
+.B msg
+|
+.B sem
+]
+.IR id " ..."
+.SH OPIS
+.I ipcrm
+usuwa z systemu obiekty komunikacji miêdzyprocesowej Systemu V (IPC) oraz
+skojarzone z nimi struktury danych.
+Aby usun±æ takie obiekty, nale¿y byæ superu¿ytkownikiem lub twórc± albo
+w³a¶cicielem tego obiektu.
+
+Istniej± trzy typy obiektów IPC Systemu V: pamiêæ wspó³dzielona, kolejki
+komunikatów i semafory.
+Usuwanie obiektu typu kolejka komunikatów lub semafor jest natychmiastowe
+(niezale¿nie od tego, czy jaki¶ proces wci±¿ trzyma identyfikator IPC tego
+obiektu).
+Obiekt typu pamiêæ wspó³dzielona jest usuwany tylko wtedy, gdy wszystkie
+obecnie po³±czone procesy usun±
+.RB ( shmdt (2))
+ten obiekt z ich wirtualnej przestrzeni adresowej.
+
+Obs³ugiwane s± dwa style sk³adni. Stara, historyczna sk³adnia linuksowa sk³ada siê
+trzyliterowego s³owa kluczowego, mówi±cego, jakiej klasy obiekt ma byæ usuniêty,
+po którym nastêpuje jeden lub wiêcej identyfikatorów obiektów tego typu.
+
+Sk³adania zgodna z SUS pozwala na podanie zera lub wiêcej obiektów wszystkich
+typów w pojedynczym wywo³aniu. Obiekty mog± byæ okre¶lone albo przez klucz,
+albo przez identyfikator (patrz ni¿ej). Zarówno klucze, jak i identyfikatory
+mog± byæ podane w postaci dziesiêtnej, szesnastkowej (zaczynaj±cej siê od '0x'
+lub '0X') lub ósemkowej (zaczynaj±cej siê od '0')
+
+.SH OPCJE
+.TP
+.BI \-M " shmkey"
+usuwa segment pamiêci wspó³dzielonej utworzony z kluczem
+.IR shmkey ,
+gdy tylko ostatni proces siê od niego od³±czy.
+.TP
+.BI \-m " shmid"
+usuwa segment pamiêci wspó³dzielonej identyfikowany przez
+.IR shmid ,
+gdy tylko ostatni proces siê od niego od³±czy.
+.TP
+.BI \-Q " msgkey"
+usuwa kolejkê komunikatów utworzon± z kluczem
+.IR msgkey .
+.TP
+.BI \-q " msgid"
+usuwa kolejkê komunikatów identyfikowan± przez
+.IR msgid .
+.TP
+.BI \-S " semkey"
+usuwa semafor utworzony z kluczem
+.IR semkey .
+.TP
+.BI \-s " semid"
+usuwa semafor identyfikowany przez
+.IR semid .
+.LP
+Szczegó³y usuwania s± opisane w
+.IR msgctl (2),
+.IR shmctl (2)
+i
+.IR semctl (2).
+Identyfikatory i klucze mog± byæ znalezione za pomoc±
+.IR ipcs (8).
+.SH UWAGI
+W swojej pierwszej implementacji linuksowej, ipcrm u¿ywa³o
+przestarza³ej sk³adni pokazanej w sekcji
+.BR SK£ADNIA .
+Od tego czasu zosta³a dodana funkcjonalno¶æ obecna w innych implementacjach
+*niksowych, mianowicie mo¿liwo¶æ usuwania zasobów przez podanie klucza
+(a nie tylko identyfikatora) oraz zgodno¶æ sk³adni polecenia. Dla
+zachowania wstecznej zgodno¶ci poprzednia sk³adnia jest wci±¿ obs³ugiwana.
+.\" .SH AUTHORS
+.\" Andre C. Mazzone (linuxdev@karagee.com)
+.\" .br
+.\" Krishna Balasubramanian (balasub@cis.ohio-state.edu)
+.SH ZOBACZ TAK¯E
+.nh
+.BR ipcs (8),
+.BR msgctl (2),
+.BR msgget (2),
+.BR semctl (2),
+.BR semget (2),
+.BR shmctl (2),
+.BR shmdt (2),
+.BR shmget (2),
+.BR ftok (3)

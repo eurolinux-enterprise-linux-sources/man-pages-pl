@@ -1,0 +1,312 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" {PTM/PB/0.1/09-05-1990/"mapowanie plików lub urz±dzenia w pamiêci"}
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Jun 2002,
+.\"              manpages 1.50
+.\" $Id: mmap.2,v 1.8 2003/07/22 11:16:10 robert Exp $
+.\"
+.\" Copyright (C) 1996 Andries Brouwer (aeb@cwi.nl)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Fri Jan 31 16:38:25 1997 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified Sat Mar 25 08:11:16 2000 by Jim Van Zandt <jrv@vanzandt.mv.com>
+.\" Modified Thu Oct  4 03:09:44 2001 by John Levon <moz@compsoc.man.ac.uk>
+.\" Modified Sun Feb  2 16:00    2003 by Andi Kleen <ak@muc.de>
+.\"
+.TH MMAP 2 2000-03-25 "Linux 2.3.51" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+mmap, munmap \- mapowanie lub usuniêcie mapowania plików lub urz±dzeñ w pamiêci
+.SH SK£ADNIA
+.B #include <sys/mman.h>
+.sp
+.B #ifdef _POSIX_MAPPED_FILES
+.sp
+.BI "void * mmap(void *" start ", size_t " length ", int " prot
+.BI ", int " flags ", int " fd ", off_t " offset );
+.sp
+.BI "int munmap(void *" start ", size_t " length );
+.sp
+.B #endif
+.SH OPIS
+Funkcja
+.B mmap
+zleca zamapowanie do pamiêci, najchêtniej pod adres
+.IR start ,
+.I length
+bajtów pliku (lub innego obiektu) zadanego przez deskryptor
+.IR fd ,
+przesuniêtych wzglêdem pocz±tku o
+.IR offset .
+Adres
+.I start
+jest jednak tylko propozycj± i zazwyczaj jest przekazywany jako 0.
+Rzeczywiste miejsce zamapowania obiektu jest zwracane przez
+.B mmap
+i nigdy nie jest zerem.
+.LP
+Argument
+.I prot
+opisuje oczekiwany sposów ochrony pamiêci (i nie mo¿e byæ sprzeczny z trybem
+otwarcia pliku). Mo¿e on byæ równy
+.B PROT_NONE
+lub mo¿e byæ logicznym OR jednego lub wiêcej spo¶ród innych znaczników PROT_*.
+.TP 1.1i
+.B PROT_EXEC
+Strony mog± byæ wykonywane.
+.TP
+.B PROT_READ
+Strony mog± byæ odczytywane.
+.TP
+.B PROT_WRITE
+Strony mog± byæ zapisywane.
+.TP
+.B PROT_NONE
+Strony nie mog± byæ dostêpne.
+.LP
+Patametr
+.I flags
+okre¶la rodzaj mapowanego obiektu, opcje mapowania i czy
+modyfikacje na zmapowanej kopii strony s± prywatne dla procesu, czy te¿
+powinny byæ wspó³dzielone z innymi odniesieniami. Ma on bity
+.TP 1.1i
+.B MAP_FIXED
+Polecenie nie wybierania innego adresu ni¿ podany. Je¶li podanego adresu nie
+mo¿na u¿yæ,
+.B mmap
+zawiedzie. Je¶li podano MAP_FIXED,
+.I start
+musi byæ wielokrotno¶ci± rozmiaru strony. U¿ywanie tej opcji nie jest
+zalecane.
+.TP
+.B MAP_SHARED
+Polecenie wspó³dzielenia mapowania ze wszystkimi innymi procesami, które
+mapuj± ten obiekt. Zapisywanie danych w danym obszarze bêdzie równowa¿ne
+z zapisywaniem do pliku. Plik mo¿e w rzeczywisto¶ci nie zostaæ zaktualizowany
+a¿ do wywo³ania
+.BR msync (2)
+lub
+.BR munmap (2).
+.TP
+.B MAP_PRIVATE
+Polecenie utworzenia prywatnego mapowania, typu "kopiowanie podczas zapisu".
+Zapisywanie danych w danym obszarze nie bêdzie wp³ywaæ na zawarto¶æ
+oryginalnego pliku. Nie jest okre¶lone, czy zmiany zawarto¶ci pliku wykonane
+po wywo³aniu
+.B mmap
+bêd± uwidocznione w mapowanym obszarze.
+.LP
+Trzeba podaæ dok³adnie jedno spomiêdzy MAP_SHARED i MAP_PRIVATE.
+.LP
+Powy¿sze trzy znaczniki s± opisane w POSIX.1b (poprzednio POSIX.4) oraz SUSv2.
+Linux obs³ugje dodatkowo nastêpuj±ce znaczniki niestandardowe:
+.TP
+.B MAP_DENYWRITE
+Ten znacznik jest ignorowany.
+.\" Wprowadzony w 1.1.36, usuniêty w 1.3.24.
+(Dawno temu sygnalizowa³ on, ¿e próba zapisu to mapowanego pliku powinna
+zawie¶æ z ETXTBUSY. Ale by³o to ¼ród³em ataków blokuj±cych us³ugê (DoS).)
+.TP
+.B MAP_EXECUTABLE
+Ten znacznik jest ignorowany.
+.\" Wprowadzony w 1.1.38, usuniêty w 1.3.24. Znacznik sprawdzany w proc_follow_link.
+.\" (Dawno temu sygnalizowa³ on, ¿e mapowany plik jet uruchamialny.
+.\" Jednak¿e, z tej informacji w rzeczywisto¶ci nigdzie nie korzystano.)
+.\" Linus mówi³ o DoS zwi±zanym z MAP_EXECUTABLE, ale mo¿e on my¶la³ o
+.\" MAP_DENYWRITE?
+.TP
+.B MAP_NORESERVE
+(U¿ywany ³±cznie z MAP_PRIVATE.) Poleca nie rezerwowaæ stron przestrzeni
+wymiany dla tego mapowania. Gdy przestrzeñ wymiany jest zarezerwowana, ma siê
+gwarancjê, ¿e istnieje mo¿liwo¶æ modyfikacji tego prywatnego "kopiowanego
+podczas zapisu" obszaru. Gdy nie jest ona zarezerwowana, mo¿na otrzymaæ
+SIGSEGV podczas zapisu, je¿eli braknie pamiêci.
+.\" (Pod Linuksem nie ma gwarancji. Dowolny proces mo¿e zostaæ unicestwiony
+.\" w dowolnym momencie, gdy w systemie zabraknie pamiêci.)
+.TP
+.B MAP_LOCKED
+Ten znacznik jest ignorowany.
+.\" Je¶li ustawiony, zamapowane strony nie bêd± podlega³y wymianie.
+.TP
+.B MAP_GROWSDOWN
+U¿ywany do stosów. Sygnalizuje systemowi zarz±dzania pamiêci± wirtualn±
+w j±drze, ¿e to mapowanie powinno byæ rozszerzane w pamiêci w dó³.
+.TP
+.B MAP_ANONYMOUS
+Mapowanie nie jest oparte na ¿adnym pliku; argumenty
+.I fd
+i
+.I offset
+zostan± zignorowane. Ten znacznik w po³±czeniu z MAP_SHARED jest
+zaimplementowany w Linuksie pocz±wszy od 2.4.
+.TP
+.B MAP_ANON
+Alias dla MAP_ANONYMOUS. Porzucony.
+.TP
+.B MAP_FILE
+Znacznik s³u¿±cy zgodno¶ci. Ignorowany.
+.TP
+.B MAP_32BIT
+Umieszczenie mapowania w pierwszych 2GB przestrzeni adresowej procesu.
+Ignorowany gdy ustawiony jest
+.IR MAP_FIXED .
+Znacznik ten jest obecnie wspierany jedynie przez 64-bitowe programy na
+architekturze x86-64.
+.LP
+Niektóre systemy dokumentuj± dodatkowe znaczniki MAP_AUTOGROW, MAP_AUTORESRV,
+MAP_COPY i MAP_LOCAL.
+.LP
+.I fd
+powinno byæ prawid³owowym deskryptorem pliku; je¿eli ustawiono
+MAP_ANONYMOUS, to argument ten jest ignorowany.
+.LP
+.I offset
+powinno byæ wielokrotno¶ci± rozmiaru strony zwracanego przez
+.BR getpagesize (2).
+.LP
+Pamiêæ zamapowana za pomoc±
+.B mmap
+jest zachowywana poprzez
+.BR fork (2)
+z tymi samymi atrybutami.
+.LP
+Plik jest mapowany w wielokrotno¶ciaæh rozmiaru strony. Dla plików, które nie
+s± wielokrotno¶ciami rozmiaru strony, pozosta³a pamiêæ jest zerowana podczas
+mapowania, a zapisy do tego obszaru nie s± zapisywane w pliku. Efektem zmiany
+rozmiaru zamapowanego pliku na zamapowane strony, które odpowiadaj± dodanym
+lub usuniêtym obszarom pliku, jest nieokre¶lony.
+
+Funkcja systemowa
+.B munmap
+usuwa mapowanie z podanego zakresu adresów i powoduje, ¿e dalsze odwo³ania
+do adresów z tego zakresu bêd± generowaæ nieprawid³owe odwo³ania do pamiêci.
+Mapowanie obszaru jest równie¿ automatycznie usuwane, gdy proces siê zakoñczy.
+Z drugiej strony, zamkniêcie deskryptora pliku nie usuwa mapowania obszaru.
+.LP
+Adres
+.I start
+musi byæ wielokrotno¶ci± rozmiaru strony. Usuwane jest mapowanie wszystkich
+stron zawieraj±cych fragmenty ze wskazanego zakresu, wszystkie pó¼niejsze
+odwo³ania do tych stron wygeneruj± SIGSEGV. Nie jest b³êdem, gdy brak
+w podanym zakresie zamapowanych stron.
+
+Dla mapowañ opartych na plikach pole
+.B st_atime
+zamapowanego pliku mo¿e zostaæ zaktualizowane w dowolnym momencie pomiêdzy
+.B mmap()
+i usuniêciem odpowiedniego mapowania; pierwsze odwo³anie do zamapowanej strony
+spowoduje zaktualizowanie tego pola, je¶li nie sta³o siê to wcze¶niej.
+.LP
+Pola
+.B st_ctime
+i
+.B st_mtime
+pliku zamapowanego z PROT_WRITE i MAP_SHARED zostanie zaktualizowane po
+zapisie do mapowanego obszaru, a przed pó¼niejszym wywo³aniem
+.I msync()
+ze znacznikiem MS_SYNC lub MS_ASYNC, je¶li taki wywo³anie wyst±pi.
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu
+B mmap
+zwraca wska¼nik do mapowanego obszaru. Po b³êdzie zwracane jest MAP_FAILED
+(\-1) i odpowiednio ustawiane jest
+.IR errno .
+Po pomy¶lnym zakoñczeniu
+.B munmap
+zwraca 0, a po b³êdzie \-1 i ustawia
+.I errno
+(prawdopodobnie na EINVAL).
+.SH UWAGI
+To, czy
+.I PROT_READ
+zawiera
+.IR PROT_EXEC ,
+czy nie, zale¿y od architektury. W przeno¶nych programach nale¿y zawsze
+ustawiaæ
+.IR PROT_EXEC ,
+gdy planowane jest uruchamianie przez nie kodu w nowym mapowaniu.
+.SH B£ÊDY
+.TP
+.B EBADF
+.I fd
+nie jest prawid³owym deskryptorem pliku (a nie ustawiono MAP_ANONYMOUS).
+.TP
+.B EACCES
+Deskryptor pliku nie odnosi siê do zwyk³ego pliku.
+Lub zg³oszono MAP_PRIVATE, lecz
+.I fd
+nie jest otwarty dla odczytu.
+Lub zg³oszono MAP_SHARED i ustawiono
+PROT_WRITE, a
+.I fd
+nie jest otwarte w trybie odczytu i zapisu (O_RDWR).
+Lub zg³oszono PROT_WRITE, lecz plik jest otwarty tylko do dopisywania.
+.TP
+.B EINVAL
+Niew³a¶ciwe
+.IR start ,
+.I length
+lub
+.IR offset .
+(Np., mog± byæ zbyt du¿e lub niewyrównane do granicy strony (PAGESIZE).)
+.\" jbl - not sure this actually happens ? see generic_file_mmap
+.\" .TP
+.\" .B ENOEXEC
+.\" Plik nie móg³ zostaæ zamapowany do odczytu.
+.TP
+.B ETXTBUSY
+Ustawiono MAP_DENYWRITE, lecz obiekt wskazywany przez
+.I fd
+jest otwarty do zapisu.
+.TP
+.B EAGAIN
+Plik zosta³ zablokowany lub zablokowano zbyt wiele pamiêci.
+.TP
+.B ENOMEM
+Brak dostêpnej pamiêci lub zosta³aby przekroczona maksymalna liczba mapowañ
+dla procesu.
+.B ENODEV
+System plików, na którym znajduje sie podany plik nie wspiera mapowania
+w pamiêci.
+.LP
+U¿ycie zamapowanego obszaru mo¿e spowodowaæ wyst±pienie nastêpuj±cych
+sygna³ów:
+.TP
+.B SIGSEGV
+Próba zapisu do obszaru podanego dla mmap jako tylko do odczytu.
+.TP
+.B SIGBUS
+Próba dostêpu do fragmentu bufora, który nie odpowiada plikowi (na przyk³ad,
+za koñcem pliku, w³±czaj±c w to przypadek obciêcia pliku przez inny process).
+.SH "ZGODNE Z"
+SVr4, POSIX.1b (poprzednio POSIX.4), 4.4BSD, SUSv2.
+SVr4 dokumentuje dodatkowe b³êdy ENXIO i ENODEV.
+SUSv2 dokumentuje dodatkowe b³êdy EMFILE i EOVERFLOW.
+
+.I MAP_32BIT
+jest rozszerzeniem linuksowym.
+.SH "ZOBACZ TAK¯E"
+.BR getpagesize (2),
+.BR mmap2 (2),
+.BR mremap (2),
+.BR msync (2),
+.BR shm_open (2),
+B.O. Gallmeister, POSIX.4, O'Reilly, str. 128-129 i 389-391.

@@ -1,0 +1,28 @@
+.\" Translation (C) 1999 Pawel Wilk <siefca@pl.qmail.org>
+.\" {PTM/PW/0.1/5-12-1999/"odbiera wiadomo¶æ pocztow± poprzez QMQP"}
+.TH qmail-qmqpd 8
+.SH NAZWA
+qmail-qmqpd \- odbierz wiadomo¶æ pocztow± poprzez QMQP
+.SH SK£ADNIA
+.B qmail-qmqpd
+.SH OPIS
+.B qmail-qmqpd
+odbiera wiadomo¶ci pocztowe poprzez Protokó³ Szybkiego Kolejkowania Poczty - z ang.
+Quick Mail Queueing Protocol (QMQP)
+i wywo³uje
+.B qmail-queue
+by ustawiæ je w kolejce wiadomo¶ci wychodz±cych. Polecenie
+.B qmail-qmqpd
+musi byæ poparte kilkoma zmiennymi ¶rodowiskowymi;
+zobacz
+.BR tcp-environ(5) .
+
+.B qmail-qmqpd
+pozwala na dostarczanie wiadomo¶ci do ka¿dego miejsca.
+Powinien byæ wywo³ywany tylko przy po³±czeniach od u¿ytkowników autoryzowanych.
+.SH "ZOBACZ TAK¯E"
+tcp-env(1),
+tcpserver(1),
+tcp-environ(5),
+qmail-qmqpc(8),
+qmail-queue(8)

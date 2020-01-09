@@ -1,0 +1,285 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" {PTM/PB/0.1/02-03-1999/"ustaw/pobierz limity zasobów i zu¿ycie"}
+.\" Translation 1999 Przemek Borys <pborys@dione.ids.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Aug 2002,
+.\"              manpages 1.52
+.\"
+.\" Copyright (c) 1992 Drew Eckhardt, March 28, 1992
+.\" Copyright (c) 2002 Michael Kerrisk
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified by Michael Haardt <michael@moria.de>
+.\" Modified Fri Jul 23 21:18:14 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified Jan 13, 1996 by Arnt Gulbrandsen <agulbra@troll.no>
+.\" Modified Jan 22, 1996 by aeb, following a remark by
+.\"          Tigran Aivazian <tigran@sco.com>
+.\" Modified Apr 14, 1996 by aeb, following a remark by
+.\"          Robert Bihlmeyer <robbe@orcus.ping.at>
+.\" Modified Tue Oct 22 17:34:42 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified May  4, 2001 by aeb, following a remark by
+.\"          Håvard Lygre <hklygre@online.no>
+.\" Modified 17 Apr 2001 by Michael Kerrisk <mtk16@ext.canterbury.ac.nz>
+.\" Modified 13 Jun 02, Michael Kerrisk <mtk16@ext.canterbury.ac.nz>
+.\"     Added note on non-standard behaviour when SIGCHLD is ignored.
+.\" Modified  9 Jul 02, Michael Kerrisk <mtk16@ext.canterbury.ac.nz>
+.\"    Enhanced descriptions of 'resource' values for [gs]etrlimit()
+.\"
+.TH GETRLIMIT 2 2002-07-09 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+getrlimit, getrusage, setrlimit \- pobranie/ustawienie limitów i zu¿ycia zasobów
+.SH SK£ADNIA
+.B #include <sys/time.h>
+.br
+.B #include <sys/resource.h>
+.br
+.B #include <unistd.h>
+.sp
+.BI "int getrlimit(int " resource ", struct rlimit *" rlim );
+.br
+.BI "int getrusage(int " who ", struct rusage *" usage );
+.br
+.BI "int setrlimit(int " resource ", const struct rlimit *" rlim );
+.SH OPIS
+.B getrlimit
+i
+.B setrlimit
+odpowiednio pobieraj± i ustawiaj± limity zasobów.
+Z ka¿dym z zasobów stowarzyszone jest miêkkie i sztywne ograniczenie
+zdefiniowane w strukturze
+.B rlimit
+(argument
+.I rlim
+w
+.BR getrlimit "() i " setrlimit ()):
+.PP
+.in +0.5i
+.nf
+struct rlimit {
+    rlim_t rlim_cur;   /* ograniczenie miêkkie */
+    rlim_t rlim_max;   /* ograniczenie sztywne (górna
+                          granica dla rlim_cur) */
+};
+
+.fi
+.in -0.5i
+Ograniczenie miêkkie jest warto¶ci± odpowiedniego zasoby wymuszn± przez j±dro.
+Ograniczenie sztywne dzia³a jak warto¶æ maksymalna dla ograniczenia miêkkiego:
+proces nieuprzywilejowany mo¿e sobie ustawiæ ograniczenie miêkkie tylko
+w zakresie od 0 do ograniczenia sztywnego oraz (nieodwracalnie) obni¿yæ
+swoje ograniczenie sztywne. Proces uprzywilejowany mo¿e dowolnie zmieniaæ
+ka¿d± z warto¶ci ograniczenia.
+.PP
+Warto¶æ
+.B RLIM_INFINITY
+okre¶la brak ograniczenia dla zasobu (zarówno w strukturze zwracanej przez
+.BR getrlimit (),
+jak i w strukturze przekazywanej do
+.BR setrlimit ()).
+.PP
+.I resource
+musi byæ jednym z:
+.TP
+.B RLIMIT_CPU
+Ograniczenie czasu procesora (CPU) w sekundach.
+Gdy proces osi±ga swoje ograniczenie miêkkie, jest do niego wysy³any sygna³
+.BR SIGXCPU .
+Domy¶ln± reakcj± na ten sygna³ jest przerwanie procesu.
+Jednak¿e, sygna³ mo¿e zostaæ przechwycony i procedura obs³ugi mo¿e przekazaæ
+sterowanie to programu g³ównego. Je¶li proces nadal bêdzie zu¿ywaæ zasoby
+procesora, bêdzie do niego co sekundê wysy³any sygna³
+.B SIGXCPU
+a¿ do osi±gniêcia ograniczenia sztywnego, kiedy to wysy³ane jest sygna³
+.BR SIGKILL .
+(Ostatni punkt opisuje zachowanie Linuksa 2.2 i 2.4. W zale¿no¶ci od
+implementacji procesy kontynuuj±ce zu¿ywanie zasobów procesora po osi±gniêciu
+ograniczenia miêkkiego s± ró¿nie traktowane. Aplikacje przeno¶ne, które
+maj± potrzebê przechwycenia tego sygna³u, powinny zakoñczyæ siê w sposób
+kontrolowany w chwili otrzymaniu pierwszego
+.BR SIGXCPU .)
+.TP
+.B RLIMIT_DATA
+Maksymalny rozmiar segmentu danych procesu (dane zainicjalizowane, dane
+niezainicjalizowane i sterta).
+Ograniczenie to wp³ywa na wywo³ania
+.BR brk "() and " sbrk (),
+które koñcz± siê niepomy¶lnie, zg³aszaj±c b³±d
+.B ENOMEM
+w momencie natrafienia na miêkkie ograniczenie tego zasobu.
+.TP
+.B RLIMIT_FSIZE
+Maksymalny rozmiar plików tworzonych przrz dany proces. Próba rozszerzenia
+pliku ponad to ograniczenie koñczy siê otrzymaniem sygna³u
+.RB SIGXFSZ .
+Domy¶lnie, sygna³ ten koñczy dzia³anie procesu, ale proces mo¿e go
+przechwyciæ. Wówczas odpowiednia funkcja systemowa (np. 
+.BR write "(), " truncate ())
+koñczy siê b³êdem.
+.BR EFBIG .
+.TP
+.B RLIMIT_LOCKS
+Ograniczenie ³±cznej liczby blokad
+.BR flock ()
+i dzier¿aw
+.BR fcntl (),
+które proces mo¿e ustanowiæ (Linux 2.4 i pó¼niejsze).
+.\" dok³adniej: Linux 2.4.0-test9 i pó¼niejsze
+.TP
+.B RLIMIT_MEMLOCK
+Maksymalna liczba bajtów pamiêci wirtualnej, które mo¿na zablokowaæ w pamiêci
+RAM za pomoc±
+.BR mlock "() i " mlockall ().
+.TP
+.B RLIMIT_NOFILE
+Okre¶la warto¶æ o jeden wiêksz± ni¿ maksymalna liczba deskryptorów plików,
+które dany proces mo¿e otworzyæ. Próby wykonania
+.RB ( open "(), " pipe "(), " dup "(), itd.)"
+przekraczaj±ce tê granicê daj± b³±d
+.BR EMFILE .
+.TP
+.B RLIMIT_NPROC
+Maksymalna liczba procesów, które mo¿na utworzyæ dla danego rzeczywistego
+identyfikatora u¿ytkownika procesu wywo³uj±cego. Po napotkaniu tego
+ograniczenia,
+.BR fork ()
+koñczy siê b³êdem
+.BR EAGAIN .
+.TP
+.B RLIMIT_RSS
+Okre¶la ograniczenie ilo¶ci rezydentnych stron procesu (liczba stron pamiêci
+wirtualnej pozostaj±cych w RAM). Ograniczenie to dzia³a pocz±wszy od Linuksa
+2.4 i dotyczy jedynie wywo³añ
+.BR madvise ()
+z u¿yciem
+.BR MADVISE_WILLNEED .
+.TP
+.B RLIMIT_STACK
+Maksymalny rozmiar stosu procesu w bajtach.
+W chwili osi±gniêcia tego ograniczenia, generowany jest sygna³
+.BR SIGSEGV .
+W celu obs³u¿enia tego sygna³u proces musi za³o¿yæ alternatywny stos dla
+sygna³ów
+.RB ( sigaltstack (2)).
+.PP
+.B RLIMIT_OFILE
+jest nazw± BSD dla
+.BR RLIMIT_NOFILE .
+.PP
+.B getrusage
+zwraca bie¿±ce zu¿ycie zasobów dla \fIwho\fP bêd±cego albo
+.B RUSAGE_SELF
+albo
+.BR RUSAGE_CHILDREN .
+W pierwszym przypadku zwracane jest zu¿ycie zasobów przez bie¿±cy proces,
+a w dugim - przez tych spo¶ród jego potomków, którzy zakoñczyli dzia³anie
+i na które to zakoñczenie oczekiwano.
+.PP 
+.in +0.5i
+.nf
+struct rusage {
+    struct timeval ru_utime; /* u¿yty czas u¿ytkownika */
+    struct timeval ru_stime; /* u¿yty czas systemowy */
+    long   ru_maxrss;        /* maximum resident set size */
+    long   ru_ixrss;         /* ca³kowity rozmiar pamiêci dzielonej */
+    long   ru_idrss;         /* ca³kowity rozmiar danych niedzielonych */
+    long   ru_isrss;         /* ca³kowity rozmiar niedzielonego stosu */
+    long   ru_minflt;        /* page reclaims */
+    long   ru_majflt;        /* page faults */
+    long   ru_nswap;         /* swapy */
+    long   ru_inblock;       /* blokowe operacje wej¶cia */
+    long   ru_oublock;       /* blokowe operacje wyj¶cia */
+    long   ru_msgsnd;        /* wys³ane komunikaty */
+    long   ru_msgrcv;        /* otrzymane komunikaty */
+    long   ru_nsignals;      /* otrzymane sygna³y */
+    long   ru_nvcsw;         /* ochotnicze prze³±czenia kontekstu */
+    long   ru_nivcsw;        /* nieochotnicze prze³±czenia kontekstu */
+};
+.fi
+.in -0.5i
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu zwracane jest 0. Po b³êdzie zwracane jest \-1
+i odpowiednio ustawiane
+.IR errno .
+.SH B£ÊDY
+.TP
+.B EFAULT
+.I rlim
+lub
+.I usage
+wskazuje poza dostêpn± przestrzeñ adresow±.
+.TP
+.B EINVAL
+.BR getrlimit " lub " setrlimit
+zosta³o wywo³ane ze z³ym \fIresource\fP, lub te¿ \fBgetrusage\fP
+zosta³o wywo³ane ze z³ym \fIwho\fP.
+.TP
+.B EPERM
+U¿ytkownik nie bêd±cy superu¿ytkownikiem próbuje u¿ywaæ \fBsetrlimit()\fP do
+zwiêkszenia miêkich lub twardych limitów, lub te¿ superu¿ytkownik próbuje
+zwiêkszyæ RLIMIT_NOFILE powy¿ej maksimum j±dra.
+.SH "ZGODNE Z"
+SVr4, BSD 4.3
+.SH UWAGA
+W³±czenie
+.I <sys/time.h>
+nie jest obecnie wymagane, ale zwiêksza przeno¶no¶æ.
+(Rzeczywi¶cie,
+.I struct timeval
+jest zdefiniowane w
+.IR <sys/time.h> .)
+.PP
+W Linuksie, je¶li rozporz±dzenie
+.B SIGCHLD
+ustawiono jako
+.BR SIG_IGN ,
+to zasobów wykorzystywane przez procesy potomne s± automatycznie do³±czane
+do warto¶ci zwracanej przez
+.BR RUSAGE_CHILDREN ,
+pomimo ¿e POSIX 1003.1-2001 jawnie tego zabrania.
+.\" Zobacz opis getrusage() w XSH.
+.\" Podobne zastrze¿enie by³o równie¿ w SUSv2.
+.LP
+Powy¿sza struktura zosta³a przejêta z BSD 4.3 Reno.
+Nie wszystkie pola maj± znaczenie pod Linuksem.
+Obecnie (Linux 2.4) jedynie pola
+.BR ru_utime ,
+.BR ru_stime ,
+.BR ru_minflt ,
+.B ru_majflt
+i
+.BR ru_nswap
+s± pielêgnowane.
+.SH "ZOBACZ TAK¯E"
+.BR dup (2),
+.BR fcntl (2),
+.BR fork (2),
+.BR mlock (2),
+.BR mlockall (2),
+.BR mmap (2),
+.BR open (2),
+.BR quotactl (2),
+.BR sbrk (2),
+.BR wait3 (2),
+.BR wait4 (2),
+.BR malloc (3),
+.BR ulimit (3),
+.BR signal (7)

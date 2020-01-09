@@ -1,0 +1,187 @@
+.\" Copyright 1996 Daniel Quinlan (Daniel.Quinlan@linux.org)
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" Translation (c) 1998 "Gwidon S. Naskrent" <naskrent@hoth.amu.edu.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Mar 2002,
+.\"              manpages 1.48
+.\"
+.TH FILESYSTEMS 5 2001-12-07 "" "Podrêcznik programisty Linuksa"
+.nh
+.SH NAZWA
+filesystems \- typy systemów plików Linuksa: minix, ext, ext2, xia, msdos,
+umsdos, vfat, proc, nfs, iso9660, hpfs, sysv, smb, ncpfs
+.SH OPIS
+Gdy, jak jest przyjête, system plików
+.B proc
+jest zamontowany w
+.IR /proc ,
+w pliku
+.I /proc/filesystems
+znale¼æ mo¿na obs³ugiwane w danej chwili przez j±dro systemy plików.
+Je¶li potrzebny jest który¶ z aktualnie nieobs³ugiwanych, nale¿y za³adowaæ
+odpowiedni modu³ lub ponownie skompilowaæ j±dro.
+
+Aby móc korzystaæ z systemu plików, nale¿y go
+.IR zamontowaæ ,
+a opis polecenia mount, które to robi, oraz dostêpnych opcji mo¿na znale¼æ w
+.BR mount (8).
+
+Poni¿ej znajduje siê opis ró¿nych systemów plików.
+
+.TP
+.\"----------------------------------------------------------------------
+.B "minix"
+jest systemem plików u¿ywanym w systemie operacyjnym Minix, jest to pierwszy
+system plików, który dzia³a³ pod Linuksem. Ma on pewn± liczbê niedoci±gniêæ:
+ograniczenie rozmiaru partycji do 64 MB, krótkie nazwy plików, pojedyncze
+znaczniki czasu itd.
+Jest on nadal przydatny dla dyskietek i RAM-dysków.
+.\"----------------------------------------------------------------------
+.TP
+.B ext
+jest bardziej z³o¿onym rozwiniêciem systemu plików
+.BR minix .
+Zosta³ on kompletnie zast±piony przez drug± wersjê rozszerzonego
+systemu plików
+.RB ( ext2 )
+i ostatecznie usuniêty z j±dra (w 2.1.21).
+.\"----------------------------------------------------------------------
+.TP
+.B ext2
+jest dyskowym systemem plików o wysokiej wydajno¶ci u¿ywanym przez Linuksa
+zarówno dla dysków sta³ych, jak i dla no¶ników wymiennych.
+Drugi rozszerzony system plików zosta³ zaprojektowany jako rozszerzenie
+rozszerzonego systemu plików
+.RB ( ext ).
+.B ext2
+oferuje najlepsz± wydajno¶æ (w przeliczeniu na szybko¶æ i wykorzystanie CPU)
+ze wszystkich systemów plików obs³ugiwanych przez Linuksa.
+.\"----------------------------------------------------------------------
+.TP
+.B ext3
+jest wersja systemu plików ext2 z dziennikiem. Prze³±czanie do ty³u i do
+przodu pomiêdzy ext2 i ext3 jest ³atwe.
+.\"----------------------------------------------------------------------
+.TP
+.B xiafs
+zosta³ zaprojektowany i zaimplementowany jako stabilny, pewny system
+plików poprzez rozszerzenie kodu systemu plików Minix. Dostarcza on
+podstawowych, najczê¶ciej wymaganych cech bez zbêdnej z³o¿ono¶ci.
+
+System plików
+.B xia
+nie jest ju¿ aktywnie rozwijany i utrzymywany. Zosta³ usuniêty z j±dra
+w 2.1.21.
+.\"----------------------------------------------------------------------
+.TP
+.B msdos
+Jest systemem plików u¿ywanym przez DOS, Windows, i niektóre komputery z
+OS/2. Nazwy plików w
+.B msdos
+nie mog± byæ d³u¿sze ni¿ 8 znaków nazwy, plus opcjonalna kropka i 3 znaki
+rozszerzenia.
+.\"----------------------------------------------------------------------
+.TP
+.B umsdos
+to rozszerzony system plików DOSu u¿ywany przez Linuksa. Dodaje on
+w³a¶ciwo¶ci takie jak d³ugie nazwy, UID/GID, uprawnienia zgodne z POSIX,
+oraz pliki specjalne (urz±dzenia, potoki nazwane itp) w systemie plików
+DOSu, bez po¶wiêcania zgodno¶ci z DOSem.
+.\"----------------------------------------------------------------------
+.TP
+.B vfat
+to rozszerzony system plików DOS u¿ywany przez Microsoft Windows95 i
+Windows NT. VFAT dodaje mo¿liwo¶æ u¿ywania d³ugich nazw w systemie plików
+MSDOS.
+.\"----------------------------------------------------------------------
+.TP
+.B proc
+jest pseudosystemem plików u¿ywanym jako interfejs do struktur danych
+j±dra, zamiast czytania i interpretowania
+.IR /dev/kmem .
+W szczególno¶ci, jego pliki nie zajmuj± przestrzeni dyskowej. Zobacz proc(5).
+.\"----------------------------------------------------------------------
+.TP
+.B iso9660
+to system plików CD-ROM zgodny ze standardem ISO 9660.
+.RS
+.TP
+.B "High Sierra"
+Linux obs³uguje High Sierra, prekursora standardu ISO 9660 dla systemów
+plików CD-ROM. Jest on rozpoznawany automatycznie w ramach obs³ugi
+systemu plików
+.B iso9660
+w Linuksie.
+.TP
+.B "Rock Ridge"
+Linux obs³uguje tak¿e rekordy System Use Sharing Protocol okre¶lone przez
+Rock Ridge Interchange Protocol. U¿ywane s± one do dalszego opisania
+plików w systemie
+.B iso9660
+hostowi uniksowemu, i dostarczaj± informacji takich jak d³ugie nazwy,
+UID/GID, uprawnienia zgodne z POSIX, oraz urz±dzenia. Jest on rozpoznawany
+automatycznie w ramach obs³ugi systemu plików
+.B iso9660
+w Linuksie.
+.RE
+.\"----------------------------------------------------------------------
+.TP
+.B hpfs
+jest to High Performance Filesystem, u¿ywany w OS/2. Ten system plików
+jest tylko do odczytu w Linuksie, z powodu braku dostêpnej dokumentacji.
+.\"----------------------------------------------------------------------
+.TP
+.B sysv
+jest implementacj± systemów plików SystemV/Coherent dla Linux. Implementuje
+on wszystkie systemy plików Xenix, SystemV/386 oraz Coherent.
+.\"----------------------------------------------------------------------
+.TP
+.B nfs
+to sieciowy system plików u¿ywany do dostêpu do dysków umieszczonych
+na odleg³ych komputerach.
+.TP
+.\"----------------------------------------------------------------------
+.B smb
+to sieciowy system plików obs³uguj±cy protokó³ SMB, u¿ywany przez
+Windows for Workgroups, Windows NT oraz Lan Manager.
+.sp
+By u¿ywaæ systemu plików
+.B smb
+potrzebny jest specjalny program do montowania, który znale¼æ mo¿na
+w pakiecie ksmbfs, dostêpnym pod
+.IR ftp://sunsite.unc.edu/pub/Linux/system/Filesystems/smbfs .
+.\"----------------------------------------------------------------------
+.TP
+.B ncpfs
+to sieciowy system plików obs³uguj±cy protokó³ NCP u¿ywany przez
+Novell NetWare.
+.sp
+By u¿ywaæ
+.BR ncpfs ,
+potrzebne s± specjalne programy, które znale¼æ mo¿na pod
+.IR ftp://linux01.gwdg.de/pub/ncpfs .
+.\"----------------------------------------------------------------------
+.SH "ZOBACZ TAK¯E"
+.BR proc (5),
+.BR fsck (8),
+.BR mkfs (8),
+.BR mount (8)

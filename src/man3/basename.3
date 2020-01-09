@@ -1,0 +1,139 @@
+.\" T³umaczenie wersji man-pages 1.39 - wrzesieñ 2001 PTM
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" Zaktualizowane do man-pages 1.44 w grudniu 2001
+.\" 
+.\" (c) 2000 by Michael Kerrisk (michael.kerrisk@gmx.net)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein. 
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" License.
+.\" Created, 14 Dec 2000 by Michael Kerrisk
+.\"
+.TH DIRNAME 3  2000-12-14 "GNU" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+dirname, basename \- wydzielenie sk³adników nazwy ¶cie¿ki dostêpu
+.SH SK£ADNIA
+.nf
+.B #include <libgen.h>
+.sp
+.BI "char *dirname(char *" path );
+.nl
+.BI "char *basename(char *" path );
+.fi
+.SH OPIS
+Funkcje
+.B dirname
+i
+.B basename
+rozbijaj± zakoñczony znakiem null ³añcuch nazwy ¶cie¿ki dostêpu na sk³adowe:
+katalog i nazwê pliku.
+W typowym przypadku
+.B dirname
+zwraca ³añcuch a¿ do ostatniego znaku '/', ale z jego wy³±czeniem, a
+.B basename
+zwraca sk³adow± nastêpuj±c± po ostatnim '/'.
+Koñcowe znaki '/' nie s± uwa¿ane za czê¶æ nazwy ¶cie¿ki dostêpu.
+.PP
+Je¶li 
+.I path
+nie zawiera uko¶nika,
+.B dirname
+zwraca ³añcuch ".", podczas gdy
+.B basename
+zwraca kopiê
+.IR path .
+Je¶li 
+.I path
+jest ³añcuchem "/", wówczas zarówno
+.B dirname
+jak i 
+.B basename
+zwracaj± ³añcuch "/".
+Je¶li 
+.I path
+jest wska¼nikiem NULL lub wskazuje na pusty ³añcuch znaków, to zarówno
+.B dirname
+jak i
+.B basename
+zwracaj± ³añcuch ".".
+.PP
+Po³±czenie ³añcucha zwróconego przez
+.BR dirname ,
+"/" i ³añcucha zwróconego przez
+.B basename
+daje pe³n± nazwê ¶cie¿ki dostêpu.
+.PP
+Zarówno
+.B dirname
+jak i
+.B basename
+mog± modyfikowaæ zawarto¶æ
+.IR path , 
+wiêc je¿eli chce siê zachowaæ ³añcuch ¶cie¿ki dostêpu,
+to nale¿y przekazywaæ do tych funkcji jego kopiê. Ponadto
+.B dirname
+i
+.B basename
+mog± zwracaæ wska¼niki do pamiêci przydzielonej statycznie, która mo¿e
+byæ nadpisana nastêpnymi wywo³aniami.
+.PP
+Poni¿sza lista przyk³adów (wziêta z SUSv2) pokazuje ³añcuchy znaków
+zwracane przez
+.B dirname
+i
+.B basename
+dla ró¿nych ¶cie¿ek:
+.sp
+.nf
+.B 
+¶cie¿ka  	dirname		basename
+"/usr/lib"	"/usr"		"lib"
+"/usr/"		"/"  		"usr"
+"usr"		"."  		"usr"
+"/"  		"/"  		"/"
+"."  		"."  		"."
+".."  		"."  		".."
+.fi
+.SH PRZYK£AD
+.nf
+char *dirc, *basec, *bname, *dname;
+char *path = "/etc/passwd";
+
+dirc = strdup(path);
+basec = strdup(path);
+dname = dirname(dirc);
+bname = basename(basec);
+printf("dirname=%s, basename=%s\\n", dname, bname);
+free(dirc);
+free(basec);
+.fi
+.SH "WARTO¦Æ ZWRACANA"
+Zarówno
+.B dirname
+jak i
+.B basename
+zwracaj± wska¼niki do zakoñczonych znakiem null ³añcuchów znaków.
+.SH B£ÊDY
+W wersjach glibc a¿ do 2.2.1 w³±cznie,
+.B dirname
+nieprawid³owo obs³uguje nazwy ¶cie¿ek dostêpu z koñcowymi znakami '/',
+i generuje naruszenie segmentacji, gdy poda siê NULL jako argument.
+.SH "ZGODNE Z"
+SUSv2
+.SH "ZOBACZ TAK¯E"
+.BR dirname (1),
+.BR basename (1),

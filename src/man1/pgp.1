@@ -1,0 +1,572 @@
+.TH PGP 1 "PGP Version 2.6.3i"
+.\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
+.\" other parms are allowed: see man(7), man(1)
+.\" Translation (c) 1999 Pawe³ Wilk <siewca@dione.ids.pl>
+.\" {PTM/PW/0.1/16-06-1999/"system szyfrowania Pretty Good Privacy"}
+.\" Thx for Jakub Chromik <cube@dione.ids.pl> for cigarettes used
+.\" during this translation. ;->
+.SH NAZWA
+pgp \- system szyfrowania Pretty Good Privacy
+.\" denote multiple entry points thus; makewhatis(8) will catch them
+.SH SK£ADNIA
+.B pgp \fR[\fIopcje\fR] \fIplikpgp
+.PP
+.B pgp \-e \fR[\fIopcje\fR] \fIplik u¿ytkownik\fR .\|.\|.
+.PP
+.SH OPIS
+
+.B PGP
+(Pretty Good Privacy) jest pakietem szyfrowania kluczem publicznym, który pozwala
+chroniæ wiadomo¶ci E-mail i pliki danych. Pozwala ci on bezpiecznie  
+komunikowaæ siê z lud¼mi nigdy wcze¶niej nie poznanymi, bez ¿adnych bezpiecznych
+kana³ów s³u¿±cych do wymiany kluczy. Jest on ca³kiem nie¼le uposa¿ony i szybki,
+z wymy¶lnym mechanizmem zarz±dzania kluczami, cyfrowymi podpisami, kompresj±
+danych i o dobrym, ergonomicznym wygl±dzie.
+
+  Je¶li naprawdê chcesz siê nauczyæ w jaki sposób u¿ywaæ go w³a¶ciwie to chyba
+najodpowiedniejszym bêdzie przeczytaæ pe³n± dokumentacjê dostarczan± razem
+z systemem, która jest bardzo szczegó³owa. To jest podrêcznik typu 
+"szybki start"; jest to taki niekompletny niezbêdnik, który zapozna ciê
+z wiêkszo¶ci± podstawowych za³o¿eñ, w³±czaj±c w to niektóre zagadnienia
+zwi±zane z kryptografi± z wykorzystaniem kluczy publicznych.
+
+.SS "Terminologia"
+
+.B id u¿ytkownika\fR: ci±g znaków ascii u¿ywany
+do zidentyfikowania u¿ytkownika.  Identyfikator u¿ytkownika mo¿e wygl±daæ
+na przyk³ad tak: "Pawe³ W. Siewca <pws@xyzcorp.com>"; proszê
+próbowaæ trzymaæ siê tego formatu. 
+Kiedy podajesz identyfikator u¿ytkownika do PGP to powiniene¶
+wyspecyfikowaæ jaki¶ unikatowy podci±g tekstowy (du¿e i ma³e litery 
+traktowane s± tak samo), np.: pawe³, albo pws@xyz.
+
+.B fraza koduj±ca\fR: tajny ci±g u¿ywany do konwencjonalnego kodowania twojego
+prywatnego klucza.  Wa¿ne jest by by³a ona trzymana w sekrecie.
+
+.B pêk kluczy\fR: plik zawieraj±cy zbiór tajnych lub publicznych kluczy.  
+Domy¶lne nazwy dla publicznych i tajnych pêków kluczy to odpowiednio 
+"pubring.pgp" i "secring.pgp".
+
+.B pancerz ascii\fR: format okre¶lany mianem ascii radix 64 - PGP u¿ywa go do
+transmitowania wiadomo¶ci poprzez kana³y takie jak E-mail; w zamy¶le podobne do
+kodowania uuencode.
+
+.SS "Krótkie omówienie poleceñ"
+
+By ujrzeæ krótki opis u¿ycia komendy dla PGP napisz po prostu:
+.br
+.B        pgp -h
+
+By zaszyfrowaæ zwyk³y plik u¿ywaj±c klucza publicznego odbiorcy:
+.br
+.B        pgp -e \fIplik_tekstowy czyj¶_id \fR...
+     
+By podpisaæ zwyk³y plik u¿ywaj±c swojego klucza prywatnego: 
+.br
+.B        pgp -s \fIplik_tekstowy \fR[\fB-u \fItwój_id\fR]
+ 
+
+By podpisaæ zwyk³y plik twoim kluczem prywatnym, a potem zaszyfrowaæ
+go u¿ywaj±c publicznego klucza odbiorcy:
+.br
+.B        pgp -es \fIplik_tekstowy czyj¶_id \fR...
+[\fB-u \fItwój_id\fR]
+       
+By stworzyæ od³±czony od dokumentu certyfikat podpisu:
+.br
+.B        pgp -sb \fIplik_tekstowy \fR[\fB-u \fItwój_id\fR]
+      
+By zaszyfrowaæ zwyk³y plik u¿ywaj±c konwencjonalnego szyfrowania napisz:
+.br
+.B        pgp -c \fIplik_tekstowy
+      
+By rozszyfrowaæ zakodowany plik lub sprawdziæ wiarygodno¶æ podpisu cyfrowo
+podpisanego zbioru:
+.br
+.B        pgp \fIzaszyfrowany_plik \fR[\fB-o \fIplik_tekstowy\fR]
+
+By ujrzeæ krótki opis poleceñ PGP s³u¿±cych do zarz±dzania kluczami napisz:
+.br
+.B        pgp -k
+
+By wygenerowaæ swoj± unikatow± parê kluczy publiczny/prywatny:
+.br
+.B        pgp -kg
+      
+By dodaæ do publicznego lub tajnego pêku kluczy klucz publiczny lub prywatny
+zawarty w pliku:
+.br
+.B        pgp -ka \fIplik_klucza \fR[\fIpêk_kluczy\fR]
+      
+By usun±æ klucz z publicznego pêku kluczy:
+.br
+.B        pgp -kr \fIid_u¿ytkownika \fR[\fIpêk_kluczy\fR]
+
+By wy³uskaæ (skopiowaæ) klucz z twojego publicznego lub prywatnego pêku kluczy:
+.br
+.B        pgp -kx\fR[\fBa\fR] \fIid_u¿ytkownika plik_klucza \fR[\fIpêk_kluczy\fR]
+      
+By przejrzeæ zawarto¶æ twojego publicznego pêku kluczy:
+.br
+.B        pgp -kv\fR[\fBv\fR] [\fIid_u¿ytkownika\fR] [\fIpêk_kluczy\fR]
+      
+By ujrzeæ "odcisk palca" publicznego klucza, by móc zweryfikowaæ go telefonicznie
+z w³a¶cicielem:
+.br
+.B     pgp -kvc \fR[\fIid_u¿ytkownika\fR] [\fIpêk_kluczy\fR]
+
+By ujrzeæ zawarto¶æ i sprawdziæ podpisy uwiarygadniaj±ce swojego publicznego 
+pêku kluczy:
+.br
+.B        pgp -kc \fR[\fIid_u¿ytkownika\fR] [\fIpêk_kluczy\fR] 
+      
+By zmodyfikowaæ frazê koduj±c± lub dodaæ identyfikator u¿ytkownika do klucza prywatnego:
+.br
+.B        pgp -ke \fIid_u¿ytkownika \fR[\fIpêk_kluczy\fR]
+
+By zmodyfikowaæ poziom zaufania dla klucza publicznego:      
+.br
+.B        pgp -ke \fIid_u¿ytkownika \fR[\fIpêk_kluczy\fR]
+      
+By usun±æ klucz lub po prostu identyfikator u¿ytkownika ze swojego pêku kluczy 
+publicznych:
+.br
+.B        pgp -kr \fIid_u¿ytkownika \fR[\fIpêk_kluczy\fR]
+
+By podpisaæ i uwiarygodniæ czyj¶ klucz publiczny przechowywany w pêku
+kluczy publicznych:
+.br
+.B        pgp -ks \fIczyj¶_id \fR[\fB-u \fItwój_id\fR] [\fIpêk_kluczy\fR]
+      
+By usun±æ wyszczególnione podpisy u¿ytkownika z pêku kluczy:
+.br
+.B        pgp -krs \fIid_u¿ytkownika \fR[\fIpêk_kluczy\fR]
+      
+Opcje komendy, które mog± byæ u¿yte w kombinacji z innymi opcjami
+(czasem nawet literuj±c ciekawe s³owa):
+      
+By wyprodukowaæ zaszyfrowany zwyk³y plik w formacie ASCII radix-64, 
+po prostu dodaj opcjê -a podczas szyfrowania lub podpisywania wiadomo¶ci
+lub wy³uskiwania klucza:
+.br
+.B        pgp -sea \fIplik_tekstowy czyj¶_id
+.br
+.B        pgp -kxa \fIid_u¿ytkownika plik_klucza \fR[\fIpêk_kluczy\fR]
+      
+By wyczy¶ciæ zwyk³y plik zaraz po wytworzeniu pliku zaszyfrowanego
+dodaj po prostu opcjê
+.B -w
+(wipe) podczas szyfrowania lub podpisywania wiadomo¶ci:
+.br
+.B        pgp -sew \fIwiadomo¶æ.txt czyj¶_id
+
+By okre¶liæ, ¿e zwyk³y plik zawiera tekst ASCII, nie binaria i
+powinien byæ konwersowany do sposobu zapisu linii tekstu odbiorcy
+dodaj opcjê
+.B -t
+(text) do innych opcji:
+.br
+.B        pgp -seat \fIwiadomo¶æ.txt czyj¶_id
+      
+By przegl±dn±æ rozszyfrowane wyj¶cie tekstu na ekranie (jak
+w Unixowej komendzie "more"), bez zapisywania do pliku, u¿yj
+opcji
+.B -m
+(more) podczas deszyfrowania:
+.br
+.B        pgp -m \fIzaszyfrowany_plik
+      
+By okre¶liæ, ¿e rozszyfrowany przez odbiorcê tekst bêdzie mo¿na 
+.B tylko
+obejrzeæ na ekranie, a nie zapisaæ do pliku zapodaj opcjê
+.B -m
+.br
+.B        pgp -steam \fIwiadomo¶æ.txt czyj¶_id
+      
+By przywróciæ oryginaln± nazwê pliku tekstowego podczas rozszyfrowywania
+wytypuj opcjê
+.B -p
+.br
+.B        pgp -p \fIzaszyfrowany_plik
+      
+By u¿yæ trybu filtrów w stylu Unixa, odczytywanie ze standardowego wej¶cia
+i zapis na standardowe wyj¶cie podaj opcjê
+.B -f
+.br
+.B        pgp -feast \fIczyj¶_id \fB<\fIplik_wej¶ciowy \fB>\fIplik_wyj¶ciowy
+      
+
+.SS "Plik Konfiguracyjny"
+
+PGP u¿ywa konfiguracyjnej bazy danych, która jest przechowywana w pliku
+"config.txt"; spójrz proszê w dokumentacjê po wiêcej szczegó³ów.
+Puste linie i linie zaczynaj±ce siê od "#" to komentarze.  Opcje przyjmuj± 
+warto¶ci liczbowe, logiczne, mog± te¿ byæ ci±gami tekstowymi.  Warto¶ci logiczne 
+to "on" i "off".  Opcje te mog± byæ tak¿e wyspecyfikowane w linii komend przy u¿yciu 
+takiej sk³adni jak np.:
+.B +armor=on\fR.
+S³owa kluczowe mog± byæ po³±czone z unikatowymi przedrostkami.  S³owa kluczowe
+nie s± czu³e na wielko¶æ liter. "=on" jest domy¶lnie dodawane do opcji
+logicznych je¶li nic nie zosta³o podane.
+
+Troszeczkê wyja¶nieñ:
+
+.B MYNAME - Domy¶lny Identyfikator U¿ytkownika do
+.B Tworzenia Podpisów
+      
+Warto¶æ domy¶lna:  MYNAME = ""
+      
+Parametr konfiguracyjny MYNAME okre¶la nam domy¶lny ID u¿ytkownika, którego
+u¿ywamy przy wyborze klucza prywatnego podczas stwarzania podpisów.
+Gdy MYNAME jest nieokre¶lone, to u¿ywany jest zainstalowany przez ciebie 
+i najczê¶ciej u¿ywany klucz prywatny.  U¿ytkownik mo¿e tak¿e przeci±¿yæ to
+ustawienie poprzez podanie identyfikatora u¿ytkownika w linii komend z
+opcj±
+.B -u
+
+.B TEXTMODE - Przyjêcie, ¿e Szyfrowany Tekst jest
+.B Plikiem Tekstowym
+      
+Warto¶æ domy¶lna:  TEXTMODE = off
+      
+Parametr konfiguracyjny TEXTMODE jest odpowiednikiem opcji
+.B -t
+wydanej z linii poleceñ.  Je¶li jest w³±czony to sprawia, ¿e PGP zak³ada i¿
+wprowadzane dane s± czystym plikiem tekstowym, nie binarnym, i przekszta³ca
+go do postaci "tekstu kanonicznego" przed szyfrowaniem.  Tekst kanoniczny ma
+znak powrotu karetki i znak nowej linii na koñcu ka¿dej linii tekstu.
+
+Tryb ten jest wy³±czany automatycznie je¶li PGP wykryje, ¿e zwyk³y plik
+zawiera binarne, 8-bitowe dane.  Jest wobec tego bezpiecznym pozostawienie
+tej opcji w³±czonej przez ca³y czas.
+
+.B ARMOR - W³±cz Opancerzone Wyj¶cie ASCII
+
+Warto¶æ domy¶lna:  ARMOR = off
+
+Parametr konfiguracyjny ARMOR jest odpowiednikiem opcji
+.B -a
+podanej w linii komend.  Je¶li jest w³±czony to sprawia, ¿e PGP emituje
+zaszyfrowany tekst lub klucze w formacie ASCII Radix-64 odpowiednim do 
+przesy³ania poprzez kana³y poczty elektronicznej.  Pliki wyj¶ciowe s±
+nazywane przy u¿yciu rozszerzenia ".asc".
+
+Je¶li zamierzasz u¿ywaæ PGP g³ównie do poczty elektronicznej mo¿e byæ dobrym
+pomys³em by w³±czyæ ten parametr.
+
+.B ARMORLINES - Rozmiar Wieloczê¶ciowych Plików
+.B Pancerza ASCII 
+
+Warto¶æ domy¶lna:  ARMORLINES = 720
+
+Przy wiêkszych plikach pancernego ASCII, PGP podzieli je na pliki
+o nazwach ".asc1", ".asc2", ".asc3", itd. by nie zapychaæ programów
+przesy³aj±cych pocztê, co zaczyna siê dziaæ zwykle przy oko³o 50,000
+bajtów.  Ten parametr pozwala nam okre¶liæ liczbê (64-bajtowych) linii 
+jakie nale¿y umie¶ciæ w ka¿dym z plików.  Je¶li ustawimy na 0, PGP nie bêdzie
+dzieliæ naszych plików z pancernym ASCII.
+
+.B CLEARSIG - W³±cz Czysto-Podpisane Wyj¶cie
+
+Warto¶æ domy¶lna:  CLEARSIG = on
+
+Normalnie, wiadomo¶æ cyfrowo podpisana i ASCII-opancerzona jest nieczytelna,
+nawet gdy tekst nie jest szyfrowany.  Zapobiega to niszczeniu zawarto¶ci
+przez programy obs³uguj±ce pocztê, lecz by zwyczajnie odczytaæ wiadomo¶æ 
+wymagany jest PGP.
+
+Je¶li w³±czymy CLEARSIG, to podczas podpisywania i uzbrajania-ASCII pliku
+tekstowego PGP u¿ywa odmiennego formatu, który za³±cza czysty tekst w formie
+czytelnej dla cz³owieka.  Linie zaczynaj±ce siê od "-" s± cytowane za pomoc±
+"\-\ ".
+By wspó³pracowaæ z niektórymi najg³upszymi na ¶wiecie programami do obs³ugi 
+poczty linie zaczynaj±ce siê od "From" s± tak¿e cytowane i w liniach usuwane s±
+pocz±tkowe spacje.  PGP usunie cytowanie je¶li u¿yjesz go do odszyfrowania
+wiadomo¶ci, lecz nie zostan± odzyskane pocz±tkowe spacje.  Opcja ta jest jeszcze
+na tyle u¿yteczna by by³a domy¶lnie w³±czona.
+
+.B ENCRYPTTOSELF - Dodaj MYNAME do Listy Odbiorców
+
+Warto¶æ domy¶lna:  ENCRYPTTOSELF = off
+
+Je¶li jest to w³±czone to MYNAME bêdzie do³±czone do listy odbiorców ka¿dej
+wiadomo¶ci, któr± szyfrujesz kluczem publicznym.  W takim wypadku MYNAME
+jest szukane w pêku kluczy publicznych, jest to potrzebne by jednoznacznie
+okre¶liæ w³a¶ciwy klucz.
+
+.B LANGUAGE - U¿ywany Jêzyk
+
+Warto¶æ domy¶lna:  LANGUAGE = en
+
+Je¶li chcesz u¿ywaæ odmiennego jêzyka i jego t³umaczenie s± w pliku
+language.txt, to ustawienie tej opcji sprawi, ¿e wiadomo¶ci PGP bêd± siê
+pojawiaæ w innym jêzyku.  Je¶li t³umaczenie dla wiadomo¶ci jest niedostêpne to
+wiadomo¶æ ta pojawi siê w jêzyku angielskim.
+
+Je¶li szukasz czego¶ na temat zaopatrywania siê w plik language.txt, 
+to jego format powinien byæ dla ciebie oczywisty.
+
+.B CHARSET - Zestaw Znaków
+
+Warto¶æ domy¶lna:  CHARSET = noconv
+
+PGP próbuje przet³umaczyæ wszystkie wiadomo¶ci trybu tekstowego na alfabet
+ISO Latin-1, albo na alfabet KOI-8 dla cyrylicy. Ustawienie to wskazuje
+drugorzêdny zestaw znaków, tak wiêc PGP mo¿e dokonaæ odpowiedniej translacji.
+Opcjami mog± byæ noconv, latin1 lub koi8, wskazuj±ce, ¿e nie jest potrzebna
+¿adna translacja; cp850, wskazuj±ce, ¿e powinna byæ u¿yta strona kodowa
+IBM PC 850; ascii, wskazuj±ce, ¿e powinien byæ u¿yty minimalny podzestaw
+znaków ASCII; i alt_codes, wskazuj±ce, ¿e dla cyrylicy powinny byæ u¿yte
+alternatywne kody IBM PC.
+
+.B KEEPBINARY - Zachowaj Po¶rednik Plik .pgp
+
+Warto¶æ domy¶lna:  KEEPBINARY = off
+
+Je¶li w³±czymy KEEPBINARY, wtedy PGP wyprodukuje plik .pgp jako dodatek do 
+pliku .asc je¶li w³±czone jest opancerzone ASCII.
+
+.B TMP - Tymczasowy katalog plików
+
+Warto¶æ domy¶lna:  TMP = ""
+
+PGP tworzy pliki tymczasowe podczas rozszyfrowywania wiadomo¶ci. 
+Jest to katalog, w którym s± one przechowywane. Je¶li nie jest podany
+w pliku konfiguracyjnym to u¿ywana jest zmienna ¶rodowiskowa TMP, albo 
+katalog bie¿±cy.
+Dopomaga bezpieczeñstwu je¶li nie jest katalog ten nie jest publicznie
+odczytywalny. Lokalny system plików te¿ mo¿e byæ dobrym pomys³em.
+
+.B COMPRESS - Kompresuj Tekst Przed Szyfrowaniem
+
+Warto¶æ domy¶lna:  COMPRESS = on
+
+PGP zwykle kompresuje plik zanim go zaszyfruje, wiêc bêdzie mniej do 
+szyfrowania i wysy³any przez ciebie plik bêdzie mniejszy.  Utrudnia to tak¿e
+analizê kryptograficzn±.  Opcja ta jest najczê¶ciej wy³±czana jedynie ze
+wzglêdów odpluskwiania.
+
+.B PAGER - Wybierz Komendê Pow³oki by Wy¶wietlaæ Wyj¶cie Pagera
+
+Warto¶æ domy¶lna:  PAGER = ""
+
+Je¶li ustawione, PGP u¿yje podanego programu by przegl±daæ pliki kiedy
+podano opcjê 
+.B -m
+w linii komend.  Domy¶lnie, PGP u¿yje prostego pagera wewnêtrznego.
+
+.B SHOWPASS - Wy¶wietlaj Frazê Koduj±c± Podczas Wprowadzania
+
+Warto¶æ domy¶lna:  SHOWPASS = off
+
+Je¶li kto¶ nie jest w stanie wprowadziæ d³ug± frazê bez ogl±dania jej na
+ekranie, mo¿e ¿yæ tej opcji, kosztem bezpieczeñstwa oczywi¶cie.
+
+.B INTERACTIVE - Zapytaj Przed Dodaniem Ka¿dego Klucza
+
+Warto¶æ domy¶lna:  INTERACTIVE = off
+
+Domy¶lnie, gdy podany plik zawiera nowe klucze, PGP spyta, czy chcesz je
+dodaæ do swojego pêku kluczy publicznych. Odk±d dodawanie kluczy wcale nie 
+implikuje tego, ¿e masz do nich zaufanie, dodawanie nowych jedynie
+marnuje miejsce.  Je¶li ta opcja jest ustawiona PGP upewnia siê w zwi±zku
+z dodaniem ka¿dego klucza z pliku z kluczami.
+
+.B VERBOSE - Poziom Szczegó³owo¶ci Wydruku
+
+Warto¶æ domy¶lna:  VERBOSE = 1
+
+Gdy jest ustawione na 0 to PGP wypisuje tylko wiadomo¶ci, które s±
+potrzebne, lub które wskazuj± jaki¶ b³±d. Gdy ustawimy 2 to PGP wypisze
+nam znaczenie ca³ej zawarto¶ci informacji "odpluskwiaj±cej" o tym, co
+aktualnie jest wykonywane. Warto¶ci wiêksze ni¿ 2 nie daj± ¿adnych
+efektów.
+
+.B PUBRING - Lokalizacja Publicznego Pêku Kluczy
+
+Warto¶æ domy¶lna:  PUBRING = $PGPPATH/pubring.pgp
+
+To jest nazwa ¶cie¿kowa prowadz±ca do u¿ywanego pêku kluczy publicznych.
+
+.B SECRING - Lokalizacja Prywatnego Pêku Kluczy
+
+Warto¶æ domy¶lna:  SECRING = $PGPPATH/secring.pgp
+
+To jest nazwa ¶cie¿kowa prowadz±ca do u¿ywanego pêku kluczy prywatnych.
+
+.B BAKRING - Kopia Zapasowa Prywatnego Pêku Kluczy
+
+Warto¶æ domy¶lna:  BAKRING = ""
+
+Je¶li jest ustawione, to podczas sprawdzania twojego pêku kluczy (\fBpgp -kc\fR), 
+PGP porówna zwyk³y pêk kluczy prywatnych z podan± kopi± zapasow±, 
+przechowywan± zazwyczaj na chronionym przed zapisem, wymiennym no¶niku.
+S³u¿y to ochronie przeciwko "hurtowym" modyfikacjom twoich pêków kluczy 
+przy u¿yciu ataku bazuj±cego na podszywaniu siê.
+
+.B RANDSEED - Plik z Zarodkiem Losowej Warto¶ci
+
+Warto¶æ domy¶lna:  RANDSEED = $PGPPATH/randseed.bin
+
+Jest to ¶cie¿ka dostêpu do pliku zawieraj±cego zarodek losowo¶ci, którego
+PGP u¿ywa w swoim algorytmie generowania liczb losowych
+do wytwarzania kluczy sesji. Ten plik powinien byæ chroniony przed
+przypadkowym odkryciem, poniewa¿ jest czê¶ci± procesu, 
+podczas którego PGP d±¿y do wielkich d³ugo¶ci by u¿yæ mo¿liwie najlepszego
+dostêpnego ¼ród³a losowo¶ci przy generowaniu kluczy sesji.
+
+.B COMMENT - Komentarz Opancerzonego ASCII
+
+Warto¶æ domy¶lna:  COMMENT = ""
+
+Je¶li nie jest ci±giem pustym to warto¶æ tej zmiennej jest umieszczana
+w nag³ówkach plików opancerzonego ASCII, poprzedzona s³owem "Comment: ".
+
+.B LEGAL_KLUDGE - Niekompatybilno¶æ z PGP w wersji innej ni¿ 2.6
+
+Warto¶æ domy¶lna:  LEGAL_KLUDGE = on
+
+Je¶li to ustawimy to PGP bêdzie generowaæ klucze w nowym formacie,
+który nie mo¿e byæ odczytany przez wersjê 5.2 i wcze¶niejsze.
+
+.SS "Certyfikacja Klucza"
+
+PGP u¿ywa takiego systemu, ¿e u¿ytkownicy mog± specyfikowaæ zaufanych
+u¿ytkowników, którzy mog± podpisywaæ publiczne klucze innych ludzi.
+Jest wa¿ne by¶ wiedzia³, jak ten mechanizm dzia³a; pe³en opis
+znajdziesz w dokumentacji.
+
+.B Wa¿ne\fR: Dokumentacja opisuje tak¿e sposób w jaki generowaæ i przesy³aæ
+certyfikat "kompromitacji klucza", który mówi czytaj±cym, ¿e twój klucz
+prywatny zosta³ skompromitowany (odkryty - przyp. t³um.). 
+Je¶li twój klucz jest skompromitowany to przeczytaj proszê sekcjê 
+podrêcznika dotycz±c± certyfikatów kompromitacji i tego jak je tworzyæ;
+im szybciej wy¶lesz certyfikat kompromitacji klucza, tym mniejsz±
+"¼li ch³opcy" bêd± mieli sposobno¶æ by wysy³aæ podrobione wiadomo¶ci.
+
+.SS "Wa¿ne Wskazówki"
+
+PGP próbuje automatycznie kompresowaæ twój plik wej¶ciowy; zachodzi wiêc
+ma³y punkt w przed-kompresji wej¶cia do transmisji.
+
+"Opancerzone ascii" PGP jest potrzebne tylko w przypadku, gdy dane
+transmitowane s± na zewn±trz; przyk³adowo, je¶li wysy³asz klucz publiczny
+komu¶ innemu podpisuj±c go z jakiego¶ bli¿ej nieokre¶lonego powodu, po prostu
+"uzbrój" wychodz±c± wiadomo¶æ; najlepiej podpisaæ binarn± formê klucza.
+
+.SS "Inne Jêzyki"
+
+PGP jest ³atwo konfigurowalne pod k±tem ró¿nych wersji jêzykowych
+(komunikaty b³êdów i pomocy); zosta³o ono bowiem przet³umaczone na
+wiele innych nie-angielskich jêzyków. Po wiêcej szczegó³ów przejrzyj w
+podrêczniku opis pliku "language.txt".
+
+.SH ¦RODOWISKO
+
+PGP na potrzeby posiada/generuje kilka specjalnych plików, takich jak
+twoje standardowe pliki pêków kluczy "pubring.pgp" i "secring.pgp",
+plik z zarodkiem losowej liczby "randseed.bin", plik konfiguracyjny PGP "config.txt"
+oraz plik przet³umaczonych komunikatów "language.txt". Pliki te mog±
+byæ przechowywane w jakimkolwiek katalogu o ile zmienna "PGPPATH" wskazuje
+na ten katalog. Je¿eli zmienna "PGPPATH" pozostaje niezdefiniowana,
+ww. pliki znajd± siê w katalogu bie¿±cym.
+
+Zwykle PGP prosi u¿ytkownika, aby ten wpisa³ sw± frazê koduj±c±, gdy tylko
+PGP chce odblokowaæ klucz prywatny. Jednakowo¿ mo¿liwe jest przechowanie
+frazy w zmiennej ¶rodowiskowej pow³oki twojego systemu operacyjnego.
+Zmienna "PGPPASS" mo¿e byæ u¿yta to podtrzymania frazy koduj±cej, której
+PGP zechce ³askawie u¿yæ najpierw. Je¶li fraza przechowywana w "PGPPASS"
+jest nieprawid³owa PGP poprosi o wprowadzenie jej jeszcze raz. To
+niebezpieczne udogodnienie czyni twe ¿ycie bardziej wygodnym je¶li musisz
+regularnie zajmowaæ siê du¿± liczb± przychodz±cych wiadomo¶ci adresowanych
+do twojego klucza prywatnego, eliminuj±c potrzebê ci±g³ego wklepywania
+frazy koduj±cej, za ka¿dym uruchomieniem PGP.
+.B  To jest bardzo gro¼ne udogodnienie\fR; w systemie UNIX zadaniem wprost 
+trywialnym jest przeczytanie czyjego¶ ¶rodowiska u¿ywaj±c komendy ps(1).
+Je¶li zastanawiasz siê nad u¿yciem tego gad¿etu, musisz z pewno¶ci±
+przeczytaæ sekcjê "How to Protect Secret Keys from Disclosure" i "Exposure on
+Multi-user Systems" w pe³nym podrêczniku PGP.
+
+Je¶li zdefiniowana jest zmienna ¶rodowiskowa PGPPASSFD to musi ona
+mieæ warto¶æ numeryczn±, której PGP u¿yje jako numer deskryptora pliku by
+przeczytaæ z niego frazê koduj±c±. Ta operacja jest przeprowadzana
+przed czymkolwiek innym, mo¿esz wiêc u¿ywaæ standardowego strumienia
+wej¶ciowego jako pliku wej¶ciowego. Jest to g³ównie u¿ywane przez
+skrypty pow³oki, odk±d pod systemem Unix trudno jest czytaæ ³±cza komunikacyjne
+(potoki - przyp. t³.) innych u¿ytkowników.
+
+.SH "WARTO¦Æ ZWRACANA"
+
+PGP zwraca pow³oce 0 je¶li wszystko pójdzie dobrze, a warto¶æ niezerow±
+kodu b³êdu w przypadku jakich¶ niepowodzeñ. Popatrz w ¼ród³a by dowiedzieæ
+siê wiêcej szczegó³ów na temat zwrotnych, niezerowych warto¶ci statusów 
+wyj¶ciowych.
+
+.SH PLIKI
+.br
+.nf
+.\" set tabstop to longest possible filename
+.ta \w'/usr/local/lib/pgp/language.txt'u
+*.pgp	plik zaszyfrowany, podpis, czasem klucz
+*.asc	plik opancerzonego ascii
+/usr/local/lib/config.txt	globalny plik konfiguracyjny
+$PGPPATH/config.txt	plik konfiguracyjny u¿ytkownika
+$PGPPATH/pubring.pgp	publiczny pêk kluczy
+$PGPPATH/secring.pgp	prywatny pêk kluczy
+$PGPPATH/randseed.bin	plik z zarodkiem losowych liczb
+/usr/local/lib/pgp/language.txt
+$PGPPATH/language.txt	plik z obcojêzycznymi t³umaczeniami
+/usr/local/lib/pgp/pgp.hlp
+$PGPPATH/pgp/pgp.hlp  	tekstowy plik pomocy
+/usr/local/lib/pgp/pgpkey.hlp
+$PGPPATH/pgp/pgpkey.hlp  	tekstowy plik pomocy zarz±dzania kluczami
+
+.SH UWAGA
+
+Podrêcznik jest naprawdê dobry i na d³u¿sz± metê warto by¶ go przeczyta³.
+PGP mo¿e byæ doskona³ym zamkiem, ale musisz jeszcze odpowiednio wstawiæ
+ten zamek w drzwi, tak ¿eby w³amywacze trzymali siê z daleka. Przeczytaj wiêc
+podrêcznik i odkryj jak!
+
+.SH PRZESTROGI
+
+Nie mo¿na przekre¶laæ wagi ochrony klucza prywatnego.
+Ka¿dy kto ma do niego dostêp mo¿e fa³szowaæ wiadomo¶ci pochodz±ce od ciebie
+lub czytaæ adresowan± do ciebie pocztê.  B±d¼ bardzo ostro¿ny u¿ywaj±c PGP na
+jakimkolwiek systemie wielodostêpowym.
+
+Autorzy PGP ufaj±, ¿e jest to najbardziej bezpieczne oprogramowanie
+kryptograficzne dostêpne publicznie, gdy u¿ywa siê go zgodnie ze wskazówkami,
+a przecie¿ ka¿dy zawsze ¿±da by jego ulubiony system kryptograficzny
+by³ bezpieczny.  Przeczytaj sekcjê podrêcznika zatytu³owan± "Trusting Snake Oil" 
+i sekcjê "Vulnerabilities" by poznaæ ró¿ne sztuczki.
+
+.SH DIAGNOSTYKA
+
+Najczê¶ciej nie wymaga wyja¶nieñ.
+
+.SH USTERKI
+
+PGP by³o oryginalnie napisane dla komputera PC i zachowuje siê w zwi±zku
+z tym bardzo PCtowo.  W szczególno¶ci jest to automatyczny wybór plików,
+rozszerzeñ plików, i inne rzeczy ca³kiem obce ¶rodowiskom UNIXowym.
+
+Ta strona man mo¿e wymagaæ odnowieñ by uwzglêdnia³a ostatnie ulepszenia.
+
+.SH AUTORZY
+
+Oryginalnie napisane przez Philipa R. Zimmermanna.  Potem rozszerzone
+przez tysi±ce innych ludzi.
+
+.SH "OGRANICZENIA PRAWNE"
+
+PGP 2.6.3i jest wolnodostêpne (freeware), i mo¿e byæ u¿ywane tylko w celach
+niekomercyjnych. Tej wersji PGP nie wolno u¿ywaæ na terytorium USA lecz
+mo¿na z powodzeniem u¿yæ jej gdziekolwiek indziej na ¶wiecie. U¿ytkownicy
+ze Stanów Zjednoczonych powinni w zamian zdobyæ kopiê MIT PGP 2.6.2 albo
+zakupiæ komercyjn± wersjê 2.7.1 od ViaCrypt.
+
+Po bardziej szczegó³ow± informacjê dotycz±c± licencjonowania PGP, 
+rozpowszechniania, praw kopiowania, patentów, znaków handlowych, 
+ograniczeñ prawnych, oraz ograniczeñ eksportowych, zapoznaj siê z sekcj±
+"Legal Issues" w podrêczniku "PGP User's Guide, Volume II: Special Topics".

@@ -1,0 +1,362 @@
+.\" T³umaczenie w oparciu o t³umaczenie apt-get.8 dla systemu Debian
+.\" Roberta Luberdy <robert@debian.org> wykona³ w listopadzie 2001
+.\" A. Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\"
+.TH "apt-get" "8" "25 pa¼dziernika 2000" "apt" ""
+.SH NAZWA
+apt-get \- narzêdzie zarz±dzania pakietami APT -- interfejs linii poleceñ
+.SH SK£ADNIA
+.sp
+apt-get [opcje] [polecenie] [pakiet ...]
+.PP
+.SH OPIS
+\fBapt-get\fP jest narzêdziem do zarz±dzania pakietami dzia³aj±cym z linii
+poleceñ i mo¿e byæ uwa¿ane za wewnêtrzne narzêdzie apt(8).
+.PP
+\fIpolecenie\fP jest jednym z:
+.IP o
+update
+.IP o
+upgrade
+.IP o
+dselect-upgrade [1]
+.IP o
+dist-upgrade
+.IP o
+install pakiet1 [pakiet2] [...]
+.IP o
+remove pakiet1 [pakiet2] [...]
+.IP o
+source pakiet1 [pakiet2] [...]
+.IP o
+check
+.IP o
+clean
+.IP o
+autoclean
+.PP
+Je¿eli nie zostanie podana opcja -h lub --help, musi byæ u¿yte jedno
+z powy¿szych poleceñ.
+.PP
+Uwaga:
+[1] Wy³±cznie dla systemów Debian
+.PP
+.IP "\fBupdate\fP"
+\fBupdate\fP jest u¿ywane do zsynchronizowania zawarto¶ci plików indeksu
+pakietów z ich ¼ród³em. Lista dostêpnych pakietów jest pobierana z lokalizacji
+okre¶lonych w pliku \fB/etc/apt/sources.list\fP.
+Na przyk³ad, gdy u¿ywane jest archiwum Debiana, to polecenie pobiera
+i przegl±da pliki \fBPackages.gz\fP, tak ¿eby udostêpniæ informacje o nowych
+i uaktualnionych pakietach. Polecenie update powinno byæ u¿yte zawsze przed
+\fBupgrade\fP lub \fBdist-upgrade\fP. Nale¿y zauwa¿yæ, ¿e licznik
+ca³kowitego postêpu operacji jest b³êdny, poniewa¿ rozmiar plików
+\fBPackages.gz\fP nie jest wcze¶niej znany.
+.IP
+.IP "\fBupgrade\fP"
+\fBupgrade\fP instaluje najnowsze wersje wszystkich aktualnie zainstalowanych
+w systemie pakietów, na podstawie ¼róde³ wymienionych w pliku
+\fB/etc/apt/sources.list\fP. Zainstalowane pakiety, których nowsza
+wersja jest dostêpna, s± pobierane i uaktualniane; w ¿adnym wypadku podanie
+tej opcji nie spowoduje usuniêcia zainstalowanego pakietu ani pobrania
+i zainstalowania nowego pakietu, wcze¶niej nie zainstalowanego. Pakiety,
+których nowa wersja wymaga zmiany statusu (np. zainstalowania b±d¼ usuniêcia)
+innego pakietu, nie bêd± uaktualnione. Aby \fBapt-get\fP wiedzia³, ¿e s±
+dostêpne nowe wersje pakietów, nale¿y wcze¶niej wykonaæ \fBupdate\fP.
+.IP
+.IP "\fBdselect-upgrade\fP"
+\fBdselect-upgrade\fP jest u¿ywane w po³±czeniu z nak³adk± \fBdselect (8)\fP,
+tradycyjnym narzêdziem do zarz±dzania pakietami w systemie Debian GNU/Linux.
+\fBdselect-upgrade\fP ¶ledzi zmiany pola \fIStatus\fP dostêpnych pakietów,
+wykonane programem \fBdselect\fP i podejmuje dzia³ania niezbêdne do
+osi±gniêcia okre¶lonego tam stanu (na przyk³ad poprzez usuniêcie starych
+pakietów i dodanie nowych).
+Polecenie to jest dostêpne jedynie na systemach Debian.
+.IP
+.IP "\fBdist-upgrade\fP"
+\fBdist-upgrade\fP wykonuje to samo, co upgrade, jednak¿e w inteligentny
+sposób wykrywa zmiany zale¿no¶ci miêdzypakietowych w nowych wersjach pakietów.
+\fBapt-get\fP ma wbudowany "sprytny" system rozwi±zywania konfliktów i je¶li
+bêdzie to potrzebne, podejmie próbê zaktualizowania najwa¿niejszych pakietów,
+kosztem tych mniej wa¿nych. Plik \fB/etc/apt/sources.list\fP zawiera
+listê adresów, z których bêd± pobierane ¿±dane pakiety.
+.IP
+.IP "\fBinstall\fP"
+po \fBinstall\fP musi wystêpowaæ nazwa jednego lub wiêcej \fIpakietów\fP
+przeznaczonych do zainstalowania. Ka¿dy argument jest nazw± pakietu,
+a nie pe³n± nazw± pliku, w którym siê znajduje
+(na przyk³ad, w systemie Debian GNU/Linux tym argumentem by³oby \fIldso\fP,
+a nie \fIldso_1.9.6-2.deb\fP). Wszystkie pakiety, niezbêdne do zainstalowania
+¿±danego(-ych) pakietu(-ów), bêd± tak¿e pobrane i zainstalowane.
+Plik \fB/etc/apt/sources.list\fP zawiera listê adresów, z których bêd±
+pobierane ¿±dane pakiety. Je¿eli przed nazw± pakietu pojawi siê minus (bez
+spacji pomiêdzy minusem a nazw± pakietu), to ten pakiet zostanie usuniêty,
+o ile oczywi¶cie jest zainstalowany. Ta ostatnia w³a¶ciwo¶æ mo¿e byæ
+u¿yta do nadpisania decyzji, podjêtych przez system rozwi±zywania konfliktów
+programu apt-get.
+.IP
+Je¿eli ¿aden pakiet nie pasuje do podanego wyra¿enia, a wyra¿enie to zawiera
+jeden z nastêpuj±cych znaków: '.', '?' lub '*', to zak³ada siê, ¿e
+jest to wyra¿enie regularne zgodne z POSIX-em i odnosi siê ono do
+wszystkich nazw pakietów w bazie. Pakiety, których nazwy pasuj± do tego
+wyra¿enia regularnego, s± instalowane (b±d¼ usuwane). Nale¿y zwróciæ uwagê
+na to, ¿e dopasowywany jest podci±g, tak wiêc 'lo*' pasuje zarówno do
+'how-lo', jak i do 'lowest'. Je¶li jest to niepo¿±dane, to nale¿y poprzedziæ
+wyra¿enie znakiem '^'.
+.IP
+.IP "\fBremove\fP"
+\fBremove\fP odpowiada poleceniu \fBinstall\fP z t± ró¿nic±, ¿e pakiety s±
+usuwane, a nie instalowane. Je¿eli nazwa pakietu zostanie poprzedzona
+znakiem plusa (bez rozdzielaj±cej spacji), wskazany pakiet zostanie
+zainstalowany.
+.IP
+.IP "\fBsource\fP"
+\fBsource\fP powoduje, ¿e apt-get pobiera pakiety ze ¼ród³ami. APT na
+podstawie listy dostêpnych pakietów decyduje, który pakiet ¼ród³owy ¶ci±gn±æ.
+Nastêpnie szuka najnowszej dostêpnej wersji pakietu ze ¼ród³ami i pobiera
+j± do bie¿±cego katalogu. Pakiety ze ¼ród³ami s± znajdowane
+inaczej ni¿ pakiety binarne: przez linie z identyfikatorem \fBdeb-src\fP lub
+\fBrpm-src\fP w pliku \fBsources.list\fP. Mo¿e to oznaczaæ, ¿e pobrany
+pakiet ¼ród³owy nie bêdzie odpowiada³ pakietowi binarnemu, który jest lub
+móg³by byæ zainstalowany. Je¿eli podano opcjê --compile, pakiet ¼ród³owy
+zostanie skompilowany do pakietu binarnego .deb za pomoc± programu
+dpkg-buildpackage, a na systemach opartych na RPM, do pakietu binarnego .rpm
+za pomoc± rpm -ba. Podanie opcji --download-only spowoduje natomiast, ¿e
+pakiet ¼ród³owy nie zostanie rozpakowany.
+.IP
+Uwaga. Pakiety ¼ród³owe nie s± traktowane tak samo, jak pakiety binarne.
+Istniej± one tylko w bie¿±cym katalogu i ich pobieranie jest podobne do
+pobierania innych paczek ze ¿ród³ami.
+.IP
+.IP "\fBcheck\fP"
+\fBcheck\fP jest poleceniem diagnostycznym, które od¶wie¿a bufor pakietów
+i poszukuje pakietów uszkodzonych.
+.IP
+.IP "\fBclean\fP"
+\fBclean\fP czy¶ci lokalne repozytorium pobranych plików z pakietami.
+Usuwa z katalogów \fB/var/cache/apt/archives/\fP i
+\fB/var/cache/apt/archives/partial/\fP wszystko oprócz pliku blokady.
+Gdy APT jest u¿ywane jako metoda programu \fBdselect(8)\fP, \fBclean\fP jest
+uruchamiane automatycznie. Osoby nie u¿ywaj±ce dselect, mog± chcieæ od czasu
+do czasu uruchamiaæ \f(CWapt-get clean\fP, aby zwolniæ trochê miejsca na
+dysku.
+.IP
+.IP "\fBautoclean\fP"
+\fBautoclean\fP, podobnie jak \fBclean\fP, czy¶ci lokalne repozytorium
+pobranych plików z pakietami. Ró¿nica polega na tym, ¿e \fBautoclean\fP usuwa
+tylko te pliki pakietów, które ju¿ nie mog± zostaæ pobrane i w wiêkszo¶ci s±
+bezu¿yteczne. Pozwala to na unikniêcie przed d³ugi czas niekontrolowanego
+wzrostu rozmiaru bufora.
+.IP
+.PP
+.SH OPCJE
+Wszystkie opcje linii poleceñ mog± byæ ustawione w pliku konfiguracyjnym.
+Poni¿sze opisy wskazuj±, któr± opcjê w pliku konfiguracyjnym nale¿y ustawiæ.
+W przypadku opcji logicznych, mo¿na uniewa¿niæ ustawienia pliku
+konfiguracyjnego, u¿ywaj±c \fB-f-\fP, \fB--no-f\fP, \fB-f=no\fP albo czego¶
+podobnego.
+.IP
+.IP "\fB-d\fP, \fB--download-only\fP"
+Tylko pobieranie; pliki z pakietami s± tylko pobierane, ale nie rozpakowywane
+czy instalowane.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::Download-Only\fP.
+.IP
+.IP "\fB-f\fP, \fB--fix-broken\fP"
+Poprawianie; podjêcie próby poprawienia uszkodzonych zale¿no¶ci. U¿ywanie
+tej opcji z install/remove mo¿e spowodowaæ pominiêcie którego¶ z pakietów
+podanych w linii poleceñ,
+.\" to wy¿ej - to s± wariacje na temat ;)
+co pozwoli programowi APT znale¼æ w³a¶ciwe rozwi±zanie problemu. Który¶
+z podanych w linii poleceñ pakietów musi stanowiæ jego rozwi±zanie. Ta opcja
+jest czasami potrzebna przy pierwszym uruchomieniu APT, który nie pozwala na
+wystêpowanie w systemie niespe³nionych zale¿no¶ci. Jest równie¿
+prawdopodobne, ¿e struktura zale¿no¶ci w systemie jest zniszczone do tego
+stopnia, ¿e bêdzie wymaga³a rêcznej interwencji (co zazwyczaj oznacza u¿ycie
+dselect lub dpkg --remove w celu usuniêcia niektórych winnych tego stanu
+pakietów). W pewnych sytuacjach u¿ycie tej opcji ³±cznie z \fB-m\fP mo¿e
+spowodowaæ b³±d.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::Fix-Broken\fP.
+.IP
+.IP "\fB-h\fP, \fB--help\fP"
+Pokazuje krótk± informacjê o sposobie u¿ycia.
+.IP
+.IP "\fB-v\fP, \fB--version\fP"
+Pokazuje wersjê programu.
+.IP
+.IP "\fB-m\fP, \fB--ignore-missing\fP, \fB--fix-missing\fP"
+Ignoruje brakuj±ce pakiety. Pakiety, które nie mog± byæ pobrane lub
+nie powiedzie siê test spójno¶ci pakietu po jego pobraniu (plik z pakietem
+jest uszkodzony), zostan± wstrzymane. W pewnych sytuacjach u¿ycie tej
+opcji ³±cznie z -f mo¿e spowodowaæ b³±d. Pakiet, który jest wybrany
+do instalacji (w szczególno¶ci wymieniony w linii poleceñ),
+ale nie mo¿e zostaæ pobrany, zostanie po cichu pominiêty.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::ignore-missing\fP.
+.IP
+.IP "\fB-S\fP, \fB--summary\fP"
+Uzywane z poleceniami upgrade lub dist-upgrade wypisuje informacje o tym, co
+by³oby uaktualnione, podaj±c poziom wa¿no¶ci i podsumowanie zmian (gdy te
+informacje s± dostêpne) i koñczy.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::Show-Upgrade-Summary\fP.
+.IP
+.IP "\fB--no-download\fP"
+Wy³±cza pobierania pakietów. Najlepiej stosowaæ z
+\fB--ignore-missing\fP, aby wymusiæ na APT u¿ywanie tylko tych plików .deb,
+które zosta³y wcze¶niej pobrane.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::No-Download\fP.
+.IP
+.IP "\fB-q\fP, \fB--quiet\fP"
+Po cichu; wypisuje tylko informacje potrzebne do logowania, opuszczaj±c
+wska¼niki postêpu. Wiêcej znaków q spowoduje jeszcze bardziej ciche
+wyj¶cie, maksimum wynosi 2. Mo¿na tak¿e ustawiæ poziom cicho¶ci za pomoc±
+\fB-q=#\fP, nadpisuj±c tym samym opcjê z pliku konfiguracyjnego.
+Nale¿y zauwa¿yæ, ¿e poziom cicho¶ci równy 2 implikuje -y, dlatego -qq
+nigdy nie powinno byæ u¿ywane bez opcji typu -d, --print-uris lub -s,
+gdy¿ APT mo¿e zadecydowaæ o zrobieniu czego¶, czego u¿ytkownik siê nie
+spodziewa.
+Odpowiadaj±cy element konfiguracji: \fBquiet\fP.
+.IP
+.IP "\fB-s\fP, \fB--simulate\fP, \fB--just-print\fP, \fB--dry-run\fP, \fB--recon,\fP, \fB-no-act\fP"
+Brak akcji; wykonuje symulacjê zdarzeñ, które mog³yby wyst±piæ, ale nic nie
+zmienia w systemie.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::Simulate\fP.
+.IP
+Symulacja powoduje wypisanie serii linii, z których ka¿da reprezentuje
+operacjê programu dpkg: konfigurowanie (Conf), usuniêcie (Remv),
+rozpakowanie (Inst). Nawiasy kwadratowe oznaczaj± uszkodzone pakiety,
+przy czym pusty zbiór pakietów w nawiasach kwadratowych oznacza brak
+nastêpstw (rzadko¶æ).
+.IP
+.IP "\fB-y\fP, \fB--yes\fP, \fB--assume-yes\fP"
+Automatyczna odpowied¼ "tak" na pytania. Zak³adaj±c odpowied¼ "tak"
+na wszelkie pytania, uruchamia siê w trybie nieinteraktywnym.
+Je¶li wyst±pi jaka¶ sytuacja niepo¿±dana, na przyk³ad zmiana wstrzymanego
+pakietu lub usuniêcie istotnego pakietu, \fBapt-get\fP przerwie dzia³anie.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::Assume-Yes\fP.
+.IP
+.IP "\fB-u\fP, \fB--show-upgraded\fP"
+Pokazuje uaktualnione pakiety. Wypisuje listê wszystkich pakietów, które
+bêd± uaktualnione.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::Show-Upgraded\fP.
+.IP
+.IP "\fB-b\fP, \fB--compile\fP, \fB--build\fP"
+Kompiluje pakiety ¼ród³owe po ich pobraniu.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::Compile\fP.
+.IP
+.IP "\fB--ignore-hold\fP"
+Ignoruje wstrzymanie pakietów. Ta opcja powoduje, ¿e \fBapt-get\fP
+zignoruje status "wstrzymany" pakietów. Mo¿e to byæ przydatne w po³±czeniu
+z \fBdist-upgrade\fP do uniewa¿nienia du¿ej liczby niepo¿±danych wstrzymañ.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Ignore-Hold\fP.
+.IP
+.IP "\fB--no-upgrade\fP"
+Nie aktualizuje pakietów. \fBno-upgrade\fP u¿yte w po³±czeniu z \fBinstall\fP
+spowoduje, ¿e te z wymienionych w linii poleceñ pakietów, które s± ju¿
+zainstalowane, nie zostan± zaktualizowane.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::no-upgrade\fP.
+.IP
+.IP "\fB--force-yes\fP"
+Wymuszenie. Jest to niebezpieczna opcja, która powoduje, ¿e apt-get kontynuuje
+swoje dzia³anie bez ¿adnej interakcji z u¿ytkownikiem, nawet je¶li robi co¶,
+co mo¿e byæ szkodliwe. Nie powinna byæ u¿ywana z wyj±tkiem bardzo szczególnych
+sytuacji. U¿ywanie \fBforce-yes\fP mo¿e zniszczyæ system!
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::force-yes\fP.
+.IP
+.IP "\fB--print-uris\fP"
+Nie pobiera pakietów do zainstalowania, tylko wypisuje ich URI. Ka¿dy URI
+sk³ada siê z lokalizacji, nazwy pliku przeznaczenia, rozmiaru oraz oczekiwanej
+sumy kontrolnej md5. Nale¿y zauwa¿yæ, ¿e nazwa pliku przeznaczenia nie musi
+byæ taka sama jak nazwa zdalnego pliku! Ta opcja dzia³a tak¿e z poleceniem
+\fBsource\fP.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::Print-URIs\fP.
+.IP
+.IP "\fB--purge\fP"
+Podczas usuwania pakietu, usuwa tak¿e jego pliki konfiguracyjne.
+Ta opcja jest ignorowana w systemach opartch na RPM.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::Purge\fP.
+.IP
+.IP "\fB--reinstall\fP"
+Ponownie instaluje pakiety, których najnowsza wersja ju¿ jest zainstalowana.
+.IP
+.IP "\fB--list-cleanup\fP"
+Ta opcja jest domy¶lnie w³±czona, mo¿na j± wy³±czyæ u¿ywaj±c
+\fB--no-list-cleanup\fP. Je¿eli jest w³±czona, \fBapt-get\fP bêdzie
+automatycznie zarz±dza³ zawarto¶ci± /var/lib/apt/lists, tak aby przestarza³e
+pliki by³y usuwane. Jedynym powodem dla jej wy³±czenia mog³yby byæ czêste
+zmiany w sources.list.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::List-Cleanup\fP.
+.IP
+.IP "\fB--trivial-only\fP"
+Wykonuje tylko \'banalne\' (ang. \'trivial\') operacje. Tê opcjê mo¿na
+porównaæ z --assume-yes, ale tam gdzie --assume-yes odpowiedzia³oby "tak" na
+pytanie, --trivial-only odpowie "nie".
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::Trivial-Only\fP.
+.IP
+.IP "\fB--no-remove\fP"
+Je¿eli jakikolwiek pakiet mia³by zostaæ usuniêty, apt-get natychmiast koñczy
+dzia³anie, bez pytania o potwierdzenie.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::No-Remove\fP.
+.IP
+.IP "\fB--diff-only\fP, \fB--tar-only\fP"
+Pobiera tylko plik diff albo tar pakietu ¼ród³owego.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Get::Diff-Only\fP.
+.IP
+.IP "\fB-c\fP, \fB--config-file\fP"
+Plik konfiguracyjny. Okre¶la plik konfiguracyjny, którego nale¿y u¿yæ.
+Program najpierw przeczyta swój domy¶lny plik konfiguracyjny, a nastêpnie plik
+podany jako argument tej opcji.
+Informacje na temat sk³adni mo¿na znale¼æ w \fBapt.conf(5)\fP.
+.IP
+.IP "\fB-o\fP, \fB--option\fP"
+Ustawia opcjê konfiguracyjn±. Mo¿na ustawiæ dowoln± opcjê konfiguracyjn±,
+Sk³adnia jest nastêpuj±ca:
+
+.nf
+
+-o Foo::Bar=bar
+.fi
+
+
+.PP
+.SH PLIKI
+.IP o
+/etc/apt/sources.list
+lokalizacje, z których bêd± pobierane pakiety
+.IP
+.IP o
+/var/cache/apt/archives/
+sk³adnica pobranych plików z pakietami
+.IP
+.IP o
+/var/cache/apt/archives/partial/
+sk³adnica w³a¶nie pobieranych plików z pakietami
+.IP
+.IP o
+/var/lib/apt/lists/
+sk³adnica informacji o stanie ka¿dej lokalizacji pakietów podanej w
+sources.list
+.IP
+.IP o
+/var/lib/apt/lists/partial/
+sk³adnica informacji o stanie w trakcie pobierania.
+.SH "ZOBACZ TAK¯E"
+.PP
+apt-cache(8),
+dpkg(8),
+dselect(8),
+sources.list(5),
+apt.conf(5),
+Przewodnik dla u¿ytkowników programu APT w /usr/share/doc/apt*/,
+.PP
+.SH DIAGNOSTYKA
+apt-get zwraca zero, gdy zakoñczy³o siê pomy¶lnie, 100 dziesiêtnie -
+w przypadku b³êdu.
+.SH "B£ÊDY"
+.PP
+Zobacz http://bugs.debian.org/apt. Aby z³o¿yæ raport o b³êdzie w APT,
+przeczytaj \fB/usr/share/doc/debian/bug-reporting.txt\fP lub u¿yj polecenia
+\fBbug(1)\fP. Je¶li korzystasz z programu apt w systemie opartym na RPM,
+korzystaj z http://distro.conectiva.com.br/bugzilla/.
+.PP
+.SH AUTOR
+apt-get zosta³ napisany przez zespó³ APT <apt@packages.debian.org> a
+do potrzeb systemów opartych na RPM przystosowa³ go Alfredo K. Kojima
+z Conectiva S.A. <kojima@conectiva.com.br>.

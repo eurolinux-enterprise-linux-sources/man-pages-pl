@@ -1,0 +1,80 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright (c) 1992 Drew Eckhardt <drew@cs.colorado.edu>, March 28, 1992
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified by Michael Haardt <michael@moria.de>
+.\" Modified Sat Jul 24 14:51:55 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified Mon Nov  4 21:02:11 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified 2001-06-04 by aeb
+.\" Translation (c) 2001 Andrzej M. Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\"              manpages 1.47
+.\"
+.TH NICE 2 2001-06-04 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+nice \- zmiana priorytetu procesu
+.SH SK£ADNIA
+.B #include <unistd.h>
+.sp
+.BI "int nice(int " inc );
+.SH OPIS
+.B nice
+dodaje
+.I inc
+do warto¶ci "nice" dla wywo³uj±cego pid.
+(Wysoka warto¶æ "nice" oznacza niski priorytet.)
+Tylko superu¿ytkownik mo¿e podawaæ ujemny przyrost, czyli zwiêkszenie
+priorytetu.
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu, zwracane jest zero. W wypadku b³êdu zwracane jest
+\-1 i odpowiednio ustawiane
+.IR errno .
+.SH B£ÊDY
+.TP
+.B EPERM
+U¿ytkownik inny ni¿ superu¿ytkownik próbowa³ dokonaæ zwiêkszenia priorytetu
+podaj±c ujemn± warto¶æ
+.IR inc .
+.SH "ZGODNE Z"
+SVr4, SVID EXT, AT&T, X/OPEN, BSD 4.3. Jednak¿e, Linux i glibc
+(wcze¶niejsze ni¿ glibc 2.2.4) zwraca³y warto¶æ niestandardow±, patrz ni¿ej.
+SVr4 dokumentuje dodatkowy b³±d EINVAL.
+.SH UWAGI
+Nale¿y zauwa¿yæ, ¿e wed³ug SUSv2, funkcja powinna zwracaæ now± warto¶æ
+"nice", podczas gdy funkcja systemowa Linuksa i funkcje (g)libc (wcze¶niejsze
+ni¿ w glibc 2.2.4) zwracaj± 0 w przypadku pomy¶lnego zakoñczenia.
+Now± warto¶æ "nice" mo¿na znale¼æ za pomoc±
+.BR getpriority (2).
+Nale¿y te¿ zauwa¿yæ, ¿e implementacja, w której
+.B nice
+zwraca now± warto¶æ nice mo¿e legalnie zwróciæ \-1.
+Aby skutecznie wykryæ b³±dr, nale¿y ustawiæ
+.I errno
+na 0 przed wywo³aniem funkcji i sprawdziæ warto¶æ tej zmiennej, gdy
+.B nice
+zwróci \-1.
+.SH "ZOBACZ TAK¯E"
+.BR nice (1),
+.BR getpriority (2),
+.BR setpriority (2),
+.BR fork (2),
+.BR renice (8)

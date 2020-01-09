@@ -1,0 +1,204 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright (C) Markus Kuhn, 1995
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139,
+.\" USA.
+.\"
+.\" 1995-11-26  Markus Kuhn <mskuhn@cip.informatik.uni-erlangen.de>
+.\"      First version written
+.\" Translation (c) 1998 "Gwidon S. Naskrent" <naskrent@hoth.amu.edu.pl>
+.\"
+.TH UNICODE 7 "1995-12-27" "Linux" "Podrêcznik Programisty Linuksa"
+.SH NAZWA
+Unicode \- zunifikowany 16-bitowy superzestaw znaków
+.SH OPIS
+Miêdzynarodowy standard
+.B ISO 10646
+definiuje
+.BR "Universal Character Set (UCS)" .
+.B UCS
+zawiera wszelkie znaki wszelkich innych zestawów znaków.  Gwarantuje
+on równie¿
+.BR "kompatybilno¶æ na okr±g³o" ,
+tj. budowanie takich tablic konwersji, ¿e podczas konwersji ³añcucha
+z jednego kodowania na 
+.B UCS
+i z powrotem nie jest tracona ¿adna informacja.
+
+.B UCS
+zawiera znaki wymagane do przedstawienia prawie wszystkich znanych
+jêzyków.  Obejmuje to, oprócz wielu jêzyków które u¿ywaj± rozszerzeñ
+pisma ³aciñskiego, tak¿e nastêpuj±ce pisma i jêzyki: grecki, cyrylica,
+hebrajski, arabski, armeñski, gruziñski, japoñski, chiñski, hiragana,
+katakana, koreañski, hangul, devangari, bengalski, gurmukji, gujarati,
+tamilski, oriya, telugu, kannada, malajlamski, tajski, lao, bopomofo
+i pewn± liczbê innych.  Trwaj± prace nad w³±czeniem innych pism,
+jak tybetañskiego, khmerskiego, runicznego, etiopskiego, hieroglifów,
+ró¿nych jêzyków indoeuropejskich i wielu innych.  Dla wiêkszo¶ci
+z tych drugich jêzyków w momencie opublikowania standardu w 1993,
+nie by³o jeszcze jasnym jak mo¿na je najlepiej zakodowaæ.  Dodatkowo
+oprócz znaków wymaganych przez pisma, w³±czono tak¿e du¿y zestaw
+symboli graficznych, typograficznych, matematycznych i naukowych,
+dostarczanych z TeX-em, PostScriptem, MS-DOS-em, Macintoshem,
+Videotextem, OCR i wieloma innymi systemami przetwarzania tekstów,
+a tak¿e kody specjalne, gwarantuj±ce "kompatybilno¶æ na okr±g³o"
+z wszelkimi innymi istniej±cymi zestawami znaków.
+
+Standard
+.B UCS
+(ISO 10646) opisuje zestaw znaków o architekturze 31-bitowej. Jednak¿e
+dzisiaj tylko pierwszym 65534 pozycjom kodowania (0x000 do 0xfffd), zwane
+.BR "Basic Multilingual Plane (BMP)" ,
+przypisano znaki, i spodziewane jest, ¿e tylko bardzo egzotyczne znaki
+(np. hieroglify) do specjalnych celów naukowych otrzymaj± miejsce
+poza ow± 16-bitow± BMP.
+
+Znaki
+.B UCS
+0x0000 do 0x007f s± identyczne z tymi w klasycznym zestawie znaków
+.BR US-ASCII ,
+a znaki w zakresie 0x000 do 0x00ff s± identyczne z tymi w zestawie znaków
+.B ISO 8859-1 .
+.SH ZNAKI SK£ADAJ¡CE
+Niektóre punkty kodowe w
+.B UCS
+zosta³y przypisane do 
+.BR "znaków sk³adaj±cych" .
+Podobne s± one do niespacyjnych klawiszy akcentów na maszynie do
+pisania. Znak sk³adaj±cy dodaje akcent do poprzedniego znaku. Najwa¿niejsze
+znaki akcentowane maj± osobne kody w
+.BR UCS ,
+jednak mechanizm znaków sk³adaj±cych pozwala dodawaæ akcenty i inne
+znaki diakrytyczne do ka¿dego znaku.  Znaki sk³adaj±ce zawsze nastêpuj±
+po znaku, który modyfikuj±.  Dla przyk³adu, niemiecki znak A-umlaut
+("Latin capital letter A with diaeresis") mo¿e byæ przedstawiony za
+pomoc± b±d¼ to istniej±cego ju¿ z³o¿onego znaku
+.B UCS
+o kodzie 0x00c4, b±d¼ alternatywnie jako kombinacja zwyk³ych znaków "capital
+letter A" i "combining diaeresis": 0x0041 0x0308.
+.SH POZIOMY IMPLEMENTACJI
+Poniewa¿ nale¿y siê spodziewaæ, ¿e nie wszystkie systemy bêd± obs³ugiwaæ
+zaawansowane mechanizmy w rodzaju sk³adania znaków, ISO 10646 okre¶la
+nastêpuj±ce trzy poziomy implementacji
+.BR UCS:
+.TP 0.9i
+Poziom 1
+Nieobs³ugiwane s± znaki sk³adane i Hangul Jamo (specjalne, bardziej
+skomplikowane kodowanie pisma koreañskiego, w którym sylaby Hangul
+s± kodowane jako dwa lub trzy podznaki).
+.TP
+Poziom 2
+Jak poziom 1, jednak¿e w niektórych pismach zezwala siê ju¿ na niektóre
+znaki sk³adaj±ce (np. hebrajski, arabski, devangari, bengalski,
+gurmukhi, gujarati, oriya, tamlilski, telugu, kannaga, malajlamski,
+tajski i lao).
+.TP
+Level 3
+Wszystkie znaki
+.B UCS
+s± obs³ugiwane.
+.PP
+Standard Unicode 1.1, opublikowany przez Unicode Consortium, zawiera
+dok³adnie
+.B UCS Basic Multilingual Plane
+na trzecim poziomie implementacji, jak to opisano w ISO 10646. Unicode 1.1
+dodaje tak¿e niektóre definicje semantyczne pewnych znaków do definicji
+ISO 10646.
+.SH UNICODE W LINUKSIE
+W Linuksie obecnie powinno u¿ywaæ siê 
+.B BMP
+tylko na pierwszym poziomie implementacji,
+aby unikn±æ komplikacji wynikaj±cych ze znaków sk³adanych. Wy¿sze poziomy
+implementacji s± odpowiedniejsze dla specjalnych formatów przetwarzania
+tekstów, ale nie jako ogólny systemowy zestaw znaków. Typ w C
+.B wchar_t
+jest w Linuksie 16-bitow± liczb± ca³kowit± bez znaku i jego warto¶ci
+interpretowane s± jako kody
+.B UCS
+na poziomie 1
+.B BMP .
+
+Ustawienie locale okre¶la czy systemowym kodowaniem znaków jest na
+przyk³ad
+.B UTF-8
+czy
+.BR "ISO 8859-1" .
+Do transformacji wewnêtrznych znaków
+.B wchar_t
+i ³añcuchów na systemowe kodowanie znaków i na odwrót
+mog± zostaæ u¿yte funkcje biblioteczne w rodzaju
+.BR wctomb ,
+.BR mbtowc ,
+albo
+.BR wprintf .
+
+.SH OBSZAR PRYWATNY
+W
+.BR BMP ,
+kodom z zakresu 0xe000 do 0xf8ff nigdy nie zostan± przypisane znaki;
+s± one zarezerwowane do u¿ytku prywatnego.  Dla spo³eczno¶ci
+Linuksowej ów obszar prywatny zosta³ dalej podzielony na zakres od
+0xe000 do 0xefff, którego mo¿e u¿ywaæ indywidualnie ka¿dy u¿ytkownik,
+oraz strefê linuksow± w zakresie 0xf000 do 0xf8ff, której rozszerzanie
+podlega koordynacji pomiêdzy wszystkimi u¿ytkownikami Linuksa. Rejestr
+znaków przypisanych do strefy Linuksowej utrzymuje obecnie 
+H. Peter Anvin <Peter.Anvin@linux.org> z Yggdrasil Computing, Inc. Zawiera
+one niektóre znaki graficzne DEC VT100 których brakuje w Unicode, daje
+bezpo¶redni dostêp do znaków w buforze fontu konsoli i zawiera znaki
+u¿ywane przez kilka bardziej zaawansowanych pism, jak klingoñski.
+.SH LITERATURA
+.TP 0.2i
+*
+Information technology \- Universal Multiple-Octet Coded Character
+Set (UCS) \- Part 1: Architecture and Basic Multilingual Plane.
+International Standard ISO 10646-1, International Organization
+for Standardization, Genewa, 1993.
+
+Jest to oficjalna specyfikacja
+.BR UCS .
+Ca³kiem oficjalna, ca³kiem gruba, i ca³kiem droga.  Co do informacji
+o zamówieniu, zobacz http://www.iso.ch.
+.TP
+*
+The Unicode Standard \- Worldwide Character Encoding Version 1.0.
+The Unicode Consortium, Addison-Wesley,
+Reading, MA, 1991.
+
+Dostêpny jest ju¿ Unicode 1.1.4.  Zmiany w stosunku do ksi±¿ki
+[opisuj±cej] 1.0 s± dostêpne na ftp://ftp.unicode.org.  Unicode 2.0
+zostanie opublikowany w postaci ksi±¿kowej w 1996.
+.TP
+*
+S. Harbison, G. Steele. C \- A Reference Manual. Fourth edition,
+Prentice Hall, Englewood Cliffs, 1995, ISBN 0-13-326224-3.
+
+Dobra ksi±¿ka-informator jêzyka programowania C.  Czwarte wydanie
+obejmuje tak¿e 1 Poprawkê do standardu C ISO (ISO/IEC 9899:1990) z 1994,
+która dodaje znaczn± liczbê nowych funkcji bibliotecznych C do obs³ugi
+wielobajtowych zestawów znaków.
+.SH B£ÊDY
+W czasie pisania tej strony man obs³uga 
+.B UCS
+w Linuksowej libc by³a daleka od kompletnej.
+.SH AUTOR
+Markus Kuhn <mskuhn@cip.informatik.uni-erlangen.de>
+.SH ZOBACZ TAK¯E
+.B utf-8(7)

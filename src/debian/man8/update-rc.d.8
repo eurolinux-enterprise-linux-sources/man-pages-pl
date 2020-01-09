@@ -1,0 +1,189 @@
+.\" {PTM/PR/0.1/23-07-1999/"instaluj lub usuñ dowi±zania do skryptów startowych w stylu System-V"}
+.\" Translation 1999 by Piotr Roszatycki
+.\" Translation update: Robert Luberda <robert@debian.org>, Apr 2004, sysvinit 2.85-13
+.\" $Id: update-rc.d.8,v 1.2 2004/04/05 11:04:55 robert Exp $
+.\"
+.\" Hey, Emacs!  This is an -*- nroff -*- source file.
+.\" Authors: Ian Jackson, Miquel van Smoorenburg
+.TH UPDATE\-RC.D 8 "23 grudnia 2003" "Projekt Debiana" "sysv-rc"
+.SH NAZWA
+update\-rc.d \- instaluje lub usuwa dowi±zania do skryptów startowych w stylu System-V
+.SH SK£ADNIA
+.B update\-rc.d
+.RI [ -n ]
+.RI [ -f ]
+.IB nazwa " remove"
+.HP
+.B update-rc.d
+.RI [ -n ]
+.IB nazwa " defaults"
+.RI [ NN " | " NN-start " " NN-stop ]
+.HP
+.B update-rc.d
+.RI [ -n ]
+.I nazwa
+.BR start | stop
+.IR "NN runlevel runlevel " ...
+.B .
+.BR start | stop
+.IR "NN runlevel runlevel " ...
+.BR . " ..."
+.SH OPIS
+.B update-rc.d
+automatycznie aktualizuje dowi±zania do skryptów w stylu System V.
+Dowi±zania o nazwie
+.BI /etc/rc runlevel .d/ NNnazwa
+s± kierowane do skryptu
+.BI /etc/init.d/ nazwa \fR.
+Uruchamiane s± przez
+.BR init ,
+gdy zmieniany jest tryb pracy (\fIrunlevel\fP), i ogólnie u¿ywane s±
+do uruchamiania oraz zatrzymywania pracy serwisów systemowych, takich
+jak demony.
+.I runlevel
+jest jednym z trybów pracy obs³ugiwanym przez
+.BR init ", " 0123456789S ,
+gdzie
+.I NN
+jest dwucyfrowym kodem u¿ywanym przez
+.B init
+do okre¶lenia kolejno¶ci uruchamiania skryptów.
+
+Ten podrêcznik opisuje jedynie sposób u¿ycia polecenia
+.BR update-rc.d .
+Szczegó³y dotycz±ce mechanizmów skryptów startowych w stylu System V
+s± zawarte w opisie
+.BR init (8)
+oraz w dokumencie
+.IR "Debian Policy Manual" .
+.SH INSTALOWANIE DOWI¡ZAÑ DO SKRYPTÓW STARTOWYCH
+update-rc.d uruchamiany z opcjami
+.BR defaults ", " start " lub " stop ,
+tworzy dowi±zania o nazwie
+.BI /etc/rc runlevel .d/[SK] NNnazwa
+do skryptu
+.BI /etc/init.d/ nazwa\fR.
+
+Je¶li istnieje ju¿ jaki¶ plik o nazwie
+.BI /etc/rc runlevel .d/[SK]?? nazwa\fR,
+to
+.B update-rc.d
+nie tworzy dowi±zania. Dziêki temu administrator systemu mo¿e
+poprzestawiaæ dowi±zania (zmieniaj±c tym samym kolejno¶æ wykonywania
+skryptów) i je¿eli pozostanie przynajmniej jedno dowi±zanie, to ta konfiguracja
+utworzona przez administratora nie zostanie nadpisana przez
+.BR update\-rc.d .
+
+Je¶li u¿yta jest opcja
+.B defaults
+to
+.B update-rc.d
+utworzy dowi±zanie do uruchomienia serwisu w trybach pracy
+.B 2345
+oraz zatrzymania serwisu w trybach pracy
+.BR 016 .
+Domy¶lnie, wszystkie dowi±zania bêd± mia³y kod okre¶laj±cy kolejno¶æ
+o warto¶ci 20, ale mo¿e to zostaæ okre¶lone przez dodanie jednego
+lub dwóch argumentów
+.IR NN .
+Jeden argument nadaje ten sam kod do uruchomienia i zatrzymania serwisu,
+podanie dwóch argumentów okre¶la kod osobno dla uruchomienia (pierwszy
+argument) i osobno dla zatrzymania serwisu (drugi argument).
+
+Zamiast u¿ycia opcji
+.BR defaults ,
+mo¿na okre¶liæ dok³adnie w których trybach pracy dany serwis bêdzie
+uruchamiany i zatrzymywany:
+
+.BR start " lub " stop
+okre¶la, czy chodzi o dowi±zanie uruchamiaj±ce serwis, czy zatrzymuj±ce
+go. Kolejny argument,
+.IR NN ,
+oznacza kod okre¶laj±cy kolejno¶æ obs³ugi serwisu, a nastêpne argumenty
+okre¶laj± tryby pracy, dla których okre¶lony jest sposób uruchamiania,
+czy zatrzymywania serwisu. Ostatnim argumentem danej serii jest
+.B .
+(znak kropki).
+
+Gdy zamiast
+.BR defaults ,
+u¿ywa siê pe³nej specyfikacji, zwykle okre¶la siê jedn± seriê argumentów dla
+.B start
+i jedn± dla
+.BR stop .
+Je¶li istnieje potrzeba okre¶lenia ró¿nych kodów kolejno¶ci, mo¿na okre¶liæ kilka
+serii argumentów dla
+.B start
+lub odpowiednio dla
+.BR stop .
+
+Skrypt
+.BI /etc/init.d/ nazwa
+musi ju¿ istnieæ w momencie wywo³ania polecenia
+.BR update-rc.d .
+.SH USUWANIE DOWI¡ZAÑ
+Gdy update-rc.d jest uruchamiany z parametrem
+.IR remove ,
+usuwane s± wszystkie dowi±zania z katalogów
+.BI /etc/rc runlevel .d
+do skryptu
+.BI /etc/init.d/ nazwa\fR.
+Przed tym nale¿y skasowaæ sam skrypt -
+.B update-rc.d
+sprawdza, czy zosta³o ju¿ to zrobione.
+.B update-rc.d
+zwykle jest wywo³ywane ze skryptu kontrolnego post-removal podczas
+usuwania pakietu, gdy parametrem wywo³ania skryptu jest argument
+.BR purge ,
+co oznacza, ¿e u¿ytkownik ¿yczy sobie wyczy¶ciæ konfiguracjê tego
+pakietu.
+Pozosta³e pliki z katalogów
+.BI /etc/rc runlevel .d\fR,
+które nie s± dowi±zaniami do skryptu
+.BI /etc/init.d/ nazwa\fR,
+pozostan± nienaruszone.
+.SH OPCJE
+.TP
+.I -n
+Niczego nie rusza, tylko pokazuje co mog³oby byæ zmienione.
+.TP
+.I -f
+Zmusza do usuniêcia dowi±zañ, nawet w przypadku, gdyby skrypt
+.BI /etc/init.d/ nazwa
+wci±¿ istnia³.
+.SH PRZYK£ADY
+Utworzenie domy¶lnych dowi±zañ:
+.nf
+.B "   update-rc.d blabla defaults"
+.fi
+Odpowiednikiem tego polecenia bêdzie:
+.nf
+.B "   update-rc.d blabla start 20 2 3 4 5 . stop 20 0 1 6 ."
+.fi
+.SH B£ÊDY
+
+Powinna byæ jaka¶ metoda okre¶lenia domy¶lnych poziomów pracy
+lub kolejno¶ci obs³ugi serwisów,
+które wykorzystuje parametr
+.BR defaults .
+.SH PLIKI
+.TP
+.B /etc/init.d/
+Katalog zawieraj±cy aktualne skrypty startowe.
+.TP
+.B /etc/rc?.d/
+Katalog zawieraj±cy dowi±zania u¿ywane przez
+.BR init
+i modyfikowane przez
+.BR update-rc.d .
+.TP
+.B /etc/init.d/skeleton
+Przyk³adowy skrypt do wykorzystania przez programistê przy
+tworzeniu w³asnych skryptów
+.BR init.d .
+.SH ZOBACZ TAK¯E
+.IR "Debian Policy Manual" ,
+.br
+.BR /etc/init.d/skeleton ,
+.br
+.BR init (8).

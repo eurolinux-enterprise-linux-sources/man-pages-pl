@@ -1,0 +1,327 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+.TH ROUTE 8 "2 stycznia 2000" "net-tools" "Podrêcznik programisty linuksowego"
+.SH NAZWA
+route \- pokazuje / obs³uguje tablicê trasowania protoko³u IP
+.SH SK£ADNIA
+.B route
+.RB [ \-CFvnee ]
+.TP
+.B route 
+.RB [ \-v ]
+.RB [ \-A
+rodzina] 
+.B add 
+.RB [ \-net | \-host ] 
+cel 
+.RB [ netmask
+Nm] 
+.RB [ gw 
+Gw] 
+.RB [ metric 
+N] 
+.RB [ mss 
+M] 
+.RB [ window 
+W] 
+.RB [ irtt 
+I]
+.RB [ reject ]
+.RB [ mod ]
+.RB [ dyn ] 
+.RB [ reinstate ] 
+.RB [[ dev ] 
+If]
+.TP
+.B route 
+.RB [ \-v ] 
+.RB [ \-A
+rodzina]
+.B del 
+.RB [ \-net | \-host ] 
+cel 
+.RB [ gw 
+Gw] 
+.RB [ netmask
+Nm] 
+.RB [ metric 
+N] 
+.RB [[ dev ]
+If]
+.TP
+.B route 
+.RB [ \-V ] 
+.RB [ \-\-version ]
+.RB [ \-h ]
+.RB [ \--help ]
+.SH OPIS
+.B Route
+obs³uguje j±drowe tablice trasowania protoko³u IP. Jego podstawowym zadaniem
+jest ustawianie \fBstatycznych\fR tras do okreslonych stacji lub sieci
+poprzez interfejs, skonfigurowany programem
+.BR ifconfig (8).
+
+Je¶li wykorzystywane s± opcje
+.B add
+lub
+.BR del ,
+.B route
+modyfikuje tablice trasowañ. Bez tych opcji program wy¶wietla obecn±
+zawarto¶æ tablic trasowania.
+
+.SH OPCJE
+.TP
+.B \-A family
+u¿yj podanej rodziny adresów (np. `inet'; polecenie `route --help' wy¶wietli
+pe³n± listê).
+
+.TP 
+.B -F
+dzia³aj na j±drowej tablicy trasowania FIB (Forwarding Information Base:
+Baza Informacji Przerzutowych). Jest to opcja domy¶lna.
+.TP 
+.B -C
+dzia³aj na j±drowym buforze podrêcznym trasowania
+
+.TP
+.B \-v
+wybierz dzia³anie gadatliwe.
+.TP
+.B \-n
+podaj adresy numeryczne zamiast nazw. Jest to przydatne je¶li próbujesz
+okre¶liæ dlaczego trasa do serwera nazw wyparowa³a.
+.TP
+.B \-e
+u¿yj formatu
+.BR netstat (8)
+do wy¶wietlania tablicy trasowania.
+.B \-ee 
+generuje bardzo d³ugie linie ze wszystkimi parametrami z tablicy trasowania.
+
+.TP
+.B del
+skasuj trasê.
+.TP 
+.B add 
+dodaj now± trasê.
+.TP
+.B cel
+docelowa sieæ lub stacja. Mo¿esz podaæ adres IP w notacji kropkowej lub
+nazwê stacji/sieci.
+.TP
+.B \-net
+oznacza, ¿e
+.B cel
+jest sieci±
+.TP
+.B -host
+oznacza, ¿e
+.B cel
+jest stacj±.
+.TP
+.B netmask NM
+podczas dodawania trasy sieciowej u¿ywana jest maska-sieci.
+.TP
+.B gw GW
+trasuj pakiety poprzez bramkê (gateway).
+.B UWAGA:
+Podana bramka musi byæ wpierw osi±galna. Oznacza to zwykle, ¿e musisz mieæ
+ustawion± do niej wcze¶niej statyczn± trasê. Je¶li podasz adres jednego ze
+swoich lokalnych interfejsów, to zostanie on u¿yty do zdecydowania o
+interfejsie, do którego trasowaæ pakiety. Jest to kompatybilno¶æ w kierunku
+BSD.
+.TP
+.B metric M
+ustaw pole metric tablicy trasowania (u¿ywane przez demony trasowania) na M.
+[bywa ono u¿ywane do obliczania kosztu trasy, zale¿nego od liczby hostów na
+drodze i manipulacji administratora--przyp. t³um.]
+.TP 
+.B mss M
+ustaw dla po³±czeñ na tej trasie maksymalny rozmiar segmentu TCP (MSS) na M
+bajtów.
+Domy¶ln± warto¶ci± jest MTU minus nag³ówki lub ni¿sze MTU, gdy zajdzie
+¶cie¿kowe wynalezienie mtu.
+.\" The default is the device MTU minus headers, or a lower MTU when path mtu 
+.\" discovery occured. This setting can be used to force smaller TCP packets on the
+Ustawienie to mo¿e byæ wykorzystywane do wymuszania mniejszych pakietów TCP
+na drugim koñcu gdy ¶cie¿kowe wynajdowanie mtu nie dzia³a (zwykle z powodu
+¼le skonfigurowanych zapór ogniowych, blokuj±cych ICMP Fragmentation
+Needed).
+.TP 
+.B window W 
+ustaw dla po³±czeñ tej trasy rozmiar okna TCP na W bajtów. Jest to zwykle
+u¿ywane jedynie w sieciach AX.25 i ze sterownikami, nie potrafi±cymi
+obs³ugiwaæ ramek back to back.
+.TP
+.B irtt I
+ustaw pocz±tkowy czas przelotu (initial round trip time, irtt) dla po³±czeñ
+TCP na tej trasie na I milisekund (1-12000). Jest to zwykle wykorzystywane
+jedynie w sieciach AX.25. Domy¶lnie przyjmuje siê warto¶æ z RFC 1122, 300ms.
+.TP
+.B reject
+zainstaluj trasê blokuj±c±, która wymusza niepowodzenie podejrzenia trasy.
+Jest to u¿ywane na przyk³ad do maskowania sieci przed u¿ywaniem trasy
+domy¶lnej. Nie jest to zapora ogniowa.
+.TP
+.B mod, dyn, reinstate
+instaluj trasê dynamiczn± lub zmodyfikowan±. Flagi te s± przeznaczone dla
+celów diagnostycznych i ogólnie s± ustawiane tylko przez demony trasowania.
+.TP
+.B dev If
+wymu¶ zwi±zanie trasy z podanym urz±dzeniem. W przeciwnym przypadku, j±dro
+spróbuje okre¶liæ urz±dzenie samodzielnie (sprawdzaj±c istniej±ce ju¿ trasy
+i specyfikacje urz±dzeñ). W wiêkszo¶ci normalnych sieci nie potrzeba tego.
+
+Je¶li
+.B dev If
+jest ostatni± opcj± linii poleceñ, to s³owo
+.B dev
+mo¿e zostaæ pominiête, gdy¿ jest przyjmowane za domy¶lne. W przeciwnym
+przypadku, kolejno¶æ modyfikatorów trasy (metric - netmask - gw - dev) nie
+ma znaczenia.
+
+.SH PRZYK£ADY
+.TP
+.B route add -net 127.0.0.0
+dodaje normalny wpis zapêtlenia u¿ywaj±cy maski sieciowej 255.0.0.0 (sieæ
+klasy A, przyjêta z adresu docelowego) zwi±zany z urz±dzeniem "lo"
+(zak³adamy, ¿e urz±dzenie to zosta³o wcze¶niej poprawnie skonfigurowane
+programem
+.BR ifconfig (8)). 
+
+.TP 
+.B route add -net 192.56.76.0 netmask 255.255.255.0 dev eth0
+dodaje trasê do sieci 192.56.76.x poprzez
+"eth0". Modyfikator sieci klasy C nie jest konieczny, gdy¿ 192.* jest
+adresem klasy C. S³owo "dev" równie¿ mo¿na pomin±æ.
+
+.TP
+.B route add default gw mango-gw
+dodaje domy¶ln± trasê (która bêdzie u¿ywana gdy nie bêdzie pasowaæ ¿adna
+inna trasa). Wszystkie pakiety u¿ywaj±ce tej trasy bêd± bramkowane przez
+"mango-gw". Urz±dzenie u¿ywane do tej trasy zale¿y od tego, jak osi±gamy
+"mango-gw" - wcze¶niej nale¿y wiêc skonfigurowaæ trasê do "mango-gw".
+
+.TP
+.B route add ipx4 sl0
+Dodaje trasê do stacji "ipx4" poprzez interfejs SLIP (zak³adamy, ¿e "ipx4"
+jest stacj± SLIP).
+
+.TP
+.B route add -net 192.57.66.0 netmask 255.255.255.0 gw ipx4
+Polecenie to dodaje sieæ "192.57.66.x" do tras bramkowanych przez poprzedni±
+trasê przez interfejs SLIP.
+
+.TP
+.B route add 224.0.0.0 netmask 240.0.0.0 dev eth0
+Jest to oble¶ny przyk³ad.
+Ustawia to wszystkie trasy IP klasy D (grupowe--multicast) na "eth0".
+Jest to prawid³owa normalna linia konfiguracji dla j±dra grupowuj±cego.
+
+.TP
+.B route add 10.0.0.0 netmask 255.0.0.0 reject
+Instaluje to trasê odrzucaj±c± dla sieci prywatnej "10.x.x.x".
+
+.LP
+.SH WYJ¦CIE
+Wyprowadzanie tablic trasowania jest organizowane w nastêpuj±ce kolumny
+.TP
+.B Destination     
+Sieæ docelowa lub stacja docelowa.
+.TP
+.B Gateway
+Adres bramki lub '*' gdy nie ma jej.
+.TP
+.B Genmask         
+Maska sieci do sieci docelowej; '255.255.255.255' dla celu stacji i
+'0.0.0.0' dla trasy domy¶lnej.
+.TP
+.B Flags 
+Dopuszczalne flagi to
+.br
+.B U
+(trasa jest zestawiona
+.BR [up] )
+.br
+.B H
+(cel jest stacj±
+.BR [host] )
+.br
+.B G
+(u¿yj bramki
+.BR [gateway] )
+.br
+.B R
+.RB ( reinstancjuj
+trasê na trasowanie dynamiczne)
+.br
+.B D
+.RB ( dynamicznie
+instalowana przez demona lub przekierowanie)
+.br
+.B M
+.RB ( modyfikowana
+z demona trasowania lub przekierowania)
+.br
+.B A
+(instalowana przez
+.BR addrconf )
+.br
+.B C
+(wpis bufora podrêcznego
+.BR [cache] )
+.br
+.B !
+(trasa odrzucenia
+.BR [reject] )
+.TP
+.B Metric 
+\'Odleg³o¶æ' do celu (zwykle liczona w przeskokach). Nie jest u¿ywana w
+nowych j±drach, lecz mo¿e byæ wymagana dla demonów trasowania.
+.TP
+.B Ref    
+Liczba referencji do tej trasy. (Nie u¿ywane w j±drze Linuksa).
+.TP
+.B Use
+Liczba podgl±dniêæ trasy. Zale¿nie od u¿ycia -F i -C bêd± to chybienia
+bufora podrêcznego trasowania (-F) lub trafienia (-C).
+.TP
+.B Iface
+Interfejs, przez który przesy³ane s± pakiety tej trasy.
+.TP
+.B MSS 
+Domy¶lny maksymalny rozmiar segmentu dla po³±czeñ TCP na tej trasie.
+.TP
+.B Window  
+Domy¶lny rozmiar okna dla po³±czeñ TCP na tej trasie.
+.TP
+.B irtt
+Pocz±tkowy czas przelotu. J±dro u¿ywa tego do zgadywania najlepszych
+parametrów protoko³u TCP bez oczekiwania na (powolne) odpowiedzi.
+.TP
+.B HH (tylko buforowane)
+Liczba wpisów ARP i tras buforowanych, odnosz±cych siê do sprzêtowego bufora
+nag³ówkowego (hardware header cache) buforowanej trasy. Bêdzie to \-1 je¶li
+adres sprzêtowy nie jest wymagany dla interfejsu buforowanej trasy (np. lo).
+.TP
+.B Arp (tylko buforowane)
+Czy adres sprzêtowy buforowanej trasy jest aktualny.
+.LP
+.SH PLIKI
+.I /proc/net/ipv6_route
+.br
+.I /proc/net/route
+.br
+.I /proc/net/rt_cache
+.LP
+.SH ZOBACZ TAK¯E
+.I ifconfig(8), netstat(8), arp(8), rarp(8)
+.LP
+.SH HISTORIA
+.B Route
+dla Linuksa zosta³o napisane pierwotnie przez Freda N.  van Kempena,
+<waltje@uwalt.nl.mugnet.org>, a nastêpnie zosta³o zmodyfikowane przez
+Johannesa Stille'a oraz Linusa Torvaldsa dla pl15. Alan Cox doda³
+opcje mss oraz window dla Linuksa 1.1.22. Wsparcie irtt i po³±czenie z
+netstatem pochodzi od Bernda Eckenfelsa.
+.SH AUTOR
+Obecnie opiekunem jest Phil Blundell <Philip.Blundell@pobox.com>.

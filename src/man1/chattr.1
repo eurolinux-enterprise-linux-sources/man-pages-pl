@@ -1,0 +1,104 @@
+.\" -*- nroff -*-
+.\" {PTM/PB/0.1/28-09-1998/"zmieñ atrybuty plików ext2fs"}
+.\" Translation (c) 1998 Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.\" Last update: Andrzej M. Krzysztofowicz <ankry@mif.pg.gda.pl>, Apr 2002
+.\" 
+.TH CHATTR 1 "Marzec 2002" "e2fsprogs wersja 1.27"
+.SH NAZWA
+chattr \- zmiana atrybutów plików na systemie plików ext2
+.SH SK£ADNIA
+.B chattr
+[
+.B \-RV
+]
+[
+.B \-v
+.I wersja
+]
+[
+.I tryb
+]
+.I pliki...
+.SH OPIS
+.B chattr
+zmienia atrybuty plików na drugim rozszerzonym systemie plików Linuksa (ext2).
+.PP
+Format w trybie symbolicznym ma postaæ +-=[ASacdistu].
+.PP
+Operator ,,+'' powoduje dodanie wybranych atrybutów do istniej±cych; ,,-''
+powoduje ich usuniêcie, a ,,='' powoduje, ¿e staj± siê jednymi atrybutami
+jakie posiadaj± pliki.
+.PP
+Litery ,,ASacdijsu'' oznaczaj± wybór nowych atrybutów dla plików: nie
+aktualizowanie atime (A), synchroniczna aktualizacja (S), tylko dopisywanie
+(a), kompresja (c), nie sk³adowanie (no dump) (d), niezmienny (immutable) (i),
+dziennik danych (j), bezpieczne kasowanie (s), i niekasowalne (u).
+.SH OPCJE
+.TP
+.B \-R
+Rekurencyjna zmiana atrybutów katalogów i ich zawarto¶ci. Napotkane podczas
+obchodzenia katalogów dowi±zania symboliczne s± ignorowane.
+.TP
+.B \-V
+Tryp rozwlek³y komunikatów chattr oraz wypisanie wersji programu.
+.TP
+.BI \-v " version"
+Ustawia wersjê pliku/numer pokolenia (generation number).
+.SH ATRYBUTY
+Gdy modyfikowany jest plik z ustawionym atrybutem ,,A'', jego rekord atime
+nie jest zmieniany. Pozwala to unikn±æ sporej ilo¶ci dyskowych operacji
+we/wy na systemach zainstalowanych na laptopach.
+.PP
+Plik z ustawionym atrybutem ,,a'' mo¿e byæ otwierany dla zapisu tylko w trybie
+dopisywania. Jedynie superu¿ytkownik mo¿e ustawiæ lub zdj±æ ten atrybut.
+.PP
+Plik z ustawionym atrybutem ,,c'' jest automatycznie kompresowany na dysku
+przez j±dro. Odczyt tego pliku zwraca zdekompresowane dane. Zapis do tego
+pliku powoduje kompresjê danych przed zapisaniem ich na dysku.
+.PP
+Plik z ustawionym atrybutem ,,d'' nie jest kandydatem do archiwizacji,
+podczas uruchamiania programu
+.BR dump (8).
+.PP
+Plik z atrybutem ,,i'' nie mo¿e byæ zmieniany: nie mo¿e byæ kasowany ani nie
+mo¿e byæ zmieniana jego nazwa, nie mo¿na tworzyæ do niego dowi±zañ i nie mo¿na
+zapisaæ do niego ¿adnych danych. Jedynie superu¿ytkownik mo¿e ustawiæ lub
+zdj±æ ten atrybut.
+.PP
+Wszystkie dane z pliku z ustawionym atrybutem ,,j'' zostan± zapisane do
+dziennika ext3 przed zapisaniem ich do pliku, o ile system plików zosta³
+zamontowany z opcj± "data=ordered" lub "data=writeback". Gdy system plików
+jest zamontowany z opcj± "data=journalled", wszystkie dane s± zapisywane do
+dziennika, wiêc ten atrybut nie ma znaczenia.
+.PP
+Gdy plik z ustawionym atrybutem ,,s'' zostanie skasowany, jego bloki zostaj±
+wyzerowane i zapisane z powrotem na dysku.
+.PP
+Gdy modyfikowany jest plik z ustawionym atrybutem ,,S'', zmiany s± zapisywane
+na dysk synchronicznie; jest to równoznaczne z opcj± montowania ,,sync'',
+dotycz±c± okre¶lonego zbioru plików.
+.PP
+Plik z atrybutem ,,t'' nie bêdzie mia³ czê¶ciowego fragmentu bloku na koñcu
+pliku uwspólnionego z innymi plikami (na systemach plików wspieraj±cych
+³±czenie koñcówek). Jest to niezbêdne dla programów takich jak LILO, które
+dokonuj± bezpo¶redniego odczytu z systemu plików i które nie rozumiej±
+plików o po³±czonych koñcówkach.
+.PP
+Gdy kasowany jest plik z ustawionym atrybutem ,,u'', jego zawarto¶æ zostaje
+zachowana. Umo¿liwia to u¿ytkownikowi odzyskanie takiego pliku.
+.SH AUTOR
+.B chattr
+zosta³ napisany przez Remy'ego Carda <Remy.Card@linux.org>.
+.SH "B£ÊDY I OGRANICZENIA"
+W Linuksie 2.2 atrybuty ,,c'', ,,s'' i ,,u'' nie s± honorowane przez kod
+systemu plików w j±drze. Atrybuty te zostan± zaimplementowane w przysz³ych
+wersjach systemu plików ext2.
+.PP
+Opcja ,,j'' jest przydatna tylko gdy system plików jest zamontowany jako
+ext3.
+.SH DOSTÊPNO¦Æ
+.B chattr
+jest czê¶ci± pakietu e2fsprogs i jest dostêpny na stronie
+http://e2fsprogs.sourceforge.net.
+.SH "ZOBACZ TAK¯E"
+.BR lsattr (1)

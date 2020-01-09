@@ -1,0 +1,173 @@
+.\" {PTM/LK/0.1/30-09-1998/"przygotowanie kodu ¼ród³owego do kompilacji"}
+.\" T³umaczenie: 30-09-1998 £ukasz Kowalczyk (lukow@tempac.okwf.fuw.edu.pl)
+.\" -*- nroff -*-
+.\" Copyright (c) 1991, 1992, 1996 Cygnus Support
+.\" written by K. Richard Pixley
+.TH configure 1 "29 marca 1996" "cygnus support" "Cygnus Support"
+.de BP
+.sp
+.ti \-.2i
+\(**
+..
+
+.SH NAZWA
+configure \- przygotuj kod ¼ród³owy do kompilacji
+
+.SH SK£ADNIA
+configure MASZYNA [--target=CEL] [--srcdir=KATALOG] [--rm]
+	[--site=SYSTEM] [--prefix=KATALOG] 
+	[--exec_prefix=KATALOG] [--program_prefix=KATALOG] 
+	[--tmpdir=KATALOG] [--with-PAKIET[=YES/NO]] 
+	[--without-PAKIET] [--enable-MO¯LIWO¦Æ[=YES/NO]] 
+	[--disable-MO¯LIWO¦Æ] 
+	[--norecursion] [--nfp] [-s] [-v] [-V | --version] [--help]
+
+.SH OPIS
+.I configure
+jest programem u¿ywanym do przygotowania kodu ¼ród³owego do kompilacji.
+Przygotowanie polega na stworzeniu plików 'Makefile' oraz .gdbinit, dowi±zañ
+symbolicznych, przejrzeniu podkatalogów oraz kilku dodatkowych operacjach na
+plikach ¼ród³owych.
+
+.SH OPCJE
+.I configure
+rozpoznaje nastêpuj±ce opcje:
+
+.TP
+.I \--target=CEL
+¯±da przygotowania plików dla maszyny okre¶lonej parametrem
+.IR CEL .
+Je¿eli maszyna docelowa nie jest okre¶lona wprost, zak³ada siê, ¿e jest ni±
+komputer, na którym uruchomiony zosta³ program
+
+.TP
+.I \--srcdir=KATALOG
+Informuje program, ¿e pliki ¼ród³owe znajduj± siê w katalogu
+.IR KATALOG .
+Pliki obiektowe s± zawsze tworzone w bie¿±cym katalogu,
+.I `.'.
+
+.TP
+.I \--rm
+Powoduje usuniêcie definicji konfiguracji, zamiast tworzenia nowej.
+
+.TP
+.I \--site=SYSTEM
+¯±da wykorzystania w plikach 'Makefile' fragmentów charakterystycznych dla
+systemu (site)
+.IR SYSTEM .
+
+.TP
+.I \--prefix=KATALOG
+Pliki instalacyjne zostan± zainstalowane w katalogu
+.IR KATALOG .
+Domy¶ln± warto¶ci± jest "/usr/local".
+
+.TP
+.I \--exec_prefix=KATALOG
+G³ównym katalogiem dla plików zale¿nych od konkretnego komputera bêdzie
+.IR KATALOG .
+Domy¶ln± warto¶ci± jest katalog podany w opcji
+.IR prefix .
+
+.TP
+.I \--program_prefix=KATALOG
+Programy o nazwach czêsto spotykanych w sytemach typu Unix (np. make)
+zostan± zainstalowane w katalogu
+.IR KATALOG .
+Dotyczy to równie¿ programów u¿ywanych do kompilacji kodu dla komputerów
+o innej architekturze.
+
+.TP
+.I \--tmpdir=KATALOG
+Pliki tymczasowe bêd± tworzone w katalogu
+.IR KATALOG .
+
+.TP
+.I \--with-PAKIET[=YES/NO]
+Ustawia flagê na okres kompilacji informuj±c±, czy dany
+.I PAKIET
+istnieje, czy nie. Je¿eli nie podano parametru
+.I \=YES/NO
+domy¶ln± warto¶ci± jest
+.IR YES .
+Opcja 
+.I \--without-PAKIET
+jest równowa¿na z
+.IR \--with-PAKIET=no .
+
+.TP
+.I \--enable-MO¯LIWO¦Æ[=YES/NO]
+Ustawia flagê na okres kompilacji informuj±c±, czy
+.I MO¯LIWO¦Æ
+(cecha) powinna byæ do³±czona, czy nie.
+Je¿eli nie podano parametru
+.I \=YES/NO
+domy¶ln± warto¶ci± jest
+.IR YES .
+Opcja
+.I \--disable-MO¯LIWO¦Æ
+jest równowa¿na z
+.IR --enable-MO¯LIWO¦Æ=no .
+
+.TP
+.I \--norecursion
+Proces konfiguracji obejmie tylko bie¿±cy katalog. Bez tej opcji program
+.I configure
+rekurencyjnie przegl±da katalogi poni¿ej bie¿±cego.
+
+.TP
+.I \-nfp
+Ta opcja informuje program
+.IR configure ,
+¿e ¿aden z podanych komputerów nie posiada jednostki zmiennoprzecinkowej.
+
+.TP
+.I \-s
+Opcja u¿ywana wewnêtrznie przez
+.IR configure ,
+która wstrzymuje wy¶wietlanie wiadomo¶ci podczas rekurencyjnego przegl±dania
+katalogów. Komunikaty te mo¿na w³±czyæ opcj±
+.I \-v
+
+.TP
+.I \-v
+Wy¶wietlanie informacji. Dla ka¿dego skonfigurowanego katalogu wy¶wietlana
+jest informacja o statusie. Bez tej opcji informacja o statusie jest
+wy¶wietlana tylko dla bie¿±cego katalogu.
+
+.TP
+.I \--version
+.I \-V
+Wy¶wietla numer wersji programu
+.IR configure .
+
+.TP
+.I \-help
+Wy¶wietla krótki opis u¿ycia programu.
+
+
+.SH PLIKI
+configure.in	indywidualne opcje ka¿dego katalogu
+.br
+Makefile.in	szablon pliku Makefile
+.br
+config.sub	dla analizy nazw konfiguracji
+.br
+config.guess	dla odgadniêcia nazwy serwera, je¿eli nie zosta³a podana
+.br
+config.status	ponownie przetwarza bie¿±cy katalog (nie rekurencyjnie)
+
+.SH PLIKI
+.ta \w'gmon.sum 'u
+a.out	przestrzeñ identyfikatorów i segmentu kodu.
+.br
+gmon.out	wykres dynamicznych wywo³añ i ich prêdko¶ci.
+.br
+gmon.sum podsumowanie powy¿szego.
+
+.SH "ZOBACZ TAK¯E"
+Opis
+.I configure
+w 
+.BR info .

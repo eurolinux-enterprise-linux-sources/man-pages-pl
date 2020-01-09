@@ -1,0 +1,267 @@
+'\" t
+.\" This man page is Copyright (C) 1999 Matthew Wilcox <willy@bofh.ai>.
+.\" Permission is granted to distribute possibly modified copies
+.\" of this page provided the header is included verbatim,
+.\" and in case of nontrivial modification author and date
+.\" of the modification is added to the header.
+.\" Modified June 1999 Andi Kleen
+.\" $Id: arp.7,v 1.1 2003/08/28 21:53:37 ankry Exp $
+.\"
+.\" Translation (c) 2003 "Andrzej M. Krzysztofowicz" <ankry@mif.pg.gda.pl>
+.\"             man-pages 1.60
+.\"
+.TH ARP 7 1999-06-03 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+arp \- modu³ ARP j±dra Linuksa
+.SH OPIS
+Ten modu³ protoko³u w j±drze zawiera implementacjê protoko³u rozpoznawania
+adresów (ang. Address Resolution Protocol) zdefiniowanego w RFC 826.
+S³u¿y on do przekszta³cania adresów sprzêtowych warstwy 2 na adresy protoko³u
+IPv4 w sieciach o bezpo¶rednim po³±czeniu. Normalnie u¿ytkownik nie korzysta
+bezpo¶rednio z tego modu³u, za wyj±tkiem konfigurowania go; s³u¿y on innym
+protoko³om w j±drze.
+
+Proces u¿ytkownika mo¿e odbieraæ pakiety ARP za pomoc± gniazd
+.BR packet (7).
+Istnieje tak¿e mechanizm zarz±dzania pamiêci± podrêczn± ARP w przestrzeni
+u¿ytkownika za pomoc± gniazd
+.BR netlink (7).
+Tabel± ARP mo¿na równie¿ zarz±dzaæ za pomoc±
+.BR ioctl (2)
+lub dowolnego gniazda
+.BR PF_INET .
+
+Modu³ ARP zarz±dza pamiêci± podrêczn± odwzorowañ pomiêdzy adresami sprzêtowymi
+i adresami protoko³u. Pamiêæ podrêczna ma ograniczony rozmiar, wiêc stare i
+rzadko u¿ywane wpisy s± usuwane. Wpisy oznaczone jako trwa³e nie s± nigdy
+usuwane podczas procesu czyszczenia. Mo¿na manipulowaæ bezpo¶rednio t±
+pamiêci± podrêczn± za pomoc± kontrolek wej¶cia/wyj¶cia (ang. ioctls) a jej
+zachowanie mo¿na dostrajaæ za pomoc± zdefiniowanych poni¿ej kontrolek
+systemowych (ang. sysctls).
+
+Gdy dla istniej±cego odwzorowania nie ma pozytywnych odpowiedzi, po pewnym
+czasie (patrz kontrolki systemowe poni¿ej) wpis w pamiêci podrêcznej dla
+danego adresu jest uwa¿any za przestarza³y. Pozytywna odpowied¼ mo¿e zostaæ
+odebrana od wy¿szej warstwy; na przyk³ad jako pozytywne potwierdzenie TCP.
+Inne protoko³y mog± sygnalizowaæ postêpy w po³±czeniu za pomoc± znacznika
+.B MSG_CONFIRM
+w
+.BR sendmsg (2).
+Gdy nie ma postêpów w po³±czeniu ARP próbuje próbkowaæ ponownie.
+Najpierw próbuje odpytaæ o zaktualizowany adres MAC
+.B app_solicit
+razy lokalnego demona arp. Gdy to siê nie powiedzie, a stary adres jest znany,
+to dokonywane jest
+.B ucast_solicit
+razy próbkowanie pojedyncze. Gdy to siê równie¿ nie powiedzie, wysy³ane jest w
+sieæ nowe zapytanie rozg³oszeniowe ARP. Zapytania s± wysy³ane jedynie wtedy,
+gdy w kolejce do wys³ania czekaj± jakie¶ dane.
+
+Linux automatycznie dodaje nietrwa³e wpisy proxy arp po otrzymaniu zapytania
+dotycz±cego adresu, dla którego s± przekazywne pakiety, o ile dla interfejsu
+odbieraj±cego dany pakiet w³±czono proxy arp. Gdy dla danego celu ustawiona
+jest droga odrzucaj±ca pakiety (ang. reject route), wpis proxy arp nie jest
+dodawany.
+
+.SH IOCTL
+Dla wszystkich gniazd
+.B PF_INET
+dostêpne s± trzy kontrolki wej¶cia/wyj¶cia.
+Pobieraj± one jako parametr wska¼nik do struktury
+.BR "struct arpreq" .
+
+.nf
+.ta 4 20 33
+struct arpreq
+{
+	struct sockaddr	arp_pa;	/* adres protoko³u */
+	struct sockaddr	arp_ha;	/* adres sprzêtowy */
+	int	arp_flags;	/* znaczniki */
+	struct sockaddr	arp_netmask;	/* maska sieci dla adresu protoko³u */
+	char	arp_dev[16];
+};
+.fi
+
+.BR SIOCSARP ", " SIOCDARP " i " SIOCGARP
+odpowiednio ustawiaj±, usuwaj± i pobieraj± odwzorowanie ARP.
+Ustawianie i usuwanie odwzorowañ ARP jest operacj± uprzywilejowan± i mo¿e
+zostaæ wykonane jedynie przez proces z ustawionym znacznikiem
+.B CAP_NET_ADMIN
+lub posiadaj±cy efektywny UID równy 0.
+
+.I arp_pa
+musi byæ gniazdem
+.B AF_INET
+a
+.I arp_ha
+musi byæ tego samego typu, co urz±dzenie podane w
+.IR arp_dev .
+.I arp_dev
+jest zakoñczonym znakiem NUL ³añcuchem stanowi±cym nazwê urz±dzenia.
+
+.TS
+tab(:) allbox;
+c s
+l l.
+\fIarp_flags\fR
+znacznik:znaczenie
+ATF_COM:Zapytanie zakoñczone
+ATF_PERM:Wpis trwa³y
+ATF_PUBL:Wpis publikacji
+ATF_USETRAILERS:Za¿±dano danych koñcowych
+ATF_NETMASK:U¿ywanie maski sieci
+ATF_DONTPUB:Nie odpowiadaæ
+.TE
+
+.PP
+
+Gdy ustawiony jest znacznik
+.BR ATF_NETMASK ,
+to
+.I arp_netmask
+powinno byæ prawid³owe. Linux 2.2 nie wspiera wpisów proxy ARP dla sieci, wiêc
+nale¿y to ustawic na 0xffffffff lub 0, aby usun±æ istniej±cy wpis arp.
+.B ATF_USETRAILERS
+jest przestarza³e i nie powinno byæ u¿ywane.
+
+.SH SYSCTL
+ARP supports a sysctl interface to configure parameters on a global
+or per-interface basis.
+The sysctls can be accessed by reading or writing the
+.B /proc/sys/net/ipv4/neigh/*/*
+files or with the
+.BR sysctl (2)
+interface.  Each interface in the system has its own directory in
+/proc/sys/net/ipv4/neigh/.
+The setting in the `default' directory is used for all newly created devices.
+Unless otherwise specified time related sysctls are specified in seconds.
+.TP
+.B anycast_delay
+The maximum number of jiffies to delay before replying to a
+IPv6 neighbour solicitation message.
+Anycast support is not yet implemented.
+Defaults to 1 second.
+.TP
+.B app_solicit
+The maximum number of probes to send to the user space ARP daemon via
+netlink before dropping back to multicast probes (see
+.IR mcast_solicit ).
+Defaults to 0.
+.TP
+.B base_reachable_time
+Once a neighbour has been found, the entry is considered to be valid
+for at least a random value between
+.IR base_reachable_time "/2 and 3*" base_reachable_time /2.
+An entry's validity will be extended if it receives positive feedback
+from higher level protocols.
+Defaults to 30 seconds.
+.TP
+.B delay_first_probe_time
+Delay before first probe after it has been decided that a neighbour
+is stale.
+Defaults to 5 seconds.
+.TP
+.B gc_interval
+How frequently the garbage collector for neighbour entries
+should attempt to run.
+Defaults to 30 seconds.
+.TP
+.B gc_stale_time
+Determines how often to check for stale neighbour entries.  When
+a neighbour entry is considered stale it is resolved again before
+sending data to it.
+Defaults to 60 seconds.
+.TP
+.B gc_thresh1
+The minimum number of entries to keep in the ARP cache.
+The garbage collector will not run if there are fewer than
+this number of entries in the cache.
+Defaults to 128.
+.TP
+.B gc_thresh2
+The soft maximum number of entries to keep in the ARP cache.
+The garbage collector will allow the number of entries to exceed
+this for 5 seconds before collection will be performed.
+Defaults to 512.
+.TP
+.B gc_thresh3
+The hard maximum number of entries to keep in the ARP cache.
+The garbage collector will always run if there are more than
+this number of entries in the cache.
+Defaults to 1024.
+.TP
+.B locktime
+The minimum number of jiffies to keep an ARP entry in the cache.
+This prevents ARP cache thrashing if there is more than one potential
+mapping (generally due to network misconfiguration).
+Defaults to 1 second.
+.TP
+.B mcast_solicit
+The maximum number of attempts to resolve an address by multicast/broadcast
+before marking the entry as unreachable.
+Defaults to 3.
+.TP
+.B proxy_delay
+When an ARP request for a known proxy-ARP address is received, delay up to
+.I proxy_delay
+jiffies before replying.
+This is used to prevent network flooding in some cases.
+Defaults to 0.8 seconds.
+.TP
+.B proxy_qlen
+The maximum number of packets which may be queued to proxy-ARP addresses.
+Defaults to 64.
+.TP
+.B retrans_time
+The number of jiffies to delay before retransmitting a request.
+Defaults to 1 second.
+.TP
+.B ucast_solicit
+The maximum number of attempts to send unicast probes before asking
+the ARP daemon (see
+.IR app_solicit ).
+Defaults to 3.
+.TP
+.B unres_qlen
+The maximum number of packets which may be queued for each unresolved
+address by other network layers.
+Defaults to 3.
+
+.SH B£ÊDY
+Niektóre ustawienia timera s± podawane w jednostkach jiffy, które s± zale¿ne
+od architektury. Dla architektury Alpha jiffy to 1/1024 sekundy, na wiêkszo¶ci
+pozosta³ych architektur jest to 1/100s.
+
+Nie ma mo¿liwo¶ci zasygnalizowania postêpów w po³±czeniu z przestrzeni
+u¿ytkownika. Oznacza to, ¿e protoko³y po³±czeniowe zaimplementowane w
+przestrzeni u¿ytkownika bêd± generowaæ nadmierny ruch ARP, gdy¿ ndisc bêdzie
+dokonywa³ regularnego próbkowania adresów MAC. Ten sam problem dotyczy
+niektórych protoko³ów j±dra (np. NFS-u po UDP).
+
+Ta strona podrêcznika miesza ze sob± funkcje charakterystyczne dla IPv4 z
+funkcjami wspólnymi dla IPv4 i IPv6.
+
+.SH WERSJE
+W Linuksie 2.0 zmieniono
+.B struct arpreq
+dodaj±c pole
+.I arp_dev
+oraz jednocze¶nie zmieniono numery kontrolek wej¶cia/wyj¶cia.
+W Linuksie 2.2 porzucono wsparcie dla starych kontrolek wej¶cia/wyj¶cia.
+
+W Linuksie 2.2 porzucono wsparcie dla wpisów proxy arp dla sieci (maska sieci
+inna ni¿ 0xffffffff). Zosta³o ono zast±pione przez automatyczn± konfiguracjê
+proxy arp w j±drze dla wszystkich hostów osi±galnych na innych interfejsach
+(gdy dla danego interfejsu w³±czone s± przekazywanie pakietów i proxy arp).
+
+Kontrolki systemowe neigh/* nie istnia³y w Linuksie przed wersj± 2.2.
+
+.SH "ZOBACZ TAK¯E"
+.BR ip (7)
+.PP
+RFC826 dla opisu ARP.
+.br
+RFC2461 dla opisu znajdywania s±siadów w IPv6 oraz podstawowych stosowanych w
+tym celu algorytmów.
+.LP
+ARP IPv4 w Linuksie 2.2+ korzysta z algorytmów IPv6, gdy jest to mo¿liwe.

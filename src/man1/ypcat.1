@@ -1,0 +1,77 @@
+.\" -*- nroff -*-
+.\" Copyright (C) 1998 Thorsten Kukuk
+.\" This file is part of the yp-tools.
+.\" Author: Thorsten Kukuk <kukuk@vt.uni-paderborn.de>
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2, or (at your option)
+.\" any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software Foundation,
+.\" Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+.\"
+.\" {PTM/TW/0.1/22-07-1999/"drukuje warto¶ci wszystkich kluczy z bazy danych NIS"}
+.\" Translation (c) 1999 Tomasz Wendlandt <juggler@cp.pl>.
+.\"
+.TH ypcat 1 "maj 1998" "Narzêdzia YP 2.2"
+.SH NAZWA
+ypcat - wypisuje zawarto¶ci mapy NIS
+.SH SK£ADNIA
+.B ypcat
+[
+.BR \-kt
+]
+[
+.BI \-d " domena"
+]
+.I nazwamapy
+.br
+.B ypcat
+.B \-x
+.LP
+.SH OPIS
+.B ypcat
+drukuje zawarto¶ci mapy NIS okre¶lonych przez
+.IR nazwêmapy ,
+które mog± byæ nazw± mapy lub pseudonimem mapy.
+.SH OPCJE
+.TP
+.BI \-d " domena"
+Okre¶la nazwê domeny inn± ni¿ warto¶æ domy¶lna, zwrócon± przez
+.BR domainname (1).
+.TP
+.B \-k
+Wy¶wietla mapê kluczy. Ta opcja jest przydatna z mapami w których 
+warto¶ci s± puste albo klucz nie jest czê¶ci± warto¶ci.
+.TP
+.B \-t
+Ta opcja hamuje t³umaczenie pseudonimu mapy.
+.TP
+.B \-x
+Wy¶wietla tabelê t³umaczeñ pseudonimów map.
+.SH PLIKI
+.TP
+.B /var/yp/nicknames
+tabela t³umaczeñ pseudonimów map.
+.SH "ZOBACZ TAK¯E"
+.BR domainname (8),
+.BR nicknames (5),
+.BR ypbind (8),
+.BR ypmatch (1),
+.BR yppoll (8),
+.BR ypserv (8),
+.BR yset (8),
+.BR ypwhich (1)
+.LP
+.SH AUTOR
+.B ypcat
+jest czê¶ci± pakietu
+.BR yp-tools ,
+który zosta³ napisany przez Thorstena Kukuka <kukuk@vt.uni-paderborn.de>.

@@ -1,0 +1,74 @@
+.\" {PTM/AB/0.1/13-12-1998/"ceil - najmniejsza warto¶æ ca³kowita nie mniejsza ni¿ x"}
+.\" t³umaczenie Adam Byrtek <abyrtek@priv.onet.pl>
+.\" aktualizacja do man-pages 1.45 A. Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" ------------
+.\" Copyright 2001 Andries Brouwer <aeb@cwi.nl>.
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.TH CEIL 3 2001-05-31 "" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+ceil, ceilf, ceill \- funkcja zaokr±glaj±ca w górê: najmniejsza warto¶æ
+ca³kowita nie mniejsza od argumentu
+.SH SK£ADNIA
+.nf
+.B #include <math.h>
+.sp
+.BI "double ceil (double " x );
+.br
+.BI "float ceilf(float " x );
+.br
+.BI "long double ceill(long double " x );
+.fi
+.SH OPIS
+Funkcje te zaokr±glaj± \fIx\fP w górê do najbli¿szej liczby ca³kowitej.
+.SH "WARTO¦Æ ZWRACANA"
+Warto¶æ ca³kowita bêd±ca wynikiem zaokr±glenia. Je¶li \fIx\fP jest ca³kowite
+lub nieskoñczone, zwracana jest warto¶æ \fIx\fP.
+.SH B£ÊDY
+Nie mog± wyst±piæ ¿adne b³êdy oprócz EDOM i ERANGE.
+Je¶li \fIx\fP wynosi NaN, to zwracana jest warto¶æ NaN i
+.I errno
+mo¿e byæ ustawione na EDOM.
+.SH UWAGI
+SUSv2 oraz POSIX 1003.1-2001 zawieraj± tekst dotycz±cy przepe³nienia (które
+mo¿e spowodowaæ ustawienie
+.I errno
+na ERANGE lub spowodowaæ wyj±tek).
+W praktyce wynik nie mo¿e spowodowaæ przepe³nienia na ¿adnej wspó³czesnej
+maszynie, wiêc obs³uga tego b³êdu jest po prostu bezsensowna.
+(Dok³adniej, przepe³nienie mo¿e wyst±piæ tylko gdy warto¶æ maksymalna
+wyk³adnika jest mniejsza ni¿ liczba bitów mantysy.
+Wed³ug standardu IEEE-754 dla 32 i 64-bitowych liczb zmiennoprzecinkowych
+warto¶æ maksymalna wyk³adnika wynosi 128 (odp. 1024), a liczba bitów mantysy
+wynosi 24 (odp. 53).)
+.SH "ZGODNE Z"
+Funkcja
+.B ceil()
+jest zgodna z SVID 3, POSIX, BSD 4.3, ISO 9899.
+Pozosta³e funkcje pochodz± z C99.
+.SH "ZOBACZ TAK¯E"
+.BR floor (3),
+.BR lrint (3),
+.BR nearbyint (3),
+.BR rint (3),
+.BR round (3),
+.BR trunc (3)

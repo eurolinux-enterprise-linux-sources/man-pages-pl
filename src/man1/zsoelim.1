@@ -1,0 +1,68 @@
+.\" {PTM/WK/1999}
+.\" Man page for zsoelim
+.\"
+.\" Copyright (C), 1994, 1995, Graeme W. Wilford. (Wilf.)
+.\"
+.\" You may distribute under the terms of the GNU General Public
+.\" License as specified in the file COPYING that comes with the
+.\" man_db distribution.
+.\"
+.\" Sat Dec 10 19:33:32 GMT 1994  Wilf. (G.Wilford@ee.surrey.ac.uk) 
+.\" 
+.TH zsoelim 1 "12 lipca 1995" "2.3.10" "Narzêdzia przegl±darki manuali"
+.SH NAZWA
+zsoelim \- wype³nij ¿±dania .so w wej¶ciu roff
+.SH SK£ADNIA
+.B zsoelim 
+.RB [ -CVh ]
+.RI [ plik ...]
+.SH OPIS
+.B zsoelim 
+analizuje zawarto¶æ \fIplików\fR, podanych jako argumenty, albo, je¶li
+ich nie podano, swoje standardowe wej¶cie, poszukuj±c wierszy o postaci:
+
+.B .so  
+.I plik
+
+¯±dania takie s± zastêpowane zawarto¶ci± podanego \fIpliku\fR. Je¿eli ¿±danie
+nie mo¿e byæ spe³nione, to 
+.B zsoelim
+szuka
+.I plik.ext
+gdzie
+.I .ext
+mo¿e byæ jednym z 
+.BR .gz ,
+.BR .Z
+lub
+.BR .z .
+W zale¿no¶ci od opcji ustalonych podczas kompilacji mog± byæ te¿ obs³ugiwane
+inne typy rozszerzeñ. Je¿eli ¿±danie spe³nia plik skompresowany, to plik ten
+jest dekompresowany przy u¿yciu odpowiedniego programu dekompresuj±cego,
+a jego wynik u¿ywany jest do wykonania ¿±dania.
+
+Tradycyjnie programy \fBsoelim\fR u¿ywane by³y do umo¿liwienia preprocesorom
+roff przetwarzania plików wskazywanych przez ¿±dania. Ta konkretna wersja
+zosta³a napisana by obej¶æ problemy stworzone przez obs³ugê skompresowanych
+stron podrêczników man.
+.SH OPCJE
+.TP
+.B \-C
+Flaga ta istnieje dla zgodno¶ci z innymi programami \fBsoelim\fR.
+Jej zadaniem jest w³±czanie przetwarzania ¿±dañ .so poprzedzonych czym¶
+innym ni¿ bia³e znaki (spacje, tabulatory, znaki nowej linii).
+Poniewa¿ takie zachowanie jest ju¿ domy¶lne dla \fBzsoelim\fR, jest ona
+ignorowana.
+.TP
+.B \-h
+Wy¶wietl informacjê pomocy i zakoñcz.
+.TP
+.B \-V
+Wy¶wietl wersjê i informacjê o autorze.
+.SH ZOBACZ TAK¯E
+.BR nroff (1),
+.BR troff (1),
+.BR groff (1),
+.BR man (1).
+.SH AUTOR
+Wilf. (G.Wilford@ee.surrey.ac.uk)

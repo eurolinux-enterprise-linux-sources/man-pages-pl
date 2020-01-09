@@ -1,0 +1,88 @@
+.\" 1999 PTM Przemek Borys
+.\" poszerzenie i aktualizacja do GNU sh-utils 2.0 PTM/WK/2000-VI
+.ig
+Transl.note: based on GNU man page pathchk.1 and sh-utils.info
+
+Copyright (C) 1994, 95, 96 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+..
+.TH PATHCHK "1" FSF "maj 2000" "Narzêdzia pow³okowe GNU 2.0"
+.SH NAZWA
+pathchk \- sprawd¼ czy nazwy plików s± prawid³owe lub przeno¶ne
+.SH SK£ADNIA
+.TP 9
+.B pathchk
+.RB [ -p ]
+.RB [ \-\-portability ]
+.RB [ \-\-help ]
+.RB [ \-\-version ]
+.br
+.IR nazwapliku ...
+.SH OPIS
+Ta strona podrêcznika man opisuje polecenie \fBpathchk\fR w wersji GNU.
+.PP
+Dla ka¿dej
+.IR nazwypliku ,
+.B pathchk
+wypisuje komunikat w wypadku wyst±pienia któregokolwiek z okre¶lonych
+ni¿ej warunków:
+.br
+\(bu jeden z istniej±cych w
+.I nazwiepliku
+katalogów nie posiada prawa przeszukiwania (wykonania)
+.br
+\(bu d³ugo¶æ
+.I nazwypliku
+jest wiêksza ni¿ dopuszczalna d³ugo¶æ nazwy pliku dla danego systemu plików
+.br
+\(bu d³ugo¶æ jednej ze sk³adowych
+.IR nazwypliku ,
+odpowiadaj±cej nazwie istniej±cego katalogu, jest wiêksza ni¿ maksymalna
+dopuszczalna w danym systemie plików d³ugo¶æ sk³adowej nazwy.
+.SH OPCJE
+.TP
+.BR \-p ", " \-\-portability
+Zamiast dokonywania sprawdzeñ d³ugo¶ci danego systemu plików, testuje
+d³ugo¶æ nazw plików i ich sk³adowych wed³ug norm POSIX.1. Poza tym sprawdza,
+czy nazwa pliku nie zawiera nieprzeno¶nych znaków.
+.TP
+.B \-\-help
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach, koñczy
+pracê.
+.TP
+.B \-\-version
+Wy¶wietla numer wersji programu i koñczy pracê.
+.SH KOD ZAKOÑCZENIA
+.TP
+.B 0
+je¶li wszystkie podane nazwy plików przesz³y pomy¶lnie wszystkie testy.
+.TP
+.B 1
+w przeciwnym wypadku
+.SH "ZG£ASZANIE B£ÊDÓW"
+B³êdy proszê zg³aszaæ, w jêz.ang., do <bug-sh-utils@gnu.org>.
+.SH COPYRIGHT
+Copyright \(co 1999 Free Software Foundation, Inc.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH ZOBACZ TAK¯E
+.BR basename (1),
+.BR dirname (1),
+.BR sh-utils (1).
+.SH OD T£UMACZA
+Zaktualizowano i poszerzono wg dokumentacji Texinfo dla narzêdzi pow³okowych
+GNU wersji 2.0.

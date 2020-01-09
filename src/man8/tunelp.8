@@ -1,0 +1,150 @@
+.\" {PTM/PB/0.1/30-05-1999/"ustaw ró¿ne parametry urz±dzenia lp"}
+.\" $Id: tunelp.8,v 1.5 2002/06/01 11:49:42 robert Exp $
+.\" Translation update: Robert Luberda <robert@debian.org>, May 2002, util-linux 2.11n
+.\"
+.\" This file Copyright (C) 1992-1997 Michael K. Johnson <johnsonm@redhat.com>
+.\" This file Copyright (C) 1998      Andrea Arcangeli   <andrea@e-mind.com>
+.\" It may be distributed under the terms of the GNU General Public License,
+.\" version 2, or any higher version.  See section COPYING of the GNU General
+.\" Public license for conditions under which this file may be redistributed.
+.\"
+.\" Polished a bit - aeb
+.TH tunelp 8 "7 maja 1999" "tunelp" "Podrêcznik programisty linuksowego"
+.SH NAZWA
+tunelp \- ustaw ró¿ne parametry urz±dzenia lp
+.SH SK£ADNIA
+\fBtunelp\fP \fI<urz±dzenie>\fP [-i \fI<IRQ>\fP | -t \fI<TIME>\fP | -c \fI<CHARS>\fP | -w \fI<WAIT>\fP | -a [on|off] | -o [on|off] | -C [on|off] | -r | -s | -q [on|off] | -T [on|off] ]
+.SH OPIS
+\fBtunelp\fP ustawia ró¿ne parametry urz±dzeñ /dev/lp\fI?\fP, umo¿liwiaj±c
+zrobienie z nich lepszego u¿ytku ni¿ standardowo (lub te¿ jakiegokolwiek
+u¿ytku, je¶li drukarka bez tego nie chce dzia³aæ...). Bez parametrów, sprawdza
+tylko, czy urz±dzenie u¿ywa przerwañ, czy nie, a je¶li tak, to których.
+Z parametrami ustawia odpowiednio charakterystykê urz±dzenia. Parametry to:
+
+.TP
+.BI \-i " <IRQ>"
+jest numerem IRQ, którego nale¿y u¿ywaæ dla danego portu
+równoleg³ego. Je¶li jego warto¶æ jest niezerowa, to opcje -t i -c nie maj± efektu.
+Je¶li twój port nie obs³uguje przerwañ, opcja ta powstrzyma drukowanie.
+.B tunelp -i 0
+odnawia bezprzerwaniow± obs³ugê drukarki i powinna ona wtedy znów dzia³aæ.
+Je¶li twój port równoleg³y wspiera przerwania, to ich u¿ycie przyspieszy
+pracê.
+
+UWAGA: Ta opcja nie powoduje ¿adnych efektów na systemach u¿ywaj±cych j±dra
+Linuksa w wersji 2.1.131 lub pó¼niejszej, poniewa¿ przerwania s± przechwytywane
+przez sterownik "parport". Przerwania te mo¿na zmieniaæ na przyk³ad poprzez edycjê
+.IR /proc/parport/*/irq .
+Wiêcej szczegó³ów na temat sterownika parport mo¿na znale¼æ w pliku
+.IR /usr/src/linux/Documentation/parport.txt .
+
+.TP
+.BI \-t " <TIME>"
+jest ilo¶ci± czasu w jiffach, przez któr± sterownik czeka
+je¶li drukarka nie przyjmuje znaku przez okre¶lon± liczbê prób, wskazanych
+przez parametr -c. Warto¶ci± domy¶ln± jest 10. Je¶li chcesz jak najszybszego
+drukowania i nie obchodzi ciê obci±¿enie systemu, mo¿esz ustawiæ tê warto¶æ
+na zero. Je¶li nie obchodzi ciê, jak szybko pracuje drukarka, lub je¶li
+drukujesz tekst na powolnej drukarce, to ustaw na 500 (5 sekund), co spowoduje
+niskie obci±¿enie systemu. Warto¶æ ta
+ogólnie powinna byæ ni¿sza przy drukowaniu grafiki ni¿ tekstu o wspó³czynnik
+oko³o 10.
+
+.TP
+.BI \-c " <CHARS>"
+jest liczb± prób wydrukowania znaku na drukarce przed
+za¶niêciem przez okres \-t \fI<TIME>\fP. Jest to liczba prób pêtli, która
+próbuje wys³aæ znak na drukarkê. 120 jest dobr± warto¶ci± dla wiêkszo¶ci
+drukarek. Domy¶ln± warto¶ci± jest 1000, poniewa¿ istniej± drukarki,
+wymagaj±ce tak d³ugiej zw³oki, lecz mo¿esz to zmieniæ. Je¶li masz bardzo
+szybk± drukarkê, jak np. HP laserjet 4, sens mo¿e mieæ warto¶æ 10. Je¶li
+masz \fInaprawdê\fP star± drukarkê, mo¿esz tê warto¶æ jeszcze zwiêkszyæ.
+
+Ustawienie \-t \fI<TIME>\fP na 0 jest równoznaczne z ustawieniem \-c 
+\fI<CHARS>\fP na nieskoñczono¶æ.
+
+.TP
+.BI \-w " <WAIT>"
+jest licznikiem zajêtych pêtli dla sygna³u strobe. Podczas
+gdy wiêkszo¶æ drukarek zdaje siê byæ w stanie pracowaæ z bardzo krótkim
+strobe, niektóre drukarki wymagaj± d³u¿szego. Zwiêkszenie tej warto¶ci z
+domy¶lnej 0 umo¿liwi drukowanie na tych drukarkach. Mo¿e to te¿ umo¿liwiæ
+drukowanie na d³u¿szych kablach.
+
+.TP
+.B \-a [on|off]
+Okre¶la to czy przerywaæ po b³êdzie drukarki -- domy¶lnie nie
+przerywa siê. Je¶li siedzisz przy komputerze, to pewnie chcesz widzieæ b³±d
+i go naprawiæ i pozwoliæ drukarce drukowaæ dalej. Z drugiej strony, je¶li
+nie siedzisz, mo¿esz raczej chcieæ, by spooler zauwa¿y³, ¿e drukarka nie
+jest gotowa i zakoñczy³ próby, wysy³aj±c list z informacj±. Wybór jest twój.
+
+.TP
+.B \-o [on|off]
+Bardzo podobne do \-a. Powoduje to, ¿e ka¿de wywo³anie funkcji
+.I open()
+tego urz±dzenia sprawdza, czy jest ono on-line i czy zg³asza jakie¶ b³êdy w
+rodzaju braku papieru. Jest to prawid³owe ustawienie dla wiêkszo¶ci wersji
+lpd.
+
+.TP
+.B \-C [on|off]
+Opcja ta dodaje ekstra ("ostro¿ne") sprawdzanie b³êdów. Je¶li
+opcja ta jest w³±czona, sterownik drukarki bêdzie upewnia³ siê, ¿e drukarka
+jest on-line i nie zg³asza ¿adnych b³êdów braku papieru przed wysy³aniem do
+niej danych. Jest to u¿yteczne dla drukarek, które normalnie przyjmuj± dane,
+gdy s± wy³±czone.
+
+UWAGA: Ta opcja jest przestarza³a, poniewa¿ jest ona domy¶lnie w³±czona w j±drach
+w wersji 2.1.131 lub wy¿szej.
+
+.TP
+.B \-s
+Opcja ta zwraca obecny status drukarki, zarówno jako liczbê 0..225, jak i
+jako listê aktywnych flag. Gdy ta opcja jest podana, implikowane jest \-q
+off, wy³±czaj±ce wy¶wietlanie bie¿±cego IRQ.
+
+.TP
+.B \-T [on|off]
+Ta opcja mówi strownikowi la, czy powinien ufaæ przerwaniom czy te¿ nie.
+.\"FIXME ufanie przerwaniom - brzmi trochê g³upio 
+.\" oryg: This option tell the lp driver to trust or not the IRQ.o
+Opcja ta ma sens tylko wtedy, gdy s± u¿ywane przerwania.
+Je¿eli w³±czysz tê opcjê, to kiedy sterownikowi drukarki zostanie dostarczone przerwanie,
+to wy¶le on nastêpny czekaj±cy znak do drukarki, nawet wtedy, gdy drukarka ci±gle
+jest w stanie BUSY (zajêty). Jest to jedyny sposób usypiania drukarki (pozwalaj±cy 
+efektywnie wykorzystaæ przerwania drukarki) przynajmiej w wypadu drukarek
+Epson Stylus Color.
+Sterownik lp automagicznie wykrywa, czy ustawienie tej opcji poprawi³oby wydajno¶æ
+i w takim wypadku wysy³a stosowne ostrze¿enie jako wiadomo¶æ j±dra.
+
+UWAGA: Ufanie przerwaniom mo¿e popsuæ drukowanie na niektórych drukarkach,
+tak wiêc musisz wiedzieæ, czy Twoja drukarka bêdzie dzia³aæ czy nie...
+
+.TP
+.B \-r
+Opcja ta resetuje port. Wymaga j±dra Linuksa w wersji 1.1.80 lub
+pó¼niejszej.
+
+.TP
+.B \-q [on|off]
+Opcja ta w³±cza wy¶wietlanie bie¿±cego ustawienia IRQ.
+
+.SH UWAGI
+\-o, \-C i \-s wymagaj± j±dra Linuksa w wersji 1.1.76 lub wy¿szej.
+
+\-C wymaga j±dra Linuksa w wersji ni¿szej ni¿ 2.1.131.
+
+\-T wymaga j±dra Linuksa w wersji 2.1.131 lub wy¿szej.
+
+.SH B£ÊDY
+Dziwnym zbiegiem okoliczno¶ci ioctl LPSTRICT w j±drze 2.0.36 ma ten sam
+numer co wprowadzony w j±drze 2.1.131 ioctl LPTRUSTIRQ. Dlatego u¿ycie
+opcji \-T w systemie z j±drem 2.0.36 mo¿e przynie¶æ dziwne efekty, je¿eli
+tunelp zosta³ skompilowany na systemie z j±drem 2.1.131 lub wy¿szym.
+
+.SH PLIKI
+.I /dev/lp?
+.br
+.I /proc/parport/*/*
+

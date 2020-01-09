@@ -1,0 +1,58 @@
+.\" Copyright (c) 1996 Free Software Foundation, Inc.
+.\" This program is distributed according to the Gnu General Public License.
+.\" See the file COPYING in the kernel source directory
+.\" $ Id: modinfo.8 1.4 Wed, 26 Sep 2001 12:00:28 +1000 kaos $
+.\"
+.\" $Id: modinfo.8,v 1.2 2001/11/13 13:43:00 ankry Exp $
+.\"
+.TH MODINFO 8 "26 wrze¶nia 2001" Linux "Wsparcie dla modu³ow"
+.SH NAZWA
+modinfo \- wypisuje informacje o module j±dra
+.SH SK£ADNIA
+.B modinfo
+[ opcje ] <plik_modu³u>
+.SH OPIS
+Program narzêdziowy
+.B modinfo
+bada plik obiektowy
+.I module_file
+zwi±zany z modu³em j±dra i wypisuje wszelkie zebrane informacje.
+.SS OPCJE
+.TP
+.BR \-a ", " \-\-author
+Wypisuje autora modu³u.
+.TP
+.BR \-d ", " \-\-description
+Wypisuje opis modu³u.
+.TP
+.BR \-a ", " \-\-license
+Wypisuje licencjê modu³u.
+.TP
+.BR \-n ", " \-\-filename
+Wypisuje nazwê pliku modu³u.
+.TP
+.BI \-f " ³añcuch_formatu\fR, " \-\-format " ³añcuch_formatu
+Pozwala u¿ytkownikowi na podanie dowolnego ³añcucha formatu, wydobywaj±cego
+warto¶ci z sekcji ELF pliku
+.I plik_modu³u
+zawieraj±cej informacje o module.
+Zastêpowane s± nazwy cech ujête w nawiasy klamrowe i poprzedzone znakiem
+procentu.
+Nazwa cechy %{filename} jest wspierana zawsze, nawet gdy modu³ nie zawiera
+sekcji modinfo.
+.TP
+.BR \-p ", " \-\-parameters
+Wypisuje parametry wspierane przez modu³ i ich typy.
+.TP
+.BR \-h ", " \-\-help
+Wypisuje ma³y ekran o u¿yciu.
+.TP
+.BR \-V ", " \-\-version
+Wypisuje wersjê
+.BR modinfo .
+.PP
+Je¶li nie podano ¿adnych opcji, domy¶lnymi s± filename, description,
+author, license i parameters.
+.SH "ZOBACZ TAK¯E"
+.BR insmod "(8), " modprobe "(8), " depmod "(8), " rmmod "(8), "
+.BR lsmod "(8), " ksyms "(8), " modules "(2) "

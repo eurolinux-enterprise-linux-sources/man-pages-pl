@@ -1,0 +1,314 @@
+.\" {PTM/WK/2000-IV}
+.ds VE LPRng-3.6.13
+.TH LPR 1 \*(VE "LPRng"
+.ig
+Thu Jul 20 07:19:29 PDT 1995 Patrick Powell
+..
+.SH NAZWA
+lpr \- drukowanie off line
+.SH SK£ADNIA
+.TP 4
+.B lpr
+.RB [ \-A ]
+.RB [ \-b , l ]
+.RB [ \-C
+.IR class ]
+.RB [ \-D
+.IR debugopt ]
+.RB [ \-F
+.IR filterformat ]
+.br
+.RB [ \-h ]
+.RB [ \-i
+.IR indentcols ]
+.RB [ \-k ]
+.RB [ \-J
+.IR job ]
+.RB [ \-K , #
+.IR copies ]
+.br
+.RB [ \-m
+.IR mailTo ]
+.RB [ \-P
+.IR printer ]
+.RB [ \-Q ]
+.RB [ \-r ]
+.RB [ \-R
+.IR remoteAccount ]
+.br
+.RB [ \-s ]
+.RB [ \-T
+.IR title ]
+.RB [ \-U
+.IR user ]
+.RB [ \-V ]
+.RB [ \-w
+.IR width ]
+.br
+.RB [ \-Z
+.IR zoptions ]
+.RB [ \-1 , 2 , 3 , 4
+.IR font ]
+.RI [ filename \|.\|.\|.]
+.SH OPIS
+.B Lpr
+wykorzystuje demona kolejki wydruku do drukowania podanych plików gdy
+us³ugi bêd± dostêpne. Je¿eli nie podano nazw, przyjmowane jest standardowe
+wej¶cie.
+.SH OPCJE
+.TP 5
+.B \-A
+Wykorzystuje us³ugi przesy³ania uwierzytelnianego, je¶li s± dostêpne.
+.TP 5
+.BI \-C " class"
+Okre¶la klasyfikacjê zadania, jaka ma byæ zastosowana dla strony
+rozdzielaj±cej i do ustawienia priorytetu.
+
+Priorytety maj± zakres od A (najni¿szy) do Z (najwy¿szy); domy¶lnym jest A.
+
+Na przyk³ad,
+.br
+.ti +0.5i
+lpr \-C B foo.c
+.br
+ustawia priorytet/klasê na B a drukowany jest plik foo.c.
+.TP 5
+\fB\-D\fP\ \fIdebugoptions\fP
+Debugowanie sterowane jest opcj±
+.BR \-D .
+Opcja ta przyjmuje listê oddzielanych przecinkami ustawieñ. Maj± one jedn±
+z dwu postaci:
+.BR urz±dzenie=warto¶æ ,
+lub
+.B warto¶æ
+ustawiaj±ca ca³o¶ciow± warto¶æ domy¶ln±.
+.TP 5
+\fB\-F\fI filterformat\fP
+Okre¶leniu filtru lub formatu. Domy¶lnie, zak³ada siê, ¿e wej¶cie jest
+standardowym plikiem tekstowym i u¿ywany jest format
+.IR f ;
+przyjmowane jest, ¿e urz±dzeniem wyj¶ciowym jest drukarka wierszowa.
+Dostêpne s± inne, podane poni¿ej, formaty. Nie wszystkie z nich s± dostêpne
+dla wszystkich drukarek; szczegó³y znajdziesz w
+.BR printcap (5).
+Formaty podawane s± jako pojedyncze ma³e litery;
+poni¿sze z nich s± poprawnymi argumentami opcji
+.B \-F
+z zak³adanym typem danych.
+Dla utrzymania zgodno¶ci z poprzednimi wersjami
+.BR lpr
+typów formatu mo¿na u¿yæ jako samodzielnych opcji
+(tj. pomijaj±c
+.BR F )
+z wyj±tkiem wymienionych ni¿ej; w takich przypadkach mo¿e siê pojawiæ
+ostrze¿enie.
+.RS 5
+.TP 5
+.B "\-b, \-l"
+obie flagi te okre¶laj± plik binarny ("dos³owny"), nie zostanie wykonane ¿adne
+przetwarzanie. Drukowane przy zastosowaniu filtru formatu
+.IR f ,
+z zaniechaniem przetwarzania.
+.TP 5
+.B \-c
+dane utworzone przez
+.BR cifplot (l).
+.TP 5
+.B \-d
+wyj¶cie z
+.BR tex (l)
+(format DVI ze Stanford).
+.TP 5
+.B \-g
+standardowe dane wykresowe utworzone przez programy
+.BR plot (3X)
+(zobacz te¿
+.BR plot (1G),
+gdzie znajdziesz opis filtrów wykorzystywanych przez program buforuj±cy
+drukarki).
+.TP 5
+.B \-n
+wyj¶cie z (niezale¿nego od urz±dzenia)
+.BR troff .
+.TP 5
+.B \-p
+Najpierw wykorzystuje
+.BR pr (1)
+do sformatowania plików, potem drukuje przy u¿yciu formatu
+.IR f .
+.TP 5
+.B \-r
+Przera¿aj±ca opcja
+.BR "USUÑ PO WYDRUKOWANIU" .
+Uwa¿aj, gdy¿
+.I lpr
+usunie pliki po wys³aniu ich do kolejki drukowania.
+Opcja obecna na ¿±danie u¿ytkowników, dla zgodno¶ci z inn± implamentacj±
+Berkeley lpr, ale faktycznie NIE powinno jej byæ.
+.TP 5
+.B \-t
+wyj¶cie z
+.BR troff (1)
+(pierwotnie polecenia cat fotona¶wietlarki, ale obecnie zak³adamy, ¿e to samo,
+co format
+.BR n ).
+.TP 5
+.B \-v
+grafika rastrowa dla urz±dzeñ takich jak Benson Varian.
+.RE
+.TP 5
+\fB\-h\fP
+Bez strony tytu³owej lub nag³ówka dla tego zadania.
+.TP 5
+.BI \-i " indentcols"
+Wciêcie wej¶cia o \fIindentcols\fP kolumn.
+Zauwa¿, ¿e ta opcja nie jest obs³ugiwana na wszystkich drukarkach.
+.TP 5
+.BI -J " jobname"
+Okre¶la nazwê zadania, jaka ma byæ wydrukowana na stronie rozdzielaj±cej.
+Domy¶lnie jest to nazwa pierwszego pliku w zadaniu lub
+.I "(STDIN)"
+je¶li wej¶cie pochodzi z potoku.
+.TP 5
+.B \-k
+U¿ywane jako filtr,
+.B lpr
+normalnie dla wej¶cia czytanego z stdin tworzy plik tymczasowy przed
+wys³aniem go na zdaln± drukarkê.
+.B \-k
+powoduje, ¿e zadanie wysy³ane jest bezpo¶rednio do serwera.
+Je¿eli zadanie zostanie zabite w ¶rodku tworzenia, to wydrukowany zostanie
+czê¶ciowo przes³any plik.
+Opcja ta mo¿e nie dzia³aæ z bardzo du¿ymi zadaniami lub programami
+buforuj±cymi spoza LPRng.
+.TP 5
+\fB\-K\fP\fIcopies\fP, \0\fB\-#\fP\fIcopies\fP
+Okre¶la liczbê kopii ka¿dego plików przeznaczonych do druku.
+.TP 5
+.BI \-m " mailTo"
+Po pomy¶lnym zakoñczeniu wysy³a wiadomo¶æ pocztow± do u¿ytkownika
+.IR mailTo .
+.TP 5
+.BI \-P " printer"
+Wyj¶cie bêdzie kierowane na drukarkê \fIprinter\fP.
+Je¿eli nie ustawiono drukarki przy pomocy tej opcji, to stosowana jest
+domy¶lna. Drukarkê domy¶ln± wskazuj± (w kolejno¶ci priorytetu): zmienna
+¶rodowiskowa \fBPRINTER\fP, pierwsza pozycja w bazie \fIprintcap\fP, wpis
+\fBdefault_printer\fP pliku konfiguracyjnego i, na koniec, wkompilowana
+(zale¿na od hosta) warto¶æ \fBdefault_printer\fP.
+.TP 5
+.B \-Q
+Umieszca nazwê kolejki druku w pliku zadania.
+Informacaja ta mo¿e byæ nastêpnie wykorzystana przez oprogramowanie
+buforuj±ce do sterowania formatem wyj¶ciowym.
+.TP 5
+.BI \-R " remoteAccount"
+Okre¶la informacjê rozliczeniow±, jakiej ma u¿yæ system zdalny drukuj±cy.
+.sp
+Parametr mo¿e s³u¿yæ do okre¶lania kodu op³aty, jaka ma zostaæ pobrana
+za wydruk.
+.TP 5
+.B \-s
+Flaga zamieszczona w celu zachowania zgodno¶ci z innymi wersjami
+.BR lpr .
+W wersjach tych tworzy ona dowi±zania symboliczne do plików przeznaczonych
+do druku.
+.B Lpr
+wysy³a teraz pliki wprost do serwera i flaga ta jest nieistotna.
+.TP 5
+.BI \-T "  title"
+Okre¶la tytu³ wykorzystywany przez
+.BR pr (1).
+Domy¶lnie jest to nazwa pliku.
+.TP 5
+\fB\-U\fP\ \fIusername\fP
+Opcja
+.B \-U
+s³u¿y do przypisania zadaniu nazwy u¿ytkownika. Jest dostêpna tylko dla
+ROOTa lub u¿ytkowników wymienionych w opcji konfiguracyjnej
+.IR allow_user_setting .
+Jest to oczywi¶cie dziura w systemie bezpieczeñstwa, lecz istnieje, by
+pozwoliæ systemom takim jak SAMBA na dostarczanie zadañ w imieniu
+u¿ytkowników.
+Zobacz
+.B "Przesy³anie uwierzytelniane"
+poni¿ej.
+.TP 5
+.B \-V
+Tryb gadatliwy. Dodatkowe flagi \fB-V\fP zwiêkszaj± gadatliwo¶æ.
+Maksymaln± gadatliwo¶æ uzyskuje siê stosuj±c flagê debug.
+.TP 5
+.BI \-w " width"
+Okre¶la szeroko¶æ strony dla drukowanego zadania.
+.TP 5
+.BI -Z " zoptions"
+Opcja stosowana do przekazywania opcji programowi buforuj±cemu druk.
+U¿ywana, gdy zachodzi potrzeba przekazania dodatkowej lub specjalizowanej
+informacji programowi buforuj±cemu.
+.TP 5
+.BI \-1,2,3,4 "fontname"
+Okre¶la nazwê fontu, jaki ma byæ osadzony na pozycji \fIi\fP przy drukowaniu
+TROFF (przestarza³e).
+.SH NAZWY PLIKÓW
+Domy¶lnie, je¿eli nie podano nazw plików
+.B lpr
+czyta standardowe wej¶cie i drukuje je.
+.SH PRZESY£ANIE UWIERZYTELNIANE
+.\" .SH "AUTHENTICATED TRANSFERS"
+.PP
+Pierwotny protokó³ sieciowy LPR zdeefiniowany w RFC1179 nie zapewnia³
+uwierzytelniania miêdzy u¿ytkownikiem a serwerem.
+Jest ono obecnie obs³ugiwane przez LPRng.
+W dokumentacji pomocniczej LPRng znajdziesz wiêcej szczegó³ów o dzia³aniu
+i obs³udze uwierzytelniania.
+.SH ZGODNO¦Æ
+.B lpr
+w wersji LPRng usi³uje byæ funkcjonalnie zgodne z typowymi implementacjami
+.BR lpr .
+Jest jednak nieco poleceñ i funkcjonalno¶ci, które
+there are some commands and functionality that are deliberately missing.
+.IP "\fB\-s\fP\ Symbolic Links" 5
+(Berkeley LPR) Ta opcja okre¶la³a, ¿e podczas buforowania zadañ powinno byæ
+u¿yte dowi±zanie symboliczne do oryginalnego pliku danych, zamiast kopii
+tego pliku.
+Otwiera to pole dla ró¿norodnych problemów z bezpieczeñstwem, jest te¿
+nieefektywne przy drukowaniu na zdalnym ho¶cie.
+.SH PLIKI
+.PP
+Nazwy plików u¿ywane przez LPRng ustawiane s± warto¶ciami w pliku
+konfiguracyjnym drukarek.
+Poni¿ej podano powszechnie u¿ywany zestaw warto¶ci domy¶lnych.
+.nf
+.ta \w'/var/spool/lpd/printcap.<hostname>           'u
+/etc/lpd.conf                        plik konfiguracyjny LPRng
+/etc/printcap                        plik opisu drukarek
+/etc/lpd.perms                       uprawnienia drukarek
+/var/spool/printer*                  katalogi buforowania
+/var/spool/printer*/printer          plik blokuj±cy sterowania kolejk±
+/var/spool/printer*/control.printer  sterowanie kolejk±
+/var/spool/printer*/active.printer   aktywne zadanie
+/var/spool/printer*/log.printer      plik dziennika drukarki
+.fi
+.SH "ZOBACZ TAK¯E"
+.BR lpd.conf (5),
+.BR lpc (8),
+.BR lpd (8),
+.BR lpr (1),
+.BR lpq (1),
+.BR lprm (1),
+.BR printcap (5),
+.BR lpd.perms (5),
+.BR pr (1).
+.SH DIAGNOSTYKA
+Wiêkszo¶æ komunikatów diagnostycznych jest oczywista. Je¶li dok³adny powód
+niepowodzenia pozostaje niejasny, nale¿y w³±czyæ poziom debugowania (-D5)
+i uruchomiæ ponownie. Informacja diagnostyczna pomo¿e uchwyciæ dok³adn±
+przyczynê.
+.SH "HISTORIA"
+LPRng jest rozszerzonym systemem buforowania wydruku o funkcjonalno¶ci podobnej
+do oprogramowania Berkeley LPR. List± dyskusyjn± o LPRng jest lprng@lprng.com;
+subskrypcja przez wys³anie listu do lprng-request@lprng.com ze s³owem
+`subscribe` w tre¶ci.
+Oprogramowanie to jest dostêpne z ftp://ftp.astart.com/pub/LPRng.
+.SH "AUTOR"
+Patrick Powell <papowell@astart.com>.

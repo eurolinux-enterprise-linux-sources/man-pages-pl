@@ -1,0 +1,348 @@
+.\" Translation (c) 1998 Jarek Woloszyn <yossa@dione.ids.pl>
+.\" Translation update: Robert Luberda <robert@debian.org>, May 2003, gpm 1.19.6
+.\" {PTM/JW/0.1/26-09-1998/"kopiowanie i wklejanie, serwer myszy"}
+.\" $Id: gpm.8,v 1.2 2003/05/19 10:14:22 robert Exp $
+.\"
+.TH GPM 8 "pa¼dziernik 2001"
+.UC 4
+.SH NAZWA
+gpm \- narzêdzie kopiowania i wklejania oraz serwer myszy
+.SH SK£ADNIA
+.B gpm
+[
+.I opcje
+]
+.br
+.SH OPIS
+Ten program stara siê byæ u¿ytecznym serwerem myszy dla aplikacji
+uruchamianych na konsoli linuksowej. Bazuje on na pakiecie
+"selection" i czê¶æ jego kodu pochodzi w³a¶nie z selection.
+Ten pakiet ma byæ zamiennikiem programu "selection" jako mechanizmu kopiowania i
+wklejania, a tak¿e zapewnia dodatkowe us³ugi.
+"Selection" by³o pierwsz± implementacj± mechanizmu kopiowania i wklejania
+w Linuksie, u¿ywaj±c± dwóch przycisków myszy. Zaznaczony tekst bêdzie
+dalej w tym dokumencie nazywany zaznaczeniem (ang. selection). Poni¿sze
+informacje zosta³y wziête z pliku texinfo, który nadal jest polecanym
+¼ród³em informacji.
+
+.LP
+Plik wykonywalny gpm ma dzia³aæ jako demon (tak wiêc gpmd by³oby dla niego
+lepsz± nazw±). Ta czê¶æ opisuje opcje w linii poleceñ gpm, a funkcje programu
+opisuje kolejna czê¶æ.
+
+.LP
+Z powodu ograniczeñ wywo³ania systemowego "ioctl(TIOCLINUX)", gpm musi
+byæ uruchamiany przez administratora. Ograniczenia zosta³y dodane w
+ostatnich j±drach 1.1, w celu usuniêcia b³êdu ochrony zwi±zanego z
+zaznaczaniem i robieniem zrzutów ekranowych.
+
+.LP
+Serwer mo¿e byæ ustawiony, tak by pasowa³ do gustu u¿ytkownika i dowolne
+aplikacje u¿ywaj±ce myszy odziedzicz± te ustawienia. W wersjach od
+1.02 a¿ do 1.19.2, w³a¶ciwo¶ci myszy mog³y byæ zmieniane przez ka¿dego u¿ytkownika
+loguj±cego siê na konsoli systemowej. Ze wzglêdów bezpieczeñstwa ta opcja nie jest
+ju¿ dostêpna.
+
+.LP
+Od wersji 0.97 serwer sam umieszcza siê w tle. Aby usun±æ gpm z pamiêci
+wywo³aj go jeszcze raz z opcj± `-k', chocia¿ `killall gpm' mo¿e byæ lepszym
+wyj¶ciem.
+
+.LP
+.SH POLECENIA SPECJALNE
+
+.LP
+Wersja 1.10 doda³a mo¿liwo¶æ wykonywania poleceñ specjalnych w odpowiednich
+warunkach. Standardowo jest to reboot lub zatrzymanie systemu, ale
+u¿ytkownik mo¿e ustawiæ w³asne. Mo¿liwo¶æ wywo³ywania poleceñ jest ciekawa
+dla programistów, gdy¿ pozwala na czyste wy³±czenie komputera, kiedy
+klawiatura jest zablokowana i niedostêpna jest sieæ, w celu przywrócenia
+systemu do stanu u¿ywalno¶ci.
+
+.LP
+Polecenia specjalne s± w³±czane przez potrójne klikniêcie lewym i prawym
+przyciskiem -- bardzo nietypowe przy normalnym u¿ywaniu myszy. Najpro¶ciej
+jest je wykonaæ trzymaj±c jeden przycisk i trzykrotnie klikaj±c drugim.
+Kiedy wykonywanie specjalnych komend zostanie uruchomione, na konsoli pojawi siê
+wiadomo¶æ (i dwa d¼wiêki z g³o¶niczka je¶li go posiadasz); je¶li u¿ytkownik
+pu¶ci wszystkie przyciski i wci¶nie znowu jeden z nich w ci±gu trzech
+sekund, wtedy wykonane zostanie polecenie przypisane do tego przycisku.
+
+.LP
+Standardowe polecenia specjalne to:
+.TP
+lewy przycisk
+Reboot systemu, przez zasygnalizowanie procesu inicjuj±cego.
+.TP
+¶rodkowy przycisk (je¶li jest)
+Wykonuje `/sbin/shutdown -h now'
+.TP
+prawy przycisk
+Wykonuje `/sbin/shutdown -r now'
+
+.LP
+Opcja `-S' w³±cza wykonywanie poleceñ specjalnych i pozwala na zmianê trzech
+specjalnych poleceñ. Aby zaakceptowaæ standardowe polecenia u¿yj `-S ""'
+(podaje pusty argument). Aby podaæ swoje w³asne polecenia, u¿yj listy
+rozdzielonej dwukropkami podaj±c polecenia dla lewego, ¶rodkowego i prawego
+przycisku. Je¶li jakie¶ polecenie jest puste, zostanie zinterpretowane
+jako `wy¶lij sygna³ do procesu inicjuj±cego (init)'. Ta szczególna operacja
+jest udostêpniana w po³±czeniu z wykonywaniem poleceñ zewnêtrznych, poniewa¿
+czasem b³±d programu uniemo¿liwia forkowanie; w takim rzadkim przypadku
+programista powinien byæ w stanie wy³±czyæ system pomimo tego, a zabicie
+procesu `init' jest jedyn± mo¿liwo¶ci± zrobienia tego.
+
+.LP
+Jako przyk³ad: `-S ":telinit 1:/sbin/halt"', przypisuje zabicie `init'
+lewemu przyciskowi, uruchomienie w trybie jednego u¿ytkownika ¶rodkowemu
+i zatrzymanie systemu prawemu przyciskowi.
+
+.LP
+Administratorzy systemu powinni oczywi¶cie postêpowaæ bardzo ostro¿nie
+z tymi poleceniami, poniewa¿ gpm uruchamia siê z prawami administratora.
+Polecenia specjalne s± dobre tylko w komputerach, gdzie fizyczny dostêp
+do myszy jest mo¿liwy tylko dla zaufanych osób.
+
+.LP
+.SH OPCJE LINII POLECEÑ
+
+.LP
+Opcje w linii poleceñ s± nastêpuj±ce:
+.TP
+-a \fIaccel\fP
+Ustawia przyspieszenie myszy kiedy pojedynczy ruch mysz± jest d³u¿szy ni¿
+\fIdelta\fP (zobacz -d).
+.TP
+-A [\fIlimit\fP]
+Uruchamia z wy³±czonym mechanizmem wklejania. Jest to pomy¶lna
+jako ¶rodek bezpieczeñstwa \- prawdopodobny wydaje siê nastêpuj±cy
+atak na system: kto¶ wkleja do bufora selekcji z³o¶liwe polecenie
+pow³oki (`rm -rf /') w³±czaj±c znak koñca linii, a ofiara naciska
+¶rodkowy przycisk myszy...
+W wersji 1.17.2 zosta³ wprowadzony bardziej ogólny mechanizm timeoutu \-
+serwer gpm mo¿e samoczynnie wy³±czyæ mechanizm wklejania po pewnym czasie
+nieaktywno¶ci. Aby w³±czyæ ten tryb pracy, nale¿y podaæ opcjonalny parametr \fIlimit\fP,
+który zostanie zinterpretowany jako czas w sekundach, w którym bufor zaznaczenia
+jest uwa¿any za poprawny i mo¿liwy do wklejania.
+W wersji 1.15.7 zosta³ dodany prosty program `disable-paste'.
+Je¿eli wiele u¿ytkowników mo¿e pracowaæ na konsoli systemowej, to dobrym
+dodatkiem do pliku `/etc/profile' mog± byæ nastêpuj±ce linie:
+
+.LP
+`case $( /usr/bin/tty ) in
+.br
+/dev/tty[0-9]*) /usr/bin/disable-paste ;;
+.br
+esac'
+.TP
+-b \fIbaud\fP
+Ustawia prêdko¶æ (baud rate).
+.TP
+-B \fIsekwencja\fP
+Ustawia kolejno¶æ przycisków. ``123'' jest normalnym ustawieniem, ``321''
+mo¿e byæ u¿ywane przez osoby leworêczne, a ``132'' mo¿e byæ u¿yteczne przy
+myszy dwuprzyciskowej (zw³aszcza w emacsie). Wszystkie kombinacje s±
+dozwolone.
+.TP
+-d \fIdelta\fP
+Ustawia warto¶æ delty. Kiedy pojedynczy ruch mysz± jest d³u¿szy ni¿ \fIdelta\fP,
+\fIaccel\fP jest u¿ywane jako mno¿nik. (Musi byæ wiêksze lub równe 2).
+.TP
+-D
+Przy uruchamianiu nie uruchamia siê automatycznie w tle i wypisuje
+wiadomo¶ci do standardowego wyj¶cia b³êdów, a nie poprzez mechanizm
+syslog. Jest to u¿yteczne w celu odpluskiwania; w poprzednich wersjach
+by³o to robione za pomoc± opcji kompilacji.
+.TP
+-g \fInumer\fP
+U¿ywany z urz±dzeniami typu glidepoint, emuluje okre¶lony przycisk przez
+stukanie w tabliczkê. \fInumer\fP musi wynosiæ `1', `2' lub `3' i okre¶la numer
+przycisku przed zmian± ustawieñ w opcji `-B'. Ta opcja wi±¿e siê z
+dekodowaniem mman i ps2. Standardowo ¿aden przycisk nie jest emulowany,
+poniewa¿ stukanie w tych urz±dzeniach jest niekompatybilne z normalnymi
+myszkami ps2.
+.TP
+-h
+Pokazuje streszczenie opcji w linii poleceñ.
+.TP
+-i \fIinterwa³\fP
+Ustawia górny limit czasowy przy wielokrotnych klikniêciach. Je¶li czas
+pomiêdzy puszczeniem i wci¶niêciem przycisku jest mniejszy ni¿ ten \fIlimit\fP,
+uwa¿ane jest za podwójne lub potrójne klikniêcie. Czas jest w milisekundach.
+.TP
+-k
+Usuwa dzia³aj±cy gpm. Mo¿e byæ u¿ywane przez u¿ytkowników myszy typu `bus'
+w celu usuniêcia gpm, przed uruchamianiem X-ów (chyba ¿e u¿yj± opcji `-R' lub
+ograniczenie pojedynczego otwarcia zostanie usuniête z j±dra).
+.TP
+-l \fIcharset\fP
+Wybiera tablicê (LUT) dla `inword()'. Argument charset jest list± znaków. `-'
+jest u¿ywane do podania zakresu, a `\\ ' do `eskejpowania' nastêpnego znaku lub
+zapewnienia kodu ósemkowego. Tylko widoczne znaki mog± pojawiæ siê w \fIcharset\fP,
+poniewa¿ znaki specjalne nie mog± pojawiæ siê w pamiêci video w trybie
+tekstowym podczas kopiowania zaznaczenia.
+.TP
+-m \fIfilename\fP
+Wybiera urz±dzenie myszy. Standardowo jest to `/dev/mouse'.
+.TP
+-M
+W³±cza tryb wielu urz±dzeñ. Deamon bêdzie czyta³ dwa ró¿ne urz±dzenia myszy.
+Ka¿da nastêpna opcja odnosi siê do drugiego urz±dzenia, a ka¿da wcze¶niejsza
+do pierwszego. Ta opcja automatycznie uruchamia ``powielacz'' (opcja `-R').
+.TP
+-o \fIlista-opcji-dodatkowych\fP
+Opcja ta dzia³a podobnie do opcji ``-o'' polecenia mount \- pozwala
+okre¶liæ listê ``dodatkowych opcji'', specyficznych dla danego
+typu myszy. Lista ta jest rozdzielona przecinkami. Opcje
+`dtr', `rts' lub `both' s± u¿ywane przy inicjalizacji myszy typu
+serial do w³±czenia linii modemu; opcje te s± zgodne ze wcze¶niejszymi
+wersjami gpm, jednak¿e u¿ywanie -o dtr z urz±dzeniami myszy nie bêd±cymi typu
+serial, mo¿e teraz generowaæ b³±d.
+.TP
+-p
+W³±cza widoczny wska¼nik podczas zaznaczania. Tak zachowuje siê
+selection-1.7, lecz czasem jest to denerwuj±ce.
+Standardowo wska¼nik nie jest pokazywany, co mo¿e byæ równie denerwuj±ce.
+.TP
+-r \fInumer\fP
+Ustawia czu³o¶æ. Wy¿sza czu³o¶æ jest u¿ywana do szybszego ruchu kursora.
+.TP
+-R\fInazwa\fP
+Zmienia gpm, aby dzia³a³ jako powielacz: wszystkie dane od myszy w trybie
+graficznym zostan± przekazane do kolejki fifo /dev/gpmdata w protokole \fInazwa\fP.
+W szczególno¶ci mo¿na u¿yæ tych samych nazw, jak dla opcji `-t', aczkolwiek
+tryb powtarzania dla pewnych protoko³ów mo¿e jeszcze nie byæ zaimplementowany.
+Dodatkowo, mo¿na podaæ `raw' jako \fInazwa\fP, aby uzyskaæ powtarzanie bajt po bajcie
+bez jakiejkolwiek translacji protoko³ów.
+Je¿eli nie podano \fInazwy\fP, to warto¶ci± domy¶ln± jest `msc'.
+U¿ywaj±c gpm w trybie powtarzania mo¿na skonfigurowaæ serwer X do
+u¿ywania jego kolejki jako urz±dzenia myszy. Ta opcja jest przydatna dla
+w³a¶cicieli myszy typu bus w celu ominiêcia ograniczeñ pojedynczego otwarcia.
+To pozwala w prosty sposób poradziæ sobie z g³upimi myszami, mog±cymi dzia³aæ
+w dwóch trybach, co zmusza ciê do trzymania ¶rodkowego przycisku w czasie
+zmiany trybu graficznego. Ta opcja jest w³±czana przez opcjê `-M'.
+.TP
+-s \fInumer\fP
+Ustawia czêstotliwo¶æ próbkowania dla urz±dzenia myszy.
+.TP
+-S \fIpolecenia\fP
+W³±cza przetwarzanie poleceñ specjalnych i opcjonalnie ustawia polecenia
+specjalne (przez listê oddzielon± dwukropkami). Zobacz wy¿ej na dok³adniejszy
+opis poleceñ specjalnych.
+.TP
+-t \fInazwa\fP
+Ustawia typ myszy. U¿yj `-t help', aby uzyskaæ listê mo¿liwych typów.
+Od wersji 1.18.1 lista ta pokazuje tak¿e, które protoko³y s±
+dostêpne jako `powielniki' (patrz opis opcji -R powy¿ej),
+oznaczaj±c je gwiazdk± (``*'').
+.TP
+-v
+Pokazuje informacjê o wersji i koñczy dzia³anie.
+.TP
+-V \fIverbosity increment\fP
+Zwiêksza lub zmniejsza maksymalny poziom wiadomo¶ci, które bêd±
+zapisywane w logu systemu. Podanie argumentu dodatniego spowoduje
+zwiêkszenie liczby komunikatów. Mo¿na równie¿ podaæ argument ujemny
+w celu wyciszenia programu; jednak¿e z powodu zasad \fBgetopt(3)\fP
+argument ujemny musi byæ sklejony z opcj±, tj. nie mo¿e byæ spacji
+miêdzy opcj± a argumentem (`-V-1', a nie `-V -1'). Argument tej opcji
+jest opcjonalny i wynosi domy¶lnie 1. Domy¶lnym poziomem logowania
+5 (`LOG_NOTICE').
+.TP
+-2
+Wymusza dwa przyciski. To oznacza, ¿e ¶rodkowy przycisk (je¶li istnieje)
+bêdzie dzia³a³ jakby by³ prawym.
+.TP
+-3
+Wymusza trzy przyciski. Standardowo mysz jest uwa¿ana za dwuprzyciskow±,
+dopóki ¶rodkowy przycisk nie zostanie wci¶niêty. Je¿eli s± trzy przyciski,
+prawy jest u¿ywany do rozszerzenia zaznaczenie, a ¶rodkowy do wklejenia.
+Uwaga: je¶li u¿yjesz opcji -3 z myszk± dwuprzyciskow± nie bêdziesz móg³
+wkleiæ zaznaczenia.
+
+.LP
+.SH DZIA£ANIE
+
+.LP
+Aby zaznaczyæ tekst wci¶nij lewy przycisk i przeci±gnij mysz±.
+Aby wkleiæ tekst na tej samej lub innej konsoli wci¶nij ¶rodkowy przycisk.
+Prawy przycisk jest u¿ywany do zmiany rozmiaru zaznaczenia (tak jak w `xterm').
+
+.LP
+Myszy dwuprzyciskowe u¿ywaj± prawego przycisku do wklejania,
+
+.LP
+Podwójne i potrójne klikniêcia zaznaczaj± ca³y wyraz lub ca³± liniê. U¿ycie
+opcji `-p' jest polecane w celu uzyskania lepszej widoczno¶ci.
+
+.LP
+Je¶li po zawarto¶ci linii zaznaczona jest koñcz±ca spacja i je¶li nie ma
+w tej linii wiêcej tekstu, reszta linii zostanie zaznaczona automatycznie.
+Je¶li zaznaczone jest kilka linii, zaznaczone spacje na koñcach ka¿dej z nich
+zostan± usuniête z bufora zaznaczenia.
+
+.LP
+Cokolwiek pokazane na wirtualnej konsoli w zaznaczonym miejscu usunie
+pod¶wietlone zaznaczenie z ekranu, aby zachowaæ integralno¶æ wy¶wietlania,
+ale zawarto¶æ bufora zostanie nienaruszona.
+
+.LP
+Mechanizm zaznaczania jest wy³±czony je¶li wirtualna konsola zostanie
+ustawiona w tryb graficzny, np. w czasie uruchamiania X11, i zostanie
+przywrócona przy powrocie do trybu tekstowego. (Zobacz czê¶æ B£ÊDY poni¿ej).
+
+.LP
+.SH B£ÊDY
+Serwer gpm mo¿e mieæ problemy w czasie wspó³dzia³ania z X-ami: je¶li Twoja mysz
+jest urz±dzeniem z mo¿liwo¶ci± pojedynczego otwarcia (np. myszy typu bus),
+powiniene¶ wy³±czyæ gpm przed uruchamianiem X-ów, lub u¿yæ opcji `-R'
+(zobacz wy¿ej). Aby wy³±czyæ gpm, u¿yj `gpm -k'. Ten problem nie dotyczy
+myszy typu serial.
+
+.LP
+Dwie instancje gpm nie mog± zostaæ uruchomione na tym samym systemie. Je¶li
+masz dwie myszki u¿yj opcji `-M' (zobacz wy¿ej).
+
+.LP
+Podczas gdy aktualna konsola jest w trybie graficznym, gpm jest u¶piony
+dopóki nie powróci do trybu tekstowego (chyba ¿e zostanie u¿yte `-R').
+Przez to nie bêdzie zwraca³ odpowiedzi klientom. Jednak jest to nietypowe, aby
+programy wykorzystuj±ce mysz, odczytywa³y j± na ukrytej konsoli.
+
+.LP
+.SH AUTORZY
+.nf
+Andrew Haylett <ajh@gec-mrc.co.uk> (oryginalny kod selection)
+Alessandro Rubini <rubini@linux.it> (stary maintainer (wci±¿ bardzo pomaga))
+Ian Zimmerman <itz@speakeasy.org> (stary maintainer)
+Nico Schottelius <nico@schottelius.org> (maintainer)
+
+A tak¿e bardzo wiele innych osób, które pomog³y tworzyæ selection i gpm.
+.fi
+.LP
+.SH OPIEKUNOWIE
+
+.LP
+Obecnym opiekunem jest Nico Schottelius. Jednak bez pomocy
+Alessandra Rubiniego i cz³onków listy emailowej, on sam nie podo³a³by
+zadaniu opiekowania siê gpm. Adres lista emailowej dla developerów to
+gpm@lists.linux.it. Wiêcej informacji o li¶cie znajduje siê w pliku
+README, w czê¶ci po¶wiêconej dystrybucji ¼róde³ gpm.
+
+.LP
+.SH PLIKI
+.nf
+/var/run/gpm.pid PID uruchomionego gpm
+/dev/gpmctl      Gniazdko kontrolne dla klientów
+/dev/gpmdata     Kolejka fifo zapisywana przez \fBpowielacz\fP (opcja `-R').
+.fi
+
+.LP
+.SH ZOBACZ TAK¯E
+.nf
+\fB mev(1)\fP      Prosty klient serwera gpm.
+\fB gpm-root(1)\fP Program do obs³ugi komunikatów kontrolnych myszy.
+
+.fi
+Plik info o `gpm', który zawiera kompletne informacje i wyja¶nia jak napisaæ
+klienta gpm.

@@ -1,0 +1,130 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" 1999 PTM Przemek Borys
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Apr 2003,
+.\"              manpages 1.55
+.\"
+.\" Copyright (c) 1992 Drew Eckhardt (drew@cs.colorado.edu), March 28, 1992
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified by Michael Haardt (michael@moria.de)
+.\" Modified by Thomas Koenig (ig25@rz.uni-karlsruhe.de)
+.\" Modified Fri Jul 23 21:51:36 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified Sun Jul 25 10:53:24 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified Wed Nov 01 18:56:43 1995 by Michael Haardt
+.\"  (michael@cantor.informatik.rwth-aachen.de)
+.\" Modified Sun Apr 14 17:04:32 1996 by Andries Brouwer (aeb@cwi.nl)
+.\"  [added some polishing contributed by Mike Battersby (mib@deakin.edu.au)]
+.\" Modified Sun Jul 21 21:25:26 1996 by Andries Brouwer (aeb@cwi.nl)
+.\" Modified Fri Jan 17 23:49:46 1997 by Andries Brouwer (aeb@cwi.nl)
+.\" Modified Tue Dec 18 10:53:02 2001 by Andries Brouwer (aeb@cwi.nl)
+.\" Modified, 24 Jul 2002, Michael Kerrisk <mtk16@ext.canterbury.ac.nz>
+.\"	Added note on historical rules enforced when an unprivileged process
+.\"	sends a signal.
+.\"
+.TH KILL 2 2001-12-18 "Linux 2.5.0" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+kill \- wys³anie sygna³u do procesu
+.SH SK£ADNIA
+.nf
+.B #include <sys/types.h>
+.br
+.B #include <signal.h>
+.sp
+.BI "int kill(pid_t " pid ", int " sig );
+.fi
+.SH OPIS
+Funkcja systemowa
+.B kill
+mo¿e s³u¿yæ do przes³ania dowolnego sygna³u do dowolnego procesu lub
+do dowolnej grupy procesów. 
+.PP
+Je¶li \fIpid\fP ma warto¶æ dodatni±, to sygna³ \fIsig\fP jest przesy³any
+do procesu \fIpid\fP.
+.PP
+Je¶li \fIpid\fP jest równy 0, to \fIsig\fP jest przesy³any do wszystkich
+procesów nale¿±cych do tej samej grupy, co proces bie¿±cy.
+.PP
+Je¶li \fIpid\fP jest równy \-1, to sygna³ jest przesy³any do wszystkich
+procesów, oprócz procesu nr 1 (init), szczegó³y poni¿ej.
+.PP
+Je¶li \fIpid\fP jest mniejszy ni¿ \-1, to sygna³ jest przesy³any do wszystkich
+procesów nale¿±cych do grupy procesów o numerze \fI\-pid\fP.
+.PP
+If \fIsig\fP jest równy 0, to nie jest przesy³any ¿aden sygna³, ale nadal jest
+wykonywana kontrola b³êdów.
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu zwracane jest zero. Po b³êdzie zwracane jest \-1
+i odpowiednio ustawiane
+.IR errno .
+.SH B£ÊDY
+.TP
+.B EINVAL
+Podano nieprawid³owy sygna³.
+.TP
+.B ESRCH
+Pid lub grupa procesów nie istnieje.
+Nale¿y zauwa¿yæ, ¿e istniej±cy proces mo¿e byæ zombie, czyli procesem, który
+ju¿ pope³ni³ samobójstwo, lecz jeszcze na niego nie zaczekano ( \fBwait\fR ).
+.TP
+.B EPERM
+Proces nie ma uprawnieñ do wys³ania sygna³u do któregokolwiek z otrzymuj±cych
+go procesów. Aby proces mia³ prawo wys³aæ sygna³ do procesu
+.I pid
+musi on mieæ uprawnienia roota albo rzeczywisty lub efektywny ID u¿ytkownika
+procesu wysy³aj±cego musi byæ równy rzeczywistemu ID lub zachowanemu set UID
+procesu otrzymuj±cego sygna³.
+W przypadku sygna³u SIGCONT wystarcza, aby procesy wysy³aj±cy i otrzymuj±cy
+nale¿a³y do tej samej sesji.
+.SH UWAGI
+Nie mo¿na wysy³aæ sygna³u, dla którego nie ma zainstalowanego pogramu obs³ugi,
+do zadania numer 1, czyli procesu init. Zabezpiecza to przed przypadkowym
+za³amaniem systemu.
+.LP
+POSIX 1003.1-2001 wymaga, aby \fIkill(-1,sig)\fP wysy³a³o \fIsig\fP
+do wszystkich procesów, do których aktualny proces mo¿e go wys³aæ, za
+ewentualnym wyj±tkiem pewnych, zdefiniowanych w implementacji, procesów
+systemowych. Linux pozwala procesowi wys³aæ sygna³ do samego siebie, ale
+wywo³anie \fIkill(-1,sig)\fP pod Linuksem nie powoduje wys³ania sygna³u do
+bie¿±cego procesu.
+.SH "HISTORIA LINUKSA"
+W ró¿nych wersjach j±dra, Linux wymusza ró¿ne regu³y dotycz±ce uprawnieñ
+wymaganych od procesu nieuprzywilejowanego, aby móg³ on wys³aæ sygna³ do
+innego procesu.
+.\" In the 0.* kernels things chopped and changed quite
+.\" a bit - MTK, 24 Jul 02
+W j±drach od 1.0 do 1.2.2 sygna³ móg³ byæ wys³any, gdy efektywny identyfikator
+u¿ytkownika wysy³aj±cego jest taki sam, jak odbieraj±cego, lub gdy rzeczywisty
+identyfikator u¿ytkownika wysy³aj±cego jest taki sam, jak odbieraj±cego.
+Od j±dra 1.2.3 a¿ do 1.3.77, sygna³ móg³ byæ wys³any, gdy efektywny
+identyfikator u¿ytkownika wysy³aj±cego jest taki sam, jak efektywny lub
+rzeczywisty identyfikator u¿ytkownika odbieraj±cego. Obecne zasady, zgodnie
+z POSIX 1003.1-2001, zosta³y przyjête w j±drze 1.3.78.
+.SH "ZGODNE Z"
+SVr4, SVID, POSIX.1, X/OPEN, BSD 4.3, POSIX 1003.1-2001
+.SH "ZOBACZ TAK¯E"
+.BR _exit (2),
+.BR killpg (2),
+.BR signal (2),
+.BR tkill (2),
+.BR exit (3),
+.BR signal (7)

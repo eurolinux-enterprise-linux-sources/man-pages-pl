@@ -1,0 +1,148 @@
+.\" 1999 PTM Przemek Borys
+.\" Translation update: Robert Luberda <robert@debian.org>, May 2003, psmisc 21.2
+.\" $Id: fuser.1,v 1.3 2003/07/28 08:57:13 robert Exp $
+.\"
+.TH FUSER 1 "1 pa¼dziernika 1999" "Linux" "Komendy u¿ytkownika"
+.SH NAZWA
+fuser \- podaje procesy korzystaj±ce z plików lub soketów
+.SH SK£ADNIA
+.ad l
+.B fuser
+.RB [ \-a | \-s ]
+.RB [ \-4 | \-6 ]
+.RB [ \-n\ \fIprzestrzeñ_nazw ]
+.RB [ \-\fIsygna³\fB ]
+.RB [ \-kimuv ]
+.I nazwa_pliku ...
+.br
+.B fuser
+.RB \-l
+.br
+.B fuser
+.RB \-V
+.ad b
+.SH OPIS
+.B fuser
+wy¶wietla PID-y procesów, które korzystaj± z podanych plików lub systemów
+plików. W domy¶lnym trybie wy¶wietlania po ka¿dej nazwie pliku wystêpuje
+litera, oznaczaj±ca rodzaj dostêpu:
+.RS
+.IP \fBc\fP
+bie¿±cy katalog.
+.IP \fBe\fP
+uruchomiony plik wykonywalny.
+.IP \fBf\fP
+otwarty plik. \fBf\fP jest pomijane w domy¶lnym trybie wy¶wietlania.
+.IP \fBr\fP
+katalog g³ówny.
+.IP \fBm\fP
+mmap-owany plik lub biblioteka dzielona.
+.RE
+.LP
+\fBfuser\fP zwraca niezerowy kod, je¶li nie mo¿na by³o dostaæ siê do ¿adnego
+z plików lub po b³êdzie krytycznym. Je¶li uda³ siê dostêp do choæby jednego
+pliku, \fBfuser\fP zwraca zero.
+.PP
+Aby móc wyszukaæ procesy u¿ywaj±ce soketów TCP lub UDP, trzeba za pomoc±
+opcji \fB-n\fP wybraæ odpowiedni± przestrzeñ nazw. Domy¶lnie, \fBfuser\fP
+bêdzie szuka³ zarówno soketów IPv6, jak i soketów IPv4. Aby to zmieniæ, nale¿y
+u¿yæ opcji \fB-4\fP i \fB-6\fP. Soket(y) mo¿e (mog±) byæ okre¶lony(-ne)
+przez podanie portów lokalnego i zdalnego oraz zdalnego adresu. Wszystkie
+pola s± nieobowi±zkowe, trzeba jednak podaæ przecinki poprzedzaj±ce opuszczone
+pola:
+
+.RB \fB[\fP\fIport_lokalny\fP\fB][\fP,\fB[\fP\fIzdalny_komp\fP\fB][\fP,\fB[\fIport_zdalny\fP\fB]]]
+
+Adresy IP oraz numery portów mog± byæ podane albo w postaci symbolicznej,
+albo jako numery.
+.SH OPCJE
+.IP \fB\-a\fP
+Pokazuje wszystkie pliki, podane w linii komend. Domy¶lnie pokazywane s± tylko
+pliki, do których dostêp uzyska³ przynajmniej jeden proces.
+.IP \fB\-k\fP
+Ubija procesy korzystaj±ce z pliku. Je¶li nie jest u¿yta opcja
+\fB-\fP\fIsygna³\fP, wysy³any jest SIGKILL. Proces \fBfuser\fP nigdy sam siebie
+nie ubije, lecz mo¿e ubiæ inne procesy \fBfuser\fP. Przed prób± ubicia
+efektywny ID u¿ytkownika procesu jest ustawiany na rzeczywisty.
+.IP \fB\-i\fP
+Przed ubiciem procesu, prosi u¿ytkownika o potwierdzenie. Opcja ta jest
+ignorowana, je¿eli nie podano opcji \fB-k\fP.
+.IP \fB\-l\fP
+Wy¶wietla wszystkie znane nazwy sygna³ów.
+.IP \fB\-m\ \fInazwa_pliku\fP
+Podaje plik na zamontowanym systemie plików lub
+zamontowane urz±dzenie blokowe. Wszystkie korzystaj±ce z niego procesy
+zostan± wymienione. Je¶li podany plik jest katalogiem, to zmieniany jest
+automatycznie na \fInazwê_pliku\fP/. , aby u¿ywaæ dowolnego systemu plików,
+który móg³by byæ zamontowany w tym katalogu.
+.IP \fB\-n\ \fIprzestrzeñ_nazw\fP
+Wybiera inn± przestrzeñ nazw. Dostêpne s± nastêpuj±ce przestrzenie nazw:
+\fBfile\fP (nazwy plików, ustawienie domy¶lne), \fBudp\fP (lokalne porty UDP)
+i \fBtcp\fP (lokalne porty TCP). Porty mog± byæ podane w postaci nazw symbolicznych
+albo jako numery. Je¿eli nie spowoduje to dwuznaczno¶ci, mo¿na u¿yæ skróconej
+notacji \fInazwa\fB/\fIprzestrzeñ_nazw\fP (np. \fInazwa\fB/\fIprotokó³\fP).
+.IP \fB\-s\fP
+Ciche dzia³anie.  \fB\-u\fP i \fB\-v\fP s± w tym trybie ignorowane.
+\fB\-a\fP nie mo¿e byæ u¿yta z \fB\-s\fP.
+.IP \fB\-\fIsygna³\fP
+zamiast SIGKILL u¿ywaj okre¶lonego sygna³u. Sygna³y mo¿na podawaæ wed³ug
+nazw (np. \fB\-HUP\fP) lub przez liczbê
+(np. \fB\-1\fP).
+.IP \fB\-u\fP
+Do ka¿dego PID-a dodaj nazwê u¿ytkownika, który jest jego w³a¶cicielem.
+.IP \fB\-v\fP
+Tryb gadatliwy. Procesy s± pokazywane w stylu \fBps\fP(1). Pola PID, USER i
+COMMAND s± podobne do tych w \fBps\fP.  ACCESS pokazuje sposób dostêpu do pliku.
+Je¿eli plik jest u¿ywany przez j±dro systemu (np. w wypadku punktu montowania,
+pliku wymiany itp.), warto¶ci± tego pola jest \fBkernel\fP.
+.IP \fB\-V\fP
+Wy¶wietla informacjê o wersji.
+.IP \fB\-4\fP
+Wyszukuje tylko sokety IPv4. Ta opcja nie mo¿e byæ u¿ywana ³±cznie z opcj±
+\fB-6\fP, a u¿ywanie jej ma efekt tylko z przestrzeniami nazw tcp i udp.
+.IP \fB\-6\fP
+Wyszukuje tylko sokety IPv6. Ta opcja nie mo¿e byæ u¿ywana ³±cznie z opcj±
+\fB-4\fP, a u¿ywanie jej ma efekt tylko z przestrzeniami nazw tcp i udp.
+.IP \fB\-\fP
+Resetuj wszystkie opcje i ustaw sygna³ z powrotem na SIGKILL.
+.SH PLIKI
+.nf
+/proc	miejsce znajdowania siê systemu plików proc
+.fi
+.SH PRZYK£ADY
+\fBfuser -km /home\fP ubija wszystkie procesy, które  w jakikolwiek
+sposób korzystaj± z systemu plików /home.
+.LP
+\fBif fuser -s /dev/ttyS1; then :; else \fIco¶\fP; fi\fR wywo³uje
+\fIco¶\fP, je¶li ¿aden inny proces nie u¿ywa /dev/ttyS1.
+.LP
+\fBfuser telnet/tcp\fP pokazuje wszystkie procesy nas³uchuj±ce
+na (lokalnym) porcie TELNET.
+.SH OGRANICZENIA
+Procesy, korzystaj±ce z tych samych plików lub systemu plików kilkukrotnie,
+s± wy¶wietlane tylko raz.
+.PP
+\fBfuser\fP jest w stanie uzyskaæ tylko czê¶ciowe dane, chyba ¿e pracujesz z
+odpowiednimi uprawnieniami. W wyniku tego, otwarte pliki, nale¿±ce do innych
+u¿ytkowników mog± nie byæ wymienione, a pliki wykonywalne mog± byæ
+sklasyfikowane jako tylko zmapowane.
+.PP
+Instalowanie \fBfuser\fP z SUID root zapobieg³oby problemom z czê¶ciowymi
+danymi, lecz mog³oby byæ niepo¿±dane z przyczyn bezpieczeñstwa.
+.PP
+Przestrzenie nazw \fBudp\fP i \fBtcp\fP oraz sokety domeny UNIX nie
+mog± byæ wyszukiwane, je¿eli wersja j±dra jest mniejsza ni¿ 1.3.78.
+.PP
+Obecnie \fBudp\fP i \fBtcp\fP dzia³aj± z IPv6 i IPv4, ale jako adresy s±
+wy¶wietlane tylko adresy IPv4.
+.PP
+Informacje o tym, ¿e to j±dro systemu u¿ywa jakiego¶ pliku, s± wy¶wietlane
+tylko wtedy, gdy podano opcjê \fB-v\fP.
+.PP
+Opcja \fB-k\fP dotyczy tylko procesów. Je¿eli dany system plików u¿ywany
+jest przez j±dro systemu, to \fBfuser\fP wypisze ostrze¿enia, ale nie
+podejmie ¿adnej akcji.
+.SH AUTOR
+Werner Almesberger <Werner.Almesberger@epfl.ch>
+.SH "ZOBACZ TAK¯E"
+kill(1), killall(1), lsof(8), ps(1), kill(2)

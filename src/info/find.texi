@@ -1,0 +1,2316 @@
+%& -translate-file=il2-pl
+\def\fontprefix{pl}
+\input texinfo @c -*-texinfo-*-
+@c %**start of header
+@setfilename find.info
+@settitle Znajdowanie plików
+@c For double-sided printing, uncomment:
+@c @setchapternewpage odd
+@documentencoding ISO-8859-2
+@documentlanguage pl
+@c %**end of header
+
+@set EDITION 1.1
+@set VERSION 4.1
+@set UPDATED listopad 1994
+
+@iftex
+@finalout
+@end iftex
+
+@ifinfo
+@format
+START-INFO-DIR-ENTRY
+* Znajdowanie plików: (find).      Listowanie i dzia³ania na plikach
+                                   spe³niaj±cych zadane warunki.
+
+* find: (find)Wywo³anie find.         Szuka plików w hierarchii katalogowej.
+* locate: (find)Wywo³anie locate.     Wyszukuje pliki w bazie danych.
+* updatedb: (find)Wywo³anie updatedb. Aktualizuje bazê nazw plików.
+* xargs: (find)Wywo³anie xargs.       Wykonuje polecenie z argumentami
+                                      pobranymi ze standardowego wej¶cia.
+
+END-INFO-DIR-ENTRY
+@end format
+
+Niniejszy podrêcznik opisuje zestaw narzêdzi GNU do znajdowania plików,
+które spe³niaj± pewne warunki, i wykonywania na nich ró¿nych dzia³añ.
+
+Copyright (C) 1994 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end ifinfo
+
+@titlepage
+@title Znajdowanie plików
+@subtitle Wydanie @value{EDITION}, opisuj±ce GNU @code{find} w wersji @value{VERSION}
+@subtitle @value{UPDATED}
+@author David MacKenzie
+
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1994 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end titlepage
+
+@node Top, Od t³umacza, , (dir)
+@comment  node-name,  next,  previous,  up
+
+@ifinfo
+Niniejszy podrêcznik opisuje zestaw narzêdzi GNU do znajdowania plików,
+które spe³niaj± pewne warunki, i wykonywania na nich ró¿nych dzia³añ.
+To jest wydanie @value{EDITION}, opisuj±ce GNU @code{find} w wersji
+@value{VERSION}.
+@end ifinfo
+
+@c The master menu, created with texinfo-master-menu, goes here.
+
+@menu
+* Od t³umacza::                 Parê s³ów od t³umacza.
+* Wprowadzenie::                Podsumowanie zadañ opisanych w podrêczniku.
+* Znajdowanie plików::          Znajdowanie plików spe³niaj±cych dane warunki.
+* Akcje::                       Czynno¶ci wykonywane na znalezionych plikach.
+* Typowe zadania::              Rozwi±zania typowych, praktycznych problemów.
+* Bazy nazw plików::            Utrzymywanie baz nazw plików.
+* Prawa pliku::                 Jak kontrolowaæ dostêp do plików.
+* Informator::                  Podsumowanie sposobów wywo³ania programów.
+* Skorowidz jednostek::         Sk³adowe wyra¿eñ @code{find}.
+@end menu
+
+@unnumbered Od t³umacza
+Niniejszy przek³ad powsta³
+w ramach @uref{http://ptm.linux.pl/, Projektu T³umaczenia Manuali}.
+Pomocne by³y istniej±ce t³umaczenia stron podrêcznika systemowego man,
+które wykonali:
+
+@itemize @w
+@item Przemek Borys (@email{pborys@@p-soft.silesia.linux.org.pl})
+@item Wojtek Kotwica (@email{wkotwica@@post.pl})
+@item £ukasz Kowalczyk (@email{lukow@@tempac.okwf.fuw.edu.pl})
+@end itemize
+
+Zg³oszenia b³êdów, komentarze i sugestie proszê przesy³aæ na listê dyskusyjn±
+Projektu: @email{ptm@@amg.net.pl} lub ewentualnie do autora t³umaczenia.
+
+W.Kotwica (@email{wkotwica@@post.pl})
+
+@unnumberedsec Rozpowszechnianie
+To jest nieoficjalne t³umaczenie warunków rozpowszechniania na jêzyk polski.
+Nie zosta³o ono opublikowane przez Free Software Foundation
+i pod wzglêdem prawnym nie stanowi warunków rozpowszechniania -- ustanawia
+je wy³±cznie oryginalny tekst angielski.  Jednak t³umacz ma nadziejê, ¿e
+pomo¿e ono lepiej zrozumieæ warunki rozpowszechniania osobom mówi±cym
+po polsku.
+
+This is an unofficial translation of the distribution terms into
+Polish language. It was not published by the Free Software Foundation, and
+does not legally state the distribution terms--only the original English text
+does that. However, the translator hopes that it will help Polish language
+speakers understand distribution terms better.
+
+Zezwala siê na tworzenie i rozpowszechnianie wiernych kopii
+tego podrêcznika, pod warunkiem, ¿e na wszystkich kopiach zostanie zachowana
+informacja o prawach autorskich i niniejsze zezwolenie.
+
+Zezwala siê na kopiowanie i rozpowszechnianie zmienionych wersji
+tego podrêcznika na warunkach jak dla wiernych kopii, pod warunkiem, ¿e
+ca³a praca pochodna bêdzie rozpowszechniana na warunkach zezwolenia
+identycznego jak niniejsze.
+
+Zezwala siê na kopiowanie i rozpowszechnianie t³umaczeñ tego
+podrêcznika na inny jêzyk, pod wy¿ej podanymi warunkami dla zmienionych
+wersji, z wyj±tkiem tego, ¿e niniejsze zezwolenie mo¿e byæ ustanowione
+w t³umaczeniu zaakceptowanym przez Fundacjê.
+
+@node Wprowadzenie
+@chapter Wprowadzenie
+
+W niniejszym podrêczniku pokazano, jak znajdowaæ pliki, które spe³niaj±
+podane kryteria i jak wykonywaæ na nich rozmaite czynno¶ci.  G³ównymi
+programami u¿ywanymi do wykonania tych zadañ s± @code{find}, @code{locate}
+i @code{xargs}. W niektórych z zamieszczonych przyk³adów wykorzystano
+mo¿liwo¶ci specyficzne dla wersji GNU tych programów.
+
+GNU @code{find} zosta³ pierwotnie napisany przez Erica Deckera, rozszerzenia
+wykonali David MacKenzie, Jay Plett i Tim Wood.  GNU @code{xargs} napisa³
+pierwotnie Mike Rendell, a jego rozszerzenia - David MacKenzie.
+GNU @code{locate} i narzêdzia mu towarzysz±ce zosta³y pierwotnie napisane
+przez Jamesa Woodsa, poszerzy³ je David MacKenzie.
+Pomys³ @samp{find -print0} i @samp{xargs -0} wyszed³ od Dana Bernsteina.
+Wiele innych osób wnios³o poprawki b³êdów, drobne usprawnienia i pomocne
+sugestie. Dziêki!
+
+Sugestie i zg³oszenia b³êdów w tych programach nale¿y przesy³aæ (w jêzyku
+angielskim) na adres @email{bug-gnu-utils@@prep.ai.mit.edu}.  W listach
+proszê zamie¶ciæ numer wersji, który mo¿na uzyskaæ uruchamiaj±c
+@samp{find --version}.
+
+@menu
+* Zakres::
+* Przegl±d::
+* Wyra¿enia find::
+@end menu
+
+@node Zakres
+@section Zakres
+
+@c For brevity
+Dla zachowania zwiêz³o¶ci, s³owo @dfn{plik} w tym podrêczniku oznacza
+zwyk³y plik, katalog, dowi±zanie symboliczne lub dowolny inny rodzaj wêz³a,
+maj±cy wpis w katalogu.  Pozycja katalogu nazywana jest te¿ @dfn{nazw± pliku}.
+Ka¿da nazwa pliku mo¿e zawieraæ czê¶æ lub wszystkie katalogi ¶cie¿ki
+prowadz±cej do pliku.  Mo¿e te¿ nie zawieraæ ich wcale.  Wszystkie poni¿sze
+zapisy s± przyk³adami tego, co nazywa siê tu ,,nazwami plików'':
+
+@example
+parser.c
+README
+./budget/may-94.sc
+fred/.cshrc
+/usr/local/include/termcap.h
+@end example
+
+@dfn{Drzewo katalogowe} to katalog i pliki, które zawiera, wszystkie jego
+podkatalogi i pliki w nich zawarte itd.  Mo¿e to te¿ byæ pojedynczy plik
+nie bêd±cy katalogiem.
+
+Omawiane programy umo¿liwiaj± znalezienie, w jednym lub w wielu drzewach
+katalogowych, plików, które:
+
+@itemize @bullet
+@item
+maj± nazwy zawieraj±ce okre¶lony tekst lub pasuj±ce do okre¶lonego wzorca,
+@item
+s± dowi±zaniami do okre¶lonych plików,
+@item
+by³y ostatnio u¿ywane w okre¶lonym okresie,
+@item
+maj± rozmiary mieszcz±ce siê w okre¶lonym zakresie,
+@item
+s± okre¶lonego typu (zwyk³y plik, katalog, dowi±zanie symboliczne, itd.),
+@item
+s± w³asno¶ci± okre¶lonego u¿ytkownika lub grupy,
+@item
+maj± okre¶lone prawa dostêpu,
+@item
+zawieraj± tekst pasuj±cy do okre¶lonego wzorca,
+@item
+znajduj± siê na okre¶lonym poziomie drzewa katalogowego,
+@item
+lub spe³niaj± jak±¶ kombinacjê powy¿szych warunków.
+@end itemize
+
+Po znalezieniu poszukiwanych plików (lub plików, które s± potencjalnie tymi,
+których szukano) mo¿na zrobiæ z nimi co¶ wiêcej, ni¿ po prostu utworzyæ listê
+ich nazw.  Mo¿liwe jest uzyskanie dowolnej kombinacji cech tych plików lub
+przetworzenie plików na wiele sposobów, albo pojedynczo albo w grupach
+ró¿nych rozmiarów.  Dzia³ania, jakie mo¿na wykonaæ na znalezionych plikach
+obejmuj± (choæ nie s± tych czynno¶ci ograniczone):
+
+@itemize @bullet
+@item
+przegl±danie i edycjê
+@item
+zapisywanie w archiwum
+@item
+usuwanie lub przemianowanie
+@item
+zmianê praw dostêpu
+@item
+klasyfikacjê w grupy
+@end itemize
+
+W tym podrêczniku opisano, jak wykonaæ ka¿de z tych zadañ, i nie tylko.
+
+@node Przegl±d
+@section Przegl±d
+
+G³ównymi programami stosowanymi do tworzenia list plików spe³niaj±cych
+zadane warunki i uruchamiania dla nich poleceñ s± @code{find}, @code{locate}
+i @code{xargs}.  Administratorzy systemu u¿ywaj± dodatkowo polecenia
+@code{updatedb}, do tworzenia baz danych, z których korzysta @code{locate}.
+
+@code{find} szuka plików w danej hierarchii katalogów i wypisuje informacje
+o tych, które znalaz³.  Uruchamiany jest tak:
+
+@example
+find @r{[}@var{plik}@dots{}@r{]} @r{[}@var{wyra¿enie}@r{]}
+@end example
+
+@noindent
+A oto typowe zastosowanie @code{find}.  Ten przyk³ad wypisuje nazwy wszystkich
+plików w drzewie katalogowym wyrastaj±cym z @file{/usr/src}, których nazwy
+koñcz± siê ci±giem znaków @samp{.c} i które s± wiêksze ni¿ 100 kilobajtów.
+
+@example
+find /usr/src -name '*.c' -size +100k -print
+@end example
+
+@code{locate} szuka w specjalnych bazach danych, zawieraj±cych nazwy plików,
+nazw pasuj±cych do wzorca.  Administrator systemu tworzy te bazy
+uruchamiaj±c program @code{updatedb}.  @code{locate} uruchamia siê tak:
+
+@example
+locate @r{[}@var{opcja}@dots{}@r{]} @var{wzorzec}@dots{}
+@end example
+
+@noindent
+Ten przyk³ad wypisuje nazwy wszystkich plików z domy¶lnej bazy nazw plików,
+których nazwy koñcz± siê ³añcuchem @samp{Makefile} lub @samp{makefile}.
+Które z nazw plików s± przechowywane w bazie, zale¿y od tego, w jaki sposób
+administrator uruchomi³ @code{updatedb}.
+@example
+locate '*[Mm]akefile'
+@end example
+
+Nazwa @code{xargs}, wymawiana iks-args (EX-args), oznacza ,,po³±cz argumenty''.
+@code{xargs} buduje i uruchamia wiersze poleceñ, za pomoc± zbierania razem
+argumentów, jakie odczyta ze standardowego wej¶cia.  Najczê¶ciej argumenty
+te s± listami nazw plików wygenerowanymi przez @code{find}.
+@code{xargs} uruchamiany jest tak:
+
+@example
+xargs @r{[}@var{opcja}@dots{}@r{]} @r{[}@var{polecenie} @r{[}@var{argumenty-pocz±tkowe}@r{]}@r{]}
+@end example
+
+@noindent
+Poni¿sze polecenie przeszukuje pliki wymienione w pliku @file{file-list}
+i wypisuje wszystkie te ich linie, które zawieraj± s³owo @samp{typedef}.
+@example
+xargs grep typedef < file-list
+@end example
+
+@node Wyra¿enia find
+@section Wyra¿enia @code{find}
+
+@c   primaries
+Wyra¿enie wykorzystywane przez @code{find} do wyboru plików sk³ada siê
+z jednej lub wiêcej @dfn{jednostek} (@dfn{primaries}), z których ka¿da
+jest dla @code{find} odrêbnym argumentem wiersza poleceñ.  @code{find}
+wylicza to wyra¿enie za ka¿dym razem, gdy przetwarza plik.  Mo¿e ono
+zawieraæ dowolny z poni¿szych rodzajów jednostek sk³adowych:
+
+@table @dfn
+@item opcje
+wp³ywaj± na ca³o¶æ dzia³ania, a nie na przetwarzanie konkretnego pliku;
+@item testy
+zwracaj± warto¶æ prawdziw± lub fa³szyw±, zale¿nie od cech pliku;
+@item akcje
+maj± skutki uboczne i zwracaj± warto¶æ prawdziw± lub fa³szyw±; oraz
+@item operatory
+³±cz± pozosta³e argumenty i wp³ywaj± na to, kiedy i czy bêd± one wyliczane.
+@end table
+
+Operator miêdzy dwoma jednostkami mo¿na pomin±æ - domy¶lnie jest to @samp{-and}.
+@xref{£±czenie jednostek za pomoc± operatorów}, gdzie opisano metody ³±czenia
+jednostek w bardziej z³o¿one wyra¿enia. Je¿eli wyra¿enie nie zawiera akcji
+innych ni¿ @samp{-prune}, to dla wszystkich plików, dla których dane wyra¿enie
+jest prawdziwe wykonywane jest @samp{-print} (@pxref{Wypisanie nazwy pliku}).
+
+Opcje dzia³aj± natychmiast - nie s± obliczane dla ka¿dego pliku, w momencie
+przej¶cia do ich pozycji w wyra¿eniu.  St±d te¿, dla czytelno¶ci, najlepiej
+umieszczaæ je na samym pocz±tku wyra¿enia.
+
+Wiele z jednostek pobiera argumenty, które wystêpuj± bezpo¶rednio po nich,
+jako nastêpny argument wiersza poleceñ @code{find}.  Niektóre argumenty s±
+nazwami plików, wzorcami lub innymi ³añcuchami. Inne s± liczbami.  Argumenty
+numeryczne mo¿na podawaæ jako
+
+@table @code
+@item +@var{n}
+dla wiêkszych od @var{n},
+@item -@var{n}
+dla mniejszych od @var{n},
+@item @var{n}
+dla dok³adnie @var{n}.
+@end table
+
+@node Znajdowanie plików
+@chapter Znajdowanie plików
+
+Domy¶lnie, @code{find} wypisuje na standardowe wyj¶cie nazwy plików
+spe³niaj±cych zadane warunki.  @xref{Akcje}, gdzie opisano, jak uzyskaæ
+wiêcej informacji o pasuj±cych plikach.
+
+@menu
+* Nazwa::
+* Dowi±zania::
+* Czas::
+* Rozmiar::
+* Typ::
+* W³a¶ciciel::
+* Prawa::
+* Zawarto¶æ::
+* Katalogi::
+* Systemy plików::
+* £±czenie jednostek za pomoc± operatorów::
+@end menu
+
+@node Nazwa
+@section Nazwa
+
+A oto metody wyszukiwania plików, których nazwy pasuj± do okre¶lonego wzorca.
+@xref{Dopasowywanie wzorców pow³oki}, gdzie opisano argumenty typu
+@var{wzorzec}, u¿ywane w takich testach.
+
+Ka¿dy z tych testów wystêpuje w wersji rozró¿niaj±cej wielko¶æ liter i
+w wersji nierozró¿niaj±cej. Nazwy tych ostatnich zaczynaj± siê od @samp{i}
+(case-insensitive).  W porównywaniu nieodró¿niaj±cym wielko¶ci
+liter wzorce @samp{fo*} i @samp{F??} dopasowuj± nazwy plików @file{Foo},
+@samp{FOO}, @samp{foo}, @samp{fOo}, itp.
+
+@menu
+* Wzorce g³ównej czê¶ci nazwy::
+* Wzorce pe³nej nazwy::
+* Szybkie wyszukiwanie pe³nej nazwy::
+* Dopasowywanie wzorców pow³oki::   Znaki uogólniaj±ce w tych programach.
+@end menu
+
+@node Wzorce g³ównej czê¶ci nazwy
+@subsection Wzorce g³ównej czê¶ci nazwy
+
+@deffn Test -name wzorzec
+@deffnx Test -iname wzorzec
+Prawdziwy, je¶li g³ówna czê¶æ nazwy pliku (¶cie¿ka z usuniêtymi wystêpuj±cymi
+na pocz±tku katalogami) pasuje do wzorca pow³oki @var{wzorzec}.  W przypadku
+@samp{-iname} dopasowywanie nie uwzglêdnia wielko¶ci liter.  Do pominiêcia
+ca³ego drzewa katalogowego s³u¿y opcja @samp{-prune} (@pxref{Katalogi}).
+Jako przyk³ad, polecenie znajduj±ce pliki ¼ród³owe Texinfo
+w @file{/usr/local/doc}:
+
+@example
+find /usr/local/doc -name '*.texi'
+@end example
+@end deffn
+
+@node Wzorce pe³nej nazwy
+@subsection Wzorce pe³nej nazwy
+
+@deffn Test -path wzorzec
+@deffnx Test -ipath wzorzec
+Prawdziwy, je¶li ca³a nazwa pliku, poczynaj±c od argumentu wiersza poleceñ,
+pod którym znaleziono plik, pasuje do wzorca pow³oki @var{wzorzec}.
+W przypadku @samp{-ipath} dopasowywanie nie uwzglêdnia wielko¶ci liter.
+Do pominiêcia ca³ego drzewa katalogowego stosuje siê opcjê @samp{-prune},
+zamiast sprawdzaæ ka¿dy plik drzewa (@pxref{Katalogi}).
+@end deffn
+
+@deffn Test -regex wyra¿
+@deffnx Test -iregex wyra¿
+Prawdziwy, je¶li ca³a nazwa pliku pasuje do wyra¿enia regularnego @var{wyra¿}.
+Jest to dopasowanie do pe³nej ¶cie¿ki, nie szukanie. Na przyk³ad, ¿eby
+dopasowaæ plik o nazwie @file{./fubar3}, mo¿na u¿yæ wyra¿enia regularnego
+@samp{.*bar.} lub @samp{.*b.*3}, ale nie @samp{b.*r3}.
+@xref{Regexps, , Syntax of Regular Expressions, emacs, The GNU Emacs Manual},
+gdzie opisano sk³adniê wyra¿eñ regularnych.
+W przypadku @samp{-iregex} dopasowywanie nie uwzglêdnia wielko¶ci liter.
+@end deffn
+
+@node Szybkie wyszukiwanie pe³nej nazwy
+@subsection Szybkie wyszukiwanie pe³nej nazwy
+
+Do szybkiego wyszukiwania plików po nazwie, bez konieczno¶ci faktycznego
+przegl±dania katalogów na dysku (co mo¿e byæ powolne), mo¿na skorzystaæ
+z programu @code{locate}.  Dla ka¿dego podanego wzorca przeszukuje on jedn±
+lub kilka baz z nazwami plików i wy¶wietla te nazwy, które go zawieraj±.
+@xref{}, gdzie dok³adniej omówiono wzorce pow³oki.
+
+Je¶li wzorzec jest zwyk³ym ³añcuchem -- nie zawiera ¿adnych metaznaków --
+@code{locate} wy¶wietla wszystkie nazwy plików z bazy zawieraj±ce ten
+³añcuch.  je¿eli wzorzec zawiera metaznaki, program wy¶wietla tylko te
+nazwy plików, które dok³adnie odpowiadaj± wzorcowi.  Wskutek tego, wzorce
+zawieraj±ce metaznaki powinny siê na ogó³ zaczynaæ od @samp{*} i najczê¶ciej
+równie¿ tak siê koñcz±.  Wyj±tkami s± wzorce, które maj± jawnie dopasowywaæ
+pocz±tek lub koniec nazwy pliku.
+
+Polecenie
+@example
+locate @var{wzorzec}
+@end example
+
+jest niemal równowa¿ne poleceniu
+@example
+find @var{katalogi} -name @var{wzorzec}
+@end example
+
+gdzie @var{katalogi} s± tymi katalogami, o których dane s± zawarte w bazach
+nazw plików.  Ró¿nice polegaj± na tym, ¿e informacje @code{locate} mog±
+byæ nieaktualne oraz na tym, ¿e @code{locate} obs³uguje znaki uogólniaj±ce
+we wzorcach nieco inaczej ni¿ @code{find} (@pxref{Dopasowywanie wzorców pow³oki}).
+
+Bazy nazw plików zawieraj± listy plików istniej±cych w systemie w momencie
+ostatniej aktualizacji baz.  Administrator powinien wybraæ nazwê pliku
+domy¶lnej bazy, czêsto¶æ, z jak± maj± byæ od¶wie¿ane bazy, oraz katalogi,
+dla których maj± zawieraæ wpisy.
+
+W poni¿szy sposób wybiera siê bazy nazw plików, które maj± byæ
+przeszukane przez @code{locate}.  Bazy domy¶lne zale¿± od systemu.
+
+@table @code
+@item --database=@var{¶cie¿ka}
+@itemx -d @var{¶cie¿ka}
+Zamiast przeszukiwania domy¶lnej bazy nazw plików, przeszukiwane bêd± bazy
+ze @var{¶cie¿ki}, która jest list± rozdzielonych dwukropkami nazw plików baz.
+Do ustawienia listy przeszukiwanych plików baz mo¿na te¿ u¿yæ zmiennej
+¶rodowiskowej @code{LOCATE_PATH}.  Je¿eli zostan± zastosowane obie, to opcja
+przes³ania ustawienia zmiennej ¶rodowiskowej.
+@end table
+
+@node Dopasowywanie wzorców pow³oki
+@subsection Dopasowywanie wzorców pow³oki
+
+@code{find} i @code{locate} potrafi± porównywaæ nazwy plików, lub czê¶ci tych
+nazw, z wzorcami pow³oki.  @dfn{Wzorzec pow³oki} jest ³añcuchem, który mo¿e
+zawieraæ poni¿sze znaki specjalne, znane jako @dfn{znaki uogólniaj±ce}
+lub @dfn{metaznaki}.
+
+Wzorce zawieraj±ce metaznaki musz± byæ cytowane, by uchroniæ je przez
+rozwiniêciem przez sam± pow³okê.  Dzia³aj± zarówno cudzys³owy, jak
+i apostrofy; równie¿ cytowanie odwrotnym uko¶nikiem.
+
+@table @code
+@item *
+Dopasowuje zero lub wiêcej znaków.
+
+@item ?
+Dopasowuje jeden dowolny znak.
+
+@item [@var{³añcuch}]
+Dopasowuje dok³adnie jeden znak bêd±cy elementem ³añcucha @var{³añcuch}.
+Nazywa siê to @dfn{klas± znaków}.  Dla uproszczenia, @var{³añcuch} mo¿e
+zawieraæ zakresy, które sk³adaj± siê z dwu znaków z kresk± miêdzy nimi.
+Na przyk³ad, klasa  @samp{[a-z0-9_]} dopasowuje ma³± literê, cyfrê lub znak
+podkre¶lenia.  Klasê mo¿na zanegowaæ, umieszczaj±c  bezpo¶rednio po nawiasie
+otwieraj±cym znak @samp{!} lub @samp{^}.  Zatem, @samp{[^A-Z@@]} dopasowuje
+dowolny znak oprócz du¿ej litery b±d¼ znaku at (@samp{@@}).
+
+@item \
+Usuwa specjalne znaczenie znaku, który po nim nastêpuje.  Dzia³a to nawet
+w klasach znaków.
+@end table
+
+W testach @code{find} wykonuj±cych dopasowywanie wzorców pow³oki
+(@samp{-name}, @samp{-path}, itd.) znaki uogólniaj±ce wzorca nie dopasowuj±
+kropki @samp{.} wystêpuj±cej na pocz±tku nazwy pliku.
+W przypadku @code{locate} tak nie jest.  Zatem, @samp{find -name '*macs'}
+nie dopasuje pliku o nazwie @file{.emacs}, ale @samp{locate '*macs'} - tak.
+
+Znaki uko¶nika nie maj± ¿adnego specjalnego znaczenia w dopasowywaniu wzorców
+wykonywanym przez @code{find} i @code{locate}, w przeciwieñstwie do pow³oki,
+gdzie znaki uogólniaj±ce ich nie dopasowuj±.  St±d te¿, wzorzec @samp{foo*bar}
+mo¿e dopasowaæ nazwê pliku @samp{foo3/bar}, a wzorzec @samp{./sr*sc} nazwê
+@samp{./src/misc}.
+
+@node Dowi±zania
+@section Dowi±zania
+
+Istniej± dwa sposoby, w jakie mog± byæ po³±czone pliki.  @dfn{Dowi±zania
+symboliczne} (@dfn{symbolic links}) to specjalny rodzaj pliku, którego
+zawarto¶æ jest fragmentem nazwy innego pliku.  @dfn{Dowi±zania twarde}
+(@dfn{hard links}) s± wieloma wpisami katalogowymi dla tego samego, jednego
+pliku -- wszystkie te nazwy plików maj± ten sam numer indeksowy wêz³a
+(numer @dfn{i-wêz³a}, @dfn{inode}) na dysku.
+
+@menu
+* Dowi±zania symboliczne::
+* Dowi±zania twarde::
+@end menu
+
+@node Dowi±zania symboliczne
+@subsection Dowi±zania symboliczne
+
+@deffn Test -lname wzorzec
+@deffnx Test -ilname wzorzec
+Prawdziwy, je¶li plik jest dowi±zaniem symbolicznym, którego zawarto¶æ
+pasuje do wzorca pow³oki @var{wzorzec}.  W przypadku @samp{-ilname}
+dopasowywanie nie uwzglêdnia wielko¶ci liter.
+@xref{Dopasowywanie wzorców pow³oki}, gdzie dok³adniej omówiono argument 
+@var{wzorzec}.  Zatem, listê dowi±zañ symbolicznych do pliku @file{sysdep.c}
+po³o¿onych w bie¿±cym katalogu i jego podkatalogach mo¿na uzyskaæ pisz±c:
+
+@example
+find . -lname '*sysdep.c'
+@end example
+@end deffn
+
+@deffn Opcja -follow
+Dereferencja dowi±zañ symbolicznych.
+[t³um.: usuwanie po¶rednio¶ci - dzia³anie na plikach wskazywanych przez
+dowi±zania, a nie na samych dowi±zaniach].
+Je¶li podano tê opcjê, to wystêpuj± nastêpuj±ce ró¿nice w zachowaniu siê
+programu:
+
+@itemize @bullet
+@item
+podczas przeszukiwania drzew katalogowych @code{find} pod±¿a za dowi±zaniami
+wskazuj±cymi na katalogi.
+@item
+@samp{-lname} i @samp{-ilname} zawsze zwracaj± fa³sz.
+@item
+@samp{-type} zg³asza typy plików wskazywanych przez dowi±zania symboliczne
+[zamiast typu @code{l} - tych dowi±zañ].
+@item
+wymusza @samp{-noleaf} (@pxref{Katalogi}).
+@end itemize
+@end deffn
+
+@node Dowi±zania twarde
+@subsection Dowi±zania twarde
+
+Aby znale¼æ dowi±zania twarde, nale¿y najpierw uzyskaæ numer i-wêz³a pliku,
+którego dowi±zañ szukamy.  Numer i-wêz³a pliku i liczbê dowi±zañ do niego
+mo¿na poznaæ uruchamiaj±c @samp{ls -i} lub @samp{find -ls}.  Je¶li plik ma
+wiêcej ni¿ jedno dowi±zanie, to pozosta³ych mo¿na szukaæ podaj±c numer
+i-wêz³a jako argument dla @samp{-inum}.  Je¿eli wyszukiwanie bêdzie
+rozpoczête w katalogu, w którym s± zamontowane inne systemy plików, jak
+@file{/usr} w przypadku wielu systemów, to nale¿y dodaæ opcjê @samp{-xdev}.
+Takie postêpowanie oszczêdza niepotrzebnego szukania, gdy¿ dowi±zania twarde
+do pliku musz± le¿eæ na tym samym systemie plików.  @xref{Systemy plików}.
+
+@deffn Test -inum n
+Plik ma numer i-wêz³a równy @var{n}.
+@end deffn
+
+Mo¿na te¿ szukaæ plików, które maj± okre¶lon± liczbê dowi±zañ.  Robi siê to
+za pomoc± opcji @samp{-links}.  Katalogi maj± normalnie dwa dowi±zania
+twarde: tym drugim jest zawarta w nich pozycja @file{.}.  Je¿eli maj±
+podkatalogi, ka¿dy z nich ma te¿ dowi±zanie twarde o nazwie @file{..}
+do swego katalogu nadrzêdnego.
+
+@deffn Test -links n
+Plik ma @var{n} dowi±zañ twardych.
+@end deffn
+
+@node Czas
+@section Czas
+
+Ka¿dy plik ma trzy znaczniki czasu, które dokumentuj± kiedy ostatnio wykonano
+pewne operacje na pliku. S± to czasy:
+
+@enumerate
+@item
+dostêpu (odczytu zawarto¶ci pliku);
+[access]
+@item
+zmiany statusu (modyfikacji pliku lub jego atrybutów, [zmiany metainformacji
+i-wêz³a]);
+[change]
+@item
+modyfikacji (zmiany zawarto¶ci pliku);
+[modify]
+@end enumerate
+
+Mo¿na szukaæ plików, których znaczniki czasu mieszcz± siê w okre¶lonym
+przedziale wiekowym lub te¿ porównywaæ je z innymi znacznikami czasu.
+
+@menu
+* Zakresy wieku::
+* Porównywanie znaczników czasu::
+@end menu
+
+@node Zakresy wieku
+@subsection Zakresy wieku
+
+Te testy s± przydatne g³ównie z zakresami (@samp{+@var{n}} i @samp{-@var{n}}).
+
+@deffn Test -atime n
+@deffnx Test -ctime n
+@deffnx Test -mtime n
+Prawdziwy, je¶li do danego pliku ostatnio siêgano (lub, odpowiednio, zmieniano
+jego status albo modyfikowano zawarto¶æ) @var{n}*24 godziny temu.
+@end deffn
+
+@deffn Test -amin n
+@deffnx Test -cmin n
+@deffnx Test -mmin n
+Prawdziwy, je¶li do danego pliku ostatnio siêgano (lub, odpowiednio, zmieniano
+jego status albo modyfikowano zawarto¶æ) @var{n} minut temu.  Te testy
+zapewniaj± precyzyjniejszy pomiar ni¿ @samp{-atime} i s-ka.  Na przyk³ad,
+do wylistowania plików w @file{/u/bill}, które by³y ostatnio odczytywane
+od 2 do 6 godzin temu:
+
+@example
+find /u/bill -amin +2 -amin -6
+@end example
+@end deffn
+
+@deffn Opcja -daystart
+Mierzy czas od pocz±tku dzisiejszego dnia, a nie od 24 godzin temu.
+Zatem, do wypisania zwyk³ych plików ze swojego katalogu domowego, które
+zosta³y zmienione wczoraj, u¿ywamy:
+
+@example
+find ~ -daystart -type f -mtime 1
+@end example
+@end deffn
+
+@node Porównywanie znaczników czasu
+@subsection Porównywanie znaczników czasu
+
+Zamiast porównywaæ znaczniki czasu z aktualnym czasem, mo¿na porównywaæ
+je ze znacznikiem innego pliku.  Znacznik tego pliku odniesienia mo¿e byæ
+aktualizowany przez inny program wtedy, gdy wyst±pi jakie¶ zdarzenie.
+Mo¿na te¿, stosuj±c polecenie @code{touch}, ustawiæ go na jak±¶ konkretn±
+sta³± datê.  Na przyk³ad, do wypisania plików w @file{/usr} zmodyfikowanych
+po 1 lutego bie¿±cego roku:
+
+@c Idea from Rick Sladkey.
+@example
+touch -t 02010000 /tmp/stamp$$
+find /usr -newer /tmp/stamp$$
+rm -f /tmp/stamp$$
+@end example
+
+@deffn Test -anewer plik
+@deffnx Test -cnewer plik
+@deffnx Test -newer plik
+Prawdziwy, je¶li do danego pliku ostatnio siêgano (lub, odpowiednio, zmieniano
+jego status albo modyfikowano zawarto¶æ) pó¼niej, ni¿ zosta³ zmodyfikowany
+@var{plik}.  Testy te uwzglêdniaj± opcjê @samp{-follow} tylko wtedy, gdy
+w wierszu poleceñ wystêpuje ona przed nimi.  @xref{Dowi±zania symboliczne},
+gdzie dok³adniej opisano @samp{-follow}.  Na przyk³ad, listê plików
+zmodyfikowanych od czasu ostatniej modyfikacji @file{/bin/sh} uzyskamy tak:
+
+@example
+find . -newer /bin/sh
+@end example
+@end deffn
+
+@deffn Test -used n
+Prawdziwy, je¶li do danego pliku ostatnio siêgano @var{n} dni po ostatniej
+zmianie jego statusu.  Przydatne do znajdowania plików, które nie s± u¿ywane,
+i które prawdopodobnie mo¿na by zarchiwowaæ lub usun±æ, by zaoszczêdziæ
+miejsca na dysku.
+@end deffn
+
+@node Rozmiar
+@section Rozmiar
+
+@deffn Test -size n@r{[}bckw@r{]}
+Prawdziwy, je¶li plik wykorzystuje @var{n} jednostek miejsca, w zaokr±gleniu
+w górê.  Jednostki to domy¶lnie bloki 512-bajtowe, ale mo¿na to zmieniæ
+dodaj±c do @var{n} jednoznakowy przyrostek:
+
+@table @code
+@item b
+bloki 512-bajtowe
+@item c
+bajty
+@item k
+kilobajty (1024 bajtów)
+@item w
+2-bajtowe s³owa
+@end table
+
+Do rozmiaru nie s± wliczane bloki niebezpo¶rednie, ale s± wliczane bloki
+w plikach rzadkich (sparse), które faktycznie nie s± przydzielone.
+@end deffn
+
+@deffn Test -empty
+Prawdziwy, je¶li plik jest pusty i jest albo zwyk³ym plikiem albo katalogiem.
+Z tego powodu mo¿e to byæ dobry kandydat do usuniêcia.  Ten test przydaje siê
+w po³±czeniu z @samp{-depth} (@pxref{Katalogi}) i @samp{-exec rm -rf '@{@}' ';'}
+(@pxref{Pojedynczy plik}).
+@end deffn
+
+@node Typ
+@section Typ
+
+@deffn Test -type c
+Prawdziwy, je¶li plik jest typu @var{c}:
+
+@table @code
+@item b
+blokowy [block] (buforowany) specjalny
+@item c
+znakowy [character] (niebuforowany) specjalny
+@item d
+katalog [directory]
+@item p
+potok nazwany [named pipe] (FIFO)
+@item f
+zwyk³y plik [regular file]
+@item l
+dowi±zanie symboliczne [symbolic link]
+@item s
+gniazdo [socket]
+@end table
+@end deffn
+
+@deffn Test -xtype c
+To samo, co @samp{-type}, chyba ¿e plik jest dowi±zaniem symbolicznym.
+Dla dowi±zañ symbolicznych: je¶li nie podano @samp{-follow}, to test daje
+prawdê je¿eli dany plik jest dowi±zaniem do pliku typu @var{c}; je¶li podano
+@samp{-follow}, to daje prawdê gdy znakiem @var{c} jest @samp{l}.  Inaczej
+mówi±c, w przypadku dowi±zañ symbolicznych @samp{-xtype} sprawdza typ tych
+plików, czego @samp{-type} nie robi.  @xref{Dowi±zania symboliczne}, gdzie
+bli¿ej opisano @samp{-follow}.
+@end deffn
+
+@node W³a¶ciciel
+@section W³a¶ciciel
+
+@deffn Test -user nazwa_u¿
+@deffnx Test -group nazwa_gr
+Prawdziwy, je¶li plik jest w³asno¶ci± u¿ytkownika @var{nazwa_u¿} (nale¿y do
+grupy @var{nazwa_gr}).  Dopuszcza siê u¿ycie identyfikatora numerycznego.
+@end deffn
+
+@deffn Test -uid n
+@deffnx Test -gid n
+Prawdziwy, je¶li numerycznym identyfikatorem u¿ytkownika (grupy) bêd±cego
+w³a¶cicielem pliku jest @var{n}.  Te testy, w przeciwieñstwie do @samp{-user}
+i @samp{-group}, obs³uguj± zakresy (@samp{+@var{n}} i @samp{-@var{n}}).
+@end deffn
+
+@deffn Test -nouser
+@deffnx Test -nogroup
+Prawdziwy, je¶li numerycznemu identyfikatorowi u¿ytkownika pliku nie
+odpowiada ¿aden u¿ytkownik (numerycznemu identyfikatorowi grupy nie odpowiada
+¿adna grupa).  Przypadki te oznaczaj± zwykle, ¿e pliki nale¿a³y do
+u¿ytkowników, których potem usuniêto z systemu.  Prawdopodobnie powinno siê
+zmieniæ w³a¶ciciela (grupê) takich plików na istniej±cego.  S³u¿± do tego
+programy @code{chown} i @code{chgrp}.
+@end deffn
+
+@node Prawa
+@section Prawa
+
+@xref{Prawa pliku}, gdzie opisano, jak± budowê maj± prawa pliku
+i jak je podawaæ.
+
+@deffn Test -perm tryb
+Prawdziwy, je¶li prawa pliku to dok³adnie @var{tryb} (który mo¿e byæ
+numeryczny lub symboliczne).  Tryby symboliczne jako punktu wyj¶cia u¿ywaj±
+trybu 0.
+Je¿eli @var{tryb} zaczyna siê od @samp{-}, to test daje prawdê gdy
+@emph{wszystkie} prawa ustawione w @var{trybie} s± ustawione dla pliku;
+prawa nie ustawione w @var{trybie} s± ignorowane.
+Je¿eli @var{tryb} zaczyna siê od @samp{+}, to test daje prawdê gdy
+@emph{którekolwiek} z praw ustawionych w @var{trybie} jest ustawione dla
+pliku; prawa nie ustawione w @var{trybie} s± ignorowane.
+@end deffn
+
+@node Zawarto¶æ
+@section Zawarto¶æ
+
+Do wyszukania plików wed³ug ich zawarto¶ci mo¿na u¿yæ programu @code{grep}.
+Na przyk³ad, mo¿na dowiedzieæ siê, które pliki ¼ród³owe w jêzyku C
+z bie¿±cego katalogu zawieraj± ³añcuch znakowy @samp{thing}, pisz±c:
+
+@example
+grep -l thing *.[ch]
+@end example
+
+Je¿eli chcemy ten ³añcuch wyszukaæ równie¿ w plikach w podkatalogach, mo¿na
+po³±czyæ @code{grep} z @code{find} i @code{xargs}, tak:
+
+@example
+find . -name '*.[ch]' | xargs grep -l thing
+@end example
+
+Opcja @samp{-l} powoduje, ¿e @code{grep} wypisuje tylko nazwy plików
+zawieraj±cych dany ³añcuch, a nie linie które go zawieraj±.  Argument
+okre¶laj±cy ³añcuch (@samp{thing}) jest w rzeczywisto¶ci wyra¿eniem
+regularnym, wiêc mo¿e zawieraæ metaznaki.  Metodê mo¿na nieco wyg³adziæ,
+wykorzystuj±c opcjê @samp{-r}, dziêki której @code{xargs} nie bêdzie
+uruchamiaæ programu @code{grep} je¿eli @code{find} nie da ¿adnego wyj¶cia.
+Zastosowanie akcji @samp{-print0} programu @code{grep} oraz opcji @samp{-0}
+programu @code{xargs} pozwoli na unikniêcie b³êdnej interpretacji tych nazw
+plików, które zawieraj± spacje:
+
+@example
+find . -name '*.[ch]' -print0 | xargs -r -0 grep -l thing
+@end example
+
+Informacje o pe³niejszej obróbce szukania plików, których zawarto¶æ pasuje
+do wzorca, znajduj± siê w podrêczniku systemowym programu @code{grep}.
+
+@node Katalogi
+@section Katalogi
+
+Poni¿ej opisano, jak decydowaæ o tym, które katalogi i w jaki sposób
+@code{find} ma przeszukiwaæ.  Te dwie opcje umo¿liwiaj± przetwarzanie
+poziomego wycinka drzewa katalogowego:
+
+@deffn Opcja -maxdepth poziomy
+Program zejdzie nie g³êbiej ni¿ @var{poziomy} (ca³kowita nieujemna) poziomów
+katalogów poni¿ej argumentów wiersza poleceñ.  @samp{-maxdepth 0} oznacza,
+¿e testy i akcje zostan± zastosowane tylko do argumentów wiersza poleceñ.
+@end deffn
+
+@deffn Opcja -mindepth poziomy
+Nie bêd± stosowane ¿adne testy ani akcje na poziomach mniejszych ni¿
+@var{poziomy} (ca³kowita nieujemna).  @samp{-mindepth 1} oznacza
+przetwarzanie wszystkich plików z wyj±tkiem argumentów wiersza poleceñ.
+@end deffn
+
+@deffn Opcja -depth
+Przetwarzanie zawarto¶ci katalogu przed samym katalogiem.
+Warto z tego korzystaæ podczas tworzenia list plików do archiwacji za pomoc±
+@code{cpio} lub @code{tar}.  Je¿eli katalog nie ma prawa zapisu dla swojego
+w³a¶ciciela, to zawarto¶æ mo¿na mimo to odtworzyæ z archiwum, gdy¿ prawa
+katalogu s± odtwarzane po jego zawarto¶ci.
+@end deffn
+
+@deffn Akcja -prune
+Je¿eli nie podano @samp{-depth}, to prawdziwa; program nie wchodzi w g³±b
+bie¿±cego katalogu.  Je¿eli podano @samp{-depth}, fa³szywa; bez skutków.
+@samp{-prune} wp³ywa tylko na testy i akcje, które w wyra¿eniu wystêpuj±
+po niej, nie na poprzedzaj±ce j±.
+
+Na przyk³ad, do pominiêcia katalogu @file{src/emacs} i wszystkich plików
+i katalogów pod nim oraz wypisania nazw pozosta³ych znalezionych plików
+u¿ywamy:
+
+@example
+find . -path './src/emacs' -prune -o -print
+@end example
+@end deffn
+
+@deffn Opcja -noleaf
+Nie jest wykonywana optymalizacja polegaj±ca na przyjêciu, ¿e katalogi
+zawieraj± o dwa podkatalogi mniej ni¿ liczba ich dowi±zañ twardych.
+Opcja ta jest potrzebna podczas przeszukiwania systemów plików
+niestosuj±cych siê do uniksowej konwencji dowi±zañ katalogów, takich jak
+systemy plików CD-ROM lub MS-DOS, czy punkty montowania wolumenów AFS.
+Ka¿dy katalog w zwyk³ym uniksowym systemie plików ma co najmniej dwa
+dowi±zania twarde: swoj± nazwê i wpis @file{.} (kropka).  Dodatkowo,
+ka¿dy z jego podkatalogów (je¶li s±) ma wpis @file{..} dowi±zany do tego
+katalogu.  Podczas badania katalogu, @code{find}, po zbadaniu funkcj±
+@var{stat} o dwa podkatalogi mniej ni¿ wynosi liczba dowi±zañ tego katalogu,
+wie, ¿e reszta wpisów w nim to nie-katalogi (pliki-@dfn{li¶cie} (@dfn{leaf})
+drzewa katalogowego).  Je¶li maj± byæ badane tylko nazwy tych plików, nie
+ma potrzeby sprawdzaæ informacji o ich statusie.  Daje to znacz±cy wzrost
+szybko¶ci wyszukiwania.
+@end deffn
+
+@node Systemy plików
+@section Systemy plików
+
+@dfn{System plików} (@dfn{filesystem}) to czê¶æ dysku, albo maszyny lokalnej,
+albo zamontowany ze zdalnego hosta poprzez sieæ.  Przeszukiwanie sieciowych
+systemów plików mo¿e byæ powolne, wiêc czêsto nakazuje siê programowi
+@code{find}, by ich unika³.
+
+S± dwie metody unikania przeszukiwania okre¶lonych systemów plików.
+Pierwsz± jest wskazanie programowi, by przeszuka³ tylko jeden system plików:
+
+@deffn Opcja -xdev
+@deffnx Opcja -mount
+Zakazuje wchodzenia do katalogów po³o¿onych na innych systemach plików.
+Te opcje to synonimy.
+@end deffn
+
+Drugi sposób to sprawdzanie dla ka¿dego pliku typu systemu plików, na którym
+siê on znajduje, i niezag³êbianie siê w katalogi, które le¿± na systemach
+plików niepo¿±danego typu:
+
+@deffn Test -fstype typ
+Prawdziwy, je¶li dany plik le¿y na systemie plików typu @var{typ}.  Poprawne
+typy systemów s± ró¿ne dla ró¿nych wersji Uniksa.  Oto niepe³na lista typów
+systemów plików akceptowanych w takich czy innych wersjach Uniksa:
+@example
+ufs 4.2 4.3 nfs tmp mfs S51K S52K
+@end example
+Typy systemów plików wystêpuj±ce w danym przypadku mo¿na zobaczyæ stosuj±c
+opcjê @samp{-printf} z dyrektyw± @samp{%F}.  @xref{Wypisanie informacji o pliku}.
+W celu unikniêcia przeszukiwania zdalnych systemów plików @samp{-fstype}
+jest zwykle u¿ywana z @samp{-prune} (@pxref{Katalogi}).
+@end deffn
+
+@node £±czenie jednostek za pomoc± operatorów
+@section £±czenie jednostek za pomoc± operatorów
+
+Operatory buduj± z³o¿one wyra¿enie z testów i akcji.  Operatory to,
+w kolejno¶ci malej±cego priorytetu:
+
+@table @code
+@item @asis{( @var{wyr} )}
+Wymusza priorytet. Prawdziwe je¶li @var{wyr} jest prawdziwe.
+
+@item @asis{! @var{wyr}}
+@itemx @asis{-not @var{wyr}}
+Prawdziwe je¶li @var{wyr} jest fa³szywe.
+
+@item @asis{@var{wyr1 wyr2}}
+@itemx @asis{@var{wyr1} -a @var{wyr2}}
+@itemx @asis{@var{wyr1} -and @var{wyr2}}
+Koniunkcja, AND. @var{wyr2} nie jest wyliczane je¶li @var{wyr1} jest fa³szywe.
+
+@item @asis{@var{wyr1} -o @var{wyr2}}
+@itemx @asis{@var{wyr1} -or @var{wyr2}}
+Alternatywa, OR. @var{wyr2} nie jest wyliczane je¶li @var{wyr1} jest prawdziwe.
+
+@item @asis{@var{wyr1} , @var{wyr2}}
+Lista.  Oba wyra¿enia: @var{wyr1} i @var{wyr2} s± zawsze wyliczane.
+Prawdziwe, je¶li @var{wyr2} jest prawdziwe.  Warto¶æ  @var{wyr1} jest
+odrzucana.  Operator listy umo¿liwia wykonywanie wielu niezale¿nych operacji
+podczas jednego przegl±dania, niezale¿nie od tego, czy pozosta³e operacje siê
+powiod³y.
+@end table
+
+Dla ka¿dej z nazw plików @code{find} przeszukuje drzewo katalogowe,
+zakorzenione w miejscu pliku,
+obliczaj±c wyra¿enie od lewej do prawej, zgodnie z regu³ami
+priorytetów, do chwili, gdy wynik jest ju¿ znany (lewa strona jest fa³szywa
+dla @samp{-and}, b±d¼ prawdziwa dla @samp{-or}).  Wówczas program przechodzi
+do nastêpnej nazwy pliku.
+
+Istniej± dwa inne testy, które mog± siê przydaæ w z³o¿onych wyra¿eniach:
+
+@deffn Test -true
+Zawsze prawdziwy.
+@end deffn
+
+@deffn Test -false
+Zawsze fa³szywy.
+@end deffn
+
+@node Akcje
+@chapter Akcje
+
+Jest kilka metod wypisywania informacji o plikach, które spe³niaj± kryteria,
+jakie zosta³y podane w wyra¿eniu @code{find}.  Mo¿na wypisywaæ je albo na
+standardowym wyj¶ciu, albo do pliku o zadanej nazwie.  Mo¿na te¿ wykonywaæ
+polecenia, dla których uzyskane nazwy plików bêd± argumentami.  Polecenia te
+mo¿na wykorzystaæ pó¼niej jako filtry do wyboru plików.
+
+@menu
+* Wypisanie nazwy pliku::
+* Wypisanie informacji o pliku::
+* Uruchamianie poleceñ::
+* Dodawanie testów::
+@end menu
+
+@node Wypisanie nazwy pliku
+@section Wypisanie nazwy pliku
+
+@deffn Akcja -print
+Prawdziwe. Wypisuje na standardowym wyj¶ciu pe³n± nazwê pliku, dodaj±c
+po niej znak nowej linii.
+@end deffn
+
+@deffn Akcja -fprint plik
+Prawdziwe. Wypisuje do pliku @var{plik} pe³n± nazwê danego pliku, dodaj±c
+po niej znak nowej linii.  Je¿eli @var{plik} nie istnieje w chwili
+uruchomienia @code{find}, to jest tworzony.  Je¶li istnieje, to jest obcinany
+do 0 bajtów.  Nazwy @file{/dev/stdout} i @file{/dev/stderr} s± obs³ugiwane
+w specjalny sposób: odnosz± siê one do, odpowiednio, standardowego wyj¶cia
+i standardowego wyj¶cia diagnostycznego (wyj¶cia b³êdów).
+@end deffn
+
+@node Wypisanie informacji o pliku
+@section Wypisanie informacji o pliku
+
+@deffn Akcja -ls
+Prawdziwe.  Listuje bie¿±cy plik na standardowym wyj¶ciu u¿ywaj±c formatu
+@samp{ls -dils}.  Wynik wygl±da tak:
+
+@smallexample
+204744   17 -rw-r--r--   1 djm      staff       17337 Nov  2  1992 ./lwall-quotes
+@end smallexample
+
+Kolejne pola to:
+
+@enumerate
+@item
+numer i-wêz³a pliku.  @xref{Dowi±zania twarde}, gdzie opisano, jak znale¼æ
+pliki na podstawie ich numeru i-wêz³a.
+
+@item
+Liczba bloków pliku. Bloki maj± wielko¶æ 1K, chyba ¿e ustawiona jest zmienna
+¶rodowiskowa @code{POSIXLY_CORRECT} -- wówczas stosowane s± bloki 512-bajtowe.
+@xref{Rozmiar}, gdzie opisano, jak znale¼æ pliki na podstawie ich rozmiaru.
+
+@item
+Typ i prawa pliku. Dla zwyk³ego pliku typ jest pokazywany jako kreska;
+pozosta³y typy s± oznaczane literami, takimi samymi, jak stosowane w opcji
+@samp{-type} (@pxref{Typ}).  Prawa pliku to odczyt (Read), zapis (Write)
+i wykonanie (eXecute), odpowiednio dla w³a¶ciciela pliku, grupy i dla
+pozosta³ych u¿ytkowników.  Kreska oznacza, ¿e nie dane prawo nie zosta³o
+przyznane.  @xref{Prawa pliku}, gdzie bli¿ej opisano prawa plików.
+@xref{Prawa},  gdzie opisano, jak znale¼æ pliki na podstawie ich praw.
+
+@item
+Liczba dowi±zañ twardych do pliku.
+
+@item
+U¿ytkownik, który posiada plik.
+
+@item
+Grupa pliku.
+
+@item
+Rozmiar pliku w bajtach.
+
+@item
+Data ostatniej modyfikacji pliku.
+
+@item
+Nazwa pliku.  @samp{-ls} cytuje wszelkie znaki niedrukowalne w nazwach
+stosuj±c sekwencje specjalne z odwrotnym uko¶nikiem, jak w C.
+@end enumerate
+@end deffn
+
+@deffn Akcja -fls plik
+Prawdziwe.  Jak @samp{-ls}, tylko wypisuje do @var{pliku}, podobnie jak
+@samp{-fprint} (@pxref{Wypisanie nazwy pliku}).
+@end deffn
+
+@deffn Akcja -printf format
+Prawdziwe.  Wypisuje @var{format} na standardowym wyj¶ciu, interpretuj±c
+sekwencje specjalne @samp{\} i dyrektywy @samp{%}.  Szeroko¶ci pól
+i dok³adno¶ci mo¿na wyszczególniaæ tak, jak w funkcji @code{printf} jêzyka C.
+@samp{-printf}, inaczej ni¿ w @samp{-print}, nie dok³ada znaku nowej linii
+na koñcu ³añcucha.
+@end deffn
+
+@deffn Akcja -fprintf plik format
+Prawdziwe.  Jak @samp{-printf}, tylko wypisuje do @var{pliku}, podobnie jak
+@samp{-fprint} (@pxref{Wypisanie nazwy pliku}).
+@end deffn
+
+@menu
+* Sekwencje specjalne::
+* Dyrektywy formatu::
+* Formaty czasu::
+@end menu
+
+@node Sekwencje specjalne
+@subsection Sekwencje specjalne
+
+Sekwencje specjalne rozpoznawane przez @samp{-printf} i @samp{-fprintf}:
+
+@table @code
+@item \a
+Dzwonek (alarm, bell).
+@item \b
+Backspace.
+@item \c
+Natychmiastowe zaprzestanie wypisywania na podstawie tego formatu
+i wymiecenie wyj¶cia.
+@item \f
+Wysuw strony (form feed).
+@item \n
+Znak nowej linii (newline).
+@item \r
+Powrót karetki (carriage return).
+@item \t
+Tabulacja pozioma (horizontal tab).
+@item \v
+Tabulacja pionowa (vertical tab).
+@item \\
+Dos³owny odwrotny uko¶nik (backslash), @samp{\}.
+@end table
+
+Znak @samp{\}, po którym wystêpuje jaki¶ inny znak jest traktowany
+jak zwyk³y znak, s± wiêc wypisywane oba, za¶ na standardowym wyj¶ciu
+diagnostycznym wypisywany jest komunikat ostrzegawczy (gdy¿
+prawdopodobnie by³a to literówka).
+
+@node Dyrektywy formatu
+@subsection Dyrektywy formatu
+
+@samp{-printf} i @samp{-fprintf} rozpoznaj± nastêpuj±ce dyrektywy formatuj±ce,
+s³u¿±ce do wypisywania informacji o przetwarzanym pliku.  W przeciwieñstwie
+do funkcji @code{printf} jêzyka C, nie udostêpniaj± one specyfikatorów
+szeroko¶ci pól.
+
+@samp{%%} jest dos³ownym znakiem procentu. Znak @samp{%}, po którym wystêpuje
+jaki¶ inny, nie ujêty poni¿ej znak jest odrzucany (ale sam znak po @samp{%}
+jest wypisywany).  W takim przypadku na standardowym wyj¶ciu diagnostycznym
+wypisywany jest komunikat ostrzegawczy (gdy¿ prawdopodobnie by³a to
+literówka).
+
+@menu
+* Dyrektywy nazwy::
+* Dyrektywy w³a¶ciciela::
+* Dyrektywy rozmiaru::
+* Dyrektywy umiejscowienia::
+* Dyrektywy czasu::
+@end menu
+
+@node Dyrektywy nazwy
+@subsubsection Dyrektywy nazwy
+
+@table @code
+@item %p
+Nazwa pliku.
+@item %f
+Nazwa pliku z usuniêtymi zaczynaj±cymi j± katalogami
+(tylko ostatni element nazwy).
+@item %h
+Katalogi zaczynaj±ce nazwê pliku
+(wszystko oprócz ostatniego elementu oraz uko¶nika przed nim).
+@item %P
+Nazwa pliku z usuniêt± z pocz±tku nazw± argumentu wiersza poleceñ,
+dla którego j± znaleziono.
+@item %H
+Argument wiersza poleceñ, dla którego znaleziono plik.
+@end table
+
+@node Dyrektywy w³a¶ciciela
+@subsubsection Dyrektywy w³a¶ciciela
+
+@table @code
+@item %g
+Nazwa grupy pliku lub jej numeryczny identyfikator, je¶li grupa nie ma nazwy.
+@item %G
+Numeryczny identyfikator grupy pliku.
+@item %u
+Nazwa u¿ytkownika pliku lub jego numeryczny identyfikator, je¶li u¿ytkownik
+nie ma nazwy.
+@item %U
+Numeryczny identyfikator u¿ytkownika pliku.
+@item %m
+Prawa pliku (ósemkowo).
+@end table
+
+@node Dyrektywy rozmiaru
+@subsubsection Dyrektywy rozmiaru
+
+@table @code
+@item %k
+Rozmiar pliku w blokach 1K (zaokr±glony w górê).
+@item %b
+Rozmiar pliku w blokach 512-bajtowych (zaokr±glony w górê).
+@item %s
+Rozmiar pliku w bajtach.
+@end table
+
+@node Dyrektywy umiejscowienia
+@subsubsection Dyrektywy umiejscowienia
+
+@table @code
+@item %d
+G³êboko¶æ po³o¿enia pliku w drzewie katalogowym; pliki wymienione w wierszu
+poleceñ maj± g³êboko¶æ 0.
+@item %F
+Typ systemu plików, na którym znajduje siê plik.  Warto¶ci tej mo¿na u¿yæ
+jako argumentu @samp{-fstype} (@pxref{Katalogi}).
+@item %l
+Obiekt wskazywany przez dowi±zanie symboliczne (³añcuch pusty je¶li plik
+nie jest dowi±zaniem symbolicznym).
+@item %i
+Numer i-wêz³a pliku (dziesiêtnie).
+@item %n
+Liczba twardych dowi±zañ do pliku.
+@end table
+
+@node Dyrektywy czasu
+@subsubsection Dyrektywy czasu
+
+Niektóre z tych dyrektyw korzystaj± z funkcji @code{ctime} jêzyka C.  Jej
+wyj¶cie zale¿y od bie¿±cych ustawieñ regionalnych (locale), ale zwykle
+[t³um.: przy nieustawionych locale lub anglosaskich] wygl±da tak
+
+@example
+Wed Nov  2 00:42:36 1994
+@end example
+
+@table @code
+@item %a
+Data ostatniego dostêpu do pliku w formacie zwracanym przez funkcjê
+@code{ctime} C.
+@item %A@var{k}
+Data ostatniego dostêpu do pliku w formacie okre¶lonym przez @var{k}
+(@pxref{Formaty czasu}). 
+@item %c
+Data ostatniej zmiany statusu pliku w formacie zwracanym przez funkcjê
+@code{ctime} C.
+@item %C@var{k}
+Data ostatniego zmiany statusu w formacie okre¶lonym przez @var{k}
+(@pxref{Formaty czasu}). 
+@item %t
+Data ostatniej modyfikacji pliku w formacie zwracanym przez funkcjê
+@code{ctime} C.
+@item %T@var{k}
+Data ostatniej modyfikacji w formacie okre¶lonym przez @var{k}
+(@pxref{Formaty czasu}). 
+@end table
+
+@node Formaty czasu
+@subsection Formaty czasu
+
+Poni¿ej podano formaty stosowane dla dyrektyw @samp{%A}, @samp{%C}
+i @samp{%T}, wypisuj±cych znaczniki czasu pliku.  Niektóre z formatów mog±
+nie byæ dostêpne we wszystkich systemach, z powodu wystêpuj±cych miêdzy
+systemami ró¿nic w funkcji C @code{strftime}.
+
+@menu
+* Elementy czasu::
+* Elementy daty::
+* £±czone formaty czasu::
+@end menu
+
+@node Elementy czasu
+@subsubsection Elementy czasu
+
+Nastêpuj±ce dyrektywy formatuj±ce wypisuj± pojedyncze elementy czasu.
+
+@table @code
+@item H
+godzina (00..23)
+@item I
+godzina (01..12)
+@item k
+godzina ( 0..23)
+@item l
+godzina ( 1..12)
+@item p
+lokalne, wynikaj±ce z ustawieñ locale, AM lub PM
+@item Z
+strefa czasowa (np. EDT) lub nic je¶li nie da siê jej okre¶liæ
+@item M
+minuta (00..59)
+@item S
+sekunda (00..61)
+@item @@
+liczba sekund od 1 stycznia 1970, 00:00 GMT.
+@end table
+
+@node Elementy daty
+@subsubsection Elementy daty
+
+Nastêpuj±ce dyrektywy formatuj±ce wypisuj± pojedyncze elementy daty.
+
+@table @code
+@item a
+lokalna, skrócona nazwa dnia tygodnia (nie..sob)
+@item A
+lokalna pe³na nazwa dnia tygodnia, zmiennej d³ugo¶ci (niedziela..sobota)
+@item b
+@itemx h
+lokalna, skrócona nazwa miesi±ca (sty..gru)
+@item B
+lokalna, pe³na nazwa miesi±ca, zmiennej d³ugo¶ci (styczeñ..grudzieñ)
+@item m
+miesi±c (01..12)
+@item d
+dzieñ miesi±ca (01..31)
+@item w
+dzieñ tygodnia (0..6)
+@item j
+dzieñ roku (001..366)
+@item U
+numer tygodnia w roku z niedziel± jako pierwszym dniem tygodnia (00..53)
+@item W
+numer tygodnia z poniedzia³kiem jako pierwszym dniem tygodnia (00..53)
+@item Y
+rok (1970@dots{})
+@item y
+ostatnie dwie cyfry roku (00..99)
+@end table
+
+@node £±czone formaty czasu
+@subsubsection £±czone formaty czasu
+
+Nastêpuj±ce dyrektywy formatuj±ce wypisuj± kombinacje elementów daty i czasu.
+
+@table @code
+@item r
+czas, 12-godzinny (gg:mm:ss [AP]M)
+@item T
+czas, 24-godzinny (gg:mm:ss [AP]M)
+@item X
+lokalna reprezentacja czasu (%H:%M:%S)
+@item c
+lokalna data i czas (sob lis 04 12:02:33 EST 1989)
+@item D
+data (mm/dd/rr)
+@item x
+lokalna reprezentacja daty (mm/dd/rr)
+@end table
+
+@node Uruchamianie poleceñ
+@section Uruchamianie poleceñ
+
+Listy nazw plików utworzonej przez @code{find} lub @code{locate} mo¿na
+u¿yæ jako argumentów innych poleceñ.  W ten sposób mo¿liwe jest wykonanie
+na znalezionych plikach dowolnych akcji.
+
+@menu
+* Pojedynczy plik::
+* Wiele plików::
+* Pytanie::
+@end menu
+
+@node Pojedynczy plik
+@subsection Pojedynczy plik
+
+Oto jak uruchamiaæ polecenie z jednym plikiem na raz.
+@c   z pojedynczym plikiem;  z jednym plikiem na raz
+
+@deffn Akcja -exec polecenie ;
+Wykonuje @var{polecenie}.  Prawdziwe je¶li polecenie zwróci kod zakoñczenia
+zero.  @code{find} uwa¿a wszystkie argumenty po @samp{-exec} za czê¶æ
+podanego polecenia a¿ do napotkania argumentu sk³adaj±cego siê ze ¶rednika
+@samp{;}.  £añcuch @samp{@{@}} zastêpuje wszêdzie w poleceniu nazw± aktualnie
+przetwarzanego pliku.  Obie te konstrukcje powinny byæ chronione (za pomoc±
+@samp{\} lub znaków cytowania) przed interpretacj± przez pow³okê.  Zadane
+polecenie jest wykonywane w katalogu, w którym zosta³ uruchomiony @code{find}.
+
+Na przyk³ad, do porównania ka¿dego pliku nag³ówkowego C w bie¿±cym katalogu
+z plikiem @file{/tmp/master} zastosujemy:
+
+@example
+find . -name '*.h' -exec diff -u '@{@}' /tmp/master ';'
+@end example
+@end deffn
+
+@node Wiele plików
+@subsection Wiele plików
+
+Czasami trzeba przetwarzaæ pliki pojedynczo.  Jednak, je¶li nie jest to
+konieczne, to szybciej jest uruchomiæ polecenie z tyloma plikami na raz,
+ile siê da, zamiast wykonywaæ je po razie dla ka¿dego pliku.  U¿ycie
+jednocze¶nie wielu plików oszczêdza czas, jakiego za ka¿dym razem potrzeba
+na uruchomienie polecenia.
+
+Do uruchomienia danego polecenia z wiêcej ni¿ jednym plikiem jednocze¶nie
+stosuje siê polecenie @code{xargs}, wywo³ywane tak:
+
+@example
+xargs @r{[}@var{opcja}@dots{}@r{]} @r{[}@var{polecenie} @r{[}@var{argumenty-pocz±tkowe}@r{]}@r{]}
+@end example
+
+@code{xargs} czyta ze standardowego wej¶cia argumenty, rozdzielone odstêpami
+(które mo¿na chroniæ przed pow³ok± cudzys³owami lub apostrofami albo
+odwrotnym uko¶nikiem) lub znakami nowej linii.  Wywo³uje raz lub
+wiele razy zadane @var{polecenie} (domy¶lnym jest @file{/bin/echo})
+z ewentualnymi @var{argumentami-pocz±tkowymi}, po których nastêpuj± argumenty
+odczytane ze standardowego wej¶cia.  Puste linie ze standardowego wej¶cia s±
+ignorowane.
+
+Zamiast nazw rozdzielanych odstêpami bezpieczniej jest korzystaæ
+z @samp{find -print0} lub @samp{find -fprint0} i przetwarzaæ wyj¶cie podaj±c
+opcjê @samp{-0} lub @samp{--null} programom GNU @code{xargs}, GNU @code{tar},
+GNU @code{cpio} lub @code{perl}.
+
+Do przetwarzania list argumentów mo¿na wykorzystaæ realizowane przez pow³okê
+podstawianie wyników poleceñ (za pomoc± odwrotnych apostrofów, backquotes):
+
+@example
+grep -l sprintf `find $HOME -name '*.c' -print`
+@end example
+
+Jednak, ta metoda da b³±d je¶li d³ugo¶æ nazw plików @samp{.c} przekroczy
+wystêpuj±cy w systemie operacyjnym limit d³ugo¶ci wiersza poleceñ.
+@code{xargs} unika tego problemu uruchamiaj±c dane polecenie tyle razy, ile
+potrzeba bez przekraczania limitu:
+
+@c   gdzie tu xargs?! zapomniane?
+@example
+find $HOME -name '*.c' -print | grep -l sprintf
+@end example
+
+Je¶li jednak polecenie potrzebuje terminala jako standardowego wej¶cia
+(na przyk³ad, @code{less}), konieczne jest u¿ycie metody z podstawianiem
+wyników poleceñ przez pow³okê.
+
+@menu
+* Ryzykowna obs³uga nazw plików::
+* Bezpieczna obs³uga nazw plików::
+* Ograniczanie rozmiaru polecenia::
+* Przeplatanie nazw plików::
+@end menu
+
+@node Ryzykowna obs³uga nazw plików
+@subsubsection Ryzykowna obs³uga nazw plików
+
+Poniewa¿ nazwy plików mog± zawieraæ cudzys³owy, odwrotne uko¶niki, znaki
+odstêpu, a nawet znaki nowej linii, nie jest bezpieczne przetwarzanie ich
+za pomoc± @code{xargs} w domy¶lnym trybie dzia³ania.  Ale wobec tego, ¿e
+wiêkszo¶æ nazw plików nie zawiera odstêpów, ten problem pojawia siê rzadko.
+Je¶li wyszukujemy w¶ród plików, o których wiemy, ¿e maj± bezpieczne nazwy,
+to nie musimy siê tym niepokoiæ.
+
+@c This example is adapted from:
+@c From: pfalstad@stone.Princeton.EDU (Paul John Falstad)
+@c Newsgroups: comp.unix.shell
+@c Subject: Re: Beware xargs security holes
+@c Date: 16 Oct 90 19:12:06 GMT
+@c 
+W wielu zastosowaniach, je¶li @code{xargs} spartaczy przetwarzanie pliku
+z powodu specjalnych znaków w nazwie, mo¿e doj¶æ do utraty pewnych danych.
+Waga tego problemu zale¿y od istotno¶ci danych i tego, czy kto¶ dostrze¿e
+stratê wystarczaj±co wcze¶nie, by je poprawiæ.  Niemniej jednak, oto skrajny
+przypadek k³opotów, jakie mo¿e spowodowaæ stosowanie nazw rozdzielanych
+odstêpami.  Je¿eli poni¿sze polecenie uruchamia siê codziennie z @code{cron},
+to pierwszy lepszy u¿ytkownik mo¿e usun±æ dowolny plik systemu:
+
+@example
+find / -name '#*' -atime +7 -print | xargs rm
+@end example
+
+Na przyk³ad, mo¿na zrobiæ co¶ takiego:
+
+@example
+eg$ echo > '#
+vmunix'
+@end example
+
+@noindent
+a wówczas @code{cron} usunie @file{/vmunix}, je¶li uruchamia @code{xargs}
+z @file{/} jako swoim katalogiem bie¿±cym.
+
+Inne pliki, na przyk³ad @file{/u/joeuser/.plan}, mo¿na by usun±æ tak:
+
+@example
+eg$ mkdir '#
+'
+eg$ cd '#
+'
+eg$ mkdir u u/joeuser u/joeuser/.plan'
+'
+eg$ echo > u/joeuser/.plan'
+/#foo'
+eg$ cd ..
+eg$ find . -name '#*' -print | xargs echo
+./# ./# /u/joeuser/.plan /#foo
+@end example
+
+@node Bezpieczna obs³uga nazw plików
+@subsubsection Bezpieczna obs³uga nazw plików
+
+Poni¿ej podano, jak spowodowaæ, by @code{find} do zwraca³ nazwy plików
+w takiej postaci, by mog³y byæ u¿ywane przez inne programy bez ryzyka
+przekrêcenia czy b³êdnej interpretacji.  Nazwy plików wygenerowane t±
+metod± przetwarza siê podaj±c programom GNU @code{xargs}, GNU @code{tar},
+GNU @code{cpio} lub @code{perl} opcjê @samp{-0} lub @samp{--null}.
+
+@deffn Akcja -print0
+Prawdziwe. Wypisuje na standardowym wyj¶ciu pe³n± nazwê pliku, dodaj±c
+po niej znak null (zerowy, oznaczaj±cy brak informacji).
+@end deffn
+
+@deffn Akcja -fprint0 plik
+Prawdziwe.  Jak @samp{-print0}, tylko wypisuje do @var{pliku}, podobnie jak
+@samp{-fprint} (@pxref{Wypisanie nazwy pliku}).
+@end deffn
+
+@node Ograniczanie rozmiaru polecenia
+@subsubsection Ograniczanie rozmiaru polecenia
+
+@code{xargs} pozwala decydowaæ o liczbie argumentów, które przesy³a
+do danego polecenia za ka¿dym razem, gdy je wywo³uje.
+Domy¶lnie, u¿ywa do @code{ARG_MAX} - 2k lub 20k (zale¿y, co jest mniejsze)
+znaków na polecenie.  Wykorzystuje tyle linii i argumentów, ile tylko mie¶ci
+siê w tym limicie.  Poni¿sze opcje zmieniaj± te warto¶ci.
+
+@table @code
+@item --no-run-if-empty
+@itemx -r
+Je¿eli standardowe wej¶cie nie zawiera ¿adnych znaków niepustych, to
+dane polecenie nie zostanie uruchomione.  Domy¶lnie, polecenie jest
+uruchamiane jednokrotnie nawet je¶li nie ma danych wej¶ciowych.
+
+@item --max-lines@r{[}=@var{max-linii}@r{]}
+@itemx -l@r{[}@var{max-linii}@r{]}
+Nakazuje u¿ywanie co najwy¿ej @var{max-linii} niepustych linii wej¶ciowych
+dla ka¿dego wiersza poleceñ.  Je¿eli pominiêto @var{max-linii}, domy¶lnie 1.
+Wystêpuj±ce na koñcu odstêpy powoduj±, ¿e linia wej¶ciowa bêdzie logicznie
+kontynuowana w nastêpnej, do celów zliczania linii.  Wymusza @samp{-x}.
+
+@item --max-args=@var{max-arg}
+@itemx -n @var{max-arg}
+U¿ywanie co najwy¿ej @var{max-arg} argumentów dla ka¿dego wiersza poleceñ.
+Je¶li zostanie przekroczony rozmiar (zobacz opcja @samp{-s}),
+@code{xargs} u¿yje mniej argumentów ni¿ nakazano, chyba ¿e podano opcjê
+@samp{-x}, wówczas zakoñczy pracê.
+
+@item --max-chars=@var{max-zn}
+@itemx -s @var{max-zn}
+U¿ywanie co najwy¿ej @var{max-zn} znaków dla ka¿dego wiersza poleceñ,
+³±cznie z samym poleceniem i argumentami pocz±tkowymi oraz znakami null
+koñcz±cymi ³añcuchy argumentów.
+
+@item --max-procs=@var{max-proc}
+@itemx -P @var{max-proc}
+Uruchamianie do @var{max-proc} procesów na raz; domy¶lnie 1.  Je¿eli
+@var{max-proc} wynosi 0, to @code{xargs} bêdzie uruchamiaæ tyle procesów
+jednocze¶nie, ile siê da.  Razem z @samp{-P} powinno siê u¿yæ opcji @samp{-n},
+@c        chances are that
+@samp{-s} lub @samp{-l}, w przeciwnym razie, wedle wszelkich danych,
+wskazane polecenie zostanie uruchomione tylko raz.
+@end table
+
+@node Przeplatanie nazw plików
+@subsubsection Przeplatanie nazw plików
+
+@code{xargs} potrafi wstawiæ nazwê przetwarzanego pliku pomiêdzy argumenty,
+podane dla danego polecenia.  Dopóki nie poda siê równocze¶nie opcji
+ograniczaj±cych rozmiar polecenia (@pxref{Ograniczanie rozmiaru polecenia}),
+ten tryb dzia³ania jest równowa¿ny @samp{find -exec} (@pxref{Pojedynczy plik}).
+
+@table @code
+@item --replace@r{[}=@var{³añc-zastêpowany}@r{]}
+@itemx -i@r{[}@var{³añc-zastêpowany}@r{]}
+Zastêpuje wyst±pienie @var{³añc-zastêpowany} w argumentach pocz±tkowych
+nazwami odczytanymi ze standardowego wej¶cia.  Dodatkowo, niecytowane odstêpy
+nie koñcz± argumentów.  Je¿eli pominiêto @var{³añc-zastêpowany}, domy¶lnie
+jest nim @samp{@{@}} (jak dla @samp{find -exec}).  Ta opcja wymusza @samp{-x}
+i @samp{-l 1}.  Na przyk³ad, posortowanie ka¿dego z plików katalogu
+@file{bills}, z pozostawieniem wyników w plikach o tych samych nazwach
+z doklejonym @file{.sorted}, mo¿na wykonaæ tak:
+
+@example
+find bills -type f | xargs -iXX sort -o XX.sorted XX
+@end example
+
+@noindent
+Równowa¿ne polecenie, z zastosowaniem @samp{find -exec}, to:
+
+@example
+find bills -type f -exec sort -o '@{@}.sorted' '@{@}' ';'
+@end example
+@end table
+
+@node Pytanie
+@subsection Pytanie
+
+W celu zapytania u¿ytkownika, czy wykonaæ polecenie dla pojedynczego pliku
+stosuje siê w @code{find} jednostkê @samp{-ok} zamiast @samp{-exec}:
+
+@deffn Akcja -ok polecenie ;
+Podobne do @samp{-exec} (@pxref{Pojedynczy plik}), ale najpierw pyta
+(na standardowym wyj¶ciu) u¿ytkownika o zgodê.  Je¶li odpowied¼ nie zaczyna
+siê od @samp{y} lub @samp{Y}, nie uruchamia polecenia i zwraca fa³sz.
+@end deffn
+
+Do pytania u¿ytkownika o potwierdzenie podczas przetwarzania wielu plików
+pojedynczym poleceniem u¿ywa siê ni¿ej podanej opcji @code{xargs}.
+Przy stosowaniu tej opcji mo¿e byæ przydatne sterowanie liczb± plików
+przetwarzanych w ka¿dym wywo³aniu polecenia
+(@pxref{Ograniczanie rozmiaru polecenia}).
+
+@table @code
+@item --interactive
+@itemx -p
+Prosi u¿ytkownika o potwierdzenie uruchomienia ka¿dego wiersza poleceñ
+i odczytuje z terminala liniê tekstu.  Uruchamia polecenie tylko wtedy,
+gdy odpowied¼ zaczyna siê od @samp{y} lub @samp{Y}.  Wymusza @samp{-t}.
+@end table
+
+@node Dodawanie testów
+@section Dodawanie testów
+
+Mo¿liwe jest testowanie takich cech pliku, których nie sprawdzaj± ¿adne
+z wbudowanych testów @code{find}.  W tym celu nale¿y zastosowaæ @code{xargs}
+do uruchomienia programu, który odfiltruje listê plików wypisanych przez
+@code{find}.  Je¶li to mo¿liwe, warto wykorzystaæ wbudowane testy @code{find},
+by skróciæ listê, dziêki czemu program uruchamiany przez @code{xargs} bêdzie
+mia³ mniej pracy.  Testy wbudowane w @code{find} bêd± prawdopodobnie dzia³aæ
+szybciej ni¿ wykonywane przez inne programy.
+
+Na przyk³ad, oto sposób na wypisanie nazw wszystkich binariów z drzewa
+katalogowego @file{/usr/local}, z których nie usuniêto symboli (unstripped
+binaries).  Testy wbudowane pozwalaj± na unikniêcie uruchamiania @code{file}
+dla plików, które nie s± zwyk³ymi plikami lub nie s± wykonywalne.
+
+@example
+find /usr/local -type f -perm +a=x | xargs file | 
+  grep 'not stripped' | cut -d: -f1
+@end example
+
+@noindent
+Program @code{cut} usuwa wszystko po nazwie pliku z wyj¶cia utworzonego
+przez @code{file}.
+
+@c Idea from Martin Weitzel.
+Je¿eli specjalny test chcemy umie¶ciæ gdzie¶ w ¶rodku wyra¿enia @code{find},
+mo¿na u¿yæ @samp{-exec} do wywo³ania programu, który go wykona.  Poniewa¿
+warto¶ci± @samp{-exec} jest kod zakoñczenia wykonanego programu, wystarczy
+napisaæ program (mo¿e to byæ skrypt pow³oki), który testuje specjaln± cechê
+i koñczy pracê ze statusem prawdy (zerowym) lub fa³szu (niezerowym).  Warto
+umie¶ciæ taki specjalny test @emph{po} testach wbudowanych, gdy¿
+zapocz±tkowuje on nowy proces, czego mo¿na by unikn±æ je¶li wynikiem testów
+wbudowanych bêdzie fa³sz.  Tê metodê nale¿y stosowaæ tylko wtedy, gdy
+@code{xargs} nie jest wystarczaj±co elastyczne, gdy¿ uruchamianie jednego
+czy wiêcej nowych procesów do przetestowania ka¿dego pliku jest wolniejsze
+ni¿ u¿ycie @code{xargs} do uruchomienia jednego procesu, który sprawdza wiele
+plików.
+
+Oto skrypt pow³oki o nazwie @code{unstripped}, który sprawdza czy jego
+argument jest plikiem binarnym bez usuniêtych symboli:
+
+@example
+#!/bin/sh
+file $1 | grep 'not stripped' > /dev/null
+@end example
+
+Opiera siê na tym, ¿e pow³oka koñczy pracê z kodem zakoñczenia ostatnio
+wykonanego programu, w tym przypadku @code{grep}.  @code{grep} koñczy pracê
+z kodem prawdy je¶li znalaz³ jakie¶ dopasowania, a fa³szu, gdy nie.
+Poni¿ej podano przyk³ad zastosowania tego skryptu, przy za³o¿eniu, ¿e
+umieszczono go w ¶cie¿ce wyszukiwania.  Wypisuje listê plików wykonywalnych
+bez usuniêtych symboli do pliku @file{sbins}, a z usuniêtymi do @file{ubins}.
+
+@example
+find /usr/local -type f -perm +a=x \
+  \( -exec unstripped '@{@}' \; -fprint ubins -o -fprint sbins \)
+@end example
+
+@node Typowe zadania
+@chapter Typowe zadania
+
+W poni¿szych sekcjach zawarto rozbudowane przyk³ady, które zarówno daj±
+pojêcie o mo¿liwo¶ciach opisywanych programów, jak i pokazuj±, jak
+rozwi±zywaæ typowe problemy praktyczne.
+
+@menu
+* Przegl±danie i edycja::
+* Archiwacja::
+* Sprz±tanie::
+* Dziwne nazwy plików::
+* Naprawianie praw::
+* Segregowanie plików::
+@end menu
+
+@node Przegl±danie i edycja
+@section Przegl±danie i edycja
+
+Do przegl±dania listy plików spe³niaj±cych okre¶lone warunki, wystarczy
+po prostu uruchomiæ program-przegl±darkê z nazwami plików jako argumentami.
+Polecenie ujête miêdzy znaki odwrotnych apostrofów pow³oka zastêpuje 
+tworzonym przez nie wyj¶ciem, zatem ca³e polecenie wygl±da tak:
+
+@example
+less `find /usr/include -name '*.h' | xargs grep -l mode_t`
+@end example
+
+@noindent
+Mo¿na zmieniaæ pliki podaj±c nazwê edytora zamiast nazwy programu do
+przegl±dania.
+
+@node Archiwacja
+@section Archiwacja
+
+Listê plików utworzon± przez @code{find} mo¿na przekazaæ do programu
+archiwuj±cego pliki.  Zarówno GNU @code{tar}, jak i @code{cpio} potrafi±
+czytaæ listy nazw plików ze standardowego wej¶cia -- albo rozdzielone
+znakami null (bezpieczna metoda) albo odstêpami (leniwa, ryzykowna metoda
+domy¶lna).  Chc±c u¿yæ nazw rozdzielonych przez null nale¿y podaæ tym
+programom opcjê @samp{--null}.  Archiwum plików mo¿na zapisaæ w pliku,
+na ta¶mie lub przes³aæ przez sieæ do rozpakowania na innej maszynie.
+
+Jednym z typowych zastosowañ @code{find} do archiwacji plików jest przesy³anie
+listy plików drzewa katalogowego do @code{cpio}.  Nale¿y u¿yæ @samp{-depth},
+dziêki czemu je¶li katalog nie ma prawa zapisu dla swojego w³a¶ciciela,
+to zawarto¶æ bêdzie mo¿na mimo to odtworzyæ z archiwum, gdy¿ prawa katalogu
+s± odtwarzane po jego zawarto¶ci.  Poni¿ej podano, jak to zrobiæ za pomoc±
+@code{cpio}.  Do archiwacji tylko okre¶lonych plików pos³u¿y bardziej
+skomplikowane wyra¿enie @code{find}.
+
+@example
+find . -depth -print0 |
+  cpio --create --null --format=crc --file=/dev/nrst0
+@end example
+
+To archiwum odtwarza siê poleceniem:
+
+@example
+cpio --extract --null --make-dir --unconditional \
+  --preserve --file=/dev/nrst0
+@end example
+
+A takimi poleceniami robi siê to samo korzystaj±c z @code{tar}:
+
+@example
+find . -depth -print0 |
+  tar --create --null --files-from=- --file=/dev/nrst0
+
+tar --extract --null --preserve-perm --same-owner \
+  --file=/dev/nrst0
+@end example
+
+@c Idea from Rick Sladkey.
+Przyk³ad kopiowania katalogu z jednego komputera na inny:
+
+@example
+find . -depth -print0 | cpio -0o -Hnewc |
+  rsh @var{inna-maszyna} "cd `pwd` && cpio -i0dum"
+@end example
+
+@node Sprz±tanie
+@section Sprz±tanie
+
+@c Idea from Jim Meyering.
+W tej sekcji podano przyk³ady usuwania niepotrzebnych plików w rozmaitych
+sytuacjach.
+Oto polecenie do usuwania plików kopii zapasowych CVS tworzonych, gdy
+aktualizacja wymaga scalania:
+
+@example
+find . -name '.#*' -print0 | xargs -0r rm -f
+@end example
+
+@c Idea from Franc,ois Pinard.
+S³u¿y do wysprz±tania ba³aganu w @file{/tmp}.  Mo¿na je umie¶ciæ w pliku
+uruchamianym przez pow³okê w momencie wylogowywania siê (@file{.bash_logout},
+@file{.logout} lub @file{.zlogout}, zale¿nie od u¿ywanej pow³oki).
+
+@example
+find /tmp -user $LOGNAME -type f -print0 | xargs -0 -r rm -f
+@end example
+
+@c Idea from Noah Friedman.
+Do usuniêcia starych kopii zapasowych Emacsa i plików autozapisu mo¿na
+wykorzystaæ polecenie podobne do podanego poni¿ej.
+W tym przypadku szczególnie wa¿ne jest u¿ycie nazw plików
+zakoñczonych przez null, gdy¿ pakiety Emacsa, takie jak VM mailer, czêsto
+tworz± pliki tymczasowe o nazwach zawieraj±cych spacje, jak np.
+@file{#reply to David J. MacKenzie<1>#}.
+
+@example
+find ~ \( -name '*~' -o -name '#*#' \) -print0 |
+  xargs --no-run-if-empty --null rm -vf
+@end example
+
+Usuwanie starych plików z @file{/tmp} zwykle wykonuje siê wywo³aniem
+z @code{cron}:
+
+@c Idea from Kaveh Ghazi.
+@example
+find /tmp /var/tmp -not -type d -mtime +3 -print0 |
+  xargs --null --no-run-if-empty rm -f
+
+find /tmp /var/tmp -depth -mindepth 1 -type d -empty -print0 |
+  xargs --null --no-run-if-empty rmdir
+@end example
+
+Drugie polecenie @code{find} powy¿ej u¿ywa @samp{-depth}, wiêc czy¶ci
+@c  it cleans out empty directories depth-first
+puste katalogi najpierw w g³±b, maj±c nadziejê, ¿e nadrzêdne stan±
+siê puste i równie¿ mog± byæ usuniête.  Korzysta z @samp{-mindepth}, by
+unikn±æ usuniêcia samego @file{/tmp}, gdyby sta³o siê ca³kiem puste.
+
+@node Dziwne nazwy plików
+@section Dziwne nazwy plików
+
+@c Idea from:
+@c From: tmatimar@isgtec.com (Ted Timar)
+@c Newsgroups: comp.unix.questions,comp.unix.shell,comp.answers,news.answers
+@c Subject: Unix - Frequently Asked Questions (2/7) [Frequent posting]
+@c Subject: How do I remove a file with funny characters in the filename ?
+@c Date: Thu Mar 18 17:16:55 EST 1993
+@code{find} mo¿e pomóc w usuniêciu lub przemianowaniu pliku o dziwnych
+znakach w nazwie.  Czasem zawadzaj± ludziom pliki maj±ce w nazwie znaki
+@c   People are sometimes stymied by files
+takie jak spacje, tabulacje, znaki steruj±ce czy znaki z ustawionym ósmym
+bitem [t³um.: np. polskie litery].  Najprostsz± metod± usuniêcia takich
+plików jest:
+
+@example
+rm -i @var{jaki¶*wzorzec*pasuj±cy*do*k³opotwliwego*pliku}
+@end example
+
+Dla ka¿dego pliku pasuj±cego do podanego wzorca @code{rm} pyta
+o potwierdzenie usuniêcia.  Je¿eli u¿ywa siê jakiej¶ starej pow³oki, takie
+podej¶cie mo¿e nie dzia³aæ je¶li nazwa pliku zawiera znak z ustawionym ósmym
+bitem -- pow³oka mo¿e go obcinaæ.  Bardziej niezawodn± metod± jest:
+
+@example
+find . -maxdepth 1 @var{testy} -ok rm '@{@}' \;
+@end example
+
+@noindent
+gdzie @var{testy} w sposób jednoznaczny identyfikuj± plik.
+Opcja @samp{-maxdepth 1} dla @code{find} zapobiega marnowaniu czasu
+na szukanie pliku w podkatalogach.  Je¶li nie ma podkatalogów, mo¿na j±
+pomin±æ.  Dobrym sposobem jednoznacznej identyfikacji k³opotliwego pliku
+jest znalezienie jego numeru i-wêz³a; wystarczy u¿yæ
+
+@example
+ls -i
+@end example
+
+Za³ó¿my, ¿e mamy plik, którego nazwa zawiera znaki steruj±ce, i dowiedzieli¶my
+siê, ¿e jego numer i-wêz³a to 12345.  To polecenie prosi o potwierdzenie
+jego usuniêcia:
+
+@example
+find . -maxdepth 1 -inum 12345 -ok rm -f '@{@}' \;
+@end example
+
+Czasem nie chcemy byæ pytani, na przyk³ad dlatego, ¿e nazwa pliku zawiera
+dziwn± sekwencjê znaków, która wypisana, zamiesza³a by na ekranie.
+Nale¿y wówczas zamiast @samp{-ok} u¿yæ @samp{-exec}.
+
+Je¿eli zamiast tego chcemy zmieniæ nazwê pliku, wystarczy u¿yæ @code{mv}
+zamiast @code{rm}:
+
+@example
+find . -maxdepth 1 -inum 12345 -ok mv '@{@}' @var{nowa-nazwa-pliku} \;
+@end example
+
+@node Naprawianie praw
+@section Naprawianie praw
+
+Za³ó¿my, ¿e chcemy siê upewniæ, i¿ ka¿dy mo¿e zapisywaæ w katalogach pewnego
+drzewa katalogowego.  Oto sposób na znalezienie katalogów nieposiadaj±cych
+praw zapisu dla u¿ytkownika lub grupy (albo obu), i poprawienie tego:
+
+@example
+find . -type d -not -perm -ug=w | xargs chmod ug+w
+@end example
+
+@noindent
+Mo¿na te¿ odwróciæ te dzia³ania, je¶li chcemy byæ pewni, ¿e katalogi
+@emph{nie} bêd± mia³y prawa zapisu dla wszystkich.
+
+@node Segregowanie plików
+@section Segregowanie plików
+
+@c Idea from:
+@c From: martin@mwtech.UUCP (Martin Weitzel)
+@c Newsgroups: comp.unix.wizards,comp.unix.questions
+@c Subject: Advanced usage of 'find' (Re: Unix security automating script)
+@c Date: 22 Mar 90 15:05:19 GMT
+Do posegregowania zbioru plików na kilka grup w oparciu o ró¿ne kryteria
+mo¿na zastosowaæ operator przecinka, daj±cy mo¿liwo¶æ wykonania na plikach
+kilku niezale¿nych od siebie testów.  Na przyk³ad:
+
+@example
+find / -type d \( -perm -o=w -fprint allwrite , \
+  -perm -o=x -fprint allexec \)
+
+echo "Katalogi, do których mo¿e pisaæ ka¿dy:"
+cat allwrite
+echo ""
+echo "Katalogi z prawem przeszukiwania dla ka¿dego:"
+cat allexec
+@end example
+
+@code{find} musi wykonaæ tylko jedno badanie drzewa katalogowego (co jest
+jedn± z najbardziej czasoch³onnych czê¶ci jego pracy).
+
+@node Bazy nazw plików
+@chapter Bazy nazw plików
+
+Wykorzystywane przez @code{locate} bazy nazw plików zawieraj± listy plików,
+które istnia³y w ustalonych drzewach katalogowych podczas ostatniej
+aktualizacji tych baz.  Nazwa pliku domy¶lnej bazy danych ustalana jest
+podczas konfiguracji i instalacji @code{locate} i @code{updatedb}.
+Czêsto¶æ, z jak± aktualizowane s± bazy, oraz katalogi, dla których zawieraj±
+zapisy, zale¿± od tego, jak czêsto i z jakimi argumentami uruchamiane jest
+@code{updatedb}.
+
+@menu
+* Umiejscowienie baz::
+* Formaty baz::
+@end menu
+
+@node Umiejscowienie baz
+@section Umiejscowienie baz
+
+Baz nazw plików mo¿e byæ wiele.  U¿ytkownicy mog±, pos³uguj±c siê zmienn±
+¶rodowiskow± lub opcj± wiersza poleceñ, wybraæ, które z nich @code{locate}
+ma przeszukiwaæ.  Administrator systemu wyznacza nazwê pliku domy¶lnej bazy,
+czêsto¶æ od¶wie¿ania baz oraz katalogi, dla których bêd± zawieraæ wpisy.
+Bazy nazw plików s± aktualizowane przez uruchomienie programu @code{updatedb},
+zwykle noc±.
+
+W ¶rodowiskach sieciowych, czêsto ma sens budowanie bazy na korzeniu
+ka¿dego z systemów plików, zawieraj±cej wpisy dla tego systemu.
+@code{updatedb} jest wówczas dla ka¿dego systemu plików uruchamiane
+na tym serwerze, dla którego ten system le¿y na dysku lokalnym.
+Zapobiega to za¶miecaniu sieci.
+Opcje @code{updatedb} pozwalaj±ce wybraæ, dla których katalogów przechowuj±
+wpisy poszczególne bazy:
+
+@table @code
+@item --localpaths='@var{¶cie¿ka}@dots{}'
+Niesieciowe katalogi, jakie maj± byæ umieszczone w bazie.
+Domy¶lnie @file{/}.
+
+@item --netpaths='@var{¶cie¿ka}@dots{}'
+Sieciowe (NFS, AFS, RFS, itp.) katalogi, jakie maj± byæ umieszczone w bazie.
+Domy¶lnie - brak.
+
+@item --prunepaths='@var{¶cie¿ka}@dots{}'
+Katalogi, jakie nie powinny byæ umieszczone w bazie, a by³yby bez tego
+wykluczenia.
+Domy¶lnie @file{/tmp /usr/tmp /var/tmp /afs}.
+
+@item --output=@var{plikbazy}
+Plik bazy danych, jaki ma zostaæ utworzony.
+Warto¶æ domy¶lna zale¿y od systemu, ale zwykle jest
+to @file{/usr/local/var/locatedb}.
+
+@item --netuser=@var{u¿ytkownik}
+U¿ytkownik, w imieniu którego, za pomoc± @code{su}, maj± byæ przeszukiwane
+katalogi sieciowe.
+Domy¶lnym jest @code{daemon}.
+@end table
+
+@node Formaty baz
+@section Formaty baz
+
+Bazy nazw plików zawieraj± listy plików, które istnia³y w ustalonych
+drzewach katalogowych podczas ostatniej aktualizacji tych baz.  Format
+baz nazw plików zmieniono pocz±wszy od wersji 4.0 GNU @code{locate},
+by umo¿liwiæ maszynom o ró¿nym porz±dku bajtów wspólne u¿ytkowanie baz.
+Nowe GNU @code{locate} potrafi czytaæ zarówno stary, jak i nowy format.
+Jednak¿e starsze wersje @code{locate} i @code{find} daj± niepoprawne
+wyniki je¶li poda im siê bazy w nowym formacie.
+
+@menu
+* Nowy format baz::
+* Przyk³adowa baza::
+* Stary format baz::
+@end menu
+
+@node Nowy format baz
+@subsection Nowy format baz
+
+@code{updatedb} uruchamia program o nazwie @code{frcode}, kompresuj±cy
+pocz±tki (@dfn{front-compress}) listy nazw plików, co redukuje 4 do 5-krotnie
+rozmiar bazy.  Kompresja pocz±tków (zwana te¿ kodowaniem przyrostowym,
+incremental encoding) dzia³a nastêpuj±co.
+
+Pozycje w bazie danych stanowi± posortowan± listê (bez uwzglêdniania ró¿nic
+w wielko¶ci liter, dla wygody u¿ytkowników).  Poniewa¿ lista jest posortowana,
+nale¿y siê spodziewaæ, ¿e ka¿da pozycja bêdzie mieæ wspólny przedrostek
+(pocz±tkowy ³añcuch) z pozycj± poprzedni±.  Ka¿da pozycja bazy rozpoczyna siê
+bajtem licznika ró¿nicy offsetu.  Jest to dodatkowa liczba znaków przedrostka
+pochodz±cego z poprzedniej pozycji bazy, jaka powinna byæ zastosowana ponad
+liczbê znaków, jakiej u¿ywa poprzednia pozycja w stosunku do jej z kolei
+poprzednika. (Licznik ten mo¿e byæ ujemny.) Po liczniku nastêpuje zakoñczona
+znakiem null koñcówka ASCII -- czê¶æ nazwy, która nastêpuje po wspólnym
+przedrostku.
+
+Je¶li licznik ró¿nicy offsetu jest wiêkszy ni¿ mo¿liwy do przechowania
+w pojedynczym bajcie (+/\-127), to bajt posiada warto¶æ 0x80, a licznik
+nastêpuje w s³owie dwubajtowym, z bajtem starszym jako pierwszym (sieciowy
+porz±dek bajtów).
+
+Ka¿da baza rozpoczyna siê od sztucznej pozycji dla pliku o nazwie
+@file{LOCATE02}. @code{locate} sprawdza ten zapis, by upewniæ siê, ¿e plik
+bazy posiada poprawny format; ignoruje te pozycjê podczas przeszukiwañ.
+
+Bazy danych nie mog± byæ sklejane (³±czone), nawet je¶li ze wszystkich baz
+oprócz pierwszej usuniêto pierwsz± (sztuczn±) pozycjê. Wynika to st±d, ¿e
+licznik ró¿nicy offsetu pierwszego wpisu pochodz±cego z drugiej i kolejnych
+baz bêdzie nieprawid³owy.
+
+@node Przyk³adowa baza
+@subsection Przyk³adowa baza
+
+Przyk³adowe dane wej¶ciowe do @code{frcode}:
+@c ze znakami null zamienionymi na znaki nowej linii:
+
+@example
+/usr/src
+/usr/src/cmd/aardvark.c
+/usr/src/cmd/armadillo.c
+/usr/tmp/zoo
+@end example
+
+D³ugo¶æ najd³u¿szego przedrostka wspólnego z poprzedni± pozycj±:
+
+@example
+0 /usr/src
+8 /cmd/aardvark.c
+14 rmadillo.c
+5 tmp/zoo
+@end example
+
+Dane wynikowe z @code{frcode}, z koñcowymi znakami null zamienionymi na znaki
+nowej linii i zmianie liczby bajtów na postaæ drukowaln±:
+
+@example
+0 LOCATE02
+0 /usr/src
+8 /cmd/aardvark.c
+6 rmadillo.c
+-9 tmp/zoo
+@end example
+
+(6 = 14 - 8, a -9 = 5 - 14)
+
+@node Stary format baz
+@subsection Stary format baz
+
+Stary format baz jest u¿ywany przez uniksowe programy @code{locate}
+i @code{find} oraz ich wcze¶niejsze wydania GNU.  @code{updatedb} tworzy
+bazy w tym formacie, gdy otrzyma opcjê @samp{--old-format}.
+
+@code{updatedb} w celu utworzenia baz w starym formacie uruchamia programy
+o nazwach @code{bigram} i @code{code}.  Stary format ró¿ni siê od nowego
+w nastêpuj±cy sposób.  W nowym formacie ka¿da z pozycji zaczyna siê od
+licznika ró¿nicy offsetu i koñczy siê bajtem null.  W starym formacie warto¶ci
+bajtu od 0 do 28 wskazuj± na licznik ró¿nicy offsetu od -14 do 14.  Warto¶ci±
+bajtu wskazuj±c±, na to, ¿e wystêpuje po niej d³ugi licznik jest 0x1e (30),
+nie za¶ 0x80. D³ugie liczniki przechowywane s± w porz±dku bajtów hosta, który
+niekoniecznie jest sieciowym porz±dkiem bajtów, oraz o rozmiarze s³owa
+integer hosta, zwykle maj±cym 4 znaki. One tak¿e reprezentuj± licznik
+o 14 mniejszy od ich warto¶ci. Wiersze bazy danych nie posiadaj± bajtu
+ogranicznika; pocz±tek nastêpnego wiersza wskazywany jest przez jego pierwszy
+bajt o warto¶ci <= 30.
+
+Poza tym, zamiast rozpoczynania siê fikcyjn± pozycj±, stary format bazy
+rozpoczyna siê od 256 bajtowej tablicy zawieraj±cej 128 najczê¶ciej
+wystêpuj±cych dwuznaków (bigramów) w li¶cie plików.  Dwuznak w tym kontek¶cie
+jest par± s±siednich bajtów.  Bajty bazy danych posiadaj±ce ustawiony
+starszy bit s± indeksami (z wyczyszczonym starszym bitem) do tablicy dwuznaków.
+Kodowanie dwuznaków i liczniki ró¿nicy offsetu powoduj±, ¿e bazy te s±
+o 20-25% mniejsze w porównaniu z nowym formatem.  Nie s± jednak czysto
+8-bitowe.  Ka¿dy z bajtów nazwy pliku, przypadaj±cy na zakres u¿ywany dla
+kodów specjalnych, zastêpowany jest w bazie przez znak zapytania, co
+nieprzypadkowo stanowi maskê pow³oki dopasowuj±c± pojedynczy znak.
+
+@node Prawa pliku
+@chapter Prawa pliku
+
+@include perm.texi
+
+@node Informator
+@chapter Informator
+
+Poni¿ej podano krótkie podsumowania sk³adni wiersza poleceñ dla programów
+omówionych w podrêczniku.
+
+@menu
+* Wywo³anie find::
+* Wywo³anie locate::
+* Wywo³anie updatedb::
+* Wywo³anie xargs::
+@end menu
+
+@node Wywo³anie find
+@section Wywo³anie @code{find}
+
+@example
+find @r{[}@var{plik}@dots{}@r{]} @r{[}@var{wyra¿enie}@r{]}
+@end example
+
+@code{find} przeszukuje drzewo katalogowe zakorzenione w ka¿dej z podanych
+nazw @var{plików}, poprzez obliczenie dla ka¿dego znalezionego w drzewie
+pliku warto¶ci @var{wyra¿enia}.
+
+@code{find} uwa¿a pierwszy argument zaczynaj±cy siê od @samp{-}, @samp{(},
+@samp{)}, @samp{,} lub @samp{!} za pocz±tek wyra¿enia.  Jakiekolwiek
+wystêpuj±ce przed nim argumenty s± ¶cie¿kami do przeszukania, a wszelkie
+po nim -- reszt± wyra¿enia.  je¿eli nie podano ¿adnych ¶cie¿ek, to u¿ywany
+jest bie¿±cy katalog.  Je¶li nie podano ¿adnego wyra¿enia, stosowane jest
+wyra¿enie @samp{-print}.
+
+@code{find} koñczy pracê z kodem 0 je¶li wszystkie pliki przetworzono
+pomy¶lnie, a wiêkszym od 0 je¶li wyst±pi b³±d.
+
+@xref{Skorowidz jednostek}, gdzie znajduje siê zestawienie wszystkich testów,
+akcji i opcji, jakie mo¿e zawieraæ wyra¿enie.
+
+@code{find} rozpoznaje te¿ dwie opcje do u¿ytku administracyjnego:
+
+@table @code
+@item --help
+Wypisuje zestawienie formatu argumentów wiersza poleceñ i koñczy pracê.
+
+@item --version
+Wypisuje numer wersji @code{find} i koñczy pracê.
+@end table
+
+@node Wywo³anie locate
+@section Wywo³anie @code{locate}
+
+@example
+locate @r{[}@var{opcja}@dots{}@r{]} @var{wzorzec}@dots{}
+@end example
+
+@table @code
+@item --database=@var{¶cie¿ka}
+@itemx -d @var{¶cie¿ka}
+Zamiast przeszukiwania domy¶lnej bazy nazw plików, przeszukiwane bêd± bazy
+ze @var{¶cie¿ki}, która jest list± rozdzielonych dwukropkami nazw plików baz.
+Do ustawienia listy przeszukiwanych plików baz mo¿na te¿ u¿yæ zmiennej
+¶rodowiskowej @code{LOCATE_PATH}.  Je¿eli zostan± zastosowane obie, to opcja
+przes³ania ustawienia zmiennej ¶rodowiskowej.
+
+@item --help
+Wypisuje zestawienie opcji @code{locate} i koñczy pracê.
+
+@item --version
+Wypisuje numer wersji @code{locate} i koñczy pracê.
+@end table
+
+@node Wywo³anie updatedb
+@section Wywo³anie @code{updatedb}
+
+@example
+updatedb @r{[}@var{opcja}@dots{}@r{]}
+@end example
+
+@table @code
+@item --localpaths='@var{¶cie¿ka}@dots{}'
+Niesieciowe katalogi, jakie maj± byæ umieszczone w bazie.
+Domy¶lnie @file{/}.
+
+@item --netpaths='@var{¶cie¿ka}@dots{}'
+Sieciowe (NFS, AFS, RFS, itp.) katalogi, jakie maj± byæ umieszczone w bazie.
+Domy¶lnie - brak.
+
+@item --prunepaths='@var{¶cie¿ka}@dots{}'
+Katalogi, jakie nie powinny byæ umieszczone w bazie, a by³yby bez tego
+wykluczenia.
+Domy¶lnie @file{/tmp /usr/tmp /var/tmp /afs}.
+
+@item --output=@var{plikbazy}
+Plik bazy danych, jaki ma zostaæ utworzony.
+Warto¶æ domy¶lna zale¿y od systemu, ale zwykle jest
+to @file{/usr/local/var/locatedb}.
+
+@item --netuser=@var{u¿ytkownik}
+U¿ytkownik, w imieniu którego, za pomoc± @code{su}(1), maj± byæ przeszukiwane
+katalogi sieciowe.
+Domy¶lnym jest @code{daemon}.
+@end table
+
+@node Wywo³anie xargs
+@section Wywo³anie @code{xargs}
+
+@example
+xargs @r{[}@var{opcja}@dots{}@r{]} @r{[}@var{polecenie} @r{[}@var{argumenty-pocz±tkowe}@r{]}@r{]}
+@end example
+
+@code{xargs} koñczy pracê z nastêpuj±cym kodem:
+
+@table @asis
+@item 0
+je¶li pracê zakoñczono pomy¶lnie
+@item 123
+je¶li wywo³anie którego¶ polecenia zakoñczy³o siê kodem 1-125
+@item 124
+je¶li polecenie zakoñczy³o pracê zwracaj±c kod 255
+@item 125
+je¶li polecenie zosta³o zakoñczone przez sygna³
+@item 126
+je¶li nie mo¿na by³o uruchomiæ polecenia
+@item 127
+je¶li nie znaleziono polecenia
+@item 1
+je¶li wyst±pi³ jaki¶ inny b³±d.
+@end table
+
+@table @code
+@item --null
+@itemx -0
+Nazwy plików wej¶ciowych s± zakoñczone znakiem o kodzie zero zamiast bia³ym
+znakiem, a cudzys³owy i odwrotne uko¶niki nie maj± specjalnego znaczenia
+(wszystkie znaki s± brane dos³ownie). Wy³±cza interpretacjê ³añcucha koñca
+pliku, który jest traktowany jak ka¿dy inny argument.
+
+@item --eof@r{[}=@var{³añc-eof}@r{]}
+@itemx -e@r{[}@var{³añc-eof}@r{]}
+Nadaje ³añcuchowi koñca pliku warto¶æ @var{³añc-eof}.  Je¿eli w linii
+wej¶ciowej pojawi siê ³añcuch koñca pliku, to reszta wej¶cia jest ignorowana.
+Je¿eli parametr @var{³añc-eof} nie zostanie podany, ¿aden ³añcuch nie jest
+interpretowany jako koniec pliku.  Je¿eli w ogóle nie podano tej opcji,
+³añcuchem koñca pliku jest @samp{_}.
+
+@item --help
+Wypisuje zestawienie opcji @code{xargs} i koñczy pracê.
+
+@item --replace@r{[}=@var{³añc-zastêpowany}@r{]}
+@itemx -i@r{[}@var{³añc-zastêpowany}@r{]}
+Zastêpuje wyst±pienie @var{³añc-zastêpowany} w argumentach pocz±tkowych
+nazwami odczytanymi ze standardowego wej¶cia.  Dodatkowo, niecytowane odstêpy
+nie koñcz± argumentów.  Je¿eli pominiêto @var{³añc-zastêpowany}, domy¶lnie
+jest nim @samp{@{@}} (jak dla @samp{find -exec}).  Ta opcja wymusza @samp{-x}
+i @samp{-l 1}.
+
+@item --max-lines@r{[}=@var{max-linii}@r{]}
+@itemx -l@r{[}@var{max-linii}@r{]}
+Nakazuje u¿ywanie co najwy¿ej @var{max-linii} niepustych linii wej¶ciowych
+dla ka¿dego wiersza poleceñ.  Je¿eli pominiêto @var{max-linii}, domy¶lnie 1.
+Wystêpuj±ce na koñcu odstêpy powoduj±, ¿e linia wej¶ciowa bêdzie logicznie
+kontynuowana w nastêpnej, do celów zliczania linii.  Wymusza @samp{-x}.
+
+@item --max-args=@var{max-arg}
+@itemx -n @var{max-arg}
+U¿ywanie co najwy¿ej @var{max-arg} argumentów dla ka¿dego wiersza poleceñ.
+Je¶li zostanie przekroczony rozmiar (zobacz opcja @samp{-s}),
+@code{xargs} u¿yje mniej argumentów ni¿ nakazano, chyba ¿e podano opcjê
+@samp{-x}, wówczas zakoñczy pracê.
+
+@item --interactive
+@itemx -p
+Prosi u¿ytkownika o potwierdzenie uruchomienia ka¿dego wiersza poleceñ
+i odczytuje z terminala liniê tekstu.  Uruchamia polecenie tylko wtedy,
+gdy odpowied¼ zaczyna siê od @samp{y} lub @samp{Y}.  Wymusza @samp{-t}.
+
+@item --no-run-if-empty
+@itemx -r
+Je¿eli standardowe wej¶cie nie zawiera ¿adnych znaków niepustych, to
+dane polecenie nie zostanie uruchomione.  Domy¶lnie, polecenie jest
+uruchamiane jednokrotnie nawet je¶li nie ma danych wej¶ciowych.
+
+@item --max-chars=@var{max-chars}
+@itemx -s @var{max-chars}
+U¿ywanie co najwy¿ej @var{max-zn} znaków dla ka¿dego wiersza poleceñ,
+³±cznie z samym poleceniem i argumentami pocz±tkowymi oraz znakami null
+koñcz±cymi ³añcuchy argumentów.
+
+@item --verbose
+@itemx -t
+Wypisuje wiersz poleceñ na standardowym wyj¶ciu przed jego uruchomieniem.
+
+@item --version
+Wypisuje numer wersji @code{xargs} i koñczy pracê.
+
+@item --exit
+@itemx -x
+Koñczy pracê je¶li przekroczono rozmiar (zobacz opcja @var{-s}).
+
+@item --max-procs=@var{max-proc}
+@itemx -P @var{max-proc}
+Uruchamianie do @var{max-proc} procesów na raz; domy¶lnie 1.  Je¿eli
+@var{max-proc} wynosi 0, to @code{xargs} bêdzie uruchamiaæ tyle procesów
+jednocze¶nie, ile siê da.
+@end table
+
+@node Skorowidz jednostek
+@unnumbered Skorowidz jednostek @code{find}
+
+Oto lista wszystkich jednostek (testów, akcji i opcji), z których mog±
+siê sk³adaæ wyra¿enia @code{find} do wyszukiwania plików.
+@xref{Wyra¿enia find}, gdzie dok³adniej opisano wyra¿enia.
+
+@printindex fn
+
+@contents
+@bye

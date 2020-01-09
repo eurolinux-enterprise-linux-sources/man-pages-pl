@@ -1,0 +1,244 @@
+.TH IPSEC_AUTO 8 "12 grudnia 1999"
+.\" RCSID $Id: ipsec_auto.8,v 1.4 2000/09/30 16:59:38 wojtek2 Exp $
+.\" {PTM/PW/0.1/02-15-2000/"kontroluje automatycznie kluczowane po³±czenia IPSEC"}
+.\" Translation (c) 2000 Pawe³ Wilk
+.SH NAZWA
+ipsec auto \- sterowanie automatycznie kluczowanymi po³±czeniami IPSEC
+.SH SK£ADNIA
+.TP 6
+.B ipsec
+.B auto
+.RB [ \-\-show ]
+.RB [ \-\-showonly ]
+.RB [ \-\-asynchronous ]
+.br
+.RB [ \-\-config
+.IR plik_konfiguracyjny ]
+.RB [ \-\-verbose ]
+.br
+.I operacja po³±czenie
+.TP 6
+.B ipsec
+.B auto
+.RB [ \-\-show ]
+.RB [ \-\-showonly ]
+.I operacja
+.SH OPIS
+.I Auto
+manipuluje automatycznie kluczowanymi po³±czeniami FreeS/WAN IPSEC,
+podnosi je i wy³±cza,
+zale¿nie od informacji w pliku konfiguracyjnym IPSEC.
+W przypadku zwyk³ego u¿ycia,
+.I po³±czenie
+jest nazw± po³±czenia wyspecyfikowanego w pliku konfiguracyjnym;
+.I operacja
+za¶ mo¿e byæ ustawiona na
+.BR \-\-add ,
+.BR \-\-delete ,
+.BR \-\-replace ,
+.BR \-\-up ,
+.BR \-\-down ,
+.BR \-\-route
+lub
+.BR \-\-unroute .
+.I Operacje
+.BR \-\-ready ,
+.BR \-\-rereadsecrets
+i
+.BR \-\-status
+nie pobieraj± nazwy po³±czenia.
+.I Auto
+generuje stosowne komendy
+i zapodaje je do pow³oki w celu wykonania.
+.PP
+Operacja
+.B \-\-add
+dodaje specyfikacjê po³±czenia do wewnêtrznej bazy
+.IR pluto ;
+nie powiedzie siê to je¶li
+.I pluto
+ju¿ ma okre¶lone po³±czenie pod t± nazw±.
+Operacja
+.B \-\-delete
+kasuje specyfikacjê po³±czenia z wewnêtrznej bazy
+.IR pluto
+(porzucaj±c przy okazji wszystkie po³±czenia na niej bazuj±ce);
+zawiedzie to je¶li podana specyfikacja nie istnieje.
+Operacja
+.B \-\-replace
+jest to¿sama z
+.B \-\-delete
+(je¶li jest ju¿ tam oczywi¶cie specyfikacja o podanej nazwie)
+lecz poprzedzona
+.B \-\-add
+i
+.BR \-\-rereadsecrets ,
+jest wygodnym sposobem na od¶wie¿enie
+wewnêtrznej specyfikacji
+.IR pluto
+by pasowa³a do tej podanej z zewn±trz.
+¯adne z pozosta³ych operacji nie zmieniaj± wewnêtrznej bazy.
+.PP
+Operacja
+.B \-\-up
+prosi
+.I pluto
+o ustanowienie po³±czenia bazuj±cego na wpisie w wewnêtrznej bazie.
+Operacja
+.B \-\-down
+mówi
+.I pluto
+by porzuciæ takie po³±czenie.
+.PP
+Zazwyczaj,
+.I pluto
+ustanawia trasê do punktu docelowego okre¶lonego dla naszego po³±czenia
+jako czê¶æ operacji
+.B \-\-up
+Jednak¿e trasa i tylko trasa mo¿e byæ ustawiona za pomoc±
+operacji
+.B \-\-route
+Dopóki nasze aktualne po³±czenie nie jest ustanowione,
+to wszystkie wysy³ane tam pakiety bêd± odrzucane,
+co mo¿e byæ preferowanym sposobem na przesy³anie ich
+gdzie indziej, bazuj±c na przyk³ad na jakiej¶ ogólnej trasie
+(np. trasie domy¶lnej).
+.PP
+Zazwyczaj trasa
+.IR pluto
+do punktu docelowego pozostaje na miejscu, gdy
+u¿ywana jest operacja
+.B \-\-down
+s³u¿±ca do kasowania po³±czenia (lub je¶li
+zawiod± podstawowe ustawienia czy pó¼niejsze automatyczne
+kluczowania).
+Pozwala to na ustanowienie nowego po³±czenia (prawdopodobnie
+u¿ywaj±c innej specyfikacji; trasa jest zmieniana je¶li to
+konieczne) bez potrzeby ``okna'', w którym pakiety mog±
+wêdrowaæ dok±dkolwiek bazuj±c na bardziej ogólnej trasie.
+Taka trasa mo¿e byæ usuniêta przy u¿yciu operacji
+.B \-\-unroute
+(i jest tak¿e usuwalna przez
+.BR \-\-delete ).
+.PP
+Operacja
+.B \-\-ready
+mówi
+.I pluto
+by nas³uchiwa³ ¿±dañ typu ustawianie-po³±czenia (negocjowanie
+parametrów po³±czenia - przyp. t³.) od innych hostów.
+Wykonywanie operacji
+.B \-\-up
+przed wykonaniem
+.B \-\-ready
+po obu koñcach jest daremne i nie zadzia³a,
+chocia¿ teraz jest to zautomatyzowan± czê¶ci± procesu
+startowego IPSEC i zazwyczaj nie powinno wynikaæ.
+.PP
+Operacja
+.B \-\-status
+pyta
+.I pluto
+o obecny status po³±czenia.
+Format wyj¶ciowy stworzono ad-hoc i prawdopodobnie bêdzie zmieniony.
+.PP
+Operacja
+.B \-\-rereadsecrets
+mówi
+.I pluto
+by jeszcze raz przeczytaæ plik
+.I /etc/ipsec.secrets
+zwany te¿ plikiem wspó³dzielonych-sekretów,
+który normalnie jest czytany tylko podczas startu.
+(Jest to obecnie synonimem dla
+.BR \-\-ready ,
+lecz mo¿e siê zmieniæ.)
+.PP
+Opcja
+.B \-\-show
+w³±cza opcjê
+.B \-x
+pow³oki u¿ywanej do wykonywania poleceñ,
+wiêc ka¿da wykonywana komenda jest
+pokazywana.
+.PP
+Opcja
+.B \-\-showonly
+sprawia, ¿e
+.I auto
+pokazuje standardowe wyj¶cia komend, 
+które uruchomi³oby, lecz nie uruchamia ich.
+.PP
+Opcja
+.B \-\-asynchronous
+dodawalna tylko do operacji
+.B up
+mówi
+.I pluto
+by przyst±piæ do ustanawiania po³±czenia,
+ale bez oczekiwania na raport o rezultatach.
+Jest to szczególnie pomocne przy startowaniu
+wielokrotnych po³±czeñ równocze¶nie,
+gdy po³±czenia sieciowe s± wolne.
+.PP
+Opcja
+.B \-\-verbose
+instruuje
+.I auto
+by przepu¶ciæ ca³e wyj¶cie z
+.IR ipsec_whack (8),
+w³±czaj±c w to wyj¶cie logów, które jest normalnie
+odfiltrowywane jako nieinteresuj±ce.
+.PP
+Opcja
+.B \-\-config
+okre¶la niestandardow± lokalizacjê pliku konfiguracyjnego IPSEC
+(domy¶lnie
+.IR /etc/ipsec.conf ).
+.PP
+Zobacz te¿
+.IR ipsec.conf (5),
+gdzie znajdziesz szczegó³y dotycz±ce pliku konfiguracyjnego.
+Abstrahuj±c od parametrów podstawowych, które okre¶laj± punkty
+koñcowe i trasowanie po³±czenia
+(\fBleft\fP
+i
+.BR right ,
+plus mo¿liwe
+.BR leftsubnet ,
+.BR leftnexthop ,
+.BR leftfirewall ,
+ich odpowiedniki
+.B right
+i byæ mo¿e
+.BR type ),
+po³±czenie
+.I auto
+niemal¿e zawsze potrzebuje parametru
+.B keyingtries
+(odk±d domy¶lne
+.B keyingtries
+s± dobierane w sposób ubogi).
+.SH PLIKI
+.ta \w'/var/run/ipsec.info'u+4n
+/etc/ipsec.conf	domy¶lny plik konfiguracyjny IPSEC
+.br
+/var/run/ipsec.info	informacja \fB%defaultroute\fP
+.SH ZOBACZ TAK¯E
+ipsec.conf(5), ipsec(8), ipsec_pluto(8), ipsec_whack(8), ipsec_manual(8)
+.SH HISTORIA
+Napisano dla Linuksowego projektu FreeS/WAN
+<http://www.xs4all.nl/~freeswan/>
+przez Henry'ego Spencera.
+.SH USTERKI
+Chocia¿ operacja
+.B \-\-up
+wykonuje ustawianie parametrów po³±czenia
+po obu koñcach to
+.B \-\-down
+porzuca tylko jeden koniec po³±czenia
+(ale w koñcu i tak osamotniona koñcówka 
+wykryje bezczynno¶æ).
+.PP
+Nie ma wsparcia dla po³±czeñ typu
+.B passthrough

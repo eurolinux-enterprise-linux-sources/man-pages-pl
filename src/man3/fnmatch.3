@@ -1,0 +1,102 @@
+.\" {PTM/AB/0.1/20-12-1998/"fnmatch - porównanie nazwy pliku lub ¶cie¿ki"}
+.\" translated by Adam Byrtek <abyrtek@priv.onet.pl>
+.\" aktualizacja do man-pages 1.48 - A. Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" ------------
+.\" (c) 1993 by Thomas Koenig (ig25@rz.uni-karlsruhe.de)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" License.
+.\" Modified Sat Jul 24 19:35:54 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified Mon Oct 16 00:16:29 2000 following Joseph S. Myers
+.\" ------------
+.TH FNMATCH 3 2000-10-15 "GNU" "Podrêcznik porgramisty Linuksa"
+.SH NAZWA
+fnmatch \- porównanie nazwy pliku lub ¶cie¿ki
+.SH SK£ADNIA
+.nf
+.B #include <fnmatch.h>
+.sp
+.BI "int fnmatch(const char *" "pattern" ", const char *" string ", int " flags );
+.fi
+.SH OPIS
+Funkcja
+.B fnmatch()
+sprawdza, czy argument
+.I string
+pasuje do wzorca
+.IR pattern ,
+który jest wzorcem pow³oki mog±cym zawieraæ znaki wieloznaczne.
+.PP
+Argument
+.I flags
+modyfikuje zachowanie funkcji, jest to bitowe OR zera lub wiêcej spo¶ród
+nastêpuj±cych znaczników:
+.TP
+.B FNM_NOESCAPE
+Je¶li ten znacznik jest ustawiony, odwrotny uko¶nik ("\") jest traktowany
+jako zwyk³y znak, a nie jako znak maskuj±cy.
+.TP
+.B FNM_PATHNAME
+Je¶li ten znacznik jest ustawiony, uko¶nik w
+.I string
+pasuje tylko do uko¶nika w
+.I pattern
+a nie, na przyk³ad, do ci±gu zawartego w [] zawieraj±cego uko¶nik.
+.TP
+.B FNM_PERIOD
+Je¶li ten znacznik jest ustawiony, pocz±tkowa kropka w
+.I string
+musi dok³adnie pasowaæ do kropki w
+.IR pattern .
+Kropka jest uznawana za pocz±tkow±, je¶li jest pierwszym znakiem
+.I string
+lub je¶li ustawiony jest znacznik
+.BR FNM_PATHNAME ,
+a kropka nastêpuje bezpo¶rednio po uko¶niku.
+.TP
+.B FNM_FILE_NAME
+Jest to synonim GNU dla \fBFNM_PATHNAME\fP.
+.TP
+.B FNM_LEADING_DIR
+Je¶li ten znacznik (rozszerzenie GNU) jest ustawiony, wzorzec jest uznawany za
+pasuj±cy je¶li pasuje do pocz±tkowego fragmentu
+.IR string ,
+po którym nastêpuje uko¶nik. Ten znacznik jest przeznaczony do wewnêtrznego
+u¿ytku w glibc i jest zaimplementowany tylko w niektórych przypadkach.
+.TP
+.B FNM_CASEFOLD
+Je¶li ten znacznik (rozszerzenie GNU) jest ustawiony, wielko¶æ liter jest
+nieistotna.
+.SH "WARTO¦Æ ZWRACANA"
+Zero je¶li
+.I string
+pasuje do 
+.IR pattern ,
+.B FNM_NOMATCH
+je¶li nie pasuje lub inna niezerowa warto¶æ je¶li wyst±pi³ b³±d.
+.SH "ZGODNE Z"
+ISO/IEC 9945-2: 1993 (POSIX.2). Znaczniki \fBFNM_FILE_NAME\fP,
+\fBFNM_LEADING_DIR\fP oraz \fBFNM_CASEFOLD\fP s± rozszerzeniami GNU.
+.SH "ZOBACZ TAK¯E"
+.BR sh (1),
+.BR glob (3),
+.BR scandir (3),
+.BR glob (7)

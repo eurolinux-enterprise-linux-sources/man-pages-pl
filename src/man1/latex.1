@@ -1,0 +1,50 @@
+.\" {PTM/PB/0.1/16-06-1999/"Strukturalne formatowanie i sk³adanie tekstu"}
+.TH LATEX 1 "27 December 1992"
+.\"=====================================================================
+.if t .ds TX \fRT\\h'-0.1667m'\\v'0.20v'E\\v'-0.20v'\\h'-0.125m'X\fP
+.if n .ds TX TeX
+.ie t .ds OX \fIT\v'+0.25m'E\v'-0.25m'X\fP\" for troff
+.el .ds OX TeX\" for nroff
+.\" the same but obliqued
+.\" BX definition must follow TX so BX can use TX
+.if t .ds BX \fRB\s-2IB\s0\fP\*(TX
+.if n .ds BX BibTeX
+.\" LX definition must follow TX so LX can use TX
+.if t .ds LX \fRL\\h'-0.36m'\\v'-0.15v'\s-2A\s0\\h'-0.15m'\\v'0.15v'\fP\*(TX
+.if n .ds LX LaTeX
+.\"=====================================================================
+.SH NAZWA
+latex \- strukturalne formatowanie i sk³adanie tekstu
+.SH SK£ADNIA
+.B latex
+[ pierwsza linia ]
+.\"=====================================================================
+.SH OPIS
+Jêzyk \*(LX jest opisany w ksi±¿ce pod tytu³em
+.IR "\*(LX \- A Document Preparation System" .
+\*(LX jest pakietem makr \*(TX-a. Nie jest on modyfikacj± ¼róde³ programu
+\*(TX, wiêc dostêpne s± tu wszystkie w³a¶ciwo¶ci opisane na stronie
+.BR tex (1).
+.PP
+Makra \*(LX-a zachêcaj± autorów do zastanowienia siê bardziej nad zawarto¶ci±
+ich dokumentów, ni¿ nad sam± form±. Idea³em, który jest bardzo trudny do
+zrealizowania by³oby, gdyby nie by³o w ogóle komend formatuj±cych (w rodzaju
+``prze³±cz na kursywê'', itp.), a zamiast nich by³yby instrukcje sk³adu, w
+rodzaju ``uwypuklij'', ``rozpocznij sekcjê''.
+.PP
+Podstawowym ¼ród³em dokumentacji \*(LX-a jest podrêcznik, do którego
+odnosimy siê ni¿ej, oraz lokalny przewodnik, znajduj±cy siê w pliku
+.IR local-guide.tex ,
+lub
+.IR local.tex ,
+lub podobnym, w okolicach katalogu /usr/lib/texmf/texmf/tex.
+.\"=====================================================================
+.SH "ZOBACZ TAK¯E"
+.BR amslatex (1),
+.BR amstex (1),
+.BR slitex (1),
+.BR tex (1),
+.br
+Leslie Lamport,
+.IR "\*(LX \- A Document Preparation System" ,
+Addison-Wesley, 1985, ISBN 0-201-15790-X.

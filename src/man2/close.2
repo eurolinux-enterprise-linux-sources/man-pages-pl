@@ -1,0 +1,103 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" This manpage is Copyright (C) 1992 Drew Eckhardt;
+.\"                               1993 Michael Haardt, Ian Jackson.
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Wed Jul 21 22:40:25 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified Sat Feb 18 15:27:48 1995 by Michael Haardt
+.\" Modified Sun Apr 14 11:40:50 1996 by Andries Brouwer <aeb@cwi.nl>:
+.\"   corrected description of effect on locks (thanks to
+.\"   Tigran Aivazian <tigran@sco.com>).
+.\" Modified Fri Jan 31 16:21:46 1997 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified 2000-07-22 by Nicolás Lichtmaier <nick@debian.org>
+.\"   added note about close(2) not guaranteeing that data is safe on close.
+.\" Translation (c) 1998 Przemek Borys <pborys@dione.ids.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\"
+.TH CLOSE 2 2001-12-13 "" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+close \- zamkniêcie deskryptora pliku
+.SH SK£ADNIA
+.nf
+.B #include <unistd.h>
+.sp
+.BI "int close(int " fd );
+.fi
+.SH OPIS
+.B close
+zamyka deskryptor pliku, tak ¿e nie odnosi siê on ju¿ pó¼niej do ¿adnego
+pliku i mo¿e byæ u¿yty ponownie. Wszelkie blokady utrzymywane pliku, z
+którym deskryptor by³ zwi±zany, i których w³a¶cicielem by³ proces, zostaj±
+usuniête (niezale¿nie od deskryptora plików, którego u¿yto dla uzyskanie
+blokady).
+.PP
+Je¶li
+.I fd
+jest ostatni± kopi± deskryptora pewnego pliku, zasoby z nim zwi±zane zostaj±
+zwolnione; je¶li deskryptor by³ ostatnim odniesieniem do pliku, który usuniêto
+za pomoc± polecenia
+.BR unlink (2),
+to plik jest kasowany.
+.SH "WARTO¦Æ ZWRACANA"
+.BR close
+zwraca zero po pomy¶lnym zakoñczeniu, a \-1 gdy wyst±pi b³±d.
+.SH B£ÊDY
+.TP
+.B EBADF
+.I fd
+nie jest prawid³owym deskryptorem otwartego pliku.
+.TP
+.B EINTR
+Funkcja
+.BR close ()
+zosta³a przerwana przez sygna³.
+.TP
+.B EIO
+Wyst±pi³ b³±d we/wy.
+.SH "ZGODNE Z"
+SVr4, SVID, POSIX, X/OPEN, BSD 4.3.
+SVr4 dokumentuje dodatowy b³±d ENOLINK.
+.SH UWAGI
+Niesprawdzanie warto¶ci zwracanej przez close jest popularnym, lecz powa¿nym
+b³êdem w sztuce programowania. Mo¿e siê zdarzyæ, ¿e przy koñcz±cym
+.B close
+zostan± najpierw zg³oszone b³êdy wcze¶niejszej operacji
+.BR write (2).
+Niesprawdzanie zwracanej podczas zamykania pliku warto¶ci mo¿e prowadziæ do
+niesygnalizowanej utraty danych. Jest to obserwowane zw³aszcza w przypadku
+NFS i quota dyskowych.
+.PP
+Pomy¶lne zamkniêcie nie gwarantuje, ¿e dane zostan± pomy¶lnie zapisane na
+dysku, gdy¿ j±dro opó¼nia zapisy. Systemy plików nie maja zwyczaju opró¿niania
+buforów przy zamykaniu strumienia. Je¶li istnieje potrzeba zapewnienia, aby
+dane zosta³y zapisane fizycznie, nale¿y u¿ywaæ
+.BR fsync (2).
+(Zapis zale¿y w tym momencie od w³a¶ciwo¶ci sprzêtowych dysku.)
+.SH "ZOBACZ TAK¯E"
+.BR open (2),
+.BR fcntl (2),
+.BR shutdown (2),
+.BR unlink (2),
+.BR fclose (3),
+.BR fsync (2)

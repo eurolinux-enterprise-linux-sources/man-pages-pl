@@ -1,0 +1,91 @@
+.\" {PTM/WK/2000-II}
+.TH PSTREE 1 "6 maja 1998" "Linux" "Polecenia u¿ytkownika"
+.SH NAZWA
+pstree \- wy¶wietl drzewo procesów
+.SH SK£ADNIA
+.TP 7
+.B pstree
+.RB [ \-a ]
+.RB [ \-c ]
+.RB [ \-h | \-H \fIpid\fP]
+.RB [ \-l ]
+.RB [ \-n ]
+.RB [ \-p ]
+.RB [ \-u ]
+.RB [ \-G | \-U ]
+.RB [ \fIpid\fB | \fIu¿ytkownik\fP ]
+.TP 7
+.B pstree \-V
+.SH OPIS
+.B pstree
+pokazuje uruchomione procesy w formie drzewa. Korzeñ tego drzewa znajduje siê
+albo w \fIpid\fP albo w \fBinit\fP je¶li \fIpid\fP pominiêto. Je¿eli podano
+nazwê u¿ytkownika, to pokazywane s± wszystkie drzewa procesów zakorzenione
+w procesach tego u¿ytkownika.
+.PP
+\fBpstree\fP wizualnie ³±czy identyczne ga³êzie umieszczaj±c je w nawiasach
+kwadratowych i poprzedzaj±c liczb± powtórzeñ, np. 
+.nf
+.sp
+    init\-+\-getty
+         |\-getty
+         |\-getty
+         `-getty
+.sp
+.fi
+staje siê
+.nf
+.sp
+    init\-\-\-4*[getty]
+.sp
+.fi
+Tworzy to bardziej zwart± formê wy¶wietlania.
+.SH OPCJE
+.IP \fB\-a\fP
+Pokazuje argumenty wiersza poleceñ. Je¿eli wiersz poleceñ procesu jest
+przeniesiony na partycjê wymiany (swapped out), to proces ten jest
+pokazywany w nawiasach. \fB\-a\fP niejawnie wy³±cza formê zwart±.
+.IP \fB\-c\fP
+Wy³±cza formê zwart± identycznych poddrzew. Domy¶lnie, je¶li jest to mo¿liwe,
+poddrzewa s± ³±czone.
+.IP \fB\-G\fP
+Pos³uguje siê znakami ramek VT100.
+.IP \fB\-h\fP
+Wyró¿nia pod¶wietleniem (highlighting) bie¿±cy proces i jego przodków.
+Nie dzia³a (no-op) je¶li terminal nie obs³uguje wyró¿nienia albo
+w pokazywanym poddrzewie nie wystêpuje proces bie¿±cy ani ¿aden
+z jego przodków.
+.IP \fB\-H\fP
+Podobne do \fB\-h\fP, ale wyró¿nia podany proces. Inaczej ni¿ przy
+\fB\-h\fP, \fBpstree\fP zawodzi, gdy pos³u¿ono siê \fB\-H\fP
+a nie jest dostêpne wyró¿nianie.
+.IP \fB\-l\fP
+Wy¶wietla d³ugie wiersze. Domy¶lnie wiersze s± obcinane do szeroko¶ci ekranu
+lub 132 je¶li wyj¶cie wysy³ane jest na co¶ innego ni¿ tty albo je¶li
+nieznana jest szeroko¶æ ekranu.
+.IP \fB\-n\fP
+Sortuj procesy o tym samym przodku w kolejno¶ci PID zamiast wed³ug nazwy.
+(Sortowanie numeryczne.)
+.IP \fB\-p\fP
+Pokazuje identyfikatory procesów (PID). Wy¶wietlane s± jako liczby dziesiêtne
+w nawiasach po ka¿dej nazwie procesu. \fB\-p\fP niejawnie wy³±cza formê zwart±.
+.IP \fB\-u\fP
+Pokazuje przenikanie siê uid. W przypadku, gdy uid procesu ró¿ni siê
+od uid jego rodzica, nowy uid pokazywany jest w nawiasach po nazwie.
+.IP \fB\-U\fP
+Pos³uguje siê znakami ramek UTF-8 (Unicode). Pod Linuksem 1.1-54 i nowszym,
+tryb UTF-8 wprowadzany jest na konsoli przez
+\fBecho -e '\\033%8'\fP i opuszczany przez
+\fBecho -e '\\033%@'\fP
+.IP \fB\-V\fP
+Wy¶wietla informacjê o wersji.
+.SH PLIKI
+.TP 10
+.I /proc
+po³o¿enie systemu plików proc
+.SH AUTOR
+Werner Almesberger <Werner.Almesberger@epfl.ch>
+.SH "ZOBACZ TAK¯E"
+.RB ps (1),
+.RB top (1).
+.\"{{{}}}

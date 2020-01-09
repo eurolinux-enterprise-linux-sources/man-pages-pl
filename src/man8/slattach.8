@@ -1,0 +1,108 @@
+.\" {PTM/WK/2000-IV}
+.TH SLATTACH 8 "12 lutego 1994" "" ""
+.SH NAZWA
+slattach \- do³±cz interfejs sieciowy do linii szeregowej
+.SH SK£ADNIA
+.TP 9
+.B slattach
+.RB [ -dehlLmnqv ]
+.RB [ -c
+.IR polecenie ]
+.RB [ -p
+.IR protokó³ ]
+.br
+.RB [ -s
+.IR prêdko¶æ ]
+.RI [ tty ]
+.SH OPIS
+.B Slattach
+jest malutkim programem, który s³u¿y do ustawienia zwyk³ej linii terminalowej
+("szeregowej") w jeden z kilku trybów "sieciowych", umo¿liwiaj±c w ten sposób
+u¿ycie jej do po³±czeñ punkt-punkt z innymi komputerami.
+.SH OPCJE
+.TP
+.BI -c " polecenie"
+Wykonuje
+.B polecenie
+po roz³±czeniu linii. Mo¿e s³u¿yæ do uruchamiania skryptów lub ponownego
+ustanawiania po³±czenia, gdy zostanie ono zerwane.
+.TP
+.B -d
+W³±cza debuggowanie wyników. Przydatne do okre¶lania dlaczego dana konfiguracja
+nie dzia³a.
+.TP
+.B -h
+Koñczy pracê po utracie no¶nej. Dzia³a zarówno na urz±dzeniach /dev/tty
+jak i na /dev/cua co 15 sekund bezpo¶rednio monitoruj±c stan no¶nej.
+.B -v
+W³±cza tryb gadatliwy. Przydatne w skryptach pow³oki.
+.TP
+.B -q
+W³±cza pracê w trybie cichym - w ogóle bez komunikatów.
+.TP
+.B -l
+Tworzy dla urz±dzenia plik blokuj±cy w /var/lock, w stylu UUCP.
+.TP
+.B -n
+Równowa¿ne poleceniu "mesg n".
+.TP
+.B -m
+\fBNie\fP inicjuje linii w 8-bitowym trybie surowym.
+.TP
+.B -e
+Koñczy pracê zaraz po zainicjowaniu urz±dzenia, zamiast oczekiwania
+na roz³±czenie siê linii.
+.TP
+.B -L
+W³±cza 3-przewodowy tryb pracy. Terminal wprowadzany jest w tryb CLOCAL
+[linia lokalna], wy³±czane jest ¶ledzenie no¶nej.
+.TP
+.BI -p " protokó³"
+Ustawia zadany typ protoko³u, jaki na byæ u¿ywany na linii. Domy¶lnie jest to
+.BR cslip ,
+tj. kompresowany SLIP. Inne mo¿liwe warto¶ci to
+.B "slip"
+(zwyk³y SLIP), 
+.B "adaptive"
+(dostosowuj±cy siê CSLIP/SLIP),
+.B "ppp"
+(Point-to-Point Protocol)
+oraz
+.B "kiss"
+(protokó³ wykorzystywany do komunikacji z kontrolerami wêz³ów terminalowych
+radia pakietowego AX.25).
+Specjalny argument
+.B "tty"
+s³u¿y do ponownego wprowadzania terminala w zwyk³y tryb pracy szeregowej.
+U¿ywanie trybu 'ppp' zwykle nie jest przydatne, gdy¿ ppp wymaga uaktywnionego
+dodatkowego demona
+.B pppd
+dla danej linii. Dla po³±czeñ kiss powinien byæ u¿ywany program
+.BR axattach .
+.TP
+.BI -s " prêdko¶æ"
+Ustawia zadan± prêdko¶æ linii, inn± ni¿ domy¶lna.
+.PP
+Je¿eli nie podano ¿adnych argumentów, to u¿ywane jest bie¿±ce ³±cze
+terminalowe (zwykle: urz±dzenie logowania). W przeciwnym razie, wykonywana
+jest próba za¿±dania wskazanego portu terminala, zablokowania go i otwarcia.
+.SH PLIKI
+.I /dev/cua* /var/lock/LCK.*
+.SH B£ÊDY
+Brak znanych.
+.SH ZOBACZ TAK¯E
+.BR axattach (8),
+.BR dip (8),
+.BR pppd(8),
+.BR sliplogin (8).
+.SH AUTORZY
+Fred N. van Kempen, <waltje@uwalt.nl.mugnet.org>
+.br
+Alan Cox, <Alan.Cox@linux.org>
+.br
+Miquel van Smoorenburg, <miquels@drinkel.ow.org>
+.br
+George Shearer, <gshearer@one.net>
+.br
+Yossi Gottlieb, <yogo@math.tau.ac.il>
+.br

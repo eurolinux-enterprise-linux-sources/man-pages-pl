@@ -1,0 +1,253 @@
+.\" 1999 PTM Przemek Borys
+.\" aktualizacja do man-pages 1.45 - A. Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" --------
+.\" (c) 1993 by Thomas Koenig (ig25@rz.uni-karlsruhe.de)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" License.
+.\" Modified Wed Jul 28 11:12:17 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified Mon May 13 23:08:50 1996 by Martin Schulze (joey@linux.de)
+.\" Modified 11 May 1998 by Joseph S. Myers (jsm28@cam.ac.uk)
+.\" Modified 990912 by aeb
+.\" --------
+.TH GLOB 3 1999-09-12 "GNU" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+glob, globfree \- znalezienie ¶cie¿ek odpowiadaj±cych wzorcowi, zwolnienie
+pamiêæ z glob()
+.SH SK£ADNIA
+.nf
+.B #include <glob.h>
+.sp
+.BI "int glob(const char *" pattern ", int " flags ,
+.nl
+.BI "         int " errfunc "(const char *" epath ", int " eerrno ),
+.nl
+.BI "         glob_t *" pglob );
+.nl
+.BI "void globfree(glob_t *" pglob );
+.fi
+.SH OPIS
+Funkcja
+.B glob()
+przeszukuje wszystkie ¶cie¿ki odpowiadaj±ce wzorcowi
+.IR pattern ,
+stosuj±c przy tym regu³y takie, jakich u¿y³aby pow³oka (zobacz
+.BR glob (7)).
+Nie jest dokonywane rozwiniêcie tyldy ani podstawienie parametrów. Je¶li s±
+one potrzebne, to nale¿y u¿yæ
+.BR wordexp (3).
+.PP
+Funkcja
+.B globfree()
+zwalnia obszar pamiêci zaalokowany dynamicznie przez wcze¶niejsze wywo³anie
+funkcji
+.BR glob() .
+.PP
+W wyniku wywo³ania
+.B glob()
+tworzona jest struktura, na któr± wskazuje
+.IR pglob ,
+bêd±cy typu
+.B glob_t
+zadeklarowanego w
+.B <glob.h>
+i zawieraj±cego nastêpuj±ce elementy zdefiniowane przez POSIX.2 (mog± te¿
+wystêpowaæ dodatkowe, ale jako rozszerzenie):
+.PP
+.br
+.nf
+.in 10
+typedef struct
+{
+.in 14
+    size_t gl_pathc;    /* Liczba odpowiadaj±cych dot±d ¶cie¿ek  */
+    char **gl_pathv;    /* Lista odpowiadaj±cych ¶cie¿ek.  */
+    size_t gl_offs;     /* Sloty do rezerwowania w `gl_pathv'.  */
+.in 10
+} glob_t;
+.fi
+.PP
+Wyniki s± zachowywane w dynamicznie przydzielanym obszarze pamiêci.
+.PP
+Parametr
+.I flags
+tworzy bitowe OR zera lub wiêcej nastêpuj±cych symboli sta³ych modyfikuj±cych
+zachowanie
+.BR glob() :
+.TP
+.B GLOB_ERR
+oznacza, ¿e nale¿y powróciæ po b³êdzie odczytu (np. gdy katalog nie ma praw
+odczytu),
+.TP
+.B GLOB_MARK
+oznacza dodawanie uko¶nika do ka¿dej ¶cie¿ki, która odpowiada katalogowi,
+.TP
+.B GLOB_NOSORT
+oznacza, ¿e zwracane ¶cie¿ki nie maj± byæ sortowane (domy¶lnie s±),
+.TP
+.B GLOB_DOOFFS
+oznacza, ¿e sloty
+.I pglob->gl_offs
+bêd± rezerwowane na pocz±tku listy napisów w
+.IR pglob->pathv ,
+.TP
+.B GLOB_NOCHECK
+oznacza, ¿e je¶li ¿aden wzorzec nie odpowiada, zwracany jest wzorzec
+oryginalny,
+.TP
+.B GLOB_APPEND
+oznacza, ¿e nale¿y doklejaæ wyniki do wyników poprzedniego wywo³ania. Nie
+nale¿y ustawiaæ tej flagi przy pierwszym wywo³aniu
+.BR glob() .
+.TP
+.B GLOB_NOESCAPE
+oznacza, ¿e metaznaki nie mog± byæ cytowane odwrotnymi uko¶nikami,
+.PP
+Parametr flags mo¿e równie¿ zawieraæ nastêpuj±ce znaczniki, bêd±ce
+rozszerzeniami GNU nie definiowanymi przez POSIX.2:
+.TP
+.B GLOB_PERIOD
+oznacza, ¿e pocz±tkowa kropka mo¿e byæ dopasowana metaznakiem,
+.PP
+.B GLOB_ALTDIRFUNC
+oznacza, ¿e przy dostêpie do systemy plików zamiast zwyk³ych funkcji
+bibliotecznych u¿ywane s± funkcje alternatywne
+.IR pglob->gl_closedir ,
+.IR pglob->gl_readdir ,
+.IR pglob->gl_opendir ,
+.IR pglob->gl_lstat i
+.IR pglob->gl_stat ,
+.TP
+.B GLOB_BRACE
+oznacza, ¿e rozwijane s± wyra¿enia nawiasowe \fB{a,b}\fR w stylu
+.BR csh (1),
+.TP
+.B GLOB_NOMAGIC
+oznacza, ¿e wzorzec jest zwracany, gdy nie zawiera metaznaków,
+.TP
+.B GLOB_TILDE
+oznacza, ¿e przeprowadzane rozwiniêcie tyldy, a
+.TP
+.B GLOB_ONLYDIR
+oznacza, ¿e dopasowywane s± wy³±cznie katalogi.
+.PP
+Je¶li
+.I errfunc
+nie jest równe
+.BR NULL ,
+to w wypadku b³êdu bêdzie ono wywo³ane z argumentami
+.IR epath ,
+czyli wska¼nikiem do ¶cie¿ki, na której co¶ siê nie powiod³o i z
+.IR eerrno ,
+przechowuj±cym warto¶æ
+.IR errno ,
+zwrócon± przez wywo³anie do
+.BR opendir() ", " readdir() " lub " stat() .
+Je¶li
+.I errfunc
+zwraca warto¶æ niezerow± lub je¶li ustawiony jest znacznik
+.BR GLOB_ERR , 
+.B glob()
+zakoñczy dzia³anie po wywo³aniu funkcji
+.IR errfunc .
+.PP
+Po pomy¶lnym zakoñczeniu,
+.I pglob->gl_pathc
+zawiera liczbê pasuj±cych ¶cie¿ek, a
+.I pglob->gl_pathv
+wska¼nik do listy trafionych ¶cie¿ek. Pierwszy wska¼nik za ostatni± ¶cie¿k±
+ma warto¶æ
+.BR NULL .
+.PP
+Mo¿liwe jest wywo³ywanie
+.B glob()
+wielokrotnie. W takim wypadku, nale¿y w nastêpnych wywo³aniach ustawiæ w
+.I flags
+znacznik
+.BR GLOB_APPEND .
+.PP
+Jako rozszerzenie GNU,
+.I pglob->gl_flags
+jest ustawiane jako \fBor\fR podanych znaczników i
+.BR GLOB_MAGCHAR ,
+gdy wystêpuj± metaznaki.
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu
+.B glob()
+zwraca zero.
+Inne mo¿liwe warto¶ci to:
+.TP
+.B GLOB_NOSPACE
+przy braku pamiêci,
+.TP
+.B GLOB_ABORTED
+przy b³êdzie odczytu i
+.TP
+.B GLOB_NOMATCH
+gdy niczego nie dopasowano.
+.SH PRZYK£ADY
+Jednym z przyk³adów u¿ycia jest nastêpuj±cy kod, emuluj±cy wpisanie
+.nl
+.B ls -l *.c ../*.c
+.nl
+w pow³oce.
+.nf
+.in 10
+
+glob_t globbuf;
+
+globbuf.gl_offs = 2;
+glob("*.c", GLOB_DOOFFS, NULL, &globbuf);
+glob("../*.c", GLOB_DOOFFS | GLOB_APPEND, NULL, &globbuf);
+globbuf.gl_pathv[0] = "ls";
+globbuf.gl_pathv[1] = "-l";
+execvp("ls", &globbuf.gl_pathv[0]);
+.fi
+.SH "ZGODNE Z"
+POSIX.2
+.SH B£ÊDY
+Funkcja
+.B glob()
+mo¿e zawie¶æ z powodu b³êdu wywo³anych przez ni± funkcji, takich jak
+.BR malloc() " czy " opendir() .
+Wywo³ania te zapisz± kod b³êdu w
+.IR errno .
+.SH UWAGI
+Elementy
+.I gl_pathc
+i
+.I gl_offs
+struktury s± w glibc 2.1 zadeklarowane jako
+.BR size_t ,
+jak powinno byæ zgodnie z POSIX.2,
+ale s± zadeklarowane jako
+.B int
+w libc4, libc5 i glibc 2.0.
+.SH "ZOBACZ TAK¯E"
+.BR ls (1),
+.BR sh (1),
+.BR stat (2),
+.BR exec (3),
+.BR malloc (3),
+.BR opendir (3),
+.BR readdir (3),
+.BR wordexp (3),
+.BR glob (7)

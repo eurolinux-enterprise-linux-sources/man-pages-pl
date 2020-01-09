@@ -1,0 +1,111 @@
+.\" 1999 PTM Przemek Borys
+.\" Updated 2002 by Grzegorz Go³awski <grzegol@pld.org.pl>
+.TH "ld.so" "8" "14 Marca 1998" "" ""
+.SH "NAZWA"
+ld.so/ld\-linux.so \- dynamiczny konsolidator/³adowacz
+.SH "OPIS"
+.B ld.so
+³aduje biblioteki dzielone wymagane przez program, przygotowuje
+program do uruchomienia i uruchamia go.
+.PP 
+O ile podczas kompilacji nie podano jawnie opcji
+.BR \-static ,
+wszystkie binaria linuksowe bêd± niekompletne i bêd± wymaga³y
+dalszego konsolidowania podczas dzia³ania.
+.PP 
+Potrzebne biblioteki dzielone s± szukane w nastêpuj±cej kolejno¶ci:
+.IP o
+Przy u¿yciu zmiennej ¶rodowiskowej
+.BR LD_LIBRARY_PATH
+.RB ( LD_AOUT_LIBRARY_PATH
+dla programów a.out).
+Poza binariami suid/sgid, dla których jest to ignorowane.
+.IP o
+Z pliku buforowego
+.BR /etc/ld.so.cache
+który zawiera skompilowan± listê kandydatów, znalezionych w ¶cie¿ce
+bibliotek.
+.IP o
+W domy¶lnym katalogu
+.BR /usr/lib ,
+a potem w
+.BR /lib .
+.SH "¦RODOWISKO"
+.TP 
+.B LD_LIBRARY_PATH
+Oddzielona dwukropkami lista katalogów, w których szukaæ bibliotek ELF
+podczas wykonywania.
+Podobne do zmiennej ¶rodowiskowej
+.BR PATH .
+.TP 
+.B LD_PRELOAD
+Oddzielona spacjami lista dodatkowych, podanych przez u¿ytkownika bibliotek
+dzielonych ELF, któr± nale¿y za³adowaæ przed wszystkimi innmi. Umo¿liwia to
+wybiórcz± zamianê funkcji w innych bibliotekach dzielonych. Dla plików
+binarnych ELF z ustawionym bitem setuid/setgid, ³adowane bêd± tylko
+biblioteki ze standardowych katalogów, maj±ce tak¿e ustawiony bit setgid.
+.TP 
+.B LD_TRACE_LOADED_OBJECTS
+Gdy zmienna ta jest obecna, sprawia, ¿e program wypisze swoje zale¿no¶ci od
+bibliotek dynamicznych, tak jakby by³ uruchomiany przez ldd, a nie normalnie.
+.TP 
+.B LD_BIND_NOW
+Gdy zmienna ta jest obecna, sprawia, ¿e dynamiczny konsolidator rozwi±¿e
+wszystkie symbole podczas startu programu, a nie wtedy gdy bêdzie do nich
+pierwsze odniesienie.
+.TP 
+.B LD_AOUT_LIBRARY_PATH
+Oddzielona dwukropkami lista katalogów, w których szukaæ bibliotek a.out
+podczas wykonywania.
+Podobne do zmiennej ¶rodowiskowej
+.BR PATH .
+.TP 
+.B LD_AOUT_PRELOAD
+Nazwa dodatkowej, podanej przez u¿ytkownika biblioteki dzielonej a.out,
+któr± nale¿y za³adowaæ po wszystkich innych.
+Mo¿e to byæ uzywane do przeci±¿ania funkcji innych bibliotek dzielonych.
+.TP 
+.B LD_NOWARN
+Powstrzymaj ostrze¿enia o bibliotekach a.out o niekompatybilnych numerach
+minorowych wersji.
+.TP 
+.B LD_KEEPDIR
+Nie ignoruj katalogu w nazwach ³adowanych bibliotek a.out. U¿ywanie tej
+opcji nie jest zalecane.
+.SH "PLIKI"
+.PD 0
+.TP 20
+.B /lib/ld.so
+Dynamiczny konsolidator/³adowacz a.out
+.TP 20
+.B /lib/ld\-linux.so.*
+Dynamiczny konsolidator/³adowacz ELF
+.TP 
+.B /etc/ld.so.cache
+Plik zawieraj±cy skompilowan± listê katalogów, w których nale¿y szukaæ
+bibliotek oraz uporz±dkowan± listê bibliotek kandyduj±cych.
+.TP 
+.B /etc/ld.so.preload
+Plik zawieraj±cy oddzielon± spacjami listê bibliotek dzielonych ELF, które
+maj± byæ za³adowane przed programem.
+.TP 
+.B lib*.so*
+Biblioteki dzielone
+.PD
+.SH "ZOBACZ TAK¯E"
+.BR ldd (1),
+.BR ldconfig (8).
+.SH "B£ÊDY"
+.LP 
+Obecnie,
+.B ld.so
+nie ma narzêdzi do usuwania i szukania kompatybilnych lub nowszych wersji
+bibliotek.
+.PP 
+Mo¿liwo¶ci
+.B ld.so
+dostêpne s± tylko dla binariów, skompilowanych przy u¿yciu libc w wersji
+4.4.3 lub wy¿szej.
+.SH "AUTORZY"
+David Engel, Eric Youngdale, Peter MacDonald, Hongjiu Lu, Linus
+Torvalds, Lars Wirzenius i Mitch D'Souza (niekoniecznie w tej kolejno¶ci).

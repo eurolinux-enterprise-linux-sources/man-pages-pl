@@ -1,0 +1,106 @@
+.\" {PTM/WK/2000-VII}
+.\" Copyright (c) 1983, 1991, 1993
+.\"	The Regents of the University of California.  All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     @(#)pac.8	8.1 (Berkeley) 6/6/93
+.\"
+.Dd June 6, 1993
+.Dt PAC 8
+.Os BSD 4.2
+.Sh NAZWA
+.Nm pac
+.Nd informacja rozliczeniowa drukarki/plottera
+.Sh SK£ADNIA
+.Nm pac
+.Op Fl P Ns Ar drukarka
+.Op Fl c
+.Op Fl m
+.Op Fl p Ns Ar cena
+.Op Fl s
+.Op Fl r
+.Op Ar nazwa ...
+.Sh OPIS
+.Nm Pac
+(printer/plotter accounting) czyta pliki rozliczeniowe drukarki/plottera,
+sumuj±c liczbê stron (typowy przypadek) lub stóp (dla urz±dzeñ rastrowych)
+papieru zu¿ytego przez ka¿dego z u¿ytkowników, i wypisuje ile zu¿y³
+ka¿dy z nich w stronach czy stopach i w dolarach.
+.Pp
+Dostêpne opcje i operandy:
+.Bl -tag -width PPdrukarka
+.It Fl P Ns Ar drukarka
+Rozliczenie wykonywane jest dla zadanej drukarki.
+Normalnie, rozliczanie wykonywane jest dla drukarki domy¶lnej (zale¿nej
+od konkretnego systemu) lub drukarki okre¶lonej warto¶ci± zmiennej ¶rodowiska
+.Ev PRINTER .
+.It Fl c
+powoduje, ¿e wyj¶cie zostanie posortowane wed³ug kosztów; normalnie jest ono
+sortowane alfabetycznie wed³ug nazwy u¿ytkownika.
+.It Fl m
+powoduje, ¿e w pliku rozliczeniowym ignorowana bêdzie nazwa hosta. Pozwala
+to u¿ytkownikowi pracuj±cemu na wielu maszynach na po³±czenie wszystkich
+op³at za drukowanie.
+.It Fl p Ns Ar cena
+Warto¶æ
+.Ar ceny
+u¿ywana jest jako koszt w dolarach, zamiast domy¶lnej warto¶ci 0.02 lub ceny
+okre¶lonej w
+.Pa /etc/printcap .
+.It Fl r
+Odwraca porz±dek sortowania.
+.It Fl s
+Informacja rozliczeniowa jest sumowana w sumarycznym pliku rozliczeniowym;
+sumowanie to jest niezbêdne, gdy¿ na obci±¿onym systemie plik rozliczeniowy
+mo¿e powiêkszaæ siê o kilkana¶cie wierszy dziennie.
+.It Ar nazwy
+Statystyki wypisywane s± tylko dla u¿ytkownika(ów) o zadanej
+.Ar nazwie ;
+zwykle, statystyki s± wypisywane dla ka¿dego u¿ytkownika, który zu¿y³
+jakikolwiek rodzaj papieru.
+.El
+.Sh PLIKI
+.Bl -tag -width /var/account/?_sum -compact
+.It Pa /var/account/?acct
+nieprzetworzone pliki rozliczeniowe
+.It Pa /var/account/?_sum
+sumaryczne pliki rozliczeniowe
+.It Pa /etc/printcap
+baza danych mo¿liwo¶ci drukarek
+.El
+.Sh ZOBACZ TAK¯E
+.Xr printcap 5a
+.Sh B£ÊDY
+Obecnie nie jest jeszcze znana relacja pomiêdzy cen± wyliczon± a rzeczywist±.
+.Sh HISTORIA
+Polecenie
+.Nm
+pojawi³o siê w
+.Bx 4.0 .

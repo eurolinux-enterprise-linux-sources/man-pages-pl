@@ -1,0 +1,1450 @@
+.\" T³umaczenie: Gwidon S. Naskrent (naskrent@hoth.amu.edu.pl), IX 1998
+.\" {PTM/GSN/0.1/04-10-1998/"przeciwieñstwo more"}
+.\" updated from 3.32 to 3.74 by WK (wkotwica@post.pl), VIII 2002
+.TH less 1 "wersja 374: 19 lutego 2002"
+.SH NAZWA
+less - przeciwieñstwo more
+.SH SK£ADNIA
+.B "less -?"
+.br
+.B "less --help"
+.br
+.B "less -V"
+.br
+.B "less --version"
+.br
+.B "less \fR[\fB-\fR[\fB+\fR]\fBaBcCdeEfFgGiIJmMnNqQrRsSuUVwWX\fR]\fR"
+.br
+.B "     \fR[\fB-b \fIrozmiar\fR] [\fB-h \fIlinie\fR] [\fB-j \fIlinia\fR] [\fB-k \fIplikklu\fR]"
+.br
+.B "     \fR[\fB-\fR{\fPoO\fR} \fIpliklog\fR] [\fB-p \fIwzór\fR] [\fB-P \fIzachêta\fR] [\fB-t \fItag\fR]"
+.br
+.B "     \fR[\fB-T \fIpliktagów\fR] [\fB-x \fItab\fR,...] [\fB-y \fIlinie\fR] [\fB-\fR[\fBz\fR] \fIlinie\fR]"
+.br
+.B "     \fR[\fB+\fR[\fB+\fR]\fIcmd\fR] [\fB--\fR] [\fInazwa_pliku\fR]..."
+.br
+(Alternatywn± sk³adniê, z d³ugimi nazwami opcji, opisano w czê¶ci OPCJE).
+.SH OPIS
+.I less
+jest programem podobnym do
+.I more
+(1), ale pozwalaj±cym na poruszanie siê w ty³ w pliku tak samo jak
+w przód.
+.I less
+nie musi te¿ czytaæ ca³ego pliku wej¶ciowego przed rozpoczêciem,
+tak wiêc przy du¿ych plikach wej¶ciowych uruchamia siê szybciej
+ni¿ edytory tekstu takie jak
+.I vi
+(1).
+.I less
+u¿ywa bazy termcap (w niektórych systemach terminfo), tak wiêc mo¿e pracowaæ
+na szeregu terminali. Istnieje nawet ograniczona obs³uga terminali
+drukuj±cych (na terminalu drukuj±cym, linie, które powinny zostaæ
+wypisane na górze ekranu s± poprzedzone daszkiem).
+.PP
+Polecenia oparte s± zarówno na
+.I more
+jak i
+.I vi.
+Polecenia mo¿na poprzedziæ liczb± dziesiêtn±, zwan± N w opisach
+poni¿ej.  Liczba ta jest u¿ywana przez niektóre polecenia, jak to
+zaznaczono.
+.SH POLECENIA
+W poni¿szych opisach, ^X oznacza Control-X, ESC oznacza klawisz ESCAPE;
+na przyk³ad ESC-v oznacza dwuznakow± sekwencjê ESC, potem "v".
+.IP "h lub H"
+Pomoc: wy¶wietla podsumowanie tych poleceñ.  Je¶li zapomnisz wszystkich
+innych poleceñ, pamiêtaj o tej.
+.IP "SPACE lub ^V lub f lub ^F"
+Przewija w przód N linii, domy¶lnie jedno okno (zobacz opcja -z poni¿ej).
+Je¶li N wynosi wiêcej ni¿ rozmiar ekranu, wy¶wietlany jest tylko
+ostatni pe³ny ekran. 
+Ostrze¿enie: niektóre systemy u¿ywaj± ^V jako specjalnego znaku
+dos³owno¶ci.
+.IP "z"
+Jak SPACJA, ale je¶li podano N, staje siê nowym rozmiarem okna.
+.IP "ESC-SPACE"
+Jak spacja, ale przewija o pe³n± wielko¶æ ekranu, nawet je¶li po drodze
+osi±gnie koniec pliku.
+.IP "RETURN lub ^N lub e lub ^E lub j lub ^J"
+Przewija w przód o N linii, domy¶lnie jedn±.  Wy¶wietlane s± wszystkie N
+linie, nawet je¶li N wynosi wiêcej ni¿ wielko¶æ ekranu.
+.IP "d lub ^D"
+Przewija w przód o N linii, domy¶lnie po³owê wielko¶ci ekranu.  Je¶li
+podano N, staje siê ono now± warto¶ci± domy¶ln± dla kolejnych poleceñ
+d i u.
+.IP "b lub ^B lub ESC-v"
+Przewija w ty³ N linii, domy¶lnie jedno okno (zobacz opcja -z poni¿ej).
+Je¶li N wynosi wiêcej ni¿ rozmiar ekranu, wy¶wietlany jest tylko
+ostatnia wielko¶æ ekranowa. 
+.IP "w"
+Jak ESC-v, ale je¶li podano N, staje siê ono nowym rozmiarem okna.
+.IP "y lub ^Y lub ^P lub k lub ^K"
+Przewija w ty³ o N linii, domy¶lnie jedn±.  Wy¶wietlane s± wszystkie N
+linie, nawet je¶li N wynosi wiêcej ni¿ wielko¶æ ekranu.  Ostrze¿enie:
+niektóre systemy u¿ywaj± ^Y jako specjalnego znaku kontroli zadañ.
+.IP "u lub ^U"
+Przewija w ty³ o N linii, domy¶lnie po³owê wielko¶ci ekranu.  Je¶li
+podano N, staje siê ono now± warto¶ci± domy¶ln± dla kolejnych poleceñ
+.IP "ESC-) lub STRZA£KA_W_PRAWO"
+Przewija poziomo N znaków w prawo, domy¶lnie o po³owê szeroko¶ci ekranu
+(zob. opcja -#).!
+Je¶li podano liczbê N, to staje siê ona domy¶lna dla przysz³ych poleceñ
+STRZA£KA_W_PRAWO i STRZA£KA_W_LEWO.
+Podczas przewijania tekstu dzia³a to tak, jakby by³a w³±czona opcja -S
+(ucinania linii).
+.IP "ESC-( lub STRZA£KA_W_LEWO"
+Przewija poziomo N znaków w prawo, domy¶lnie o po³owê szeroko¶ci ekranu
+(zob. opcja -#).!
+Je¶li podano liczbê N, to staje siê ona domy¶lna dla przysz³ych poleceñ
+STRZA£KA_W_PRAWO i STRZA£KA_W_LEWO.
+.IP "r lub ^R lub ^L"
+Od¶wie¿a ekran.
+.IP R
+Od¶wie¿a ekran, odrzucaj±c wszelkie wej¶cie z bufora.  U¿yteczne je¶li
+plik zmienia siê w trakcie ogl±dania.
+.IP "F"
+Przewija w przód, i próbuje nadal odczytywaæ gdy osi±gniêto koniec pliku.
+Normalnie polecenia tego u¿ywa³by¶ gdy znajdujesz siê ju¿ na koñcu
+pliku.  Jest to metoda monitorowania ogona pliku który w³a¶nie ro¶nie
+podczas ogl±dania (zachowanie to jest podobne do polecenia tail -f).
+.IP "g lub < lub ESC-<"
+Przechodzi do linii numer N w pliku, domy¶lnie pierwszej (pocz±tku pliku).
+(Ostrze¿enie: mo¿e to byæ powolne je¶li N jest du¿e).
+.IP "G lub > lub ESC->"
+Przechodzi do linii numer N w pliku, domy¶lnie na koniec pliku.  
+(Ostrze¿enie: mo¿e to byæ powolne je¶li N jest du¿e lub je¶li N
+jest niepodane, a czytane jest standardowe wej¶cie zamiast pliku).
+.IP "p lub %"
+Przechodzi do pozycji N procent w pliku.  N powinno zawieraæ siê miêdzy 0
+a 100.
+.IP "{"
+Je¶li w linii wy¶wietlanej na górze ekranu znajduje siê otwieraj±cy
+nawias klamrowy, polecenie { przejdzie do odpowiadaj±cego mu prawego nawiasu.
+Pasuj±cy zamykaj±cy nawias klamrowy jest umieszczany na dole ekranu.  Je¶li
+w linii na górze ekranu znajduje siê wiêcej ni¿ jeden nawias klamrowy, mo¿na
+u¿yæ liczby N okre¶laj±cej N-ty nawias w linii.
+.IP "}"
+Je¶li w linii wy¶wietlanej na dole ekranu znajduje siê zamykaj±cy
+nawias klamrowy, polecenie } przejdzie do odpowiadaj±cego mu prawego nawiasu.
+Pasuj±cy otwieraj±cy nawias klamrowy jest umieszczany na górze ekranu.  
+Je¶li w linii na górze ekranu znajduje siê wiêcej ni¿ jeden nawias klamrowy, 
+mo¿na u¿yæ liczby N okre¶laj±cej N-ty nawias w linii.
+.IP "("
+Jak {, ale odnosi siê do nawiasów okr±g³ych, a nie klamrowych
+.IP ")"
+Jak }, ale odnosi siê do nawiasów okr±g³ych, a nie klamrowych
+.IP "["
+Jak {, ale odnosi siê do nawiasów kwadratowych, a nie klamrowych
+.IP "]"
+Jak }, ale odnosi siê do nawiasów kwadratowych, a nie klamrowych
+.IP "ESC-^F"
+Po którym nastêpuj± dwa znaki, zachowuje siê jak {, ale u¿ywa tych
+dwóch znaków jako odpowiednio nawiasu otwieraj±cego i zamykaj±cego.
+Na przyk³ad, "ESC ^F < >" mo¿na u¿yæ do przej¶cia do >, które odpowiada
+< wy¶wietlanemu w linii na górze ekranu.
+.IP "ESC-^B"
+Po którym nastêpuj± dwa znaki, zachowuje siê jak }, ale u¿ywa tych
+dwóch znaków jako odpowiednio nawiasu otwieraj±cego i zamykaj±cego.
+Na przyk³ad, "ESC ^B < >" mo¿na u¿yæ do przej¶cia do w ty³ do <, które 
+odpowiada > wy¶wietlanemu w linii na dole ekranu.
+.IP m
+Plus dowolna ma³a litera; zaznacza bie¿±c± pozycjê t± liter±.
+.IP "'"
+(Pojedynczy apostrof)
+Plus dowolna ma³a litera: powraca do pozycji zaznaczonej uprzednio
+t± liter±.  Plus kolejny pojedynczy cudzys³ów: wraca do pozycji, w której
+wykonano ostatni± "du¿e" polecenie przemieszczania siê.  Plus ^ lub $,
+skacze odpowiednio na pocz±tek lub koniec pliku.  Znaczniki pozycji
+s± zachowywane przy otwieraniu nowego pliku, tak wiêc polecenia '
+mo¿na u¿yæ do prze³±czania miêdzy plikami wej¶ciowymi.
+.IP "^X^X"
+Tak jak pojedynczy apostrof.
+.IP /wzorzec
+Szuka w przód w pliku N-tej linii zawieraj±cej wzorzec.  N domy¶lnie równa
+siê jeden. Wzorzec to wyra¿enie regularne rozpoznawane przez
+.IR ed .
+Szukanie zaczyna siê od drugiej wy¶wietlanej linii (ale zobacz opcje -a
+i -j, które to zmieniaj±).
+.sp
+Pewne znaki maj± specjalne znaczenie je¶li wprowadzono je na pocz±tku
+wzorca; zmieniaj± one typ szukania, a nie s± traktowane jako czê¶æ
+wzorca:
+.RS
+.IP "^N lub !"
+Szukanie linii, które NIE pasuj± do wzorca.
+.IP "^E lub *"
+Szukanie w wielu plikach.  To znaczy, je¶li szukanie dosz³o do koñca
+bie¿±cego pliku bez znalezienia dopasowania, ci±gnie siê ono dalej
+w kolejnym pliku z listy podanej w wierszu poleceñ.
+.IP "^F lub @"
+Zaczêcie szukania od pierwszej linii PIERWSZEGO pliku z listy z wiersza
+poleceñ, niezale¿nie od tego, co aktualnie wy¶wietlane jest na ekranie,
+oraz ustawieñ opcji -a i -j.
+.IP "^K"
+Pod¶wietlanie ka¿dego tekstu, który pasuje do wzorca na bie¿±cym ekranie,
+ale bez przesuwania siê do pierwszego dopasowania (KEEP = utrzymaj
+bie¿±c± pozycjê).
+.IP "^R"
+Bez interpretacji metaznaków wyra¿eñ regularnych. Wykonuje proste
+porównanie tekstowe.
+.RE
+.IP ?wzorzec
+Szukanie w ty³ w pliku N-tej linii zawieraj±cej wzorzec.  Szukanie zaczyna
+siê od linii znajduj±cej siê tu¿ przed lini± wy¶wietlan± na samym dole
+[czyli w przedostatniej linii ekranu - GSN]
+.sp
+Pewne znaki maj± specjalne znaczenie, jak w poleceniu /:
+.RS
+.IP "^N lub !"
+Szukanie linii które NIE pasuj± do wzorca.
+.IP "^E lub *"
+Szukanie w wielu plikach.  To znaczy, je¶li szukanie dosz³o do pocz±tku
+bie¿±cego pliku bez znalezienia dopasowania, ci±gnie siê ono dalej
+w poprzednim pliku z listy podanej w wierszu poleceñ.
+.IP "^F lub @"
+Zaczêcie szukania od ostatniej linii OSTATNIEGO pliku z listy z wiersza
+poleceñ, niezale¿nie od tego co aktualnie wy¶wietlane jest na ekranie,
+oraz ustawieñ opcji -a i -j.
+.IP "^K"
+Jak w szukaniu w przód.
+.IP "^R"
+Jak w szukaniu w przód.
+.RE
+.IP "ESC-/wzorzec"
+To samo co "/*".
+.IP "ESC-?wzorzec"
+To samo co "?*".
+.IP n
+Powtarza poprzednie szukanie, dla N-tej linii zawieraj±cej ostatni wzorzec.
+Je¶li poprzednie szukanie zmodyfikowano przez ^N, szukanie jest
+wykonywane dla N-tej linii NIE zawieraj±cej wzorca.  Je¶li poprzednie
+szukanie zmodyfikowano przez ^E, szukanie ci±gnie siê przez nastêpny
+(lub poprzedni) plik, je¶li nie wystarczy³ plik bie¿±cy.  Je¶li
+poprzednie szukanie zmodyfikowano przez ^R, szukanie wykonywane jest
+bez u¿ycia wyra¿eñ regularnych.  Je¶li poprzednie szukanie by³o
+zmodyfikowane przez ^F lub ^K, nie wystêpuje ¿aden efekt.
+.IP N
+Powtarza poprzednie szukanie, ale w przeciwnym kierunku.
+.IP "ESC-n"
+Powtarza poprzednie szukanie, ale przekraczaj±c granice plików.  Efekt
+jest taki sam, jak gdyby poprzednie szukanie zmodyfikowano przez *.
+.IP "ESC-N"
+Powtarza poprzednie szukanie, ale w przeciwnym kierunku i przekraczaj±c
+granice plików.
+.IP "ESC-u"
+Cofa pod¶wietlanie szukania.  Wy³±cza pod¶wietlanie ³añcuchów pasuj±cych
+do bie¿±cego wzoru szukania.  Je¶li pod¶wietlenie ju¿ jest wy³±czone
+z powodu poprzedniego polecenia ESC-u, w³±cza je z powrotem.  Pod¶wietlenie
+w³±czy te¿ ka¿de polecenie szukaj±ce (mo¿na je te¿ wy³±czyæ prze³±czaj±c
+opcjê -G; wówczas polecenia szukaj±ce nie w³±czaj± go z powrotem).
+.IP ":e [nazwa_pliku]"
+Ogl±danie nowego pliku.  Je¶li brakuje nazwy pliku, plik "bie¿±cy" (zobacz
+polecenia :n i :p poni¿ej) z listy plików z wierszu poleceñ jest ogl±dany
+na nowo.  Znak procentu (%) w nazwie pliku zastêpowany jest nazw±
+pliku bie¿±cego.  Znak funta (#) jest zastêpowany nazw± poprzednio
+ogl±danego pliku.  Jednak dwa kolejne znaki procentu s± po prostu
+zastêpowane pojedynczym znakiem procentu.
+Pozwala to na wprowadzenie nazwy pliku zawieraj±cej w nazwie znak procentu.
+Podobnie, dwa kolejne znaki funta s± zastêpowane pojedynczym znakiem funta.
+Nazwa pliku wstawiana jest do listy plików z wiersza poleceñ, tak aby mo¿na
+j± by³o obejrzeæ kolejnymi poleceniami :n i :p.  Je¶li nazwa pliku sk³ada
+siê z kilku plików, wszystkie one s± wstawiane do listy plików i ogl±dany
+jest pierwszy z nich.  Je¶li nazwa pliku zawiera jedn± lub wiêcej spacji,
+ca³a nazwa musi byæ ujêta w cudzys³owy (zobacz te¿ opcja -").
+.IP "^X^V lub E"
+To samo co :e.
+Uwaga: niektóre systemy u¿ywaj± ^V jako specjalnego znaku dos³owno¶ci.
+W takich systemach u¿ycie ^V mo¿e byæ niemo¿liwe.
+.IP ":n"
+Ogl±danie nastêpnego pliku (z listy plików podanej w wierszu poleceñ).
+Je¶li podano liczbê N, wy¶wietlany jest N-ty nastêpny plik.
+.IP ":p"
+Ogl±danie poprzedniego pliko (z listy plików podanej w wierszu poleceñ).
+Je¶li podano liczbê N, wy¶wietlany jest N-ty poprzedni plik.
+.IP ":x"
+Ogl±danie pierwszego pliku z listy plików podanej w wierszu poleceñ.
+Je¶li podano liczbê N, wy¶wietlany jest N-ty plik na li¶cie.
+.IP ":d"
+Usuniêcie bie¿±cego pliku z listy plików.
+.IP "t"
+Przej¶cie do nastêpnego tagu (znacznika), je¶li dla bie¿±cego wyst±pi³o wiêcej
+ni¿ jedno dopasowanie. Tagi omówiono dok³adniej w opisie opcji -t.
+.IP "T"
+Przej¶cie do poprzedniego tagu, je¶li dla bie¿±cego wyst±pi³o wiêcej
+ni¿ jedno dopasowanie.
+.IP "= lub ^G lub :f"
+Wypisuje pewne informacje o pliku w³a¶nie ogl±danym, w tym jego nazwê oraz
+numer linii i offset bajtowy dolnej wy¶wietlanej linii.  Je¶li to mo¿liwe,
+wypisywana jest tak¿e d³ugo¶æ pliku, ilo¶æ linii w pliku oraz procentowa
+wielko¶æ pliku ponad ostatni± wy¶wietlan± lini±.
+.IP \-
+Plus jedna lub wiêcej opcji wierszu poleceñ (zobacz OPCJE poni¿ej): zmienia
+ustawienie tej opcji i wypisuje komunikat opisuj±cy nowe ustawienie.
+Je¶li bezpo¶rednio po kresce zostanie wprowadzone ^P (CONTROL-P), to
+ustawienie danej opcji jest zmieniane, ale bez wypisywania komunikatu.
+Je¶li opcja ma warto¶æ liczbow± (jak -b lub -h) lub ³añcuchow± (jak -P lub -t),
+warto¶æ mo¿na wprowadziæ tu¿ po literze opcji.  Je¶li nie wprowadzono nowej
+warto¶ci, wypisywany jest komunikat o bie¿±cym ustawieniu i nic nie
+ulega zmianie.
+.IP \-\-
+Jak polecenie \-, ale przyjmuje jako argument d³ug± nazwê opcji
+(zobacz OPCJE poni¿ej), a nie pojedyncz± literê opcji.
+Po wpisaniu nazwy opcji musisz nacisn±æ RETURN.
+^P bezpo¶rednio po drugiej eliminuje wypisywanie komunikatu opisuj±cego nowe
+ustawienie, tak jak w poleceniu \-.
+.IP \-+
+Plus jedna z liter opcji wierszu poleceñ; przywraca opcjê
+do ustawienia domy¶lnego i wypisuje komunikat opisuj±cy nowe ustawienie
+(polecenie "\-+\fIX\fP" dokonuje tego samego co opcja "\-+\fIX\fP" w linii
+poleceñ).  Nie dzia³a to dla opcji maj±cych warto¶æ ³añcuchow±.
+.IP \-\-+
+Jak polecenie \-+, ale pobiera d³ug± nazwê opcji zamiast pojedynczej
+litery opcji.
+.IP \-!
+Plus jedna z liter opcji wierszu poleceñ; ustawia opcjê
+na warto¶æ przeciwn± ustawieniu domy¶lnego i wypisuje komunikat opisuj±cy nowe
+ustawienie.  Nie dzia³a to dla opcji maj±cych warto¶æ liczbow± lub
+³añcuchow±.
+IP \-\-!
+Jak polecenie \-!, ale pobiera d³ug± nazwê opcji zamiast pojedynczej
+litery opcji.
+.IP _
+(podkre¶lenie)
+Plus jedna z liter opcji wierszu poleceñ; wypisuje komunikat
+opisuj±cy bie¿±ce ustawienie tej opcji.  Nie zmienia ustawienia.
+.IP __
+(podwojone podkre¶lenie)
+Jak polecenie _ (podkre¶lenie), ale pobiera d³ug± nazwê opcji zamiast
+pojedynczej litery opcji.
+Po wpisaniu nazwy opcji musisz nacisn±æ RETURN.
+.IP +polecenie
+Powoduje, ¿e podane polecenie jest wykonywane za ka¿dym razem, gdy ogl±dany
+jest nowy plik.  Na przyk³ad, +G powoduje, ¿e
+.I less
+zaczyna wy¶wietlanie ka¿dego pliku od koñca zamiast od pocz±tku.
+.IP V
+Wypisuje numer bie¿±cej wersji
+.I less 
+.IP "q lub Q lub :q lub :Q lub ZZ"
+Koñczy dzia³anie
+.I less.
+.PP
+Nastêpuj±ce cztery polecenia mog±, ale nie musz± byæ prawid³owe, zale¿nie
+od twojej instalacji.
+.PP
+.IP v
+Wywo³uje edytor do edycji w³a¶nie ogl±danego pliku.  Edytor pobierany
+jest pobierany ze zmiennej ¶rodowiskowej VISUAL, je¶li ta jest okre¶lona,
+lub EDITOR, je¶li VISUAL nie jest okre¶lona, a w ka¿dym razie domy¶lnie
+"vi", je¶li ani VISUAL ani EDITOR jest okre¶lona.  Zobacz te¿ omówienie
+LESSEDIT po sekcji o ZNAKACH ZACHÊTY poni¿ej.
+.IP "! polecenie-pow³oki"
+Wywo³uje pow³okê i wykonuje podan± polecenie pow³oki.
+Znak procentu (%) jest
+zastêpowany nazw± bie¿±cego pliku.  Znak funta (#) jest zastêpowany
+nazw± poprzednio ogl±danego pliku. "!!" powtarza ostatnie polecenie
+pow³oki.  "!" bez polecenia wywo³uje po prostu pow³okê.   W systemach
+Unixowych, nazwa pow³oki pobierana jest ze zmiennej ¶rodowiskowej
+SHELL, a w ka¿dym razie domy¶lnie "sh".  W systemach MS-DOS i OS/2,
+pow³ok± jest zwyk³y procesor poleceñ.
+.IP "| <m> polecenie-pow³oki"
+<m> przedstawia dowoln± literê-znacznik.  Przesy³a przez potok sekcjê podanego
+pliku do podanej polecenia pow³oki.  Sekcja pliku, która ma zostaæ przes³ana
+to ta znajduj±ca siê miêdzy pierwsz± lini± bie¿±cego ekranu a pozycj±
+oznaczon± liter±.  <m> mo¿e te¿ równaæ siê ^ lub $, oznaczaj±c odpowiednio
+pocz±tek lub koniec pliku.  Je¶li <m> równa siê . lub znakowi nowej linii,
+przesy³any jest bie¿±cy ekran.
+.IP "s nazwa_pliku"
+Zapisuje wej¶cie do pliku.  Dzia³a to tylko wtedy, gdy wej¶cie jest potokiem,
+a nie zwyczajnym plikiem.
+.PP
+.SH OPCJE
+Opcje wierszu poleceñ s± opisane poni¿ej.  Wiêkszo¶æ opcji mo¿na zmieniaæ
+w trakcie dzia³ania
+.IR less ,
+u¿ywaj±c polecenia "\-".
+.PP
+Wiêkszo¶æ opcji mo¿na podaæ w jednej z dwu postaci: albo kreski
+z pojedyncz± liter± albo dwu kresek z nastêpuj±c± po nich d³ug±
+nazw± opcji.
+D³ugie nazwy opcji mo¿na skracaæ, o ile skrót jest jednoznaczny.
+Na przyk³ad, --quit-at-eof mo¿na skróciæ do --quit, ale nie do --qui,
+poniewa¿ na --qui zaczynaj± siê zarówno --quit-at-eof, jak i --quiet.
+Niektóre z d³ugich nazw opcji zapisane s± du¿ymi literami,
+jak --QUIT-AT-EOF, odró¿niane od --quit-at-eof. Takie nazwy wymagaj±
+du¿ej tylko pierwszej litery, reszta mo¿e byæ podana ma³ymi lub du¿ymi.
+Na przyk³ad, --Quit-at-eof jest równowa¿nikiem --QUIT-AT-EOF.
+.PP
+Opcje pobierane s± tak¿e ze zmiennej ¶rodowiskowej LESS.  Na przyk³ad,
+¿eby unikn±æ pisania "less -options..." za ka¿dym wywo³aniem
+.IR less ,
+mo¿esz napisaæ w 
+.IR csh :
+.sp
+setenv LESS "-options"
+.sp
+lub, je¶li u¿ywasz
+.I sh:
+.sp
+LESS="-options"; export LESS
+.sp
+W MS-DOS nie potrzebujesz cudzys³owów, ale powiniene¶ zast±piæ
+wszystkie znaki procentu w ³añcuchu opcji podwójnymi znakami procentu.
+.sp
+Zmienna ¶rodowiskowa analizowana jest przed wierszem poleceñ, tak wiêc
+opcje wiersza poleceñ uniewa¿niaj± zmienn± LESS.  Je¶li jaka¶ opcja
+pojawia siê w zmiennej LESS, mo¿na przywróciæ jej warto¶æ domy¶ln±
+poprzedzaj±c w wierszu poleceñ opcjê znakami "-+".
+.sp
+Dla opcji takich jak -P lub -D, wymagaj±cych nastêpuj±cego po nich ³añcucha,
+musi zostaæ u¿yty znak dolara ($), sygnalizuj±cy koniec ³añcucha.
+Na przyk³ad, chc±c w MS-DOS skorzystaæ z dwu opcji -D, musisz umie¶ciæ
+miêdzy nimi znak dolara:
+.sp
+LESS="-Dn9.1$-Ds4.1"
+.IP "-? lub --help"
+Opcja ta wy¶wietla podsumowanie poleceñ akceptowanych przez
+.I less
+(to samo co polecenie h).  Zale¿nie od tego, jak u¿ywana przez ciebie
+pow³oka interpretuje znak zapytania, mo¿e byæ koniecznym zacytowanie
+go, jako "-\\?".
+.IP "-a lub --search-skip-screen"
+Powoduje, ¿e szukania zaczynaj± siê po ostatniej linii wy¶wietlanej
+na ekranie, przeskakuj±c wszystkie wy¶wietlone linie.  Domy¶lnie
+szukania zaczynaj± siê od drugiej linii ekranu (albo po ostatniej
+znalezionej linii; zobacz opcja -j).
+.IP "-b\fIn\fP lub --buffers=\fIn\fP"
+Podaje, w kilobajtach (1024 bajtów), ilo¶æ pamiêci na buforowanie, jakiej
+.I less
+u¿yje dla ka¿dego pliku.
+Domy¶lnie dla ka¿dego pliku u¿ywany jest 64KB bufor (chyba ¿e
+plik jest potokiem - zobacz opcja -B). U¿ycie opcji -b powoduje, ¿e
+zamiast tego dla ka¿dego pliku zostanie u¿yty bufor o wielko¶ci \fIn\fP
+kilobajtów.
+Je¶li \fIn\fP wynosi -1, to bufory s± nieograniczone, to znaczy, do pamiêci
+jest wczytywany ca³y plik.
+.IP "-B lub --auto-buffers"
+Domy¶lnie, kiedy dane s± odczytywane z potoku, bufory s± alokowane
+automatycznie, w miarê potrzeby.  Je¶li przez potok czytana jest du¿a
+ilo¶æ danych, mo¿e to spowodowaæ zaalokowanie znacznej ilo¶ci pamiêci.
+Opcja -B wy³±cza ow± automatyczn± alokacjê buforów dla potoków, tak
+¿e przydzielane jest im tylko 64KB (lub wielko¶æ bufora podana opcj± -b).
+Uwaga: u¿ywanie -B mo¿e spowodowaæ nieprawid³owe wy¶wietlanie, poniewa¿
+w pamiêci trzymana jest tylko ostatnio ogl±dana czê¶æ pliku; wszelkie
+poprzednie dane s± tracone.
+.IP "-c lub --clear-screen"
+Powoduje ¿e pe³ne od¶wie¿ania ekranu s± rysowane od górnej linii w dó³.
+Domy¶lnie, pe³ne od¶wie¿ania ekranu s± dokonywane poprzez przewijanie
+z do³u ekranu.
+.IP "-C lub --CLEAR-SCREEN"
+Opcja -C dzia³a tak jak -c, ale ekran jest czyszczony przed od¶wie¿eniem.
+.IP "-d lub --dumb"
+Opcja
+.I -d
+wy³±cza komunikat o b³êdzie wy¶wietlany zwykle je¶li terminal jest niemy,
+to jest, brakuje w nim wa¿nych zdolno¶ci, takich jak mo¿liwo¶æ
+od¶wie¿ania ekranu lub przewijania w ty³.  Opcja -d nie zmienia w
+ka¿dym razie zachowania 
+.I less
+na niemym terminalu.
+.IP "-D\fBx\fP\fIkolor\fP lub --color=\fBx\fP\fIkolor\fP"
+[tylko MS-DOS]
+Ustawia kolor wy¶wietlanego tekstu. \fBx\fP to pojedynczy znak okre¶laj±cy
+rodzaj tekstu, dla którego ustawiany jest kolor: n=normalny,
+s=standardowe wyj¶cie, d=pogrubiony, u=podkre¶lony, k=migaj±cy.
+\fIkolor\fP to para liczb rozdzielona kropk±. Pierwsza liczba okre¶la
+kolor pierwszego planu, a druga kolor t³a tekstu.  Pojedyncza liczba
+\fIN\fP oznacza to samo co \fIN.0\fP.
+.IP "-e lub --quit-at-eof"
+Powoduje ¿e
+.I less 
+automatycznie koñczy pracê, gdy za drugim razem osi±gnie koniec pliku.
+Domy¶lnie, jedyn± metod± wyj¶cia z
+.I less
+jest polecenie "q".
+.IP "-E lub --QUIT-AT-EOF"
+.IP -E
+Powoduje, ¿e
+.I less
+automatycznie koñczy pracê, jak tylko osi±gnie koniec pliku. 
+.IP "-f lub --force"
+Wymusza otwieranie plików nieregularnych (plik nieregularny to
+katalog lub specjalny plik urz±dzenia).  Wy³±cza równie¿
+komunikat ostrzegawczy gdy otwierany jest plik binarny.  Domy¶lnie
+.I less
+odmówi otwarcia pliku nieregularnego.
+.IP "-F lub --quit-if-one-screen"
+Powoduje, ¿e
+.I less
+automatycznie koñczy pracê, je¶li ca³y plik da siê wy¶wietliæ
+na jednym ekranie.
+.IP "-g lub --hilite-search"
+Normalnie
+.I less 
+pod¶wietla WSZYSTKIE ³añcuchy, które pasuj± do ostatniego polecenia szukania.
+Opcja -g zmienia to zachowanie, ka¿±c pod¶wietlaæ tylko ten konkretny
+³añcuch, który znaleziono ostatnim poleceniem szukania.  Mo¿e to spowodowaæ,
+¿e
+.I less 
+bêdzie pracowa³ nieco szybciej ni¿ domy¶lnie.
+.IP "-G lub --HILITE-SEARCH"
+Opcja -G wy³±cza wszystkie pod¶wietlania ³añcuchów znalezionych poleceniami
+szukania. 
+.IP "-h\fIn\fP lub ---max-back-scroll=\fIn\fP"
+Okre¶la maksymaln± liczbê linii do przewijania w ty³.  Je¶li koniecznym
+jest przewiniêcie w ty³ o wiêcej ni¿ \fIn\fP linii, ekran jest rysowany
+na nowo w kierunku w przód.  Je¶li terminal nie ma mo¿liwo¶ci przewijania
+w dó³, zak³adane jest -h0).
+.IP "-i lub --ignore-case"
+Powoduje, ¿e szukania ignoruj± wielko¶æ liter; to jest, litery ma³e i du¿e
+s± uwa¿ane za identyczne.  Opcja ta jest ignorowana je¶li we wzorcu
+szukania wyst±pi± jakiekolwiek du¿e litery; innymi s³owy, je¶li wzorzec
+zawiera du¿e litery, szukanie nast±pi z uwzglêdnieniem wielko¶ci liter.
+.IP "-I lub --IGNORE-CASE"
+Jak -i, ale szukania ignoruj± wielko¶æ liter nawet je¶li wzór zawiera
+du¿e litery.
+.IP "-j\fIn\fP lub --jump-target=\fIn\fP"
+Okre¶la liniê na ekranie, w której umieszczona ma byæ linia "docelowa".
+Linia docelowa to obiekt szukania tekstu, szukania tagów, skakania
+do linii o numerze, skakania do pozycji w procentach, lub skakania
+do zaznaczonej pozycji.  Linie na ekranie okre¶lane s± numerem; linia
+górna to 1, nastêpna 2, i tak dalej.  Numery mog± byæ ujemne, co
+okre¶la linie liczone od do³u ekranu: dolna linia ekranu to -1, druga
+od do³u -2, i tak dalej.  Je¶li u¿yto opcji -j, szukania zaczynaj± siê
+od linii nastêpuj±cej tu¿ po linii docelowej.  Na przyk³ad je¶li u¿yto -j4,
+lini± docelow± jest czwarta linia ekranu, szukania wiêc zaczynaj± siê
+w linii pi±tej.
+.IP "-J lub --status-column"
+Wy¶wietla kolumnê stanu na lewym brzegu ekranu.
+Kolumna stanu wskazuje linie dopasowane w bie¿±cym wyszukiwaniu. Stosowana
+jest tak¿e gdy dzia³a opcja -w lub -W.
+.IP "-k\fIfilename\fP lub --lesskey-file=\fIfilename\fP"
+Ka¿e
+.I less
+otworzyæ i zinterpretowaæ wskazany plik jako plik
+.IR lesskey(1) .
+Mo¿na podaæ wielokrotne opcje -k.  Je¶li ustawiona jest zmienna
+¶rodowiskowa LESSKEY lub LESSKEY_SYSTEM, albo je¶li plik lesskey znajduje
+siê w standardowym miejscu (zobacz PRZYPISANIA KLAWISZY), jest on tak¿e
+u¿ywany jako plik
+.IR lesskey .
+.IP "-m lub --long-prompt"
+Powoduje ¿e
+.I less
+pokazuje rozwiniêty znak zachêty (jak \fImore\fP), z procentow± pozycj±
+w pliku.  Domy¶lnie, znakiem zachêty
+.I less
+jest dwukropek.
+.IP "-M lub --LONG-PROMPT"
+Powoduje, ¿e
+.I less
+wy¶wietla jeszcze bardziej szczegó³ow± zachêtê ni¿
+.I more.
+.IP "-n lub --line-numbers"
+Wy³±cza numery linii.  Warto¶æ domy¶lna (u¿ywanie numerów linii) mo¿e
+spowodowaæ, ¿e
+.I less
+bêdzie dzia³a³ w niektórych przypadkach wolniej, zw³aszcza z bardzo
+du¿ym plikiem wej¶ciowym.  Wy³±czenie numerów linii opcj±
+.I -n
+pozwoli unikn±æ tego problemu.  U¿ywanie numerów linii oznacza: numer
+linii bêdzie wy¶wietlany w rozwiniêtym znaku zachêty i poleceniu =,
+a polecenie v przeka¿e bie¿±cy numer linii edytorowi (zobacz tak¿e
+omówienie LESSEDIT i ZNAKÓW ZACHÊTY poni¿ej).
+.IP "-N lub --LINE-NUMBERS"
+Powoduje, ¿e na pocz±tku ka¿dej linii ekranowej wy¶wietlane s±
+numery linii. 
+.IP "-o\fInazwa_pliku\\fP lub --log-file=\fInazwa_pliku\\fP"
+Powoduje, ¿e
+.I less
+podczas przegl±dania otrzymanego wej¶cia kopiuje je do wskazanego pliku.
+Dzia³a to tylko wtedy gdy plik wej¶ciowy jest potokiem, a nie zwyk³ym plikiem.
+Je¶li podany plik ju¿ istnieje,
+.I less
+zapyta o potwierdzenie przed nadpisaniem go.
+.IP "-O\fInazwa_pliku\fP lub --LOG-FILE=\fInazwa_pliku\fP"
+Opcja -O jest podobna do -o, ale nadpisze istniej±cy plik bez pytania
+o potwierdzenie.
+.sp
+Je¶li nie podano pliku logu, opcji -o i -O mo¿na u¿yæ z wnêtrza
+.I less
+do jego okre¶lenia.  Bez nazwy pliku, bêd± one po prostu podawaæ
+nazwê pliku logu.  Polecenie "s" jest równowa¿ne podaniu -o z wnêtrza
+.I less.
+.IP "-p\fIwzorzec\fP lub --pattern=\fIwzorzec\fP"
+Opcja -p w wierszu poleceñ jest równowa¿na podaniu wzorca +/\fIwzorzec\fP;
+to znaczy, nakazuje
+.I less
+aby rozpocz±³ od pierwszego wyst±pienia \fIwzorzec\fP w pliku.
+.IP "-P\fIzachêta\fP or --prompt=\fIzachêta\fP"
+Daje metodê przystosowania trzech stylów znaku zachêty do w³asnych
+upodobañ.  Normalnie umieszcza siê j± w zmiennej ¶rodowiskowej
+LESS, zamiast wpisywaæ po ka¿dym poleceniu
+.IR less .
+Taka opcja musi byæ albo ostatni± opcj± w zmiennej LESS, albo byæ
+zakoñczona znakiem dolara.
+-Ps plus ³añcuch zmienia domy¶ln± (krótk±) zachêtê na ten ³añcuch.
+-Pm zmienia ¶redni± (-m) zachêtê.
+-PM zmienia d³ug± (-M) zachêtê.
+-Ph zmienia zachêtê na ekranie pomocy.
+-P= zmienia komunikat wypisywany poleceniem =.
+-Pw zmienia komunikat wypisywany podczas oczekiwania na dane (w poleceniu F).
+Wszystkie ³añcuchy zachêty sk³adaj± siê z sekwencji liter i specjalnych
+sekwencji escape'owych.  Szczegó³y opisano w sekcji ZNAKI ZACHÊTY.
+.IP "-q lub --quiet lub --silent"
+Powoduje ¶rednio "ciche" dzia³anie: dzwonek terminala nie dzwoni je¶li
+próbowano przewin±æ poza koniec pliku lub przed jego pocz±tek - je¶li
+terminal ma "dzwonek wizualny", jest on u¿ywany zamiast zwyk³ego.  Dzwonek
+zadzwoni przy niektórych innych b³êdach, jak wpisywanie niew³a¶ciwych
+znaków.  Domy¶lnym ustawieniem jest dzwonienie we wszystkich takich
+przypadkach.
+.IP "-Q lub --QUIET lub --SILENT"
+Powoduje ca³kowicie "ciche" dzia³anie: dzwonek terminala nigdy nie dzwoni.
+.IP "-r lub --raw-control-chars"
+Powoduje wy¶wietlanie nieprzetworzonych, "surowych" znaków steruj±cych.
+Domy¶lnie znaki steruj±ce (z³o¿one z Ctrl) wy¶wietlane s± z u¿yciem notacji
+z daszkiem; na przyk³ad, Control-A (ósemkowo 001) wy¶wietlane jest jako "^A".
+Uwaga: gdy u¿ywana jest opcja -r,
+.I less
+nie potrafi zachowaæ faktycznego wygl±du ekranu (poniewa¿ to zale¿y od
+tego, jak ekran reaguje na ka¿dy rodzaj znaku steruj±cego).  Mog± wiêc
+wyst±piæ ró¿ne problemy z wy¶wietlaniem, jak dzielenie d³ugich linii
+w niew³a¶ciwym miejscu.
+.IP "-R lub --RAW-CONTROL-CHARS"
+Jak -r, ale usi³uje zachowaæ wygl±d ekranu, tam gdzie to mo¿liwe.
+Dzia³a to tylko wówczas, gdy wej¶cie sk³ada siê ze zwyk³ego tekstu,
+ewentualnie z dodanymi sekwencjami ANSI steruj±cymi kolorem, o postaci:
+.sp
+	ESC [ ... m
+.sp
+gdzie "..." to zero lub wiêcej znaków ró¿nych od "m".
+Do celów zachowania wygl±du ekranu zak³ada siê, ¿e ¿aden ze znaków
+steruj±cych i ¿adna z sekwencji ANSI zmieniaj±cych kolory nie przesuwaj±
+kursora.
+Przypisuj±c zmiennej ¶rodowiskowej LESSANSIENDCHARS listê znaków, które mog±
+koñczyæ sekwencje ANSI steruj±ce kolorem mo¿na zmusiæ
+.I less
+do akceptowania w tej roli znaków innych ni¿ "m".
+.IP "-s lub --squeeze-blank-lines"
+Powoduje ¶ciskanie kolejnych pustych linii w pojedyncz± liniê pust±.
+U¿yteczne przy ogl±daniu wyj¶cia
+.IR nroffa .
+.IP "-S lub --chop-long-lines"
+Powoduje, ¿e linie d³u¿sze ni¿ szeroko¶æ ekranu s± ucinane, a nie
+zawijane.  To jest, reszta d³ugiej linii jest po prostu odrzucana.
+Domy¶lnie d³ugie linie s± zawijane; to znaczy, reszta wy¶wietlana jest
+w nastêpnej linii.
+.IP "-t\fItag\fP lub --tag=\fItag\fP"
+Opcja -t, plus zaraz po niej TAG, bêdzie edytowaæ plik zawieraj±cy ów tag.
+A¿eby to dzia³a³o, musi byæ dostêpna informacja o tagach, na przyk³ad,
+w bie¿±cym katalogu mo¿e znajdowaæ siê plik zwany "ctags", zbudowany
+uprzednio poleceniem
+.I ctags(1)
+lub jakim¶ równowa¿nym.
+Je¶li ustawiono zmienn± ¶rodowiskow± LESSGLOBALTAGS, to jej warto¶æ uwa¿ana
+jest za nazwê polecenia zgodnego z
+.IR global(1) ,
+które zostanie wykonane w celu znalezienia tagu.
+(Zobacz http://www.gnu.org/software/global/global.html).
+Opcja -t mo¿e byæ podana równie¿ z wnêtrza
+.I less 
+(poleceniem \-), jako metoda ogl±dniêcia nowego pliku.  Polecenie :t jest
+równowa¿ne podaniu -t z wnêtrza
+.I less.
+.IP "-T\fIplik_tagów\fP lub --tag-file=\fIplik_tagów\fP"
+Podaje plik tagów, który nale¿y u¿yæ zamiast "tags".
+.IP "-u lub --underline-special"
+Powoduje, ¿e znaki backspace i powroty karetki s± traktowane jako znaki
+drukowalne; to jest, posy³ane s± one na terminal je¶li pojawi± siê
+w wej¶ciu.
+.IP "-U lub --UNDERLINE-SPECIAL"
+Powoduje, ¿e znaki backspace, tabulacje i powroty karetki s± traktowane
+jako znaki steruj±ce; to jest, obs³ugiwane s± one jak przy podaniu
+opcji -r.
+.sp
+Domy¶lnie, je¶li podano ani -u ani -U, znaki backspace wystêpuj±ce
+obok znaku podkre¶lenia s± traktowane specjalnie; wy¶wietlany jest
+podkre¶lony tekst, z u¿yciem sprzêtowego podkre¶lania terminala.
+Tak¿e znaki backspace wystêpuj±ce miêdzy dwoma identycznymi znakami
+s± traktowane specjalnie: wy¶wietlany jest tekst nadpisany,
+z u¿yciem sprzêtowego pogrubienia terminala.  Pozosta³e wyst±pienia backspace
+s± usuwane, razem z poprzedzaj±cym znakiem.  Powroty karetki,
+po których nastêpuje nowa linia s± usuwane.  Inne powroty karetki
+obs³ugiwane s± jak przy podaniu opcji -r.  Tekstu, który jest
+nadpisany lub podkre¶lony mo¿na szukaæ gdy nie dzia³a ani
+-u ani -U.
+.IP "-V lub --version"
+Wy¶wietla numer wersji
+.I less.
+.IP "-w lub --hilite-unread"
+Tymczasowo pod¶wietla pierwsz± "now±" liniê po ruchu w przód o pe³n± stronê.
+Pierwsza "nowa" linia to linia wystêpuj±ca bezpo¶rednio po tej, która
+znajdowa³a siê poprzednio na samym dole ekranu. Pod¶wietlana jest tak¿e
+linia docelowa po poleceniach g lub p. Przy nastêpnym poleceniu powoduj±cym
+ruch pod¶wietlenie jest usuwane. Pod¶wietlana jest ca³a linia, chyba ¿e dzia³a
+opcja -J - wówczas pod¶wietlana bêdzie tylko kolumna stanu.
+.IP "-W lub --HILITE-UNREAD"
+Tak jak -w, ale tymczasowo pod¶wietla pierwsz± now± liniê po ka¿dym poleceniu
+ruchu o wiêcej ni¿ jedn± liniê.
+.IP "-x\fIn\fP,... lub --tabs=\fIn\fP,..."
+Ustawia pozycje tabulacji.
+Je¶li podano tylko jedno \fIn\fP, to pozycje tabulacji s± ustawiane
+na wielokrotno¶ciach \fIn\fP. Je¿eli podano wiêcej warto¶ci, oddzielonych
+przecinkami, tabulacje ustawiane s± na tych pozycjach, a nastêpnie w tym
+samym odstêpie, co ostatnie dwie.
+Na przyk³ad, \fI-x9,17\fP ustawi tabulacje na pozycjach 9, 17, 25, 33, itd.
+Domy¶ln± warto¶ci± \fIn\fP jest 8.
+.IP "-X lub --no-init"
+Wy³±cza wysy³anie sekwencji inicjalizacji i deinicjalizacji terminala z termcap.
+Jest to czasami po¿±dane, je¿eli ³añcuch deinicjalizacyjny
+robi co¶ niepotrzebnego, jak czyszczenie ekranu.
+.IP "--no-keypad"
+Wy³±cza wysy³anie sekwencji inicjalizacji i deinicjalizacji bloku klawiszy
+numerycznych terminala.
+Jest to czasami po¿±dane, je¿eli ³añcuchy inicjuj±ce/deinicjuj±ce powoduj±
+zachowanie siê klawiatury numerycznej w niepo¿±dany sposób.
+.IP "-y\fIn\fP lub --max-forw-scroll=\fIn\fP"
+Okre¶la maksymaln± liczbê linii do przesuniêcia w przód.  Je¶li koniecznym
+jest przesuniêcie o wiêcej ni¿ \fIn\fP linii, zamiast tego od¶wie¿any
+jest ekran.  Opcji -c lub -C mo¿na u¿yæ do od¶wie¿enia ekranu od jego
+góry, je¶li jest to po¿±dane.  Domy¶lnie ka¿dy ruch w przód powoduje
+przewijanie.
+.IP "-[z]\fIn\fP lub --window=\fIn\fP"
+Zmienia domy¶lny rozmiar okna przewijania na \fIn\fP linii.  Domy¶lnie
+jeden pe³ny ekran.  Do zmiany rozmiaru okna mo¿na te¿ u¿yæ poleceñ z i w.
+"z" mo¿na opu¶ciæ dla kompatybilno¶ci z
+.I more.
+Je¶li podana liczba
+.I n
+jest ujemna, oznacza to
+.I n
+linii mniej ni¿ bie¿±cy rozmiar ekranu.  Na przyk³ad, je¶li ekran ma 24
+linie, \fI-z-4\fP ustawia okno przewijania na 20 linii.  Je¶li ekran
+zostanie rozszerzony do 40 linii, okno przewijania automatycznie zmieni
+siê na 36 linii.
+.IP -"\fIcc\fP\ lub\ --quotes=\fIcc\fP
+Zmienia znak cytuj±cy w nazwach plików.  Mo¿e to byæ konieczne przy
+nazywaniu pliku zawieraj±cego zarówno znaki spacji jak i cudzys³owy. 
+Je¶li nastêpuje po niej pojedynczy znak, zmienia ona znak cytuj±cy na
+ten¿e znak.  Nazwa pliku zawieraj±ca spacje powinna odt±d byæ otoczona
+tym znakiem, a nie cudzys³owami.  Je¶li nastêpuj± po niej dwa znaki,
+zmienia ona znak otwieraj±cy cytowanie na znak pierwszy, a zamykaj±cy
+na drugi.  Nazwa pliku zawieraj±ca spacje powinna odt±d byæ poprzedzona
+znakiem otwieraj±cym i zakoñczona znakiem zamykaj±cym.  Zauwa¿, ¿e nawet
+je¶li zmieniono znaki cytuj±ce, opcja ta pozostaje jako -" (my¶lnik
+plus cudzys³ów).
+.IP "-~ lub --tilde"
+Normalnie linie poza koñcem pliku wy¶wietlane s± jako zawieraj±ce pojedyncze
+znaki tyldy (~). Ta opcja powoduje, ¿e bêd± wy¶wietlane jako puste linie.
+.IP "-# lub --shift"
+Okre¶la domy¶ln± liczbê pozycji, o jakie bêdzie wykonywane przewijanie
+poziome w poleceniach STRZA£KA_W_PRAWO i STRZA£KA_W_LEWO. Je¿eli podan±
+liczba jest zero, przyjmowana jest domy¶lna liczba równa po³owie szeroko¶ci
+ekranu.
+.IP --
+Argument wierszu poleceñ "--" oznacza koniec argumentów opcji.  Wszelkie
+argumenty nastêpuj±ce po nim s± interpretowane jako nazwa pliku.  Mo¿e
+byæ to przydatne przy ogl±daniu pliku którego nazwa zaczyna siê od "-"
+lub "+".
+.IP +
+Je¶li opcja wierszu poleceñ zaczyna siê od \fB+\fP, reszta opcji uwa¿ana
+jest za pocz±tkowe polecenie
+.IR less .
+Na przyk³ad, +G mówi
+.IR less ,
+aby zacz±³ od koñca pliku zamiast od pocz±tku, a +/xyz mówi mu, aby
+zacz±³ od pierwszego wyst±pienia "xyz" w pliku.  W przypadku szczególnym,
++<liczba> dzia³a jak +<liczba>g, to jest, rozpoczyna wy¶wietlanie od
+okre¶lonego numeru linii (zobacz jednak zastrze¿enie przy poleceniu g
+powy¿ej).  Je¶li opcja zaczyna siê od ++, pocz±tkowe polecenie odnosi
+siê do ka¿dego ogl±danego pliku, nie tylko pierwszego.  Polecenia +
+opisywanej powy¿ej mo¿na te¿ u¿yæ do ustawienia (lub zmiany) polecenia
+pocz±tkowego dla ka¿dego pliku.
+.SH LINIA EDYCJI
+Gdy wprowadzany jest wiersz poleceñ u do³u ekranu (na przyk³ad nazwa
+pliku dla polecenia :e, albo wzór dla polecenia szukaj±cego), do manipulowania
+ni± mo¿na u¿yæ pewnych klawiszy.  Wiêkszo¶æ poleceñ ma formê alternatywn±
+w [nawiasach], której mo¿na u¿yæ je¶li jaki¶ klawisz nie istnieje na
+danej klawiaturze (formy w nawiasach nie dzia³aj± w wersji MS-DOS).  Ka¿dy
+z tych specjalnych klawiszy mo¿na wprowadziæ dos³ownie poprzedzaj±c go
+znakiem dos³owno¶ci, ^V lub ^A.  Sam odwrotny uko¶nik mo¿na te¿ wprowadziæ 
+dos³ownie, wprowadzaj±c dwa odwrotne uko¶niki.
+.IP "STRZA£KA_W_LEWO [ ESC-h ]"
+Przesuwa kursor jedno miejsce w lewo.
+.IP "STRZA£KA_W_PRAWO [ ESC-l ]"
+Przesuwa kursor jedno miejsce w prawo.
+.IP "^STRZA£KA_W_LEWO [ ESC-b lub ESC-STRZA£KA_W_LEWO ]"
+(To znaczy, CONTROL i STRZA£KA_W_LEWO równocze¶nie).  Przesuwa kursor
+o jedno s³owo w lewo.
+.IP "^STRZA£KA_W_PRAWO [ ESC-w lub ESC-STRZA£KA_W_LEWO ]"
+(To znaczy, CONTROL i STRZA£KA_W_LEWO równocze¶nie).  Przesuwa kursor
+o jedno s³owo w prawo.
+.IP "HOME [ ESC-0 ]"
+Przesuwa kursor na pocz±tek linii.
+.IP "END [ ESC-$ ]"
+Przesuwa kursor na koniec linii.
+.IP "BACKSPACE"
+Usuwa znak na lewo od kursora lub anuluje polecenie je¶li wiersz poleceñ
+jest pusta.
+.IP "DELETE lub [ ESC-x ]"
+Usuwa znak pod kursorem.
+.IP "^BACKSPACE [ ESC-BACKSPACE ]"
+(To znaczy, CONTROL i BACKSPACE równocze¶nie).  Usuwa jedno s³owo na lewo
+od kursora.
+.IP "^DELETE [ ESC-X lub ESC-DELETE ]"
+(To znaczy, CONTROL i DELETE równocze¶nie).  Usuwa s³owo pod kursorem.
+.IP "UPARROW [ ESC-k ]"
+Odzyskuje poprzedni± liniê poleceñ.
+.IP "DOWNARROW [ ESC-j ]"
+Odzyskuje nastêpn± liniê poleceñ.
+.IP "TAB"
+Dokoñcza czê¶ciow± nazwê pliku na lewo od kursora.  Je¶li pasuje ona
+do wiêcej ni¿ jednej nazwy pliku, do wierszu poleceñ wprowadzane jest
+pierwsze dopasowanie.  Powtórne TABulatory prze³±czaj± wko³o pozosta³e nazwy
+plików.  Je¶li dokoñczona nazwa pliku jest katalogiem, do³±czany jest
+do niej "/" (W systemach MS-DOS do³±czany jest "\\").
+Do okre¶lenia innego znaku, który nale¿y do³±czyæ do nazwy katalogu, mo¿e
+byæ u¿yta zmienna ¶rodowiskowa LESSSEPARATOR.
+.IP "BACKTAB [ ESC-TAB ]"
+Tak jak TAB, ale prze³±cza pasuj±ce nazwy plików w odwrotnym porz±dku.
+.IP "^L"
+Dokoñcza czê¶ciow± nazwê pliku na lewo od kursora.  Je¶li pasuje ona do
+wiêcej ni¿ jednej nazwy pliku, do wierszu poleceñ wprowadzane s± wszystkie
+dopasowania (je¶li siê mieszcz±).
+.IP "^U (Unix i OS/2) lub ESC (MS-DOS)"
+Usuwa ca³± liniê poleceñ lub anuluje polecenie je¶li wiersz poleceñ jest
+pusta.
+Je¶li zmieni³e¶ znak kill w Unixie na co¶ innego ni¿ ^U, zamiast ^U
+bêdzie u¿ywany ten¿e znak.
+
+.SH "PRZYPISANIA KLAWISZY"
+Mo¿esz zdefiniowaæ swoje w³asne polecenia
+.I lessa
+u¿ywaj±c programu
+.I lesskey(1)
+do stworzenia pliku lesskey.  Plik ten okre¶la zestaw klawiszy poleceñ
+oraz dzia³anie skojarzone z ka¿dym klawiszem.  Mo¿esz te¿ u¿yæ
+.I lesskey
+do zmiany klawiszy linii edycji (zobacz LINIA EDYCJI) oraz ustawienia
+zmiennych ¶rodowiskowych.  Je¶li ustawiona jest zmienna ¶rodowiskowa
+LESSKEY,
+.I less
+u¿ywa jej [warto¶ci] jako nazwy pliku lesskey.  W przeciwnym razie,
+.I less
+szuka pliku lesskey w standardowym miejscu.  W systemach Unixowych
+.I less
+szuka pliku lesskey zwanego "$HOME/.less".  W systemach MS-DOS i Windows
+.I less
+szuka pliku lesskey zwanego "$HOME/_less", a je¶li go tam nie znalaz³,
+pliku lesskey zwanego "_less" w ka¿dym katalogu okre¶lonym przez
+zmienn± ¶rodowiskow± PATH.  W systemach OS/2
+.I less
+szuka pliku lesskey zwanego "$HOME/_less.ini", a je¶li go tam nie znalaz³,
+pliku lesskey zwanego "less.ini" w ka¿dym katalogu okre¶lonym przez
+zmienn± ¶rodowiskow± INIT, a je¶li i tam go nie znalaz³, szuka pliku lesskey 
+zwanego "less.ini" w ka¿dym katalogu okre¶lonym przez zmienn± ¶rodowiskow± 
+PATH.  Zobacz stronê podrêcznika systemowego
+.IR lesskey (1)
+po wiêcej szczegó³ów.
+.P
+Przypisania klawiszy mo¿na tak¿e umie¶ciæ w ogólnosystemowym pliku lesskey.
+Je¶li dany klawisz zdefiniowano zarówno w pliku systemowym, jak i w lokalnym,
+to priorytet maj± przypisania lokalne. Je¶li ustawiono zmienn± ¶rodowiskow±
+LESSKEY_SYSTEM,
+.I less
+u¿ywa jej jako nazwy systemowego pliku z przypisaniami klawiszy.
+W przeciwnym razie szuka go w standardowym miejscu: w systemach uniksowych
+jest to plik /usr/local/etc/sysless.
+(Jednak je¶li
+.I less 
+skompilowano z katalogiem przeznaczonym na konfiguracjê systemu innym ni¿
+ni¿ /usr/local/etc, to w nim w³a¶nie znajdzie siê plik sysless).
+W systemach MS-DOS i Windows, ogólnosystemowym plikiem lesskey jest c:\\_sysless.
+W systemach OS/2, ogólnosystemowym plikiem lesskey jest c:\\sysless.ini.
+
+.SH "PREPROCESOR WEJ¦CIA"
+Mo¿esz dla
+.I less
+zdefiniowaæ "preprocesor wej¶cia".  Zanim
+.I less
+otwiera jaki¶ plik, daje najpierw twojemu preprocesorowi wej¶cia szansê
+zmodyfikowania sposobu w jaki wy¶wietlana jest zawarto¶æ pliku.  Preprocesor
+wej¶cia to po prostu wykonywalny program (lub skrypt pow³oki), który
+zapisuje zawarto¶æ pliku do innego pliku, zwanego plikiem zastêpuj±cym. 
+Nastêpnie wy¶wietlana jest zawarto¶æ pliku zastêpuj±cego, zamiast pliku
+oryginalnego.  U¿ytkownikowi bêdzie siê jednak wydawaæ, ¿e otwarty zosta³
+oryginalny plik; to znaczy,
+.I less
+wy¶wietli oryginaln± nazwê pliku jako nazwê bie¿±cego pliku.
+.PP
+Preprocesor wej¶cia otrzymuje jeden argument wiersza poleceñ, oryginaln±
+nazwê pliku wprowadzon± przez u¿ytkownika.  Powinien on stworzyæ
+plik zastêpuj±cy, a kiedy zakoñczy pracê, wypisaæ nazwê pliku zastêpuj±cego
+na swoje standardowe wej¶cie.  Je¶li preprocesor wej¶cia nie wypisze
+nazwy pliku zastêpuj±cego,
+.I less
+u¿ywa pliku oryginalnego, jak zwykle.  Preprocesor wej¶cia nie jest
+wywo³ywany przy ogl±daniu standardowego wej¶cia.  Aby przygotowaæ
+jaki¶ preprocesor, ustaw zmienn± ¶rodowiskow± LESSOPEN na wiersz
+poleceñ, który wywo³a twój preprocesor.  Ten wiersz poleceñ powinien zawieraæ
+jedno wyst±pienie ³añcucha "%s", który zostanie zast±piony nazw± pliku
+podczas wywo³ania polecenia preprocesora.
+.PP
+Gdy
+.I less
+zamyka plik otworzony tym sposobem, wywo³a inny program, zwany postprocesorem
+wej¶cia, który mo¿e dokonaæ wszelkich po¿±danych dzia³añ czyszcz±cych
+(jak usuwanie pliku zastêpuj±cego stworzonego przez LESSOPEN). Aby
+przygotowaæ jaki¶ preprocesor, ustaw zmienn± ¶rodowiskow± LESSCLOSE na wiersz
+poleceñ, która wywo³a twój postprocesor.  Ten wiersz poleceñ mo¿e zawieraæ
+dwa wyst±pienia ³añcucha "%s"; pierwsze zostanie zast±pione oryginaln± nazw± 
+pliku, a drugie nazw± pliku zastêpuj±cego wypisanego przez LESSOPEN.
+.PP
+Na przyk³ad, w wielu systemach Unixowych, poni¿sze dwa skrypty pozwol±
+ci przechowywaæ pliki w formie skompresowanej, ale nadal umo¿liwi±
+ogl±danie ich bezo¶rednio przy pomocy
+.IR less :
+.PP
+lessopen.sh:
+.br
+	#! /bin/sh
+.br
+	case "$1" in
+.br
+	*.Z)	uncompress -c $1  >/tmp/less.$$  2>/dev/null
+.br
+		if [ -s /tmp/less.$$ ]; then 
+.br
+			echo /tmp/less.$$
+.br
+		else
+.br
+			rm -f /tmp/less.$$
+.br
+		fi
+.br
+		;;
+.br
+	esac
+.PP
+lessclose.sh:
+.br
+	#! /bin/sh
+.br
+	rm $2
+.PP
+Aby u¿yæ tych skryptów, umie¶æ oba tam, sk±d mog± byæ wykonywane i
+ustaw  LESSOPEN="lessopen.sh\ %s", oraz LESSCLOSE="lessclose.sh\ %s\ %s".
+Mo¿na napisaæ bardziej z³o¿one skrypty LESSOPEN i LESSCLOSE, akceptuj±ce
+inne typy plików skompresowanych itd.
+.PP
+Mo¿liwe jest tak¿e przygotowanie preprocesora wej¶cia posy³aj±cego
+dane bezpo¶rednio potokiem do
+.IR less ,
+zamiast wstawiania danych do pliku zastêpuj±cego.  Unika siê w ten
+sposób potrzeby odkompresowania ca³ego pliku zanim zacznie siê go
+ogl±daæ.  Preprocesor wej¶cia dzia³aj±cy w ten sposób zwany jest
+potokiem wej¶ciowym.  Potok wej¶ciowy, zamiast wypisywaæ nazwê pliku
+wyj¶ciowego na standardowe wyj¶cie, wypisuje ca³± zawarto¶æ pliku
+zastêpuj±cego na standardowe wyj¶cie.  Je¶li potok nie wypisze
+¿adnych znaków na standardowe wyj¶cie, plik zastêpuj±cy nie istnieje i
+.I less
+u¿yje pliku oryginalnego, jak zwykle.  Aby u¿yæ potoku wej¶ciowego,
+zmieñ pierwszy znak w zmiennej ¶rodowiskowej LESSOPEN na kreskê
+pionow± (|), aby zaznaczyæ, ¿e preprocesor wej¶ciowy jest potokiem.
+.PP
+Na przyk³ad, w wielu systemach Unixowych, poni¿szy skrypt zadzia³a
+tak jak poprzednie skrypty przyk³adowe:
+.PP
+lesspipe.sh:
+.br
+	#! /bin/sh
+.br
+	case "$1" in
+.br
+	*.Z)	uncompress -c $1  2>/dev/null
+.br
+		;;
+.br
+	esac
+.br
+.PP
+Aby u¿yæ tego skryptu, umie¶æ go tam, sk±d mo¿e byæ wykonywany i ustaw
+LESSOPEN="|lesspipe.sh %s".  Gdy u¿ywa siê potoku wej¶ciowego, mo¿na
+u¿yæ równie¿ postprocesora LESSCLOSE, ale zwykle nie jest on potrzebny,
+poniewa¿ nie ma pliku zastêpuj±cego który nale¿a³oby posprz±taæ.  W
+tym przypadku nazw± pliku zastêpuj±cego przekazywan± do postprocesora
+LESSCLOSE jest "-".
+
+.SH "NARODOWE ZESTAWY ZNAKÓW"
+W pliku wej¶ciowym istniej± trzy rodzaje znaków:
+.IP "znaki normalne"
+mog± byæ wy¶wietlane bezpo¶rednio na ekranie.
+.IP "znaki steruj±ce"
+nie powinny byæ wy¶wietlane bezpo¶rednio, ale mo¿na siê ich spodziewaæ
+w zwyk³ych plikach tekstowych (jak backspace i tabulacji).
+.IP "znaki binarne"
+nie powinny byæ wy¶wietlane bezpo¶rednio i nie spodziewamy siê ich
+w plikach tekstowych.
+.PP
+"Zestaw znaków" to po prostu opis tego, jakie znaki maj± byæ uwa¿ane
+za normalne, steruj±ce i binarne.
+Do wybrania zestawu znaków mo¿na u¿yæ zmiennej ¶rodowiskowej LESSCHARSET.
+Mo¿liwymi warto¶ciami LESSCHARSET s±:
+.IP ascii
+BS, TAB, NL, CR i znak wysuwu do nowej strony s± znakami steruj±cymi,
+wszystkie znaki o warto¶ciach pomiêdzy 32 a 126 s± normalnymi znakami,
+a wszystkie pozosta³e - binarnymi.
+.IP iso8859
+Wybiera zestaw znaków ISO 8859.  Jest to to samo, co ASCII, z wyj±tkiem
+tego, ¿e znaki miêdzy 160 i 255 s± traktowane jako normalne.
+[od t³um: niezbêdne dla prawid³owej obs³ugi polskich znaków.]
+.IP latin1
+To samo, co iso8859.
+.IP latin9
+To samo, co iso8859.
+.IP dos
+Wybiera zestaw znaków odpowiedni dla MS-DOS-u.
+.IP ebcdic
+Wybiera zestaw znaków EBCDIC.
+.IP IBM-1047
+Wybiera zestaw znaków EBCDIC stosowany przez OS/390 Unix Services.
+W EBCDIC jest to zestaw analogiczny do latin1. Podobny efekt mo¿esz uzyskaæ
+ustawiaj±c w ¶rodowisku albo LESSCHARSET=IBM-1047 albo LC_CTYPE=en_US.
+.IP koi8-r
+Wybiera rosyjski zestaw znaków
+.IP next
+Wybiera zestaw znaków odpowiedni dla komputerów NeXT.
+.IP utf-8
+Wybiera kodowanie UTF-8 zestawu znaków ISO 10646.
+.PP
+W wypadkach szczególnych mo¿e zaj¶æ potrzeba przystosowania
+.I less
+do u¿ywania zestawu znaków innego ni¿ te, które mo¿na wskazaæ przy pomocy
+LESSCHARSET. Wówczas do zdefiniowania zestawu znaków nale¿y u¿yæ zmiennej
+¶rodowiskowej LESSCHARDEF. Powinna byæ ona ustawiona na ³añcuch, którego
+ka¿dy znak okre¶la jeden znak w zestawie znaków.  Znak "." u¿ywany jest
+dla znaków normalnych, "c" dla steruj±cych i "b" dla binarnych.  Mo¿na
+u¿yæ liczby dziesiêtnej oznaczaj±cej powtórzenie.  Na przyk³ad, "bccc4b."
+oznacza³oby, ¿e znak [o kodzie] 0 jest binarny, 1, 2 i 3 s± steruj±ce,
+4, 5, 6 i 7 s± binarne, a 8 jest normalny.  Wszystkie znaki po ostatnim
+s± przyjmowane za takie same jak ostatni, znaki wiêc pomiêdzy 9 a 255
+by³by tu normalne (jest to przyk³ad, niekonieczne odpowiadaj±cy
+jakiemu¶ rzeczywistemu zestawowi znaków).
+.PP
+Tabela poni¿sza pokazuje warto¶æ LESSCHARDEF równowa¿n± ka¿dej z
+mo¿liwych warto¶ci LESSCHARSET:
+.sp
+	ascii\ 	8bcccbcc18b95.b
+.br
+	dos\ \ \ 	8bcccbcc12bc5b95.b.
+.br
+	ebcdic	5bc6bcc7bcc41b.9b7.9b5.b..8b6.10b6.b9.7b
+.br
+	\ \ \ \ \ \ 	9.8b8.17b3.3b9.7b9.8b8.6b10.b.b.b.
+.br
+	IBM-1047	4cbcbc3b9cbccbccbb4c6bcc5b3cbbc4bc4bccbc
+.br
+	\ \ \ \ \ \ 	191.b
+.br
+	iso8859	8bcccbcc18b95.33b.
+.br
+	koi8-r	8bcccbcc18b95.b128.
+.br
+	latin1	8bcccbcc18b95.33b.
+.br
+	next\ \ 	8bcccbcc18b95.bb125.bb
+.PP
+Je¶li ani LESSCHARSET ani LESSCHARDEF s± ustawione, ale w zmiennych
+¶rodowiskowych LC_ALL, LC_TYPE lub LANG znaleziono ³añcuch "UTF-8", to
+domy¶lnym zestawem znaków jest utf-8.
+.PP
+Je¶li tego ³añcucha nie znaleziono, ale wykorzystywany system
+obs³uguje interfejs
+.IR setlocale , less
+u¿yje setlocale do okre¶lenia zestawu znaków.  setlocale kontrolowane
+jest ustawieniem zmiennych ¶rodowiskowych LANG lub LC_CTYPE.
+.PP
+Na koniec, je¶li interfejs
+.I setlocale
+równie¿ nie jest dostêpny, to domy¶lnym zestawem znaków jest latin1.
+.PP
+Znaki binarne i steruj±ce wy¶wietlane s± w odwróconych kolorach.  Ka¿dy
+taki znak wy¶wietlany jest w notacji z daszkiem, je¶li to mo¿liwe
+(np. ^A dla Control-A).  Notacja z daszkiem u¿ywana jest tylko je¶li
+odwrócenie trzeciego bitu od koñca daje normalny znak drukowalny.
+W przeciwnym razie znak jest wy¶wietlany jako cyfra szesnastkowa
+w nawiasach ostrych.  Format ten mo¿na zmieniæ ustawiaj±c zmienn±
+¶rodowiskow± LESSBINFMT.  LESSBINFMT mo¿e zaczynaæ siê od "*" i
+jednego znaku wybieraj±cego atrybut wy¶wietlania: "*k" to
+miganie, "*d" - pogrubienie, "*u" - podkre¶lenie, "*s" - odwrócone
+kolory, "*n" - normalny.
+Je¶li LESSBINFMT nie zaczyna siê od "*", przyjmowany jest atrybut
+normalny.  Reszta LESSBINFMT to ³añcuch, który mo¿e zawieraæ
+jedn± sekwencjê escape w stylu printf (% plus x, X, o, d itd.).
+Na przyk³ad, je¶li LESSBINFMT ma warto¶æ "*u[%x]", znaki binarne
+wy¶wietlane s± jako podkre¶lone liczby szesnastkowe otoczone
+nawiasami kwadratowymi.  Warto¶ci± domy¶ln±, je¶li nie okre¶lono
+LESSBINFMT, jest "*s<%X>".
+
+.SH "ZNAKI ZACHÊTY"
+Opcja -P pozwala dostosowaæ znaki zachêty do w³asnych upodobañ.  £añcuch
+podany opcji -P zastêpuje okre¶lony ³añcuch zachêty.  Pewne znaki w tym
+³añcuchu s± interpretowane w sposób szczególny.  Mechanizm znaków zachêty
+jest raczej skomplikowany, a¿eby zapewniaæ elastyczno¶æ, ale zwyk³y
+u¿ytkownik nie musi rozumieæ szczegó³ów konstruowania w³asnych ³añcuchów
+zachêty.
+.sp
+Znak procentu plus dowolny pojedynczy znak rozwijany jest zale¿nie
+od tego, czym jest ów nastêpny znak.
+.IP "%b\fIX\fP"
+Zastêpowany przez offset bajtowy w bie¿±cym pliku wej¶ciowym.  Po b
+nastêpuje pojedynczy znak (pokazany jako \fIX\fP powy¿ej), który okre¶la
+liniê, której offsetu bajtowego nale¿y u¿yæ.  Je¶li znakiem tym jest "t",
+u¿ywany jest offset bajtowy linii wy¶wietlanej na górze ekranu, "m"
+oznacza liniê ¶rodkow±, "b" oznacza liniê doln±, "B" oznacza liniê tu¿
+przed doln±, a "j" oznacza liniê "docelow±", jak to okre¶la opcja -j.
+.IP "%B"
+Zastêpowany przez rozmiar bie¿±cego pliku wej¶ciowego.
+.IP "%c"
+Zastêpowany przez numer kolumny tekstu widniej±cej w pierwszej
+kolumnie ekranu.
+.IP "%d\fIX\fP"
+Zastêpowany przez numer strony dla wskazanej linii pliku wej¶ciowego.
+Liniê, która ma zostaæ u¿yta, okre¶la \fIX\fP, tak jak w opcji %b.
+.IP "%D"
+Zastêpowany przez liczbê stron w pliku wej¶ciowym, lub, co jest równowa¿ne,
+numer strony ostatniej linii pliku.
+.IP "%E"
+Zastêpowany przez nazwê edytora (ze zmiennej ¶rodowiskowej VISUAL, lub
+EDITOR je¶li VISUAL nie jest zdefiniowana).  Zobacz omówienie elementu
+LESSEDIT poni¿ej.
+.IP "%f"
+Zastêpowany przez nazwê bie¿±cego pliku wej¶ciowego.
+.IP "%i"
+Zastêpowany przez indeks bie¿±cego pliku w li¶cie plików wej¶ciowych.
+.IP "%l\fIX\fP"
+Zastêpowany przez numer linii w pliku wej¶ciowym.  Linia, której nale¿y
+u¿yæ okre¶lana jest przez \fIX\fP, jak w opcji %b.
+.IP "%L"
+Zastêpowany przez numer linii ostatniej linii w pliku wej¶ciowym.
+.IP "%m"
+Zastêpowany przez ca³kowit± liczbê plików wej¶ciowych.
+.IP "%p\fIX\fP"
+Zastêpowany przez pozycjê procentow± w bie¿±cym pliku wej¶ciowym,
+wed³ug offsetów w bajtach.  Linia, której nale¿y u¿yæ okre¶lana jest
+przez \fIX\fP, jak w opcji %b.
+.IP "%P\fIX\fP"
+Zastêpowany przez pozycjê procentow± w bie¿±cym pliku wej¶ciowym,
+wed³ug liczby linii.
+.IP "%s"
+To samo co %B.
+.IP "%t"
+Powoduje, ¿e wszystkie spacje wystêpuj±ce na koñcu s± usuwane.  Zwykle
+u¿ywane na koñcu ³añcucha, ale mo¿e siê pojawiæ gdziekolwiek.
+.IP "%x"
+Zastêpowany nazw± nastêpnego pliku wej¶ciowego w li¶cie.
+.PP
+Je¶li jakikolwiek z elementów jest nieznany (na przyk³ad rozmiar pliku
+je¶li wej¶ciem jest potok), zamiast niego wypisywany jest znak zapytania.
+.PP
+Format ³añcucha zachêty mo¿na zmieniaæ zale¿nie od pewnych warunków.
+Pytajnik plus pojedynczy znak zachowuje siê jak "IF"; zale¿nie od
+tego znaku rozpatrywany jest warunek.  Je¶li warunek jest
+prawdziwy, wszystkie znaki nastêpuj±ce po znaku zapytania i znaku
+warunku, a¿ do kropki, s± umieszczane w zachêcie.  Je¶li warunek
+jest fa³szywy, znaki te nie s± tam umieszczane.  Dwukropka wystêpuj±cego
+miêdzy znakiem zapytania i kropk± mo¿na u¿yæ do zaznaczenia "ELSE";
+wszystkie znaki pomiêdzy dwukropkiem i kropk± s± w³±czane do ³añcucha
+wtedy i tylko wtedy, gdy warunek IF jest fa³szywy.  Znakami warunku
+(nastêpuj±cymi po znaku zapytania) mog± byæ:
+.IP "?a"
+Prawda je¶li ju¿ w³±czono do zachêty jakie¶ znaki.
+.IP "?b\fIX\fP"
+Prawda je¶li znany jest offset bajtowy okre¶lonej linii.
+.IP "?B"
+Prawda je¶li znany jest rozmiar bie¿±cego pliku wej¶ciowego.
+.IP "?c"
+Prawda je¶li tekst jest przesuniêty w poziomie (%c jest niezerowe).
+.IP "?d\fIX\fP"
+Prawda je¶li znany jest numer strony dla podanej linii.
+.IP "?e"
+Prawda je¶li osi±gniêto koniec pliku.
+.IP "?f"
+Prawda je¶li istnieje nazwa pliku wej¶ciowego (tzn. wej¶cie nie
+jest potokiem).
+.IP "?l\fIX\fP"
+Prawda je¶li znany numer okre¶lonej linii.
+.IP "?L"
+Prawda je¶li znany jest numer ostatniej linii pliku.
+.IP "?m"
+Prawda je¶li jest wiêcej ni¿ jeden plik wej¶ciowy.
+.IP "?n"
+Prawda je¶li jest to pierwsza zachêta w nowym pliku wej¶ciowym.
+.IP "?p\fIX\fP"
+Prawda je¶li znana jest, liczona wed³ug offsetów bajtowych, pozycja procentowa
+w pliku okre¶lonej linii.
+.IP "?P\fIX\fP"
+Prawda je¶li znana jest, liczona wed³ug liczby linii, pozycja procentowa
+w pliku okre¶lonej linii.
+.IP "?s"
+To samo co "?B".
+.IP "?x"
+Prawda je¶li istnieje nastêpny plik wej¶ciowy (to jest, bie¿±cy plik
+nie jest ostatnim).
+.PP
+Wszystkie znaki inne ni¿ znaki specjalne (znak zapytania, dwukropek, kropka
+i odwrotny uko¶nik) staj± siê bez zmian czê¶ci± zachêty.  Wszystkie znaki
+specjalne mo¿na umie¶ciæ w zachêcie dos³ownie poprzedzaj±c je odwrotnym
+uko¶nikiem.
+.PP
+Kilka przyk³adów:
+.sp
+?f%f:Standardowe wej¶cie.
+.sp
+Ta zachêta wypisuje nazwê pliku, je¶li jest znana, w przeciwnym razie
+³añcuch "Standardowe wej¶cie".
+.sp
+?f%f .?ltLinia %lt:?pt%pt\\%:?btBajt %bt:-...
+.sp
+Ta zachêta wypisze nazwê pliku, je¶li jest znana.  Po nazwie pliku
+nastêpuje numer linii, je¶li znany, w przeciwnym razie pozycja procentowa,
+je¶li znana, w przeciwnym razie offset bajtowy, je¶li znany.  W przeciwnym
+razie wypisywany jest my¶lnik.  Zauwa¿, ¿e ka¿dy znak zapytania ma 
+odpowiadaj±c± mu kropkê, i ¿e % po %pt jest wstawiony dos³ownie poprzez
+poprzedzenie go odwrotnym uko¶nikiem.
+.sp
+?n?f%f\ .?m(file\ %i\ of\ %m)\ ..?e(END)\ ?x-\ Next\:\ %x..%t
+.sp
+To wypisuje nazwê pliku, je¶li jest to pierwsza zachêta w pliku,
+plus komunikat "file N of N", je¶li istnieje wiêcej ni¿ jeden
+plik wej¶ciowy.  Nastêpnie, je¶li jeste¶my na koñcu pliku, wypisywany
+jest ³añcuch "(END)" plus nazwa nastêpnego pliku, je¶li istnieje.
+Na koñcu obcinane s± wszelkie koñcowe spacje.  Jest to zachêta domy¶lna.
+Dla odniesienia, poni¿ej podano warto¶ci domy¶lne pozosta³ych dwóch
+zachêt (odpowiednio -m i -M).  Ka¿da z³amana jest w dwie linie, ale
+tylko dla czytelno¶ci.
+.nf
+.sp
+?n?f%f\ .?m(file\ %i\ of\ %m)\ ..?e(END)\ ?x-\ Next\\:\ %x.:
+	?pB%pB\\%:byte\ %bB?s/%s...%t
+.sp
+?f%f\ .?n?m(file\ %i\ of\ %m)\ ..?ltlines\ %lt-%lb?L/%L.\ :
+	byte\ %bB?s/%s.\ .?e(END)\ ?x-\ Next\\:\ %x.:?pB%pB\\%..%t
+.sp
+.fi
+A tu jest domy¶lny komunikat wypisywany przez polecenie =:
+.nf
+.sp
+?f%f\ .?m(file\ %i\ of\ %m)\ .?ltlines\ %lt-%lb?L/%L.\ .
+	byte\ %bB?s/%s.\ ?e(END)\ :?pB%pB\\%..%t
+.fi
+.PP
+Rozwijanie zachêt jest u¿ywane równie¿ do innego celu: je¶li zdefiniowano
+zmienn± ¶rodowiskow± LESSEDIT, u¿ywana jest ona jako polecenie do
+wykonania w momencie wywo³ania polecenia v.  £añcuch w LESSEDIT rozwijany
+jest tak samo jak ³añcuch zachêty.  Domy¶lna warto¶æ LESSEDIT to:
+.nf
+.sp
+	%E\ ?lm+%lm.\ %f
+.sp
+.fi
+Zauwa¿, ¿e rozwijane jest to do nazwy edytora, plus znak + i numer
+linii, plus nazwa pliku.  Je¶li twój edytor nie akceptuje sk³adni
+"+numerlinii", albo ma inne ró¿nice w sk³adni wywo³ania, mo¿na
+zmieniæ zmienn± LESSEDIT ¿eby zmodyfikowaæ zachowanie domy¶lne.
+
+.SH BEZPIECZEÑSTWO
+Gdy zmienna ¶rodowiskowa LESSSECURE jest ustawiona na 1,
+.I less
+pracuje w trybie "bezpiecznym".  Oznacza to, ¿e nastêpuj±ce mo¿liwo¶ci
+s± wy³±czone:
+.RS
+.IP "!"
+polecenie pow³oki
+.IP "|"
+polecenie potokowa
+.IP ":e"
+polecenie examine
+.IP "v"
+polecenie edycyjna
+.IP "s  -o"
+pliku logów
+.IP "-k"
+u¿ywanie plików lesskey
+.IP "-t"
+u¿ywanie plików z tagami.
+.IP " "
+metaznaki w nazwach plików, takie jak *
+.IP " "
+uzupe³nianie nazwy pliku (TAB, ^L)
+.RE
+.PP
+less mo¿e tak¿e zostaæ skompilowany na sta³e w trybie "bezpiecznym".
+
+.SH "ZMIENNE ¦RODOWISKOWE"
+Zmienne ¶rodowiskowe mog± byæ okre¶lone albo w ¶rodowisku systemu, jak
+zwykle, albo w pliku
+.IR lesskey(1) .
+Je¶li zmienne ¶rodowiskowe zdefiniowano w wiêcej ni¿ jednym miejscu,
+to zmienne zdefiniowane w lokalnym pliku lesskey maj± priorytet nad
+zmiennymi ze ¶rodowiska systemu, które z kolei ma priorytet nad zmiennymi
+zdefiniowanymi w zdefiniowanymi w systemowym pliku lesskey.
+.IP COLUMNS
+Ustawia liczbê kolumn na ekranie.  Ma priorytet na liczb± kolumn okre¶lon±
+przez zmienn± TERM.
+(Jednak je¶li masz system okien obs³uguj±cy TIOCGWINSZ lub WIOCGETD,
+to pojêcie rozmiaru ekranu okre¶lone przez ten system jest nadrzêdne
+w stosunku do zmiennych ¶rodowiskowych LINES i COLUMNS).
+.IP EDITOR
+Nazwa edytora (u¿ywanego dla polecenia v).
+.IP HOME
+Nazwa katalogu domowego u¿ytkownika (u¿ywana do znalezienia pliku lesskey
+w systemach Unixowych i OS/2).
+.IP "HOMEDRIVE, HOMEPATH"
+Z³o¿enie zmiennych ¶rodowiskowych HOMEDRIVE i HOMEPATH tworzy nazwê katalogu
+domowego u¿ytkownika, je¶li nie zdefiniowano zmiennej HOME (tylko w wersji
+dla Windows).
+.IP INIT
+Nazwa katalogu inicjalizacji u¿ytkownika (u¿ywana do znalezienia pliku lesskey
+w systemach OS/2).
+.IP LANG
+Jêzyk okre¶laj±cy zestaw znaków.
+.IP LC_CTYPE
+Jêzyk okre¶laj±cy zestaw znaków.
+.IP LESS
+Opcje które s± przekazywane
+.I less
+automatycznie.
+.IP LESSANSIENDCHARS
+Znaki, co do których zak³ada siê, ¿e koñcz± sekwencje ANSI steruj±ce kolorem
+(domy¶lnie "m").
+.IP LESSBINFMT
+Format wy¶wietlania znaków niedrukowalnych i niesteruj±cych.
+.IP LESSCHARDEF
+Okre¶la zestaw znaków.
+.IP LESSCHARSET
+Wybiera predefiniowany zestaw znaków.
+.IP LESSCLOSE
+wiersz poleceñ wywo³uj±cy (opcjonalny) postprocesor wej¶cia.
+.IP LESSECHO
+Nazwa programu lessecho (domy¶lnie "lessecho").  Program lessecho u¿ywany
+jest do rozwijania metaznaków, takich jak * czy ?, w nazwach plików
+w systemach Unixowych.
+.IP LESSEDIT
+Prototypowy ³añcuch dla edytora (u¿ywany dla polecenia v).  Zobacz omówienie
+w sekcji ZNAKI ZACHÊTY.
+.IP LESSGLOBALTAGS
+Nazwa polecenia wykorzystywanego przez opcjê -t do znalezienia tagów
+globalnych. Normalnie powinno to byæ ustawione na "global", je¶li system
+ma polecenie
+.I global (1).
+Je¶li nie jest ustawione, tagi globalne nie s± u¿ywane.
+.IP LESSKEY
+Nazwa domy¶lnego pliku lesskey(1).
+.IP LESSKEY_SYSTEM
+Nazwa domy¶lnego pliku systemowego lesskey(1).
+.IP LESSMETACHARS
+Lista znaków uwa¿anych za metaznaki przez pow³okê.
+.IP LESSMETAESCAPE
+Przedrostek, który less doda przed ka¿dym metaznakiem w poleceniach wysy³anych
+do pow³oki.  Je¶li LESSMETAESCAPE jest ³añcuchem pustym, polecenia zawieraj±ce
+metaznaki nie bêd± przekazywane pow³oce.
+.IP LESSOPEN
+wiersz poleceñ wywo³uj±ca (opcjonalny) preprocesor wej¶cia.
+.IP LESSSECURE
+Uruchamia less w trybie "bezpiecznym".  Zobacz omówienie w sekcji
+BEZPIECZEÑSTWO.
+.IP LESSSEPARATOR
+£añcuch do do³±czenia do nazwy katalogu przy dokañczaniu nazwy pliku.
+.IP LINES
+Ustawia liczbê linii na ekranie.  Ma priorytet nad liczb± linii okre¶lon±
+przez zmienn± TERM.
+(Jednak je¶li masz system okien obs³uguj±cy TIOCGWINSZ lub WIOCGETD,
+to pojêcie rozmiaru ekranu okre¶lone przez ten system jest nadrzêdne
+w stosunku do zmiennych ¶rodowiskowych LINES i COLUMNS).
+.IP PATH
+¦cie¿ka szukania u¿ytkownika (u¿ywana do znalezienia pliku lesskey w
+systemach MS-DOS i OS/2).
+.IP SHELL
+Pow³oka u¿ywana przy wykonywaniu polecenia ! oraz do rozwijania nazw
+plików.
+.IP TERM
+Typ terminala na którym uruchamiany jest
+.IR less .
+.IP VISUAL
+Nazwa e
+Nazwa edytora (u¿ywanego dla polecenia v).
+
+.SH ZOBACZ TAK¯E
+.BR lesskey (1),
+.BR more (1),
+.BR head (1).
+
+.SH OSTRZE¯ENIA
+Polecenie = i znaki zachêty (chyba ¿e zmieniono je przez -P) podaj±
+numery linii na górze i na dole ekranu, ale offset i pozycjê procentow± linii
+wystêpuj±cej po znajduj±cej siê na dole ekranu.
+.PP
+Je¶li u¿ywa siê polecenia :e do nazwania wiêcej ni¿ jednego pliku,
+a jeden z nazwany plików by³ ogl±dany poprzednio, nowe pliki mog±
+zostaæ do³±czone do listy w nieokre¶lonym porz±dku.
+.PP
+Na pewnych starszych terminalach (tak zwanych terminalach z "magic cookie")
+szukanie z pod¶wietlaniem spowoduje nieprawid³owe wy¶wietlanie.  Na takich
+terminalach szukanie z pod¶wietlaniem jest domy¶lnie wy³±czone, aby
+unikn±æ potencjalnych problemów.
+.PP
+W pewnych przypadkach, kiedy w³±czone jest szukanie z pod¶wietleniem,
+a wzorzec do szukania zaczyna siê od ^, pod¶wietlone mo¿e zostaæ wiêcej
+tekstu ni¿ pasuje.
+(Ten problem nie wystêpuje, gdy less jest skompilowany tak, by u¿ywa³
+pakietu POSIX-owych wyra¿eñ regularnych).
+.PP
+Przy przegl±daniu tekstu zawieraj±cego steruj±ce kolorem sekwencje specjalne
+ANSI, przy pomocy opcji -R, wyszukiwanie mo¿e nie znale¼æ tekstu
+zawieraj±cego w sobie tak± sekwencjê. Oprócz tego, wyszukiwanie mo¿e zmieniæ
+kolor czê¶ci tekstu wystêpuj±cego za pod¶wietlonym.
+.PP
+W niektórych systemach,
+.I setlocale
+twierdzi ¿e znaki ASCII od 0 do 31 s± znakami steruj±cymi, a nie
+binarnymi.  Powoduje to, ¿e
+.I less 
+traktuje pewne pliki binarne jako zwyk³e, niebinarne.  Aby obej¶æ
+ten problem, ustaw zmienn± ¶rodowiskow± LESSCHARSET na "ascii" (albo
+na inny odpowiedni zestaw znaków).
+.PP
+Naj¶wie¿sz± listê b³êdów znanych w tej wersji less znajdziesz na
+http://www.greenwoodsoftware.com/less.
+
+.SH COPYRIGHT
+Copyright (c) 2000  Mark Nudelman
+.PP
+less jest czê¶ci± projektu GNU i stanowi wolne oprogramowanie.
+Mo¿esz go rozprowadzaæ dalej i/lub modyfikowaæ na warunkach albo
+(1) Powszechnej Licencji Publicznej GNU, wydanej przez Fundacjê
+Wolnego Oprogramowania, albo (2) Licencji Less.
+Szczegó³y dotycz±ce rozprowadzania znajdziesz w pliku README pakietu
+dystrybucyjnego less.
+Wraz z less powiniene¶ otrzymaæ egzemplarz Powszechnej Licencji
+Publicznej GNU (GNU General Public License) - zobacz plik COPYING.
+Je¶li nie - napisz do Free Software Foundation, 59 Temple Place,
+Suite 330, Boston, MA  02111-1307, USA.
+Powiniene¶ tak¿e otrzymaæ kopiê Licencji Less - zobacz plik LICENSE.
+less rozpowszechniany jest z nadziej±, i¿ bêdzie u¿yteczny
+- jednak BEZ JAKIEJKOLWIEK GWARANCJI, nawet domy¶lnej gwarancji
+PRZYDATNO¦CI HANDLOWEJ albo PRZYDATNO¦CI DO OKRE¦LONYCH
+ZASTOSOWAÑ. W celu uzyskania bli¿szych informacji siêgnij do
+Powszechnej Licencji Publicznej GNU.
+
+.SH AUTOR
+.PP
+Mark Nudelman <markn@greenwoodsoftware.com>
+.br
+Zg³oszenia b³êdów lub komentarze proszê przesy³aæ na powy¿szy adres
+albo do bug-less@gnu.org.
+.br
+Wiêcej informacji znajdziesz na witrynie macierzystej programu less:
+http://www.greenwoodsoftware.com/less.

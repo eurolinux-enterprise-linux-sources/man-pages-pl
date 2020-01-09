@@ -1,0 +1,225 @@
+.\" T³umaczenie wersji man-pages 1.44 - grudzieñ 2001 PTM
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\"
+.\" This man page is Copyright (C) 1999 Andi Kleen <ak@muc.de>.
+.\" Permission is granted to distribute possibly modified copies
+.\" of this page provided the header is included verbatim,
+.\" and in case of nontrivial modification author and date
+.\" of the modification is added to the header.
+.\" $ Id: cmsg.3,v 1.8 2000/12/20 18:10:31 ak Exp $
+.TH CMSG 3 1998-10-02 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+CMSG_ALIGN, CMSG_SPACE, CMSG_NXTHDR, CMSG_FIRSTHDR \- dostêp do danych
+pomocniczych
+.SH SK£ADNIA
+.B #include <sys/socket.h>
+.br
+.sp 2
+.BI "struct cmsghdr *CMSG_FIRSTHDR(struct msghdr *" msgh );
+.br
+.BI "struct cmsghdr *CMSG_NXTHDR(struct msghdr *" msgh ", struct cmsghdr *" cmsg );
+.br
+.BI "size_t CMSG_ALIGN(size_t " length );
+.br
+.BI "size_t CMSG_SPACE(size_t " length );
+.br
+.BI "size_t CMSG_LEN(size_t " length );
+.br
+.BI "unsigned char *CMSG_DATA(struct cmsghdr *" cmsg );
+.sp
+.nf
+.ta 8n 20n 32n
+struct cmsghdr {
+	socklen_t	cmsg_len;	/* liczba bajtów danych, w³±czaj±c nag³ówek */
+	int	cmsg_level;	/* protokó³ ¼ród³owy */
+	int	cmsg_type;	/* zale¿ny od protoko³u typ */
+/* nastêpuje po nim  unsigned char	cmsg_data[]; */
+};
+.ta
+.fi
+.SH OPIS
+Makrodefinicje te s³u¿± do tworzenia i dostêpu do komunikatów steruj±cych
+(zwanych równie¿ danymi pomocniczymi), które nie s± czê¶ci± gniazda.
+.\" w oryginale: socket payload
+Te informacje steruj±ce mog± zawieraæ: interfejs, przez który pakiet zosta³
+odebrany, ró¿ne rzadko u¿ywane pola nag³ówka, rozszerzony opis b³êdu, zestaw
+deskryptorów plików lub uwierzytelnieñ uniksowych. Na przyk³ad, komunikaty
+steruj±ce mog± s³u¿yæ do ustawiania dodatkowych pól nag³ówka, takich jak opcje
+IP, dla wysy³anych pakietów.
+Dane pomocnicze s± wysy³ane poprzez wywo³anie
+.BR sendmsg (2)
+a otrzymywane poprzez wywo³anie
+.BR recvmsg (2).
+Wiêcej informacji znajduje siê na stronach podrêcznika man dla tych poleceñ.
+.PP
+Dane pomocnicze s± ci±giem struktur
+.B struct cmsghdr
+z dodanymi danymi. Dostêp do tego ci±gu powinien siê odbywaæ wy³±cznie
+poprzez opisane na tej stronie podrêcznika makrodefinicje, nigdy za¶
+bezpo¶rednio. Dostêpne rodzaje komunikatów steruj±cych opisano na stronach
+podrêcznika dla poszczególnych protoko³ów. Maksymalny rozmiar bufora danych
+pomocniczych dla gniazda mo¿na ustawiæ za pomoc± sysctl-a
+.BR net.core.optmem_max ;
+patrz
+.BR socket (7).
+.PP
+.B CMSG_FIRSTHDR
+zwraca wska¼nik do pierwszego
+.B cmsghdr
+w buforze danych pomocniczych zwi±zanym z przekazanym
+.BR msghdr .
+.PP
+.B CMSG_NXTHDR
+zwraca nastêpny poprawny
+.B cmsghdr
+po przekazanym
+.BR cmsghdr .
+Zwraca
+.BR NULL ,
+gdy brak dostatecznej ilo¶ci miejsca w buforze.
+.PP
+.BR CMSG_ALIGN ,
+zadana d³ugo¶æ, zwraca j± w³±czaj±c niezbêdne wyrównanie. Jest to wyra¿enie
+sta³e.
+.PP
+.B CMSG_SPACE
+zwraca liczbê bajtów elementu pomocniczego w³±czaj±c d³ugo¶æ, jak± zajmuj±
+przekazane dane. Jest to wyra¿enie sta³e.
+.PP
+.B CMSG_DATA
+zwraca wska¼nik do czê¶ci
+.B cmsghdr
+zawieraj±cej dane.
+.PP
+.B CMSG_LEN
+zwraca warto¶æ, która ma byæ przechowywana w elemencie
+.I cmsg_len
+struktury
+.BR cmsghdr ,
+bior±c pod uwagê wszelkie niezbêdne wyrównania. Jako argument pobiera d³ugo¶æ
+danych. Jest to wyra¿enie sta³e.
+.PP
+Aby utworzyæ dane pomocnicze, nale¿y najpierw zainicjalizowaæ element
+.I msg_controllen
+struktury
+.B msghdr
+d³ugo¶ci± bufora komunikatów steruj±cych. Nale¿y u¿yæ
+.B CMSG_FIRSTHDR
+dla
+.BR msghdr ,
+aby otrzymaæ pierwszy komunikat steruj±cy oraz
+.BR CMSG_NEXTHDR ,
+aby otrzymaæ wszystkie nastêpne.
+Dla ka¿dego komunikatu steruj±cego nale¿y zainicjalizowaæ
+.I cmsg_len
+(za pomoc±
+.BR CMSG_LEN ),
+inne pola nag³ówka
+.B cmsghdr
+oraz czê¶æ zawieraj±c± dane za pomoc±
+.BR CMSG_DATA .
+Ostatecznie pole
+.I msg_controllen
+struktury
+.B msghdr
+powinno zawieraæ sumê
+.B CMSG_SPACE
+dla d³ugo¶ci wszystkich komunikatów steruj±cych w buforze.
+Wiêcej informacji dotycz±cych
+.BR msghdr ,
+znajduje siê w
+.BR recvmsg (2).
+.PP
+Gdy bufor komunikatów steruj±cych jest za krótki, aby przechowaæ wszystkie
+komunikaty, ustawiany jest znacznik
+.B MSG_CTRUNC
+elementu
+.I msg_flags
+struktury
+.BR msghdr .
+.SH PRZYK£AD
+Nastêpuj±cy kod poszukuje opcji
+.B IP_TTL
+w otrzymanym buforze pomocniczym:
+.PP
+.RS
+.nf
+.ta 8n 16n 32n
+struct msghdr msgh;
+struct cmsghdr *cmsg;
+int *ttlptr;
+int received_ttl;
+
+/* Otrzymywanie danych z zewn±trz do msgh */
+for (cmsg = CMSG_FIRSTHDR(&msgh);
+     cmsg != NULL;
+     cmsg = CMSG_NXTHDR(&msgh,cmsg) {
+	if (cmsg->cmsg_level == SOL_IP
+	  && cmsg->cmsg_type == IP_TTL) {
+		ttlptr = (int *) CMSG_DATA(cmsg);
+		received_ttl = *ttlptr;
+		break;
+	}
+}
+if (cmsg == NULL) {
+	/*
+	 * B³±d: IP_TTL not jest w³±czone, za ma³y bufor lub
+	 * b³±d I/O.
+	 */
+}
+.ta
+.fi
+.RE
+.PP
+Poni¿szy kod przekazuje tablicê deskryptorów plików poprzez gniazdo Uniksa
+.BR SCM_RIGHTS :
+.PP
+.RS
+.nf
+.ta 8n 16n 32n
+struct msghdr msg = {0};
+struct cmsghdr *cmsg;
+int myfds[NUM_FD]; /* Zawiera przekazywane deskryptory plików. */
+char buf[CMSG_SPACE(sizeof myfds)];  /* bufor danych pomocniczych */
+int *fdptr;
+
+msg.msg_control = buf;
+msg.msg_controllen = sizeof buf;
+cmsg = CMSG_FIRSTHDR(&msg);
+cmsg->cmsg_level = SOL_SOCKET;
+cmsg->cmsg_type = SCM_RIGHTS;
+cmsg->cmsg_len = CMSG_LEN(sizeof(int) * NUM_FD);
+/* Inicjalizacja: */
+fdptr = (int *)CMSG_DATA(cmsg);
+memcpy(fdptr, myfds, NUM_FD * sizeof(int));
+/* Suma d³ugo¶ci wszystkich komunikatów steruj±cych w buforze: */
+msg.msg_controllen = cmsg->cmsg_len;
+.ta
+.fi
+.RE
+.SH UWAGI
+Dla przeno¶no¶ci, dostêp do danych pomocniczych powinien siê odbywaæ jedynie 
+za pomoc± opisanych tu makrodefinicji.
+.B CMSG_ALIGN
+jest rozszerzeniem Linuksa i nie powinno byæ u¿ywane w przeno¶nych programach.
+.PP
+W Linuksie,
+.BR CMSG_LEN ,
+.BR CMSG_DATA ,
+i
+.B CMSG_ALIGN
+s± wyra¿eniami sta³ymi (zak³adaj±c, ¿e ich argument jest sta³y) -
+mo¿na to wykorzystaæ do zadeklarowania rozmiaru zmiennych globalnych.
+Jednak¿e, mo¿e siê to okazaæ nieprzeno¶nym.
+.SH "ZGODNE Z"
+Ten model danych pomocniczych jest zgodny ze szkicem POSIX.1003.1g,
+z 4.4BSD-Lite, z zaawansowanym API dla IPv6 opisanym w RFC2292 oraz
+ze specyfikacj± Single Unix v2.
+.B
+CMSG_ALIGN
+jest rozszerzeniem Linuksa.
+.SH "ZOBACZ TAK¯E"
+.BR sendmsg (2),
+.BR recvmsg (2)
+.PP
+RFC 2292

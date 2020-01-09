@@ -1,0 +1,68 @@
+.\" {PTM/PB/0.1/28-09-1998/"zmieñ swoja informacjê fingerow±"}
+.\"
+.\"  chfn.1 -- change your finger information
+.\"  (c) 1994 by salvatore valente <svalente@athena.mit.edu>
+.\"
+.\"  this program is free software.  you can redistribute it and
+.\"  modify it under the terms of the gnu general public license.
+.\"  there is no warranty.
+.\"
+.\"  $Author: wojtek2 $
+.\"  $Revision: 1.4 $
+.\"  $Date: 2000/09/30 17:08:37 $
+.\" Translation (c) 1998 Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.\"
+.TH CHFN 1 "October 13 1994" "chfn" "Podrêcznik referencyjny Linuksa"
+.SH NAZWA
+chfn \- zmieñ swoj± informacjê fingerow±
+.SH SK£ADNIA
+.B chfn
+[\ \-f\ prawdziwe imiê\ ] [\ \-o\ biuro\ ] [\ \-p\ telefon biurowy\ ]
+[\ \-h\ telefon domowy\ ] [\ \-u\ ] [\ \-v\ ] [\ nazwa u¿ytkownika\ ]
+.SH OPIS
+.B chfn
+u¿ywane jest do zmiany danych fingerowych. Dane te s± zapisane w
+pliku
+.I /etc/passwd
+i wy¶wietlane przez program
+.B finger .
+Linuksowy
+.B finger
+wy¶wietla cztery dane, które mog± byæ zmienione przez
+.B chfn
+: twoje prawdziwe imiê, pokój pracy i telefon, telefon domowy.
+.SS LINIA KOMEND
+Wszystkie te cztery elementy moga byæ podane z linii komend. Je¶li nie
+podano informacji w linii komend, 
+.B chfn
+przechodzi w tryb interaktywny.
+.SS TRYB INTERAKTYWNY
+W trybie interaktywnym,
+.B chfn
+pyta o ka¿de pole. Przy prompcie mo¿esz wstawiæ nowe dane, lub nacisn±æ
+enter aby pozostawiæ pole bez zmiany. Je¶li chcesz uczyniæ pole pustym,
+wprowad¼ s³owo kluczowe "none".
+.SH OPCJE
+.TP
+.I "\-f, \-\-full-name"
+Podaj swoje imiê.
+.TP
+.I "\-o, \-\-office"
+Podaj swoje biuro i numer pokoju.
+.TP
+.I "\-p, \-\-office-phone"
+Podaj telefon biurowy.
+.TP
+.I "\-h, \-\-home-phone"
+Podaj telefon domowy.
+.TP
+.I "\-u, \-\-help"
+Wydrukuj informacjê o u¿ywaniu i zakoñcz program.
+.TP
+.I "-v, \-\-version"
+Wydrukuj wersjê i zakoñcz program.
+.SH "ZOBACZ TAK¯E"
+.BR finger (1),
+.BR passwd (5)
+.SH AUTOR
+Salvatore Valente <svalente@mit.edu>

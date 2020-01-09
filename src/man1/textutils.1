@@ -1,0 +1,714 @@
+.\" {PTM/WK/2000-V}
+.ig
+Transl.note: based on GNU textutils.info
+FSF notice for tekstutils docs follows:
+ 
+Copyright 1994, 95, 96, 1999 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+..
+.TH TEXTUTILS "1" FSF "sierpieñ 1999" "Narzêdzia tekstowe GNU 2.0"
+.SH NAZWA
+textutils - opis pakietu narzêdzi tekstowych GNU
+.SH OD T£UMACZA
+Podrêczniki man dla narzêdzi tekstowych GNU nie s± ju¿ rozwijane.
+Niniejsza strona podrêcznika powsta³a jako t³umaczenie, u¿ywanej
+przez twórców jako podstawowej, dokumentacji formatu info.
+W pliku, który czytasz umieszczono czê¶æ dokumentacji dotycz±c± wspólnych
+cech i opcji programów oraz informacje, które z ró¿nych przyczyn nie znalaz³y
+siê na stronach opisuj±cych poszczególne polecenia pakietu.
+Szczegó³owe opisy samych poleceñ znajdziesz we w³a¶ciwych, osobnych
+stronach podrêcznika.
+.SH WSTÊP
+Niniejszy podrêcznik opisuje zestaw narzêdzi tekstowych GNU w wersji 2.0.
+
+Jak i inne podrêczniki pakietu, i ten nie jest wyczerpuj±cy: nie usi³owano
+wyja¶niæ podstawowych pojêæ w sposób odpowiedni dla nowicjuszy. Zatem, je¶li
+jeste¶ zainteresowany, w³±cz siê, proszê, w udoskonalanie go. Skorzysta
+na tym ca³a wspólnota GNU.
+
+Narzêdzia tekstowe GNU s± w wiêkszo¶ci zgodne ze standardem POSIX.2.
+
+B³êdy proszê zg³aszaæ, w jêz.angielskim, do <bug-fileutils@gnu.org>. Pamiêtaj,
+by zamie¶ciæ numer wersji, architekturê maszyny, pliki wej¶ciowe i inne
+informacje potrzebne do powielenia b³êdu: wprowadzane znaki, czego siê
+spodziewa³e¶, co otrzyma³e¶ i dlaczego jest to ¼le. Pliki diff s± mile
+widziane, ale proszê do³±czyæ równie¿ opis problemu, gdy¿ czasem ciê¿ko
+jest wyci±gn±æ wnioski.
+
+Podrêcznik ten powsta³ pierwotnie na bazie uniksowych stron man napisanych
+przez Davida MacKenzie i aktualizowanych przez Jima Meyeringa. Autorytatywn±
+dokumentacj± jest obecnie dokumentacja w formacie info; strony man nie s±
+ju¿ rozwijane i aktualizowane.
+Franc,ois Pinard wykona³ wstêpn± konwersjê do formatu Texinfo. Karl
+Berry wykona³ indeksy, trochê reorganizacji i edycji wyników.
+Richard Stallman wniós³ swój zwyk³y nieoceniony wgl±d w ca³o¶æ procesu.
+.SH ZAWARTO¦Æ PAKIETU
+Obecnie pakiet narzêdzi tekstowych GNU zawiera dwadzie¶cia kilka programów:
+.SS Wypisywanie ca³o¶ci plików
+.RS 4
+.nf
+cat         ³±czenie i wypisywanie plików
+tac         ³±czenie i wypisywanie odwróconych plików
+nl          numerowanie linii i wypisywanie plików
+od          wypisywanie plików w formacie ósemkowym i innych
+.fi
+.RE
+.SS Formatowanie zawarto¶ci plików
+.RS 4
+.nf
+fmt         reformatowanie akapitów tekstu
+pr          stronicowanie i kolumnowanie plików do wydruku
+fold        zawijanie linii wej¶ciowych do zadanej szeroko¶ci 
+.fi
+.RE
+.SS Wypisywanie czê¶ci plików
+.RS 4
+.nf
+head        wypisywanie pocz±tku plików
+tail        wypisywanie koñcówki plików
+split       podzia³ pliku na czê¶ci sta³ej wielko¶ci
+csplit      podzia³ pliku na czê¶ci zale¿ne od kontekstu
+.fi
+.RE
+.SS Podsumowywanie plików
+.RS 4
+.nf
+wc          wypisywanie liczby bajtów, s³ów i linii
+sum         wypisywanie sumy kontrolnej i liczby bloków
+csum        wypisywanie sumy CRC liczby bloków
+md5sum      wypisywanie lub sprawdzanie skrótu danych
+.fi
+.RE
+.SS Sortowanie i dzia³ania na plikach posortowanych
+.RS 4
+.nf
+sort        sortowanie plików tekstowych
+uniq        pozostawianie unikalnych linii w pliku
+comm        porównywanie dwu posortowanych plików liniami
+ptx         tworzenie indeksu permutacyjnego zawarto¶ci pliku
+tsort       sortowanie topologiczne
+.fi
+.RE
+.SS Dzia³ania na polach wewn±trz linii
+.RS 4
+.nf
+cut         wypisywanie wybranych czê¶ci linii
+paste       zlepianie linii plików
+join        ³±czenie linii wed³ug wspólnego pola
+.fi
+.RE
+.SS Dzia³ania na znakach
+.RS 4
+.nf
+tr          zamiana, ¶ciskanie, usuwanie znaków
+expand      zamiana tabulacji na spacje
+unexpand    zamiana spacji na tabulacje
+.fi
+.RE
+.SH OPCJE WSPÓLNE
+Pewne opcje dostêpne s± we wszystkich opisywanych programach (naprawdê
+powinien je przyjmowaæ ka¿dy z programów GNU).
+.TP
+.B --help
+Wy¶wietla informacjê o stosowaniu programu i listê wszystkich dostêpnych opcji,
+pomy¶lnie koñczy pracê.
+.TP
+.B --version
+Wy¶wietla numer wersji programu i pomy¶lnie koñczy pracê.
+.SH Otwarcie skrzynki narzêdziowej z programami
+.\" Opening the software toolbox
+Ten rozdzia³ pierwotnie pojawi³ siê w 'Linux Journal', volume 1, nr 2,
+na kolumnie `What's GNU?'. Zosta³ napisany przez Arnolda Robbinsa.
+.SS Wprowadzenie
+W tym miesi±cu artyku³ jest tylko ubocznie zwi±zany z Projektem GNU,
+gdy¿ opisuje kilka narzêdzi GNU obecnych w systemie Linux i sposoby,
+na jakie mo¿esz z nich korzystaæ. Faktycznie artyku³ jest o filozofii
+"Narzêdzi programowych" w rozwijaniu i wykorzystywaniu programów.
+
+Filozofia narzêdzi programowych by³a wa¿nym i integralnym pojêciem
+w pocz±tkowym projekcie i rozwoju Uniksa (którego Linux i GNU s± zasadniczo
+klonami). Niestety, przy wspó³czesnym nacisku intersieci i b³yskotliwych GUI,
+wydaje siê, ¿e idea ta spad³a na pobocze. To wstyd, poniewa¿ zapewnia ona
+potê¿ny model my¶lowy do rozwi±zywania wielu rodzajów problemów.
+
+Sporo ludzi nosi w kieszeniach spodni szwajcarski scyzoryk. Scyzoryk jest
+wygodnym narzêdziem: ma kilka ostrzy, ¶rubokrêt, pincetê, wyka³aczkê, zestaw
+gwo¼dzi, korkoci±g i mo¿e kilka innych rzeczy. Do codziennych drobnych,
+ró¿norodnych zadañ, gdzie potrzebujesz prostego narzêdzia ogólnego
+zastosowania, jest w³a¶nie tym, o co chodzi.
+
+Z drugiej strony, do¶wiadczony cie¶la nie buduje domu scyzorykiem.
+Zamiast tego ma skrzynkê wypchan± specjalizowanymi narzêdziami -- jest tam
+pi³a, m³otek, ¶rubokrêt, strug i tak dalej. I dok³adnie wie kiedy i gdzie
+u¿yæ ka¿dego z narzêdzi. Nie przy³apa³by¶ go na wbijaniu gwo¼dzi rêkoje¶ci±
+¶rubokrêtu.
+
+Konstruktorzy Uniksa w Bell Labs byli ca³kiem zawodowymi programistami
+i wyszkolonymi naukowcami komputerowymi. Zauwa¿yli, ¿e choæ rozwi±zanie
+wszystko-w-jednym mo¿e przyci±gaæ u¿ytkownika, gdy¿ ma on tylko jeden program
+do korzystania, w praktyce programy takie s±
+
+a. trudne do napisania,
+
+b. trudne w konserwacji i usuwaniu b³êdów, oraz
+
+c. trudne do rozbudowy, przystosowania do nowych sytuacji.
+
+Uwa¿ali, ¿e zamiast tego, programy powinny byæ specjalizowanymi narzêdziami.
+Krótko mówi±c, ka¿dy program "powinien robiæ jedn± rzecz dobrze". Nie wiêcej
+i nie mniej. Takie programy s± ³atwiejsze do zaprojektowania, napisania
+i zrozumienia -- robi± tylko jedn± rzecz.
+
+Ponadto zauwa¿yli, ¿e przy odpowiednim mechanizmie ³±czenia programów
+ca³o¶æ jest wiêksza od sumy sk³adowych. Wi±¿±c kilka specjalizowanych programów
+mo¿esz zrealizowaæ konkretne zadanie, do którego ¿aden z nich nie by³
+projektowany i osi±gn±æ to du¿o szybciej i ³atwiej ni¿ pisz±c dla niego
+specjalizowany program. W dalszej czê¶ci artyku³u zobaczymy kilka (klasycznych)
+tego przyk³adów. Wa¿nym dodatkowym punktem by³o to, ¿e je¶li jest to niezbêdne,
+nale¿y najpierw zrobiæ narzêdzia, które bêd± potrzebne, je¿eli nie ma siê
+jeszcze odpowiednich w skrzynce narzêdziowej.
+.SS Przekierowanie wej¶cia/wyj¶cia
+Mam nadziejê, ¿e jeste¶ obeznany z podstawami przekierowywania wej¶cia/wyj¶cia
+w pow³oce, w szczególno¶ci z pojêciami "standardowego wej¶cia", "standardowego
+wyj¶cia" i "standardowego wyj¶cia b³êdów (diagnostycznego)". Zwiê¼le:
+"standardowe wej¶cie" jest ¼ród³em danych, sk±d pochodz± dane. Program nie musi
+wiedzieæ ani dbaæ o to, czy ¼ród³em danych jest plik dyskowy, klawiatura,
+ta¶ma magnetyczna czy nawet czytnik kart perforowanych. Podobnie, "standardowe
+wyj¶cie" jest odp³ywem danych, dok±d dane sp³ywaj±. Program nie powinien ani
+wiedzieæ ani dbaæ o to, gdzie to mo¿e byæ. Programy, które tylko czytaj± swoje
+standardowe wej¶cie, robi± co¶ z tymi danymi i wysy³aj± je na standardowe
+wyj¶cie, nazywane s± "filtrami", przez analogiê do filtrów w wodoci±gach.
+
+W pow³oce uniksowej bardzo ³atwo jest zestawiæ potoki danych:
+[t³um.: ang.'pipeline' to 'ruroci±g' lub, w informatyce, 'potok']
+.nf
+
+    program_tworzacy_dane | filtr1 | .... | filtrN > koncowe.dane
+
+.fi
+Zaczynamy od utworzenia surowych danych pierwotnych. Ka¿dy z filtrów stosuje
+pewne kolejne przekszta³cenie danych, a¿ wychodz±c z potoku bêd± one mieæ
+po¿±dan± postaæ.
+
+To jest eleganckie i dobre dla standardowego wej¶cia i standardowego wyj¶cia.
+A gdzie siê tu pojawia standardowe wyj¶cie b³êdów? Có¿, pomy¶lmy o 'filtr1'
+w powy¿szym potoku. Co siê stanie, je¶li napotka on b³±d w przyjmowanych
+danych? Je¿eli wypisze komunikat o b³êdzie na standardowe wyj¶cie, to po prostu
+zniknie on w potoku wej¶cia do 'filtr2' a u¿ytkownik zapewne nigdy go
+nie zobaczy. Zatem programi¶ci potrzebuj± miejsca, gdzie mogliby wysy³aæ
+komunikaty o b³êdach, tak by u¿ytkownik je zauwa¿y³. Jest to standardowe
+wyj¶cie diagnostyczne i zwykle zwi±zane jest z twoj± konsol± lub oknem,
+nawet je¶li przekierowa³e¶ standardowe wyj¶cie programu gdzie¶ poza ekran.
+
+Aby programy filtruj±ce mog³y wspó³dzia³aæ, musi zostaæ uzgodniony format
+danych. Najprostszym i naj³atwiejszym w wykorzystaniu formatem s± zwyk³e
+wiersze tekstu. Uniksowe pliki danych s± zazwyczaj po prostu strumieniami
+bajtów, o wierszach zakoñczonych znakiem LF ASCII (Line Feed - wysuw linii),
+konwencjonalnie w literaturze dotycz±cej Uniksa nazywanym "znakiem nowej linii"
+(newline). (Jest to '\\n' je¶li programujesz w C.) To format stosowany przez
+wszystkie tradycyjne programy filtruj±ce. (Wiele wcze¶niejszych systemów
+operacyjnych wypracowa³o ¶rodki i specjalizowane programy do obs³ugi danych
+binarnych. Unix zawsze wystrzega³ siê takich rzeczy, zgodnie z filozofi±,
+¿e naj³atwiej jest móc przegl±daæ i modyfikowaæ dane po prostu edytorem
+tekstu.)
+
+Dobrze, starczy wprowadzenia. Przyjrzyjmy siê niektórym narzêdziom,
+a wtedy zobaczymy jak wi±zaæ je ze sob± na ciekawe sposoby. W dalszych
+rozwa¿aniach poka¿emy tylko te opcje wiersza poleceñ, które nas interesuj±.
+Tak jak zawsze powiniene¶, dwukrotnie sprawd¼ dokumentacjê systemow±.
+Znajdziesz tam pe³ne opisy.
+.SS Polecenie 'who'
+Pierwszym programem jest polecenie 'who'. Samodzielne, tworzy listê aktualnie
+zalogowanych u¿ytkowników. Mimo, ¿e piszê to w systemie jednou¿ytkownikowym,
+bêdziemy udawaæ, ¿e zalogowanych jest kilka osób:
+.nf
+
+     $ who
+     arnold   console Jan 22 19:57
+     miriam   ttyp0   Jan 23 14:19(:0.0)
+     bill     ttyp1   Jan 21 09:32(:0.0)
+     arnold   ttyp2   Jan 23 20:48(:0.0)
+
+.fi
+Znak '$' jest tu zwyczajow± zachêt± pow³oki, po której napisa³em 'who'.
+Zalogowane s± trzy osoby, w tym ja dwukrotnie. W tradycyjnych systemach Unix
+nazwy u¿ytkowników nigdy nie maj± wiêcej ni¿ osiem znaków. Ta ma³a ciekawostka
+przyda siê pó¼niej. Wyj¶cie z 'who' wygl±da ³adnie, ale dane nie s± a¿ tak
+pasjonuj±ce.
+.SS Polecenie 'cut'
+Nastêpnym programem, któremu siê przygl±dniemy jest polecenie 'cut' (wytnij).
+Wycina ono kolumny lub pola z danych wej¶ciowych. Na przyk³ad, mo¿emy nakazaæ
+mu wypisanie tylko nazwy zg³oszeniowej i nazwiska z pliku /etc/passwd.
+Plik posiada siedem pól, rozdzielonych dwukropkami:
+.nf
+
+     arnold:xyzzy:2076:10:Arnold D. Robbins:/home/arnold:/bin/ksh
+
+.fi
+Do pobrania pierwszego i pi±tego pola, u¿yliby¶my takiego wycinania:
+.nf
+
+     $ cut -d: -f1,5 /etc/passwd
+     root:Operator
+     ...
+     arnold:Arnold D. Robbins
+     miriam:Miriam A. Robbins
+     ...
+
+.fi
+Z opcj± '-c', 'cut' wycina konkretne znaki (tj. kolumny) wierszy wej¶ciowych.
+To polecenie wygl±da na przydatne do filtrowania danych.
+.SS Polecenie 'sort'
+Nastêpnie przyjrzymy siê 'sort'. To jedno z najpotê¿niejszych
+poleceñ w systemie typu uniksowego. Czêsto bêdziesz go u¿ywa³ przy
+konstruowaniu ró¿nych wymy¶lnych ruroci±gów. 'sort' czyta i sortuje ka¿dy
+z podanych w wierszu poleceñ plików. Nastêpnie scala uporz±dkowane dane
+i wypisuje na standardowe wyj¶cie. Je¶li w wierszu poleceñ nie poda siê
+¿adnych nazw plików to czyta standardowe wej¶cie (w ten sposób robimy zeñ
+filtr). Sortowanie oparte jest na leksykograficznym porz±dku znaków lub
+kryteriach porz±dkowania zadanych przez u¿ytkownika.
+.SS Polecenie `uniq'
+Na koniec (przynajmniej na razie), przygl±dniemy siê programowi 'uniq'.
+Przy sortowaniu danych czêsto uzyskasz powtórzone wiersze, wiersze,
+które s± identyczne. Zazwyczaj potrzebujesz tylko jednego wyst±pienia ka¿dego
+z nich. Tu w³a¶nie pojawia siê 'uniq'. Czyta on ze swego standardowego wej¶cia,
+spodziewaj±c siê, ¿e jest ono posortowane. Wypisuje tylko jeden egzemplarz
+ka¿dego zduplikowanego wiersza. 'uniq' ma kilka opcji. W dalszym ci±gu
+wykorzystamy opcjê '-c', wypisuj±c± przed niepowtarzalnym wierszem
+ile razy wyst±pi³ on w danych wej¶ciowych.
+.SS £±czenie narzêdzi
+Za³ó¿my teraz, ¿e mamy system BBS z zalogowanymi dziesi±tkami
+u¿ytkowników. Zarz±dzaj±cy chc±, by operator systemu (SysOp) napisa³
+program tworz±cy posortowan± listê zalogowanych u¿ytkowników.
+Co wiêcej, nawet je¶li u¿ytkownik jest zalogowany wielokrotnie, jego nazwa
+powinna w wyniku pojawiæ siê tylko raz.
+
+SysOp móg³by si±¶æ z dokumentacj± systemow± i napisaæ program w C, który
+by to robi³. Kosztowa³oby to pewnie kilkaset linii kodu i oko³o dwu godzin
+pisania, testowania i usuwania b³êdów. Jednak, znaj±c narzêdzia programowe,
+SysOp mo¿e zamiast tego zacz±æ od utworzenia tylko listy zalogowanych
+u¿ytkowników:
+.nf
+
+     $ who | cut -c1-8
+     arnold
+     miriam
+     bill
+     arnold
+
+.fi
+Nastêpnie, posortowaæ listê:
+.nf
+
+     $ who | cut -c1-8 | sort
+     arnold
+     arnold
+     bill
+     miriam
+
+.fi
+Na koniec, przepu¶ciæ posortowan± listê przez 'uniq', by wypieliæ duplikaty:
+.nf
+
+     $ who | cut -c1-8 | sort | uniq
+     arnold
+     bill
+     miriam
+
+.fi
+Polecenie 'sort' faktycznie posiada opcjê '-u', która robi to, co 'uniq'.
+Jednak 'uniq' ma inne zastosowania, w których nie mo¿na go zast±piæ
+przez 'sort -u'.
+
+SysOp umieszcza ten potok w skrypcie pow³oki i udostêpnia go wszystkim
+u¿ytkownikom systemu:
+.nf
+
+     # cat > /usr/local/bin/listusers
+     who | cut -c1-8 | sort | uniq
+     ^D
+     # chmod +x /usr/local/bin/listusers
+
+.fi
+Warto tu zauwa¿yæ cztery zalety. Po pierwsze, przy pomocy zaledwie
+czterech programów, w jednej linii poleceñ, SysOp móg³ oszczêdziæ oko³o
+dwu godzin pracy. Co wiêcej, potok pow³oki jest prawie tak samo wydajny,
+jak by³by program w C, a o wiele bardziej efektywny je¶li chodzi o czas
+programisty. Czas ludzki jest o wiele kosztowniejszy ni¿ czas komputera,
+a w naszym wspó³czesnym spo³eczeñstwie, gdzie "nigdy nie ma do¶æ czasu by
+wszystko zrobiæ", zaoszczêdzenie dwu godzin czasu programisty jest
+nie byle jakim wyczynem.
+
+Po drugie, równie istotne jest podkre¶lenie, ¿e przy pomocy _po³±czenia_
+narzêdzi mo¿liwe jest wykonanie specyficznego zadania, nigdy
+nie przewidywanego przez autorów pojedynczych programów.
+
+Po trzecie, warto¶ciowe jest te¿ stopniowe budowanie potoku, jak to
+zrobili¶my. Pozwala ono na przygl±dniêcie siê danym na ka¿dym etapie
+przebiegu potoku, co pomaga uzyskaæ pewno¶æ, ¿e rzeczywi¶cie poprawnie
+u¿ywasz narzêdzi.
+
+Na koniec, dziêki zapakowaniu potoku w skrypt pow³oki, inni u¿ytkownicy mog±
+korzystaæ z twojego polecenia, nie musz±c pamiêtaæ o zawarto¶ci tego
+wymy¶lnego opakowania. Z punktu widzenia sposobu uruchamiania, skrypty pow³oki
+i skompilowane programy s± nierozró¿nialne.
+
+Po uprzedniej rozgrzewce, przypatrzymy siê dwu kolejnym, bardziej
+skomplikowanym potokom.
+Potrzebujemy dla nich wprowadziæ jeszcze dwa narzêdzia.
+
+Pierwszym jest polecenie 'tr', oznaczaj±ce "transliteracjê".
+Polecenie 'tr' wymienia znaki, dzia³aj±c na zasadzie znak-na-znak.
+Zwykle stosowane jest do takich rzeczy jak odwzorowanie du¿ych liter
+na ma³e.
+.nf
+
+     $ echo ThIs ExAmPlE HaS MIXED case! | tr '[A-Z]' '[a-z]'
+     this example has mixed case!
+
+.fi
+Interesuje nas kilka opcji:
+.TP
+\-c
+dzia³a na dope³nieniu wskazanych znaków, tj. dzia³ania odnosz± siê
+do znaków spoza zadanego zestawu
+.TP
+\-d
+usuwa z wyniku znaki okre¶lone w pierwszym zestawie
+.TP
+\-s
+¶ciska w wyniku powtórzone znaki w pojedynczy znak.
+.PP
+Za chwilê bêdziemy korzystaæ ze wszystkich trzech opcji.
+
+Innym poleceniem, któremu siê przyjrzymy jest 'comm'. Pobiera ono dwa
+posortowane pliki jako dane wej¶ciowe i wypisuje ich wiersze w trzech
+kolumnach. Kolumny wynikowe s± unikalnymi wierszami z pierwszego pliku,
+unikalnymi wierszami z drugiego pliku i wierszami danych wspólnymi dla obu.
+Opcje '1', '-2' i '3' pomijaj± odpowiednie kolumny. Nie jest to intuicyjne
+i wymaga pewnego przywykniêcia. Na przyk³ad:
+.nf
+
+     $ cat f1
+     11111
+     22222
+     33333
+     44444
+     $ cat f2
+     00000
+     22222
+     33333
+     55555
+     $ comm f1 f2
+             00000
+     11111
+                     22222
+                     33333
+     44444
+             55555
+
+.fi
+Pojedyncza kreska jako nazwa pliku nakazuje 'comm' czytanie standardowego
+wej¶cia zamiast zwyk³ego pliku.
+
+Jeste¶my teraz gotowi do skonstruowania wymy¶lnego potoku.
+Pierwszym zastosowaniem jest licznik czêsto¶ci s³ów. Pomaga autorowi
+stwierdziæ, czy nie nadu¿ywa on pewnych s³ów.
+
+Pierwszym krokiem jest zmiana wielko¶ci wszystkich liter z pliku wej¶ciowego
+na jedn± wielko¶æ. "to" i "To" przy zliczaniu s± tym samym s³owem.
+.nf
+
+     $ tr '[A-Z]' '[a-z]' < whats.gnu | ...
+
+.fi
+[t³um.: zauwa¿, ¿e dla jêzyka polskiego, podobnie jak w nastêpnym kroku,
+nale¿y uwzglêdniæ dodatkowo nasze znaki diakrytyczne. Mo¿na do³±czyæ je
+do podanego zakresu lub, lepiej, pos³u¿yæ siê klas± znaków i ustawieniami
+narodowymi - zobacz \fBtr\fP(1).]
+.br
+Nastêpnym krokiem jest pozbycie siê znaków przestankowych. S³owa cytowane
+i niecytowane powinny byæ traktowane identycznie; naj³atwiej bêdzie po prostu
+wyrzuciæ zawadzaj±c± interpunkcjê.
+.nf
+
+     $ tr '[A-Z]' '[a-z]' < whats.gnu | tr -cd '[A-Za-z0-9_ \012]' | ...
+
+.fi
+Drugie polecenie 'tr' dzia³a na dope³nieniu podanych znaków, którymi s±
+litery, cyfry, podkre¶lenie i odstêp. '\012' oznacza znak nowej linii,
+nale¿y go pozostawiæ. Dla dobrego pomiaru w dzia³aj±cym skrypcie
+powinien byæ te¿ zawarty znak tabulacji (ASCII tab).
+
+Na tym etapie, mamy dane sk³adaj±ce siê ze s³ów rozdzielonych odstêpami.
+S³owa zawieraj± wy³±cznie znaki alfanumeryczne i znak podkre¶lenia.
+Nastêpnym krokiem jest rozbicie danych na czê¶ci tak, by¶my mieli po jednym
+s³owie w wierszu. Jak wkrótce zobaczymy, znacznie u³atwia to zliczanie.
+.nf
+
+     $ tr '[A-Z]' '[a-z]' < whats.gnu | tr -cd '[A-Za-z0-9_ \012]' |
+     > tr -s '[ ]' '\012' | ...
+
+.fi
+To polecenie zamienia odstêpy w znaki nowej linii. Opcja '-s' ¶ciska
+wielokrotne znaki nowej linii wyniku w pojedynczy. Pomaga nam to unikn±æ
+pustych wierszy. (Znak '>' jest tu wtórnym znakiem zachêty pow³oki. Pow³oka
+wypisuje go, gdy zauwa¿y, ¿e nie zakoñczy³e¶ wpisywania ca³ego polecenia.)
+
+Teraz mamy dane sk³adaj±ce siê z jednego s³owa w ka¿dym wierszu, bez znaków
+interpunkcyjnych, wszystkie pisane jedn± wielko¶ci±.
+Jeste¶my gotowi do zliczania ka¿dego z nich:
+.nf
+
+     $ tr '[A-Z]' '[a-z]' < whats.gnu | tr -cd '[A-Za-z0-9_ \012]' |
+     > tr -s '[ ]' '\012' | sort | uniq -c | ...
+
+.fi
+Na tym etapie, dane mog± wygl±daæ jako¶ tak:
+.nf
+
+       60 a
+        2 able
+        6 about
+        1 above
+        2 accomplish
+        1 acquire
+        1 actually
+        2 additional
+
+.fi
+Wynik jest posortowany wed³ug s³ów, nie wed³ug liczby wyst±pieñ!
+Chcieliby¶my natomiast mieæ jako pierwsze najczê¶ciej u¿ywane s³owa.
+Na szczê¶cie, ³atwo to osi±gn±æ przy pomocy dwu dodatkowych opcji 'sort':
+.TP
+\-n
+wykonuje sortowanie liczbowe, a nie tekstowe
+.TP
+\-r
+odwraca kolejno¶æ sortowania
+.PP
+Ostateczny potok wygl±da tak:
+.nf
+
+     $ tr '[A-Z]' '[a-z]' < whats.gnu | tr -cd '[A-Za-z0-9_ \012]' |
+     > tr -s '[ ]' '\012' | sort | uniq -c | sort -nr
+      156 the
+       60 a
+       58 to
+       51 of
+       51 and
+      ...
+
+.fi
+No, no! Sporo do opowiadania. Nadal jednak obowi±zuj± te same zasady.
+Przy pomocy sze¶ciu poleceñ, w dwu wierszach (faktycznie jednej d³ugiej linii
+podzielonej dla wygody), stworzyli¶my program, który robi co¶ ciekawego
+i po¿ytecznego, w du¿o krótszym czasie ni¿ mogliby¶my napisaæ program w C
+robi±cy to samo.
+
+Niewielkie zmiany w powy¿szym potoku mog± nam daæ prosty korektor pisowni!
+Do stwierdzenia, czy napisa³e¶ poprawnie jakie¶ s³owo wystarczy, ¿e
+poszukasz go w s³owniku. Je¶li w nim nie wystêpuje, to mo¿liwe, ¿e twoja
+pisownia jest nieprawid³owa. Tak wiêc, potrzebujemy s³ownika. Je¿eli masz
+dystrybucjê Slackware Linux, to plik '/usr/lib/ispell/ispell.words' jest
+posortowanym, zawieraj±cym 38.400 s³ów, s³ownikiem.
+
+Zatem, jak porównaæ nasz plik ze s³ownikiem? Jak poprzednio, utworzymy
+posortowan± listê s³ów, po jednym w wierszu:
+.nf
+
+     $ tr '[A-Z]' '[a-z]' < whats.gnu | tr -cd '[A-Za-z0-9_ \012]' |
+     > tr -s '[ ]' '\012' | sort -u | ...
+
+.fi
+Teraz potrzebujemy tylko listy s³ów, których NIE MA w s³owniku.
+Tu w³a¶nie pojawia siê polecenie 'comm'.
+.nf
+
+     $ tr '[A-Z]' '[a-z]' < whats.gnu | tr -cd '[A-Za-z0-9_ \012]' |
+     > tr -s '[ ]' '\012' | sort -u |
+     > comm -23 - /usr/lib/ispell/ispell.words
+
+.fi
+Opcje '-2' i '-3' likwiduj± wiersze wystêpuj±ce tylko s³owniku (drugi plik),
+i wystêpuj±ce w obu plikach. Wiersze obecne tylko w pierwszym pliku
+(standardowe wej¶cie, nasz strumieñ s³ów), s± s³owami, których nie ma
+w s³owniku. S± to prawdopodobne b³êdy pisowni.
+Taki potok by³ pierwszym etapem budowy korektora pisowni w Uniksie.
+
+Istnieje jeszcze kilka innych narzêdzi wymagaj±cych krótkiej wzmianki.
+.TP
+grep
+szuka w plikach tekstu pasuj±cego do wyra¿enia regularnego
+.TP
+egrep
+jak 'grep', ale z bardziej rozbudowanymi wyra¿eniami regularnymi
+.TP
+wc
+zlicza wiersze, s³owa, znaki
+.TP
+tee
+kopiuje dane do plików i na standardowe wyj¶cie;
+dzia³a jak T-kszta³tka w ruroci±gu danych
+.TP
+sed
+edytor strumieniowy, zaawansowane narzêdzie
+.TP
+awk
+jêzyk manipulacji danymi, kolejne zaawansowane narzêdzie
+.PP
+Filozofia narzêdzi programowych daje te¿ nastêpuj±c± radê: "Niech kto¶
+inny zrobi trudn± czê¶æ pracy".
+To znaczy, we¼ co¶, co zaspokoi wiêkszo¶æ twoich potrzeb, a nastêpnie
+przekszta³caj dalej, a¿ uzyskasz po¿±dan± postaæ.
+
+Podsumowuj±c:
+.IP 1.
+Ka¿dy program powinien robiæ jedn± rzecz, ale dobrze. Nie wiêcej, nie mniej.
+.IP 2.
+£±czenie programów w odpowiedni sposób prowadzi do rezultatu, gdzie
+ca³o¶æ jest wiêksza od sumy czê¶ci. Prowadzi te¿ do nowatorskich
+zastosowañ programów, których ich autorzy nawet sobie nie wyobra¿ali.
+.IP 3.
+Programy nigdy nie powinny wypisywaæ dodatkowych danych nag³ówkowych
+czy koñcz±cych, gdy¿ mog³yby one zostaæ przes³ane potokiem.
+(Cecha, o której wcze¶niej nie wspominali¶my).
+.IP 4.
+Niech kto¶ inny wykona trudn± czê¶æ roboty.
+.IP 5.
+Znaj swoje narzêdzia! Ka¿dego programu u¿ywaj we w³a¶ciwy sposób.
+Je¿eli nie masz odpowiedniego narzêdzia - zrób je.
+.PP
+W chwili powstania tego artyku³u, wszystkie omawiane programy by³y dostêpne
+przez anonimowe ftp z \fBprep.ai.mit.edu\fP jako
+\fI/pub/gnu/textutils-1.9.tar.gz\fP.
+Wersja 1.9 by³a wówczas bie¿±c±. Sprawd¼ w najbli¿szym archiwum GNU jaka
+wersja jest aktualnie bie¿±ca.
+G³ówn± siedzib± archiwum jest obecnie \fBftp.gnu.org\fP.
+
+Nic z tego, co przedstawi³em w tym artykule nie jest nowe. Filozofia Narzêdzi
+Programowych zosta³a po raz pierwszy wprowadzona w ksi±¿ce 'Software Tools',
+Briana Kernighana i P.J. Plaugera (Addison-Wesley, ISBN 0-201-03669-X).
+Ksi±¿ka ta pokazywa³a jak pisaæ i wykorzystywaæ narzêdzia programowe.
+Zosta³a napisana w 1976, korzystaj±c z preprocesora FORTRAN-u o nazwie 'ratfor'
+(RATional FORtran). Wówczas C nie by³ tak wszechobecny jak dzi¶. FORTRAN by³.
+Ostatni rozdzia³ przedstawia³ 'ratfor' dla procesora FORTRAN-u, napisany w
+'ratforze'. 'ratfor' wygl±da bardzo podobnie do C -- je¶li znasz C,
+nie bêdziesz mieæ ¿adnych k³opotów ze zrozumieniem kodu.
+
+W 1981 ksi±¿ka ta zosta³a zaktualizowana i udostêpniona jako 'Software Tools
+in Pascal' (Addison-Wesley, ISBN 0-201-10342-7). Obie ksi±¿ki s± nadal
+drukowane i s± rzeczywi¶cie warte przeczytania je¶li jeste¶ programist±.
+Z pewno¶ci± bardzo zmieni³y mój punkt widzenia na programowanie.
+
+Pocz±tkowo programy z obu ksi±¿ek by³y dostêpne (na 9-calowej ta¶mie)
+z Addison-Wesley. Niestety, ju¿ tak nie jest, mimo ¿e mo¿esz znale¼æ kopie
+rozproszone w Internecie. Przez wiele lat dzia³a³a Software Tools Users Group
+\- Grupa U¿ytkowników Narzêdzi Programowych, której cz³onkowie przenie¶li
+pierwotne programy 'ratforu' na niemal ka¿dy system komputerowy z kompilatorem
+FORTRAN-u. Popularno¶æ grupy zanik³a w po³owie lat 80-tych, gdy Unix zacz±³
+rozpowszechniaæ siê poza uniwersytetami.
+
+Przy obecnym rozmno¿eniu kodu GNU i innych klonów programów uniksowych,
+programom tym po¶wiêca siê teraz niewiele uwagi. Wspó³czesne wersje C
+s± o wiele wydajniejsze i robi± wiêcej ni¿ te programy. Niemniej jednak,
+ksi±¿ki te s± niezrównane jako opis dobrego stylu programowania, g³osz±c
+wci±¿ cenn± filozofiê. Gor±co je polecam.
+
+Podziêkowania: chcia³bym wyraziæ sw± wdziêczno¶æ Brianowi Kernighanowi
+z Bell Labs, pierwszemu Kowalowi Narzêdzi Programowych, za przejrzenie tego
+artyku³u.
+
+.SH ZOBACZ TAK¯E
+.TP 12
+.BR cat (1)
+³±czenie i wypisywanie plików
+.TP 12
+.BR comm (1)
+porównywanie dwu posortowanych plików liniami
+.TP 12
+.BR csplit (1)
+podzia³ pliku na czê¶ci zale¿ne od kontekstu
+.TP 12
+.BR csum (1)
+wypisywanie sumy CRC liczby bloków
+.TP 12
+.BR cut (1)
+wypisywanie wybranych czê¶ci linii
+.TP 12
+.BR expand (1)
+zamiana tabulacji na spacje
+.TP 12
+.BR fmt (1)
+reformatowanie akapitów tekstu
+.TP 12
+.BR fold (1)
+zawijanie linii wej¶ciowych do zadanej szeroko¶ci 
+.TP 12
+.BR head (1)
+wypisywanie pocz±tku plików
+.TP 12
+.BR join (1)
+³±czenie linii wed³ug wspólnego pola
+.TP 12
+.BR md5sum (1)
+wypisywanie lub sprawdzanie skrótu danych
+.TP 12
+.BR nl (1)
+numerowanie linii i wypisywanie plików
+.TP 12
+.BR od (1)
+wypisywanie plików w formacie ósemkowym i innych
+.TP 12
+.BR paste (1)
+zlepianie linii plików
+.TP 12
+.BR pr (1)
+stronicowanie i kolumnowanie plików do wydruku
+.TP 12
+.BR ptx (1)
+tworzenie indeksu permutacyjnego zawarto¶ci pliku
+.TP 12
+.BR sort (1)
+sortowanie plików tekstowych
+.TP 12
+.BR split (1)
+podzia³ pliku na czê¶ci sta³ej wielko¶ci
+.TP 12
+.BR sum (1)
+wypisywanie sumy kontrolnej i liczby bloków
+.TP 12
+.BR tac (1)
+³±czenie i wypisywanie odwróconych plików
+.TP 12
+.BR tail (1)
+wypisywanie koñcówki plików
+.TP 12
+.BR tr (1)
+zamiana, ¶ciskanie, usuwanie znaków
+.TP 12
+.BR tsort (1)
+sortowanie topologiczne
+.TP 12
+.BR unexpand (1)
+zamiana spacji na tabulacje
+.TP 12
+.BR uniq (1)
+pozostawianie unikalnych linii w pliku
+.TP 12
+.BR wc (1)
+wypisywanie liczby bajtów, s³ów i linii
+.PP

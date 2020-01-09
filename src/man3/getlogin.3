@@ -1,0 +1,100 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright 1995  James R. Van Zandt <jrv@vanzandt.mv.com>
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Changed Tue Sep 19 01:49:29 1995, aeb: moved from man2 to man3
+.\"  added ref to /etc/utmp, added BUGS section, etc.
+.\"
+.\" T³umaczenie wersji man-pages 1.50 - czerwiec 2002 PTM
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\"
+.TH GETLOGIN 3 1995-09-03 "Linux 1.2.13" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+getlogin, cuserid \- odczytanie nazwy u¿ytkownika
+.SH SK£ADNIA
+.B #include <unistd.h>
+.sp
+.B "char *getlogin(void);"
+.sp
+.B #include <stdio.h>
+.sp
+.BI "char *cuserid(char *" string );
+.SH OPIS
+\fBgetlogin\fP zwraca wska¼nik do ³añcucha zawieraj±cego nazwê u¿ytkownika
+zalogowanego na terminalu steruj±cym procesu, lub wska¼nik NULL, je¶li nie
+mo¿na tej informacji okre¶liæ. £añcuch ten jest alokowany statycznie i mo¿e
+zostaæ nadpisany przez pó¼niejsze wywo³anie tej funkcji lub funkcji
+\fBcuserid\fP.
+.PP
+\fBcuserid\fP zwraca wska¼nik do ³añcucha zawieraj±cego nazwê u¿ytkownika
+skojarzonego z efektywnym identyfikatorem u¿ytkownika dla procesu. Je¶li
+\fIstring\fP nie jest wska¼nikiem NULL, powinien on byæ tablic±, która mo¿e
+pomie¶ciæ co najmniej \fBL_cuserid\fP znaków; ³añcuch jest zwracany w tej
+tablicy. W przeciwnym przypadku, zwracany jest wska¼nik do ³añcucha w obszarze
+pamiêci statycznej. £añcuch ten jest alokowany statycznie i mo¿e zostaæ
+nadpisany przez pó¼niejsze wywo³ania tej funkcji lub funkcji \fBgetlogin\fP.
+.PP
+Makro \fBL_cuserid\fP jest sta³± ca³kowit± okre¶laj±c±, jaka du¿a tablica
+mo¿e byæ potrzebna do przechowania nazwy u¿ytkownika. \fBL_cuserid\fP jest
+zadeklarowane w \fBstdio.h\fP.
+.PP
+Funkcje te pozwalaj± programowi pozytywnie zidentyfikowaæ u¿ytkownika, na
+prawach którego dzia³a program (\fBcuserid\fP) lub u¿ytkownika zalogowanego
+w danej sesji (\fBgetlogin\fP). (Mog± to byæ ró¿ni u¿ytkownicy, gdy wchodz±
+w grê programy setuid-owe.)
+.PP
+W wiêkszo¶ci zastosowañ, bardziej przydatne dla okre¶lenia kim jest u¿ytkownik
+jest pos³ugiwanie siê zmienn± ¶rodowiskow± \fBLOGNAME\fP. Jest to bardziej
+elastyczne, w³a¶nie dlatego, ¿e u¿ytkownik mo¿e dowolnie ustawiæ
+\fBLOGNAME\fP.
+.SH B£ÊDY
+.TP
+.B ENOMEM
+Zabrak³o pamiêci na przydzielenie struktury passwd.
+.SH PLIKI
+.nf
+\fI/etc/passwd\fP	plik bazy danych z has³ami
+.br
+\fI/var/run/utmp\fP	(tradicyjnie \fI/etc/utmp\fP;
+			niektóre wersje libc u¿ywa³y \fI/var/adm/utmp\fP)
+.fi
+.SH "ZGODNE Z"
+POSIX.1. System V zawiera funkcjê \fBcuserid\fP, która pos³uguje siê raczej
+rzeczywistym identyfikatorem u¿ytkownika, ni¿ efektywnym identyfikatorem
+u¿ytkownika. Funkcjê \fBcuserid\fP w³±czono w wersji POSIX z roku 1988, ale
+usuniêto j± w wersji z roku 1990.
+.SH USTERKI
+Na nieszczê¶cie, raczej ³atwo jest og³upiæ getlogin().
+Czasem nie dzia³a ona wcale, gdy¿ jaki¶ program namiesza³ w pliku utmp.
+Czêsto zwraca ona jedynie pierwszych 8 znaków nazwy logowania. Ponadto,
+u¿ytkownik aktualnie zalogowany na terminalu steruj±cym programu nie musi byæ
+u¿ytkownikiem, który ten program uruchomi³.
+Ze wzglêdów zwi±zanych z bezpieczeñstwem, nale¿y unikaæ getlogin().
+.LP
+Nikt dok³adnie nie wie, co robi cuserid() - nale¿y jej unikaæ w przeno¶nych
+programach - nale¿y jej w ogóle unikaæ i u¿ywaæ zamiast niej
+getpwuid(geteuid()), je¶li jest to to, czego potrzeba.
+NIE NALE¯Y U¯YWAÆ cuserid().
+.SH "ZOBACZ TAK¯E"
+.BR geteuid (2),
+.BR getuid (2)

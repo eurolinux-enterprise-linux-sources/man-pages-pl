@@ -1,0 +1,50 @@
+.\" Aktualizacja do wersji z modutils-2.4.10 - pa¼dziernik 2001 PTM
+.\" Andrzej Krzysztofowicz <ankry@green.mif.pg.gda.pl>
+.\" Translation update: Robert Luberda <robert@debian.org>, Oct 2004, modutils 2.4.26
+.\"
+.\" Copyright (c) 1996 Free Software Foundation, Inc.
+.\" This program is distributed according to the Gnu General Public License.
+.\" See the file COPYING in the kernel source directory
+.\" $Id: lsmod.8 1.3 Sun, 06 May 2001 14:52:26 +1000 kaos $
+.\"
+.\" {PTM/MM/0.1/18-11-1998/"lsmod.8 - pokazuje za³adowane modu³y"
+.TH LSMOD 8 "4 lutego 2002" Linux "Wsparcie dla modu³ów"
+.SH NAZWA
+lsmod \- pokazuje za³adowane modu³y
+.SH SK£ADNIA
+.B lsmod
+[-hV]
+.SH OPIS
+.B lsmod
+wy¶wietla informacjê o wszystkich za³adowanych modu³ach.
+.PP
+Informacja podawana jest w nastêpuj±cym formacie: nazwa, rozmiar, licznik
+u¿ycia, lista odwo³uj±cych siê do niego modu³ów. 
+Podawana informacja jest identyczna z t±, która jest dostêpna poprzez 
+/proc/modules.
+.PP 
+Je¿eli modu³ mo¿e usun±æ siê za pomoc± funkcji
+.IR can_unload ,
+to lsmod w polu licznik u¿ycia wy¶wietla zawsze -1, niezale¿nie od rzeczywistej
+warto¶æ licznika,
+.SH OPCJE
+.TP
+.BR \-h ", " \-\-help
+Wy¶wietla podsumowanie opcji i koñczy dzia³anie.
+.TP
+.BR \-V ", " \-\-version
+Wy¶wietla wersjê programu \fBlsmod\fR i koñczy dzia³anie.
+.SH "ZOBACZ TAK¯E"
+insmod(8), modprobe(8), depmod(8), rmmod(8), ksyms(8)
+.SH HISTORIA
+Wsparcie dla modu³ów zosta³o zapocz±tkowane przez Anonima
+.br
+Pierwsza wersja linuksowa przygotowana przez Basa Laarhovena <bas@vimec.nl>
+.br
+Wersja 0.99.14 przygotowana przez Jona Tombsa <jon@gtex02.us.es>
+.br
+Rozbudowana przez Bjorna Ekwalla <bj0rn@blox.se>
+.br
+Aktualizowana do 2.1.17 przez Richarda Hendersona <rth@tamu.edu>
+.br
+Aktualizowana przez Bjorna Ekwalla <bj0rn@blox.se> w marcu 1999

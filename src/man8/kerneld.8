@@ -1,0 +1,78 @@
+.\" Copyright (c) 1995 Bjorn Ekwall <bj0rn@blox.se>
+.\" This program is distributed according to the Gnu General Public License.
+.\" See the file COPYING in the kernel source directory /linux
+.\" $Id: kerneld.8,v 1.6 2000/09/30 16:59:38 wojtek2 Exp $
+.\"
+.\" Translation (c) 1998 Pawe³ Wilk <siewca@dione.ids.pl>
+.\" {PTM/PW/0.3/09-05-1999/"wykonaj dzia³anie j±dra w przestrzeni u¿ytkownika"}
+.\"
+.TH KERNELD 8 "14 Maj, 1995" Linux "Rozszerzenia Linuksa"
+.SH NAZWA
+kerneld \- wykonuje dzia³anie j±dra w przestrzeni u¿ytkownika (jak np. ³adowanie modu³ów na ¿yczenie)
+.SH SK£ADNIA
+.B kerneld
+[ debug ] [ keep ] [ delay=<sekund> ] [ type=<numer wiadomo¶ci> ]
+.SH OPIS
+Pomijaj±c automatyczne usuwanie nie u¿ywanych modu³ów,
+.B kerneld
+wykonuje te¿ specyficzne zadania j±dra w przestrzeni u¿ytkownika poprzez reagowanie na ¿±dania
+z j±dra docieraj±ce doñ z kolejki komunikatów IPC.
+Dostêp do tej kolejki mo¿e byæ uzyskany z poziomu przestrzeni u¿ytkownika za pomoc± otwarcia kolejki
+w nastêpuj±cy sposób:
+
+	qid = msgget(IPC_PRIVATE, 0600 | IPC_KERNELD);
+
+Specyficzne zadanie jest okre¶lone typem wiadomo¶ci
+takim jak przedstawiono w <linux/kerneld.h>.
+.PP
+Struktura wiadomo¶ci kerneld jest nastêpuj±ca:
+.nf
+	struct kerneld_msg {
+		long mtype;
+		long id;
+		char text[1];
+	};
+.fi
+gdzie pole id jest u¿ywane jako numer widomo¶ci zwrotnej
+od kerneld z powrotem do j±dra.
+Je¶li pole id ma warto¶æ równ± zero, to nie bêdzie ¿adnej odpowiedzi od kerneld.
+.br
+(Zauwa¿, ¿e nowa struktura jest tak u³o¿ona, i¿ bêdzie zawieraæ pid 
+¿±daj±cego w nag³ówku protoko³u.)
+
+Je¶li za¿±dano odpowiedzi to w polu id
+bêdzie zapamiêtany kod powrotu z dzia³ania kerneld.
+
+Pole text jest u¿ywane by j±dro mog³o przekazaæ parametry
+do okre¶lonego dzia³ania wykonywanego przez kerneld.
+W wiadomo¶ciach zwrotnych to pole mo¿e zawieraæ wynik dzia³ania,
+bêd±cego u¿ytym (je¶li jest taka potrzeba) przez j±dro.
+.PP
+Mo¿liwe s± nastêpuj±ce opcje:
+.TP 8
+debug
+Z w³±czon± opcj± debug (¶ledzenia) bêdziesz móg³ obserwowaæ obecny status
+wykonywanych przez kerneld zadañ.  Zauwa¿, ¿e mo¿esz kontrolowaæ
+¶ledzenie, równie dobrze jak wszystkie inne parametry dziêki narzêdziu kdstat.
+.TP 8
+keep
+Opcja keep (zatrzymaj) powoduje, ¿e kerneld ignoruje wszystkie ¿±dania usuniêcia modu³ów.
+Ta opcja mo¿e byæ przydatna w systemach, w których modu³y nigdy nie powinny
+byæ usuwane (z jakich¶ tam powodów).
+Ta opcja powstrzymuje te¿ przed procedur± automatycznego usuwania nieu¿ywanych modu³ów,
+do której kerneld przystêpuje co minutê (lub co <delay> sekund).
+.TP 8
+delay=<sekund>
+Opcja delay zmienia warto¶æ czasu oczekiwania kerneld na procedurê
+automatycznego usuwania nieu¿ywanych modu³ów z domy¶lnych 60-u sekund na dowoln± podan± warto¶æ.
+.TP 8
+type=<typ wiadomo¶ci>
+Domy¶lny typ to -255, co oznacza, ¿e kerneld bêdzie nas³uchiwa³
+wszystkich wiadomo¶ci, których typ jest mniejszy b±d¼ równy 255.
+Je¶li dana jest warto¶æ dodatnia to kerneld bêdzie oczekiwa³ tylko wiadomo¶ci podanego typu (podanej warto¶ci).
+.PP
+kerneld wysy³a wiadomo¶ci o b³êdach wywo³uj±c syslog z argumentem u³atwienia (facility) LOG_DAEMON.
+.SH ZOBACZ TAK¯E
+insmod(1), rmmod(1), modprobe(1), depmod(1), syslogd(8)
+.SH HISTORIA
+Pomoc do kerneld by³a zainspirowana dyskusjami z Jacques Gelinas <jack@solucorp.qc.ca>

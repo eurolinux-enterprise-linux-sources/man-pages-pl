@@ -1,0 +1,30 @@
+.\" T³umaczenie wersji man-pages 1.45 - grudzieñ 2001 PTM
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" aktualno¶æ: man-pages 1.48
+.\" 
+.\" @(#)bindresvport.3n	2.2 88/08/02 4.0 RPCSRC; from 1.7 88/03/14 SMI
+.TH BINDRESVPORT 3  1987-11-22 
+.SH NAZWA
+bindresvport \- po³±czenie gniazda z uprzywilejowanym portem IP
+.SH SK£ADNIA
+.nf
+.B #include <sys/types.h>
+.B #include <netinet/in.h>
+.LP
+.B int bindresvport(sd, sin)
+.B int sd;
+.B struct sockaddr_in \(**sin;
+.fi
+.SH OPIS
+.LP
+.B bindresvport()
+s³u¿y do ³±czenia deskryptora gniazda z uprzywilejowanym portem
+.SM IP,
+to znaczy z portem o numerze z zakresu 0-1023.
+Funkcja ta zwraca 0, gdy zakoñczy siê pomy¶lnie, a w przeciwnym przypadku
+zwraca \-1 i ustawia
+.BR errno ,
+aby odzwierciedliæ przyczynê b³êdu.
+.LP
+Jedynie root mo¿e wykonaæ po³±czenie z uprzywilejowanym portem; wywo³anie tej
+funkcji dla innych u¿ytkowników zawiedzie.

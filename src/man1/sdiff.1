@@ -1,0 +1,248 @@
+.\" PTM/WK/2001-I
+.TH SDIFF 1 "22 wrze¶nia 1994" "Narzêdzia ró¿nicowe GNU" "Narzêdzia GNU"
+.SH NAZWA
+sdiff \- znajduje ró¿nice miêdzy dwoma plikami i scala je interaktywnie
+.SH SK£ADNIA
+.B sdiff
+.B -o
+.I plik-wyj
+.RB [ opcje ]
+.I plik1 plik2
+.SH OPIS
+Dokumentacja niniejsza nie jest ju¿ utrzymywana i mo¿e byæ niedok³adna
+lub niekompletna.  Autorytatywnym ¼ród³em jest obecnie dokumentacja
+Texinfo.  Dostêp do niej uzyskasz wpisuj±c w wierszu poleceñ:
+.RS
+.B pinfo sdiff
+.RE
+lub
+.RS
+.BR "info sdiff" .
+.RE
+.PP
+Polecenie
+.B sdiff
+scala dwa pliki i interaktywnie wypisuje otrzymany wynik do
+.IR pliku-wyj .
+.PP
+Je¶li
+.I plik1
+jest katalogiem a
+.I plik2
+nie, to
+.I sdiff
+bêdzie porównywa³ znajduj±cy siê w katalogu
+.IR plik1
+plik o tej samej nazwie, co
+.IR plik2 ,
+i odwrotnie.
+Oba argumenty
+.I plik1
+i
+.I plik2
+nie mog± byæ równocze¶nie katalogami.
+.PP
+Opcje
+.B sdiff
+zaczynaj± siê od
+.BR \- ,
+wiêc normalnie nazwy
+.I plik1
+ani
+.I plik2
+nie mog± siê zaczynaæ od kreski.
+Jednak u¿ycie argumentu
+.B \-\-
+powoduje, ¿e wystêpuj±ce po nim argumenty wiersza poleceñ s± traktowane
+jak nazwy plików, nawet je¶li zaczynaj± siê kresk±.
+.PP
+Nie mo¿na u¿yæ
+.B \-
+jako pliku wej¶ciowego.
+.PP
+.I sdiff
+bez opcji
+.B \-o
+(lub
+.BR \-\-output )
+tworzy ró¿nicê wy¶wietlan± w równoleg³ych kolumnach.  Sk³adnia ta jest
+przestarza³a; zamiast niej nale¿y stosowaæ
+.BR "diff \-\-side\-by\-side" .
+.SH OPCJE
+Poni¿ej wymieniono wszystkie opcje akceptowane przez GNU
+.B sdiff .
+Wiêkszo¶æ opcji posiada dwie równowa¿ne formy, jedn± z nich jest
+pojedyncza litera poprzedzona kresk± \fB\-\fP, a drug± pe³na nazwa
+poprzedzona przez \fB\-\-\fP. Kilka pojedynczych liter opcji (nie
+wymagaj±cych argumentu) mo¿na ³±czyæ w pojedynczy argument wiersza
+poleceñ. Opcje w formie pe³nej nazwy mog± byæ skracane do dowolnego
+unikalnego przedrostka.
+.PP
+Wiêkszo¶æ opcji \fBsdiff\fP ma to samo znaczenie, co dla \fBdiff\fP:
+.RS 4
+.nf
+.B  -a -b -d -i -t -v
+.BI  "-B -H -I " regexp
+.B --ignore-blank-lines  --ignore-case
+.B --ignore-matching-lines=\fIregexp\fP  --ignore-space-change
+.B --left-column  --minimal  --speed-large-files
+.B --suppress-common-lines  --expand-tabs
+.B --text  --version  --width=\fIkolumny\fP
+.fi
+.RE
+Zauwa¿, ¿e opcje \fB-W\fP i \fB-w\fP maj± w \fBsdiff\fP w stosunku do
+\fBdiff\fP zamienione znaczenie.  Korzystanie z d³ugiej postaci opcji
+zmniejszy ryzyko pomy³ek.
+.TP
+.B \-a
+.br
+.ns
+.TP
+.B \-\-text
+Traktowanie wszystkich plików jako pliki tekstowe i porównywanie ich linia
+po linii, nawet je¶li nie wygl±daj± one na pliki tekstowe.
+.TP
+.B \-b
+.br
+.ns
+.TP
+.B \-\-ignore\-space\-change
+Ignorowanie zmian w ilo¶ci odstêpów (bia³ych znaków).
+.TP
+.B \-B
+.br
+.ns
+.TP
+.B \-\-ignore\-blank\-lines
+Ignorowanie zmian, które jedynie dodaj± lub usuwaj± puste linie.
+.TP
+.B \-d
+.br
+.ns
+.TP
+.B \-\-minimal
+Zmiana algorytmu na taki, który mo¿e czasami znale¼æ mniejsz± liczbê zmian.
+Spowalnia to dzia³ania \fBsdiff\fP (czasami bardzo znacznie).
+.TP
+.TP
+.B \-H
+.br
+.ns
+.TP
+.B \-\-speed\-large\-files
+U¿ycie algorytmów heurystycznych aby przyspieszyæ przeszukiwanie du¿ych
+plików ze znaczn± liczb± rozrzuconych ma³ych zmian.
+.TP
+.B \-t
+.br
+.ns
+.TP
+.B \-\-expand\-tabs
+Rozszerzanie tabulatorów do spacji na wyj¶ciu, aby zachowaæ oryginalne
+u³o¿enie tabulatorów pliku wej¶ciowego.
+.TP
+.B \-i
+.br
+.ns
+.TP
+.B \-\-ignore\-case
+Ignorowanie zmian w wielko¶ci liter, du¿e i ma³e litery s± uznawane za
+równowa¿ne.
+.TP
+.BI "\-I " regexp
+.br
+.ns
+.TP
+.BI \-\-ignore\-matching\-lines= regexp
+Ignorowanie zmian, które jedynie dodaj± lub usuwaj± linie pasuj±ce do
+wyra¿enia regularnego \fIregexp\fP.
+.TP
+.B \-W
+.br
+.ns
+.TP
+.B \-\-ignore\-all\-space
+Ignorowanie wszystkich odstêpów przy porównywaniu plików.
+Warto pamiêtaæ, ¿e, z przyczyn historycznych, opcja ta nazywa siê
+.B \-w
+w programie
+.BR diff ,
+za¶
+.B \-W
+w
+.BR sdiff .
+.TP
+.B \-l
+.br
+.ns
+.TP
+.B \-\-left\-column
+Wy¶wietlenie jedynie lewej kolumny z dwóch wspólnych w formacie jedna obok
+drugiej.
+.TP
+.BI "\-o " plik
+.br
+.ns
+.TP
+.BI \-\-output= plik
+Wstawia scalone wyj¶cie do
+.IR pliku .
+Wymagana do scalania.
+.TP
+.B \-s
+.br
+.ns
+.TP
+.B \-\-suppress\-common\-lines
+Powoduje, ¿e wspólne linie nie bêd± wypisywane.
+.TP
+.BI "\-w " kolumny
+.br
+.ns
+.TP
+.BI \-\-width= kolumny
+U¿ycie szeroko¶ci wyj¶cia \fIkolumny\fP w formacie jedna obok drugiej.
+Warto pamiêtaæ, ¿e, z przyczyn historycznych, opcja ta nazywa siê
+.B \-W
+w programie
+.BR diff ,
+za¶
+.B \-w
+w
+.BR sdiff .
+.TP
+.B \-\-help
+Wy¶wietlenie informacji o stosowaniu programu i dostêpnych opcjach.
+.TP
+.B \-v
+.br
+.ns
+.TP
+.B \-\-version
+Wy¶wietlenie numeru wersji programu.
+.SH KOPIOWANIE
+Plik ten powsta³ na podstawie podrêcznika info pakietu diffutils.
+
+Copyright (C) 1992, 1993, 1994 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+.SH DIAGNOSTYKA
+Zwracana warto¶æ 0 oznacza, ¿e nie odnaleziono ró¿nic, 1 znaczy ró¿nice,
+a 2 k³opoty.
+.SH ZOBACZ TAK¯E
+.BR cmp (1),
+.BR comm (1),
+.BR diff (1),
+.BR diff3 (1).

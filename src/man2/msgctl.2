@@ -1,0 +1,224 @@
+.\" Copyright 1993 Giorgio Ciucci (giorgio@crcc.it)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Tue Oct 22 08:11:14 EDT 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified Sun Feb 18 01:59:29 2001 by Andries E. Brouwer <aeb@cwi.nl>
+.\" Modified, 27 May 2004, Michael Kerrisk <mtk-manpages@gmx.net>
+.\"     Added notes on CAP_IPC_OWNER requirement
+.\" Modified, 17 Jun 2004, Michael Kerrisk <mtk-manpages@gmx.net>
+.\"     Added notes on CAP_SYS_ADMIN requirement for IPC_SET and IPC_RMID
+.\" Modified, 11 Nov 2004, Michael Kerrisk <mtk-manpages@gmx.net>
+.\"	Language and formatting clean-ups
+.\"	Added msqid_ds and ipc_perm structure definitions
+.\"
+.\" Translated by Rafa³ Lewczuk, 9 May 1999
+.\" Last update: Robert Luberda <robert@debian.org>, Mar 2005,
+.\"              manpages 2.01
+.\" $Id: msgctl.2,v 1.6 2005/03/17 10:55:38 robert Exp $
+.\"
+.TH MSGCTL 2 2004-11-10 "Linux 2.6.9" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+msgctl \- sterowanie kolejkami komunikatów
+.SH SK£ADNIA
+.nf
+.B
+#include <sys/types.h>
+.B
+#include <sys/ipc.h>
+.B
+#include <sys/msg.h>
+.fi
+.sp
+.BI "int msgctl(int " msqid ,
+.BI "int " cmd ,
+.BI "struct msqid_ds *" buf );
+.SH OPIS
+Funkcja ta wykonuje operacjê okre¶lon± przez parametr
+.I cmd
+na kolejce komunikatów o identyfikatorze
+.IR msqid .
+.PP
+Struktura danych
+.I msqid_ds
+jest zdefiniowana w <sys/msg.h> nastêpuj±co:
+.nf
+.in +4n
+
+struct msqid_ds {
+    struct ipc_perm msg_perm;     /* W³asno¶ci i uprawnienia */
+    time_t          msg_stime;    /* Czas ostatniego msgsnd() */
+    time_t          msg_rtime;    /* Czas ostatniego msgrcv() */
+    time_t          msg_ctime;    /* Czas ostatniej zmiany */
+    unsigned long   __msg_cbytes; /* Bie¿±ca liczba bajtów w
+                                     kolejce (niestandardowy) */
+    msgqnum_t       msg_qnum;     /* Bie¿±ca liczba komunikatów
+                                     w kolejce */
+    msglen_t        msg_qbytes;   /* Maksymalna liczba dostêpnych
+                                     bajtów w kolejce */
+    pid_t           msg_lspid;    /* PID ostatniego msgsnd() */
+    pid_t           msg_lrpid;    /* PID ostatniego msgrcv() */
+
+};
+.in -4n
+.fi
+.PP
+Struktura
+.I ipc_perm
+jest zdefiniowana w <sys/ipc.h> nastêpuj±co
+(wyró¿nione pola mo¿na ustawiæ za pomoc±
+.BR IPC_SET ):
+.PP
+.nf
+.in +4n
+struct ipc_perm {
+    key_t key;            /* Klucz podany w msgget() */
+    uid_t \fBuid\fP;            /* Efektywny UID w³a¶ciciela */
+    gid_t \fBgid\fP;            /* Efektywny GID w³a¶ciciela */
+    uid_t cuid;           /* Efektywny UID twórcy */
+    gid_t cgid;           /* Efektywny GID twórcy */
+    unsigned short \fBmode\fP;  /* Uprawnienia */
+    unsigned short seq;   /* Numer sekwencji */
+};
+.in -4n
+.fi
+Dozwolone warto¶ci
+.I cmd
+to:
+.TP
+.B IPC_STAT
+Kopiowanie informacji ze struktury kontrolnej kolejki komunikatów,
+skojarzonej z
+.IR msqid ,
+do struktury wskazywanej przez
+.IR buf .
+Wywo³uj±cy musi mieæ prawo odczytu kolejki komunikatów.
+.TP
+.B IPC_SET
+Zapis warto¶ci niektórych pól struktury
+.B msqid_ds
+wskazywanej przez parametr
+.I buf
+do struktury kontrolnej kolejki komunikatów.
+Pole
+.B msg_ctime
+zostanie automatycznie uaktualnione.
+Zaktualizowane mog± równie¿ zostaæ nastêpuj±ce pola tej struktury:
+.IR msg_qbytes ,
+.IR msg_perm.uid ,
+.IR msg_perm.gid
+i (przynajmniej 9 najmniej znacz±cych bitów z)
+.IR msg_perm.mode .
+Efektywny identyfikator u¿ytkownika musi wskazywaæ na w³a¶ciciela
+.RI ( msg_perm.uid )
+lub na twórcê
+.RI ( msg_perm.uid )
+kolejki komunikatów albo proces wywo³uj±cy  musi byæ uprzywilejowany.
+Odpowiednie uprawnienia (Linux: zdolno¶æ
+.BR CAP_IPC_RESOURCE )
+s± równie¿ wymagane, aby nadaæ polu
+.B msg_qbytes
+warto¶æ wiêksz± ni¿ parametr systemowy
+.BR MSGMNB .
+.TP
+.B IPC_RMID
+Natychmiastowe usuniêcie kolejki komunikatów i skojarzonej z ni± struktury
+danych. Wszystkie procesy oczekuj±ce na zapis lub odczyt z kolejki zostan±
+wznowione i wywo³ania, które  wykonywa³y zasygnalizuj± b³±d (przypisuj±c
+zmiennej
+.B errno
+warto¶æ
+.BR EIDRM ).
+Proces wywo³uj±cy tê funkcjê musi mieæ odpowiednie uprawnienia (prawdopodobnie
+uprawnienia u¿ytkownika root), ewentualnie jego efektywny identyfikator
+u¿ytkownika musi wskazywaæ na twórcê lub na w³a¶ciciela kolejki komunikatów.
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu, funkcja zwróci warto¶æ 0,
+w przeciwnym przypadku \-1,
+a zmiennej
+.I errno
+zostanie nadana warto¶æ okre¶laj±ca rodzaj b³êdu.
+.SH B£ÊDY
+W przypadku niepomy¶lnego zakoñczenia funkcji, zmiennej
+.I errno
+zostanie nadana jedna z nastêpuj±cych warto¶ci:
+.TP 11
+.B EACCES
+Parametr
+.I cmd
+jest równy
+.B IPC_STAT
+lub
+.B MSG_STAT ,
+ale proces wywo³uj±cy funkcjê nie ma prawa do odczytu wskazywanej przez
+.I msqid
+kolejki komunikatów ani nie ma zdolno¶ci
+.BR CAP_IPC_OWNER .
+.TP
+.B EFAULT
+Parametr
+.I cmd
+ma warto¶æ
+.B IPC_SET
+lub
+.BR IPC_STAT ,
+ale
+.I buf
+wskazuje na niedostêpny obszar pamiêci.
+.TP
+.B EIDRM
+Kolejka komunikatów zosta³a usuniêta.
+.TP
+.B EINVAL
+Niew³a¶ciwa warto¶æ parametru
+.I cmd
+lub
+.IR msqid .
+.TP
+.B EPERM
+Parametr
+.I cmd
+jest równy
+.B IPC_SET
+lub
+.BR IPC_RMID ,
+ale proces wywo³uj±cy funkcjê nie jest twórc±
+(okre¶lonym w
+.IR msg_perm.cuid )
+ani w³a¶cicielem
+(okre¶lonym w
+.IR msg_perm.uid )
+kolejki komunikatów, a proces nie jest uprzywilejowany
+(Linux: nie ma zdolno¶ci
+.BR CAP_SYS_ADMIN ).
+Niektóre pola struktury \fIstruct msqid_ds\fP by³y w Linuksie 2.2 typu short
+a sta³y siê typu long w Linuksie 2.4. Aby to wykorzystaæ, powinna wystarczyæ
+rekompilacja pod glibc-2.1.91 lub nowsz±.
+(J±dro rozró¿nia stare i nowe wywo³ania za pomoc± znacznika IPC_64 w
+.IR cmd ).
+.SH "ZGODNE Z"
+SVr4, SVID.  Kod b³êdu EIDRM nie zosta³ udokumentowany w SVID.
+.SH "ZOBACZ TAK¯E"
+.BR msgget (2),
+.BR msgrcv (2),
+.BR msgsnd (2),
+.BR ipc (5),
+.BR capabilities (7)

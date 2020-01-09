@@ -1,0 +1,149 @@
+'\" t
+.\" {PTM/WK/2000-IV}
+.\" Man page for man2html
+.\" aeb, 980101
+.\"
+.\" Translation update:  Robert Luberda <robert@debian.org>, Feb 2003, man-1.5k
+.\" $Id: man2html.1,v 1.3 2003/03/10 11:08:40 robert Exp $
+.TH man2html 1 "1 stycznia 1998"
+.LO 1
+.SH NAZWA
+man2html \- formatuje stronê man w html-u
+.SH SK£ADNIA
+.B man2html
+.RI [ opcje ]
+.RI [ plik ]
+.SH OPIS
+.B man2html
+wykonuje konwersjê strony podrêcznika systemowego zapisanej w podanym
+.I pliku
+(lub pobieranej z stdin, w przypadku gdy nie podano nazwy pliku lub nazwê "-")
+z u¿ywanego przez man formatu nroff na html i drukuje wynik na stdout.
+Obs³uguje tbl, ale nie zna eqn.
+Kod zakoñczenia wynosi 0. Je¶li co¶ siê nie powiedzie, to na stdout
+drukowana jest strona z komunikatem b³êdu.
+
+Mo¿e byæ wykorzystywane jako samodzielne narzêdzie, ale zasadniczo
+zaprojektowano je do zastosowañ pomocniczych, by umo¿liwiæ
+u¿ytkownikom przegl±danie stron podrêcznika systemowego za pomoc±
+przegl±darki html, takiej jak np.
+.BR lynx (1),
+.BR xmosaic (1)
+czy
+.BR netscape (1).
+.\" (See
+.\" .BR man (1)
+.\" for info on how to browse man pages via
+.\" .BR man2html .
+.\" Usually it would suffice to put "MANHTMLPAGER=/usr/bin/lynx"
+.\" in the environment.)
+
+G³ówn± czê¶æ
+.B man2html
+stanowi konwerter troff-na-html napisany przez Richarda Verhoevena
+(rcb5@win.tue.nl).
+Dodaje on odno¶niki hipertekstowe do nastêpuj±cych konstrukcji:
+.LP
+.TS
+l l.
+foo(3x)	"http://localhost/cgi-bin/man/man2html?3x+foo"
+metoda://³añcuch	"metoda://³añcuch"
+www.nazwa.hosta	"http://www.nazwa.hosta"
+ftp.nazwa.hosta	"ftp://ftp.nazwa.hosta"
+nazwa@host	"mailto:nazwa@host"
+<string.h>	"file:/usr/include/string.h"
+.TE
+.LP
+(Pierwsza z nich mo¿e byæ dopasowywana do potrzeb przez opcje - zobacz ni¿ej).
+Nie jest wykonywane ¿adne wyszukiwanie - obiekty wskazywane przez tworzone
+odno¶niki nie musz± istnieæ.
+Tworzony jest te¿ indeks wewnêtrznych odno¶ników hipertekstowych do ró¿nych
+sekcji strony, co u³atwia orientacjê w du¿ych stronach jak
+.BR bash (1).
+
+.SH OPCJE
+Przy odczycie z stdin nie zawsze jest jasne, jak wykonaæ rozwiniêcie
+¿±dania .so. Opcja \-D pozwala skryptowi na zdefiniowanie katalogu roboczego.
+.LP
+.TP
+.BI \-\^D " ¶cie¿ka"
+Przed rozpoczêciem konwersji obcina ostatnie dwie czê¶ci ¶cie¿ki
+i w odniesieniu do pozosta³ej czê¶ci wykonuje \fIchdir\fP(\fIdir\fP).
+.LP
+Opcja \-E umo¿liwia skryptowi cgi ³atwe tworzenie komunikatów o b³êdach.
+.LP
+.TP
+.BI \-\^E " ³añcuch"
+Tworzy w wyniku stronê zawieraj±c± zadany komunikat o b³êdzie.
+.LP
+Ogóln± postaci± odno¶nika hipertekstowego generowanego dla odsy³acza strony man
+jest
+.IP
+<metoda:¶cie¿kacgi><¶cie¿kaman2html><separator><stronaman>
+.LP
+z warto¶ci± domy¶ln± pokazan± powy¿ej. Sk³adowe tego odno¶nika ustawiane
+s± przy pomocy ró¿nych opcji.
+.TP
+.B \-\^h
+Ustawia metoda:¶cie¿kacgi na http://localhost. Jest to ustawienie domy¶lne.
+.TP
+.BI \-\^HP " host[.domena][:port]"
+Ustawia metoda:¶cie¿kacgi na
+.RI http:// host.domena:port .
+.TP
+.B \-\^l
+Ustawia metoda:¶cie¿kacgi na
+.RI lynxcgi: /home/httpd .
+.TP
+.BI \-\^L " katalog"
+Ustawia metoda:¶cie¿kacgi na
+.RI lynxcgi: katalog .
+.TP
+.BI \-\^M " ¶cie¿kaman2html"
+Ustawia ¶cie¿kê man2html, jaka ma byæ u¿yta. Domy¶lnie jest to
+.IR /cgi-bin/man/man2html .
+.TP
+.B \-\^p
+Ustawia separator na '/'.
+.TP
+.B \-\^q
+Ustawia separator na '?'. Jest to separator domy¶lny.
+.TP
+.B \-\^r
+U¿ywa relatywnych ¶cie¿ek html, zamiast ¶cie¿ek typu cgi-bin.
+.LP
+Na maszynach, na których nie jest uruchomiony
+.BR httpd ,
+mo¿na do przegl±dania stron man u¿ywaæ przegl±darki
+.BR lynx ,
+wykorzystuj±c metodê lynxcgi. Je¿eli pracuje jaki¶ demon http, do przegl±dania
+mo¿na u¿yæ lynx-a, czy jakiejkolwiek innej przegl±darki, wykorzystuj±c metodê
+http. Opcja \-l (oznaczaj±ca `lynxcgi') wybiera pierwsze z opisanych zachowañ.
+Przy jej zastosowaniu domy¶ln± ¶cie¿k± cgi jest \fI/home/httpd\fP.
+
+Ogólnie skrypt cgi wywo³uje siê przez
+.IP
+<¶cie¿ka_do_skryptu>/<dalej_¶cie¿ka>?<zapytanie>
+.LP
+a zmiennym ¶rodowiska PATH_INFO i QUERY_STRING zostan± przypisane warto¶ci,
+odpowiednio, <dalej_¶cie¿ka> i <zapytanie>. Poniewa¿ lynxcgi nie obs³uguje
+czê¶ci PATH_INFO, domy¶lnie tworzymy odno¶niki z '?' jako separatorem.
+Opcja \-p (`path' - ¶cie¿ka) wybiera za separator znak uko¶nika '/', za¶
+\-q (`query' - zapytanie) znak zapytania '?'.
+
+Opcja \-H \fIhost\fP okre¶la nazwê hosta, jaki ma byæ u¿ywany (zamiast
+\fIlocalhost\fP). Skrypt cgi mo¿e wykorzystaæ konstrukcjê
+.IP
+man2html -H $SERVER_NAME
+.LP
+je¶li ustawiona jest zmienna SERVER_NAME. Dziêki temu maszyna mo¿e dzia³aæ
+jako serwer i eksportowaæ strony man.
+
+.SH B£ÊDY
+Wiele rzeczy jest zrobionych heurystycznie. Wynik nie zawsze bêdzie doskona³y.
+Metoda lynxcgi nie zadzia³a, je¿eli lynx zosta³ skompilowany bez jej obs³ugi.
+Mog± byæ problemy z bezpieczeñstwem.
+
+.SH "ZOBACZ TAK¯E"
+.BR lynx (1),
+.BR man (1)

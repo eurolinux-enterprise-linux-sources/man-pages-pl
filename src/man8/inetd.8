@@ -1,0 +1,261 @@
+.\" {PTM/PB/0.1/01-06-1999/"superserwer internetu"}
+.\" Translation (c) 1999 Przemek Borys <pborys@dione.ids.pl>
+.\" Copyright (c) 1985, 1991 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     from: @(#)inetd.8	6.7 (Berkeley) 3/16/91
+.\"	$Id: inetd.8,v 1.4 2005/10/16 22:33:28 robert Exp $
+.\"
+.Dd 16 Marzec, 1991
+.Dt INETD 8
+.Os BSD 4.3
+.Sh NAZWA
+.Nm inetd
+.Nd "super-serwer" internetu
+.Sh SK£ADNIA
+.Nm inetd
+.Op Fl d
+.Op Ar plik konfiguracyjny
+.Sh OPIS
+.Nm Inetd
+powinien byæ wywo³ywany podczas startu systemu z 
+.Pa /etc/rc.local
+(zobacz
+.Xr rc 8 ) .
+Nas³uchuje on pó¼niej po³±czeñ na okre¶lonych gniazdach internetowych. Gdy
+na jednym z gniazd zaistnieje po³±czenie, decyduje on, jakiej us³udze to
+gniazdo odpowiada i wywo³uje program, który obs³u¿y ¿±danie.
+Po zakoñczeniu programu, inetd kontynuuje nas³uchiwania gniazda (poza
+niektórymi wypadkami, opisanymi poni¿ej). Ogólnie,
+.Nm inetd
+umo¿liwia u¿ywanie jednego daemona do wywo³ywania wielu innych, zmniejszaj±c
+wymagane obci±¿enie systemu.
+.Pp
+Opcje dostêpne dla
+.Nm inetd:
+.Bl -tag -width Ds
+.It Fl d
+W³±cza debuggowanie.
+.El
+.Pp
+Podczas uruchamiania,
+.Nm inetd
+odczytuje swoj± konfiguracjê z pliku konfiguracyjnego, którym domy¶lnie jest
+.Pa /etc/inetd.conf .
+Musi tam byæ wpis dla ka¿dego pola pliku konfiguracyjnego, z poszczególnymi
+wpisami dla danego pola; wpisy s± oddzielane znakiem tabulacji lub spacji.
+Komentarze s± zaznaczane przez ``#'' na pocz±tku linii. Musi istnieæ wpis dla
+ka¿dego pola. Pola pliku konfiguracyjnego s± nastêpuj±ce:
+.Pp
+.Bd -unfilled -offset indent -compact
+nazwa us³ugi (service name)
+rodzaj gniazda (socket type)
+protokó³ (protocol)
+okre¶lenie, czy us³uga ma "zwlekaæ" (wait/nowait[.max])
+u¿ytkownik[.grupa] (user[.group])
+program serwera (server program)
+argumenty programu serwera (server program arguments)
+.Ed
+.Pp
+Aby podaæ us³ugê opart± o
+.Em Sun-RPC 
+, wpis powinien zawieraæ te pola.
+.Pp
+.Bd -unfilled -offset indent -compact
+nazwa us³ugi/wersja (service name/version)
+rodzaj gniazda (socket type)
+rpc/protokó³ (rpc/protocol)
+zw³oka (wait/nowait[.max])
+u¿ytkownik[.grupa] (user[.group])
+program serwera (server program)
+argumenty programu serwera (server program arguments)
+.Ed
+.Pp
+Wpis
+.Em nazwa-us³ugi
+jest nazw± prawid³owej us³ugi, zdefiniowanej w pliku
+.Pa /etc/services .
+Dla us³ug
+.Dq wewnêtrznych
+(internal) (opisanych ni¿ej), nazwa us³ugi musi byæ oficjaln± nazw± us³ugi
+(to znaczy pierwszym wpisem w
+.Pa /etc/services ) . 
+Podczas podawania us³ugi opartej o 
+.Em Sun-RPC
+, pole to jest prawid³ow± nazw± us³ugi RPC, zdefiniowan± w pliku
+.Pa /etc/rpc . 
+Czê¶æ na prawo od
+.Dq /
+jest numerem wersji RPC. Mo¿e to byæ zwyczajny argument numeryczny, lub
+zakres wersji. Zakres jest obramowany od ni¿szej wersji do wy¿szej -
+.Dq rusers/1-3 .
+.
+.Pp
+Wpis
+.Em rodzaj gniazda
+powinien byæ jednym z
+.Dq stream ,
+.Dq dgram ,
+.Dq raw ,
+.Dq rdm ,
+lub
+.Dq seqpacket ,
+zale¿nie od tego, czy gniazdo jest strumieniowe (stream), datagramowe
+(datagram), lub typu raw, reliably delivered message, czy te¿ sequenced packet.
+.Pp
+Pole
+.Em protokó³
+musi byæ prawid³owym protoko³em, zdefiniowanym w
+.Pa /etc/protocols .
+Przyk³adami mog± byæ
+.Dq tcp
+lub
+.Dq udp .
+Us³ugi oparte o RPC s± okre¶lane przez
+.Dq rpc/tcp
+lub
+.Dq rpc/udp.
+.
+.Pp
+Wpis
+.Em zw³oka
+jest u¿ywany tylko dla gniazd datagramowych (inne gniazda powinny mieæ wpis
+.Dq nowait
+).  Je¶li serwer datagramowy ³±czy siê ze swoim rozmówc±, zwalniaj±c
+gniazdo w ten sposób, ¿e
+.Nm inetd
+mo¿e odbieraæ dalsze wiadomo¶ci z tego gniazda, to mówi siê o nim jako o
+serwerze
+.Dq wielow±tkowym
+(multi-threaded) i powinno siê u¿ywaæ wpisu
+.Dq nowait
+Serwery datagramowe, które przetwarzaj± wszystkie nadchodz±ce do
+gniazda datagramy, ewentualnie maj±ce timeouty, nazywa siê
+.Dq jednow±tkowymi
+(single threaded) i powinno u¿ywaæ siê dla nich wpisu
+.Dq wait.
+.Xr Comsat 8
+.Pq Xr biff 1
+i
+.Xr talkd 8
+s± przyk³adami tego drugiego rodzaju serwerów datagramowych.
+.Xr Tftpd 8
+jest wyj±tkiem; jest to serwer datagramowy, który zestawia pseudopo³±czenia.
+Musi byæ zdefiniowany jako
+.Dq wait
+aby zapobiec wy¶cigowi; serwer odczytuje pierwszy pakiet, tworzy nowe
+gniazdo, nastêpnie forkuje i wychodzi, aby
+.Nm inetd
+móg³ robiæ swoje i oczekiwaæ na nowe ¿±dania us³ug, które (jak zwykle)
+przy³±cza nastêpnie do odpowiednich innych serwerów.
+Opcjonalny przyrostek
+.Dq max
+(oddzielony od
+.Dq wait
+lub
+.Dq nowait
+kropk±) okre¶la maksymaln± liczbê instancji serwera, jakie mog± zostaæ
+postawione przez
+.Nm inetd
+w czasie 60 sekund. Gdy zostanie to pominiête,
+.Dq max
+przyjmuje warto¶æ 40.
+.Pp
+Wpis
+.Em u¿ytkownik
+powinien zawieraæ nazwê u¿ytkownika u¿ytkownika, pod którym powinien uruchamiaæ
+siê serwer. Umo¿liwia to serwerom posiadanie mniejszych praw ni¿ prawa
+roota. Opcjonalnie, po dodaniu kropki do nazwy u¿ytkownika, mo¿na podaæ w
+tym polu nazwê grupy. Umo¿liwia to serwerom pracê w innym (podstawowym) id
+grupy ni¿ ten, podany w pliku z has³ami. Je¶li grupa jest podana, a
+u¿ytkownik nie jest rootem, to uzupe³niaj±ce grupy zwi±zane z u¿ytkownikiem
+wci±¿ bêd± ustawione.
+.Pp
+Wpis
+.Em program serwera
+powinien zawieraæ ¶cie¿kê programu, który ma byæ wywo³ywany przez
+.Nm inetd
+po otrzymaniu ¿±dania na gnie¼dzie. Je¶li
+.Nm inetd
+udostêpnia tê us³ugê wewnêtrznie, to wpis ten powinien byæ wpisem
+.Dq internal .
+.Pp
+Wpis
+.Em argumenty programu serwera
+powinien wygl±daæ tak jak zwyk³e argumenty, poczynaj±c od argv[0], który
+jest nazw± programu. Je¶li us³uga jest udostêpniana wewnêtrznie, to wpis
+powinien przyj±æ nazwê
+.Dq internal.
+.Pp
+.Nm Inetd
+udostêpnia wiele
+.Dq trywialnych
+us³ug wewnêtrznie, u¿ywaj±c do tego swoich w³asnych procedur. Tymi us³ugami s±
+.Dq echo ,
+.Dq discard ,
+.Dq chargen
+(generator znaków),
+.Dq daytime
+(odczytywalny przez cz³owieka czas) oraz
+.Dq time
+(czas odczytywalny przez maszynê, liczba sekund od pó³nocy 1 stycznia 1900).
+Wszystkie te us³ugi s± oparte o tcp. Dla dalszych szczegó³ów o tych
+us³ugach, skonsultuj siê z odpowiednim
+.Tn RFC
+z Centrum Informacji Sieci (Network Information Center).
+.Pp
+.Nm Inetd
+odczytuje swój plik konfiguracyjny od nowa gdy otrzyma sygna³ zawieszenia
+(hangup), czyli
+.Dv SIGHUP .
+Us³ugi mog± byæ tak dodawane, kasowane lub modyfikowane.
+.Nm Inetd
+tworzy plik
+.Em /etc/inetd.pid
+który zawiera jego identyfikator procesu (PID).
+.Sh ZOBACZ TAK¯E
+.Xr comsat 8 ,
+.Xr fingerd 8 ,
+.Xr ftpd 8 ,
+.Xr rexecd 8 ,
+.Xr rlogind 8 ,
+.Xr rshd 8 ,
+.Xr telnetd 8 ,
+.Xr tftpd 8
+.Sh HISTORIA
+Komenda
+.Nm
+pojawi³a siê w
+.Bx 4.3 .
+Wsparcie dla us³ug opartych o
+.Em Sun-RPC 
+zosta³o zmodelowane wg udostêpnionego przez
+.Em Sun-OS 4.1 .

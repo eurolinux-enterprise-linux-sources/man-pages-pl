@@ -1,0 +1,85 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright 1993 Rickard E. Faith (faith@cs.unc.edu)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Mon Aug 25 16:26:16 1997 by Nicolás Lichtmaier <nick@debian.org>
+.\" Translation (c) 1998 Przemek Borys <pborys@dione.ids.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\"
+.TH GETDOMAINNAME 2 1997-08-25 "Linux 2.0" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+getdomainname, setdomainname \- pobranie/ustawienie nazwy domeny
+.SH SK£ADNIA
+.B #include <unistd.h>
+.sp
+.BI "int getdomainname(char *" name ", size_t " len );
+.br
+.BI "int setdomainname(const char *" name ", size_t " len );
+.SH OPIS
+Funkcje s³u¿± do pobierania, lub zmieniania nazwy domeny obecnego
+procesora.
+Je¶li zakoñczona znakiem NUL nazwa domeny wymaga wiêcej ni¿ \fIlen\fP bajtów,
+.B getdomainname
+zwróci \fIlen\fP pierwszych bajtów nazwy (glibc) lub b³±d (libc).
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu zwracane jest zero. Po b³êdzie zwracane jest \-1
+i odpowiednio ustawiane
+.IR errno .
+.SH B£ÊDY
+.TP
+.B EINVAL
+Dla
+.B getdomainname
+pod libc:
+.I name
+jest równe
+.B NULL
+lub
+.I name
+jest d³u¿sze ni¿
+.I len
+bajtów.
+.TP
+.B EINVAL
+Dla
+.BR setdomainname :
+.I len
+by³o ujemne lub zbyt du¿e.
+.TP
+.B EPERM
+Dla
+.BR setdomainname :
+wywo³uj±cy nie by³ superu¿ytkownikiem.
+.TP
+.B EFAULT
+Dla
+.BR setdomainname :
+.I name
+wskazywa³o poza przestrzeñ adresow± u¿ytkownika.
+.SH "ZGODNE Z"
+POSIX nie okre¶la tych funkcji.
+.SH "ZOBACZ TAK¯E"
+.BR gethostname (2),
+.BR sethostname (2),
+.BR uname (2)

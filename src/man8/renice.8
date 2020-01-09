@@ -1,0 +1,123 @@
+.\" 1999 PTM Przemek Borys
+.\" Copyright (c) 1983, 1991, 1993
+.\"	The Regents of the University of California.  All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     @(#)renice.8	8.1 (Berkeley) 6/9/93
+.\"
+.Dd 9 Czerwca, 1993
+.Dt RENICE 8
+.Os BSD 4
+.Sh NAZWA
+.Nm renice
+.Nd popraw priorytet dzia³aj±cego procesu
+.Sh SK£ADNIA
+.Nm renice
+.Ar priority
+.Oo
+.Op Fl p
+.Ar pid ...
+.Oc
+.Oo
+.Op Fl g
+.Ar pgrp ...
+.Oc
+.Oo
+.Op Fl u
+.Ar user ...
+.Oc
+.Sh OPIS
+.Nm Renice
+poprawia priorytet schedulowania jednego lub wiêkszej liczby procesów.
+Nastêpuj±ce parametry 
+.Ar kto
+s± interpretowane jako identyfikatory procesów, grup, lub nazwy
+u¿ytkowników.
+.Nm Renice Ns 'owanie
+grupy procesów, powoduje ¿e wszystkie procesy grupy bêd± mia³y zmieniony
+priorytet.
+.Nm Renice Ns 'owanie
+u¿ytkownika spowoduje, ¿e wszystkie jego porocesy zmieni± priorytet.
+Domy¶lnie, zmieniane procesy s± podawane przez ich PID.
+.Pp
+Opcje obs³ugiwane przez
+.Nm renice :
+.Bl -tag -width Ds
+.It Fl g
+Wymu¶ interpretacjê parametrów
+.Ar kto
+jako identyfikatorów grup procesów.
+.It Fl u
+Wymu¶ interpretacjê parametrów
+.Ar kto
+jako nazw u¿ytkowników.
+.It Fl p
+Resetuje interpretacjê parametrów
+.Ar kto
+na domy¶ln±, czyli PID.
+.El
+.Pp
+Na przyk³ad,
+.Bd -literal -offset
+renice +1 987 -u daemon root -p 32
+.Ed
+.Pp
+zmieni priorytety procesów 987 i 32, oraz wszystkich procesów u¿ytkowników
+daemon i root.
+.Pp
+U¿ytkownicy inni ni¿ superu¿ytkownik mog± tylko zmieniaæ priorytety swoich
+procesów i mog± je monotonicznie zwiêkszaæ tylko w zakresie 0 do
+.Dv PRIO_MAX
+(20).
+Superu¿ytkownik mo¿e zmieniaæ priorytety procesów w zakresie
+.Dv PRIO_MIN
+(\-20)
+do
+.Dv PRIO_MAX .
+Przydatnymi priorytetami s±:
+20 (proces bêdzie dzia³a³ tylko gdy system nie ma nic innego do roboty),
+0 (podstawowy priorytet schedulowania),
+cokolwiek ujemnego (aby lecia³o szybko).
+.Sh PLIKI
+.Bl -tag -width /etc/passwd -compact
+.It Pa /etc/passwd
+do mapowania nazw u¿ytkowników na ich ID.
+.El
+.Sh ZOBACZ TAK¯E
+.Xr getpriority 2 ,
+.Xr setpriority 2
+.Sh B£ÊDY
+Niesuperu¿ytkownik nie mo¿e zwiêkszaæ priorytetów schedulowania swoich
+w³asnych procesów, nawet je¶li by³y one najpierw zmniejszone.
+.Sh HISTORIA
+Polecenie
+.Nm
+pojawi³o siê w
+.Bx 4.0 .

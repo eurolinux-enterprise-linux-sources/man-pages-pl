@@ -1,0 +1,79 @@
+.\" Copyright (c) 1995 Martin Schulze <joey@infodrom.north.de>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" Wed Oct 18 20:23:54 MET 1995  Martin Schulze  <joey@infodrom.north.de>
+.\"	* first released
+.\"
+.\" Translated wto wrz 29 1998 by Bartek Sowa <bartowl@kki.net.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Mar 2002,
+.\"              manpages 1.48
+.\"
+.TH PROTOCOLS 5 1995-10-18 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+protocols \- plik definiuj±cy protoko³y
+.SH OPIS
+Jest to plik tekstowy opisuj±cy ró¿ne, dostêpne w podsystemie TCP/IP,
+protoko³y internetowe DARPA. Plik ten powinien zawieraæ w³a¶ciwe warto¶ci,
+a nie u¿yte w plikach nag³ówkowych ARPA, ani tym bardziej po prostu wymy¶lone.
+Zawarte w tym pliku numery protoko³ów pojawi± siê w polu protocol ka¿dego
+nag³ówka IP.
+
+Najlepiej nic tu nie zmieniaæ, gdy¿ zmiany mog± byæ przyczyn± powstawania
+nieprawid³owych pakietów IP. Numery protoko³ów i ich nazwy ustalane s± przez
+DDN Network Information Center.
+
+Ka¿da linia ma nastêpuj±c± postaæ:
+
+.RS
+.I protokó³ numer aliasy ...
+.RE
+
+gdzie pola s± rozdzielane spacj± lub znakiem tabulacji. Puste linie s±
+ignorowane. Je¶li linia zaczyna siê od krzy¿yka (#), to znak ten i czê¶æ
+linii, która po nim nastêpuje s± ignorowane.
+
+Opisy pól:
+
+.TP
+.I protokó³
+wewnêtrzna nazwa protoko³u. Na przyk³ad ip, tcp czy udp.
+.TP
+.I numer
+oficjalny numer tego protoko³u, który bêdzie widoczny w nag³ówku IP.
+.TP
+.I aliasy
+opcjonalne aliasy dla protoko³u.
+.LP
+
+Ten plik mo¿e byæ rozprowadzany przez sieæ przy u¿yciu ogólnosieciowej
+us³ugi nazewnictwa, takiej jak Yellow Pages/NIS czy BIND/Hesoid.
+
+.SH PLIKI
+.TP
+.I /etc/protocols
+Plik definicji protoko³ów.
+.SH "ZOBACZ TAK¯E"
+.BR getprotoent (3)
+
+Przewodnik po us³udze Yellow Pages
+
+Przewodnik po us³udze BIND/Hesiod

@@ -1,0 +1,31 @@
+.\" Translation (C) 1999 Pawel Wilk <siewca@dione.ids.pl>
+.\" {PTM/PW/0.1/25-05-1999/"przywróæ ³añcuchy zapory ogniowej IP wczytane ze stdin"}
+.\" Translation update Robert Luberda <robert@debian.org>, Jul 2004, ipchains 1.3.10
+.\" $Id: ipchains-restore.8,v 1.3 2004/07/16 10:03:41 robert Exp $
+.\"
+.TH IPCHAINS-RESTORE 8 "8 lutego 1998" "" ""
+.SH NAZWA
+ipchains\-restore \- przywraca ³añcuchy zapory ogniowej IP wczytane ze stdin
+.SH SK£ADNIA
+.BR "ipchains\-restore " "[ -f ] [ -v ]
+.SH OPIS
+ipchains\-restore przywraca (wczytuje) ³añcuchy regu³ zapory ogniowej IP
+korzystaj±c ze standardowego wej¶cia.
+.SH OPCJE
+Opcje rozpoznawane przez
+.B ipchains-restore
+to:
+.TP
+.BR -f
+czy¶ci ³añcuchy bez ¿±dania potwierdzenia
+.TP
+.BR -v
+drukuje ka¿d± regu³ê
+.TP
+.BR -p
+tworzy ka¿dy ³añcuch, do którego regu³y siê odwo³uj±, a który jeszcze nie istnieje
+(u¿yteczne, je¿eli ipchains\-save by³o u¿yte do zachowania pojedynczego ³añcucha).
+.SH ZOBACZ TAK¯E
+ipchains(8)
+.SH AUTOR
+Paul ``Rusty'' Russell <ipchains@rustcorp.com>

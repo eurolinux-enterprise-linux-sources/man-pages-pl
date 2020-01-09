@@ -1,0 +1,260 @@
+'\" t
+.\" Copyright (c) 1993 by Thomas Koenig (ig25@rz.uni-karlsruhe.de)
+.\" Copyright (c) 2002 by Michael Kerrisk (mtk16@ext.canterbury.ac.nz)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" License.
+.\" Modified Sat Jul 24 17:34:08 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified Sun Jan  7 01:41:27 1996 by Andries Brouwer (aeb@cwi.nl)
+.\" Modified Sun Apr 14 12:02:29 1996 by Andries Brouwer (aeb@cwi.nl)
+.\" Modified Sat Nov 13 16:28:23 1999 by Andries Brouwer (aeb@cwi.nl)
+.\" Modified 10 Apr 2002, by Michael Kerrisk (mtk16@ext.canterbury.ac.nz)
+.\" Modified  7 Jun 2002, by Michael Kerrisk (mtk16@ext.canterbury.ac.nz)
+.\"     Added information on real-time signals
+.\" Modified 13 Jun 2002, by Michael Kerrisk (mtk16@ext.canterbury.ac.nz)
+.\"    Noted that SIGSTKFLT is in fact unused
+.\"
+.\" Translation (c) 1998 Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.\" updated to man-pages-1.55 - April 2003
+.\"                             Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\"
+.TH SIGNAL 7  2002-06-13 "Linux 2.4.18" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+signal \- lista dostêpnych sygna³ów
+.SH OPIS
+Linux wspiera zarówno rzeczywiste sygna³y POSIX-owe (zwane dalej "sygna³ami
+standardowymi"), jak i sygna³y POSIX-owe czasu rzeczywistego.
+.SS "Sygna³y standardowe"
+Linux wspiera wymienione poni¿ej sygna³y standardowe. Numery niektórych
+sygna³ów zale¿± od architektury, co pokazano w kolumnie "Warto¶æ".
+(Je¿eli podano trzy warto¶ci, to zazwyczaj pierwsza obowi±zuje dla
+architektur alpha i sparc, ¶rodkowa dla i386, ppc i sh, a ostatnia dla mips.
+Znak \- oznacza, ¿e sygna³ dla danej architektury nie wystêpuje.)
+
+Wpisy w kolumnie "Akcja" tabeli okre¶laj± domy¶ln± akcjê dla danego sygna³u,
+jako jedn± z nastêpuj±cych:
+.IP Term
+Domy¶ln± akcj± jest przerwanie procesu.
+.IP Ign
+Domy¶ln± akcj± jest zignorowanie sygna³u.
+.IP Core
+Domy¶ln± akcj± jest przerwanie procesu i zapisanie obrazu pamiêci (core).
+.IP Stop
+Domy¶ln± akcj± jest zatrzymanie procesu.
+.PP
+Najpierw sygna³y opisane w pierwotnym standardzie POSIX.1.
+.sp
+.PP
+.TS
+l c c l
+____
+lB c c l.
+Sygna³	Warto¶æ	Akcja	Komentarz
+SIGHUP	\01	Term	Zawieszenie wykryte na terminalu kontroluj±cym
+			lub ¶mieræ procesu kontroluj±cego
+SIGINT	\02	Term	Przerwanie nakazane z klawiatury
+SIGQUIT	\03	Core	Wyj¶cie nakazane z klawiatury
+SIGILL	\04	Core	Nielegalna instrukcja
+SIGABRT	\06	Core	Sygna³ abort od \fIabort\fP(3)
+SIGFPE	\08	Core	Wyj±tek zmiennoprzecinkowy
+SIGKILL	\09	Term	Sygna³ Kill
+SIGSEGV	11	Core	Nieprawid³owa referencja pamiêciowa
+SIGPIPE	13	Term	Uszkodzony potok: zapis do potoku bez odbiorców
+SIGALRM	14	Term	Sygna³ timera od \fIalarm\fP(1)
+SIGTERM	15	Term	Sygna³ zakoñczenia pracy
+SIGUSR1	30,10,16	Term	Sygna³ 1 u¿ytkownika
+SIGUSR2	31,12,17	Term	Sygna³ 2 u¿ytkownika
+SIGCHLD	20,17,18	Ign	Potomek zatrzyma³ siê, lub zakoñczy³ pracê
+SIGCONT	19,18,25		Kontynuuj, je¶li zatrzyma³ siê
+SIGSTOP	17,19,23	Stop	Zatrzymaj proces
+SIGTSTP	18,20,24	Stop	Zatrzymanie napisane z tty
+SIGTTIN	21,21,26	Stop	wej¶cie tty dla procesu w tle
+SIGTTOU	22,22,27	Stop	wyj¶cie tty dla procesu w tle
+.TE
+
+Sygna³ów
+.B SIGKILL
+oraz
+.B SIGSTOP
+nie mo¿na przechwyciæ, zablokowaæ ani zignorowaæ.
+
+Nastêpnie sygna³y nie wystêpuj±ce w standardzie POSIX.1, ale opisane w SUSv2
+lub w SUSv3 / POSIX 1003.1-2001.
+.sp
+.PP
+.TS
+l c c l
+____
+lB c c l.
+Sygna³	Warto¶æ	Akcja	Komentarz
+SIGBUS	10,7,10	Core	B³±d szyny (nieprawid³owy dostêp do pamiêci)
+SIGPOLL		Term	Zdarzenie odpytywalne (Sys V). Synonim SIGIO
+SIGPROF	27,27,29	Term	Przeterminowanie zegara profilowego
+SIGSYS	12,\-,12	Core	Niew³a¶ciwy argument funkcji (SVID)
+SIGTRAP	5	Core	¦ledzenie/pu³apka kontrolna
+SIGURG	16,23,21	Ign	Pilny warunek na gnie¼dzie (BSD 4.2)
+SIGVTALRM	26,26,28	Term	Wirtualny zegar alarmu (BSD 4.2)
+SIGXCPU	24,24,30	Core	Przekroczone ograniczenie czasu CPU (BSD 4.2)
+SIGXFSZ	25,25,31	Core	Przekroczone ograniczenie rozmiaru pliku (BSD 4.2)
+.TE
+
+Do wersji 2.2 Linuksa (w³±cznie) domy¶lne zachowanie dla sygna³ów
+.BR SIGSYS ", " SIGXCPU ", " SIGXFSZ
+oraz (na architekturach innych ni¿ SPARC i MIPS)
+.B SIGBUS
+polega³o na przerwaniu procesu (bez zrzutu pamiêci).
+(W niektórych innych Uniksach domy¶lne zachowanie dla
+.BR SIGXCPU " i " SIGXFSZ
+polega na przerwaniu procesu bez zrzutu pamiêci.)
+Linux 2.4 jest zgodny ze wymaganiami standardu POSIX 1003.1-2001
+w zakresie przerywania procesu ze zrzutem pamiêci.
+
+A teraz ró¿ne inne sygna³y.
+.sp
+.PP
+.TS
+l c c l
+____
+lB c c l.
+Sygna³	Warto¶æ	Akcja	Komentarz
+SIGIOT	6	Core	pu³apka IOT. Synonim SIGABRT
+SIGEMT	7,\-,7	Term
+SIGSTKFLT	\-,16,\-	Term	B³±d stosu koprocesora (nieu¿ywany)
+SIGIO	23,29,22	Term	I/O teraz mo¿liwe (BSD 4.2)
+SIGCLD	\-,\-,18	Ign	Synonim SIGCHLD
+SIGPWR	29,30,19	Term	B³±d zasilania (System V)
+SIGINFO	29,\-,\-		Synonim SIGPWR
+SIGLOST	\-,\-,\-	Term	Utracono blokadê pliku
+SIGWINCH	28,28,20	Ign	Sygna³ zmiany rozmiarów okna (BSD 4.3, Sun)
+SIGUNUSED	\-,31,\-	Term	Nie u¿yty sygna³ (wyst±pi SIGSYS)
+.TE
+
+(Sygna³ 29 oznacza
+.B SIGINFO
+/
+.B SIGPWR
+na architekturze alpha, lecz
+.B SIGLOST
+na architekturze sparc.)
+
+.B SIGEMT
+nie jest wymieniony w POSIX 1003.1-2001, lecz pomimo to pojawia siê w
+wiêkszo¶ci innych Uniksów. Domy¶ln± akcj± dla tego sygna³u jest zazwyczaj
+przerwanie procesu ze zrzutem pamiêci.
+
+.B SIGPWR
+(nie wymieniony w POSIX 1003.1-2001) jest zazwyczaj domy¶lnie ignorowany
+w tych Uniksach, w których wystêpuje.
+
+.B SIGIO
+(nie wymieniony w POSIX 1003.1-2001) jest domy¶lnie ignorowanyw niektórych
+innych Uniksach.
+.SS "Sygna³y czasu rzeczywistego"
+Linux wspiera sygna³y czasu rzeczywistego zdefiniowane pierwotnie w
+rozszerzeniu dla czasu rzeczywistego POSIX.4 (a obecnie zawarte w POSIX
+1003.1-2001). Linux wspiera 32 sygna³y czasu rzeczywistego, o numerach od
+.RB ( SIGRTMIN )
+do 63
+.RB ( SIGRTMAX ).
+(Programy powinny zawsze odwo³ywaæ siê do sygna³ów czasu rzeczywistego u¿ywaj±c
+notacji
+.BR SIGRTMIN +n,
+gdy¿ zakres numerów sygna³ów czasu rzeczywistego ró¿ni siê pomiêdzy Uniksami.)
+.PP
+W odró¿nieniu od sygna³ów standardowych, sygna³y czasu rzeczywistego nie
+posiadaj± predefiniowanego znaczenia:
+mo¿na wykorzystywaæ ca³y zestaw sygna³ów czasu rzeczywistego do celów
+okre¶lonych w aplikacji.
+(Nale¿y jednak zauwa¿yæ, ¿e implementacja LinuxThreads korzysta z trzech
+pierwszych sygna³ów czasu rzeczywistego.)
+.PP
+Domy¶l± akcj± na nieobs³u¿ony sygna³ czasu rzeczywistego jest przerwanie
+procesu, który go otrzyma³.
+.PP
+Sygna³y czasu rzeczywistego s± rozpoznawane w nastêpuj±cy sposób:
+.IP 1. 4
+Mo¿na kolejkowaæ wiele egzemplarzy sygna³u czasu rzeczywistego.
+Dla odró¿nienia, je¶li w czasie gdy standardowy sygna³ jest blokowany zostanie
+doêczonych wiele egzemplarzy tego sygna³u, tylko jeden egzemplarzy trafia do
+kolejki.
+.IP 2. 4
+Je¶li sygna³ wys³ano korzystaj±c z
+.BR sigqueue (2),
+mo¿na wys³aæ wraz z tym sygna³em warto¶æ towarzysz±c± (ca³kowit± lub
+wska¼nik). Je¶li proces otrzymuj±cy ustanawia funkcjê obs³ugi dla tego
+sygna³u za pomoc± znacznika
+.B SA_SIGACTION
+funkcji
+.BR sigaction (2),
+to otrzymuje towarzysz±c± mu dan± za po¶rednictwem pola
+.I si_value
+struktury
+.I siginfo_t
+przekazanej jako drugi argument funkcji obs³ugi.
+Ponadto, pola
+.I si_pid
+oraz
+.I si_uid
+tej struktury mog± s³u¿yæ do otrzymania PID oraz rzeczywistego ID u¿ytkownika
+procesu wusy³aj±cego sygna³.
+.IP 3. 4
+sygna³y czasu rzeczywistego s± dorêczane w zagwarantowanej kolejno¶ci.
+Sygna³y czasu rzeczywistego jednego rodzaju s± dorêczane w takiej kolejno¶ci,
+w jakiej zosta³y wys³ane.
+Je¶li do procesu zostan± wys³ane ró¿ne sygna³y czasu rzeczywistego, bêd± one
+dorêczone pocz±wszy od sygna³u o najni¿szym numerze.
+(Tzn., sygna³y o niskich numerach maj± najwy¿szy priorytet.)
+.PP
+POSIX nie okre¶la, które z sygna³ów powinny zostaæ dorêczone jako pierwsze w
+sytuacji, gdy obs³u¿enia wymagaj± zarówno sygna³y standardowe, jak i sygna³y
+czasu rzeczywistego. Linux, podobnie do innych implementacji, daje w tym
+przypadku pierwszeñstwo sygna³om standardowym.
+.PP
+Zgodnie z POSIX, implementacja powinna zazwalaæ na kolejkowanie do procesu co
+najmniej _POSIX_SIGQUEUE_MAX (32) sygna³ów czasu rzeczywistego.
+Jednak¿e, Linux zamiast okre¶laæ ogdaniczenie dla procesu, wymusza
+ograniczenie ogólnosystemowe liczby kolejkowanych do wszystkich procesów
+sygna³ów czasu rzeczywistego.
+Ograniczenie to mo¿bna zobaczyæ a tak¿e (przy odpowiednich uprawnieniach)
+zmieniæ za po¶rednictwem pliku
+.IR /proc/sys/kernel/rtsig-max .
+Podobnie, za po¶rednictwem pliku
+.I /proc/sys/kernel/rtsig-nr
+mo¿na dowiedzieæ siê ile sygna³ów czasu rzeczywistego jest aktualnie w
+kolejce.
+.SH "ZGODNE Z"
+POSIX.1
+.SH B£ÊDY
+.B SIGIO
+i
+.B SIGLOST
+maj± tê sam± warto¶æ.
+Ten drugi jest zakomentowany w ¼ród³ach kernela, lecz proces tworzenia
+niektórych aplikacji wci±¿ zak³ada, ¿e sygna³ 29 to
+.BR SIGLOST .
+.SH "ZOBACZ TAK¯E"
+.BR kill (1),
+.BR kill (2),
+.BR setitimer (2),
+.BR sigaction (2),
+.BR signal (2),
+.BR sigprocmask (2),
+.BR sigqueue (2)

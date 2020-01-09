@@ -1,0 +1,38 @@
+.\" {PTM/WK/1999-10-20}
+.\" -*- nroff -*-
+.TH kmalloc 9 "3 sierpnia 1997" "Linux" "Funkcje j±dra"
+.SH NAZWA
+kmalloc, kfree \- alokuj i zwolnij obszar pamiêci
+.SH SK£ADNIA
+.B #include <linux/malloc.h>
+.sp
+.BI "void * kmalloc (size_t " size ", int " priority ");"
+.br
+.BI "void kfree (void * " __ptr ");"
+.SH OPIS
+Funkcja
+.B kmalloc
+alokuje fragment pamiêci.
+.PP
+Parametr
+.I size
+jest liczb± bajtów, jakie zostan± zaalokowane. Parametr
+.I priority
+wskazuje na wagê i typ ¿±dania pamiêci. Niektórymi mo¿liwymi
+warto¶ciami s± GFP_DMA, GFP_ATOMIC, GFP_BUFFER i GFP_NFS.
+.PP
+Funkcja
+.B kfree
+zwalnia obszar pamiêci przes³any jako parametr
+.IR __ptr .
+.SH WARTO¦Æ ZWRACANA
+W przypadku powodzenia,
+.B kmalloc
+zwraca wska¼nik do ¶wie¿o zaalokowanej pamiêci.
+.PP
+W przypadku b³êdu zamiast wska¼nika do pamiêci zwracany jest NULL.
+.PP
+.SH DOSTÊPNO¦Æ
+Linux 2.0
+.SH AUTOR
+Kirk Petersen (kirk@speakeasy.org)

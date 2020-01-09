@@ -1,0 +1,67 @@
+.\" {PTM/WK/1999-11-22}
+.TH IGAWK 1 "3 listopada 1999" FSF "Narzêdzia"
+.SH NAZWA
+igawk \- gawk z plikami w³±czanymi
+.SH SK£ADNIA
+.B igawk
+.RI [ "opcje gawk" ]
+.B \-f
+.I plik-programu
+.RB [ -- ]
+.IR plik ...
+.br
+.B igawk
+.RI [ "opcje gawk" ]
+.RB [ -- ]
+.I tekst-programu
+.IR plik ...
+.SH OPIS
+.I igawk
+jest prostym skryptem pow³oki dodaj±cym do
+.IR gawk (1)
+mo¿liwo¶æ obs³ugi "plików w³±czanych" ("include files").
+.PP
+Programy AWK dla
+.I igawk
+s± takie same jak dla
+.IR gawk ,
+z wyj±tkiem tego, ¿e dodatkowo mo¿esz w swoim programie umieszczaæ
+wiersze w rodzaju
+.RS
+.sp
+.ft B
+@include getopt.awk
+.ft R
+.sp
+.RE
+by w³±czyæ zawarto¶æ pliku
+.B getopt.awk
+albo z katalogu bie¿±cego albo z jednego z katalogów w ¶cie¿ce przeszukiwañ.
+.SH OPCJE
+W
+.IR gawk (1)
+znajdziesz pe³ny opis jêzyka AWK oraz opcji, jakie obs³uguje
+.IR gawk .
+.SH PRZYK£ADY
+.nf
+.ft B
+cat << EOF > test.awk
+@include getopt.awk
+.sp
+BEGIN {
+	while (getopt(ARGC, ARGV, "am:q") != \-1)
+		\&.\^.\^.
+}
+EOF
+.sp
+igawk \-f test.awk
+.ft R
+.fi
+.SH ZOBACZ TAK¯E
+.BR gawk (1)
+.PP
+.IR "Effective AWK Programming" ,
+Edycja 1.0, opublikowane przez Free Software Foundation, 1995.
+.SH AUTOR
+Arnold Robbins
+.RB ( arnold@skeeve.com ).

@@ -1,0 +1,374 @@
+.\" {PTM/WK/2000-I}
+.\" -*- nroff -*-
+.\" Copyright 1993, 1994, 1995 by Theodore Ts'o.  All Rights Reserved.
+.\" This file may be copied under the terms of the GNU Public License.
+.\" 
+.TH DEBUGFS 8 "Kwiecieñ 2002" "e2fsprogs version 1.27" 
+.SH NAZWA
+debugfs - degugger systemu plików ext2
+.SH SK£ADNIA
+.B debugfs
+[
+.B -b
+rozmiar_bloku
+]
+[
+.B -s
+superblok
+]
+[
+.B -f 
+plik_komend
+]
+[
+.B -R
+komenda
+]
+[
+.B -V
+]
+[
+[
+.B -w
+]
+[
+.B -c
+]
+[
+.B -i
+]
+[
+urz±dzenie
+]
+]
+.SH OPIS
+Program 
+.B debugfs 
+jest debuggerem systemów plików. Mo¿na go u¿ywaæ do sprawdzenia i zmiany stanu
+systemu plików typu ext2.
+.br 
+.I urz±dzenie
+jest plikiem specjalnym odpowiadaj±cym urz±dzeniu zawieraj±cemu system
+plików ext2 (np. /dev/hdXX).
+.SH OPCJE
+.TP 
+.B -w
+Okre¶la, ¿e system plików powinien byæ otwarty w trybie odczyt-zapis
+(read-write). Bez tej opcji system plików otwierany jest w trybie
+tylko-do-odczytu (read-only).
+.TP 
+.I -c
+Powoduje, ¿e system plików powinien byæ otwarty w trybie katastrofalnym
+(catastrophic mode), gdzie iwêze³ oraz mapy bitowe grup nie s± pocz±tkowo
+odczytywane. Ta opcja mo¿e byæ przydatna dla znacznie uszkodzonych
+systemów plików, lecz powoduje ona ich otwarcie w trybie tylko do odczytu.
+.TP 
+.I -i
+Powoduje, ¿e
+.I urz±dzenie
+reprezentuje obraz ext2 utworzony przez program
+.B e2image.
+Poniewa¿ obraz ext2 zawiera jedynie superblok, deskryptor grupy bloków,
+blok i mapy bitowe alokacji iwêz³ów oraz tablicê iwêz³ów, wiele komend
+.B debugfs
+nie bêdzie dzia³a³o poprawnie.
+.B Ostrze¿enie:
+nie ma ¿adnych bezpiecznych sprawdzeñ, dlatego 
+.B debugfs 
+mo¿e zawie¶æ podczas prób wykonania takich komend jak
+.IR ls ", " dump ", " 
+itd.  
+.B debugfs 
+jest debuggerem. Posiada szorstkie krawêdzie!
+.TP 
+.I -b rozmiar_bloku
+Powoduje u¿ycie podanego rozmiaru bloku dla systemu plików zamiast, tak
+jak normalnie, wykrywaæ odpowiedni rozmiar.
+.TP 
+.I -s superblok
+Powoduje odczytanie superbloku z podanego numeru bloku zamiast z domy¶lnego (1). Je¿eli podasz opcjê
+.I -s
+,musisz tak¿e podaæ opcjê
+.I -b.
+.TP 
+.I -f plik_komend
+Powoduje, ¿e 
+.B debugfs
+odczytuje z
+.IR "pliku komend" , 
+komendy i wykonuje je. Po zakoñczeniu wykonywania tych komend
+.B debugfs
+koñczy pracê.
+.TP 
+.I -R komenda
+Powoduje wykonanie pojedynczej
+.I komendy
+(¿±dania - request), i zakoñczenie pracy.
+.TP 
+.B -V
+Wy¶wietla wersjê programu i koñczy pracê.
+.SH OKRE¦LANIE PLIKÓW
+Wiele komend
+.B debugfs
+pobiera
+.I plikspec
+jako argument okre¶laj±cy i-wêze³ (w przeciwieñstwie do nazwy ¶cie¿kowej
+¶cie¿ka) systemu plików, aktualnie otwartego przez
+.BR debugfs . 
+Argument
+.I plikspec
+mo¿e byæ podany w dwu postaciach. Pierwsz± jest numer i-wêz³a ujêty
+w nawiasy k±towe, np.
+.IR <2> .
+Drug± postaæ stanowi nazwa ¶cie¿kowa; je¶li jest ona poprzedzona uko¶nikiem
+('/'), to bêdzie interpretowana wzglêdem katalogu g³ównego (root) systemu
+plików aktualnie otwartego przez 
+.BR debugfs .
+Je¶li nie, to interpretowana bêdzie wzglêdem bie¿±cego katalogu roboczego,
+jaki jest w ustawiony w danym momencie w
+.BR debugfs .
+Mo¿na go zmieniæ pos³uguj±c siê komend±
+.B debugfs
+o nazwie
+.BR cd .
+.SH KOMENDY
+.B debugfs
+jest debuggerem interaktywnym. Rozumie sporo komend.
+.TP 
+.I cat plikspec
+Zrzuæ zawarto¶æ i-wêz³a
+.I plikspec
+na standardowe wyj¶cie.
+.TP 
+.I cd plikspec
+Zmieñ bie¿±cy katalog roboczy na 
+.IR plikspec .
+.TP 
+.I chroot plikspec
+Zmieñ katalog g³ówny (root) na katalog
+.IR plikspec .
+.TP 
+.B close
+Zamknij aktualnie otwarty system plików.
+.TP 
+.I clri plik
+Wyczy¶æ zawarto¶æ i-wêz³a
+.IR plik .
+.TP 
+.B dump [-p] plikspec plik_wyj¶ciowy
+Zrzuæ zawarto¶æ i-wêz³a
+.I plikspec
+do pliku wyj¶ciowego
+.IR plik_wyj¶ciowy .  
+Je¶li podano opcjê 
+.BR -p ,
+to ustaw informacjê o w³a¶cicielu, grupie i prawach
+.IR plik_wyj¶ciowy ,
+tak jak dla
+.IR plikspec .
+.TP 
+.I expand_dir plikspec
+Rozwiñ katalog
+.IR plikspec .
+.TP 
+.I feature [cecha] [-cecha] ...
+Ustaw lub wyczy¶æ ró¿ne cechy systemu plików w superbloku i wy¶wietl
+aktualny stan cech systemu plików.
+.I find_free_block [cel]
+Znajd¼ pierwszy wolny blok, poczynaj±c od
+.I cel
+i zaalokuj go.
+.TP 
+.I find_free_inode [katalog [tryb]]
+Znajd¼ wolny i-wêze³ i zaalokuj go. Je¶li go podano, to argument
+.I katalog
+okre¶la numer i-wêz³a katalogu, w którym ma zostaæ umieszczony i-wêze³. Drugi
+opcjonalny argument
+.I tryb
+okre¶la prawa nowego i-wêz³a. (Je¿eli w trybie mode ustawiony jest
+bit katalogu, to procedura alokacji bêdzie dzia³aæ odmiennie.)
+.TP 
+.I freeb blok
+Zaznacz blok numer
+.I blok
+jako nie przydzielony (nie zaalokowany).
+.TP 
+.I freei plikspec
+Zwolnij i-wêze³ okre¶lony przez
+.IR plikspec .
+.TP 
+.B help
+Poka¿ listê poleceñ rozumianych przez
+.BR debugfs (8).
+.TP 
+.I icheck blok ...
+Poka¿ zestawienie i-wêz³ów u¿ywaj±cych jednego lub wiêcej bloków okre¶lonych
+w wierszu poleceñ.
+.TP 
+.I initialize urz±dzenie rozmiar_bloku
+Stwórz system plików ext2 na urz±dzeniu
+.I urz±dzenie
+z rozmiarem urz±dzenia
+.IR rozmiar_bloku .
+Zauwa¿, ¿e nie inicjuje to w pe³ni wszystkich struktur danych; aby to zrobiæ,
+wykorzystaj program
+.BR mke2fs (8).
+Ta komenda jest tylko wywo³aniem funkcji z biblioteki niskopoziomowej, która
+ustawia superblok i deskryptory bloków.
+.TP 
+.I kill_file plikspec
+Zwolnij (dealokuj) i-wêze³
+.I plikspec
+i jego bloki. Zauwa¿, ¿e nie usuwa to ¿adnych wpisów katalogu (je¶li istniej±)
+dotycz±cych tego i-wêz³a.
+Je¶li chcesz usun±æ plik (unlink), zajrzyj do opisu polecenia
+.BR rm (1).
+.TP 
+.I lcd katalog
+Zmieñ bierz±cy katalog roboczy
+.B debugfs
+na
+.I katalog
+na pierwotnym (native) systemie plików.
+.I ln plikspec plik_docelowy
+Stwórz dowi±zanie o nazwie
+.IR plik_docelowy ,
+do pliku
+.IR plikspec .
+Zauwa¿, ¿e nie dostosowuje to odpowiednio licznika odwo³añ w i-wê¼le.
+.TP 
+.I logdump [-ac] [-b<blok>] [-i<iwêze³>] [-f<dziennik>] [plik_wyj¶ciowy]
+Zrzuæ zawarto¶æ dziennika ext3.
+.B ls [-l] plikspec
+Poka¿ zestawienie plików w katalogu
+.IR plikspec .
+.TP 
+.I modify_inode plikspec
+Zmieñ zawarto¶æ struktury i-wêz³a o nazwie
+.IR plikspec .
+.TP 
+.I mkdir plikspec
+Stwórz katalog.
+.TP 
+.I mknod plikspec [p|[[c|b] g³ówny poboczny]]
+Stwórz plik specjalny urz±dzenia (potoku nazwanego, urz±dzenia znakowego
+lub blokowego). Je¿eli tworzone ma byæ urz±dzenie znakowe lub blokowe, to
+musi zostaæ podany g³ówny
+.RI ( major )
+i poboczny
+.RI ( minor )
+numer urz±dzenia.
+.TP 
+.I ncheck numer_iwêz³a ...
+We¼ zadan± listê numerów i-wêz³ów i poka¿ zestawienie nazw ¶cie¿kowych
+do tych i-wêz³ów.
+.TP 
+.I open [-w] [-f] [-i] [-c] [-b rozmiar_bloku] [-s superblok] urz±dzenie
+Otwórz system plików do odczytu. Flaga
+.I -w 
+powoduje otwarcie systemu plików w trybie do zapisu. Flaga
+.I -f 
+wymusza otwarcie systemu plików nawet wtedy gdy posiada on nieznane lub
+niekompatybilne cechy, które normalnie zapobieg³y by otwarciu.
+Opcje 
+.IR -c ", " -b ", " -i ", " i " -s
+zachowuj± siê tak samo jak te z 
+.B debugfs.
+.TP 
+.B pwd
+Poka¿ bie¿±cy katalog roboczy.
+.TP 
+.B quit
+Koniec pracy
+.BR debugfs .
+.TP 
+.I rdump katalog miejsce_docelowe
+Zrzuæ rekurencyjnie
+.I katalog
+wraz z zawrto¶ci± (w³±czaj±c plik, dowi±zania symboliczne i inne katalogi) w 
+.I miejsce_docelowe,
+które powinno byæ istniej±cym katalogiem na pierwotnym systemie plików.
+.I rm ¶cie¿ka
+Usuñ (unlink)
+.IR ¶cie¿ka .
+Je¶li spowoduje to, ¿e i-wêze³ wskazywany przez
+.I ¶cie¿ka
+nie bêdzie posiada³ innych odwo³añ, to dealokuj plik. Komenda ta dzia³a jak
+funkcja systemowa unlink().
+.I 
+.TP 
+.I rmdir plikspec
+Usuñ katalog
+.IR plikspec .
+Funkcja ta nie jest obecnie zaimplementowana.
+.TP 
+.I setb blok [ilo¶æ]
+Zaznacz blok o numerze
+.I block
+jako zaalokowany. Je¿eli podany zostanie opcjonalny agrument
+.I ilo¶æ, 
+wtedy 
+.I ilo¶æ
+bloków zaczynaj±c od bloku o numerze
+.I blok
+zostanie zaznaczona jako zaalokowana.
+.TP 
+.I seti plikspec
+Zaznacz i-wêze³ 
+.I plikspec
+jako u¿ywany przez mapê bitow± i-wêz³a (inode bitmap).
+.TP 
+.I set_super_value pole warto¶æ
+Ustaw pole superbloku
+.I pole
+na warto¶æ 
+.I warto¶æ.
+Wszystkie prawid³owe pola superbloku mog± zostaæ wy¶wietlone przez
+komendê:
+.B set_super_value -l
+.TP 
+.B show_super_stats [-h]
+Wy¶wietl zawarto¶æ superbloku i deskryptorów grup bloków. Je¿eli podana
+jest flaga
+.I -h,
+wypisz tylko zawarto¶æ superbloku.
+.TP 
+.TP 
+.I stat plikspec
+Wy¶wietl zawarto¶æ struktury i-wêz³a o nazwie
+.IR plikspec .
+.TP 
+.I testb blok [ilo¶æ]
+Sprawd¼, czy blok o numerze
+.I blok
+jest zaznaczony jako zaalokowany w mapie bitowej bloku.
+Je¿eli podany jest opcjonalny argument
+.I ilo¶æ, 
+wtedy 
+.I ilo¶æ
+bloków zaczynaj±c od bloku o numerze
+.I blok
+bêdzie sprawdzonych.
+.TP 
+.I testi plikspec
+Sprawd¼, czy i-wêze³
+.I plikspec
+jest zaznaczony jako zaalokowany w mapie bitowej bloku.
+.TP 
+.I unlink ¶cie¿ka
+Usuñ dowi±zanie do i-wêz³± okre¶lone przez
+.IR ¶cie¿ka .
+Zauwa¿, ¿e nie dostosowuje to odpowiednio licznika odwo³añ w i-wê¼le.
+.TP 
+.I write plik_¼ród³owy plik_wyj¶ciowy
+Stwórz w systemie plików plik o nazwie
+.IR plik_wyj¶ciowy ,
+i skopiuj do niego zawarto¶æ pliku
+.IR plik_¼ród³owy .
+.SH AUTOR
+.B debugfs
+zosta³o napisane przez Theodore Ts'o <tytso@mit.edu>.
+.SH ZOBACZ TAK¯E
+.BR dumpe2fs (8),
+.BR e2fsck (8),
+.BR mke2fs (8).

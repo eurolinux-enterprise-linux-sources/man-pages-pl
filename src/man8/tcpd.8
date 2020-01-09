@@ -1,0 +1,173 @@
+.\" {PTM/PB/0.1/05-01-1999/"urz±dzenie kontroli dostêpu do us³ug internetowych"}
+.\" Translation (c) 1999 Przemek Borys <pborys@dione.ids.pl>
+.TH TCPD 8
+.SH NAZWA
+tcpd \- urz±dzenie kontroli dostêpu do us³ug internetowych
+.SH OPIS
+.PP
+Program \fItcpd\fR mo¿e zostaæ skonfigurowany do monitorowania nadchodz±cych
+¿±dañ us³ug
+\fItelnet\fR, \fIfinger\fR, \fIftp\fR, \fIexec\fR, \fIrsh\fR,
+\fIrlogin\fR, \fItftp\fR, \fItalk\fR, \fIcomsat\fR 
+i innych, które maj± mapowanie typu jeden-na-jeden na pliki wykonywalne.
+.PP
+Program wspiera zarówno gniazda typu 4.3BSD jak i TLI z System V.4.
+Funkcjonalno¶æ mo¿e byæ ograniczona gdy protokó³ pod TLI nie jest protoko³em
+internetowym (internet protocol).
+.PP
+Dzia³anie jest nastêpuj±ce: kiedy tylko pojawi siê ¿±danie us³ugi, demon
+\fIinetd\fP uruchamia program \fItcpd\fP zamiast oczekiwanego serwera.
+\fItcpd\fP loguje ¿±danie i wykonuje pewne dodatkowe sprawdzenia. Gdy
+wszystko jest w porz±dku, \fItcpd\fP uruchamia odpowiedni serwer i wy³±cza
+siê.
+.PP
+Dodatkowe opcje to: kontrola dostêpu w oparciu o wzorce, podgl±danie nazw
+u¿ytkownika wg RFC 931 itp, ochrona przeciw hostom, które udaj±, ¿e maj±
+inn± nazwê hosta ni¿ rzeczywi¶cie, a tak¿e ochrona przeciw hostom udaj±cym
+czyj¶ inny adres sieciowy.
+.SH LOGOWANIE
+Po³±czenia monitorowane przez
+.I tcpd
+s± komentowane poprzez \fIsyslog\fR(3).
+Ka¿dy rekord zawiera znak czasu, nazwê hosta klienta, a tak¿e ¿±dan± us³ugê.
+Te wiadomo¶ci mog± byæ przydatne do wykrywania niechcianych dzia³añ,
+szczególnie gdy po³±czone s± dane z logów wielu hostów.
+.PP
+Aby dowiedzieæ siê, gdzie wêdruj± twoje logi, sprawd¼ w pliku
+konfiguracyjnym demona syslog, zwykle /etc/syslog.conf.
+.SH KONTROLA DOSTÊPU
+Opcjonalnie,
+.I tcpd
+wspiera prosty mechanizm kontroli dostêpu, opartej na porównywaniu wzorców.
+Umo¿liwia to akcjê podczas wywo³ywania komend pow³oki, kiedy wzorzec
+bêdzie odpowiada³. Dla szczegó³ów obejrzyj stronê podrêcznika
+\fIhosts_access\fR(5).
+.SH WERYFIKACJA NAZWY HOSTA
+Schemat autentykacji niektórych protoko³ów (\fIrlogin, rsh\fR) 
+bazuje na nazwach hosta. Niektóre implementacje wierz± nazwie hosta, któr±
+otrzymuj± od losowego serwera nazw; inne implementacje s± bardziej ostro¿ne,
+lecz u¿ywaj± wadliwych algorytmów.
+.PP
+.I tcpd
+weryfikuje nazwê hosta klienta, która jest zwracana przez zapytanie
+serwera DNS adres->nazwa, poprzez sprawdzenie nazwy hosta i adresu zwróconego
+przez zapytanie serwera DNS nazwa->adres. Je¶li pojawi siê niezgodno¶æ,
+.I tcpd
+wnioskuje, ¿e ma do czynienia z hostem, który udaje, ¿e ma nazwê innego
+hosta.
+.PP
+Je¶li ¼ród³a s± skompilowane z -DPARANOID,
+.I tcpd
+porzuci po³±czenie w wypadku niezgodno¶ci nazwy/adresu. W przeciwnym
+wypadku, nazwa hosta mo¿e byæ porównana z "dzik± kart±" \fIPARANOID\fR, po
+czym mo¿e zostaæ podjête odpowiednie dzia³anie.
+.SH HOST ADDRESS SPOOFING
+Opcjonalnie,
+.I tcpd
+wy³±cza opcje rutowania ¼róde³ (source-routing) gniazd na ka¿dym
+po³±czeniu, z którym ma do czynienia. Za³atwia to problem wiêkszo¶ci ataków
+od hostów, które udaj± adres, nienale¿±cy do ich sieci. Us³ugi UDP nie
+odnosz± z tego zabezpieczenia ¿adnej korzy¶ci. Opcja ta musi byæ w³±czona
+podczas kompilacji.
+.SH RFC 931
+Gdy podgl±dy RFC 931 etc. s± w³±czone (opcja kompilacyjna) \fItcpd\fR
+spróbuje uzyskaæ nazwê u¿ytkownika klienta. Powiedzie siê to tylko je¶li
+na ho¶cie klienta pracuje kompatybilny z RFC 931 daemon. Nie dzia³a to na
+po³±czeniach zorientowanych datagramowo i mo¿e spowodowaæ zauwa¿alne
+spowolnienia w wypadku po³±czeñ z PC.
+.SH PRZYK£ADY
+Detale u¿ywania \fItcpd\fR zale¿± od informacji o ¶cie¿ce, która zosta³a
+wkompilowana w program.
+.SH PRZYK£AD 1
+Ten przyk³ad odnosi siê do przypadku, gdy \fItcpd\fR oczekuje, ¿e oryginalne
+demony sieciowe zostan± przeniesione w "inne" miejsce.
+.PP
+Aby monitorowaæ dostêp do us³ugi \fIfinger\fR, przenie¶ oryginalnego demona
+finger w "inne" miejsce, a zamiast niego zainstaluj tcpd. Nie rób ¿adnych
+zmian w plikach konfiguracyjnych.
+.nf
+.sp
+.in +5
+# mkdir /other/place
+# mv /usr/etc/in.fingerd /other/place
+# cp tcpd /usr/etc/in.fingerd
+.fi
+.PP
+Przyk³ad zak³ada, ¿e demony sieciowe s± w /usr/etc. Na niektórych
+systemach, demony sieciowe znajduj± siê w /usr/sbin lub /usr/libexec, a
+czasem nie maj± przedrostka `in.\' w nazwie.
+.SH PRZYK£AD 2
+Ten przyk³ad odnosi siê do przypadku, gdy \fItcpd\fR oczekuje, ¿e demony
+sieciowe s± w swoim oryginalnym miejscu.
+.PP
+Aby monitorowaæ dostêp do us³ugi \fIfinger\fR, dokonaj nastêpuj±cych edycji
+w pliku konfiguracyjnym \fIinetd\fR (zwykle
+\fI/etc/inetd.conf\fR lub \fI/etc/inet/inetd.conf\fR):
+.nf
+.sp
+.ti +5
+finger  stream  tcp  nowait  nobody  /usr/etc/in.fingerd  in.fingerd
+.sp
+stanie siê:
+.sp
+.ti +5
+finger  stream  tcp  nowait  nobody  /some/where/tcpd     in.fingerd
+.sp
+.fi
+.PP
+.PP
+Podobne zmiany bêd± wymagane dla innych us³ug, które maj± byæ objête
+\fItcpd\fR. Po ich dokonaniu wy¶lij do \fIinetd\fR(8) sygna³ `kill -HUP',
+aby zmiany zaczê³y dzia³aæ. U¿ytkownicy AIX mog± skorzystaæ tu z komendy
+`inetimp\'.
+.SH PRZYK£AD 3
+W wypadku demonów, które nie istniej± w ogólnym katalogu ("tajnych", czy
+innych), zmieñ plik konfiguracyjny \fIinetd\fR tak, aby wskazywa³
+absolutn± ¶cie¿kê dla pola nazwy procesu. Na przyk³ad:
+.nf
+.sp
+    ntalk  dgram  udp  wait  root  /some/where/tcpd  /usr/local/lib/ntalkd
+.sp
+.fi
+.PP
+Tylko ostatni komponent (ntalkd) ¶cie¿ki zostanie u¿yty do kontroli dostêpu
+i do logowania.
+.SH B£ÊDY
+Niektóre demony UDP (i RPC) zwlekaj± chwilê po tym, jak zakoñcz± pracê, a
+kiedy nadchodzi nastêpne ¿±danie. W pliku konfiguracyjnym inetd, us³ugi te
+s± zarejestrowane z flag± \fIwait\fR. Tylko ¿±danie, które uruchomi³o taki
+daemon zostanie zalogowane.
+.PP
+Program nie dzia³a z us³ugami RPC poprzez TCP. Us³ugi te s± zarejestrowane w
+pliku inetd jako \fIrpc/tcp\fR. Jedyn± nietrywialn± us³ug±, która jest
+dotkniêta tym ograniczeniem, jest \fIrexd\fR, u¿ywany przez komendê
+\fIon(1)\fR. Nie jest to wielka strata. Na wiêkszo¶ci systemów
+\fIrexd\fR jest mniej bezpieczny ni¿ /etc/hosts.equiv.
+.PP
+¯±dania typu broadcast RPC (np: \fIrwall, rup, rusers\fR) 
+zawsze jawi± siê jako pochodz±ce od hosta odpowiadaj±cego. Je¶li klient
+rozg³asza ¿±danie do wszystkich demonów \fIportmap\fR w jego sieci:
+ka¿dy daemon \fIportmap\fR przekazuje ¿±danie lokalnemu demonowi. Z kolei
+demony typu \fIrwall\fR itp. widz±, ¿e ¿±danie pochodzi od hosta lokalnego.
+.SH PLIKI
+.PP
+Domy¶lne lokacje tabel kontroli dostêpu do hosta to:
+.PP
+/etc/hosts.allow
+.br
+/etc/hosts.deny
+.SH ZOBACZ TAK¯E
+.na
+.nf
+hosts_access(5), format tabel kontroli dostêpu tcpd.
+syslog.conf(5), format pliku kontrolnego syslogd.
+inetd.conf(5), format pliku konfiguracyjnego inetd.
+.SH AUTORZY
+.na
+.nf
+Wietse Venema (wietse@wzv.win.tue.nl),
+Department of Mathematics and Computing Science,
+Eindhoven University of Technology
+Den Dolech 2, P.O. Box 513, 
+5600 MB Eindhoven, The Netherlands
+\" @(#) tcpd.8 1.5 96/02/21 16:39:16

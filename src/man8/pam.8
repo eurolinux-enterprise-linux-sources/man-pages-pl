@@ -1,0 +1,258 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\" $Id: pam.8,v 1.3 2000/09/30 16:59:39 wojtek2 Exp $
+.\" Copyright (c) Andrew G. Morgan 1996-7 <morgan@linux.kernel.org>
+.TH PAM 8 "9 lutego 1997" "Linux-PAM 0.56" "Podrêcznik Linux-PAM"
+.SH NAZWA
+
+Linux-PAM \- Wstawialne modu³y autentykacji dla Linuksa
+(ang. Pluggable Authentication Modules)
+
+.SH STRESZCZENIE
+.B /etc/pam.conf
+.sp 2
+.SH OPIS
+
+Podrêcznik ten ma na celu danie krótkiego wprowadzenia do
+.BR Linux-PAM ". "
+Dla dalszych informacji, czytelnik jest odsy³any do
+.BR "Linux-PAM system administrators' guide".
+
+.sp
+.BR Linux-PAM
+jest systemem bibliotek, które zajmuj± siê zadaniami autentykacji aplikacji
+(us³ug) systemu. Biblioteka daje stabilny i ogólny interfejs (API), któremu
+podlegaj± w zadaniach autentykacji programy daj±ce przywileje (takie jak
+.BR login "(1) "
+i
+.BR su "(1)). "
+
+.sp
+Podstawow± w³a¶ciwo¶ci± podej¶cia PAM jest to, ¿e natura autentykacji jest
+dynamicznie konfigurowalna. Innymi s³owy, administrator systemu ma pe³ne
+pole do popisu w wybieraniu sposobu autentykacji poszczególnych aplikacji.
+Ta dynamiczna konfiguracja jest ustawiana zawarto¶ci± pojedynczego pliku
+konfiguracyjnego
+.BR Linux-PAM
+czyli
+.BR /etc/pam.conf "."
+Alternatywnie, mo¿na wszystko konfigurowaæ pojedynczymi plikami
+konfiguracyjymi, zlokalizowanymi w katalogu
+.BR /etc/pam.d/ .
+.IB "Obecno¶æ tego katalogu spowoduje, ¿e " Linux-PAM " zignoruje"
+.BI /etc/pam.conf "."
+
+.sp
+Z punktu widzenia administratora systemu, dla którego przeznaczony jest ten
+podrêcznik, nie jest wa¿ne zrozumienie wewnêtrznego dzia³ania biblioteki
+.BR Linux-PAM .
+Wa¿n± rzecz± jest natomiast rozumienie, ¿e plik(i) konfiguracyjne
+.I definiuj±
+po³±czenia miêdzy aplikacjami
+.BR "" "(" us³ugami ")"
+a wstawialnymi modu³ami autentykacji
+.BR "" "(" PAM "'ami),"
+które dokonuj± rzeczywistych zadañ autentykacji.
+
+.sp
+.BR Linux-PAM
+rozdziela zadania
+.I autentykacji
+na cztery niezale¿ne grupy zarz±dzania:
+.BR "" "zarz±dzanie kontem (" "account" "); "
+.BR "" "zarz±dzanie autentykacj± (" "auth" "entication); "
+.BR "" "zarz±dzanie has³ami (" "password" "); "
+i
+.BR "" "zarz±dzanie sesj± (" "session" ")."
+(pod¶wietlamy skróty u¿ywane dla tych grup w pliku konfiguracyjnym.)
+
+.sp
+Po ustawieniu, grupy te bêd± siê zajmowa³y ró¿nymi aspektami
+typowego ¿±dania zastrze¿onej us³ugi przez u¿ytkownika:
+
+.sp
+.BR account " - "
+daj us³udze mo¿liwo¶æ weryfikacji konta: czy has³o u¿ytkownika jest
+przedawnione?; czy u¿ytkownik ma prawo dostêpu do ¿±danej us³ugi?
+
+.br
+.BR auth "entication - "
+ustal czy u¿ytkownik jest tym, za którego siê podaje. Zazwyczaj robi siê to
+poprzez zapytanie u¿ytkownika o pewn± odpowied¼, której musi udzieliæ: je¶li
+jeste¶ tym, za kogo siê podajesz, podaj proszê swoje has³o. Nie wszystkie
+autentykacje s± tego rodzaju, istniej± te¿ sprzêtowe schematy autentykacji
+(takie jak u¿ywanie urz±dzeñ biometrycznych), które maj±
+odpowiednie modu³y, nadaj±ce siê do bezproblemowego podstawienia za
+standardowe modele autentykacji - oto elastyczno¶æ
+.BR Linux-PAM "."
+
+.br
+.BR password " - "
+zadaniem tej grupy jest od¶wie¿anie mechanizmów autentykacji. Zazwyczaj
+us³ugi takie s± ¶ci¶le zwi±zane z tymi z
+.BR auth .
+Niektóre mechanizmy autentykacji dobrze nadaj± siê do od¶wie¿ania t±
+funkcj±. Oczywistym przyk³adem jest standardowy UN*X-owy dostêp oparty o
+has³o: proszê wstawiæ has³o zamienne.
+
+.br
+.BR session " - "
+zadania tej grupy obejmuj± rzeczy, które powinny byæ dokonane przed daniem
+us³ugi oraz po jej wycofaniu. Zadania takie to m.in obs³uga ¶ladów
+rewizyjnych i montowanie katalogu domowego u¿ytkownika. 
+Grupa obs³ugi sesji jest wa¿na, gdy¿ udostêpnia zarówno hak otwieraj±cy, jak
+i zamykaj±cy modu³ów.
+
+.SH Plik(i) konfiguracyjne
+
+Gdy uruchamiana jest aplikacja ¶wiadoma przyznawania uprawnieñ poprzez
+bibliotekê
+.BR Linux-PAM ,
+aktywuje ona swoje powi±zanie z PAM-API. Aktywacja ta okre¶la wiele rzeczy,
+w¶ród których najwa¿niejsz± jest przeczytanie plików konfiguracyjnych:
+.BR /etc/pam.conf ", lub"
+w wypadku istnienia odpowiedniego katalogu, pliki z
+.BR /etc/pam.d/ .
+
+Pliki te wymieniaj±
+.BR PAM "y,"
+które bêd± siê zajmowa³y zadaniami autentykacji danej us³ugi i odpowiednie
+zachowanie PAM-API gdy który¶ z
+.BR PAM "ów "
+zawiedzie.
+
+.sp
+Sk³adnia pliku konfiguracyjnego
+.B /etc/pam.conf
+jest nastêpuj±ca. Plik jest z³o¿ony z listy regu³, przy czym ka¿da z nich
+zwykle jest umieszczana w pojedynczej linii, choæ mo¿e byæ te¿ z³o¿ona na
+koñcu linii: `\\<LF>'. Komentarze s± poprzedzane znakiem `#' i trwaj± a¿ do
+koñca linii.
+
+.sp
+Format ka¿dej regu³y to rozdzielona spacjami kolekcja elementów, z których
+pierwsze trzy nie rozró¿niaj± wielko¶ci liter:
+
+.sp
+.br
+.BR "   us³uga  rodzaj  kontrola  ¶cie¿ka-modu³u  argumenty-modu³u"
+
+.sp
+sk³adnia plików z
+.B /etc/pam.d/
+jest taka sama, z t± ró¿nic± ¿e nie ma tam pól
+.IR us³ug .
+W tym wypadku,
+.I us³uga
+jest nazw± pliku z
+.BR /etc/pam.d/ .
+Nazwa pliku musi byæ zapisana ma³ymi literami.
+
+.sp
+Wa¿n± w³a¶ciwo¶ci± 
+.BR Linux-PAM
+jest to, ¿e mo¿na
+.I zestawiæ na stosie
+wiele regu³ i ³±czyæ tak us³ugi wielu PAMów dla
+danego zadania autentykacji.
+
+.sp
+.BR Us³uga
+jest zwykle znan± nazw± odpowiadaj±cej aplikacji:
+.BR login
+i
+.BR su
+s± tu dobrymi przyk³adami. Nazwa
+.BR "" us³ugi " other"
+jest zarezerwowana na tworzenie regu³
+.IR domy¶lnych .
+
+.sp
+Element
+.BR rodzaj
+okre¶la grupê zarz±dzania, której odpowiada regu³a. Jest u¿ywany do podania,
+z któr± z grup po³±czyæ ten modu³. Poprawne wpisy to:
+.BR account "; "
+.BR auth "; "
+.BR password "; "
+i
+.BR session "."
+Znaczenie tych s³ów kluczowych wyja¶niono powy¿ej.
+
+.sp
+Trzecie pole, 
+.BR kontrola ", "
+okre¶la zachowanie PAM-API po niepowodzeniu modu³u w procesie autentykacji.
+Prawid³owe warto¶ci tego pola to:
+.BR requisite
+- niepowodzenie takiego PAM powoduje natychmiastowe zatrzymanie procesu 
+autentykacji;
+.BR required
+- niepowodzenie takiego PAM bêdzie prowadzi³o PAM-API do zwrócenia b³êdu,
+lecz dopiero po tym, jak pozosta³e
+.I "zestawione na stosie"
+modu³y (dla tej us³ugi i rodzaju PAM) zostan± wykonane;
+.BR sufficient
+- sukces takiego modu³u wystarcza do zadowolenia wymagañ autentykacji w
+stosie modu³ów (je¶li wcze¶niej nie powiód³ siê modu³
+.BR required ,
+sukces tego jest
+.IR ignorowany "); "
+.BR optional
+- sukces lub niepowodzenie tego modu³u jest istotny tylko je¶li jest jedynym
+modu³em na stosie zwi±zanym z t±
+.BR us³ug± "+" rodzajem "."
+
+.sp
+.BR ¶cie¿ka-modu³u
+- pe³na nazwa pliku PAMu u¿ywanego przez aplikacjê
+
+.sp
+.BR argumenty-modu³u
+- lista rozdzielonych spacjami elementów, u¿ywanych do modyfikowania
+okre¶lonego zachowania danego PAMu. Argumenty takie s± opisywane dla
+konkretnych modu³ów.
+
+.SH "PLIKI"
+.BR /etc/pam.conf " - plik konfiguracyjny"
+.br
+.BR /etc/pam.d/ " - katalog konfiguracyjny"
+.BR Linux-PAM .
+Je¶li ten katalog istnieje,
+.B /etc/pam.conf
+jest ignorowany.
+.br
+.BR /usr/lib/libpam.so.X " - biblioteka dynamiczna"
+.br
+.BR /usr/lib/security/*.so " - PAMy
+
+.sp
+Zauwa¿, ¿e aby odpowiadaæ standardowi Linuksowego systemu plików, biblioteki
+i modu³y twojego systemu mog± siê znajdowaæ odpowiednio w
+.BR /lib " i " /lib/security .
+
+.SH B£ÊDY
+Typowe b³êdy generowane przez system
+.BR Linux-PAM
+s± zapisywane do
+.BR syslog "(3)."
+
+.SH "ZGODNE Z"
+DCE-RFC 86.0, Pa¼dziernik 1995.
+.br
+Zawiera dodatkowe w³a¶ciwo¶ci, rozwa¿ane obecnie przez komitet
+DCE-RFC.
+
+.SH USTERKI
+.sp 2
+Nie s± znane.
+
+.SH "ZOBACZ TAK¯E"
+
+Trzy podrêczniki
+.BR Linux-PAM ,
+dla
+.BR "Administratorów systemu" ", "
+.BR "Twórców modu³ów" ", "
+i
+.BR "Twórców aplikacji" ". "

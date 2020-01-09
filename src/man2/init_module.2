@@ -1,0 +1,79 @@
+.\" Copyright (C) 1996 Free Software Foundation, Inc.
+.\" This file is distributed according to the GNU General Public License.
+.\" See the file COPYING in the top level source directory for details.
+.\" $ Id: init_module.2 1.1 Fri, 05 Jan 2001 12:45:19 +1100 kaos $
+.\"
+.\" $Id: init_module.2,v 1.2 2001/11/13 13:43:01 ankry Exp $
+.\"
+.TH INIT_MODULE 2 "26 grudnia 1996" "Linux 2.1.17" "Wsparcie dla modu³ów"
+.SH NAZWA	
+init_module \- inicjalizacja wpisu ³adowalnego modu³u
+.SH SK£ADNIA
+.nf
+.B #include <linux/module.h>
+.sp
+.BI "int init_module(const char *" name ", struct module *" image );
+.fi
+.SH OPIS
+.B init_module
+³aduje do przestrzeni j±dra przesuniêty obraz modu³u i wykonuje funkcjê
+\fIinit\fP tego modu³u.
+.PP
+Obraz modu³u rozpoczyna siê od struktury modu³u, po której nastêpuj±,
+odpowiednio, kod i dane. Struktura modu³u jest zdefiniowana nastêpuj±co:
+.PP
+.RS
+.nf
+struct module
+{
+  unsigned long size_of_struct;
+  struct module *next;
+  const char *name;
+  unsigned long size;
+  long usecount;
+  unsigned long flags;
+  unsigned int nsyms;
+  unsigned int ndeps;
+  struct module_symbol *syms;
+  struct module_ref *deps;
+  struct module_ref *refs;
+  int (*init)(void);
+  void (*cleanup)(void);
+  const struct exception_table_entry *ex_table_start;
+  const struct exception_table_entry *ex_table_end;
+#ifdef __alpha__
+  unsigned long gp;
+#endif
+};
+.fi
+.RE
+.PP
+Wszystkie pola wskazuj±ce, oprócz \fInext\fP i \fIrefs\fP, powinny wskazywaæ
+na adresy w ciele modu³u i zostaæ zainicjalizowane odpowiednio dla
+przestrzeni adresowej j±dra, tzn. przesuniête wraz z reszt± modu³u.
+.PP
+Ta funkcja jest dostêpna jedynie dla superu¿ytkownika.
+.SH "RETURN VALUE"
+W przypadku sukcesu zwracane jest zero. W przypadku b³êdu, \-1 i odpowiednio
+ustawiane jest \fIerrno\fP.
+.SH B£ÊDY
+.TP
+.B EPERM
+U¿ytkownik nie jest superu¿ytkownikiem.
+.TP
+.B ENOENT
+Nie istnieje modu³ o tej nazwie.
+.TP
+.B EINVAL
+Który¶ z wpisów \fIimage\fP jest wypê³niony nieprawid³owo, \fIimage->name\fP
+ró¿ni siê od oryginalnej nazwy modu³u, który¶ z wpisów \fIimage->deps\fP nie
+odpowiada ¿adnemu za³adowanemu modu³owi lub inna podobna niespójno¶æ.
+.TP
+.B EBUSY
+Procedura inicjalizacji modu³u zakoñczy³a siê niepowodzeniem.
+.TP
+.B EFAULT
+\fIname\fP lub \fIimage\fP
+znajduje siê poza dostêpn± przestrzeni± adresow±.
+.SH "ZOBACZ TAK¯E"
+.BR create_module "(2), " delete_module "(2), " query_module "(2)."

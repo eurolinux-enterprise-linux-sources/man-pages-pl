@@ -1,0 +1,255 @@
+.\" Copyright 1993 Giorgio Ciucci (giorgio@crcc.it)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Tue Oct 22 17:54:56 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified 1 Jan 2002, Martin Schulze <joey@infodrom.org>
+.\" Modified 4 Jan 2002, Michael Kerrisk <mtk16@ext.canterbury.ac.nz>
+.\" Translated by Rafa³ Lewczuk, 9 May 1999
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Mar 2002,
+.\"              manpages 1.48
+.\" 
+.TH SEMGET 2 2002-01-04 "Linux 2.5" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+semget \- pobranie identyfikatora zestawu semaforów
+.SH SK£ADNIA
+.nf
+.B
+#include <sys/types.h>
+.B
+#include <sys/ipc.h>
+.B
+#include <sys/sem.h>
+.fi
+.sp
+.BI "int semget(key_t " key ,
+.BI "int " nsems ,
+.BI "int " semflg );
+.SH OPIS
+Funkcja ta zwraca identyfikator zestawu semaforów, skojarzonego
+z parametrem
+.IR key .
+Je¶li
+.I key
+ma warto¶æ
+.B IPC_PRIVATE
+lub, gdy z warto¶ci± 
+.I key
+nie jest skojarzony ¿aden istniej±cy zestaw semaforów, a w parametrze
+.I semflg
+zosta³ przekazany znacznik
+.B IPC_CREAT
+(tzn.
+.IR semflg " &"
+.B IPC_CREAT
+jest niezerowe), to tworzony jest nowy zestaw semaforów
+.IR nsems .
+.PP
+Znaczniki
+.B IPC_CREAT
+i
+.B IPC_EXCL
+przekazywane parametrem
+.I semflg
+pe³ni± tê sam± rolê w obs³udze semaforów, co
+.B O_CREAT
+i
+.B O_EXCL
+w parametrze mode funkcji systemowej
+.BR open (2):
+np. funkcja
+.B semget
+zg³osi b³±d, je¶li w
+.I semflg
+przekazane zostan± obydwa znaczniki
+.B IPC_CREAT
+i
+.BR IPC_EXCL ,
+za¶ zestaw semaforów identyfikowany kluczem
+.I key
+ju¿ bêdzie istnieæ.
+.PP
+Podczas tworzenia, 9 najmniej znacz±cych bitów argumentu
+.I semflg
+okre¶la prawa dostêpu do zestawu semaforów (dla w³a¶ciciela, grupy i innych).
+Prawa dostêpu maj± ten sam format i takie samo znaczenie, co parametr
+mode
+funkcji systemowych
+.BR open (2)
+i
+.BR creat (2)
+(bity praw uruchamiania nie s± istotne dla semaforów,
+natomiast bity praw zapisu oznaczaj± mo¿liwo¶æ zmiany warto¶ci semaforów).
+.PP
+Podczas tworzenia nowego zestawu semaforów
+.B semget
+inicjalizuje strukturê
+.B semid_ds
+zwi±zan± z zestawem semaforów w nastêpuj±cy sposób:
+.IP
+.B sem_perm.cuid
+oraz
+.B sem_perm.uid
+przypisany zostanie efektywny identyfikator u¿ytkownika procesu wywo³uj±cego.
+.IP
+.B sem_perm.cgid
+oraz
+.B sem_perm.gid
+przypisany zostanie efektywny identyfikator grupy procesu wywo³uj±cego.
+.IP
+9 najmniej znacz±cym bitom pola
+.B sem_perm.mode
+zostan± przypisane ich odpowiedniki z parametru
+.IR semflg .
+.IP
+Polu
+.B sem_nsems
+przypisania zostanie, zawarta w parametrze
+.IR nsems ,
+liczba semaforów w zestawie.
+.IP
+.B sem_otime
+przyjmie warto¶æ 0.
+.IP
+.B sem_ctime
+przypisany zostanie aktualny czas.
+.PP
+Parametr
+.I nsems
+mo¿e mieæ warto¶æ
+.B 0
+(nie jest brany pod uwagê),
+je¶li nie bêdzie tworzony zestaw semaforów.
+W przeciwnym przypadku parametr
+.I nsems
+musi byæ wiêkszy od
+.B 0
+i mniejszy lub równy maksymalnej liczbie semaforów w zestawie
+.RB ( SEMMSL ).
+.PP
+Je¶li zestaw semaforów ju¿ istnieje, wówczas weryfikowane s± prawa dostêpu.
+.\" i nastêpuje sprawdzenie, czy zestaw zosta³ zanaczony do usuniêcia.
+.SH "WARTO¦Æ ZWRACANA"
+W wyniku pomy¶lnego wykonania wywo³ania, funkcja zwróci identyfikator
+zestawu semaforów (nieujemn± liczbê ca³kowit±). W przeciwnym przypadku
+zwróci
+.BR \-1 ,
+za¶ zmiennej
+.B errno
+zostanie przypisany kod wskazuj±cy rodzaj b³êdu.
+.SH B£ÊDY
+W przypadku niepowodzenia, zmiennej
+.B errno
+zostanie przypisana jedna z nastêpuj±cych warto¶ci:
+.TP 11
+.B EACCES
+Zestaw semaforów identyfikowany kluczem
+.I key
+istnieje, ale proces wywo³uj±cy nie ma praw dostêpu do niego.
+.TP
+.B EEXIST
+Zestaw semaforów o identyfikatorze
+.B key
+istnieje, ale w parametrze
+.I semflg
+przekazane zosta³y jednocze¶nie oba znaczniki
+.B IPC_CREAT
+i
+.BR IPC_EXCL .
+.\" .TP
+.\" .B EIDRM
+.\" Zestaw semaforów jest przeznaczony do usuniêcia.
+.TP
+.B ENOENT
+Nie ma zestawu semaforów o identyfikatorze
+.IR key ,
+za¶ znacznik
+.B IPC_CREAT
+nie zosta³ przekazany w parametrze
+.IR semflg .
+.TP
+.B EINVAL
+.IR nsems
+jest mniejsze ni¿ 0 lub wiêksze ni¿ ograniczenie liczby semaforów w zestawie
+.RB ( SEMMSL ),
+lub zestaw semaforów, do któregoodnosi siê
+.I key
+ju¿ istnieje a
+.I nsems
+jest wiêksze ni¿ liczba semaforów w tym zestawie.
+.TP
+.B ENOMEM
+Zestaw semaforów powinien zostaæ utworzony, ale zabrak³o pamiêci na now±
+strukturê danych.
+.TP
+.B ENOSPC
+Nast±pi³a próba przekroczenia ograniczenia liczby zestawów
+.RB ( SEMMNI ),
+lub ³±cznej liczby semaforów w systemie
+.RB ( SEMMNS ).
+.SH UWAGI
+Sta³a
+.B IPC_PRIVATE
+nie jest znacznikiem, tylko specjaln± warto¶ci± typu
+.BR key_t .
+Je¶li zostanie ona przekazana jako warto¶æ parametru
+.IR key ,
+wówczas (w razie pomy¶lnego wykonania) funkcja systemowa pominie wszystko
+oprócz najmniej znacz±cych 9 bitów
+.IR semflg ,
+tworz±c nowy zestaw semaforów, nie posiadaj±cy identyfikatora.
+.PP
+Wystêpuj± nastêpuj±ce ograniczenia zasobów systemowych, zwi±zane z wywo³aniem
+.BR semget :
+.TP 11
+.B SEMMNI
+Maksymalna liczba zestawów semaforów w systemie: zale¿na od polityki.
+.TP
+.B SEMMSL
+Maksymalna liczba semaforów w zestawie: zale¿na od implementacji
+(aktualnie 500).
+.TP
+.B SEMMNS
+Maksymalna liczba semaforów w systemie: zale¿na od polityki.
+Warto¶æ wiêksza ni¿
+.B SEMMSL * SEMMNI
+pozbawia to ograniczenie sensu.
+.SH USTERKI
+Wybrana nazwa, IPC_PRIVATE, prawdopodobnie nie jest najszczê¶liwsza.
+IPC_NEW w sposób bardziej przejrzysty odzwierciedla³o by rolê tej warto¶ci.
+.LP
+Struktury danych skojarzone z poszczególnymi semaforami z zestawu nie s±
+inicjalizowane przez wywo³anie systemowe. Aby zainicjalizowaæ te struktury,
+nale¿y nastêpnie u¿yæ dla tego zestawu semaforów wywo³ania
+.BR semctl (2)
+z rozkazami
+.B SETVAL
+lub
+.BR SETALL .
+.SH "ZGODNE Z"
+SVr4, SVID.
+SVr4 dokumentuje dodatkowe sta³e b³êdów: EFBIG, E2BIG, EAGAIN,
+ERANGE, EFAULT.
+.SH "ZOBACZ TAK¯E"
+.BR ftok (3),
+.BR ipc (5),
+.BR semctl (2),
+.BR semop (2)

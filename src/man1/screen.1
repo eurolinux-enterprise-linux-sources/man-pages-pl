@@ -1,0 +1,3820 @@
+.\" 1999 PTM Przemek Borys <pborys@dione.ids.pl>
+.\" vi:set wm=5
+.\" $Id: screen.1,v 1.7 2003/05/29 11:06:06 robert Exp $
+.TH SCREEN 1 "10 czerwca 1999"
+.if n .ds Q \&"
+.if n .ds U \&"
+.if t .ds Q ``
+.if t .ds U ''
+.UC 4
+.SH NAZWA
+screen \- mened¿er ekranu z emulacj± VT100/ANSI
+.SH SK£ADNIA
+.B screen
+.RB [ -\fIopcje\fP ]
+.RI [ komenda
+.RI [ argumenty ]]
+.br
+.B screen \-r
+[[\fIpid\fP\fB.\fP]\fItty\fP[\fB.\fP\fIhost\fP]]
+.br
+.B screen \-r
+\fIw³a¶cicielsesji\fP\fB/\fP[[\fIpid\fP\fB.\fP]\fItty\fP[\fB.\fP\fIhost\fP]]
+.ta .5i 1.8i
+.SH OPIS
+.I Screen
+jest pe³noekranowym mened¿erem okien, który dzieli fizyczny terminal miêdzy
+kilkoma procesami (zwykle interaktywnymi pow³okami).
+Ka¿dy z wirtualnych terminali daje funkcjonalno¶æ terminala DEC VT100, a
+dodatkowo równie¿ pewne funkcje steruj±ce ze standardów
+ISO 6492 (ECMA 48, ANSI X3.64) oraz ISO 2022 (np. wstaw/usuñ liniê i obs³ugê
+wielu zestawów znaków). Dla ka¿dego wirtualnego terminala istnieje bufor
+przewijania oraz mechanizm wycinania i wklejania, który umo¿liwia
+przenoszenie obszarów tekstów miêdzy oknami.
+.PP
+W momencie, gdy
+.I screen
+jest wywo³ywany, tworzy pojedyncze okno z pow³ok± (lub z podan± komend±), a
+nastêpnie znika z drogi, aby¶ móg³ u¿ywaæ programu w normalny sposób.
+W dowolnej chwili mo¿esz utworzyæ nowe pe³noekranowe okna z innymi
+programami (równie¿ z dodatkowymi pow³okami), zabiæ istniej±ce okna,
+zobaczyæ listê okien, w³±czyæ raportowanie wyj¶cia, wklejaæ miêdzy nimi
+tekst, ogl±daæ historiê przewijania, prze³±czaæ siê miêdzy oknami, itd.
+Wszystkie okna uruchamiaj± swoje programy zupe³nie niezale¿nie od
+pozosta³ych. Programy pracuj± równie¿ wtedy, gdy ich okna s± niewidoczne, a
+nawet wtedy, gdy ca³a sesja 
+.I screen 
+jest od³±czona od terminala u¿ytkownika. Gdy program siê koñczy,
+.I screen
+(domy¶lnie) zabija okno, które go zawiera³o. Je¶li okno to by³o na pierwszym
+planie, wy¶wietlacz prze³±cza siê na okno poprzednie; je¶li ¿adne ju¿ nie
+pozostanie,
+.I screen
+koñczy dzia³anie.
+.PP
+Wszystko co wstukasz, jest przesy³ane do programu pracuj±cego w bie¿±cym
+oknie. Wyj±tkiem jest jedna sekwencja, która jest u¿ywana do
+inicjalizacji komendy mened¿era okien. Domy¶lnie ka¿da komenda rozpoczyna
+siê od control-a (dalej skracane do C-a), po którym wystêpuje drugi klawisz.
+Znak komendy i inne powi±zania mog± byæ w pe³ni dostosowywane do twoich
+potrzeb, choæ mog± byæ zawsze tylko dwuznakowe.
+.PP
+.I Screen
+nie rozumie przedrostka \*QC-\*U, oznaczaj±cego control. Jako argumenty
+do np. komendy
+.I escape
+lub opcji
+.IR -e 
+u¿ywaj proszê notacji daszkowej (\*Q^A\*U zamiast \*QC-a\*U) .
+.I Screen
+drukuje znaki steruj±ce (z³o¿one z Ctrl) równie¿ w notacji daszkowej.
+.PP
+Standardowym sposobem utworzenia nowego okna jest wstukanie \*QC-a c\*U.
+Tworzy to nowe okno z pow³ok± i prze³±cza siê na nie natychmiast,
+niezale¿nie od stanu procesu z bie¿±cego okna. Podobnie mo¿na tworzyæ nowe
+okno z w³asn± komend±. Trzeba najpierw powi±zaæ komendê z klawiszem (w twoim
+pliku .screenrc, lub w linii komend \*QC-a :\*U) a nastêpnie u¿yæ jej
+zupe³nie tak, jak komendy \*QC-a c\*U.
+Poza tym, nowe okna mo¿na tworzyæ równie¿ z pomoc± komend w rodzaju:
+.IP
+screen emacs prog.c
+.PP
+spod znaku zachêty pow³oki z poprzednio utworzonego okna. Nie spowoduje to
+uruchomienia kolejnej kopii
+.IR screen ,
+lecz przeka¿e nazwê komendy i jej argumenty mened¿erowi okien (okre¶lonemu w
+zmiennej ¶rodowiskowej $STY), który u¿yje jej do utworzenia nowego okna.
+Powy¿szy przyk³ad uruchomi³by edytor emacs (edytuj±cy prog.c) i prze³±czy³
+siê do jego okna.
+.PP
+Je¶li \*Q/var/run/utmp\*U jest zapisywalny przez
+.IR screen ,
+to dla ka¿dego okna zostanie zapisany odpowiedni rekord, który bêdzie
+usuwany po zakoñczeniu pracy okna.
+Jest to przydatne do pracy z \*Qtalk\*U, \*Qscript\*U, \*Qshutdown\*U,
+\*Qrsend\*U, \*Qsccs\*U i innymi podobnymi programami, które u¿ywaj± pliku
+utmp do okre¶lenia, kim jeste¶. Dopóki
+.I screen
+jest aktywny na twoim terminalu, w³asny rekord terminala jest  usuwany
+z pliku utmp. Zobacz te¿ \*QC-a L\*U.
+
+
+.SH PODSTAWY
+Zanim zaczniesz u¿ywaæ
+.I screen
+musisz upewniæ siê, ¿e prawid³owo wybra³e¶ sobie rodzaj terminala, podobnie
+zreszt±, jak dla ka¿dego innego programu termcap/terminfo.
+(Mo¿esz tego dokonaæ, u¿ywaj±c np.
+.IR tset (1).)
+.PP
+Je¶li jeste¶ niecierpliwy i chcesz rozpocz±æ pracê bez szczególnego
+wczytywania siê w instrukcjê, powiniene¶ zapamiêtaæ jedn± komendê: \*QC-a ?\*U.
+Wpisanie tych dwóch znaków spowoduje wy¶wietlenie listy dostêpnych komend
+.I screen
+oraz ich powi±zania. Ka¿dy klawisz jest omówiony w sekcji
+\*QDOMY¦LNE WI¡ZANIA KLAWISZY\*U. Sekcja podrêcznika \*QDOSTOSOWYWANIE\*U
+zajmuje siê zawarto¶ci± twojego .screenrc.
+.PP
+Je¶li twój terminal jest "prawdziwym" terminalem auto-marginesowym (nie
+pozwala ostatniej pozycji ekranu na bycie poprawionej bez przewiniêcia
+ekranu), mo¿esz rozwa¿yæ u¿ycie wersji terminala, która ma wy³±czone
+automatyczne marginesy. Zapewni to w³a¶ciwe i optymalne od¶wie¿anie ekranu
+we wszystkich przypadkach. Wiêkszo¶æ dzisiejszych terminali ma "magiczne"
+marginesy (automatyczne marginesy plus u¿ywalna ostatnia kolumna). Jest to
+typ w stylu VT100 i jest doskonale przystosowany dla
+.IR screen .
+Je¶li wszystko co masz to "prawdziwy" automarginesowy terminal, 
+.I screen
+bêdzie w stanie go wykorzystaæ, jednak od¶wie¿enie znaku wstawionego na
+ostatni± pozycjê ekranu mo¿e nie byæ mo¿liwe do czasu przewiniêcia ekranu,
+lub przesuniêcia znaku do innej bezpiecznej pozycji. Opó¼nienie to mo¿e byæ
+skrócone przy u¿yciu terminala z w³a¶ciwo¶ci± wstawiania znaków
+(insert-character).
+
+
+.SH "OPCJE LINII KOMEND"
+Screen ma nastêpuj±ce opcje linii komend:
+.TP 5
+.B \-a
+w³±cz \fIwszystkie\fP w³a¶ciwo¶ci (z pewnymi wyj±tkami) w termcapie ka¿dego
+okna, nawet je¶li
+.I screen
+musi przerysowywaæ czê¶ci wy¶wietlacza aby zaimplementowaæ dan± funkcjê.
+.TP 5
+.B \-A
+Dostosuj rozmiary wszystkich okien do rozmiaru bie¿±cego terminala.
+Domy¶lnie,
+.I screen
+próbuje odtworzyæ stare rozmiary swojego okna podczas podwieszania pod
+terminale zmiennej wielko¶ci (te z \*QWS\*U w swoim opisie, np.
+suncmd lub jaki¶ xterm).
+.TP 5
+.BI "\-c " plik
+przes³oñ domy¶lny plik konfiguracyjny \*Q$HOME/.screenrc\*U
+plikem \fIplik\fP.
+.TP 5
+.BR \-d | \-D " [" \fIpid.tty.host\fP ]
+nie uruchamia
+.IR screen ,
+lecz od³±cza pracuj±c± gdzie indziej sesjê
+.IR screen .
+Ma to taki sam efekt jak wpisanie \*QC-a d\*U z terminala steruj±cego
+.IR screen 'a.
+\fB\-D\fP jest odpowiednikiem klawisza od³±czenia zasilania (power detach).
+Je¶li ¿adna sesja nie mo¿e byæ od³±czona, opcja ta jest ignorowana. W
+po³±czeniu z \fB\-r\fP/\fB\-R\fP mo¿na osi±gn±æ ciekawsze efekty:
+.TP 8
+.B \-d \-r
+Pod³±cz na nowo (reattach) sesjê, a je¶li to konieczne, najpierw j± od³±cz.
+.TP 8
+.B \-d \-R
+Pod³±cz na nowo sesjê, a je¶li to konieczne, najpierw j± od³±cz, lub nawet
+utwórz.
+.TP 8
+.B \-d \-RR
+Pod³±cz na nowo sesjê, a je¶li to konieczne, od³±cz j± lub utwórz. U¿yj
+pierwszej sesji je¶li dostêpnych jest wiêcej ni¿ jedna.
+.TP 8
+.B \-D \-r
+Pod³±cz na nowo sesjê, a je¶li to konieczne, najpierw od³±cz i wyloguj siê
+zdalnie.
+.TP 8
+.B \-D \-R
+Pod³±cz tu i teraz. Znaczy to: je¶li sesja dzia³a, to pod³±cz na nowo. Je¶li
+to konieczne, najpierw od³±cz i zdalnie siê wyloguj. Je¶li nie dzia³a³a,
+utwórz j± i poinformuj u¿ytkownika. Jest to ulubiony sposób autora.
+.TP 8
+.B \-D \-RR
+Pod³±cz tu i teraz. Cokolwiek to znaczy, po prostu to zrób.
+.IP "" 5
+Uwaga: Zawsze jest dobrym pomys³em sprawdzenie statusu twoich sesji z pomoc±
+\*Qscreen \-list\*U.
+.TP 5
+.BI "\-e " xy
+okre¶la, ¿e znak komendy to \fIx\fP, a znak generuj±cy literalny znak
+komendy to \fIy\fP. Domy¶lnym ustawieniem jest
+\*QC-a\*U i `a', co mo¿e byæ przekazane jako \*Q-e^Aa\*U.
+Podczas tworzenia sesji
+.I screen
+opcja ta ustawia domy¶lny znak komendy. W sesji wielou¿ytkownikowej, wszyscy
+dodani u¿ytkownicy rozpoczn± z tym znakiem komendy. Jednak podczas
+pod³±czenia do ju¿ dzia³aj±cej sesji, opcja ta zmienia tylko znak komendy
+pod³±czaj±cego siê u¿ytkownika.
+Opcja ta jest równowa¿na odpowiednio komendom \*Qdefescape\*U lub
+\*Qescape\*U.
+.TP 5
+.BR \-f\fP ", " \-fn ", i " \-fa
+w³±cza lub wy³±cza albo wchodzi w "automatyczny tryb prze³±czania" kontroli
+przep³ywu. Mo¿e to byæ te¿ zdefiniowane poprzez \*Qdefflow\*U w pliku .screenrc.
+.TP 5
+.BI "\-h " num
+Ustawia bufor przewijania historii na \fInum\fP linii.
+.TP 5
+.B \-i
+powoduje, ¿e klawisz przerwania (zwykle C-c) przerywa wy¶wietlanie
+natychmiast gdy w³±czona jest kontrola przep³ywu.
+Zobacz komendê \*Qdefflow\*U z .screenrc dla szczegó³ów.
+U¿ywanie tej opcji nie jest zalecane.
+.TP 5
+.BR \-l " i " \-ln
+w³±cza/wy³±cza tryb zg³oszeniowy (dla od¶wie¿ania /var/run/utmp).
+Mo¿na to zdefiniowaæ te¿ poprzez komendê \*Qdeflogin\*U pliku .screenrc.
+.TP 5
+.BR \-ls " i " \-list
+nie uruchamia sesji
+.IR screen ,
+lecz drukuje listê ³añcuchów
+.I pid.tty.host
+okre¶laj±cych twoje sesje
+.IR screen .
+Sesje oznaczone jako `detached' (od³±czone) mog± byæ wznowione z pomoc±
+\*Qscreen -r\*U. Te, zaznaczone jako `attached' (pod³±czone) dzia³aj± i maj±
+terminal steruj±cy. Je¶li sesja dzia³a w trybie wielou¿ytkownikowym, jest
+zaznaczona jako `multi'. Sesje oznaczone jako `unreachable' (nieosi±galne)
+¿yj± albo na innych hostach, albo s± `martwe'.
+Sesja nieosi±galna jest uwa¿ana za martw± je¶li jej nazwa odpowiada albo
+nazwie hosta lokalnego, albo podanemu parametrowi. Zobacz flagê
+\fB-r\fP dla opisu konstruowania porównañ.
+Sesje zaznaczone jako `dead' (martwe), powinny byæ sprawdzane i usuwane.
+Zapytaj administratora je¶li nie jeste¶ pewien. Sesje usuwa siê opcj± 
+\fB-wipe\fP. 
+.TP 5
+.B \-L
+mówi
+.IR screen owi
+¿e twój automarginesowy terminal ma zapisywaln± ostatni± pozycjê ekranu.
+Mo¿esz to ustawiæ równie¿ w swoim .screenrc, podaj±c `LP' w komendzie 
+\*Qtermcap\*U.
+.TP 5
+.B \-m
+powoduje, ¿e
+.I screen
+ignoruje zmienn± ¶rodowiskow± $STY. \*Qscreen -m\*U wymusza tworzenie nowej
+sesji, niezale¿nie od tego, czy 
+.I screen
+jest wywo³any z wewn±trz innej sesji
+.IR screen
+czy nie. Flaga ta ma specjalne znaczenie w po³±czeniu z opcj± `-d':
+.TP 8
+.B \-m \-d
+Uruchom
+.I screen
+w trybie \*Qod³±czonym\*U. Tworzy to now± sesjê, lecz nie pod³±cza do niej.
+Jest to przydatne dla skryptów startowych systemu.
+.TP 8
+.B \-m \-D
+To równie¿ uruchamia screen w trybie "od³±czonym", lecz nie rozwidla nowego
+procesu. Komenda koñczy dzia³anie gdy koñczy siê sesja.
+.TP 5
+.B \-O
+wybiera bardziej optymalny tryb wyj¶ciowy dla twojego terminala ni¿
+prawdziwy VT100 (tyczy siê tylko terminali automarginesowych bez `LP').
+Mo¿e to byæ ustawione w twoim .screenrc przez podanie `OP' w komendzie
+\*Qtermcap\*U.
+.TP 5
+.B \-q
+Powstrzymuje drukowanie komunikatów o b³êdach. W po³±czeniu z \*Q-ls\*U,
+kod wyj¶cia jest nastêpuj±cy: 9 wskazuje katalog bez sesji. 10 wskazuje
+katalog z pracuj±cymi, lecz niepod³±czalnymi sesjami. 11 (lub wiêcej)
+wskazuje na jedn± (lub wiêcej) nadaj±cych siê do u¿ycia sesji.
+W po³±czenie z \*Q-r\*U, kod wyj¶cia jest nastêpuj±cy: 10 oznacza, ¿e nie ma
+sesji do wznowienia. 12 (lub wiêcej) oznacza, ¿e istniej± 2 (lub wiêcej)
+sesje do wznowienia i ¿e powiniene¶ podaæ, któr± wybraæ. W innych wypadkach 
+\*Q-q\*U nie daje efektu.
+.TP 5
+.BR \-r " [" \fIpid.tty.host\fP ]
+.PD 0
+.TP 5
+.BR \-r " \fIw³a¶cicielsesji\fP/[" \fIpid.tty.host\fP ]
+.PD
+wznawia od³±czon± sesjê
+.IR screen .
+Nie mo¿na podawaæ ¿adnych innych opcji (poza kombinacjami z 
+\fB\-d\fP/\fB\-D\fP), choæ mo¿e byæ wymagany opcjonalny przedrostek
+[\fIpid.\fP]\fItty.host\fP (w celu rozró¿nienia wielu od³±czonych sesji
+.IR screen ).
+Druga postaæ jest u¿ywana do pod³±czenia do sesji screen innego u¿ytkownika,
+który pracuje w trybie wielou¿ytkownikowym. Oznacza to, ¿e screen powinien
+szukaæ sesji w katalogu innego u¿ytkownika. Wymaga to setuid-root.
+.TP 5
+.B \-R
+próbuje wznowiæ pierwsz± od³±czon± sesjê
+.IR screen ,
+któr± znajdzie. Po sukcesie wszystkie inne opcje linii komend s± ignorowane.
+Je¶li ¿adna z od³±czonych sesji nie istnieje, uruchamiana jest nowa sesja z
+u¿yciem podanych opcji, zupe³nie jakby
+.B \-R
+nie zosta³o podane. Opcja ta jest ustawiana domy¶lnie gdy
+.I screen
+jest uruchamiany jako pow³oka zg³oszeniowa.
+.TP 5
+.B \-s
+ustawia domy¶ln± pow³okê na podany program. Normalnie u¿ywana jest warto¶æ
+zmiennej ¶rodowiskowej $SHELL (lub \*Q/bin/sh\*U je¶li jej nie zdefiniowano).
+Mo¿e to byæ te¿ zdefiniowane poprzez komendê \*Qshell\*U pliku .screenrc.
+.TP 5
+.BI "\-S " nazwasesji
+Podczas tworzenia nowej sesji, opcja ta mo¿e byæ u¿yta do podania znacz±cej
+nazwy sesji. Nazwa ta identyfikuje sesjê dla akcji
+\*Qscreen -list\*U i \*Qscreen -r\*U. Podmienia domy¶lny przyrostek
+[\fItty.host\fP].
+.TP 5
+.BI "\-t " nazwa
+ustawia tytu³ (a.\|k.\|a.) dla domy¶lnej pow³oki, lub podanego programu.
+Zobacz te¿ komendê \*Qshelltitle\*U pliku .screenrc.
+.TP 5
+.B \-v
+Wydrukuj numer wersji.
+.TP 5
+.BR \-wipe " [" \fIdopasowanie\fP ]
+robi to samo co \*Qscreen -ls\*U, lecz usuwa sesje zamiast zaznaczaæ je jako
+martwe ('dead').
+Nieosi±galna sesja jest uwa¿ana za martw±, je¶li jej nazwa odpowiada nazwie
+hosta lokalnego, lub jakiego¶ jawnie podanego parametru. Zobacz opis flagi
+\fB-r\fP dla opisu konstruowania dopasowañ.
+.TP 5
+.B \-x
+Pod³±cz do nieod³±czonej sesji
+.IR screen .
+(Tryb wielowy¶wietlaczowy).
+
+
+.SH "DOMY¦LNE WI¡ZANIA KLAWISZY"
+.ta 12n 26n
+Jak wspomniano, ka¿da komenda
+.I screen
+sk³ada siê z
+\*QC-a\*U, za którym nastêpuje okre¶lony znak. Dla wygody, wszystkie
+komendy, które s± powi±zane z ma³ymi literami, powi±zane s± te¿ z ich
+odpowiednikami z³o¿onymi z Ctrl (z wyj±tkiem
+\*QC-a a\*U; zobacz ni¿ej); tak wiêc \*QC-a c\*U zarówno jak \*QC-a C-c\*U 
+mo¿e byæ u¿ywany do utworzenia okna. Zobacz sekcjê 
+\*QDOSTOSOWYWANIE\*U dla opisu komendy.
+.PP
+.TP 26n
+Nastêpuj±ca tablica pokazuje domy¶lne wi±zania klawiszy:
+.IP "\fBC-a '\fP"
+.PD 0
+.IP "\fBC-a ""\fP	(select)"
+.PD
+Zapytaj o nazwê okna, do którego chcesz siê prze³±czyæ, lub o jego numer.
+.IP "\fBC-a 0\fP	(select 0)"
+.PD 0
+.IP "\fB ... \fP	   ..."
+.IP "\fBC-a 9\fP	(select 9)"
+.IP "\fBC-a -\fP	(select -)"
+.PD
+Prze³±cz na okno numer 0 \- 9 lub na puste okno.
+.IP "\fBC-a tab\fP	(focus)"
+.PD
+Prze³±cz ogniskowanie wej¶cia na nastêpny region.
+.IP "\fBC-a C-a\fP	(other)"
+W³±cz poprzednio wy¶wietlane okno.
+Zauwa¿, ¿e to po³±czenie jest równowa¿ne dwukrotnemu wpisaniu znaku komendy
+(chyba ¿e jest to przes³oniête). Na przyk³ad, je¶li u¿ywasz opcji
+\*Q\fB\-e]x\fP\*U, ta komenda stanie siê \*Q]]\*U.
+.IP "\fBC-a a\fP	(meta)"
+Wy¶lij znak komendy (C-a) do okna. Zobacz komendê \fIescape\fP.
+.IP "\fBC-a A\fP	(title)"
+Zezwól u¿ytkownikowi ustawiæ nazwê dla bie¿±cego okna.
+.IP "\fBC-a b\fP"
+.PD 0
+.IP "\fBC-a C-b\fP	(break)"
+.PD
+Wy¶lij do okna przerwanie (break).
+.IP "\fBC-a B\fP	(pow_break)"
+Otwórz na nowo liniê terminala i wy¶lij przerwanie (break).
+.IP "\fBC-a c\fP"
+.PD 0
+.IP "\fBC-a C-c\fP	(screen)"
+.PD
+Utwórz nowe okno z pow³oka i prze³±cz siê na nie.
+.IP "\fBC-a C\fP	(clear)"
+Wyczy¶æ ekran.
+.IP "\fBC-a d\fP"
+.PD 0
+.IP "\fBC-a C-d\fP	(detach)"
+.PD
+Od³±cz
+.I screen
+od tego terminala.
+.IP "\fBC-a D D\fP	(pow_detach)"
+Od³±cz i siê wyloguj.
+.IP "\fBC-a f\fP"
+.PD 0
+.IP "\fBC-a C-f\fP	(flow)"
+.PD
+W³±cz, wy³±cz, lub ustaw automatyczny przep³yw.
+.IP "\fBC-a F\fP	(fit)"
+Zmieñ rozmiar okna na obecny rozmiar regionu.
+.IP "\fBC-a C-g\fP	(vbell)"
+W³±cza tryb wizualnego dzwonka
+.IR screen 'a.
+.IP "\fBC-a h\fP	(hardcopy)"
+.PD
+Zapisz tward± kopiê bie¿±cego okna do pliku \*Qhardcopy.\fIn\fP\*U.
+.IP "\fBC-a H\fP	(log)"
+Rozpoczyna/koñczy raportowanie bie¿±cego okna do pliku \*Qscreenlog.\fIn\fP\*U.
+.IP "\fBC-a i\fP"
+.PD 0
+.IP "\fBC-a C-i\fP	(info)"
+.PD
+Poka¿ informacjê o tym oknie.
+.IP "\fBC-a k\fP"
+.PD 0
+.IP "\fBC-a C-k\fP	(kill)"
+.PD
+Zniszcz bie¿±ce okno.
+.IP "\fBC-a l\fP"
+.PD 0
+.IP "\fBC-a C-l\fP	(redisplay)"
+.PD
+Ca³kowicie od¶wie¿ bie¿±ce okno.
+.IP "\fBC-a L\fP	(login)"
+W³±cz slot zg³oszeniowy tego okna. Dostêpne tylko je¶li
+.I screen
+jest skonfigurowany do od¶wie¿ania bazy utmp.
+.IP "\fBC-a m\fP"
+.PD 0
+.IP "\fBC-a C-m\fP	(lastmsg)"
+.PD
+Powtórz ostatni± wiadomo¶æ, wy¶wietlon± w linii komunikatów.
+.IP "\fBC-a M\fP	(monitor)"
+W³±cza monitorowanie bie¿±cego okna.
+.IP "\fBC-a space\fP"
+.PD 0
+.IP "\fBC-a n\fP"
+.IP "\fBC-a C-n\fP	(next)"
+.PD
+Prze³±cz na nastêpne okno.
+.IP "\fBC-a N\fP	(number)"
+Poka¿ numer (i tytu³) bie¿±cego okna.
+.IP "\fBC-a backspace\fP"
+.PD 0
+.IP "\fBC-a h\fP"
+.IP "\fBC-a p\fP"
+.IP "\fBC-a C-p\fP	(prev)"
+.PD
+Prze³±cz na poprzednie okno (odwrotne do \fBC-a n\fP).
+.IP "\fBC-a q\fP"
+.PD 0
+.IP "\fBC-a C-q\fP	(xon)"
+.PD
+Wy¶lij control-q do bie¿±cego okna.
+.IP "\fBC-a Q\fP	(only)"
+Skasuj wszystkie regiony poza bie¿±cym.
+.IP "\fBC-a r\fP"
+.PD 0
+.IP "\fBC-a C-r\fP	(wrap)"
+.PD
+W³±cz ustawienie zawijania linii (line-wrap) bie¿±cego okna (w³±cz
+automatyczne marginesy okna).
+.IP "\fBC-a s\fP"
+.PD 0
+.IP "\fBC-a C-s\fP	(xoff)"
+.PD
+Wy¶lij do bie¿±cego okna control-s.
+.IP "\fBC-a S\fP	(split)"
+Podziel bie¿±cy region na dwa nowe.
+.IP "\fBC-a t\fP"
+.PD 0
+.IP "\fBC-a C-t\fP	(time)"
+.PD
+Poka¿ informacjê systemow±.
+.IP "\fBC-a v\fP	(version)"
+.PD
+Wy¶wietl wersjê i datê kompilacji.
+.IP "\fBC-a C-v\fP	(digraph)"
+.PD
+Wstaw dwuznak.
+.IP "\fBC-a w\fP"
+.PD 0
+.IP "\fBC-a C-w\fP	(windows)"
+.PD
+Poka¿ listê okien.
+.IP "\fBC-a W\fP	(width)"
+W³±cz 80/132 kolumny.
+.IP "\fBC-a x\fP"
+.PD 0
+.IP "\fBC-a C-x\fP	(lockscreen)"
+.PD
+Zablokuj (lock) ten terminal.
+.IP "\fBC-a X\fP 	(remove)"
+Zabij bie¿±cy region.
+.IP "\fBC-a z\fP"
+.PD 0
+.IP "\fBC-a C-z\fP	(suspend)"
+.PD
+Zwie¶
+.IR screen .
+Twój system musi obs³ugiwaæ kontrolê zadañ w stylu BSD.
+.IP "\fBC-a Z\fP	(reset)"
+Zresetuj terminal wirtualny na jego warto¶ci \*Qpower-on\*U.
+.IP "\fBC-a .\fP	(dumptermcap)"
+Zapisz plik \*Q.termcap\*U.
+.IP "\fBC-a ?\fP	(help)"
+Poka¿ wi±zania klawiszowe.
+.IP "\fBC-a C-\e\fP	(quit)"
+Zabij wszystkie okna i zakoñcz
+.IR screen .
+.IP "\fBC-a :\fP	(colon)"
+Wejd¼ do trybu linii komend.
+.IP "\fBC-a [\fP"
+.PD 0
+.IP "\fBC-a C-[\fP"
+.IP "\fBC-a esc\fP	(copy)"
+.PD
+Wejd¼ w tryb kopiowania/przewijania.
+.IP "\fBC-a ]\fP	(paste .)"
+.PD
+Zapisz zawarto¶æ bufora wklejania na kolejkê standardowego wej¶cia bie¿±cego
+okna.
+.IP "\fBC-a {\fP
+.PD 0
+.IP "\fBC-a }\fP	(history)"
+.PD
+Kopiuj i wklej poprzedni± liniê (komend).
+.IP "\fBC-a >\fP	(writebuf)"
+Zapisz bufor wklejania do pliku.
+.IP "\fBC-a <\fP	(readbuf)"
+Wczytuje plik wymiany screena do bufora wklejania.
+.IP "\fBC-a =\fP	(removebuf)"
+Usuwa plik, u¿ywany przez \fBC-a <\fP i \fPC-a >\fP.
+.IP "\fBC-a ,\fP	(license)"
+Pokazuje, sk±d
+.I screen
+pochodzi, dok±d poszed³ i dlaczego mo¿esz go u¿ywaæ.
+.IP "\fBC-a _\fP	(silence)"
+Rozpoczyna/koñczy monitorowanie bie¿±cego okna na nieaktywno¶æ.
+.\" 						XXX removed in 3.8.0 XXX
+.\" .IP "\fBC-a ~\fP	(select -)"
+.\" Switch to the control window.
+.IP "\fBC-a *\fP	(displays)"
+Poka¿ listing wszystkich obecnie pod³±czonych wy¶wietlaczy.
+
+
+.SH DOSTOSOWYWANIE
+\*QKatalog gniazd\*U (socket directory) domy¶lnie jest w $HOME/.screen lub 
+zwyczajnie w
+/tmp/screens. Je¶li
+.I screen
+jest zainstalowany z setuid-root, to administrator powinien skompilowaæ go z
+odpowiednim (nie zamontowanym przez NFS) katalogiem gniazd.
+Je¶li
+.I screen
+nie dzia³a jako setuid-root, u¿ytkownik mo¿e podaæ dowolny katalog o prawach
+700 poprzez zmienn± ¶rodowiskow± $SCREENDIR.
+.PP
+W momencie, gdy
+.I screen
+jest uruchamiany, wykonuje on komendy inicjalizacyjne z plików
+\*Q/etc/screenrc\*U i
+\*Q.screenrc\*U z katalogu domowego u¿ytkownika. S± to \*Qdomy¶lne warto¶ci
+programisty\*U, które mo¿na przes³oniæ w nastêpuj±ce sposoby: dla
+znalezienia globalnego pliku screenrc,
+.I screen
+poszukuje zmiennej ¶rodowiskowej $SYSSCREENRC (ta w³a¶ciwo¶æ przes³aniania
+mo¿e byæ wy³±czona podczas kompilacji). Plik screenrc konkretnego
+u¿ytkownika jest szukany w $SCREENRC, a potem w $HOME/.screenrc.
+Opcja \fB-c\fP linii komend ma jeszcze wiêkszy priorytet.
+.PP
+Komendy w tych plikach s± u¿ywane do ustawiania opcji, wi±zania funkcji do
+klawiszy i do automatycznego zestawiania jednego lub wiêcej okien na starcie
+twojej sesji
+.IR screen .
+Komendy s± wymieniane jedna na linie; puste linie s± ignorowane.
+Argumenty komend s± rozdzielane tabulacjami lub spacjami i mog± byæ otaczane
+pojedynczymi lub podwójnymi cudzys³owami.
+Znak `#' zmienia resztê linii w komentarz, poza sytuacj± gdy jest cytowany.
+Niezrozumia³e linie s± ignorowane z wydaniem ostrze¿enia. Komendy mog±
+zawieraæ odniesienia do zmiennych ¶rodowiskowych. Sk³adnia jest
+podobna do pow³okowej "$VAR" lub "${VAR}". Zauwa¿, ¿e wprowadza to
+niekompatybilno¶æ z poprzednimi wersjami
+.IR screen ,
+jako ¿e teraz znak '$' musi byæ chroniony przez '\e' je¶li nie chcemy
+dokonaæ podstawienia zmiennej. £añcuch w pojedynczych cudzys³owach jest
+równie¿ chroniony od podstawienia zmiennych.
+.PP
+Jako przyk³ady z dystrybucj± screena s± przekazywane dwa pliki
+konfiguracyjne: \*Qetc/screenrc\*U i \*Qetc/etcscreenrc\*U. 
+Zawieraj± one wiele przydatnych przyk³adów ró¿nych komend.
+.PP
+Dostosowywanie mo¿na równie¿ wykonywaæ 'on-line'. Aby wej¶æ w tryb komend,
+wci¶nij `C-a :'. Zauwa¿, ¿e komendy rozpoczynaj±ce siê od \*Qdef\*U
+zmieniaj± warto¶ci domy¶lne, podczas gdy inne zmieniaj± ustawienia bie¿±ce.
+.PP
+Dostêpne s± nastêpuj±ce komendy:
+.sp 
+.ne 3
+.BI acladd " nazwyu¿ytkowników"
+.RI [ crypted-pw ]
+.br
+.BI addacl " nazwyu¿ytkowników"
+.PP
+Umo¿liw u¿ytkownikom pe³ny dostêp do tej sesji screen. \fINazwyu¿ytkowników\fP
+mog± byæ jednym u¿ytkownikiem, lub rozdzielon± przecinkami list±
+u¿ytkowników. Opcja ta umo¿liwia pod³±czenie do sesji
+.I screen
+i wykonuje równowa¿nik `aclchg \fInazwyu¿ytkowników\fP +rwx \&"#?\&"'.
+Aby dodaæ u¿ytkownika o ograniczonym dostêpie, u¿yj ni¿ej opisanej komendy
+`aclchg'. Je¶li podany jest opcjonalny drugi parametr, to powinno to byæ
+zakodowane (crypted) has³o dla podanego u¿ytkownika. `Addacl' jest synonimem
+`acladd'. Przydatne tylko w trybie wielou¿ytkownikowym.
+.sp 
+.ne 3
+.BI aclchg " nazwyu¿ytkowników bityuprawnieñ lista"
+.br
+.BI chacl " nazwyu¿ytkowników bityuprawnieñ lista"
+.PP
+Zmieñ uprawnienia rozdzielonej przecinkami listy u¿ytkowników. Bity
+uprawnieñ s± reprezentowane jako `r', `w' i `x'. Poprzedzenie symbolu `+'
+zapewnia uprawnienie, `-' odbiera je. Trzeci parametr jest rozdzielon±
+przecinkami list± komend i/lub okien (podawanych albo przez numer, albo
+przez tytu³). Specjalna lista `#' odnosi siê do wszystkich okien, `?' do
+wszystkich komend. Je¶li \fInazwyu¿ytkowników\fR sk³adaj± siê z pojedynczej
+`*', akcja bêdzie dotyczyæ wszystkich znanych u¿ytkowników.
+Komenda mo¿e byæ przez u¿ytkownika wykonywana gdy ma dla niej bit `x'.
+U¿ytkownik mo¿e do okna wprowadzaæ dane wej¶ciowe je¶li ma bit `w', i ¿aden
+inny u¿ytkownik nie blokuje tego okna do zapisu. Inne bity s± obecnie
+ignorowane.
+Aby wycofaæ blokadê zapisu z okna 2:
+`aclchg \fInazwau¿ytkownika\fP -w+w 2'.
+Aby zezwoliæ na dostêp tylko dla odczytu do sesji:
+`aclchg \fInazwau¿ytkownika\fP -w \&"#\&"'. 
+Gdy tylko u¿ytkownik staje siê znany dla programu
+.I screen 
+\fR, mo¿e on do³±czaæ siê do sesji i (domy¶lnie) ma pe³ne uprawnienia do
+wszystkich komend i okien. Uprawnienia wywo³ywania dla komend acl, `at' i
+innych równie¿ powinny byæ usuwane; w przeciwnym wypadku u¿ytkownik mo¿e
+odzyskaæ prawa zapisu.
+Uprawnieñ specjalnego u¿ytkownika
+.B nobody
+nie mo¿na zmieniaæ t± komend± (zobacz komendê \*Qsu\*U).
+`Chacl' jest synonimem `aclchg'.
+Dzia³a jedynie w trybie wielou¿ytkownikowym.
+.sp
+.ne 3
+.BI acldel " nazwau¿ytkownika"
+.PP
+Usuñ u¿ytkownika z listy kontrolnej
+.IR screen a.
+Je¶li jest on obecnie pod³±czony, wszystkie wy¶wietlacze u¿ytkownika s±
+od³±czane od sesji. Nie mo¿e siê znów pod³±czyæ. Dzia³a jedynie w trybie
+wielou¿ytkownikowym.
+.sp
+.ne 3
+.BI aclgrp " nazwau¿ytkownika"
+.RI [ nazwagrupy ]
+.PP
+Tworzy grupy u¿ytkowników, które dziel± wspólne prawa dostêpu. Nazwa grupy
+jest nazw± u¿ytkownika lidera grupy. Znaczy to, ¿e je¶li u¿ytkownik nie
+przejdzie kontroli dostêpu, robiona jest kontrola dla lidera grupy.
+U¿ytkownika mo¿na usun±æ ze wszystkich grup, u¿ywaj±c specjalnej warto¶ci
+\*Qnone\*U jako
+.IR nazwygrupy .
+Je¶li drugi parametr jest pominiêty, wy¶wietlane s± wszystkie grupy, do
+których nale¿y u¿ytkownik.
+.sp
+.ne 3
+.B aclumask
+.RI [[ u¿ytkownicy ] +bity 
+.RI |[ u¿ytkownicy ] -bity " .... ]"
+.B umask
+.RI [[ u¿ytkownicy ] +bity 
+.RI |[ u¿ytkownicy ] -bity " .... ]"
+.PP
+Okre¶la to dostêp, jaki bêd± mieli inni u¿ytkownicy do okien tworzonych
+przez wo³aj±cego komendê.
+.I U¿ytkownicy
+mog± nie byæ podani, mo¿e byæ jeden, lub rozdzielona przecinkami lista nazw
+u¿ytkowników. Je¶li nie podano u¿ytkowników, zak³adana jest lista wszystkich
+znanych obecnie u¿ytkowników.
+.I Bity
+s± dowoln± kombinacj± bitów kontroli dostêpu, zdefiniowanych komend±
+\*Qaclchg\*U. Specjalna nazwa u¿ytkownika \*Q?\*U predefiniuje dostêp do
+dowolnego okna, jaki
+na starcie dostan± nieznani obecnie u¿ytkownicy.
+Specjalna nazwa u¿ytkownika \*Q??\*U predefiniuje dostêp do komend, jaki na
+starcie dostan± nieznani obecnie u¿ytkownicy. 
+Praw specjalnego u¿ytkownika
+.B nobody
+nie mo¿na zmieniaæ (zobacz komendê \*Qsu\*U).
+`Umask' jest synonimem `aclumask'.
+.sp
+.ne 3
+.BI activity " wiadomo¶æ"
+.PP
+Gdy w monitorowanym oknie z t³a pojawi siê jaka¶ aktywno¶æ,
+.I screen
+wy¶wietla informacjê w linii komunikatów.
+Powiadomienie mo¿e byæ przedefiniowywane komend± \*Qactivity\*U.
+Znaki `%' w \fIwiadomo¶ci\fP s± zamieniane na numer okna, w którym
+zaistnia³a aktywno¶æ, a `~' na definicjê dzwonka w twoim termcapie.
+Domy¶ln± wiadomo¶ci± jest
+.sp
+	'Activity in window %'
+.sp
+Zauwa¿, ¿e domy¶lnie monitorowanie jest wy³±czone, lecz mo¿na to zmieniæ
+komend± \*Qmonitor\*U (C-a M).
+.sp
+.ne 3
+.BR "allpartial on" | off
+.PP
+Je¶li jest to w³±czone, po zmianie okna od¶wie¿ana jest tylko bie¿±ca linia
+kursora. Ma to wp³yw na wszystkie okna i jest przydatne na powolnych
+terminalach. Poprzednie ustawienie pe³nego/czê¶ciowego od¶wie¿ania dla okna
+mo¿na przywróciæ poprzez \*Qallpartial off\*U.
+Jest to flaga globalna, która natychmiast zaczyna dzia³aæ we wszystkich
+oknach, przes³aniaj±c ustawienia \*Qpartial\*U. Nie zmienia domy¶lnego
+zachowania od¶wie¿ania nowo tworzonych okien.
+.sp
+.ne 3
+.BR "at " "[\fIidentyfikator\fP][" "#\fP|\fP*\fP|\fP%\fP] "
+.IR "komenda " [ arg " ... ]"
+.PP
+Wywo³aj komendê na innych wy¶wietlaczach lub oknach tak, jakby zosta³y one
+tam wprowadzone. \*QAt\*U zmienia kontekst (`bie¿±ce okno' lub `bie¿±cy
+wy¶wietlacz') komendy. Je¶li pierwszy parametr opisuje nieunikalny kontekst,
+komenda zostanie wykonania wiele razy. Je¶li pierwszy parametr jest w
+postaci `\fIidentyfikator\fP*', to identyfikator jest dopasowywany do nazw
+u¿ytkowników. Komenda jest wykonywana raz na ka¿dym wy¶wietlaczu wybranego
+u¿ytkownika(ków).
+Je¶li pierwszy parametr jest postaci `\fIidentyfikator\fP%', to
+identyfikator jest dopasowywany do wy¶wietlaczy. Wy¶wietlacze s± nazywane
+wed³ug tty, do których s± pod³±czone. Prefiks `/dev/' lub `/dev/tty' mo¿na
+pomin±æ.
+Je¶li identyfikator zawiera `#', lub nie ma nic doklejonego, jest
+dopasowywany do numerów okien i tytu³ów.
+Pominiêcie identyfikatora na pocz±tku `#', `*' lub `%' wybiera wszystkich
+u¿ytkowników, wszystkie wy¶wietlacze, lub wszystkie okna. Dzieje siê tak
+dlatego, ¿e dokonywane jest dopasowanie prefiksowe.
+Zauwa¿, ¿e na dotkniêtych wy¶wietlaczach pojawi siê krótki komunikat,
+okre¶laj±cy co siê sta³o. Prawa s± sprawdzane dla inicjatora komendy
+\*Qat\*U, a nie dla w³a¶cicieli dotkniêtych wy¶wietlaczy. 
+Zauwa¿, ¿e znak '#' gdy poprzedza go bia³a spacja dzia³a jak komentarz.
+Mo¿na go wycytowaæ, poprzedzaj±c znakiem `\e'.
+Prawa s± sprawdzane dla inicjatora komendy \*Qat\*U, a nie dla w³a¶cicieli
+dotkniêtych wy¶wietlaczy.
+.br
+Zastrze¿enie: 
+Podczas dopasowywania okien, komenda jest wykonywana przynajmniej raz na
+okno. Komendy, które zmieniaj± wewnêtrzn± aran¿acjê okien (jak \*Qother\*U)
+mog± byæ wywo³ane ponownie. Uwa¿aj wiêc przy wywo³ywaniu komend w rodzaju
+\*Qlogin\*U!.
+Niektóre komendy (np. \*Qstuff\*U, \*Qprocess\*U lub \*Qpaste\*U)
+wymagaj± by z docelowymi oknami by³ zwi±zany wy¶wietlacz. Komendy te mog±
+nie dzia³aæ w³a¶ciwie dla \*Qat\*U kr±¿±cego po oknach.
+.sp
+.ne 3
+.BR "autodetach on" | off
+.PP
+Ustawia czy
+.I screen
+ma siê automatycznie od³±czaæ po odwieszeniu (hangup), co zachowuje
+wszystkie twoje pracuj±ce programy a¿ do ich wznowienia komend±
+.BR "screen -r" .
+Gdy w³a¶ciwo¶æ jest wy³±czona, sygna³ odwieszenia (wysy³any przy
+wylogowywaniu siê--przyp. t³um.) zakoñczy
+.I screen
+i wszystkie procesy, które on zawiera. Autood³±czanie jest domy¶lnie w³±czone.
+.sp
+.ne 3
+.BR "autofixterm on" | off
+.PP
+Ustawia czy
+.I screen
+bêdzie dodawa³ brakuj±ce w³a¶ciwo¶ci do wpisów termcap/info. Jest to
+domy¶lnie w³±czone.
+.sp
+.ne 3
+.BR "autonuke on" | off
+.PP
+Ustawia czy sekwencja czyszczenia ekranu powinna niszczyæ ca³e wyj¶cie,
+które jeszcze nie zosta³o wypisane na terminal. Zobacz te¿
+\*Qobuflimit\*U.
+.sp
+.ne 3
+.B bell_msg
+.RI [ wiadomo¶æ ]
+.PP
+Gdy w oknie z t³a wys³any jest znak dzwonka,
+.I screen
+wy¶wietla informacjê w linii komunikatów. Informacja mo¿e byæ dziêki tej
+komendzie redefiniowana. Znaki `%' \fIwiadomo¶ci\fP s± zamieniane numerem
+dzwoni±cego okna, `~' jest zamieniana na definicjê dzwonka w twoim
+termcapie.
+Domy¶ln± wiadomo¶ci± jest
+.sp
+	'Bell in window %'
+.sp
+W celu powstrzymania drukowania linii informacyjnej, mo¿na nadaæ jej warto¶æ
+pust± (bell_msg "").
+Bez parametrów, pokazywana jest wiadomo¶æ obecna.
+.sp
+.ne 3
+.BI "bind " klawisz
+.RI [ komenda " [" arg ]]
+.PP
+Wi±¿e komendê do klawisza.
+Domy¶lnie, wiêkszo¶æ komend udostêpnianych przez
+.I screen
+jest przywi±zana do jednego lub wiêkszej ilo¶ci klawiszy, wg
+opisu sekcji \*QDOMY¦LNE WI¡ZANIA KLAWISZY\*U, np. komenda tworzenia nowego
+okna jest dowi±zana do
+\*QC-c\*U i \*Qc\*U.
+W celu przedefiniowania i definiowania nowych wi±zañ u¿ywana jest komenda
+\*Qbind\*U.
+Argument \fIklawisz\fP jest albo pojedynczym znakiem, albo dwuznakow±
+sekwencj± w postaci \*Q^x\*U (oznaczaj±c± \*QC-x\*U), albo lewym uko¶nikiem
+z liczb± ósemkow± (oznaczaj±c± kod ASCII znaku), albo lewym uko¶nikiem z
+do³±czonym znakiem, jak \*Q\e^\*U czy \*Q\e\e\*U.
+Argument je¶li chcesz mo¿e byæ równie¿ cytowany.
+Je¶li nie ma podanego dalszego argumentu, wszystkie poprzednio zestawione
+wi±zania dla tego klawisza s± usuwane. \fIKomenda\fP mo¿e byæ dowoln± komend±
+wymienion± w tej sekcji.
+.PP
+Przyk³ady:
+.PP
+.nf
+	bind ' ' windows
+	bind ^k
+	bind k
+	bind K kill
+	bind ^f screen telnet foobar
+	bind \e033 screen -ln -t root -h 1000 9 su
+.fi
+.PP
+przywi±¿e spacjê do komendy, która wy¶wietla listê okien (wiêc komenda
+normalnie wywo³ywana przez \*QC-a C-w\*U bêdzie równie¿ dostêpna jako \*QC-a
+spacja\*U). Nastêpne trzy linie usuwaj± domy¶lne wi±zanie zabijania z \*QC-a
+C-l\*U i \*QC-a l\*U.
+Nastêpnie do komendy zabijania wi±zane jest \*QC-a K\*U.
+Nastêpnie klawisz \*QC-f\*U jest wi±zany z komend± tworzenia okna z
+po³±czeniem telnetowym do foobar, a klawisz \*Qescape\*U jest wi±zany do
+komendy, która tworzy niezg³oszeniowe okno z a.\|k.\|a. \*Qroot\*U w
+slocie #9, z pow³ok± superu¿ytkownika i buforem przewijania na 1000 linii.
+.sp
+.ne 3
+.B bindkey
+.RB [ -d ]
+.RB [ -m ]
+.RB [ -a ]
+.RB [[ -k | -t ]
+.I ³añcuch
+.RI [ "kmd arg" ]]
+.PP
+Komenda ta zarz±dza wej¶ciowymi tablicami translacji screena. Ka¿dy wpis w
+jednej z tablic mówi mu jak reagowaæ gdy pojawi siê okre¶lona sekwencja
+znaków. Istniej± trzy tablice:
+jedna, która powinna zawieraæ akcje zaprogramowane przez u¿ytkownika, druga
+dla domy¶lnych akcji emulacji terminala i trzecia dla trybu kopiowania screena
+do zajmowania siê poruszaniem kursora. Zobacz sekcjê
+\*QTRANSLACJA WEJ¦CIOWA\*U dla listy domy¶lnych wi±zañ klawiszowych.
+.br
+Je¶li podana jest opcja
+.BR -d ,
+bindkey modyfikuje domy¶ln± tablicê,
+.B -m
+zmienia tablicê trybu kopiowania, a bez ¿adnej opcji wybierana jest tablica
+u¿ytkownika.
+Argument
+.I ³añcuch
+jest sekwencj± znaków, do której przywi±zana jest akcja. Mo¿e to byæ albo
+skoñczony napis, albo nazwa w³a¶ciwo¶ci klawiaturowej z termcap (wybierana
+opcj±
+.BR -k ).
+.br
+Niektóre klawisze terminala VT100 mog± wysy³aæ inne ³añcuchy gdy w³±czony
+jest tryb aplikacji (np. ruchy kursora). Takie klawisze maj± dwa wpisy w
+tablicy translacji. Mo¿esz wybraæ wpisy trybu aplikacji podaj±c opcjê
+.BR -a .
+.br
+Opcja
+.B -t
+mówi screenowi by nie dokonywa³ miêdzyznakowego pomiaru czasu. Nie mo¿na go
+wy³±czyæ je¶li u¿ywana jest w³a¶ciwo¶æ termcap.
+.br
+.I Kmd
+mo¿e byæ dowoln± z komend screena o okre¶lonej liczbie
+.IR arg umentów.
+Je¶li
+.I kmd
+jest pominiêta, wi±zanie klawiszowe jest usuwane z tablicy.
+.br
+Oto kilka przyk³adów wi±zañ klawiaturowych:
+.sp
+.nf
+        bindkey -d
+.fi
+Poka¿ wszystkie domy¶lne wi±zania klawiaturowe. Wpisy trybu aplikacji s±
+zaznaczone [A].
+.sp
+.nf
+        bindkey -k k1 select 1
+.fi
+Upewnij siê, ¿e klawisz "F1" prze³±cza na okno numer 1.
+.sp
+.nf
+        bindkey -t foo stuff barfoo
+.fi
+Uczyñ z "foo" skrót dla s³owa "barfoo". Czas oczekiwania jest wy³±czony,
+wiêc u¿ytkownicy mog± siê guzdraæ z wklepywaniem.
+.sp
+.nf
+        bindkey "\e024" mapdefault
+.fi
+To wi±zanie klawiszowe powoduje, ¿e \*Q^T\*U staje siê znakiem specjalnym
+wi±zañ klawiaturowych. Je¶li dokona³e¶ powy¿szego wi±zania
+\*Qstuff barfoo\*U, mo¿esz wprowadziæ s³owo
+\*Qfoo\*U naciskaj±c \*Q^Tfoo\*U. Je¶li chcesz wprowadziæ \*Q^T\*U,
+musisz nacisn±æ go dwukrotnie.
+.sp
+.nf
+        bindkey -k F1 command
+.fi
+Uczyñ F11 (nie F1!) alternatywnym znakiem specjalnym screena (poza ^A).
+.sp
+.ne 3
+.B break
+.RI [ czas ]
+.PP
+Wysy³aj do tego okna przez \fIczas\fP*0.25 sekund sygna³ przerwania.
+Dla systemów nieposixowych, interwa³ czasowy mo¿e byæ zaokr±glany w górê do
+pe³nych sekund. Jest to przydatne je¶li do okna jest pod³±czone urz±dzenie
+znakowe (a nie proces pow³okowy) (Zobacz te¿ rozdzia³ \*QRODZAJE OKIEN\*U).
+Maksymalny czas trwania sygna³u przerwania jest ograniczony do 15 sekund.
+.sp
+.ne 3
+.B breaktype
+.RI [ tcsendbreak | TIOCSBRK
+.RI | TCSBRK ]
+.PP
+Wybierz jedn± z dostêpnych metod generowania sygna³u przerwania dla urz±dzeñ
+terminalowych. Komenda ta powinna dotykaæ jedynie bie¿±cego okna. Wci±¿
+jednak zachowuje siê identycznie do \*Qdefbreaktype\*U. 
+W przysz³o¶ci bêdzie to zmienione. Wo³anie \*Qbreaktype\*U bez parametrów
+wy¶wietla metody przerywania dostêpne dla bie¿±cego okna.
+.sp
+.ne 3
+.B bufferfile
+.RI [ exchange-file ]
+.PP
+Zmieñ nazwê pliku u¿ywan± do odczytywania i zapisywania buforu wklejania.
+Je¶li pominiêty jest opcjonalny argument plikowy, reaktywowane jest domy¶lne
+ustawienie (\*Q/tmp/screen-exchange\*U).
+Nastêpuj±cy przyk³ad przekopiuje plik z has³ami systemowymi na okno
+.IR screen :
+.PP
+.nf
+	C-a : bufferfile /etc/passwd
+	C-a < C-a ]
+	C-a : bufferfile
+.fi
+.sp
+.ne 3
+.BR "c1 " [ on | off ]
+.PP
+Zmieñ przetwarzanie kodu c1. \*QC1 on\*U mówi screenowi by traktowa³ znaki
+wej¶ciowe z przedzia³u 128..159 jako funkcje steruj±ce. Takie 8-bitowe kody
+s± normalnie takie same jak ESC z do³±czonym kodem 7-bitowym. Domy¶lne
+ustawienie przetwarza kody c1 i mo¿e byæ zmienione komend± \*Qdefc1\*U.
+U¿ytkownicy z fontami, które maj± u¿yteczne znaki w pozycjach c1 mog±
+to wy³±czyæ.
+.sp
+.ne 3
+.BR "caption always" | splitonly
+.RI [ ³añcuch ]
+.br
+.B "caption string"
+.RI [ ³añcuch ]
+.PP
+Komenda ta kontroluje wy¶wietlanie tytu³ów okien. Normalnie tytu³ jest
+u¿ywany tylko je¶li na wy¶wietlaczu pokazywanych jest wiêcej ni¿ jedno okno
+(tryb podzielonego ekranu--splitonly). Je¶li typ jest ustawiony na
+.B always
+screen pokazuje tytu³ nawet je¶li wy¶wietlane jest tylko jedno okno.
+Warto¶ci± domy¶ln± jest
+.BR splitonly .
+.P
+Druga postaæ zmienia tekst u¿ywany na tytu³. Mo¿esz u¿ywaæ wszystkich znaków
+specjalnych z rozdzia³u \*QZNAKI SPECJALNE TEKSTOWE\*U. Screen u¿ywa
+warto¶ci domy¶lnej, `%3n %t'.
+.P
+Mo¿esz ³±czyæ obie formy, daj±c ³añcuch jako argument dodatkowy.
+.sp
+.ne 3
+.BI "charset " zestaw
+.PP
+Zmieñ desygnacjê obecnego slotu zestawu znaków i mapowania zestawu znaków.
+Pierwsze cztery znaki
+.I zestawu
+s± traktowane jako desygnatory zestawu znaków, podczas gdy pi±ty i szósty
+znak, bêd±ce w zakresie '0' do '3', ustawiaj± mapowanie zestawu znaków
+GL/GR. Na ka¿dej pozycji mo¿na u¿yæ znaku '.', co oznacza, ¿e odpowiadaj±cy
+mu zestaw znaków/mapowanie nie powinno byæ zmieniane.
+(\fIzestaw\fP jest wewnêtrznie dope³niany do sze¶ciu znaków przez doklejenie
+znaków '.'). Domy¶lnym zestawem znaków dla nowych okien jest "BBBB02", chyba
+¿e aktywna jest komenda \*Qkanji\*U.
+.br
+Bie¿±ce ustawienia mo¿na obejrzeæ komend± \*Qinfo\*U.
+.sp
+.ne 3
+.B chdir
+.RI [ katalog ]
+.PP
+Zmieñ \fIkatalog bie¿±cy\fP
+.IR screen a
+na podany katalog lub, je¶li wywo³ane bez argumentów, na twój katalog domowy
+(zawarto¶æ zmiennej ¶rodowiskowej $HOME).
+Wszystkie okna, tworzone komend± \*Qscreen\*U z wewn±trz
+\*Q.screenrc\*U lub poprzez \*QC-a : screen ...\*U czy
+\*QC-a c\*U bêd± go u¿ywa³y jako katalogu domy¶lnego.
+Bez u¿ywania chdir, katalogiem tym by³by katalog, z którego wywo³ano
+.IR screen .
+Pliki twardych kopii (hardcopy files) i pliki raportowe zawsze s± zapisywane
+do domy¶lnego katalogu okna, a \fInie\fP do katalogu bie¿±cego procesu,
+pracuj±cego w oknie.
+Mo¿esz u¿ywaæ tej komendy w swoim .screenrc wielokrotnie. Umo¿liwia to
+uruchamianie ró¿nych okien w ró¿nych katalogach. Jednak¿e ostatnie chdir
+bêdzie dotyczyæ wszystkich okien tworzonych interaktywnie.
+.sp
+.ne 3
+.B clear
+.PP
+Czy¶ci bie¿±ce okno i zapisuje jego obraz w buforze przewijania.
+.sp
+.ne 3
+.B colon
+.RI [ prefiks ]
+.PP
+Umo¿liwia wpisywanie linii poleceniowych \*Q.screenrc\*U. Przydatne do
+podrêcznej modyfikacji wi±zañ klawiszowych, specyficznego tworzenia okien i
+zmieniania ustawieñ. Zauwa¿, ¿e s³owo kluczowe \*Qset\*U ju¿ nie istnieje!
+Zazwyczaj komendy tycz± siê bie¿±cego okna, a nie domy¶lnych ustawieñ dla
+przysz³ych okien. Warto¶ci domy¶lne zmienia siê komendami, rozpoczynaj±cymi
+siê od 'def...'.
+.sp 
+.ne 3
+.B command
+.PP
+Komenda ta ma taki sam skutek, jak wpisanie znaku specjalnego (^A). Jest
+chyba przydatna jedynie dla wi±zañ klawiaturowych. Zobacz te¿ \*Qbindkey\*U.
+.sp 
+.ne 3
+.BR "compacthist " [ on | off ]
+.PP
+Mówi to screenowi czy powstrzymywaæ doczepione puste linie podczas
+przewijania tekstu w górê w buforze historii.
+.sp 
+.ne 3
+.BR "console " [ on | off ]
+.PP
+Zbiera lub "od-zbiera" (ungrabs) wyj¶cie konsoli do okna.
+.IR Uwaga :
+Jedynie w³a¶ciciel /dev/console mo¿e zbieraæ wyj¶cie konsoli.
+Komenda ta jest dostêpna je¶li maszyna obs³uguje ioctl TIOCCONS.
+.sp
+.ne 3
+.B copy
+.PP
+Wejd¼ w tryb kopiowania/przewijania wstecz. Umo¿liwia to kopiowanie z
+bie¿±cego okna (i jego historii) tekstu do buforu wklejania. W trybie tym
+dostêpny jest vi-podobny pe³noekranowy edytor:
+.br
+.IR "Poruszanie siê" :
+.br
+.in +4n
+.ti -2n
+\fBh\fP, \fBj\fP, \fBk\fP, \fBl\fP przesuñ liniê kursora o liniê lub kolumnê
+o kolumnê.
+.br
+.ti -2n
+\fB0\fP, \fB^\fP i \fB$\fP przesuñ do krañcowo lewej kolumny, do pierwszego
+lub ostatniego ró¿nego od bia³ej spacji znaku linii.
+.br
+.ti -2n
+\fBH\fP, \fBM\fP i \fBL\fP przesuñ kursor do krañcowo lewej kolumny na
+górze, ¶rodku, lub dole okna.
+.br
+.ti -2n
+\fB+\fP i \fB\-\fP przesuwa o jedn± liniê w górê i w dó³.
+.br
+.ti -2n
+\fBG\fP przesuwa do podanej linii absolutnej (domy¶lnie: koniec bufora).
+.br 
+.ti -2n
+\fB|\fP przesuwa do podanej kolumny absolutnej.
+.br
+.ti -2n
+\fBw\fP, \fBb\fP, \fBe\fP przesuwaj kursor s³owo po s³owie.
+.br 
+.ti -2n
+\fBC-u\fP i \fBC-d\fP przewijaj wy¶wietlacz w górê i w dó³ o podan± ilo¶æ
+linii, zachowuj±c pozycjê kursora. (Domy¶lnie: po³owa ekranu).
+.br
+.ti -2n
+\fBC-b\fP i \fBC-f\fP przewijaj wy¶wietlacz w górê/dó³ o pe³ny ekran.
+.br
+.ti -2n
+\fBg\fP przesuwa na pocz±tek bufora.
+.br
+.ti -2n
+\fB%\fP skacze do podanego procentu bufora.
+.br
+.ti -4n
+
+.IR Uwaga :
+.br
+Komend± .screenrc mo¿na dostosowaæ klawisze do stylu emacsa. 
+(Np. markkeys "h=^B:l=^F:$=^E") Nie ma prostej metody na pe³n± mapê klawiszy
+w stylu emacsa, gdy¿ wymaga to wieloznakowych kodów.
+
+.br
+.ti -4n
+.IR Zaznaczanie :
+.br
+Zakres kopiowania jest ustalany przez ustawienie dwóch znaczników. Tekst
+miêdzy nimi zostaje pod¶wietlany. Naci¶nij
+.br
+.ti -2n
+\fBspacjê\fP do ustawienia pierwszego lub drugiego znacznika.
+.br
+.ti -2n
+\fBY\fP i \fBy\fP s± u¿ywane do zaznaczania ca³ej linii lub do zaznaczania
+od pocz±tku linii.
+.br
+.ti -2n
+\fBW\fP zaznacza dok³adnie jedno s³owo. 
+.br 
+.ti -4n
+.IR "Licznik powtórzeñ" :
+.br
+Ka¿d± z tych komend mo¿na poprzedziæ licznikiem powtórzeñ, naciskaj±c cyfry
+.br
+.ti -2n
+\fB0\fP..\fB9\fP, które s± nastêpnie uwa¿ane za liczniki powtórzeñ.
+.br
+Przyk³ad: \*QC-a C-[ H 10 j 5 Y\*U skopiuje linie
+11 do 15 do bufora wklejania.
+.br
+.ti -4n
+.IR Szukanie :
+.ti -2n
+\fB/\fP \fIVi\fP-podobne szukanie naprzód.
+.ti -2n
+\fB?\fP \fIVi\fP-podobne szukanie wstecz.
+.ti -2n 
+\fBC-a s\fP \fIEmacs\fPopodobne inkrementalne szukanie naprzód.
+.ti -2n
+\fBC-r\fP \fIEmacs\fPopodobne odwrócone i-szukanie.
+.ti -4n
+.IR Specjalno¶ci :
+.br
+Istnieje kilka klawiszy, zachowuj±cych siê inaczej ni¿ w
+.IR vi .
+.I Vi
+nie umo¿liwia zaznaczania prostok±tnych bloków tekstu, lecz
+.I screen
+to umo¿liwia.
+naci¶nij
+.br
+.ti -2n
+\fBc\fP lub \fBC\fP aby ustawiæ lewy lub prawy margines. Je¶li nie podano
+licznika powtórzeñ, obydwa odnosz± siê do bie¿±cej pozycji kursora.
+.br
+Przyk³ad: Wypróbuj to na zape³nionym tekstem ekranie:
+\*QC-a [ M 20 l SPACE c 10 l 5 j C SPACE\*U.
+
+Przechodzi to na ¶rodkow± liniê ekranu, przesuwa siê 20 kolumn w lewo,
+zaznacza pocz±tek bufora wklejania, ustawia lew± kolumnê, przesuwa 5 kolumn
+w dó³ (w prawo?--przyp. t³um.), zaznacza praw± kolumnê, a nastêpnie zaznacza
+koniec bufora wklejania. Wypróbuj teraz:
+.br
+\*QC-a [ M 20 l SPACE 10 l 5 j SPACE\*U
+
+i zwróæ uwagê na ró¿nicê w ilo¶ci skopiowanego tekstu.
+.br
+.ti -2n
+\fBJ\fP ³±czy linie. Prze³±cza siê miêdzy 4 trybami: linie rozdzielane
+znakiem nowej linii (012), linie sklejone bez szwów (lines glued seamless),
+linie rozdzielone pojedyncz± bia³± spacj±, linie rozdzielone przecinkami.
+Zauwa¿, ¿e mo¿esz poprzedzaæ znak nowej linii znakiem CR, u¿ywaj±c \*Qcrlf
+on\*U.
+.br
+.ti -2n
+\fBv\fP jest dla wszystkich u¿ytkowników 
+.I vi 
+z \*Q:set numbers\*U \- w³±cza lewy margines miêdzy kolumn± 9 a 1. Naci¶nij
+.br
+.ti -2n
+\fBa\fP przed ostatnim klawiszem spacji aby w³±czyæ tryb doklejania. W ten
+sposób bufor wklejania nie bêdzie nadpisywany, lecz zostanie do niego
+dopisana nowa tre¶æ.
+.br
+.ti -2n
+\fBA\fP w³±cza tryb doklejania i ustawia (drugi) znacznik.
+.br
+.ti -2n
+\fB>\fP ustawia (drugi) znacznik i zapisuje zawarto¶æ bufora wklejania do
+pliku wymiany screena (domy¶lnie /tmp/screen-exchange) po zakoñczeniu trybu
+kopiowania.
+.br
+Przyk³ad ten demonstruje jak wrzuciæ do tego pliku ca³y bufor przewijania:
+\*QC-A [ g SPACE G $ >\*U.
+.br
+.ti -2n
+\fBC-g\fP podaje informacjê o bie¿±cej linii i kolumnie.
+.br
+.ti -2n
+\fBx\fP wymienia pierwszy znacznik i pozycjê kursora. Mo¿esz u¿ywaæ tego do
+dostrajania ju¿ ustawionego znacznika.
+.br
+.ti -2n
+\fB@\fP nie robi nic. Nawet nie koñczy trybu kopiowania.
+.br
+.ti -2n
+Wszystkie nie opisane tutaj klawisze koñcz± tryb kopiowania.
+.in -4n
+.sp
+.ne 3
+.B copy_reg
+.RI [ klucz ]
+.PP
+Ju¿ nie istnieje, u¿yj zamiast tego \*Qreadreg\*U.
+.sp
+.ne 3
+.BR "crlf " [ on | off ]
+.PP
+Ma to wp³yw na kopiowanie regionów tekstu komend± `C-a ['. Je¶li jest
+w³±czone, linie bêd± rozdzielane sekwencj± znaków `CR' - `LF'. W przeciwnym
+wypadku (domy¶lnie) u¿ywane bêdzie tylko `LF'. Bez parametrów, stan jest
+w³±czany.
+.sp
+.ne 3
+.BR "debug on" | off
+.PP
+W³±cza lub wy³±cza debuggowanie czasu dzia³ania.
+.sp
+.ne 3
+.BR "defc1 on" | off
+.PP
+To samo co komenda \fBc1\fP lecz domy¶lne ustawienie dla nowych okien jest
+zmieniane. Pocz±tkowym ustawieniem jest `on'.
+.sp
+.ne 3
+.BR "defautonuke on" | off
+.PP
+To samo co \fBautonuke\fP, lecz domy¶lne ustawienie dla nowych wy¶wietlaczy
+jest zmieniane. Pocz±tkowe ustawienie to `off'. Zauwa¿, ¿e je¶li chcesz
+byæ zale¿nym od typu terminala, mo¿esz u¿yæ specjalnej w³a¶ciwo¶ci `AN'
+terminala.
+.sp
+.ne 3
+.B defbreaktype
+.RI [ tcsendbreak | TIOCSBRK
+.RI | TCSBRK ]
+.PP
+Wybierz jedn± z dostêpnych metod generowania sygna³u przerwania (break) dla
+urz±dzeñ terminalowych. Preferowanymi metodami s±
+.IR tcsendbreak " oraz " TIOCSBRK .
+Trzecia, 
+.IR TCSBRK , 
+blokuje ca³± sesjê
+.I screen
+na czas przerywania, lecz mo¿e byæ jedynym sposobem generowania d³u¿szych
+przerwañ.
+.IR Tcsendbreak " i " TIOCSBRK
+mog± (lub nie) dawaæ d³ugie przerwania ze szpicami (z przerwami?--with spikes)
+(np. 4 na sekundê). Jest to nie tylko zale¿ne od systemu, lecz zale¿y równie¿
+od sterowników uk³adów szeregowych.
+Wywo³ywanie \*Qdefbreaktype\*U bez parametru wy¶wietla bie¿±ce ustawienie.
+.sp
+.ne 3
+.BR "defcharset " [ \fIzestaw ]
+.PP
+Podobne do komendy \fBcharset\fP, lecz domy¶lne ustawienie dla nowych okien
+jest te¿ zmieniane. Po wywo³aniu bez argumentu, pokazuje bie¿±c± warto¶æ
+domy¶ln±.
+.sp
+.ne 3
+.BI "defescape " xy
+.PP
+Ustaw domy¶lne znaki komend. Jest to równowa¿ne 
+\*Qescape\*U, ale jest przydatne tylko w sesjach wielou¿ytkownikowych. W
+takiej sesji \*Qescape\*U zmienia znaki komend u¿ytkownika, który wywo³a³ to
+polecenia, podczas gdy \*Qdefescape\*U zmienia domy¶lne znaki komend dla
+u¿ytkowników, którzy bêd± dodawani pó¼niej.
+.sp
+.ne 3
+.BR "defflow on" | off | auto 
+.RB [ interrupt ]
+.PP
+To samo co komenda \fBflow\fP, lecz zmieniane jest domy¶lne ustawienie dla
+nowych okien. Pocz±tkowym ustawieniem jest `auto'. Podanie 
+\*Qdefflow auto interrupt\*U jest równowa¿ne opcjom linii komend
+.B \-fa
+i
+.BR \-i . 
+.sp
+.ne 3
+.BR "defgr on" | off
+.PP
+To samo co komenda \fBgr\fP, lecz zmieniane jest domy¶lne ustawienie dla
+nowych okien. Pocz±tkowym ustawieniem jest `off'.
+.sp
+.ne 3
+.BR "defhstatus " [ \fIstatus ]
+.PP
+Linia twardego status, któr± otrzymaj± wszystkie nowe okna jest ustawiana na
+.I status\fR.
+Komenda ta jest przydatna do wy¶wietlenia poprzez status ka¿dego okna jego
+numeru, tytu³u, itp.
+.I Status
+mo¿e zawieraæ te same dyrektywy co komunikaty okna, lecz znakiem specjalnym
+(escape character) dyrektywy jest '^E' (ósemkowe 005) zamiast '%'. Zrobione
+jest to w celu uniemo¿liwienia z³ej interpretacji generowanych przez program
+linii statusu.
+Je¶li parametr
+.I status
+jest pominiêty, wy¶wietlany jest bie¿±cy ³añcuch domy¶lny.
+Domy¶lnie, linie statusu nowych okien s± puste.
+.sp
+.ne 3
+.BR "defkanji jis" | sjis | euc
+.PP
+To samo co komenda \fBkanji\fP, lecz zmieniane jest domy¶lne ustawienie dla
+nowych okien. Pocz±tkowym ustawieniem jest `off', np. `jis'.
+.sp
+.ne 3
+.BR "deflogin on" | off
+.PP
+To samo co komenda \fBlogin\fP, lecz zmieniane jest domy¶lne ustawienie dla
+nowych okien. W dystrybucji inicjalizowane jest to na `on' (zobacz
+config.h.in).
+.sp
+.ne 3
+.BI "defmode " prawa
+.PP
+Prawa ka¿dego z nowo zaalokowanych pseudo-tty s± ustawiane na \fIprawa\fP.
+\fIPrawa\fP s± liczb± ósemkow±. Pocz±tkowo, u¿ywane s± prawa 0622.
+(prawa dostêpu, tryb, mode -- przyp. t³um.)
+.sp
+.ne 3
+.BR "defmonitor on" | off
+.PP
+To samo co komenda \fBmonitor\fP, lecz zmieniane jest domy¶lne ustawienie
+dla nowych okien. Pocz±tkowym ustawieniem jest `off'.
+.sp
+.ne 3
+.BI "defobuflimit " limit
+.PP
+To samo co \fBobuflimit\fP, lecz zmieniane jest domy¶lne ustawienie dla
+nowych wy¶wietlaczy. Pocz±tkowym ustawieniem jest 256 bajtów. Zauwa¿, ¿e
+je¶li chcesz byæ zale¿nym od typu terminala, mo¿esz u¿yæ w³a¶ciwo¶ci 'OL'.
+.sp
+.ne 3
+.BI "defscrollback " num
+.PP
+To samo co \fBscrollback\fP, lecz zmieniane jest domy¶lne ustawienie dla
+nowych okien. Pocz±tkowym ustawieniem jest 100.
+.sp
+.ne 3
+.BI "defshell " komenda
+.PP
+Synonim komendy \fBshell\fP. Patrz tam.
+.sp
+.ne 3
+.BR "defsilence on" | off
+.PP
+To samo co komenda \fBsilence\fP, lecz zmieniane jest domy¶lne ustawienie
+dla nowych okien. Pocz±tkowym ustawieniem jest `off'.
+.sp
+.ne 3
+.BI "defslowpaste " msec"
+.PP
+To samo co \fBslowpaste\fP, lecz zmieniane jest domy¶lne ustawienie dla
+nowych okien. Pocz±tkowym ustawieniem jest 0 milisekund, co oznacza
+wy³±czenie.
+.sp
+.ne 3
+.BR "defwrap on" | off
+.PP
+To samo co \fBwrap\fP, lecz zmieniane jest domy¶lne ustawienie dla nowych
+okien. Pocz±tkowo zawijanie linii jest w³±czone i mo¿e byæ prze³±czane
+komend± \*Qwrap\*U (\*QC-a r\*U) lub poprzez "C-a : wrap on|off".
+.sp
+.ne 3
+.BR "defwritelock on" | off | auto
+.PP
+To samo co \fBwritelock\fP, lecz zmieniane jest domy¶lne ustawienie dla nowych
+okien. Pocz±tkowo blokady zapisu s± wy³±czone.
+.sp
+.ne 3
+.BR "defzombie " [\fIkeys\fP]
+.PP
+Synonim komendy \fBzombie\fP. Obie w chwili obecnej zmieniaj± warto¶æ
+domy¶ln±. Patrz tam.
+.sp
+.ne 3
+.B detach
+.PP
+Od³±cz sesjê
+.I screen
+(od³±cz j± od terminala i wrzuæ w t³o).
+Powracasz wtedy do pow³oki, z której wywo³a³e¶
+.IR screen .
+Od³±czonego 
+.I screena
+mo¿na wznowiæ, wywo³uj±c
+.I screen
+z opcj±
+.BR \-r .
+(Zobacz te¿ sekcjê \*QOPCJE LINII KOMEND\*U.)
+.sp
+.ne 3
+.B displays
+.PP
+Pokazuje tabularyczny listing wszystkich obecnie pod³±czonych front-endów
+u¿ytkownika (wy¶wietlaczy). Jest to przydatne w sesjach
+wielou¿ytkownikowych.
+.sp
+.ne 3
+.BR "digraph " [ \fIpreset\fP ]
+.PP
+Komenda ta bierze u¿ytkownika o sekwencjê dwuznakow±. Wpisane dwa znaki s±
+sprawdzane we wbudowanej tablicy, a znak wynikowy jest wstawiany do
+strumienia wej¶ciowego. Na przyk³ad, je¶li u¿ytkownik wprowadzi 'a"',
+wstawiony zostanie a-umlaut. Je¶li pierwszym wprowadzonym znakiem jest 0,
+.I screen
+potraktuje nastêpne znaki (do trzech) jako liczbê ósemkow±.
+Opcjonalny argument
+.I preset
+jest traktowany jako wej¶cie u¿ytkownika. Mo¿na wiêc zrobiæ sobie klawisz
+\*Qumlaut\*U. Na przyk³ad, komenda "bindkey ^K digraph '"'" umo¿liwia
+u¿ytkownikowi generowanie a-umlaut przez wpisanie CTRL-K a.
+.sp
+.ne 3
+.B dumptermcap
+.PP
+Zapisz wpis termcap dla wirtualnego terminala, zoptymalizowanego dla
+aktualnie aktywnego okna. Zapis nast±pi do pliku \*Q.termcap\*U w katalogu
+\*Q$HOME/.screen\*U u¿ytkownika (lub tam, gdzie
+.I screen
+przechowuje swoje gniazda. Zobacz sekcjê \*QPLIKI\*U).
+Ten wpis termcap jest identyczny z warto¶ci± zmiennej ¶rodowiskowej
+$TERMCAP, która jest ustawiana przez 
+.I screen
+dla ka¿dego okna. Dla systemów opartych na terminfo, mo¿esz potrzebowaæ
+konwertera w rodzaju
+.I captoinfo
+oraz kompilowaæ wpis z pomoc±
+.IR tic .
+.sp
+.ne 3
+.BR "echo " [ -n ]
+.I wiadomo¶æ
+.PP
+komenda echo mo¿e byæ u¿ywana do denerwowania u¿ytkowników
+.I screen
+\&'wiadomo¶ciami dnia'. Zazwyczaj jest to instalowane w globalnym
+/etc/screenrc. Opcja \*Q-n\*U powoduje zatrzymanie wci±gania nowej linii.
+Zobacz te¿ \*Qsleep\*U.
+Echo jest te¿ przydatne do testowania online zmiennych ¶rodowiskowych.
+.sp
+.ne 3
+.BI "escape " xy
+.PP
+Ustaw znak komendy na \fIx\fP, a znak generuj±cy literalny znak komendy
+(przez wywo³anie komendy \*Qmeta\*U) na \fIy\fP (podobne do opcji \-e).
+Ka¿dy argument mo¿e byæ albo pojedynczym znakiem, albo dwuznakow± sekwencj±
+w postaci \*Q^x\*U (oznaczaj±c± \*QC-x\*U), albo lewym uko¶nikiem z liczb±
+ósemkow± (kod ASCII znaku), albo lewym uko¶nikiem z drugim znakiem, w
+rodzaju \*Q\e^\*U czy \*Q\e\e\*U.
+Domy¶ln± warto¶ci± jest \*Q^Aa\*U.
+.sp
+.ne 3
+.B exec
+.RI [[ fdpat ]
+.IR "nowakomenda " [ "arg ..." ]]
+.PP
+Uruchom w bie¿±cym oknie podproces unixowy (okre¶lony przez ¶cie¿kê wykonywaln±
+\fInowakomenda\fP i jej argumenty). Przep³yw danych miêdzy
+stdin/stdout/stderr nowejkomendy, procesem pocz±tkowo uruchomionym w oknie
+(powiedzmy "procesem-aplikacji") i screenem (oknem) jest kontrolowany przez
+wzorzec deskryptora plików fdpat. Wzorzec jest sekwencj± trójznakow±,
+reprezentuj±c± stdin, stdout i stderr nowejkomendy. Kropka (.) ³±czy
+deskryptor pliku do
+.IR screena .
+Znak wykrzyknika (!) powoduje, ¿e deskryptor jest pod³±czany do
+procesu-aplikacji. Dwukropek (:) ³±czy obydwa te zadania.
+Do nowej komendy bêdzie przechodzi³o wej¶cie u¿ytkownika, chyba ¿e komenda
+otrzymuje wyj¶cie procesu-aplikacji (pierwszym znakiem fdpat jest `!' lub `:')
+lub do koñca fdpat (jako czwarty znak) dodano znak potoku (|).
+.br
+Wywo³ywanie `exec' bez argumentów pokazuje nazwê i argumenty bie¿±cego
+podprocesu aktualnego okna. W ka¿dym oknie naraz mo¿e dzia³aæ tylko jeden
+podproces.
+.br
+Gdy podproces akurat wykonuje siê, komenda `kill' bêdzie dotyczyæ jego, a
+nie procesów okien.
+.br
+Dla ciê¿kostrawnej ilustracji wszystkich 21 kombinacji, zobacz `doc/fdpat.ps'.
+Ka¿dy rysunek pokazuje cyfry 2,1,0, odwzorowuj±ce trzy deskryptory
+nowejkomendy. Skrzynka oznaczona jako `W' jest normalnym pty, który na
+stronie biernej (slave) ma proces-aplikacji.
+Skrzynka zaznaczona jako `P' jest drugorzêdnym pty, który po swojej stronie
+nadrzêdnej (master) ma
+.IR screen .
+.sp
+Skróty:
+.br
+Bia³a spacja miêdzy s³owem `exec', fdpat i komend± mo¿e byæ opuszczona.
+Fdpat sk³adaj±cy siê z samych kropek, lub jego koñcowe kropki mo¿na pomin±æ.
+Prosty `|' jest synonimem do wzorca `!..|';  s³owo exec mo¿na tu pomin±æ, a
+zawsze mo¿na je zast±piæ `!'.
+.sp
+Przyk³ady:
+.IP
+exec ... /bin/sh
+.br
+exec /bin/sh
+.br
+!/bin/sh
+.PP
+Tworzy now± pow³okê w tym samym oknie, podczas gdy pow³oka wyj¶ciowa wci±¿
+dzia³a. Wyj¶cie obydwu pow³ok jest wy¶wietlane, a wej¶cie u¿ytkownika jest
+wysy³ane do nowego
+/bin/sh.
+.IP
+exec !.. stty 19200
+.br
+exec ! stty 19200
+.br
+!!stty 19200
+.PP
+Ustaw szybko¶æ tty okna. Je¶li twoja komenda stty operuje na stdout, dodaj
+kolejny `!'.
+.IP
+exec !..| less
+.br
+|less
+.PP
+Dodaje to przegl±darkê do wyj¶cia okna. Znak specjalny `|' jest potrzebny do
+uzyskania kontroli u¿ytkownika nad przegl±dark±, choæ dostaje ona swoje
+wej¶cie z procesu okna. Dzia³a to, poniewa¿
+.I less
+nas³uchuje stderr (zachowanie, którego
+.I screen
+nie oczekiwa³by bez `|') 
+kiedy jego stdin nie jest tty.
+Wersje
+.IR less , 
+nowsze ni¿ 177 wypadaj± tu ¿a³o¶nie; jednak stary, dobry
+.I pg
+wci±¿ dzia³a.
+.IP
+!:sed -n s/.*Error.*/\e007/p
+.PP
+Wysy³a wyj¶cie okna do u¿ytkownika i komendy sed. Sed wstawia do wyj¶cia
+okna widzianego przez \fIscreen\fP dodatkowy znak
+dzwonka (ósemkowy 007).
+Spowoduje to wy¶wietlenie komunikatu "Bell in window x",
+za ka¿dym ³añcuchem "Error", który pojawi siê w oknie.
+.sp
+.ne 3
+.B fit
+.PP
+Zmieñ rozmiar okna na rozmiar bie¿±cego regionu. Komenda ta jest wymagana,
+gdy¿ screen automatycznie nie adaptuje rozmiaru okna je¶li okno jest
+wy¶wietlane wiêcej ni¿ raz.
+.sp
+.ne 3
+.B flow
+.RB [ on | off | "auto\fR]\fP"
+.PP
+Ustawia tryb kontroli przep³ywu dla tego okna.
+Bez parametrów, przesuwa on kontrolê bie¿±cego okna z "automatic" na "on" na
+"off".
+Zobacz dyskusjê o \*QKONTROLI-PRZEP£YWU\*U, opisanej ni¿ej w tym dokumencie
+dla pe³nych szczegó³ów i odpowiednich uwag.
+Warto¶æ domy¶lna jest ustawiana przez `defflow'.
+.sp
+.ne 3
+.B focus
+.PP
+Przenie¶ ognisko wej¶ciowe na nastêpny region. Jest to dokonywane w
+cykliczny sposób tak, ¿e region górny jest wybierany po dolnym.
+.sp
+.ne 3
+.BR "gr " [ on | off ]
+.PP
+W³±cza/wy³±cza prze³±czanie zestawu znaków GR (ang. GR charset switching). Za
+ka¿dym razem, gdy screen zauwa¿y znak wej¶ciowy z ustawionym ósmym bitem,
+skorzysta ze znaku ze slotu GR i wydrukuje znak z obciêtym ósmym bitem.
+Domy¶ln± warto¶ci± (zobacz te¿ \*Qdefgr\*U) jest nieprzetwarzanie
+prze³±czania GR, gdy¿ mo¿e to spowodowaæ niedzia³anie zestawu znaków
+ISO-8859-1.
+.sp
+.ne 3
+.B hardcopy
+.PP
+Zapisuje obecnie wy¶wietlany obraz do pliku \fIhardcopy.n\fP (w katalogu
+domy¶lnym okna), gdzie \fIn\fP jest numerem bie¿±cego okna. Komenda mo¿e
+albo doklejaæ, albo nadpisywaæ istniej±cy plik. Patrz ni¿ej.
+.sp
+.ne 3
+.BR "hardcopy_append on" | off
+.PP
+Je¶li jest to ustawione na "on",
+.I screen
+bêdzie dokleja³ dane do plików "hardcopy.n" komendy \*QC-a h\*U. W
+przeciwnym wypadku, pliki te bêd± za ka¿dym razem nadpisywane. Domy¶lnie
+doklejanie jest wy³±czone.
+.sp
+.ne 3
+.BI "hardcopydir "katalog
+.PP
+Definiuje katalog plików hardcopy. Je¶li jest to nieustawione, pliki te
+l±duj± w bie¿±cym katalogu roboczym screena.
+.sp
+.ne 3
+.BR "hardstatus " [ on | off ]
+.br
+.BR "hardstatus \fR[\fBalways\fR]\fBlastline\fP" | message | ignore
+.RI [ ³añcuch ]
+.br
+.B "hardstatus string"
+.RI [ ³añcuch ]
+.PP
+Komenda ta konfiguruje u¿ywanie i emulacjê terminalowej linii twardego
+statusu (hardstatus line). Pierwsza postaæ prze³±cza czy screen powinien
+u¿ywaæ sprzêtowej linii statusu do wy¶wietlania komunikatów. Je¶li flaga
+jest wy³±czona, komunikaty te s± nak³adane w trybie inwersyjnym na liniê
+wy¶wietlania. Domy¶lnym ustawieniem jest `on' (w³±czone).
+.P
+Druga postaæ mówi screenowi co robiæ, je¶li terminal nie posiada linii
+twardego statusu (np. gdy w³a¶ciwo¶ci termcap/terminfo
+"hs", "ts", "fs" i "ds" nie s± ustawione). W wypadku u¿ycia typu
+\*Qlastline\*U, 
+.I screen 
+Zarezerwuje ostatni± liniê wy¶wietlacza na twardy status. Typ \*Qmessage\*U
+u¿ywa screenowego mechanizmu komunikatów, a
+\*Qignore\*U mówi by screen nigdy nie wy¶wietla³ twardego statusu.
+Je¶li do typu dokleisz s³owo \*Qalways\*U, screen u¿yje tego typu nawet
+je¶li terminal posiada twardy status.
+.P
+Trzecia postaæ okre¶la zawarto¶æ linii twardego statusu. Domy¶lnym ³añcuchem
+jest '%h', tj. wy¶wietlany jest zachowany twardy status okna (ustawialny
+poprzez \\E]0;^G or \\E_\\\\).
+Mo¿esz to dostosowaæ do dowolnego ³añcucha, jaki zechcesz, ³±cznie ze
+znakami specjalnymi z rozdzia³u \*QZNAKI SPECJALNE £AÑCUCHÓW\*U.
+Je¶li pominiesz argument
+.IR ³añcuch ,
+wy¶wietlony zostanie ³añcuch bie¿±cy.
+.P
+Mo¿esz ³±czyæ drug± i trzeci± postaæ, podaj±c ³añcuch jako argument
+dodatkowy.
+.sp
+.ne 3
+.BR "height " [ \fIwiersze\fP ]
+.PP
+Ustaw wysoko¶æ wy¶wietlacza na podan± liczbê wierszy. Bez argumentów
+nastêpuje prze³±czanie miêdzy wy¶wietlaczem 24-liniowym i 42-liniowym.
+.sp
+.ne 3
+.B help
+.PP
+Nie jest to naprawdê pomoc online, lecz wy¶wietlanie okna pomocy,
+pokazuj±cego wszystkie wi±zania klawiszowe. Pierwsze strony wymieniaj±
+wszystkie wewnêtrzne komendy wraz z ich obecnymi wi±zaniami.
+Dalsze strony pokazuj± zwyczajowe komendy, po jednej na klawisz.
+Przewijanie nastêpuje przez naciskanie spacji, a koniec ogl±dania to
+return. Wszystkie inne znaki s± ignorowane. Zobacz te¿ sekcjê \*QDOMY¦LNE
+WI¡ZANIA KLAWIATUROWE\*U.
+.sp
+.ne 3
+.B history
+.PP
+U¿ytkownicy zwykle pracuj± z pow³okami, umo¿liwiaj±cymi ³atwy dostêp do
+poprzednich komend. Na przyk³ad w csh komenda \*Q!!\*U s³u¿y do powtarzania
+ostatniej wywo³anej komendy.
+.I Screen
+udostêpnia prosty sposób przywo³ywania \*Qkomendy, która rozpoczê³a siê ...\*U:
+Wpisuje siê po prostu pierwsz± literê komendy, nastêpnie naciska
+`C-a {' i
+.I screen
+zaczyna szukaæ poprzedniej linii, która zostanie dopasowana do `znaku
+zachêty' na lewo od kursora. Linia ta jest wklejana do kolejki wej¶ciowej
+okna.
+W ten sposób masz brutaln± historiê komend (stworzon± z widzialnego okna i
+jego bufora przewijania).
+.sp
+.ne 3
+.BI "hstatus " status
+.PP
+Zmieñ liniê twardego statusu na ³añcuch \fIstatus\fP.
+.sp
+.ne 3
+.B info
+.PP
+U¿ywa linii komunikatów do wy¶wietlania informacji o bie¿±cym oknie:
+s± to pozycja kursora w postaci \*Q(kolumna,wiersz)\*U (rozpoczynaj±ca siê od
+\*Q(1,1)\*U) szeroko¶æ i wysoko¶æ terminala plus rozmiar bufora przewijania
+w wierszach (np. \*Q(80,24)+50\*U), bie¿±cy stan kontroli przep³ywu XON/XOFF
+okna pokazany nastêpuj±co (Zobacz te¿ sekcjê KONTROLA PRZEP£YWU):
+
+.nf
+  +flow     automatyczna kontrola przep³ywu, aktualnie w³±czona.
+  -flow     automatyczna kontrola przep³ywu, aktualnie wy³±czona.
+  +(+)flow  w³±czona kontrola przep³ywu. Zgadza siê z kontrol± automatyczn±.
+  -(+)flow  wy³±czona kontrola przep³ywu. Nie zgadza siê z kontrol± automatyczn±.
+  +(-)flow  w³±czona kontrola przep³ywu. Nie zgadza siê z kontrol± automatyczn±.
+  -(-)flow  wy³±czona kontrola przep³ywu. Zgadza siê z kontrol± automatyczn±.
+.fi
+
+Bie¿±ce ustawienie zawijania linii (`+wrap' oznacza w³±czenie, `\-wrap'
+wy³±czenie) jest tak¿e pokazywane. Wy¶wietlane s± te¿ flagi
+`ins', `org', `app', `log', `mon' lub `nored'. Odpowiadaj± one trybom pracy:
+wstawiania (insert), origin, aplikacji-keypadu oraz stanom pracy:
+raportowanie wyj¶cia (log), monitorowanie aktywno¶ci (mon), lub czê¶ciowe
+od¶wie¿anie (nored).
+
+Wy¶wietlany jest równie¿ aktywny obecnie zestaw znaków (\fIG0\fP, \fIG1\fP, 
+\fIG2\fP, lub \fIG3\fP) oraz w nawiasach kwadratowych zestawy znaków
+terminala, desygnowane obecnie jako \fIG0\fP do \fIG3\fP.
+
+Na koñcu linii statusu wy¶wietlane s± te¿ dodatkowe tryby, zale¿ne od
+rodzaju okna (Zobacz rozdzia³ \*QRODZAJE OKIEN\*U).
+.br
+Je¶li maszyna stanu emulatora terminala nie jest w stanie domy¶lnym, to
+linia info jest rozpoczynana ³añcuchem okre¶laj±cym bie¿±cy stan.
+.br
+Dla informacji o systemie u¿yj komendy \*Qtime\*U.
+.sp
+.ne 3
+.BR ins_reg " [" \fIklucz ]
+.PP
+Ju¿ nie istnieje, u¿yj \*Qpaste\*U.
+.sp
+.ne 3
+.B kanji
+.BR jis | euc | sjis
+.RB [ jis | euc | sjis\fR]
+.PP
+Powiedz screenowi, jak przetwarzaæ wej¶cie/wyj¶cie kanji. Pierwszy argument
+ustawia typ kanji bie¿±cego okna. Ka¿de okno mo¿e emulowaæ inny typ.
+Dodatkowy drugi parametr mówi, jak zapisywaæ kody kanji na pod³±czonym
+terminalu. Preferowan± metod± ustawiania typu wy¶wietlacza jest u¿ywanie
+wpisu \*QKJ\*U termcapu.
+Zobacz te¿ \*Qdefkanji\*U, który zmienia domy¶lne ustawienie dla nowych
+okien.
+.sp
+.ne 3
+.B kill
+.PP
+Zabij bie¿±ce okno.
+.br 
+Je¶li pracuje w nim komenda `exec', to jest ona zabijana. W przeciwnym
+wypadku, proces (pow³oka) okna otrzymuje sygna³ HANGUP, struktura okna jest
+usuwana, a
+.I screen 
+(twój wy¶wietlacz) prze³±cza siê na inne okno. Gdy niszczone jest ostatnie
+okno, screen koñczy pracê.
+Po komendzie kill, screen prze³±cza siê na poprzednio wy¶wietlane okno.
+.br
+Uwaga:
+U¿ytkownicy
+.I emacsa
+powinni pamiêtaæ o tej komendzie przy zabijaniu linii.
+Zalecane jest nie u¿ywaæ \*QC-a\*U jako klawisza specjalnego
+screena, lub przewi±zywaæ kill do \*QC-a K\*U.
+.sp
+.ne 3
+.B lastmsg
+.PP
+Wy¶wietl na nowo ostatni± zawarto¶æ linii komunikatów/statusu.
+Przydatne, je¶li wpisujesz co¶ podczas pojawiania siê komunikatu. Wiadomo¶æ
+bowiem znika gdy przyci¶nie siê jaki¶ klawisz (chyba ¿e terminal ma
+sprzêtow± liniê statusu). W celu dostrajania, zobacz komendy \*Qmsgwait\*U i
+\*Qmsgminwait\*U.
+.sp
+.ne 3
+.B license
+.PP
+Wy¶wietl stronê opisow±. Jest to dokonywane za ka¿dym razem, gdy screen jest
+uruchamiany bez opcji, co powinno wystarczaæ. Zobacz tez komendê
+\*Qstartup_message\*U.
+.sp
+.ne 3
+.B lockscreen
+.PP
+Zablokuj ten wy¶wietlacz.
+Wywo³aj program blokuj±cy screena (/usr/bin/lock lub wbudowany ekwiwalent
+je¶li nie ma nic innego). Screen nie przyjmuje ¿adnych klawiszy komend
+dopóki program ten nie zakoñczy dzia³ania. W miêdzyczasie procesy okien mog±
+kontynuowaæ dzia³anie, gdy¿ okna s± w stanie `od³±czonym'.
+Program blokuj±cy mo¿e byæ zmieniony poprzez zmienn± ¶rodowiskow± $LOCKPRG
+(która musi byæ ustawiana w pow³oce, z której screen jest uruchamiany).
+Program ten jest uruchamiany z uid i gid u¿ytkownika.
+.br
+Uwaga: 
+Gdy inne pow³oki zostawisz niezablokowane i nie masz ustawionego has³a dla
+screen, blokowanie jest puste: mo¿naby ³atwo pod³±czyæ siê na nowo z
+niezablokowanej pow³oki. W³a¶ciwo¶æ ta powinna byæ raczej nazywana
+`lockterminal'.
+.sp
+.ne 3
+.BR "log " [ on | off ]
+.PP
+Uruchom/zakoñcz zapisywanie wyj¶cia bie¿±cego okna do pliku
+\*Qscreenlog.\fIn\fP\*U w domy¶lnym katalogu okna, gdzie \fIn\fP jest
+numerem bie¿±cego okna. Nazwa pliku mo¿e byæ zmieniana komend± `logfile'.
+Bez podanych parametrów, raportowanie jest prze³±czane. Raport sesji jest
+doklejany do poprzedniej zawarto¶ci wcze¶niej istniej±cego pliku (je¶li plik
+nie istnia³, tworzony jest nowy). Bie¿±ca zawarto¶æ i zawarto¶æ historii
+przewijania nie jest uwzglêdniana w raporcie sesji.
+Domy¶lnie wy³±czone.
+.sp
+.ne 3
+.BI "logfile " nazwapliku
+.br
+.BI "logfile flush " sekundy
+.PP
+Definiuje nazwê plików raportowych. Domy¶ln± nazw± jest
+\*Qscreenlog.%n\*U. Druga postaæ zmienia liczbê sekund, któr± screen
+odczekuje przed wypró¿nieniem bufora pliku raportowego do systemu plików.
+Domy¶ln± warto¶ci± jest 10 sekund.
+.sp
+.ne 3
+.BR "login " [ on | off ]
+.PP
+Dodaje lub usuwa wpis z bazy utmp dla bie¿±cego okna. Kontroluje to czy okno
+jest `wlogowane'. Bez parametrów, stan zg³oszeniowy okna jest prze³±czany.
+Dodatkowo do tego prze³±czania, dobrze jest mieæ klawisze `log in' i `log
+out'. Np. `bind I login on' i `bind O login off' zmapuje te klawisze na
+C-a I i C-a O.
+Domy¶lne ustawienie (w config.h.in) powinno byæ w³±czone dla screena,
+pracuj±cego z suid-root.
+U¿yj komendy \*Qdeflogin\*U do zmieniania domy¶lnego stanu zg³oszeniowego
+nowych okien. Obydwie komendy obecne s± tylko je¶li screen zosta³
+skompilowany z obs³ug± utmp.
+.sp
+.ne 3
+.BR "logtstamp " [ on | off ]
+.br
+.B "logtstamp after"
+.RI [ sekundy ]
+.br
+.B "logtstamp string"
+.RI [ ³añcuch ]
+.PP
+Ta komenda kontroluje mechanizm piecz±tek czasowych (time stamp) screena.
+Je¶li piecz±tki s± w³±czone, screen po dwóch minutach nieaktywno¶ci do pliku
+raportowego dodaje ³añcuch, zawieraj±cy bie¿±cy czas. Gdy natomiast wyj¶cie
+zaczyna siê na nowo, doklejana jest nowa piecz±tka, okre¶laj±ca moment
+restartu emitowania wyj¶cia. Czas opó¼nienia mo¿na zmieniaæ drug± postaci±
+tej komendy. Trzecia postaæ jest u¿ywana do dostosowywania ³añcucha
+piecz±tki czasowej. 
+(domy¶lnie `-- %n:%t -- time-stamp -- %M/%d/%y %c:%s --\\n').
+.sp
+.ne 3
+.B mapdefault
+.PP
+Powiedz screenowi, ¿e nastêpny znak wej¶ciowy powinien zostaæ sprawdzony w
+domy¶lnej tablicy wi±zañ klawiszowych bindkey. Zobacz te¿ \*Qbindkey\*U.
+.sp
+.ne 3
+.B mapnotnext
+.PP
+Podobne do mapdefault, lecz w ogóle nie zagl±da do domy¶lnej tablicy
+bindkey.
+.sp
+.ne 3
+.B maptimeout
+.RI [ timo ]
+.PP
+Ustawia opó¼nienie miêdzyznakowe dla sekwencji wej¶ciowych do wykrywania
+czasu opó¼nienia
+.I timo
+ms. Domy¶lnym czasem jest 300ms. Maptimeout bez argumentów pokazuje bie¿±ce
+ustawienie. Zobacz te¿ \*Qbindkey\*U.
+.sp
+.ne 3
+.BI "markkeys " ³añcuch
+.PP
+Jest to metoda zmieniania mapy klawiszowej, u¿ywanej w trybie
+kopiowania/historii. £añcuch jest z³o¿ony z par
+\fIstaryznak\fP=\fInowyznak\fP, które s± rozdzielone znakami `:'. Na
+przyk³ad: £añcuch \*QB=^B:F=^F\*U zmieni klawisze
+`C-b' i `C-f' na wi±zania w stylu vi.
+Komenda \*Qmarkkeys h=^B:l=^F:$=^E\*U ustawi³aby tryb na wi±zania w stylu
+emacsa.
+Je¶li twój terminal wysy³a znaki, które powoduj±, ¿e przerywasz tryb
+kopiowania, to komenda ta mo¿e byæ pomocna w wi±zaniu tych znaków do
+nie robienia niczego. Znak braku operacji to `@' i jest u¿ywany nastêpuj±co:
+\*Qmarkkeys @=L=H\*U. Komenda ta powoduje od³±czenie komend `H' i `L'.
+Jak pokazano w tym przyk³adzie, w pojedynczej instrukcji do pojedynczej
+funkcji mo¿na przywi±zaæ wiele klawiszy.
+.sp
+.ne 3
+.B meta
+.PP
+Wstawia znak komendy (C-a) w strumieniu wej¶ciowym bie¿±cego okna.
+.sp
+.ne 3
+.BR "monitor " [ on | off ]
+.PP
+W³±cza monitorowanie aktywno¶ci okien.
+Gdy jest to w³±czone, a aktywne okno jest prze³±czone w t³o, otrzymasz
+komunikat informuj±cy o aktywno¶ci. Pojawi siê on w linii statusu przy
+pierwszych oznakach wydawania wyj¶cia przez tamto okno. 
+W wy¶wietlaczu statusu okien takie okno aktywne jest zaznaczane jako `@'.
+Monitorowanie pocz±tkowo jest wy³±czone.
+.sp
+.ne 3
+.BI "msgminwait " sek
+.PP
+Definiuje czas, przez który screen czeka z now± wiadomo¶ci± gdy jedna jest
+ju¿ wy¶wietlana. Warto¶ci± domy¶ln± jest 1 sekunda.
+.sp
+.ne 3
+.BI "msgwait " sek
+.PP
+Definiuje czas, przez który komunikat jest wy¶wietlany je¶li screen nie jest
+poruszany innymi aktywno¶ciami. Domy¶lnie 5 sekund.
+.sp
+.ne 3
+.BR "multiuser on" | off
+.PP
+Prze³±cza miêdzy trybem wielou¿ytkownikowym i pojedynczym. Standardowo
+screen dzia³a w trybie pojedynczym. W trybie wielou¿ytkownikowym, do
+umo¿liwiania u¿ytkownikom dostania siê do sesji u¿ywa siê komend
+`acladd', `aclchg', `aclgrp' i `acldel'.
+.sp
+.ne 3
+.BR "nethack on" | off
+.PP
+Zmienia rodzaj komunikatów o b³êdach, u¿ywanych przez
+.IR screen .
+Je¶li znasz grê \*Qnethack\*U, mog± ci siê spodobaæ podobne jak w niej
+komunikaty,
+które czêsto trochê zaciemniaj± fakty, lecz s± zabawniejsze do czytania. Z
+drugiej strony, standardowe komunikaty te¿ mog± byæ czêsto niejasne.
+.br
+Opcja ta jest dostêpna tylko je¶li
+.I screen
+zosta³ skompilowany ze zdefiniowan± flag± NETHACK. Domy¶lne ustawienie jest
+wtedy okre¶lone obecno¶ci± zmiennej ¶rodowiskowej $NETHACKOPTIONS.
+.sp
+.ne 3
+.B next
+.PP
+Prze³±cz siê na nastêpne okno. Komenda ta mo¿e byæ u¿ywana do cyklicznego
+prze³±czania siê miêdzy list± okien.
+.sp
+.ne 3
+.B nonblock 
+.RB [ on | off ]
+.PP
+W³±cz lub wy³±cz kontrole przep³ywu bie¿±cego interfejsu u¿ytkownika
+(wy¶wietlacza). Jest to u¿ywane do uchronienia powolnych wy¶wietlaczy od
+spowolnienia przetwarzania danych wyj¶ciowych przez okno. Komenda ta mo¿e
+byæ przydatna gdy wiele wy¶wietlaczy pokazuje te samo okno. Opcja jest
+normalnie wy³±czona dla wszystkich wy¶wietlaczy.
+.sp
+.ne 3
+.BR "number " [ \fIn\fP ]
+.PP
+Zmieñ numer bie¿±cego okna. Je¶li numer \fIn\fP ju¿ jest u¿ywany przez inne
+okno, okna wymieniaj± numery miêdzy sob±. Je¶li nie poda siê argumentu,
+pokazywany jest numer (i tytu³) okna.
+.sp
+.ne 3
+.BR "obuflimit " [ \fIlimit\fP ]
+.PP
+Je¶li bufor wyj¶ciowy zawiera wiêcej bajtów ni¿ podany limit, to z okien nie
+bêd± czytane dalsze dane. Domy¶ln± warto¶ci± jest 256. Je¶li masz szybki
+wy¶wietlacz (jak xterm), mo¿esz ustawiæ to na wiêksz± warto¶æ. Je¶li nie
+poda siê argumentów, wy¶wietlane jest bie¿±ce ustawienie.
+.sp
+.ne 3
+.B only
+.PP
+Zabij wszystkie regiony poza bie¿±cym.
+.sp
+.ne 3
+.B other
+.PP
+Prze³±cza na poprzednio wy¶wietlane okno. Je¶li okno to ju¿ nie istnieje,
+\fIother\fP dzia³a analogicznie do \fInext\fP.
+.sp
+.ne 3
+.BR "partial on" | off
+.PP
+Definiuje czy wy¶wietlacz powinien byæ od¶wie¿any (jak dla \fIredisplay\fP)
+po prze³±czaniu na bie¿±ce okno. Komenda ta dotyczy tylko bie¿±cego okna.
+Aby dotyczy³a wszystkich okien, nale¿y skorzystaæ z komendy
+\fIallpartial\fP. Domy¶lnie jest to wy³±czone. Warto¶æ domy¶lna jest
+ustalona na sta³e, gdy¿ nie ma na razie komendy \fIdefpartial\fP.
+.sp
+.ne 3
+.BR "password " [ \fIkodowane_has³o\fP ]
+.PP
+Gdy przedstawisz w swoim pliku \*Q.screenrc\*U zakodowane has³o, screen
+bêdzie o nie pyta³ za ka¿dym razem, gdy kto¶ bêdzie próbowa³ wznowiæ
+od³±czony proces. Jest to przydatne je¶li w sesji screen pracuj±
+uprzywilejowane programy i chcesz chroniæ j± od prób pod³±czenia przez
+innych u¿ytkowników, podaj±cych siê za ciebie (np. superu¿ytkownik).
+Je¶li nie ma podanego zakodowanego has³a,
+screen dwukrotnie prosi o wstukanie has³a i umieszcza jego zakodowany
+odpowiednik w buforze wklejania. Domy¶ln± warto¶ci± jest `none', która
+wy³±cza sprawdzanie has³a.
+.sp
+.ne 3
+.BR paste
+.RI [ registers " [" dest_reg ]]
+.PP
+Zapisz (konkatenowan±) zawarto¶æ podanych rejestrów na kolejkê stdin
+bie¿±cego wej¶cia. Rejestr '.' jest traktowany jako bufor wklejania. Je¶li
+nie poda siê parametrów, u¿ytkownik jest pytany o pojedynczy rejestr.
+Bufor wklejania mo¿e byæ wype³niany komendami \fIcopy\fP, \fIhistory\fP oraz
+\fIreadbuf\fP.
+Inne rejestry mo¿na wype³niaæ komendami \fIregister\fP, \fIreadreg\fP i
+\fIpaste\fP.
+Je¶li \fIpaste\fP jest wywo³any z drugim argumentem, zawarto¶æ podanych
+rejestrów jest umieszczana w podanym rejestrze docelowym, a nie w oknie.
+Je¶li jako drugi argument u¿yæ '.', rejestrem docelowym jest bufor wklejania
+wy¶wietlacza.
+Zauwa¿, ¿e \*Qpaste\*U u¿ywa ró¿nych zasobów: Gdy tylko podany jest drugi
+argument, nie jest wymagane okno bie¿±ce. Gdy okre¶lenie ¼ród³a zawiera
+tylko rejestry (nie bufor wklejania), to nie jest w ogóle wymagany bie¿±cy
+wy¶wietlacz (podwieszony terminal), gdy¿ rejestry s± zasobami globalnymi.
+Bufor wklejania jest osobny dla ka¿dego u¿ytkownika.
+.sp
+.ne 3
+.BR "pastefont " [ on | off ]
+.PP
+Powiedz
+screenowi, by do bufora wklejania za³±cza³ informacjê o foncie. Domy¶lnie
+nie jest to robione. Komenda ta jest szczególnie przydatna dla fontów
+wieloznakowych, jak kanji.
+.sp
+.ne 3
+.B pow_break
+.PP
+Otwórz na nowo liniê terminalow± okna i wy¶lij warunek przerwania. Zobacz
+`break'.
+.sp
+.ne 3
+.B pow_detach
+.PP
+Od³±czenie zasilania. Ogólnie to samo co \fIdetach\fP, lecz dodatkowo wysy³a
+sygna³ HANGUP do procesu rodzicielskiego screena.
+UWAGA: Spowoduje to wylogowanie w wypadku gdy screen zosta³ uruchomiony z
+pow³oki zg³oszeniowej.
+.sp
+.ne 3
+.B pow_detach_msg
+.RI [ komunikat ]
+.PP
+Podany tu \fIkomunikat\fP jest wydawany za ka¿dym razem gdy dokonywane jest
+`od³±czenie zasilania'. Mo¿e byæ u¿ywane jako zamiennik komunikatu
+wylogowywania, lub do resetowania szybko¶ci linii, itp.
+Bez parametrów, pokazywany jest obecny komunikat.
+.sp
+.ne 3
+.B prev
+.PP
+Prze³±cz na okno o nastêpnym ni¿szym numerze.
+Komenda ta mo¿e byæ u¿ywana do cyklicznego prze³±czania miêdzy list± okien.
+.sp
+.ne 3
+.B printcmd
+.RI [ kmd ]
+.PP
+Je¶li
+.I kmd
+nie jest pustym ³añcuchem, screen nie bêdzie u¿ywa³ w³a¶ciwo¶ci
+\*Qpo/pf\*U terminala, je¶li wykryje sekwencjê drukowania ansi
+.BR "ESC [ 5 i" ,
+lecz bêdzie przerzuca³ potokowo wyj¶cie do
+.IR kmd .
+Powinno to normalnie byæ komend± w rodzaju \*Qlpr\*U lub
+\*Q'cat > /tmp/scrprint'\*U.
+.B printcmd
+bez komendy wy¶wietla bie¿±ce ustawienie.
+Sekwencja ansi
+.B "ESC \e"
+koñczy drukowanie i zamyka potok.
+.br
+Uwaga: Ostro¿nie z t± komend±! Je¶li inni u¿ytkownicy maj± dostêp zapisu do
+twojego terminala, bêd± oni mogli odpalaæ komendy drukowania.
+.sp
+.ne 3
+.BR process " [" \fIklucz\fP ]
+.PP
+Przerzuæ zawarto¶æ podanego rejestru do screenowej kolejki wej¶ciowej.
+Po uruchomieniu bez parametrów, zostaniesz zapytany o nazwê rejestru.
+Tekst jest przetwarzany tak, jakby by³ wpisywany z klawiatury u¿ytkownika.
+Komenda ta mo¿e byæ przydatna do wi±zania wielu akcji pod jeden klawisz.
+.sp
+.ne 3
+.B quit
+.PP
+Zabij wszystkie okna i zakoñcz
+.IR screen .
+Zauwa¿, ¿e w terminalach VT100-podobnych klawisze C-4 i C-\e s± równowa¿ne.
+Powoduje to, ¿e domy¶lne wi±zania s± niebezpieczne:
+Uwa¿aj by nie wpisaæ C-a C-4 podczas wybierania okna numer 4. 
+W celu usuniêcia wi±zania klawiszowego, u¿yj zwyk³ej komendy bind (jak dla
+\*Qbind '^\e'\*U).
+.sp
+.ne 3
+.B readbuf
+.PP
+Odczytuje zawarto¶æ bie¿±cego pliku wymiany screena do bufora wklejania.
+Zobacz te¿ komendê \*Qbufferfile\*U.
+.sp
+.ne 3
+.B readreg 
+.RI [ register " [" nazwapliku ]]
+.PP
+Robi dwie rzeczy, zale¿nie od liczby argumentów: w wypadku braku, lub przy
+jednym argumencie, duplikuje bufor wklejania do podanego rejestru lub
+rejestru, podanego po znaku zachêty. Przy dwóch argumentach, odczytuje
+zawarto¶æ podanego pliku do rejestru. Jest to zachowanie podobne do
+wczytywania przez \*Qreadbuf\*U plik wymiany screena do bufora wklejania
+Nastêpuj±cy przyk³ad wkleja systemowy plik z has³ami w okno screena (przy
+u¿yciu rejestru p, gdzie pozostaje kopia):
+.PP
+.nf
+	C-a : readreg p /etc/passwd
+	C-a : paste p
+.fi
+.sp
+.ne 3
+.B redisplay
+.PP
+Wy¶wietl na nowo bie¿±ce okno. Wymagane do uzyskania pe³nego rewy¶wietlenia
+w trybie czê¶ciowego od¶wie¿ania.
+.sp
+.ne 3
+.BI "register " "klucz ³añcuch"
+.PP
+Zachowuje podany \fI³añcuch\fP w rejestrze \fIklucz\fP. Zobacz te¿ komendê
+\*Qpaste\*U.
+.sp
+.ne 3
+.B "remove"
+.PP
+Usuñ bie¿±cy region. Jest to nieskuteczne (no-op) gdy istnieje tylko jeden
+region.
+.sp
+.ne 3
+.B "removebuf"
+.PP
+Usuwa plik wymiany screena, u¿ywany przez komendy \*Qwritebuf\*U i
+\*Qreadbuf\*U.
+.sp
+.ne 3
+.B "reset"
+.PP 
+Przestaw terminal wirtualny na jego ustawienia pocz±tkowe. Przydatne, gdy
+pozosta³y na nim po jakiej¶ aplikacji dziwne ustawienia.
+.sp
+.ne 3
+.B "screen \fP[\fI-opts\fP] [\fIn\fP] [\fIkmd\fP [\fIarg\fP]]"
+.PP
+Zestaw nowe okno. Z ka¿d± komend± mo¿na przekazaæ opcje kontroli przep³ywu
+(\fB\-f\fP, \fB\-fn\fP i \fB\-fa\fP), tytu³u (a.\|k.\|a.) (\fB\-t\fP), 
+opcje zg³oszeniowe (\fB-l\fP i \fB-ln\fP), opcjê typu terminala
+(\fB-T\fP <term>), i flagê-wszystkich-w³a¶ciwo¶ci (\fB-a\fP) oraz
+opcjê bufora przewijania (\fB-h\fP <num>). 
+Opcja (\fB-M\fP) w³±cza dla tego okna monitorowanie.
+Opcja (\fB-L\fP) w³±cza dla niego raportowanie wyj¶cia. 
+Je¶li podany jest dodatkowa liczba w zakresie 0..9, to nowo tworzonemu oknu
+przyznawany jest numer \fIn\fP (lub je¶li numer ten jest ju¿ u¿ywany,
+przyznawany jest nastêpny dostêpny). 
+Je¶li po \*Qscreen\*U podana jest komenda, to jest ona uruchamiana w
+tworzonym oknie; w przeciwnym wypadku, uruchamiana jest pow³oka. Tak wiêc
+je¶li twój \*Q.screenrc\*U zawiera linie
+.sp
+.nf
+	# przyk³ad dla .screenrc:
+	screen 1
+	screen -fn -t foobar -L 2 telnet foobar
+.fi
+.sp
+to
+.I screen
+utworzy okno z pow³ok± (numer #1) i okno z po³±czeniem telnet do maszyny
+foobar (w oknie #2, bez kontroli przep³ywu, pod tytu³em \*Qfoobar\*U) i
+bêdzie zapisywaæ raporty (\*Qscreenlog.2\*U) sesji telnetowej. Zauwa¿,
+¿e w przeciwieñstwie do poprzednich wersji screena,
+nie bêdzie tworzone ¿adne dodatkowe okno domy¶lne je¶li w twoim
+\*Q.screenrc\*U znajduj± siê komendy \*Qscreen\*U. Po zakoñczeniu
+inicjalizacji, screen prze³±cza siê na ostatnie okno podane w twoim pliku .screenrc 
+lub, je¶li nic nie podano, otwiera domy¶lne okno #0.
+.br
+Screen ma wbudowane pewne w³a¶ciwo¶ci \*Qcu\*U i \*Qtelnet\*U. Zobacz te¿
+rozdzia³ \*QRODZAJE OKIEN\*U.
+.sp
+.ne 3
+.B "scrollback \fP\fInum\fP"
+.PP
+Ustawia rozmiar bufora przewijania dla bie¿±cych okien na \fInum\fP wierszy.
+Domy¶ln± warto¶ci± jest 100. Zobacz te¿ komendê \*Qdefscrollback\*U, a do
+ogl±dania bie¿±cych ustawieñ, skorzystaj z \*QC-a i\*U.
+.sp
+.ne 3
+.BR "select " [ \fIIDOkna\fP ]
+.PP
+Prze³±cz siê na okno, okre¶lone przez \fIIDOkna\fP.
+Mo¿e to byæ przedrostek tytu³u okna (alfanumeryczna nazwa), lub numer okna.
+Parametr jest opcjonalny i je¶li jest pominiêty, zostaniesz zapytany o
+identyfikator. 
+Gdy zestawiane jest nowe okno, przyznawany jest mu pierwszy
+dostêpny numer.
+Tak wiêc, pierwsze okno mo¿na w³±czyæ przez \*Qselect 0\*U (nie mo¿e byæ
+naraz obecnych wiêcej ni¿ 10 okien, chyba ¿e
+.I screen
+zosta³ skompilowany z wiêkszym
+ustawieniem MAXWIN).
+.\" 						XXX removed in 3.8.0 XXX
+.\" The special command \*Qselect -\*U switches to a control window which 
+.\" can be used to enter 
+.\" .I screen
+.\" commands directly at the colon (:) prompt.
+.sp
+.ne
+.BR "sessionname " [ \fInazwa\fP ]
+.PP
+Zmieñ nazwê bie¿±cej sesji. Zauwa¿, ¿e dla \*Qscreen -list\*U nazwa pojawia
+siê z przyklejonym id-procesu. Je¶li argument \*Qnazwa\*U jest pominiêty,
+wy¶wietlana jest nazwa tej sesji. Uwaga: zmienne ¶rodowiskowe $STY wci±¿
+odzwierciedlaj± stare nazwy. Mo¿e to powodowaæ zak³opotanie.
+Domy¶lna warto¶æ jest tworzona z tty i nazw hosta.
+.sp
+.ne 3
+.B "setenv " 
+.RI [ zmienna " [" ³añcuch ]]
+.PP
+Ustawia zmienn± ¶rodowiskow± \fIzmienna\fP na warto¶æ \fI³añcuch\fP.
+Je¶li podana jest tylko \fIzmienna\fP, u¿ytkownik zostanie zapytany o jej
+warto¶æ. Je¶li nie zostan± podane ¿adne parametry, u¿ytkownik zostanie
+zapytany tak o zmienn±, jak o jej warto¶æ. ¦rodowisko jest dziedziczone
+przez wszystkie kolejno rozwidlane pow³oki.
+.sp
+.ne 3
+.B "shell \fIkomenda\fP"
+.PP
+Ustaw komendê, u¿ywan± do tworzenia nowej pow³oki. Przes³ania to warto¶æ
+zmiennej ¶rodowiskowej $SHELL. Jest to przydatne je¶li chcesz uruchomiæ
+rozszerzacza-tty, który chce wykonywaæ program podany w $SHELL.
+Je¶li komenda rozpoczyna siê znakiem '-', pow³oka bêdzie uruchomiona jako
+pow³oka zg³oszeniowa.
+.sp
+.ne 3
+.B "shelltitle \fItytu³\fP"
+.PP
+Ustaw tytu³ dla wszystkich pow³ok, tworzonych podczas startu lub przez
+komendê C-A C-c.
+Dla szczegó³ów o tym, czym jest tytu³, zobacz dyskusjê
+\*QTYTU£Y (nazywanie okien)\*U.
+.sp
+.ne 3
+.BR "silence " [ on | off "|\fIsek\fP]"
+.PP
+Prze³±cza monitorowanie ciszy okien. Gdy cisza jest w³±czona, a monitorowane
+okno jest w tle, to po pewnym czasie nieaktywno¶ci (ciszy) otrzymasz
+w linii statusu komunikat o ciszy. Domy¶lny czas oczekiwania mo¿e byæ
+zmieniany komend± `silencewait', lub poprzez podanie liczby sekund zamiast
+`on' lub `off'.
+Cisza jest pocz±tkowo wy³±czona dla wszystkich okien.
+.sp
+.ne 3
+.BI "silencewait " sek
+.PP
+Zdefiniuj czas, po którym ma siê pojawiaæ komunikat ciszy. Domy¶lnie 30
+sekund.
+.sp
+.ne
+.B "sleep \fP\fInum\fP"
+.PP
+Komenda ta powstrzymuje wykonywanie pliku .screenrc na \fInum\fP sekund.
+Aktywno¶æ klawiaturowa przerywa pauzê.
+Mo¿e to byæ przydatne do dawania u¿ytkownikom szansy na przeczytanie
+komunikatów, wydawanych przez \*Qecho\*U.
+.sp
+.ne 3
+.B "slowpaste \fImsek\fP"
+.PP
+Zdefiniuj szybko¶æ, z jak± komenda paste ("C-a ]") wkleja tekst do okna.
+Je¶li parametr jest niezerowy, tekst jest wpisywany znak po znaku.
+Dodatkowo, screen pauzuje przez \fImsec\fP milisekund po ka¿dym znaku,
+umo¿liwiaj±c aplikacji przetworzenie wej¶cia. U¿ywaj slowpaste tylko je¶li
+twój system ma problemy kontroli przep³ywu podczas wklejania wielkich
+fragmentów tekstu.
+.sp
+.ne 3
+.B sorendition
+.RB [ "\fIatr\fR " [ \fIkolor\fP ]]
+.PP
+Zmieñ sposób, którego u¿ywa screen do pod¶wietlania tekstu (w celu
+zaznaczania i drukowania komunikatów).
+.I Atr
+jest liczb± szesnastkow± i okre¶la atrybuty tekstu (inwersja, podkre¶lenie, ...).
+.I Kolor
+jest dwucyfrow± liczb± i zmienia kolor pierwszego planu/t³a pod¶wietlanego
+tekstu.
+Aby znaki pojawia³y siê w odpowiedni sposób, wymagana jest pewna wiedza o
+wewnêtrznej reprezentacji znaków screena. Domy¶ln± warto¶ci± jest obecnie
+10 99 (standout, domy¶lne kolory).
+.sp
+.ne 3
+.B split
+.PP
+Podziel bie¿±cy region na dwa nowe. Wszystkie regiony wy¶wietlacza zmieniaj±
+rozmiar, aby zrobiæ miejsce na nowy. Puste okno jest wy¶wietlane na nowym
+regionie.
+.sp
+.ne 3
+.B "startup_message on\fP|\fBoff"
+.PP
+Wybierz, czy chcesz ogl±daæ informacjê o kopiowaniu podczas startu.
+Domy¶lnie jest to w³±czone, jak pewnie zauwa¿y³e¶.
+.sp
+.ne 3
+.B stuff
+.I ³añcuch
+.PP
+Przerzuæ
+.I ³añcuch
+do bufora wej¶ciowego bie¿±cego okna. Jest to podobne do komendy
+\*Qpaste\*U, lecz mniej ogólne. Nie mo¿esz z pomoc± tej komendy wklejaæ
+du¿ych buforów. Jest ona najprzydatniejsza do wi±zañ klawiaturowych. Zobacz
+te¿ \*Qbindkey\*U.
+.sp
+.ne 3
+.B su
+.RB [ nazwau¿ytkownika " [" has³o
+.RB [ has³o2 ]]
+.PP
+Podmieñ u¿ytkownika wy¶wietlacza. Komenda pyta o wszystkie pominiête
+parametry. Je¶li w parametrach podano has³a, musz± one byæ niezakodowane.
+Pierwsze has³o jest dopasowywane do systemowej bazy passwd, drugie do has³a
+screena, ustawionego komendami \*Qacladd\*U, \*Qpassword\*U.
+\*QSu\*U mo¿e byæ przydatne dla administratora screena do testowania
+wielou¿ytkownikowych konfiguracji.
+.\"						XXX removed in 3.8.0 XXX
+.\" but it is mainly used implicitly
+.\" by the \*Qconnect\*U command to identify users that access a remote session.
+Gdy identyfikacja siê nie powiedzie, u¿ytkownik ma dostêp do komend
+przeznaczonych dla u¿ytkownika
+.BR nobody .
+S± to \*Qdetach\*U, \*Qlicense\*U, \*Qversion\*U, \*Qhelp\*U oraz
+\*Qdisplays\*U.
+.sp
+.ne 3
+.B "suspend"
+.PP
+Zawie¶ screena.
+Okna s± w tym stanie `od³±czone'. W³a¶ciwo¶æ ta jest zale¿na od pow³oki,
+zdolnej do kontroli zadañ.
+.sp
+.ne 3
+.B "term \fIterm\fP"
+.PP
+W ¶rodowisku ka¿dego okna, które otworzy³ screen, zmienna ¶rodowiskowa $TERM
+jest ustawiona domy¶lnie na \*Qscreen\*U. Je¶li w lokalnym pliku termcap nie
+ma ¿adnego opisu dla takiego terminala, mo¿esz zmieniæ $TERM na np.
+\*Qvt100\*U. Nie spowoduje to ¿adnej szkody, gdy¿ screen jest zgodny z
+vt100/ansi.
+U¿ywanie komendy \*Qterm\*U nie jest zalecane dla celów niedomy¶lnych. 
+Znaczy to, ¿e mo¿naby podaæ ustawienia $TERM (np. vt100) dla komendy
+\*Qscreen rlogin innamaszyna\*U. Jednak zamiast tego lepiej u¿yæ
+\*Qscreen -T vt100 rlogin innamaszyna\*U.
+.sp
+.ne 3
+.BI termcap " term terminal-tweaks"
+.RI [ window-tweaks ]
+.br
+.BI terminfo " term terminal-tweaks"
+.RI [ window-tweaks ]
+.br
+.BI termcapinfo " term terminal-tweaks"
+.RI [ window-tweaks ]
+.PP
+U¿ywanie tej komendy powoduje modyfikacje wpisów termcap terminala bez
+potrzeby przechodzenia przez trudno¶ci zwi±zane z tworzeniem dostosowanego
+wpisu termcap. Dodatkowo, mo¿esz opcjonalnie dostosowaæ termcap generowany
+dla okien. Komendy te nale¿y umie¶ciæ w jednym z plików startowych screenrc,
+gdy¿ po uruchomieniu emulatora terminala staj± siê one bezu¿yteczne.
+.br
+Je¶li twój system dzia³a w oparciu o bazê terminfo (zamiast termcap), screen
+bêdzie rozumia³ komendê `terminfo', która ma takie same efekty, jak komenda
+`termcap'. Udostêpniono dwie oddzielne komendy, gdy¿ istniej± subtelne
+definicje syntaktyczne, np. to gdzie wymagana jest interpolacja parametrów
+(z u¿yciem `%'). Zauwa¿, ¿e z komend± `terminfo' u¿ywa siê nazw w³a¶ciwo¶ci
+z termcap.
+.br
+W wielu wypadkach, gdy argumenty s± prawid³owe zarówno dla sk³adni
+terminfo jak i termcap, mo¿esz u¿yæ komendy `termcapinfo', która jest
+skrótem dla pary komend `termcap' i `terminfo', o identycznych argumentach.
+.PP
+Pierwszy argument okre¶la, do którego terminala (terminali) odnosi siê
+definicja. Mo¿esz podaæ wiele nazw terminali, rozdzielaj±c je znakami `|'.
+`*' odpowiada wszystkim terminalom, a `vt*' wszystkim terminalom,
+rozpoczynaj±cym siê od \*Qft\*U.
+.PP
+Ka¿dy argument \fItweak\fP sk³ada siê z jednej lub wiêcej definicji termcap
+(rozdzielonych dwukropkami), które maj± byæ wstawione na pocz±tek
+odpowiedniego wpisu termcap, rozszerzaj±c go lub przes³aniaj±c istniej±ce
+warto¶ci.
+Pierwszy tweak modyfikuje termcap twojego terminala i zawiera definicje, z
+których twój terminal korzysta do wykonywania pewnych funkcji.
+Je¶li podasz tu ³añcuch pusty, zawarto¶æ pozostanie niezmieniona (np. '').
+Drugi (opcjonalny) tweak modyfikuje wszystkie termcapy okien i powinien
+zawieraæ definicje zrozumia³e dla screena (zobacz sekcjê \*QTERMINAL
+WIRTUALNY\*U.
+.PP
+Przyk³ady:
+.IP
+termcap xterm*  LP:hs@
+.PP
+Mówi screenowi, ¿e wszystkie terminale rozpoczynaj±ce siê od `xterm' maj±
+automatyczne marginesy, które umo¿liwiaj± od¶wie¿anie ostatniej pozycji
+ekranu (LP), lecz nie posiadaj± prawdziwej linii statusu (brak 'hs' \-
+doklejanie `@' wy³±cza wpisy).
+Zauwa¿, ¿e zak³adamy `LP' dla wszystkich nazw terminala, które rozpoczynaj±
+siê od \*Qvt\*U, lecz tylko je¶li nie podasz komendy termcap dla takiego
+terminala.
+.IP
+termcap vt*  LP
+.br
+termcap vt102|vt220  Z0=\eE[?3h:Z1=\eE[?3l
+.PP
+Podaje w³a¶ciwo¶æ `LP' dla wszystkich terminali rozpoczynaj±cych siê od
+`vt'. Druga linia dodatkowo dodaje sekwencje specjalne do prze³±czania do
+(Z0) i z (Z1) trybu 132 znaków na liniê dla vt102 i vt220.
+(W celu u¿ywania komend zmieniaj±cych szeroko¶æ, musisz w swoim termcap
+podaæ Z0 i Z1.)
+.IP
+termcap vt100  ""  l0=PF1:l1=PF2:l2=PF3:l3=PF4
+.PP
+Pozostawia to twój termcap vt100 w spokoju i dodaje wpis do termcapu ka¿dego
+okna.
+.IP
+termcap h19|z19  am@:im=\eE@:ei=\eEO  dc=\eE[P
+.PP
+Bierze termcap h10 i z19 i wy³±cza automarginesy (am@) oraz w³±cza
+w³a¶ciwo¶ci trybu wstawiania (im--insert mode) i end-insert (ei) (znak `@' w
+³añcuchu `im' znajduje siê po `=', wiêc jest czê¶ci± ³añcucha).
+Posiadanie w termcapie terminala definicji `im' i `ei', screen automatycznie
+zareklamuje w³a¶ciwo¶æ character-insert w termcapie ka¿dego okna.
+Ka¿de okno dostanie te¿ w³a¶ciwo¶æ delete-character (dc), która bêdzie przez
+screen t³umaczona na od¶wie¿enie linii (line-update) terminala (udajemy, ¿e
+nie obs³uguje on kasowania znaków).
+.PP
+Je¶li chcia³by¶ w pe³ni okre¶liæ wpisy termcap ka¿dego okna, powiniene¶
+zamiast tego wszystkiego przed uruchomieniem screena ustawiæ zmienn±
+$SCREENCAP.
+Zobacz te¿ dyskusjê w sekcji \*QTERMINAL WIRTUALNY\*U i podrêcznik systemowy
+termcap.
+.sp
+.ne 3
+.B time
+.PP
+U¿ywa linii komunikatów do wy¶wietlania czasu dnia, nazwy hosta i obci±¿enia
+w 1, 5 i 15 minutach (je¶li informacja ta jest dostêpna w twoim systemie).
+Dla informacji specyficznych oknu, u¿yj \*Qinfo\*U.
+.sp
+.ne 3
+.BR "title " [ \fIaliasokna\fP ]
+.PP
+Ustaw nazwê bie¿±cego okna na \fIaliasokna\fP. Je¶li nie podano nazwy,
+screen o ni± zapyta. Komenda ta by³a znana dawniej jako `aka'.
+.sp
+.ne 3
+.BI "unsetenv " zmienna
+.PP
+Kasuje zmienn± ¶rodowiskow±.
+.sp
+.ne 3
+.B vbell 
+.RB [ on | off ]
+.PP
+Ustawia wizualny dzwonek dla tego okna. Pominiêcie parametru prze³±cza
+ustawienie. Je¶li vbell jest w³±czony, lecz twój terminal nie obs³uguje
+wizualnego dzwonka, po otrzymaniu znaku dzwonka (^G) w linii statusu jest
+wy¶wietlany `komunikat-vbell'.
+Obs³uga vbell terminala jest definiowana zmienn± termcapa `vb' (terminfo:
+\&'flash').
+.br
+Domy¶lnie, vbell jest wy³±czony i u¿ywany jest dzwonek audio. Zobacz te¿
+`bell_msg'.
+.sp
+.ne 3
+.B vbell_msg
+.RI [ komunikat ]
+.PP
+Ustawia komunikat wizualnego dzwonka. Je¶li okno otrzyma znak dzwonka (^G),
+a terminal nie obs³uguje wizualnego dzwonka, w linii statusu drukowany jest
+\fIkomunikat\fP. Domy¶lnym komunikatem jest \*QWuff, Wuff!!\*U.
+Bez parametrów, pokazywany jest obecny komunikat.
+.sp
+.ne 3
+.BI "vbellwait " sek
+.PP
+Zdefiniuj w sekundach opó¼nienie, po ka¿dym wy¶wietleniu komunikatu o
+dzwonku. Domy¶lnie jest to 1 sekunda.
+.sp
+.ne 3
+.B verbose
+.RB [ on | off ]
+.PP
+Je¶li tryb verbose (gadatliwy) jest w³±czony, przy ka¿dym tworzeniu okna
+istnieje echo nazwy komendy. Domy¶lnie wy³±czone. Bez parametrów, pokazuje
+obecne ustawienie.
+.sp
+.ne 3
+.B version
+.PP
+Wydrukuj w linii statusu bie¿±c± wersjê i datê kompilacji.
+.sp
+.ne 3
+.BI "wall " "komunikat"
+.PP
+Zapisz na wszystkie wy¶wietlacze komunikat. Komunikat pojawi siê w
+terminalowej linii statusu.
+.sp
+.ne 3
+.BR "width " [ \fInum\fP ]
+.PP
+Prze³±czaj szeroko¶æ okna miêdzy 80 a 132 kolumnami, lub ustaw na \fInum\fP
+kolumn.
+Wymaga to odpowiedniego terminala i wpisów termcap \*QZ0\*U oraz \*QZ1\*U.
+Zobacz dla dalszych informacji komendê \*Qtermcap\*U.
+.sp
+.ne 3
+.B windows
+.PP
+U¿ywa linii komunikatów do wy¶wietlania listy wszystkich okien. Ka¿de okno
+jest wymieniane wed³ug numeru wraz z nazw± procesu, który zosta³ w nim
+uruchomiony (lub z tytu³em);
+okno bie¿±ce jest zaznaczane przez `*';
+okno poprzednie jest zaznaczane przez `-';
+wszystkie okna, które s± zalogowane, s± zaznaczane jako `$';
+okno w tle, które otrzyma³o dzwonek jest zaznaczane jako `!';
+okno w tle, które jest monitorowane i zasz³a w nim aktywno¶æ jest zaznaczane
+jako `@';
+okno, które ma w³±czone raportowanie wyj¶cia jest zaznaczone jako `(L)';
+okna, zajmowane przez innych u¿ytkowników s± zaznaczane jako `&';
+okna w stanie zombie s± zaznaczane jako `Z'.
+Je¶li lista jest zbyt d³uga, by zmie¶ciæ siê w terminalowej linii statusu,
+wy¶wietlana jest tylko czê¶æ wokó³ bie¿±cego okna.
+.sp
+.ne 3
+.BR "wrap " [ on | off ]
+.PP
+Ustawia zawijanie linii w oknie. Gdy jest to w³±czone, znak wstawiany na
+ostatniej kolumnie wiersza bêdzie zawija³ na pocz±tek nastêpnego wiersza. W
+my¶l dodanej w³a¶ciwo¶ci, backspace (^H) równie¿ zawija od lewego marginesu
+do poprzedniej linii.
+Domy¶lnie jest to w³±czone.
+.sp
+.ne 3
+.B writebuf
+.PP
+Zapisuje zawarto¶æ bufora wklejania do publicznie dostêpnego pliku wymiany
+screena. Jest to prymitywne narzêdzie komunikacji miêdzy u¿ytkownikami
+screena na danym ho¶cie. Nazwa pliku mo¿e byæ ustawiana z pomoc± komendy
+\fIbufferfile\fP i domy¶lnie jest ni± \*Q/tmp/screen-exchange\*U.
+.sp
+.ne 3
+.BR "writelock " [ on | "off\fR|\fBauto\fR]"
+.PP
+Jako dodatek do list kontroli dostêpu, nie wszyscy u¿ytkownicy musz± byæ w stanie
+pisaæ do tego samego okna naraz. Domy¶lnie, blokada zapisu jest w trybie
+`auto' i zapewnia wy³±czne prawo wej¶cia dla u¿ytkownika, który pierwszy
+siê na dane okno prze³±czy³. Gdy opu¶ci on okno, automatycznie blokadê mog±
+uzyskaæ inni u¿ytkownicy. Blokadê zapisu bie¿±cego okna mo¿na wy³±czyæ
+komend± \*Qwritelock off\*U. Je¶li u¿ytkownik wykona komendê \*Qwritelock
+on\*U, to bêdzie on mia³ wy³±czne prawa zapisu podczas prze³±czania siê na
+inne okna.
+.sp
+.ne 3
+.B xoff
+.br
+.B xon
+.PP
+Wstawia na kolejkê stdin bie¿±cego okna znak CTRL-s/CTRL-q.
+.sp
+.ne 3
+.BR "zombie " [\fIklawisze\fP]
+.br
+.BR "defzombie " [\fIklawisze\fP]
+.PP
+Domy¶lnie okna screena s± usuwane z listy okien gdy tylko ich procesy
+(np. pow³oki) zakoñcz± dzia³anie. Gdy do komendy zombie podaæ ³añcuch dwóch
+klawiszy, `martwe' okna pozostaj± na li¶cie. Do usuniêcia takiego okna mo¿na
+u¿yæ komendy \fBkill\fP. Naci¶niêcie w martwym oknie pierwszego klawisza ma
+ten sam efekt. Naci¶niêcie drugiego klawisza powoduje, ¿e screen próbuje
+wskrzesiæ okno. Proces, uruchomiony pocz±tkowo w oknie zostanie ponownie
+odpalony. Wywo³anie \fBzombie\fP bez parametrów wyczy¶ci ustawienie zombie,
+w wyniku czego okna znikn± po zakoñczeniu ich procesu.
+
+Gdy ustawienie zombie jest obs³ugiwane globalnie dla wszystkich okien,
+komenda ta powinna byæ nazywana \fBdefzombie\fP. Dopóki potrzebujemy 
+tego jako ustawienia dla poszczególnego okna, komendy \fBzombie\fP i 
+\fBdefzombie\fP s± równowa¿ne.
+
+.SH "LINIA KOMUNIKATÓW"
+Dodatkowe komunikaty i diagnostyki s± wy¶wietlane w \fIlinii komunikatów\fP.
+Zwykle linia ta znajduje siê na dole ekranu, jednak mo¿na to przedefiniowaæ
+na górê podczas kompilacji. Je¶li twój terminal ma w termcapie
+zdefiniowan± liniê statusu, screen skorzysta w³a¶nie z niej. W przeciwnym
+wypadku, linia bie¿±cego ekranu bêdzie tymczasowo nadpisywana, a wyj¶cie
+bêdzie chwilowo przerywane. Linia komunikatów jest automatycznie usuwana po
+paru sekundach przerwy. Mo¿e byæ te¿ usuwana wcze¶niej poprzez rozpoczêcie
+naciskania klawiszy.
+.PP
+Urz±dzenie linii komunikatów mo¿e byæ u¿ywane przez aplikacje, pracuj±ce w
+bie¿±cym oknie. Narzêdziem w tym celu jest sekwencja steruj±ca ANSI,
+\fIPrivacy message\fP.
+Na przyk³ad, z pow³oki mo¿esz wpisaæ co¶ takiego:
+.IP
+echo '<esc>^Hello world from window '$WINDOW'<esc>\e\e'
+.PP
+Gdzie '<esc>' to \fIescape\fP, '^' to literalna strza³ka w górê, a '\e\e'
+zmienia siê w pojedynczy lewy uko¶nik.
+
+.SH "TYPY OKIEN"
+Screen daje trzy rodzaje okien. Nowe okna mo¿na utworzyæ z pomoc± komendy
+.B screen
+(zobacz te¿ opis w rozdziale \*QDOSTOSOWYWANIE\*U). Pierwszy parametr
+komendy
+.B screen
+okre¶la typ tworzonego okna. Inne typy okien s± szczególnymi przypadkami
+typu normalnego. Zosta³y one dodane, aby umo¿liwiæ efektywne wykorzystanie
+screena jako multiplekser (powielacz) konsolowy ze 100 lub wiêcej oknami.
+
+.IP \(bu 3
+Normalne okno zawiera pow³okê, lub dowoln± inn± komendê systemow±, jak±
+mo¿na uruchomiæ z pow³oki (np.
+.BR slogin ,
+itd...) 
+
+.IP \(bu
+Je¶li jako pierwszy parametr podana jest nazwa tty (urz±dzenie znakowe, np.
+\*Q/dev/ttya\*U), to okno jest pod³±czane bezpo¶rednio do tego urz±dzenia.
+Typ tego okna jest podobny do
+\*Qscreen cu -l /dev/ttya\*U.
+Dla u¿ywania wêz³a urz±dzenia wymagane s± prawa zapisu i odczytu. Dodatkowo,
+screen próbuje u¿yæ otwarcia na wy³±czno¶æ, aby zaznaczyæ zajêcie linii
+po³±czenia. Dozwolony jest dodatkowy parametr, sk³adaj±cy siê z rozdzielonej
+przecinkami listy flag w notacji u¿ywanej przez stty(1):
+.RS
+.IP <szybko¶æ>		
+Zwykle 300, 1200, 9600 lub 19200. Dotyczy to tak transmisji, jak i
+odbierania.
+.IP "cs8 or cs7"
+Okre¶la transmisjê o¶miu (lub siedmiu) bitów na bajt.
+.IP "ixon or -ixon"
+W³±cza (lub wy³±cza) programow± kontrolê przep³ywu (CTRL-S/CTRL-Q)
+nadawania.
+.IP "ixoff or -ixon"
+W³±cza (lub wy³±cza) programow± kontrolê przep³ywu odbierania.
+.IP "istrip or -istrip"
+Czy¶ci (lub zatrzymuje) ósmy bit w ka¿dym odebranym bajcie.
+.PP
+Mo¿esz podaæ tyle opcji, ile potrzeba. Niepodane opcje powoduj±, ¿e
+sterownik terminala pobiera warto¶ci parametrów z po³±czenia. Warto¶ci te s±
+zale¿ne od systemu i mog± byæ warto¶ciami domy¶lnymi, lub warto¶ciami
+zachowanymi z poprzedniego po³±czenia.
+.PP
+Dla okien tty, komenda
+.B info
+pokazuje w linii statusu czê¶æ linii kontroli modemu. Mog± one zawieraæ
+`RTS', `CTS', 'DTR', `DSR', `CD' i wiêcej.
+Zale¿y to od dostêpnych ioctl() oraz nag³ówków systemu i fizycznych
+w³a¶ciwo¶ci uk³adu szeregowego. Sygna³y, które s± w stanie niskim
+(nieaktywne) maj± nazwy poprzedzone znakiem wykrzyknika. W przeciwnym
+wypadku s± one w stanie wysokim. Sygna³y nieobs³ugiwane przez sprzêt, lecz
+znane interfejsowi ioctl() s± zwykle wy¶wietlane jako niskie.
+.br
+Gdy bit statusu CLOCAL jest ustawiony, ca³y zestaw sygna³ów modemowych jest
+umieszczany w nawiasach klamrowych ({ i }). Gdy ustawiony jest bit CRTSCTS
+lub TIOCSOFTCAR, sygna³y `CTS' lub `CD' s± pokazywane w nawiasach.
+
+
+Dla okien tty, komenda
+.B break
+powoduje obni¿enie sygna³u linii transmisji danych (TxD) na podany okres
+czasu. Ma to byæ interpretowane jako sygna³ przerwania po drugiej stronie.
+Podczas wykonywania tej komendy nie przesy³ane s± dane i nie s± zmieniane
+linie kontroli modemu.
+.RE
+.IP \(bu
+Je¶li pierwszym parametrem jest \*Q//telnet\*U, to drugim powinna byæ nazwa
+hosta, a opcjonalny trzeci parametr mo¿e podawaæ numer portu TCP (domy¶lnie
+dziesiêtne 23). Screen pod³±czy siê do serwera na zdalnym ho¶cie i u¿yje
+protoko³u telnet do komunikacji.
+.br
+.br
+Dla okien telnet, komenda
+.B info
+wy¶wietla szczegó³y o po³±czeniu w nawiasach kwadratowych ([ i ]) na koñcu
+linii statusu.
+.RS
+.IP b
+BINARY. Po³±czenie jest w trybie binarnym.
+.IP e
+ECHO. Wy³±czone lokalne echo.
+.IP c
+SGA. Po³±czenie jest w `trybie znakowym' (domy¶lnie: `tryb wierszowy').
+.IP t
+TTYPE. Zdalny host za¿±da³ typu terminala. Screen wysy³a nazwê \*Qscreen\*U,
+chyba ¿e zosta³ inaczej pouczony (zobacz te¿ komendê `term').
+.IP w
+NAWS. Zdalny host jest powiadamiany o zmianach rozmiaru okna.
+.IP f
+LFLOW. Zdalny host bêdzie przesy³a³ informacje kontroli przep³ywu. (Obecnie
+ignorowane.)
+.PP
+Dodatkowymi flagami, przeznaczonymi do debuggowania s± x,t i n (XDISPLOC,
+TSPEED i NEWENV).
+.PP
+Dla okien telnet, komenda
+.B break
+wysy³a kod telnet IAC BREAK (dziesiêtne 243) do zdalnego hosta.
+
+
+Ten rodzaj okien jest dostêpny tylko je¶li screen zosta³ skompilowany ze
+zdefiniowan± opcj± BUILTIN_TELNET.
+.RE
+
+
+.SH "£AÑCUCHOWE SEWKENCJE SPECJALNE"
+Screen daje specjalny mechanizm wstawiania do komunikatów lub nazw pliku
+informacji w rodzaju bie¿±cego czasu. Znakiem specjalnym jest '%', z jednym
+wyj±tkiem: w obrêbie twardego statusu okna u¿ywane jest '^%' ('^E').
+
+Oto pe³na lista obs³ugiwanych sekwencji:
+.IP %
+znak procentu
+.IP a
+\&'am' albo 'pm'
+.IP A
+\&'AM' albo 'PM'
+.IP c
+bie¿±cy czas, GG:MM w postaci 24h
+.IP C
+bie¿±cy czas, GG:MM w postaci 12h
+.IP d
+numer dnia
+.IP D
+nazwa dnia tygodnia
+.IP h
+twardy status okna
+.IP l
+bie¿±ce obci±¿enie systemu
+.IP m
+numer miesi±ca
+.IP M
+nazwa miesi±ca
+.IP n
+numer okna
+.IP s
+sekundy
+.IP t
+tytu³ okna
+.IP u
+wszyscy inni u¿ytkownicy tego okna
+.IP w
+wszystkie numery okien i nazwy
+.IP W
+wszystkie numery okien i nazwy poza bie¿±c±
+.IP y
+ostatnie dwie cyfry roku
+.IP Y
+pe³ny rok
+.IP ?
+czê¶æ do nastêpnego '%?' jest wy¶wietlana tylko je¶li sekwencja rozwija siê
+do niezerowego ³añcucha
+.IP :
+czê¶æ else '%?'
+.P
+Sekwencje 'c' i 'C' mog± byæ kwalifikowane przez '0', powoduj±c, ¿e screen
+u¿yje zera zamiast spacji jako znaku wype³nienia. Sekwencja 'n' rozumie
+kwalifikator d³ugo¶ci (np. '%3n').
+
+.SH "KONTROLA PRZEP£YWU"
+Ka¿de okno ma ustawienie kontroli przep³ywu, które okre¶la jak traktowaæ
+znaki XON i XOFF (oraz prawdopodobnie znak przerwania (interrupt)). Gdy
+kontrola jest wy³±czona, znaki te s± ignorowane, co umo¿liwia u¿ytkownikom
+przesy³anie ich w prosty sposób do programów (przydatne np. dla edytora
+\fIemacs\fP).
+Minusem jest to, ¿e trzeba bêdzie d³u¿ej czekaæ a¿ wyj¶cie z
+\*Qnormalnego\*U programu zapauzuje w odpowiedzi na XOFF.
+Przy w³±czonej kontroli przep³ywu, znaki XON i XOFF s± u¿ywane do
+natychmiastowego przerywania wyj¶cia z bie¿±cego okna. Znaki te mo¿na wci±¿
+przesy³aæ do bie¿±cego programu, lecz musisz u¿ywaæ odpowiednich
+dwuznakowych komend screena (zwykle \*QC-a q\*U (xon) oraz
+\*QC-a s\*U (xoff)).
+Komendy xon/xoff s± te¿ przydatne do wpisywania C-s i C-q obok terminala,
+przechwytuj±cego te znaki.
+.PP
+Ka¿de okno ma pocz±tkow± warto¶æ kontroli przep³ywu ustawian± albo opcj±
+.BR \-f ,
+albo komend± \*Qdefflow\*U .screenrc. Domy¶lnie, okna s± ustawiane na
+automatyczne prze³±czanie przep³ywu. Mo¿e to byæ potem prze³±czane miêdzy
+trzema stanami--'w³±czony ustalony' (fixed on), 'wy³±czony ustalony' (fixed
+off) i 'automatyczny' (automatic)--s³u¿y do tego komenda \*Qflow\*U,
+podwi±zana do "C-a f".
+.PP
+Tryb automatycznego prze³±czania przep³ywu zajmuje siê kontrol± przep³ywu
+przy u¿yciu trybu TIOCPKT (podobnie jak \*Qrlogin\*U). Je¶li sterownik tty
+nie obs³uguje TIOCPKT, screen próbuje znale¼æ prawid³owy tryb w oparciu o
+bie¿±ce ustawienie keypadu aplikacji \- gdy jest w³±czony, kontrola
+przep³ywu jest wy³±czona i odwrotnie.
+Oczywi¶cie, w wypadku zaj¶cia potrzeby, wci±¿ mo¿na manipulowaæ kontrol±
+rêcznie.
+.PP
+Je¶li pracujesz z w³±czon± kontrol± przep³ywu i zauwa¿ysz, ¿e naciskanie
+klawisza przerwania (zwykle C-c) nie przerywa wy¶wietlania a¿ do nastêpnych
+6-8 linii, spróbuj uruchomiæ screena z opcj± \*Qinterrupt\*U (dodaj flagê
+\*Qinterrupt\*U do komendy \*Qflow\*U w .screenrc, lub u¿yj opcji
+.B \-i
+linii komend).
+Powoduje to, ¿e wyj¶cie, które screen zebra³ z przerwanego programu jest
+wypró¿niane. Wad± tego jest to, ¿e pamiêæ terminala zawiera niewypró¿nion±
+wersjê wyj¶cia, co w rzadkich przypadkach mo¿e powodowaæ pewne
+niedok³adno¶ci wyj¶cia.
+Na przyk³ad, je¶li prze³±czasz ekrany i powrócisz, lub od¶wie¿ysz ekran z
+pomoc± \*QC-a l\*U, to zobaczysz wersjê wyj¶cia, która pojawi³aby siê bez
+w³±czonego \*Qinterrupt\*U.
+Poza tym, byæ mo¿e podczas pracy z programem, który oczekuje wpisywania jako
+wej¶cie znaku przerwania (interrupt), bêdzie trzeba wy³±czyæ kontrolê
+przep³ywu (lub u¿yæ trybu automatycznego), poniewa¿ jest mo¿liwe przypadkowe 
+przerwanie wyj¶cia wirtualnego terminala na twój terminal fizyczny.
+Je¶li zajdzie takie zdarzenie, zwyk³e od¶wie¿enie ekranu \*QC-a l\*U powinno
+go odtworzyæ. 
+
+
+.SH "TYTU£Y (nazywanie okien)"
+Nazwê ka¿dego okna w wy¶wietlaczu (widzian± w komendzie \*Qwindows\*U (C-a w))
+mo¿na zmieniæ poprzez ustawianie jej jedn± z komend title.
+Normalnie, wy¶wietlan± nazw± jest nazwa polecenia programu, utworzonego w
+oknie.
+Czasem jednak przydatne jest rozró¿niæ ró¿ne programy o tej samej nazwie,
+lub zmieniaæ nazwê w locie, aby odzwierciedlaæ bie¿±cy stan okna.
+.PP
+Domy¶lna nazwa okien pow³okowych mo¿e byæ ustawiana komend± \*Qshelltitle\*U
+pliku .screenrc, podczas gdy inne  okna s± tworzone komend± \*Qscreen\*U i
+mog± miêæ ustawian± nazwê poprzez opcjê
+.BR \-t .
+Interaktywnie, istnieje sekwencja specjalna ³añcuchu tytu³owego
+(<esc>k\fInazwa\fP<esc>\e) oraz komenda \*Qtitle\*U (C-a A).
+Pierwsze mo¿e byæ wysy³ane przez aplikacjê w celu kontrolowania nazwy okna,
+a drugie zapyta o nazwê po wci¶niêciu. Mo¿na te¿ przywi±zaæ nazwy
+predefiniowane do klawiszy z komend± \*Qtitle\*U i ustawiaæ tak wszystko w
+sposób zgrabny i bez zapytywania.
+.PP
+Screen ma pewne mechanizmy specyficznej dla pow³ok heurystyki, w³±czanej
+przez ustawienie nazwy okna na \*Qszukaj|nazwa\*U i zaaran¿owanie zerowej
+sekwencji specjalnej tytu³u jako czê¶ci znaku zachêty.
+Czê¶æ \fIszukaj\fP okre¶la szukany ³añcuch koñca-znaku-zachêty, podczas gdy
+czê¶æ \fInazwa\fP okre¶la domy¶ln± nazwê pow³oki dla okna. Je¶li \fInazwa\fP
+koñczy siê dwukropkiem,
+screen spróbuje dodaæ do koñca nazwy pow³oki nazwê komendy, uruchomionej w
+oknie (np. \*Q\fInazwa:kmd\fP\*U).
+W przeciwnym wypadku, nazwa bie¿±cej komendy poprzedza podczas dzia³ania
+nazwê pow³oki.
+.PP
+Oto jak to dzia³a: musisz zmodyfikowaæ zachêtê pow³oki tak, by emitowa³a
+zerow± sekwencjê specjaln± tytu³u (<esc>k</esc>\e). Ostatnia czê¶æ znaku
+zachêty musi byæ identyczna z ³añcuchem, podanym w czê¶ci \fIszukaj\fP
+tytu³u.
+Gdy jest to ustawione, screen bêdzie u¿ywa³ sekwencji specjalnej tytu³u do
+czyszczenia poprzedniej nazwy komendy i przygotowywa³ siê na nastêpn±
+komendê. Potem, po odebraniu z pow³oki nowej linii, nast±pi szukanie koñca
+znaku zachêty. Po jego znalezieniu, pobrane zostanie pierwsze s³owo,
+znajduj±ce siê za nim i zostanie u¿yte jako nazwa komendy. Je¶li nazwa
+komendy rozpoczyna siê od '!', '%', lub '^', to screen u¿yje pierwszego
+s³owa nastêpnej linii, preferuj±c je nad w³a¶nie znalezion± nazwê.
+Pomaga to u¿ytkownikom csh w uzyskiwaniu lepszych nazw komend przy u¿ywaniu
+kontroli zadañ lub historii.
+.PP
+Oto kilka przyk³adów .screenrc:
+.IP
+screen -t top 2 nice top
+.PP
+Dodanie tej linii do .screenrc uruchomi znicowan± wersjê komendy \*Qtop\*U w
+oknie 2 o nazwie \*Qtop\*U (a nie \*Qnice\*U).
+.sp
+.nf
+	shelltitle '> |csh'
+	screen 1
+.fi
+.sp
+Komendy te uruchamiaj± pow³okê o podanym tytule pow³okowym.
+Tytu³ jest podany jako auto-tytu³, który oczekuje, ¿e znak zachêty i wpisana
+komenda bêd± wygl±daæ podobnie do nastêpuj±cego:
+.IP
+/usr/joe/src/dir> trn
+.PP
+(za znakiem '> ' nastêpuje szukanie nazwy komendy).
+Status okna poka¿e podczas dzia³ania komendy warto¶æ \*Qtrn\*U, a po jej
+zakoñczeniu powróci do \*Qcsh\*U.
+.IP
+bind R screen -t '% |root:' su
+.PP
+To polecenie wi±¿e sekwencjê klawiszow± \*QC-a R\*U do komendy \*Qsu\*U
+i przekazuje jej auto-tytu³ \*Qroot:\*U. Aby ten tytu³ zadzia³a³, ekran
+powinien wygl±daæ nastêpuj±co:
+.sp
+.nf
+	% !em
+	emacs file.c
+.fi
+.sp
+U¿ytkownik wpisa³ tu komendê \*Q!em\*U historii csh, która uruchomi³a
+poprzednio wpisan± komendê \*Qemacs\*U. Status okna poka¿e \*Qroot:emacs\*U
+podczas wykonywania komendy, a po zakoñczeniu po prostu \*Qroot:\*U.
+.PP
+.nf
+	bind o title
+	bind E title ""
+	bind u title (unknown)
+.fi
+.sp
+Pierwsze wi±zanie nie ma ¿adnych argumentów, wiêc zapyta ciê o tytu³ (C-a o).
+Drugie wi±zanie wyczy¶ci bie¿±ce ustawienie auto-tytu³u (C-a E).
+Trzecie wi±zanie ustawi tytu³ bie¿±cego okna na \*Q(unknown)\*U
+(C-a u).
+.PP
+Wa¿n± rzecz± do pamiêtania przy dodawaniu zerowej sekwencji specjalnej
+tytu³u do znaku zachêty jest to, ¿e niektóre pow³oki (np. csh) zliczaj±
+wszystkie niesteruj±ce znaki jako d³ugo¶æ znaku zachêty. Je¶li znaki
+niewidzialne nie s± wielokrotno¶ci± 8, to backspace po tabulacji spowoduje
+nieprawid³owe wy¶wietlanie. Sposobem ominiêcia tego jest u¿ycie
+nastêpuj±cego znaku zachêty:
+.IP
+set prompt='^[[0000m^[k^[\e% '
+.PP
+Sekwencja specjalna \*Q<esc>[0000m\*U nie tylko normalizuje atrybuty
+znakowe, lecz dodatkowo wszystkie zera zaokr±glaj± d³ugo¶æ znaków
+niewidzialnych do 8.
+U¿ytkownicy basha prawdopodobnie bêd± chcieli wy¶wietlaæ sekwencjê specjaln±
+przy u¿yciu PROMPT_COMMAND:
+.IP
+PROMPT_COMMAND='echo -n -e "\e033k\e033\e134"'
+.PP
+(Do wysy³ania `\e' u¿ywa³em \*Q\134\*U z uwagi na b³±d w bash 1.04).
+
+
+.SH "TERMINAL WIRTUALNY"
+Ka¿de okno w sesji screen emuluje terminal vt100 z dodanymi kilkoma
+funkcjami. Emulator vt100 jest wkodowany na sztywno; nie ma emulacji innych
+terminali.
+.br
+Zazwyczaj screen usi³uje emulowaæ tak du¿o ze standardu vt100/ansi ile tylko
+mo¿liwe. Je¶li jednak twój terminal nie ma pewnych w³a¶ciwo¶ci, emulacja
+mo¿e nie byæ kompletna. W tych wypadkach, screen musi powiedzieæ aplikacj±,
+¿e niektórych w³a¶ciwo¶ci nie ma. Nie jest to problem dla maszyn u¿ywaj±cych
+termcapa, gdy¿ screen mo¿e u¿ywaæ zmiennej $TERMCAP do dostosowywania
+standardowego termcapu screena.
+.PP
+Je¶li jednak wykonujesz rlogin na inn± maszynê, lub twoja maszyna obs³uguje
+tylko terminfo, metoda ta nie zadzia³a. Z tego powodu, screen daje pewien
+sposób na zajêcie siê tymi przypadkami. Oto jak to dzia³a:
+.PP
+Gdy screen próbuje znale¼æ dla siebie nazwê terminala, najpierw szuka wpisu
+\*Qscreen.<term>\*U, gdzie <term> jest zawarto¶ci± twojej zmiennej $TERM.
+Je¶li wpis taki nie istnieje, próbowany jest
+\*Qscreen\*U (lub \*Qscreen-w\*U je¶li terminal jest szeroki (132 kolumn lub
+wiêcej)).
+Je¶li nawet ten wpis nie zosta³ znaleziony, jako substytut u¿ywany jest
+\*Qvt100\*U.
+.PP
+Pomys³em jest to, ¿e je¶li masz terminal, który nie obs³uguje wa¿nej
+w³a¶ciwo¶ci (np. kasowanie znaku, lub czyszczenie do EOS), to mo¿esz
+zbudowaæ dla screena nowy wpis termcap/terminfo (o nazwie
+\*Qscreen.<dumbterm>\*U), w którym w³a¶ciwo¶æ ta jest wy³±czona. Je¶li ten
+wpis jest zainstalowany na twoich maszynach, to mo¿esz wykonywaæ rlogin i
+wci±¿ zachowywaæ poprawny wpis termcap/terminfo. 
+Nazwa terminala jest wstawiana do zmiennej $TERM wszystkich nowych okien.
+Dodatkowo te¿, screen ustawia zmienn± $TERMCAP, aby odzwierciedla³a
+w³a¶ciwo¶ci emulowanego wirtualnego  terminala. Zauwa¿ jednak, ¿e na
+maszynach z bazami terminfo, zmienna ta nie ma efektu. Ponadto, zmienna
+$WINDOW jest ustawiana na numer okna ka¿dego okna.
+.PP
+Rzeczywisty zestaw w³a¶ciwo¶ci, obs³ugiwanych przez terminal wirtualny
+zale¿y od w³a¶ciwo¶ci obs³ugiwanych przez terminal fizyczny. Je¶li na
+przyk³ad terminal fizyczny nie obs³uguje trybu podkre¶lania, screen nie
+bêdzie wstawia³ w³a¶ciwo¶ci `us' i `ue' do $TERMCAP. 
+Jednak do samego uruchomienia screena potrzeba minimalnego zestawu w³a¶ciwo¶ci;
+s± to przewijanie, czyszczenie ekranu i bezpo¶rednie adresowanie kursora
+(dodatkowo, screen nie dzia³a na terminalach hardcopy i na terminalach,
+które nadstukuj±).
+.PP
+Warto¶æ $TERMCAP mo¿na te¿ dostosowywaæ, korzystaj±c z komendy .screenrc
+\*Qtermcap\*U, lub definiuj±c przed startem zmienn± ¶rodowiskow± $SCREENCAP.
+Gdy to drugie jest zdefiniowane, jego zawarto¶æ bêdzie dos³ownie kopiowana
+do zmiennej $TERMCAP ka¿dego okna. Mo¿e to byæ albo pe³na definicja
+terminala, albo plik, w którym zdefiniowany jest terminal \*Qscreen\*U
+(lub/i \*Qscreen-w\*U).
+.PP
+Zauwa¿, ¿e screen honoruje komendê \*Qterminfo\*U .screenrc, je¶li system
+u¿ywa bazy terminfo.
+.PP
+Gdy we wpisie termcap obecna jest w³a¶ciwo¶æ logiczna `G0', to terminal, z
+którego uruchomiono screena obs³uguje wiele zestawów znaków. Umo¿liwia to
+aplikacji np. u¿ywanie grafiki vt100 lub narodowych zestawów znaków.
+Obs³ugiwane s± nastêpuj±ce komendy z ISO 2022:
+\fIlock shift G0\fP (\fISI\fP), \fIlock shift G1\fP (\fISO\fP),
+\fIlock shift G2\fP, \fIlock shift G3\fP, \fIsingle shift G2\fP,
+oraz \fIsingle shift G3\fP.
+Gdy tworzony (lub resetowany) jest terminal wirtualny, zestaw ASCII jest
+oznaczany jako \fIG0\fP do \fIG3\fP.
+Gdy obecna jest w³a¶ciwo¶æ `G0',
+screen analizuje (je¶li s± obecne) w³a¶ciwo¶ci `S0', `E0' i `C0'. `S0' jest
+sekwencj±, której terminal u¿ywa do w³±czania zestawu znaków graficznych
+zamiast \fISI\fP. `E0' jest odpowiadaj±cym zamiennikiem dla \fISO\fP.
+`C0' daje ³añcuch translacji znaku na znak, u¿ywany w trybie semigrafiki.
+£añcuch ten jest zbudowany podobnie do w³a¶ciwo¶ci `acsc' terminfo.
+.PP
+Gdy we wpisie terminala obecne s± w³a¶ciwo¶ci `po' i `pf', aplikacje
+pracuj±ce pod screenem mog± wysy³aæ wyj¶cie na port drukarki terminala.
+Umo¿liwia to u¿ytkownikowi posiadanie w jednym oknie aplikacji, wysy³aj±cej
+wyj¶cie do drukarki, pod³±czonej do terminala, podczas gdy inne okna s±
+wci±¿ aktywne (port drukarki jest w³±czany i wy³±czany dla ka¿dego fragmentu
+wyj¶cia).
+Jako efekt uboczny, programy pracuj±ce w ró¿nych oknach mog± równocze¶nie
+wysy³aæ wyj¶cie na drukarkê .
+Dane wysy³ane do drukarki nie pojawiaj± siê w oknie. Komenda
+.I info
+wy¶wietla w czasie aktywno¶ci drukarkowej liniê rozpoczynaj±c± siê od
+`PRIN'.
+.PP
+.I Screen
+Obs³uguje liniê twardego statusu ka¿dego okna. Je¶li okno zostanie wybrane,
+twardy status wy¶wietlacza jest od¶wie¿any, aby odpowiada³ statusowi tego
+okna. Je¶li wy¶wietlacz nie posiada twardego statusu, to linia bêdzie
+wy¶wietlana jako standardowy komunikat screena.
+Liniê twardego statusu mo¿na zmieniæ komend± ANSI Application Program
+Command (APC): \*QESC_<³añcuch>ESC\e\*U. Jako uk³on w stronê u¿ytkowników
+xterma, przyjmowana jest te¿ sekwencja \*QESC]0..2;<string>^G\*U.
+.PP
+Niektóre w³a¶ciwo¶ci s± wstawiane do zmiennej $TERMCAP terminala wirtualnego
+tylko je¶li mo¿na je efektywnie zaimplementowaæ na terminalu fizycznym. Na
+przyk³ad `dl' jest wstawiane tylko je¶li terminal obs³uguje albo kasowanie
+linii, albo przewijanie regionów. Zauwa¿, ¿e mo¿e to spowodowaæ zak³opotanie
+gdy sesja zostanie wznowiona na innym terminalu, gdy¿ warto¶æ $TERMCAP nie
+mo¿e byæ zmieniona przez proces rodzicielski.
+.PP
+Poni¿ej znajduje siê lista sekwencji steruj±cych, rozpoznawanych przez
+screen.
+\*Q(V)\*U i \*Q(A)\*U okre¶laj± VT100-specyficzne oraz ANSI- lub
+ISO-specyficzne funkcje.
+.PP
+.ta 22n
+.TP 27
+.B "ESC E"
+Nastêpna linia.
+.TP 27
+.B "ESC D"
+Indeks
+.TP 27
+.B "ESC M"
+Odwróæ indeks
+.TP 27
+.B "ESC H"
+Ustaw tabulacjê poziom±
+.TP 27
+.B "ESC Z"
+Wy¶lij ³añcuch identyfikacji vt100
+.TP 27
+.BR "ESC 7" "	(V)"
+Zachowaj kursor i atrybuty
+.TP 27
+.BR "ESC 8" "	(V)"
+Odtwórz kursor i atrybuty
+.TP 27
+.BR "ESC [s" "	(A)"
+Zachowaj kursor i atrybuty
+.TP 27
+.BR "ESC [u" "	(A)"
+Odtwórz kursor i atrybuty
+.TP 27
+.B "ESC c"
+Resetuj do stanu pocz±tkowego
+.TP 27
+.B "ESC g"
+Dzwonek wizualny
+.TP 27
+.B "ESC \fPPn\fB p"
+Widzialno¶æ kursora (97801)
+.TP 27
+\h'\w'ESC 'u'Pn = \fB6\fP
+Niewidzialny
+.TP 27
+\h'\w'ESC Pn = 'u'\fB7\fP
+Widzialny
+.TP 27
+.BR "ESC =" "	(V)"
+Tryb keypad aplikacji
+.TP 27
+.BR "ESC >" "	(V)"
+Tryb numerycznego keypadu
+.TP 27
+.BR "ESC # 8" "	(V)"
+Wype³nij ekran E.
+.TP 27
+.BR "ESC \e" "	(A)"
+Terminator ³añcucha
+.TP 27
+.BR "ESC ^" "	(A)"
+£añcuch prywatnego komunikatu (linia komunikatów)
+.TP 27
+.B "ESC !"
+£añcuch globalnego komunikatu (linia komunikatów)
+.TP 27
+.B "ESC k"
+£añcuch definicji A.\|k.\|a. 
+.TP 27
+.BR "ESC P" "	(A)"
+£añcuch kontroli urz±dzenia. 
+Wysy³a bezpo¶rednio do hostowego terminala ³añcuch bez interpretacji.
+.TP 27
+.BR "ESC _" "	(A)"
+Komenda programu aplikacji (twardy status)
+.TP 27
+.BR "ESC ]" "	(A)"
+Komenda systemu operacyjnego (twardy status, hack tytu³u xterm)
+.TP 27
+.BR "Control-N" "	(A)"
+Zablokuj Shift G1 (SO)
+.TP 27
+.BR "Control-O" "	(A)"
+Zablokuj Shift G0 (SI)
+.TP 27
+.BR "ESC n" "	(A)"
+Zablokuj Shift G2
+.TP 27
+.BR "ESC o" "	(A)"
+Zablokuj Shift G3
+.TP 27
+.BR "ESC N" "	(A)"
+Pojedynczy Shift G2
+.TP 27
+.BR "ESC O" "	(A)"
+Pojedynczy Shift G3
+.TP 27
+.BR "ESC ( \fPPcs" "	(A)"
+Desygnuj zestaw znaków jako G0
+.TP 27
+.BR "ESC ) \fPPcs" "	(A)"
+Desygnuj zestaw znaków jako G1
+.TP 27
+.BR "ESC * \fPPcs" "	(A)"
+Desygnuj zestaw znaków jako G2
+.TP 27
+.BR "ESC + \fPPcs" "	(A)"
+Desygnuj zestaw znaków jako G3
+.TP 27
+.B "ESC [ \fPPn\fB ; \fPPn\fB H"
+Bezpo¶rednie adresowanie kursora
+.TP 27
+.B "ESC [ \fPPn\fB ; \fPPn\fB f"
+jak wy¿ej
+.TP 27
+.B "ESC [ \fPPn\fB J"
+Kasuj w wy¶wietlaczu
+.TP 27
+\h'\w'ESC [ 'u'Pn = None or \fB0\fP
+Od kursora do koñca ekranu
+.TP 27
+\h'\w'ESC [ Pn = 'u'\fB1\fP
+Od pocz±tku ekranu do kursora
+.TP 27
+\h'\w'ESC [ Pn = 'u'\fB2\fP
+Ca³y ekran
+.TP 27
+.B "ESC [ \fPPn\fB K"
+Kasuj w linii
+.TP 27
+\h'\w'ESC [ 'u'Pn = None or \fB0\fP
+Od kursora do koñca linii
+.TP 27
+\h'\w'ESC [ Pn = 'u'\fB1\fP
+Od pocz±tku linii do kursora
+.TP 27
+\h'\w'ESC [ Pn = 'u'\fB2\fP
+Ca³± liniê
+.TP 27
+.B "ESC [ \fPPn\fB A"
+Kursor w górê
+.TP 27
+.B "ESC [ \fPPn\fB B"
+Kursor w dó³
+.TP 27
+.B "ESC [ \fPPn\fB C"
+Kursor w prawo
+.TP 27
+.B "ESC [ \fPPn\fB D"
+Kursor w lewo
+.TP 27
+.B "ESC [ \fPPn\fB E"
+Kursor na nastêpn± liniê
+.TP 27
+.B "ESC [ \fPPn\fB F"
+Kursor na poprzedni± liniê
+.TP 27
+.B "ESC [ \fPPn\fB G"
+Pozioma pozycja kursora
+.TP 27
+.B "ESC [ \fPPn\fB `"
+jak wy¿ej
+.TP 27
+.B "ESC [ \fPPn\fB d"
+Pionowa pozycja kursora
+.TP 27
+.B "ESC [ \fPPs\fB ;\fP...\fB; \fPPs\fB m"
+Wybierz interpretacjê grafiki
+.TP 27
+\h'\w'ESC [ 'u'Ps = None or \fB0\fP
+Domy¶lna interpretacja
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB1\fP
+Pogrubienie
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB2\fP	(A)
+Md³y
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB3\fP	(A)
+Tryb \fIstandout\fP (ANSI: kursywa)
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB4\fP
+Podkre¶lenie
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB5\fP
+Migotanie
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB7\fP
+Negatyw
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB22\fP	(A)
+Normalna intensywno¶æ
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB23\fP	(A)
+Wy³±czenie trybu \fIstandout\fP (ANSI: wy³±czenie kursywy)
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB24\fP	(A)
+Nie podkre¶lone
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB25\fP	(A)
+Nie migocz±ce
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB27\fP	(A)
+Obraz pozytywowy
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB30\fP	(A)
+Pierwszy plan czarny
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB31\fP	(A)
+Pierwszy plan czerwony
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB32\fP	(A)
+Pierwszy plan zielony
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB33\fP	(A)
+Pierwszy plan ¿ó³ty
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB34\fP	(A)
+Pierwszy plan niebieski
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB35\fP	(A)
+Pierwszy plan fioletowy
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB36\fP	(A)
+Pierwszy plan cyjankowy
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB37\fP	(A)
+Pierwszy plan bia³y
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB39\fP	(A)
+Pierwszy plan domy¶lny
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB40\fP	(A)
+T³o czarne
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB...\fP
+...
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB49\fP	(A)
+T³o domy¶lne
+.TP 27
+.B "ESC [ \fPPn\fB g"
+Czyszczenie tab
+.TP 27
+\h'\w'ESC [ 'u'Pn = None or \fB0\fP
+Czyszczenie tab w pozycji bie¿±cej
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB3\fP
+Czyszczenie wszystkich tabów
+.TP 27
+.BR "ESC [ \fPPn\fB ; \fPPn\fB r" "	(V)"
+Ustaw region przewijania
+.TP 27
+.BR "ESC [ \fPPn\fB I" "	(A)"
+Tabulacja pozioma
+.TP 27
+.BR "ESC [ \fPPn\fB Z" "	(A)"
+Tabulacja wsteczna
+.TP 27
+.BR "ESC [ \fPPn\fB L" "	(A)"
+Wstaw liniê
+.TP 27
+.BR "ESC [ \fPPn\fB M" "	(A)"
+Skasuj liniê
+.TP 27
+.BR "ESC [ \fPPn\fB @" "	(A)"
+Wstaw znak
+.TP 27
+.BR "ESC [ \fPPn\fB P" "	(A)"
+Skasuj znak
+.TP 27
+.B "ESC [ \fPPn\fB S"
+Przewiñ region przewijania w górê
+.TP 27
+.B "ESC [ \fPPn\fB T"
+Przewij region przewijania w dó³
+.TP 27
+.B "ESC [ \fPPn\fB ^"
+jak wy¿ej
+.TP 27
+.B "ESC [ \fPPs\fB ;\fP...\fB; \fPPs\fB h"
+Ustaw tryb
+.TP 27
+.B "ESC [ \fPPs\fB ;\fP...\fB; \fPPs\fB l"
+Resetuj tryb
+.TP 27
+\h'\w'ESC [ 'u'Ps = \fB4\fP	(A)
+Tryb wstawiania
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB20\fP	(A)
+Tryb \fIautomatycznego linefeed\fP
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB34\fP
+Normalna widzialno¶æ kursora
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB?1\fP	(V)
+Klawisze kursora aplikacji
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB?3\fP	(V)
+Zmieñ szeroko¶æ terminala na 132 kolumny
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB?5\fP	(V)
+Tryb reverse video
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB?6\fP	(V)
+Tryb \fIorigin\fP
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB?7\fP	(V)
+Tryb \fIzawijania\fP
+.TP 27
+\h'\w'ESC [ Ps = 'u'\fB?25\fP	(V)
+Widzialny kursor
+.TP 27
+.BR "ESC [ 5 i" "	(A)"
+Zacznij transmitowaæ do drukarki (ANSI Media Copy)
+.TP 27
+.BR "ESC [ 4 i" "	(A)"
+Przerwij transmisjê do drukarki (ANSI Media Copy)
+.TP 27
+.B "ESC [ 8 ; \fPPh\fB ; \fPPw\fB t"
+Zmieñ rozmiar okna na `Ph' linii i `Pw' kolumn (SunView special)
+.TP 27
+.B "ESC [ c"
+Wy¶lij ³añcuch identyfikacji VT100
+.TP 27
+.B "ESC [ x"
+Wy¶lij raport parametrów terminala
+.TP 27
+.B "ESC [ > c"
+Wy¶lij ³añcuch atrybutów drugorzêdnego urz±dzenia VT220
+.TP 27
+.B "ESC [ 6 n"
+Wy¶lij raport pozycji kursora
+
+
+.SH "TRANSLACJA WEJ¦CIA"
+Aby spe³niaæ pe³n± emulacjê VT100, screen musi wykryæ, ¿e w strumieniu
+wej¶ciowym wygenerowano sekwencjê znaków i wstawiæ sekwencjê specjaln±
+VT100. Screen robi to w bardzo elastyczny sposób, umo¿liwiaj±c zmapowanie
+arbitralnych komand na arbitralne sekwencje znakowe. Dla standardowej
+emulacji VT100, komenda bêdzie zawsze wstawiaæ ³añcuch do bufora wej¶ciowego
+okna (zobacz te¿ opis komendy \fBstuff\fP).
+Z uwagi na to, ¿e sekwencje generowane przez naci¶niêcie klawisza mog± siê
+zmieniæ po ponownym pod³±czeniu z innego terminala, mo¿na wi±zaæ komendy do
+nazw termcapowych klawiszy. Screen wstawi wtedy prawid³owe wi±zanie po
+ka¿dym wznowieniu. Zobacz te¿ komendê \fBbindkey\fP dla dalszych szczegó³ów
+sk³adni i przyk³adów.
+.PP
+Oto tablica domy¶lnych wi±zañ klawiszowych. (A) oznacza, ¿e komenda jest
+wykonywana je¶li klawiatura jest w trybie aplikacji.
+.PP
+.ta 18n 34n 50n
+.nf
+Nazwa klawisza	Nazwa termcap	Komenda
+\l'54n'
+.ta 22n 34n 50n
+Kursor w górê	ku	stuff \e033[A
+		stuff \e033OA	(A)
+Kursor w dó³	kd	stuff \e033[B
+		stuff \e033OB	(A)
+Kursor w prawo	kr	stuff \e033[C
+		stuff \e033OC	(A)
+Kursor w lewo	kl	stuff \e033[D
+		stuff \e033OD	(A)
+Klawisz funkc 0	k0	stuff \e033[10~
+Klawisz funkc 1	k1	stuff \e033OP
+Klawisz funkc 2	k2	stuff \e033OQ
+Klawisz funkc 3	k3	stuff \e033OR
+Klawisz funkc 4	k4	stuff \e033OS
+Klawisz funkc 5	k5	stuff \e033[15~
+Klawisz funkc 6	k6	stuff \e033[17~
+Klawisz funkc 7	k7	stuff \e033[18~
+Klawisz funkc 8	k8	stuff \e033[19~
+Klawisz funkc 9	k9	stuff \e033[20~
+Klawisz funk 10	k;	stuff \e033[21~
+Klawisz funk 11	F1	stuff \e033[22~
+Klawisz funk 12	F2	stuff \e033[23~
+Backspace	kb	stuff \e010
+Home	kh	stuff \e033[1~
+End	kH	stuff \e033[4~
+Insert	kI	stuff \e033[2~
+Delete	kD	stuff \e033[3~
+Page up	kP	stuff \e033[5~
+Page down	kN	stuff \e033[6~
+Keypad 0	f0	stuff 0
+		stuff \e033Op	(A)
+Keypad 1	f1	stuff 1
+		stuff \e033Oq	(A)
+Keypad 2	f2	stuff 2
+		stuff \e033Or	(A)
+Keypad 3	f3	stuff 3
+		stuff \e033Os	(A)
+Keypad 4	f4	stuff 4
+		stuff \e033Ot	(A)
+Keypad 5	f5	stuff 5
+		stuff \e033Ou	(A)
+Keypad 6	f6	stuff 6
+		stuff \e033Ov	(A)
+Keypad 7	f7	stuff 7
+		stuff \e033Ow	(A)
+Keypad 8	f8	stuff 8
+		stuff \e033Ox	(A)
+Keypad 9	f9	stuff 9
+		stuff \e033Oy	(A)
+Keypad +	f+	stuff +
+		stuff \e033Ok	(A)
+Keypad -	f-	stuff -
+		stuff \e033Om	(A)
+Keypad *	f*	stuff *
+		stuff \e033Oj	(A)
+Keypad /	f/	stuff /
+		stuff \e033Oo	(A)
+Keypad =	fq	stuff =
+		stuff \e033OX	(A)
+Keypad .	f.	stuff .
+		stuff \e033On	(A)
+Keypad ,	f,	stuff ,
+		stuff \e033Ol	(A)
+Keypad enter	fe	stuff \e015
+		stuff \e033OM	(A)
+.fi
+
+
+.SH SPECJALNE W£A¦CIWO¦CI TERMINALA
+Nastêpuj±ca tablica opisuje wszystkie w³a¶ciwo¶ci terminala, które s±
+rozpoznawane przez screen, a których nie ma w podrêczniku termcap(5).
+Mo¿esz umieszczaæ te w³a¶ciwo¶ci w swoich wpisach termcap (w /etc/termcap)
+lub u¿ywaæ komend `termcap', `terminfo' i `termcapinfo' w plikach screenrc.
+Czêsto nie jest mo¿liwe wstawienie tych w³a¶ciwo¶ci do bazy terminfo.
+.PP
+.ta 5n
+.TP 13
+.BI LP "	(bool)"
+Terminal ma marginesy w stylu VT100 (`magiczne marginesy'). Zauwa¿, ¿e ta
+w³a¶ciwo¶æ jest przedawniona, gdy¿ screen u¿ywa zamiast tego standardowego
+'xn'.
+.TP 13
+.BI Z0 "	(str)"
+Zmieñ szeroko¶æ na 132 kolumny.
+.TP 13
+.BI Z1 "	(str)"
+Zmieñ szeroko¶æ na 80 kolumn.
+.TP 13
+.BI WS "	(str)"
+Zmieñ rozmiar wy¶wietlacza. W³a¶ciwo¶æ ta jako argumenty bierze oczekiwan±
+szeroko¶æ i wysoko¶æ. Przyk³ad \fISunView(tm)\fP: '\eE[8;%d;%dt'.
+.TP 13
+.BI NF "	(bool)"
+Terminal nie potrzebuje kontroli przep³ywu. Przesy³aj ^S i ^Q bezpo¶rednio
+do aplikacji. To samo co 'flow off'. Przeciwieñstwem tej w³a¶ciwo¶ci jest
+\&'nx'.
+.TP 13
+.BI G0 "	(bool)"
+Terminal daje sobie radê z sekwencjami wyboru fontu ISO 2022.
+.TP 13
+.BI S0 "	(str)"
+Prze³±cz zestaw znaków 'G0' na podany zestaw. Domy¶lnym jest '\eE(%.'.
+.TP 13
+.BI E0 "	(str)"
+Prze³±cz zestaw znaków 'G0' z powrotem na standardowy zestaw. Domy¶lnie
+to '\eE(B'.
+.TP 13
+.BI C0 "	(str)"
+U¿yj ³añcucha jako tablicy konwersji dla fontu '0'. Zobacz w³a¶ciwo¶æ 'ac'
+dla dalszych szczegó³ów.
+.TP 13
+.BI CS "	(str)"
+Prze³±cz klawisze-kursora w tryb aplikacji.
+.TP 13
+.BI CE "	(str)"
+Prze³±cz klawisze-kursora z powrotem do trybu normalnego.
+.TP 13
+.BI AN "	(bool)"
+W³±cz autonuke. Zobacz komendê 'autonuke' dla dalszych szczegó³ów.
+.TP 13
+.BI OL "	(num)"
+Ustaw limit bufora wyj¶ciowego. Zobacz komendê 'obuflimit' dla dalszych
+szczegó³ów.
+.TP 13
+.BI KJ "	(str)"
+Ustaw typ kanji terminala. Prawid³owe ustawienia to \*Qjis\*U,
+\*Qeuc\*U i \*Qsjis\*U.
+.TP 13
+.BI AF "	(str)"
+Zmieñ kolor pierwszego planu znaków w postaci zgodnej z ANSI. W³a¶ciwo¶æ ta
+jest prawie zawsze ustawiana na '\eE[3%dm' ('\eE[3%p1%dm' na maszynach
+terminfo).
+.TP 13
+.BI AB "	(str)"
+To samo co 'AF', lecz zmienia kolor t³a.
+.TP 13
+.BI AX "	(bool)"
+Rozumie w³±czanie domy¶lnego koloru pierwszego planu/t³a ANSI (\eE[39m / \eE[49m).
+.TP 13
+.BI XC "	(str)"
+Opisuje translacjê znaków na ³añcuchy, zale¿nie od bie¿±cego fontu. Wiêcej
+detali w nastêpnej sekcji.
+.TP 13
+.BI TF "	(bool)"
+Dodaj brakuj±ce w³a¶ciwo¶ci termcap/info. (Domy¶lnie ustawione).
+
+.SH TRANSLACJA ZNAKÓW
+\fIScreen\fP ma potê¿ny mechanizm t³umaczenia znaków na arbitralne ³añcuchy,
+zale¿nie od bie¿±cego fontu i typu terminala.
+
+Sk³adnia:
+.nf
+    \fBXC=\fP\fI<mapowanie-znaków>\fP{\fB,,\fP\fI<mapowanie-znaków>\fP}
+    \fI<mapowanie-znaków>\fP := \fI<desygnator><wzorzec>\fP{\fB,\fP\fI<mapowanie>\fP}
+    \fI<mapowanie>\fP := \fI<znak-do-zmapowania><arg-wzorca>\fP
+.fi
+
+Elementy w nawiasach mog± byæ powtarzane wielokrotnie.
+
+\fI<mapowanie-znaków>\fP mówi screenowi jak mapowaæ znaki fontu
+\fI<desygnator>\fP ('B': Ascii, 'A': UK, 'K': niemiecki, itd.) na ³añcuchy.
+Ka¿de \fI<mapowanie<\fP opisuje na jaki ³añcuch t³umaczyæ pojedynczy znak. 
+Z uwagi na wiele wspólnego ró¿nych kodów, u¿ywany jest mechanizm wzorców
+(np. ³añcuchy prze³±czaj±ce do i z jakiego¶ zestawu znaków). Ka¿de
+pojawienie siê we \fI<wzorcu>\fP znaku '%' jest podmieniane na
+\fI<arg-wzorca>\fP podany wraz ze znakiem. Je¶li twoje ³añcuchy nie s± w
+ogóle podobne, u¿yj jako wzorca '%' i umie¶æ pe³ny ³añcuch w
+\fI<arg-wzorca>\fP. Aby umo¿liwiæ u¿ywanie rzeczywistego '%', udostêpniono
+mechanizm cytowania. Znak '\e' cytuje znaki specjalne '\e', '%' i ','.
+
+Here is an example:
+
+    termcap hp700 'XC=B\eE(K%\eE(B,\e304[,\e326\e\e\e\e,\e334]'
+
+Mówi to screenowi jak t³umaczyæ du¿e znaki umlaut z ISOlatin1 
+(zestaw znaków 'B')  na terminalu hp700, który posiada niemiecki zestaw
+znaków. '\e304' bêdzie t³umaczone na '\eE(K[\eE(B' itd. Zauwa¿, ¿e linia ta
+jest przetwarzana *trzykrotnie* zanim zbudowana zostanie wewnêtrzna tablica
+sprawdzania. Dlatego do uzyskania pojedynczego '\e' potrzeba sporo
+cytowania.
+
+Aby umo¿liwiæ dalsz± emulacjê, dodano jeszcze jedno rozszerzenie: je¶li
+mapowanie t³umaczy niecytowany znak '%', to bêdzie on wysy³any na terminal
+za ka¿dym razem, gdy screen w³±czy odpowiedni \fI<desygnator>\fP. W tym
+specjalnym przypadku, wzorzec jest przyjmowany jako '%', poniewa¿ zazwyczaj
+sekwencja prze³±czania znaków i mapowania nie maj± wiele wspólnego
+
+Poni¿szy przyk³ad pokazuje zastosowanie tego rozszerzenia:
+
+    termcap xterm 'XC=K%,%\eE(B,[\e304,\e\e\e\e\e326,]\e334'
+
+W tym wypadku, na xtermie emulowana jest czê¶æ niemieckiego zestawu znaków
+('K'). Je¶li screen musi zmieniæ zestaw znaków na 'K', to wy¶le do terminala
+sekwencjê '\eE(B', tj. zamiast u¿ywany bêdzie zestaw ASCII. Wzorzec to sam
+znak '%', wiêc mapowanie jest proste: '['
+na '\e304', '\e' na '\e326', i ']' na '\e334'.
+
+.SH ¦RODOWISKO
+.PD 0
+.IP COLUMNS 15
+Liczba kolumn terminala (przes³ania wpis termcap).
+.IP HOME
+Katalog, w którym szukaæ .screenrc.
+.IP LINES 
+Liczba wierszy terminala (przes³ania wpis termcap).
+.IP LOCKPRG
+Program blokuj±cy screena.
+.IP NETHACKOPTIONS
+W³±cza opcjê nethack.
+.IP PATH
+U¿ywane do lokalizowania uruchamianych programów.
+.IP SCREENCAP
+Dla dostosowywania terminalowej warto¶ci TERMCAP.
+.IP SCREENDIR
+Alternatywny katalog gniazd.
+.IP SCREENRC
+Alternatywny plik screenrc.
+.IP SHELL
+Domy¶lny program pow³okowy dla otwierania okien (domy¶lnie \*Q/bin/sh\*U).
+.IP STY
+Alternatywna nazwa gniazda.
+.IP SYSSCREENRC
+Alternatywny systemowy plik screenrc.
+.IP TERM
+Nazwa terminala.
+.IP TERMCAP
+Opis terminala.
+
+
+.SH PLIKI
+.PD 0
+.IP .../screen-3.?.??/etc/screenrc 34
+.IP .../screen-3.?.??/etc/etcscreenrc
+Przyk³ady dystrybucyjne prywatnych i globalnych plików inicjalizacji
+.IP $SYSSCREENRC 
+.IP /etc/screenrc
+komendy inicjalizacji screena
+.IP $SCREENRC
+.IP $HOME/.screenrc
+Wczytywane po /etc/screenrc
+.IP $SCREENDIR/S-<login>
+.IP /tmp/screens/S-<login>
+Katalogi gniazdowe (domy¶lnie)
+.IP "<socket directory>/.termcap"
+Zapisywane przez funkcjê wyj¶ciow± "termcap"
+.IP /tmp/screens/screen-exchange
+lub
+.IP /tmp/screen-exchange
+bufor komunikacji miêdzyprocesowej screena
+.IP hardcopy.[0-9]
+Obrazy ekranów, stworzone funkcj± hardcopy
+.IP screenlog.[0-9]
+Wyj¶ciowe pliki raportowe, utworzone funkcj± log
+.IP /usr/share/terminfo/?/*
+lub
+.IP /var/run/utmp
+Wpisy zg³oszeniowe
+.IP $LOCKPRG
+Program, blokuj±cy terminal.
+
+
+.SH "ZOBACZ TAK¯E"
+termcap(5), utmp(5), vi(1), captoinfo(1), tic(1)
+
+
+.SH AUTORZY
+Oryginalnie stworzone przez Oliviera Laumanna. Najnowsza wersja wydana przez
+Wayne Davisona, Juergena Weigerta i Michaela Schroedera.
+
+.SH KOPIOWANIE
+.nf
+Copyright (C) 1999
+	Juergen Weigert (jnweiger@immd4.informatik.uni-erlangen.de)
+	Michael Schroeder (mlschroe@immd4.informatik.uni-erlangen.de)
+Copyright (C) 1987 Oliver Laumann
+.fi
+.PP
+Program ten jest programem wolnodostêpnym; mo¿esz go dystrybuowaæ i/lub
+modyfikowaæ wed³ug GNU General Public License, opublikowanej przez FSF;
+wersja 2, lub (wg uznania) dowolna wersja pó¼niejsza.
+.PP
+Program ten jest dystrybuowane w nadziei, ¿e bêdzie przydatny, lecz bez
+¯ADNEJ GWARANCJI. Zobacz GNU GPL dla dalszych szczegó³ów.
+.PP
+Powiniene¶ wraz z tym programem otrzymaæ kopiê GNU GPL (zobacz plik
+COPYING); je¶li nie, napisz do
+Free Software Foundation, Inc.,
+59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
+
+.SH KONTRYBUTORZY
+.nf
+Ken Beal (kbeal@amber.ssd.csd.harris.com),
+Rudolf Koenig (rfkoenig@immd4.informatik.uni-erlangen.de),
+Toerless Eckert (eckert@immd4.informatik.uni-erlangen.de), 
+Wayne Davison (davison@borland.com),
+Patrick Wolfe (pat@kai.com, kailand!pat),
+Bart Schaefer (schaefer@cse.ogi.edu),
+Nathan Glasser (nathan@brokaw.lcs.mit.edu),
+Larry W. Virden (lvirden@cas.org),
+Howard Chu (hyc@hanauma.jpl.nasa.gov),
+Tim MacKenzie (tym@dibbler.cs.monash.edu.au),
+Markku Jarvinen (mta@{cc,cs,ee}.tut.fi),
+Marc Boucher (marc@CAM.ORG),
+Doug Siebert (dsiebert@isca.uiowa.edu),
+Ken Stillson (stillson@tsfsrv.mitre.org),
+Ian Frechett (frechett@spot.Colorado.EDU),
+Brian Koehmstedt (bpk@gnu.ai.mit.edu),
+Don Smith (djs6015@ultb.isc.rit.edu),
+Frank van der Linden (vdlinden@fwi.uva.nl),
+Martin Schweikert (schweik@cpp.ob.open.de),
+David Vrona (dave@sashimi.lcu.com),
+E. Tye McQueen (tye%spillman.UUCP@uunet.uu.net),
+Matthew Green (mrg@mame.mu.oz.au),
+Christopher Williams (cgw@unt.edu),
+Matt Mosley (mattm@access.digex.net),
+Gregory Neil Shapiro (gshapiro@wpi.WPI.EDU).
+.fi
+
+
+.SH WERSJA
+Jest to wersja 3.9. Jej korzenie s± z³±czeniem wersji
+2.3PR7 Wayne Davisona i wielu rozszerzeñ
+wersji 2.0 Olivera Laumanna. Zauwa¿, ¿e wszystkie wersje numerowane jako 2.x
+s± autorstwa Oliviera Laumanna.
+
+.SH DOSTÊPNO¦Æ
+Najnowsza oficjalna wersja screena jest dostêpna przez anonimowy ftp z
+prep.ai.mit.edu, nic.funet.fi lub dowolnego innego hosta dystrybucji GNU.
+Domowym hostem screena jest
+ftp.uni-erlangen.de (131.188.3.71), katalog
+pub/utilities/screen. 
+Podkatalog `private' zawiera najnowsze wersje beta. Je¶li chcesz pomóc,
+wy¶lij wiadomo¶æ na screen@uni-erlangen.de.
+
+.SH B£ÊDY
+.PD
+.IP \(bu 3
+`dm' (tryb kasowania) i `xs' nie s± obs³ugiwane (s± ignorowane). `xn' jest
+traktowany jako wska¼nik magicznych marginesów.
+.IP \(bu
+Screen nie wie nic o znakach podwojonej wysoko¶ci lub szeroko¶ci. Jest to
+jednak jedyne miejsce, w którym
+.I vttest
+ma prawo siê nie powie¶æ.
+.IP \(bu
+Nie jest mo¿liwe zmienienie zmiennej ¶rodowiskowej $TERMCAP podczas
+ponownego pod³±czania z innego terminala.
+.IP \(bu
+Obs³uga systemów opartych o terminfo jest bardzo ograniczona. Dodawanie
+w³a¶ciwo¶ci do $TERMCAP mo¿e nie mieæ ¿adnych efektów.
+.IP \(bu
+Screen nie u¿ywa sprzêtowych tabów.
+.IP \(bu
+Screen musi byæ na wiêkszo¶ci systemów instalowany jako suid root. Inaczej
+nie bêdzie w stanie w odpowiedni sposób zmieniæ w³a¶ciciela pliku urz±dzenia
+tty dla ka¿dego okna.
+Wymaga tak¿e specjalnych uprawnieñ do zapisu do pliku \*Q/var/run/utmp\*U.
+.IP \(bu
+Wpisy z \*Q/var/run/utmp\*U nie s± usuwane gdy
+screen jest zbijany SIGKILL.
+Powoduje to, ¿e niektóre programy ("w", "rwho") mówi±, ¿e u¿ytkownik jest
+zalogowany, choæ wcale tak nie jest.
+.IP \(bu
+Screen mo¿e dawaæ dziwne ostrze¿enia je¶li twój tty nie ma wpisu utmp.
+.IP \(bu
+Gdy linia modemu zostanie odwieszona, screen nie zawsze automatycznie siê
+od³±czy (lub zakoñczy dzia³anie), chyba ¿e sterownik urz±dzenia wysy³a sygna³
+HANGUP.
+Aby od³±czyæ sesjê screena, u¿yj opcji -d lub -D linii komend.
+.IP \(bu
+Je¶li ustawione jest has³o, opcje -d, -D linii komend wci±¿ od³±czaj± sesjê
+bez pytania.
+.IP \(bu
+Zarówno \*Qbreaktype\*U jak i \*Qdefbreaktype\*U zmieniaj± metodê
+generowania przerwania, u¿ywan± przez wszystkie urz±dzenia terminalowe.
+Pierwszy powinien zmieniæ tylko ustawienie okna a drugi tylko warto¶æ
+domy¶ln± dla nowych okien.
+.IP \(bu
+Podczas pod³±czania do sesji wielou¿ytkownikowej, plik .screenrc u¿ytkownika
+nie jest ogl±dany. Ustawienia prywatne u¿ytkowników musz± byæ w³±czane do
+pliku .screenrc, z którego uruchomiono sesjê, lub zmieniane rêcznie.
+.IP \(bu
+Dziwna wyobra¼nia jest bardzo przydatna do zrozumienia wszystkich
+w³a¶ciwo¶ci.
+.IP \(bu
+Wysy³aj raporty o b³êdach, usprawnienia, koszulki, pieni±dze, piwo & pizzê
+do
+.BR screen@uni-erlangen.de .

@@ -1,0 +1,724 @@
+'\" t
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" This manpage is Copyright (C) 1992 Drew Eckhardt;
+.\"                               1993 Michael Haardt, Ian Jackson;
+.\"                               1998 Jamie Lokier;
+.\"                               2002 Michael Kerrisk.
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Sat Jul 24 13:39:26 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified Tue Sep 26 21:47:21 1995 by Andries Brouwer <aeb@cwi.nl>
+.\" and again on 960413 and 980804 and 981223.
+.\" Modified Fri Dec 11 17:57:27 1998 by Jamie Lokier <jamie@imbolc.ucc.ie>
+.\" Applied correction by Christian Ehrhardt - aeb, 990712
+.\" Modified 23 Apr 02, Michael Kerrisk, <mtk16@ext.canterbury.ac.nz>
+.\"    Added note on F_SETFL and O_DIRECT
+.\"    Complete rewrite + expansion of material on file locking
+.\"    Incorporated description of F_NOTIFY, drawing on
+.\"            Stephen Rothwell's notes in Documentation/dnotify.txt.
+.\"    Added description of F_SETLEASE and F_GETLEASE
+.\" Corrected and polished, aeb, 020527.
+.\"
+.\" Translation (c) 1998 Przemek Borys <pborys@dione.ids.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Aug 2002,
+.\"              manpages 1.53
+.\"
+.TH FCNTL 2 2002-04-24 Linux-2.5.18 "Podrêcznik programisty Linuksa"
+.SH NAZWA
+fcntl \- manipulacje na deskryptorze pliku
+.SH SK£ADNIA
+.nf
+.B #include <unistd.h>
+.B #include <fcntl.h>
+.sp
+.BI "int fcntl(int " fd ", int " cmd );
+.BI "int fcntl(int " fd ", int " cmd ", long " arg );
+.BI "int fcntl(int " fd ", int " cmd ", struct flock *" lock );
+..fi
+.SH OPIS
+.B fcntl
+dokonuje jednej z wielu ró¿nych operacji na 
+.IR fd .
+Wykonywana operacja zdeterminowana jest przez
+.IR cmd .
+.SS "Obs³uga zamkniêcia przy uruchomieniu (close-on-exec)"
+.TP
+.B F_DUPFD
+Znalezienie najni¿szego dostêpnego numeru dla deskryptora pliku, wiekszego lub
+równego
+.I arg
+i uczynienie deskryptora o tym numerze kopi±
+.IR fd .
+Jest to inna postaæ
+.BR dup2 (2),
+korzystaj±ca z konkretnego, zadanego deskryptora.
+.sp
+Stare i nowe deskryptory mog± byæ u¿ywane zamiennie. Dziel± one blokady,
+wska¼niki pozycji pliku i flagi; na przyk³ad, je¶li pozycja pliku zostanie
+zmodyfikowana poprzez u¿ycie
+.B lseek
+na jednym z deskryptorów, zmieni siê równie¿ pozycja dla drugiego deskryptora.
+.sp
+Te dwa deskryptory nie wspó³dziel± jednak znacznika "zamkniêcia przy
+uruchomieniu" (close-on-exec). Znacznik ten dla kopii jest wyzerowany, co
+oznacza, ¿e kopia nie zostanie zamkniêta podczas wywo³ania exec.
+.sp
+Po pomy¶lnym zakoñczeniu zwracany jest nowy deskryptor.
+.TP
+.B F_GETFD
+Odczytanie znacznika "zamkniêcia przy uruchomieniu" (close-on-exec). Je¶li bit
+.B FD_CLOEXEC
+jest równy 0, to plik pozostanie otwarty po wykonaniu
+.BR exec ,
+w przeciwnym przypadku zostanie zamkniêty.
+.TP
+.B F_SETFD
+Nadanie znacznikowi "zamkniêcia przy uruchomieniu" (close-on-exec) warto¶ci
+okre¶lonej przez bit
+.B FD_CLOEXEC
+.IR arg .
+.SS "Znaczniki stanu pliku"
+Z deskryptorem pliku stowarzyszonych jest kilka znaczników inicjalizowanych
+przez
+.BR open (2),
+.\" or
+.\" .BR creat (2),
+które mog± ewentualnie byæ modyfokowane przez
+.BR fcntl (2).
+Znaczniki s± wspó³dzielone przez kopie (wykonane za pomoc±
+.BR dup (2),
+.BR fork (2),
+itp.) tego samego deskryptora pliku.
+.sp
+Znaczniki i ich znaczenie s± opisane w 
+.BR open (2).
+.TP
+.B F_GETFL
+Odczytanie znaczników deskryptora.
+.TP
+.B F_SETFL
+Nadanie tym znacznikom deskryptora, które okre¶laj± stan pliku, warto¶ci
+okre¶lonej przez
+.IR arg .
+Pozosta³e bity (prawa dostêpu, znaczniki tworzenia pliku) w
+.I arg
+pozostaj± niezmienione.
+Pod Linuksem polecenie to mo¿e zmieniaæ jedynie znaczniki O_APPEND,
+O_NONBLOCK, O_ASYNC i O_DIRECT.
+.P
+.SS "Blokowanie doradcze"
+.BR F_GETLK ", " F_SETLK " i " F_SETLKW
+s³u¿± do zak³adania, zwalniania i sprawdzania obecno¶ci blokad rekordów
+(znanych równie¿ jako blokady segmentów lub obszarów pliku).
+Trzeci argument,
+.IR lock ,
+jest wska¼nikiem do struktury zawieraj±cej co najmniej nastêpuj±ce pola
+(kolejno¶æ nie jest okre¶lona).
+.in +2n
+.nf
+.sp
+struct flock {
+    ...
+    short l_type;    /* Rodzaj blokady: F_RDLCK,
+                        F_WRLCK, F_UNLCK */
+    short l_whence;  /* Sposób interpretacji l_start:
+                        SEEK_SET, SEEK_CUR, SEEK_END */
+    off_t l_start;   /* Pocz±tek (offset) blokady */
+    off_t l_len;     /* Liczba blokowanych bajtów */
+    pid_t l_pid;     /* PID procesu uniemo¿liwiaj±cego blokadê
+                        (tylko F_GETLK) */
+    ...
+};
+.fi
+.in -2n
+.P
+Pola 
+.IR l_whence ", " l_start " i " l_len
+powy¿szej struktury okre¶laj± zakres bajtów, który chcemy zablokowaæ.
+.I l_start
+jest pocz±tkiem (offsetem) blokady i jest interpretowane wzglêdem:
+pocz±tku pliku (gdy
+.I l_whence
+jest równe
+.BR SEEK_SET );
+aktualnej pozycji w pliku (gdy
+.I l_whence
+jest równe
+.BR SEEK_CUR );
+lub koñca pliku (gdy
+.I l_whence
+jest równe
+.BR SEEK_END ).
+W dwu ostatnich przypadkach
+.I l_start
+mo¿e byæ liczb± ujemn± o ile pozycja nie znajdzie siê przed pocz±tkiem pliku.
+.I l_len
+jest liczb± nieujemn± (ale zobacz UWAGI poni¿ej) okre¶laj±c± liczbê
+blokowanych bajtów. Mo¿na blokowaæ bajty poza koñcem pliku, ale nie przed jego
+pocz±tkiem. Podanie 0 jako
+.I l_len
+ma specjalne znaczenie: blokowanie wszystkich bajtów pocz±wszy od pozycji
+okre¶lonej przez
+.IR l_whence " i " l_start
+do koñca pliku, niezale¿nie od tego, jaki du¿y stanie siê plik.
+.P
+Pole
+.I l_type
+mo¿e s³u¿yæ do za³o¿enia blokady dla odczytu
+.RB ( F_RDLCK )
+lub dla zapisu
+.RB ( F_WDLCK )
+do pliku. Dowolna liczba procesów mo¿e utrzymywaæ blokadê dla odczytu pliku
+(blokada wspólna) w pewnym jego obszarze, ale tylko jeden proces mo¿e
+utrzymywaæ blokadê dla zapisu do pliku (blokada wy³±czna). Blokada wy³±czna
+wyklucza wszelkie inne blokady, zarówno wspólne, jak i wy³±czne.
+Pojedynczy proces mo¿e w danym obszarze pliku utrzymywaæ blokadê tylko
+jednego rodzaju; gdy w aktualnie zablokowanym obszarze zak³adana jest nowa
+blokada, to istniej±ca blokada jest przekszta³cana w blokadê nowego typu.
+(Takie przekszta³cenie mo¿e poci±gaæ za sob± podzia³, skrócenie lub
+po³±czenie z istniej±c± blokad±, gdy zakres bajtów podany dla nowej blokady
+nie pokrywa siê dok³adnie z zakresem istniej±cej blokady.) 
+.TP
+.B F_SETLK
+Ustawienie blokady dla zakresu bajtów okre¶lonego przez pola
+.IR l_whence ", " l_start " and " l_len
+.I lock
+(gdy
+.B l_type
+jest równe
+.B F_RDLCK
+lub
+.BR F_WRLCK )
+albo jej zwolnienie (gdy
+.B l_type
+jest równe
+.BR F_UNLCK ).
+Je¶li koliduj±ca blokada jest utrzymywana przez inny proces, funkcja ta
+zwraca \-1 i ustawia 
+.I errno
+na
+.B EACCES
+lub
+.BR EAGAIN .
+.TP
+.B F_SETLKW
+Podobne do
+.BR F_SETLK ,
+lecz w sytuacji, gdy na pliku za³o¿ona jest koliduj±ca blokada czeka na
+zwolnienie tej blokady.
+Je¶li podczas oczekiwania zostanie przechwycony sygna³, funkcja jest
+przerywana i (po powrocie z funkcji obs³ugi sygna³u) powraca natychmiast
+(zwracaj±c warto¶æ \-1 i ustawiaj±c
+.I errno
+na
+.BR EINTR ).
+.TP
+.B F_GETLK
+Jako argument
+.I lock
+tej funkcji okre¶la blokadê, jak± chcieliby¶my za³o¿yæ na pliku.
+Gdy za³o¿enie blokady jest mo¿liwe,
+.BR fcntl ()
+w rzeczywisto¶ci jej nie zak³ada, lecz zwraca
+.B F_UNLCK
+w polu
+.I l_type
+struktury
+.I lock
+pozostawiaj±c inne pola tej struktury niezmienione.
+Je¶li co najmniej jedna niezgodna blokada uniemo¿liwi³aby za³o¿enie zadanej
+blokady, to
+.BR fcntl ()
+zwróci w polach
+.IR l_type ", " l_whence ", " l_start " i " l_len
+struktury
+.I lock
+informacje dotycz±ce jednej z koliduj±cych blokad oraz ustawi
+.I l_pid
+na warto¶æ PID procesu utrzymuj±cego tê blokadê.
+.P
+Aby za³o¿yæ blokadê do odczytu, deskryptor
+.I fd
+musi byæ otwarty do odczytu.
+Aby za³o¿yæ blokadê do zapisu, deskryptor
+.I fd
+musi byæ otwarty do zapisu.
+Aby za³o¿yæ obydwa rodzaje blokad, nale¿y otworzyæ plik do odczytu i zapisu.
+.P
+Blokady s± usuwane w wyniku jawnego
+.BR F_UNLCK ,
+jak te¿ s± one automatycznie zwalniane gdy proces koñczy dzia³anie lub zamyka
+.I dowolny
+deskryptor odnosz±cy siê do pliku, na którym blokady s± utrzymywane.
+.\" (Additional file descriptors referring to the same file
+.\" may have been obtained by calls to
+.\" .BR open "(2), " dup "(2), " dup2 "(2), or " fcntl (2).)
+Jest to z³e: oznacza, ¿e proces mo¿e utraciæ blokady na pliku takim jak
+.I /etc/passwd
+lub
+.I /etc/mtab
+gdy jaka¶ funkcja biblioteczna zdecyduje siê z jakiego¶ powodu ten plik
+otworzyæ, odczytaæ i zamkn±æ.
+.P
+Blokady rekordów nie s± dziedziczone przez procesy potomne poprzez
+.BR fork (2),
+ale s± zachowywane poprzez
+.BR execve (2).
+.P
+Ze wzglêdu na wykonywane przez bibliotekê
+.BR stdio (3)
+buforowanie, nale¿y unikaæ blokowania rekordów w po³±czeniu z funkcjami
+z tego pakietu; zamiast tego nale¿y u¿ywaæ
+.BR read "(2) i " write (2).
+.P
+.SS "Blokowanie obowi±zuj±ce"
+(Nie POSIX-owe.)
+Powy¿sze blokady plików mog± byæ albo doradcze, albo obowi±zuj±ce, a domy¶lnie
+s± obowi±zuj±ce.
+Aby skorzystaæ z obowi±zuj±cych blokad, na systemie plików zawieraj±cym
+blokowany plik musi byæ w³±czone blokowanie obowi±zuj±ce (za pomoc±
+opcji "-o mand" programu
+.BR mount (8))
+oraz musi byæ ono w³±czone dla samego pliku (poprzez wy³±czenie prawa
+uruchamiania dla grupy i w³±czenie bitu set-GID).
+
+Blokady doradcze nie s± wymuszane i s± przydatne jedynie pomiêdzy
+wspó³pracuj±cymi procesami. Blokady obowi±zuj±ce s± wymuszane dla wszystkich
+procesów.
+.P
+.SS "Zarz±dzanie sygna³ami"
+.BR F_GETOWN ", " F_SETOWN ", " F_GETSIG " i " F_SETSIG
+s³u¿± do zarz±dzania sygna³ami dostêpno¶ci we/wy:
+.TP
+.B F_GETOWN
+Pobranie ID procesu lub grupy procesów aktualnie otrzymuj±cych sygna³y SIGIO
+i SIGURG dla zdarzeñ na deskryptorze plików
+.IR fd .
+Grupy procesów s± zwracane jako warto¶ci ujemne.
+.TP
+.B F_SETOWN
+Ustawia ID procesu lub grupy procesów aktualnie otrzymuj±cych sygna³y SIGIO
+i SIGURG dla zdarzeñ na deskryptorze plików
+.IR fd .
+Grupy procesów s± okre¶lane za pomoc± warto¶ci ujemnych.
+.RB ( F_SETSIG
+mo¿e s³u¿yæ do okre¶lenia innego sygna³u zamiast SIGIO).
+
+.\" From glibc.info:
+Je¶li na deskryptorze pliku ustawiony zostanie znacznik stanu
+.B O_ASYNC
+(przez usttawienie tego znacznika przy wywo³aniu
+.IR open (2),
+albo przy u¿yciu polecenia
+.B F_SETFL
+w
+.BR fcntl ),
+to gdy wej¶cie lub wyj¶cie dla tego deskryptora pliku stanie siê mo¿liwe, 
+wys³any zostanie sygna³ SIGIO.
+.sp
+Proces lub grupê procesów, które otrzymaj± sygna³ mo¿na wybraæ za pomoc±
+polecenia
+.B F_SETOWN
+w funkcji
+.BR fcntl .
+Je¶li deskryptor pliku jest gniazdem, okre¶la to równie¿ odbiorcê sygna³ów
+SIGURG dostarczanych gdy poprzez gniazdo przybêd± dane autonomiczne.
+(SIGURG jest wysy³any w sytuacjach, w których
+.BR select (2)
+zg³osi³by "stan wyj±tkowy" dla gniazda.)
+Je¶li deskryptor pliku jest skojarzony z urz±dzeniem terminalowym, to sygna³y
+SIGIO s± wysy³ane do grupy procesów pierwszoplanowych tego terminala.
+.TP
+.B F_GETSIG
+Pobranie numeru sygna³u wysy³anego, gdy wej¶cie lub wyj¶cie stanie siê
+mo¿liwe. Warto¶æ zerowa oznacza wysy³anie SIGIO. Dowolna inna warto¶æ (³±cznie
+z SIGIO) stanowi numer sygna³u wysy³anego zamiast SIGIO. W tych sytuacjach
+dodatkowe informacje mog± byæ dostêpne dla programu obs³ugi sygna³u, o ile
+zosta³y zainstalowane z u¿yciem SA_SIGINFO.
+.TP
+.B F_SETSIG
+Ustawienie numeru sygna³u wysy³anego, gdy wej¶cie lub wyj¶cie stanie siê
+mo¿liwe. Warto¶æ zerowa oznacza wysy³anie sygna³u domy¶lnego, czyli SIGIO.
+Dowolna inna warto¶æ (³±cznie z SIGIO) stanowi numer sygna³u wysy³anego
+zamiast SIGIO. W tych sytuacjach dodatkowe informacje mog± byæ dostêpne dla
+programu obs³ugi sygna³u, o ile zosta³y zainstalowane z u¿yciem SA_SIGINFO.
+.sp
+Za pomoc± F_SETSIG z niezerow± warto¶ci± i przy ustawionym SA_SIGINFO dla
+programu obs³ugi sygna³u (patrz
+.BR sigaction (2)),
+mo¿na przekazaæ do programu obs³ugi sygna³u w strukturze
+.I siginfo_t
+dodatkowe informacje o zdarzeniach we/wy
+Je¶li pole
+.I si_code
+wskazuje, ¿e ¼ród³em jest SI_SIGIO, to pole
+.I si_fd
+zawiera deskryptor pliku zwi±zany ze zdarzeniem. W przeciwnym przypadku,
+brak jest wskazania, które deskryptory plików oczekuj± i do okre¶lenia
+dostêpnych dla we/wy deskryptorów plików nale¿y u¿ywaæ zwyk³ych mechanizmów
+.RB ( select (2),
+.BR poll (2),
+.BR read (2)
+z ustawionym
+.B O_NONBLOCK
+itd.),
+.sp
+Wybieraj±c sygna³ czasu rzeczywistego wg POSIX.1b (warto¶æ >= SIGRTMIN),
+mo¿na, u¿ywaj±c tych samych numerów sygna³ów, spowodowaæ umieszczenie
+w kolejce wielu zdarzeñ we/wy. (Kolejkowanie zale¿y od dostêpnej pamiêci.)
+Jak powy¿ej, dodatkowe informacje s± dostêpne, gdy programy obs³ugi sygna³ów
+zosta³y zainstalowane z ustawionym SA_SIGINFO.
+.PP
+Za pomoc± tych mechanizmów program mo¿e zaimplementowaæ w pe³ni asynchroniczne
+we/wy nie u¿ywaj±c przez wiêkszo¶æ czasu
+.BR select (2)
+i
+.BR poll (2).
+.PP
+Opisane powy¿ej korzystanie z
+.BR O_ASYNC ,
+.BR F_GETOWN ,
+.B F_SETOWN
+jest specyficzne dla BSD i Linuksa.
+.B F_GETSIG
+i
+.B F_SETSIG
+s± specyficzne dla Linuksa. POSIX posiada asynchroniczne we/wy i strukturê
+.I aio_sigevent
+s³u¿±c± do podobnych celów; w Linuksie s± one równie¿ dostêpne jako czê¶æ
+biblioteki GNU C (glibc).
+.P
+.SS Dzier¿awy
+.B F_SETLEASE
+i
+.B F_GETLEASE
+(od Linuksa 2.4 wzwy¿) s³u¿± do (odpowiednio) ustanowienia i pobrania
+aktualnego ustawienia dzier¿awy na pliku okre¶lonym przez
+.I fd
+dla procesu wywo³uj±cego funkcjê.
+Dzier¿awa pliku zapewnia mechanizm, w którym proces utrzymuj±cy dzier¿awê
+("dzier¿awca") jest zawiadamiany (poprzez dostarczenie sygna³u) o tym, ¿e
+inny proces ("wspó³zawodnik") próbuje wykonaæ
+.BR open (2)
+lub
+.BR truncate (2)
+na tym pliku.
+.TP
+.B F_SETLEASE
+Ustawia lub usuwa dzier¿awê pliku w zale¿no¶ci od tego, która z nastêpuj±cych
+warto¶ci zostanie podana jako argument
+.I arg
+typu integer :
+
+.RS
+.TP
+.B F_RDLCK
+Wziêcie dzier¿awy odczytu.
+Spowoduje to zawiadamianie o otwarciu pliku do zapisu lub jego obciêciu przez
+inny proces.
+.TP
+.B F_WRLCK
+Wziêcie dzier¿awy zapisu.
+Spowoduje to zawiadamianie o otwarciu pliku (do odczytu lub do zapisu) lub
+obciêciu go przez inny proces. Dzier¿awa zapisu mo¿e zostaæ na³o¿ona na plik
+tylko wtedy, gdy plik ten nie jest aktualnie otwarty przez ¿aden inny proces.
+.TP
+.B F_UNLCK
+Zdjêcie w³asnej dzier¿awy z pliku.
+.RE
+.P
+Proces mo¿e utrzymywaæ na pliku dzier¿awê tylko jednego typu.
+.P
+Dzier¿awy mo¿na pobieraæ tylko dla zwyk³ych plików.
+Proces nieuprzywilejowany mo¿e pobieraæ jedynie dzier¿awy na plikach, których
+UID odpowiada UID-owi systemu plików dla danego procesu.
+.TP
+.B F_GETLEASE
+Wskazuje rodzaj dzier¿awy utrzymywanej przez aktualny proces na pliku
+okre¶lonym przez deskryptor
+.IR fd ,
+zwracaj±c
+.BR F_RDLCK ", " F_WRLCK " albo " F_UNLCK,
+w zale¿no¶ci od tego, czy (odpowiednio) aktualny proces utrzymuje dzier¿awê
+odczytu, zapisu, czy nie utrzymuje ¿adnej dzier¿awy na danym pliku.
+(Trzeci argument
+.BR fcntl ()
+jest pomijany.)
+.PP
+Gdy wspó³zawodnik wykona operacjê
+.BR open ()
+lub
+.BR truncate ()
+koliduj±c± z dzier¿aw± ustanowion± poprzez
+.BR F_SETLEASE ,
+wywo³anie funkcji systemowej jest blokowane przez j±dro (chyba ¿e w
+.BR open (),
+podano znacznik
+.B O_NONBLOCK
+kiedy powraca ona natycmiast zg³aszaj±c b³±d
+.BR EWOULDBLOCK ).
+J±dro zawiadamia wówczas dzier¿awcê poprzez wys³anie sygna³u
+(domy¶lnie SIGIO).
+Dzier¿awca powinien odpowiedzieæ na otrzymanie tego sygna³u wykonuj±c porz±dki
+niezbêdne dla przygotowania pliku do dostêpu przez inny proces (np. zrzucenie
+buforów) a nastêpnie usuniêcie swojej dzier¿awy poprzez wykonanie polecenia
+.B F_SETLEASE
+podaj±c jako
+.I arg
+.BR F_UNLCK .
+
+Je¶li dzier¿awca nie zwolni dzier¿awy w ci±gu podanej w
+.I /proc/sys/fs/lease-break-time
+liczby sekund, a wywo³anie funkcji systemowej przez wspó³zawodnika pozostaje
+zablokowane (tzn. wspó³zawodnik nie poda³
+.B O_NONBLOCK
+w swoim wywo³aniu funkcji
+.BR open (),
+ani te¿ wywo³anie funkcji systemowej nie zosta³o przerwane przez obs³ugê
+sygna³u), to j±dro wymusi przerwanie dzier¿awy przez dzier¿awcê.
+
+Po dobrowolnym lub wymuszonym usuniêciu dzier¿awy, pzry za³o¿eniu, ¿e
+wywo³anie funkcji systemowej przez wspó³zawodnika nie jest nieblokuj±ce,
+j±dro pozwala na kontynuacjê funkcji systemowej wywo³anej przez
+wspó³zawodnika.
+
+Domy¶lnym sygna³em stosowanym do zawiadamiania dzier¿awcy jest SIGIO, lecz
+mo¿na go zmieniæ za pomoc± polecenia
+.B F_SETSIG
+w
+.B fcntl ().
+Je¶li wydano polecenie
+.B F_SETSIG
+(nawet podaj±c SIGIO), a funkcja obs³ugi sygna³u zosta³a okre¶lona za pomoc±
+SA_SIGINFO, to ta funkcja obs³ugi otrzyma jako drugi argument strukturê
+.IR siginfo_t ,
+której pole
+.I si_fd
+bêdzie zawieraæ deskryptor dzier¿awionego pliku, do którego uzyskuje dostêp
+inny proces.
+(Jest to przydatne, gdy wywo³uj±cy utrzymuje dzier¿awy na wielu plikach).
+.SS "Powiadamianie o zmianach pliku lub katalogu"
+.TP
+.B F_NOTIFY
+(od Linuksa 2.4 wzwy¿)
+Zapewnia powiadamianie o modyfikacji katalogu, do którego odnosi siê
+.I fd
+lub o modyfikacji któregokolwiek z plików w tym katalogu.
+Zdarzenia, powiadamianie o których ma nast±piæ s± okre¶lone w
+.IR arg ,
+bêd±cym mask± bitow± utworzon± jako suma logiczna (OR) zera lub wiêcej
+spo¶ród nastêpuj±cych bitów:
+
+.TS
+l l
+----
+lB l.
+Bit	Opis (zdarzenie w katalogu)
+DN_ACCESS	Dostêp do pliku (read, pread, readv)
+DN_MODIFY	Modyfikacja pliku (write, pwrite,
+	writev, truncate, ftruncate)
+DN_CREATE	Utworzenie pliku (open, creat, mknod,
+	mkdir, link, symlink, rename)
+DN_DELETE	Usuniêcie pliku (unlink, rename do
+	innego katalogu, rmdir)
+DN_RENAME	Zmiana nazwy w obrêbie katalogu
+	(rename)
+DN_ATTRIB	Zmiana atrybutów pliku
+	(chown, chmod, utime[s])
+.TE
+.sp
+(Uzyskanie ich definicji wymaga zdefiniowania makra _GNU_SOURCE przed
+w³±czeniem <fcntl.h>.)
+.sp
+Powiadomienia dotycz±ce katalogów s± zazwyczaj jednorazowe, wiêc aplikacja 
+musi siê ponownie zarejestrowaæ, aby otrzymaæ dalsze powiadomienia.
+Alternatywnie, je¶li w
+.IR arg
+w³±czono
+.BR DN_MULTISHOT ,
+to powiadomienia bêd± dokonywane a¿ do ich jawnego usuniêcia.
+.\" The following does seem a poor API-design choice...
+Szereg wywo³añ podaj±cych
+.B DN_MULTISHOT
+kumuluje siê, przy czym zdarzenia w
+.I arg
+s± dodawane logicznie do ju¿ monitorowanych.
+Aby wy³±czyæ powiadamianie o jakichkolwiek zdarzeniach, nale¿y w wywo³aniu
+.B F_NOTIFY
+podaæ
+.I arg
+równe 0.
+.sp
+Powiadamianie odbywa siê poprzez dostarczenie sygna³u.
+Domy¶lnym sygna³em jest SIGIO, ele mo¿na go amieniæ za pomoc± polecenia
+.B F_SETSIG
+w
+.BR fcntl ().
+W tym drugim przypadku, funkcja obs³ugi sygna³u otrzymuje jako swój drugi
+argument strukturê
+.I siginfo_t
+(gdy funkcja obs³ugi sygna³u zosta³a okre¶lona za pomoc± A_SIGINFO) a pole
+.I si_fd
+tej struktury zawiera deskryptor pliku, który spowodowa³ powiadomienie.
+(przydatne, gdy utrzymywane s± dzier¿awy na wielu katalogach).
+.sp
+W szczególno¶ci, gdy u¿ywa siê
+.BR DN_MULTISHOT ,
+do zawiadamiania powinien byæ stosowany sygna³ czasu rzeczywistego zgodny
+z POSIX.1b, tak aby mozna by³o kolekowaæ wiele zmian.
+.SH "WARTO¦Æ ZWRACANA"
+Warto¶æ zwracana po pomy¶lnym zakoñczeniu funkcji zale¿y od operacji:
+.TP 0.9i
+.B F_DUPFD
+Nowy deskryptor.
+.TP
+.B F_GETFD
+Warto¶æ znacznika.
+.TP
+.B F_GETFL
+Warto¶ci znaczników.
+.TP
+.B F_GETOWN
+Warto¶æ w³a¶ciciela deskryptora.
+.PP
+.B F_GETSIG
+Warto¶æ sygna³u wys³yanego, gdy odczyt lub zapis stan± siê mo¿liwe, lub zero,
+dla tradycyjnego zachowania SIGIO.
+.TP
+Wszystkie pozosta³e polecenia
+Zero.
+.PP
+Przy b³êdach zwracane jest \-1 i odpowiednio ustawiane
+.IR errno .
+.SH B£ÊDY
+.TP
+.BR EACCES " lub " EAGAIN
+Operacja jest zabroniona przez blokadê utrzymywan± przez inny proces.
+Albo, operacja jest zabroniona, gdy¿ plik zosta³ odwzorowany w pamiêci przez
+inny proces. 
+.TP
+.B EBADF
+.I fd
+nie jest deskryptorem otwartego pliku, albo by³o to polecenie
+.B F_SETLK
+lub
+.B F_SETLKW
+a tryb otwarcia deskryptora pliku nie odpowiada rodzajowi ¿±danej blokady.
+.TP
+.B EDEADLK
+Stwierdzono, ¿e podane polecenie
+.B F_SETLKW
+spowodowa³oby zakleszczenie blokad.
+.TP
+.B EFAULT
+.I lock
+znajduje siê poza dostêpn± dla u¿ytkownika przestrzeni± adresow±.
+.TP
+.B EINTR
+Dla
+.BR F_SETLKW ,
+oznacza, ¿e polecenie zosta³o przerwane przez sygna³.
+Dla
+.BR F_GETLK " i " F_SETLK ,
+polecenie zosta³o przerwane przez sygna³ zanim blokada zosta³a sprawdzona lub
+ustawiona. Najbardziej prawdopodobne podczas blokowania zdalnego pliku (np.
+blokowanie przez NFS), ale czasmi zda¿a siê lokankie.
+.TP
+.B EINVAL
+Dla
+.BR F_DUPFD ,
+.I arg
+jest ujemny, lub wiêkszy od maksymalnej dozwolonej warto¶ci. Dla
+.BR F_SETSIG ,
+.I arg
+nie jest dozwolonym numerem sygna³u.
+.TP
+.B EMFILE
+Dla
+.BR F_DUPFD ,
+proces ju¿ osi±gn±³ maksymaln± liczbê otwartych deskryptorów plików.
+.TP
+.B ENOLCK
+Zbyt wiele otwartych blokad segmentowych, tablica blokad jest pe³na lub
+zawiód³ protokó³ blokowania zdalnego (np. dla blokad przez NFS).
+.TP
+.B EPERM
+Próbowano wyzerowaæ znacznik
+.B O_APPEND
+na pliku posiadaj±cym ustawiony atrybut "append-only".
+.SH UWAGI
+B³êdy zwracane przez
+.B dup2
+s± inne ni¿ zwracane przez
+.BR F_DUPFD .
+
+Pocz±wszy od j±dra 2.0, nie ma oddzia³ywania pomiêdzy typami blokad
+zak³±danych przez
+.BR flock (2)
+i przez
+.BR fcntl (2).
+
+POSIX 1003.1-2001 zezwala na ujemne wareo¶ci
+.IR l_len .
+(I je¶li warto¶æ jest ujemna, to przedzia³em, którego dotyczy blokada obejmuje
+bajty od
+.IR l_start + l_len
+do
+.IR l_start -1
+w³±cznie.) Jednak¿e, funkcja systemowa z aktualnych j±der Linuksa zwraca
+w tej sytuacji EINVAL.
+
+W niektórych systemach struktura
+.I "struct flock"
+zawiera dodatkowe pola, takie jak np.
+.IR l_sysid .
+Oczywi¶cie, samo
+.I l_pid
+jest ma³o przydatne, gdy proces utrzymuj±cy blokadê mo¿e dzia³aæ na innej
+maszynie.
+
+.SH "ZGODNE Z"
+SVr4, SVID, POSIX, X/OPEN, BSD 4.3.  Tylko operacje F_DUPFD, 
+F_GETFD, F_SETFD, F_GETFL, F_SETFL, F_GETLK, F_SETLK i F_SETLKW
+s± opisane w POSIX.1. F_GETOWN i F_SETOWN s± BSDizmami niewspieranymi przez
+SVr4; F_GETSIG i F_SETSIG s± specyficzne dla Linuksa.
+.BR F_NOTIFY ", " F_GETLEASE " i " F_SETLEASE
+s± równie¿ specyficzne dla Linuksa.
+(Uzyskanie ich definicji wymaga zdefiniowania makra _GNU_SOURCE przed
+w³±czeniem <fcntl.h>.)
+Legalne znaczniki dla F_GETFL/F_SETFL to te, które s± wspierane przez
+.BR open (2)
+i s± tu ró¿nice miêdzy wymienionymi systemami; O_APPEND, O_NONBLOCK, O_RDONLY,
+i O_RDWR s± opisane w POSIX.1. SVr4 wspiera wiele innych opcji i znaczników,
+tutaj nie opisanych.
+.PP
+SVr4 dokumentuje dodatkowe b³êdy EIO, ENOLINK i EOVERFLOW.
+.SH "ZOBACZ TAK¯E"
+.BR dup2 (2),
+.BR flock (2),
+.BR lockf (3),
+.BR open (2),
+.BR socket (2)
+.P
+Zobacz te¿ locks.txt, mandatory.txt i dnotify.txt w
+/usr/src/linux/Documentation.

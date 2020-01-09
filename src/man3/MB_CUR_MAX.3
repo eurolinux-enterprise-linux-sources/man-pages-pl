@@ -1,0 +1,42 @@
+.\" T³umaczenie wersji man-pages 1.39 - wrzesieñ 2001 PTM
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" --------
+.\" Copyright (c) Bruno Haible <haible@clisp.cons.org>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" References consulted:
+.\"   GNU glibc-2 source code and manual
+.\"   Dinkumware C library reference http://www.dinkumware.com/
+.\"   OpenGroup's Single Unix specification http://www.UNIX-systems.org/online.html
+.\"
+.\" Modified, aeb, 990824
+.\" --------
+.TH MB_CUR_MAX 3 1999-07-04 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+MB_CUR_MAX \- maksymalna d³ugo¶æ wielobajtowego znaku w aktualnym locale
+.SH SK£ADNIA
+.nf
+.B #include <stdlib.h>
+.fi
+.SH OPIS
+Makro
+.B MB_CUR_MAX
+definiuje wyra¿enie ca³kowite udostêpniaj±ce maksymaln± liczbê bajtów wymagan±
+dla reprezentacji pojedynczego szerokiego znaku w aktualnym locale
+Zale¿y ono od locale, wiêc nie jest sta³± podczas kompilacji.
+.SH "WARTO¦Æ ZWRACANA"
+Warto¶æ ca³kowita >= 1 i <= MB_LEN_MAX.
+Warto¶æ 1 oznacza znaki zakodowane tradycyjnie, 8-bitowo.
+.SH "ZGODNE Z"
+ANSI C, POSIX.1
+.SH "ZOBACZ TAK¯E"
+.BR MB_LEN_MAX (3),
+.BR mblen (3),
+.BR mbtowc (3),
+.BR mbstowcs (3),
+.BR wctomb (3),
+.BR wcstombs (3)

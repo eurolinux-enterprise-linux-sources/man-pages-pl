@@ -1,0 +1,32 @@
+.\" {PTM/LK/0.1/28-09-1998/"konwersja pixmapy X11 do .ppm"}
+.\" Tlumaczenie: 28-09-1998 Lukasz Kowalczyk (lukow@tempac.okwf.fuw.edu.pl)
+.TH xpmtoppm 1 "16 sierpnia 1990"
+.SH NAZWA
+xpmtoppm \- utwórz przeno¶n± pixmapê (.ppm) z pixmapy X11
+.SH SK£ADNIA
+.B xpmtoppm
+.RI [ plik_xpm ]
+.SH OPIS
+Odczytuje pixmapê X11 (XPM w wersji 1 lub 3). Nastepnie zapisuje na
+standardowym wyj¶ciu przeno¶n± pixmapê (.ppm).
+.SH ZNANE PROBLEMY
+Format plików utworzonych przez XPM w wersji 3 nie jest w pe³ni obs³ugiwany.
+Komentarze mog± byæ zawarte tylko w pojedynczych liniach i dla ka¿dego
+piksela musi istnieæ domy¶lna nazwa koloru.
+.\" there must be for every pixel a default colorname for a color type visual.
+.SH "ZOBACZ TAK¯E"
+ppmtoxpm(1), ppm(5)
+.br
+XPM Manual by Arnaud Le Hors lehors@mirsa.inria.fr
+.SH AUTOR
+Copyright (C) 1991 by Jef Poskanzer.
+.\" Permission to use, copy, modify, and distribute this software and its
+.\" documentation for any purpose and without fee is hereby granted, provided
+.\" that the above copyright notice appear in all copies and that both that
+.\" copyright notice and this permission notice appear in supporting
+.\" documentation.  This software is provided "as is" without express or
+.\" implied warranty.
+
+Upgraded to support XPM version 3 by
+    Arnaud Le Hors (lehors@mirsa.inria.fr)
+    Tue Apr 9 1991

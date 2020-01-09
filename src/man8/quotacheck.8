@@ -1,0 +1,208 @@
+.\" {PTM/WK/2000-II}
+.\" Last update: Andrzej M. Krzysztofowicz <ankry@mif.pg.gda.pl>, Apr 2002
+.\"              quota 3.04
+.\"
+.TH quotacheck 8 "20 lipca 2001"
+.SH NAZWA
+quotacheck \- przeszukanie systemu plików w celu okre¶lenia wykorzystania
+dysku oraz utworzenia, sprawdzenia i naprawy plików kwot
+.SH SK£ADNIA
+.B quotacheck
+[
+.B \-gubcfinvdMmR
+] [
+.B \-F
+.I nazwa-formatu
+]
+.B \-a
+|
+.I system-plików
+.br
+.SH OPIS
+.B quotacheck
+bada ka¿dy z systemów plików, tworzy tablicê zajêto¶ci dysku i porównuje j±
+z tablic± zapisan± w pliku kwot dyskowych systemu plików (krok ten jest
+pomijany w przypadku podania opcji 
+.BR -c ).
+Je¶li stwierdzone zostan± rozbie¿no¶ci, to aktualizowane s± zarówno plik kwot,
+jak i aktualna systemowa kopia nieprawid³owych kwot (to ostatnie ma miejsce
+jedynie podczas sprawdzania aktywnego systemu plików, co nie jest zalecane).
+Domy¶lnym zachowaniem jest sprawdzanie jedynie kwot dyskowych u¿ytkowników.
+.B quotacheck
+oczekuje, ¿e ka¿dy ze sprawdzanych systemów plików zawiera pliki kwot
+o nazwach
+.I [a]quota.user
+i
+.IR [a]quota.group ,
+umieszczone w g³ównym katalogu danego systemu plików. Je¶li plik nie istnieje,
+to
+.B quotacheck
+go utworzy.
+.PP
+Je¶li plik kwot jest uszkodzony, to
+.B quotacheck
+spróbuje zachowaæ tyle danych, ile bêdzie mo¿liwe. Odzyskiwanie danych mo¿e
+wymagaæ interwencji u¿ytkownika. Bez dodatkowych opcji,
+.B quotacheck
+w takiej sytuacji po prostu zakoñczy pracê. W trybie interakcyjnym (opcja
+.BR -i ),
+u¿ytkownik jest proszony o poradê. Porady mo¿na udzieliæ z linii poleceñ
+(patrz opcja
+.BR -n ),
+co jest przydatne podczas automatycznego uruchamiania
+.B quotacheck
+(np. ze skryptu) i niepowodzenie jest nie do przyjêcia.
+.PP
+.B quotacheck
+powinno byæ uruchamiane ka¿dorazowo gdy system startuje i montuje
+niepoprawne systemy plików. Najczê¶ciej zdarza siê to po awarii systemu.
+.PP
+Jest wysoce zalecane, aby uruchamiaæ
+.B quotacheck
+przy wy³±czonych dla danego systemu plików kwotach. W przeciwnym razie, mog±
+wyst±piæ uszkodzenia lub utrata danych w plikach kwot. Nie jest równie¿
+rozs±dnym uruchamianie
+.B quotacheck
+na aktywnym systemie plików, gdy¿ aktualne zu¿ycie zasobów mo¿e ulec zmianie
+podczas przeszukiwania. Aby temu zapobiec,
+.B quotacheck
+próbuje prze³±czyæ system plików w tryb "tylko do odczytu", zanim rozpocznie
+przeszukiwanie. Po zakoñczeniu przeszukiwania system plików jest prze³±czany
+w tryb "do odczytu i zapisu". Mo¿na to wy³±czyæ za pomoc± opcji
+.BR \-m .
+Mo¿na równie¿ za pomoc± opcji
+.B \-M
+spowodowaæ, aby
+.B quotacheck
+ignorowa³ niepomy¶lne prze³±czenie systemu plików w tryb "tylko do odczytu".
+.SH OPCJE
+.TP
+.B \-b
+Wymuszenie tworzenia przez
+.B quotacheck
+kopii zapasowych pliku kwot przed zapisaniem nowych danych.
+.TP
+.B \-v
+Sygnalizowanie przez
+.B quotacheck
+postêpu operacji. Normalnie, dzia³a on po cichu.
+.TP
+.B \-d
+Tryb odpluskwiania. Podaje mnóstwo informacji, które mog± pos³u¿yæ do
+wyszukiwania b³êdów w programie. Wynik jest bardzo rozgadany a przeszukiwanie
+nie powolne.
+.TP
+.B \-u
+Sprawdzanie jedynie kwot dyskowych u¿ytkowników na systemach plików
+wymienionych w
+.I /etc/mtab
+lub podanych w linii poleceñ. Jest to zachowanie domy¶lne.
+.TP
+.B \-g
+Sprawdzanie jedynie kwot dyskowych grup na systemach plików wymienionych w
+.I /etc/mtab
+lub podanych w linii poleceñ.
+.TP
+.B \-c
+Nie czytanie istniej±cych plików kwot. Po przostu wykonanie przeszukania
+i zapisanie jego wyników na dyaku.
+.B quotacheck
+pominie równie¿ poszukiwanie starych plików kwot, gdy ich nie znajdzie.
+.TP
+.B \-f
+Wymuszenie sprawdzania systemu plików przy w³±czonych kwotach. Jest to
+niezalecane, gdy¿ utworzone pliki kwot mog± byæ nieaktualne. 
+.TP
+.B \-M
+Opcja ta wymusza sprawdzanie systemu plików w trybie "do odczytu i zapisu",
+gdy prze³±czenie w tryb "tylko do odczytu" siê nie powiedzie. Nale¿y to robiæ,
+gdy ma siê pewno¶æ, ¿e ¿aden proces nie zapisuje na przeszukiwanym systemie
+plików.
+.TP
+.B \-m
+Ominiêcie próby prze³±czenia systemu plików w tryb "tylko do odczytu". Patrz 
+komentarz do opcji
+.BR \-M .
+.TP
+.B \-i
+Tryb interakcyjny. Domy¶lnie,
+.B quotacheck
+koñczy pracê po wykryciu b³êdu. W trybie interakcyjnym u¿ytkownik jest pytany
+o decyzjê. Zobacz opcjê
+.BR \-n .
+.TP
+.B \-n
+Je¶li plik kwot jest uszkodzony, mog± pojawiæ siê podwójne wpisy dla
+poszczególnych identyfikatorów u¿ytkowników lub grup. Normalnie, w takiej
+sytuacji
+.B quotacheck
+koñczy pracê lub pytz u¿ytkownika o decyzjê. Przy w³±czonej tej opcji, u¿ywany
+jest zawsze pierwszy wpis (dzia³a ona równie¿ w trybie interakcyjnym).
+.TP
+.B \-F \f2nazwa-formatu\f1
+Sprawdzanie kwot wed³ug podanego formatu (tzn. nie jest wykonywana
+autodetekcja formatu). Jest to zalecane, gdy¿ detekcja mo¿e nie dzia³aæ
+poprawnie  w przypadku uszkodzonych plików kwot. Dozwolone s± nastêpuj±ce
+nazwy formatów:
+.B vfsold
+(wersja 1 kwot),
+.B vfsv0
+(wersja 2 kwot),
+.B rpc
+(kwoty na NFS),
+.B xfs
+(kwoty na systemie plików XFS)
+.TP
+.B \-a
+Sprawdzanie wszystkich zamontowanych, ró¿nych od NFS systemów plików
+wymienionych w
+.B /etc/mtab
+.TP
+.B \-R
+U¿ywane w po³±czeniu z opcj±
+.B \-a
+powoduje sprawdzenie kwot na wszystkich systemach plików, oprócz g³ównego.
+
+.SH UWAGA
+.I quotacheck
+powinno byæ uruchamiane tylko przez superu¿ytkownika. U¿ytkownicy
+nieuprzywilejowani przypuszczalnie nie maj± praw do odczytu wszystkich
+katalogów danego systemu plików.
+
+.SH "ZOBACZ TAK¯E"
+.BR quota (1),
+.BR quotactl (2),
+.BR fstab (5),
+.BR quotaon (8),
+.BR repquota (8),
+.BR convertquota (8),
+.BR setquota (8),
+.BR edquota (8),
+.BR fsck (8),
+.BR efsck (8),
+.BR e2fsck (8),
+.BR xfsck (8)
+
+.SH PLIKI
+.PD 0
+.TP 15
+.BR aquota.user " i " aquota.group
+pliki kwot umieszczone w g³ównym katalogu systemu plików (wersja 2
+kwot, systemy plików inne ni¿ XFS)
+.TP 15
+.BR quota.user " i " quota.group
+pliki kwot umieszczone w g³ównym katalogu systemu plików (wersja 1
+kwot, systemy plików inne ni¿ XFS)
+.TP
+.B /etc/mtab
+nazwy i lokalizacja zamontowanych systemów plików
+.SH AUTOR
+Jan Kara \<jack@suse.cz\>
+.br
+W oparciu o star± wersjê
+.B quotacheck
+autorstwa:
+.br
+Edvarda Tuindera \<ed@elm.net\>
+.br
+Marco van Wieringena \<mvw@planets.elm.net\>

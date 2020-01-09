@@ -1,0 +1,360 @@
+.\" Copyright (c) 1994, 1995 Jacques Gelinas (jacques@solucorp.qc.ca)
+.\" Copyright (c) 1995 Bjorn Ekwall (bj0rn@blox.se)
+.\" This program is distributed according to the Gnu General Public License.
+.\" See the file COPYING in the kernel source directory /linux
+.\" $Id: depmod.1,v 1.5 2000/09/30 17:08:37 wojtek2 Exp $
+.\"
+.\" {PTM/MM/0.1/18-11-1998/"depmod.1, modprobe.1 - automatyczna obs³uga modu³ów"}
+.TH DEPMOD 1 "March 17, 1996" Linux "Linux Module Support"
+.SH NAZWA
+depmod, modprobe \- programy do "automatycznej" obs³ugi modu³ów
+.SH SK£ADNIA
+.B depmod
+[ \-a ]
+.br
+.B depmod
+[ \-a wersja ]
+.br
+.B depmod
+modu³1.o modu³2.o ...
+.PP
+.B modprobe
+modu³.o [symbol=warto¶æ ...]
+.br
+.B modprobe
+\-t tag wzorzec
+.br
+.B modprobe
+\-a \-t tag wzorzec
+.br
+.B modprobe
+\-l [ \-t tag ] wzorzec
+.br
+.B modprobe
+\-r modu³
+.br
+.B modprobe
+\-c
+.br
+.SH OPIS
+Narzêdzia te maj± pomóc u¿ytkownikom w pos³ugiwaniu siê modu³ami
+Linuksa.
+.PP
+.B Depmod
+tworzy plik podobny do "Makefile" z zale¿no¶ciami, bazuj±cy na symbolach,
+które znalaz³ w zbiorze modu³ów podanych w linii komend (lub w standardowym
+miejscu).
+Plik zale¿no¶ci mo¿e byæ potem u¿yty przez
+.B modprobe 
+, aby automatycznie  za³adowaæ odpowiednie modu³y.
+.PP
+.B Modprobe
+jest u¿ywany aby za³adowaæ zbiór modu³ów, pojedynczy modu³, zbiór
+zale¿nych od siebie modu³ów lub wszystkie modu³y oznaczone okre¶lonym
+tagiem.
+.PP
+.B Modprobe
+³aduje automatycznie wszystkie modu³y zale¿ne od siebie w zbiorze modu³ów,
+jak zosta³o to opisane w pliku zale¿no¶ci modules.dep.
+Je¶li za³adowanie jednego z tych modu³ów siê nie powiedzie, ca³y zbiór
+modu³ów zostanie usuniêty automatycznie z j±dra (przez rmmod).
+.PP
+.B Modprobe
+mo¿e ³adowaæ modu³y na dwa ró¿ne sposoby. Jeden to taki, ¿e modprobe spróbuje
+za³adowaæ modu³ z podanej listy lub zdefiniowany przez  
+.B wzorzec (pattern).
+Zatrzymuje siê je¶li uda mu siê za³adowaæ jeden z modu³ów.
+Ten tryb mo¿e byæ u¿yty np. do automatycznego za³adowania modu³u z driverem
+dla naszej karty sieciowej, wybranego z listy.
+Inny sposób u¿ycia modprobe, to za³adowanie wszystkich modu³ów z listy.
+Ta opcja mo¿e byæ u¿yta do za³adowania wszystkich modu³ów w trakcie
+uruchamiania systemu.
+.PP
+Podaj±c opcjê
+.B -r,
+modprobe automatycznie usunie zbiór modu³ów, podobnie jak by to zosta³o wykonane przez
+.B rmmod -r
+.
+.PP
+Opcja -l podana z opcj± -t wypisze wszystkie dostêpne modu³y
+okre¶lonego typu.
+Polecenie
+.B mount
+mog³o by np. wykorzystaæ komendê
+
+	modprobe -l -t fs
+
+aby otrzymaæ listê wszystkich dostêpnych systemów plików w postaci modu³ów,
+aby nastêpnie za³adowaæ odpowiedni.
+Polecenie, mount mog³oby siê wtedy staæ bardziej elastyczne...
+(ale tym zajmuje siê kerneld bez potrzeby zmian w poleceniu mount).
+.PP
+Opcja -c wy¶wietla ca³± konfiguracjê (ustawienia standardowe + plik
+konfiguracyjny).
+.PP
+Najczêstsze u¿ycie
+.B depmod
+to wstawienie polecenia "/sbin/depmod -a" w jednym z plików startowych w
+/etc/rc.d, aby odpowiednie powi±zania modu³ów by³y dostêpne zaraz po
+uruchomieniu siê systemu.
+.br
+Istnieje tak¿e mo¿liwo¶æ utworzenia pliku zale¿no¶ci zaraz po skompilowaniu
+nowego j±dra. Po wykonaniu "depmod -a 1.3.99" je¶li wcze¶niej skompilowa³e¶
+j±dro 1.3.99 i jego modu³y po raz pierwszy, u¿ywaj±c wci±¿ j±dra 1.3.98,
+plik zostanie utworzony w odpowiednim miejscu.
+.br
+Zauwa¿, ¿e mimo wszystko, zale¿no¶ci wygenerowane mog± nie byæ poprawne.
+.PP
+Opcja
+.B -d
+uruchomi depmod w trybie debugowania. Wy¶wietla wszystkie polecenia, które
+wydaje.
+.Pp
+Opcja
+.B -e
+podaje listê wszystkich nierozwi±zanych symboli dla ka¿dego modu³u,
+Normalnie depmod wy¶wietli jedynie listê modu³ów, które nie mo¿e za³adowaæ.
+.Pp
+Opcja
+.B -v
+wy¶wietla listê wszystkich modu³ów którymi siê zajmuje.
+.Pp
+Modu³y mog± byæ po³o¿one w innym miejscu systemu plików, ale zawsze bêdzie
+istnia³a potrzeba aby to zmieniæ, szczególnie dla ludzi zajmuj±cych siê
+rozwijaniem modu³ów.
+Oczekuje siê, ¿e pojawi± siê oficjalne standardy zdefiniowane przez FSSTND.
+Do tego czasu mo¿esz u¿ywaæ równie dobrze struktury katalogów tu
+zaproponowanej.
+.SH KONFIGURACJA
+Zachowanie siê
+.B depmod
+i
+.B modprobe
+mo¿e byæ dostosowane przez (opcjonalny) plik konfiguracyjny
+.B /etc/conf.modules
+.PP
+Plik ten sk³ada siê ze zbioru linii.
+.br
+Wszystkie puste linie i linie zaczynaj±ce siê od znaku '#', zostan±
+zignorowane.
+.br
+Linie mog± byæ kontynuowane poprzez zakoñczenie ich znakami '\\'.
+.br
+Pozosta³e linie powinny byæ dostosowane do jednego z podanych poni¿ej
+formatów:
+
+  keep
+  parameter=warto¶æ
+  options module symbol=warto¶æ ...
+  alias modu³ prawdziwa_nazwa
+  pre-install modu³ polecenie ...
+  install modu³ polecenie ...
+  post-install modu³ polecenie ...
+  pre-remove modu³ polecenie ...
+  remove modu³ polecenie ...
+  post-remove modu³ polecenie ...
+
+Wszystkie warto¶ci w liniach "parameter"  bêd± uruchamiane poprzez pow³okê,
+co oznacza, ¿e dozwolone s± wszystkie triki pow³okowe, jak znaki specjalne "*", "?"
+i komendy podawane w odwróconych apostrofach:
+
+  path[misc]=/lib/modules/1.1.5?
+  path[net]=/lib/modules/`uname -r`
+
+Parametry mog± byæ powtarzane wiele razy.
+.PP
+Poni¿ej podane s± dozwolone parametry:
+.TP
+keep
+Je¶li to s³owo zostanie znalezione w lini
+.B przed
+jak±kolwiek inn± lini±, która zawiera opis
+.B ¶cie¿ek (path)
+, standardowy zbiór ¶cie¿ek zostanie zachowany, a nastêpne zostan± dodane do niego.
+W przeciwnym wypadku standardowe ¶cie¿ki zostan±
+.B usuniête
+przez sciezki podane w pliku konfiguracyjnym.
+.TP
+depfile=DEPFILE_PATH
+Jest to ¶cie¿ka do pliku zawieraj±cego plik zale¿no¶ci, który zostanie
+utworzony przez
+.B depmod
+, a u¿ywany przez
+.B modprobe.
+.TP
+path=SOME_PATH
+Parametr
+.B path
+podaje katalog w którym powinny byæ szukane modu³y.
+.TP
+path[tag]=SOME_PATH
+Parametr path mo¿e mieæ dodatkowy, opcjonalny tag.
+W ten sposób mo¿emy trochê dok³adniej opisaæ znacznie modu³ów w tym
+katalogu, pozwala nam to na zautomatyzowanie operacji wykonywanych przez
+.B modprobe.
+Tag jest dodawany do s³owa "path" i zawarty jest w nawiasach kwadratowych.
+Je¶li przy 'path" nie ma podanego taga, standardowo do³±czany jest tag
+"misc".
+.br
+Jednym z bardziej u¿ytecznych tagów jest tag
+.B boot,
+którym mo¿emy oznaczyæ wszystkie modu³y które maj± byæ za³adowane podczas
+startu systemu.
+.PP
+Je¶li brakuje pliku '/etc/conf.modules',
+lub je¶li ¿aden z parametrów nie zosta³ u¿yty,
+nastêpuj±ce ustawienia standardowe s± zak³adane:
+.PP
+  depfile=/lib/modules/`uname -r`/modules.dep
+  path[boot]=/lib/modules
+
+  path[fs]=/lib/modules/`uname -r`
+  path[misc]=/lib/modules/`uname -r`
+  path[net]=/lib/modules/`uname -r`
+  path[scsi]=/lib/modules/`uname -r`
+  path[cdrom]=/lib/modules/`uname -r`
+  path[ipv4]=/lib/modules/`uname -r`
+  path[ipv6]=/lib/modules/`uname -r`
+  path[sound]=/lib/modules/`uname -r`
+
+  path[fs]=/lib/modules/default
+  path[misc]=/lib/modules/default
+  path[net]=/lib/modules/default
+  path[scsi]=/lib/modules/default
+  path[cdrom]=/lib/modules/default
+  path[ipv4]=/lib/modules/default
+  path[ipv6]=/lib/modules/default
+  path[sound]=/lib/modules/default
+
+  path[fs]=/lib/modules
+  path[misc]=/lib/modules
+  path[net]=/lib/modules
+  path[scsi]=/lib/modules
+  path[cdrom]=/lib/modules
+  path[ipv4]=/lib/modules
+  path[ipv6]=/lib/modules
+  path[sound]=/lib/modules
+.PP
+Wszystkie linie opcji ("option" lines) podaj± standardowe opcje które s±
+wymagane przez modu³, np.:
+
+  modprobe de620 bnc=1
+
+Opcje te mog± byæ zmienione przez podanie tych opcji do programu
+.B modprobe
+z lini komend.
+.br
+
+Mo¿liwe jest u¿ycie lini opcji tak¿e dla aliasu modu³u równie dobrze jak i
+dla jego prawdziwej nazwy.
+Przyk³ad u¿ytecznego u¿ycia poni¿ej:
+
+  alias dummy0 dummy
+  options dummy0 -o dummy0
+
+.PP
+Linie zaczynaj±ce siê od s³owa "alias" mog± byæ u¿yte dla podania aliasów
+dla pewnych modu³ów.
+Linia w /etc/conf.modules która wygl±da jak poni¿ej:
+
+  alias iso9660 isofs
+
+sprawia ¿e mo¿na wpisaæ
+.B "modprobe iso9660"
+mimo i¿ tak naprawdê nie ma takiego modu³u.
+.br
+Zauwa¿ ¿e linia:
+
+  alias nazwa_modu³u off
+
+sprawi, ¿e modprobe zignoruje ¿±dania za³adownia tego modu³u.
+Jest to zazwyczaj u¿ywane w po³±czeniu z
+.B kerneld.
+.TP
+Komendy
+Linie konfiguruj±ce
+  pre-install modu³ polecenie ...
+  install modu³ polecenie ...
+  post-install modu³ polecenie ...
+  pre-remove modu³ polecenie ...
+  remove modu³ polecenie ...
+  post-remove modu³ polecenie ...
+.br
+mog± byæ u¿yte kiedy chcemy aby pewne specyficzne polecenia zosta³y wykonane 
+kiedy modu³ jest ³adowany lub usuwany.
+Ca³y tekst podany za nazw± modu³u bêdzie zinterpretowany jak komenda do
+wykonania.
+.br
+Zauwa¿, ¿e komendy pre- i post-remove \fBnie\fR bêd± wykonywane je¶li modu³
+jest usuwany automatycznie przez kerneld!
+Zamiast zastanawiaæ siê, jak to obej¶æ, poczekaj, a¿ zostanie wprowadzona obs³uga 
+uporczywych modu³om.
+
+.SH STRATEGIA
+Istnieje pomys³ aby
+.B modprobe
+najpierw sprawdzi³ katalog zawieraj±cy modu³y skompilowane dla bie¿±cej wersji
+j±dra. Je¶li nie zostanie tam znaleziony,
+.B modprobe
+sprawdzi inne katalogi.
+.PP
+Kiedy zainstalujesz nowego Linuksa, modu³y powinny byæ przesuniête do
+katalogu nazwanego od numeru j±dra które instalujemy.
+Nastêpnie powiniene¶ zrobiæ link z tego katalogu do katalogu "default".
+.PP
+Za ka¿dym razem kiedy kompilujesz nowe j±dro, polecenie
+.B "make modules_install"
+stworzy nowy katalog, ale nie zmieni katalogu default.
+.PP
+Kiedy otrzymasz modu³ nie zwi±zany z konkretnym j±drem powiniene¶ go umie¶ciæ
+w katalogu nie zale¿nym od wersji j±dra w katalogu /lib/modules.
+.PP
+Takie jest standardowe zachowanie, które jednak¿e mo¿e byæ zmienione poprzez
+odpowiednie wpisy do /etc/conf.modules.
+.SH PRZYK£ADY
+.TP
+modprobe -t net
+Za³aduj jeden z modu³ów, który znajduje siê w katalogu oznaczonym "net".
+Ka¿dy modu³ jest wyprubowywany a¿ do momentu kiedy który¶ z nich zostanie
+za³adowany (standardowo: /lib/modules/net).
+.TP
+modprobe -a -t boot
+Wszystkie modu³y, które znajduj± siê w katalogu oznaczony przez "boot" bêd±
+za³adowane (standardowo: /lib/modules/boot).
+.TP
+modprobe slip.o
+Polecenie to spowoduje próbê za³adowania modu³u slhc.o o ile nie zosta³
+uprzednio za³adowany, poniewa¿ modu³ slip potrzebuje wcze¶niejszego
+za³adowania modu³u slhc.o.
+Ta zale¿no¶æ bêdzie opisana w pliku "modules.dep", który zosta³ wygenerowany
+automatycznie przez
+.B depmod
+.TP
+modprobe -r slip.o
+usunie slip.o, a tak¿e automatycznie slhc.o, chyba ¿e jest on u¿ywany przez
+jaki¶ inny modu³ (np. ppp.o).
+.SH PLIKI
+.nf
+/etc/conf.modules, (and /etc/modules.conf)
+/lib/modules/*/modules.dep,
+/lib/modules/*
+.fi
+.SH ZOBACZ TAK¯E
+lsmod(1),
+kerneld(8),
+ksyms(1),
+modules(2),
+.SH NIEZBÊDNE NARZÊDZIA
+insmod(1),
+nm(1)
+rmmod(1),
+.SH NOTES
+Wzorzec podany programowi modprobe czêsto jest escapowany, aby
+mieæ pewno¶æ, ¿e jest interpretowany we w³a¶ciwy sposób.
+
+.SH AUTOR
+Jacques Gelinas (jack@solucorp.qc.ca)
+.br
+Bjorn Ekwall (bj0rn@blox.se)
+.SH B£ÊDY
+Naah...

@@ -1,0 +1,67 @@
+.\" 1999 PTM Przemek Borys
+.\" Aktualizacja do man-pages 1.47 - A. Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" --------
+.\" Written by Michael Haardt, Fri Nov 25 14:51:42 MET 1994
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" Added siglongjmp, Sun Mar  2 22:03:05 EST 1997, jrv@vanzandt.mv.com
+.\" Modifications, Sun Feb 26 14:39:45 1995, faith@cs.unc.edu
+.\" --------
+.TH LONGJMP 3 1997-03-02 "" "Funkcje biblioteczne"
+.SH NAZWA
+longjmp, siglongjmp \- nielokalny skok do zachowanego kontekstu stosu
+.SH SK£ADNIA
+.ad l
+.B #include <setjmp.h>
+.sp
+.nf
+.BI "void longjmp(jmp_buf " env ", int " val );
+.BI "void siglongjmp(sigjmp_buf " env ", int " val );
+.fi
+.ad b
+.SH OPIS
+\fBlongjmp()\fP i \fBsetjmp()\fP s± przydatne w obs³udze b³êdów i przerwañ,
+napotykanych w niskopoziomowych procedurach programu. \fBlongjmp()\fP
+odtwarza ¶rodowisko zachowane przez ostatnie wywo³anie \fBsetjmp()\fP,
+z odpowiadaj±cym argumentem \fIenv\fP. Po zakoñczeniu \fBlongjmp()\fP,
+program dzia³a dalej tak, jakby wywo³anie \fBsetjmp()\fP w³a¶nie zwróci³o
+warto¶æ \fIval\fP. \fBlongjmp()\fP nie potrafi spowodowaæ zwrócenia 0.
+Je¶li longjmp jest wywo³ane z argumentem 0, zwrócone zostanie 1.
+.P
+\fBsiglongjmp()\fP jest podobne do \fBlongjmp()\fP, inny jest tylko typ
+jego argumentu \fIenv\fP. Je¶li wywo³anie \fBsigsetjmp()\fP, które ustawi³o
+\fIenv\fP mia³o ustawiony niezerowy znacznik \fIsavesigs\fP, to
+\fBsiglongjmp()\fP odtworzy rónie¿ zestaw blokowanych sygna³ów.
+.SH "WARTO¦Æ ZWRACANA"
+Funkcja ta nigdy nie powracaj±.
+.SH "ZGODNE Z"
+POSIX
+.SH UWAGI
+POSIX nie podaje czy \fBlongjmp\fP powinno odtwarzaæ kontekst sygna³owy. Je¶li
+potrzebne jest zachowywanie maski sygna³ów, nale¿y u¿ywaæ \fBsiglongjmp\fP.
+.P
+\fBlongjmp()\fP i \fBsiglongjmp()\fP powoduj±, ¿e programy s± trudne do
+zrozumienia i pielêgnowania. Je¶li jest to mo¿liwe, nale¿y u¿ywaæ innych
+rozwi±zañ.
+.SH "ZOBACZ TAK¯E"
+.BR setjmp (3),
+.BR sigsetjmp (3)

@@ -1,0 +1,108 @@
+.\" 1999 PTM Przemek Borys
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Mar 2002,
+.\"              manpages 1.48
+.\" 
+.\" Copyright (c) 1983, 1991 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     @(#)sigblock.2	6.7 (Berkeley) 3/10/91
+.\"
+.\" Modified Sat Jul 24 10:09:15 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified Fri Aug 11 1995 by Stephen Lee <sl14@cornell.edu>
+.\" Modified 1995 by Mike Battersby <mib@deakin.edu.au>
+.\""
+.TH SIGBLOCK 2 1995-08-31 "Linux 1.3" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+sigblock, siggetmask, sigsetmask, sigmask \- operacje na masce sygna³ów
+.SH SK£ADNIA
+.B #include <signal.h>
+.sp
+.BI "int sigblock(int " mask );
+.sp
+.B int siggetmask(void);
+.sp
+.BI "int sigsetmask(int " mask );
+.sp
+.BI "int sigmask(int " signum );
+.SH OPIS
+Interfejs ten jest przedawniony przez
+.BR sigprocmask (2).
+
+Wywo³anie systemowe
+.B sigblock
+dodaje przekazane w masce
+.I mask
+sygna³y do zestawu obecnie blokowanych sygna³ów (które nie mog± byæ
+dostarczone).
+.PP
+Wywo³anie
+.B sigsetmask
+zamienia ten zestaw ca³kowicie nowym zestawem, podanym jako maska
+.IR mask .
+Sygna³y s± blokowane je¶li odpowiadaj±cy im bit maski 
+.I mask
+jest jedynk±.
+.PP
+Zestaw aktualnie blokowanych sygna³ów mo¿na uzyskaæ za pomoc±
+.BR siggetmask .
+.PP
+Udostêpnia siê makro
+.BR sigmask ,
+konstruuj±ce maskê dla podanego w
+.I signum
+sygna³u.
+
+.SH "WARTO¦Æ ZWRACANA"
+.B siggetmask
+zwraca bie¿±cy zestaw maskowanych sygna³ów.
+
+.B sigsetmask 
+i
+.B sigblock
+zwracaj± poprzedni zbiór maskowanych sygna³ów.
+.SH UWAGI
+Prototypy tych funkcji s± dostêpne tylko je¶li przed w³±czeniem jakiegokolwiek
+systemowego pliku nag³ówkowego zdefiniowano
+.BR _BSD_SOURCE .
+.PP
+Nie mo¿na blokowaæ sygna³ów
+.B SIGKILL
+i
+.B SIGSTOP
+\- ograniczenie to jest milcz±co wymuszone przez system
+
+.SH "ZGODNE Z"
+4.4BSD. Funkcje te pojawi³y siê w BSD 4.3 i zosta³y porzucone.
+W nowych programach nale¿y korzystaæ z POSIX-owych metod obs³ugi sygna³ów.
+.SH "ZOBACZ TAK¯E"
+.BR kill (2),
+.BR sigprocmask (2),
+.BR signal (7)

@@ -1,0 +1,206 @@
+.\" {PTM/PB/0.1/02-02-1998/"konfiguruj interfejs sieciowy"}
+.\" Translation 1999 Przemek Borys <pborys@dione.ids.pl>
+.\" Translation update: Robert Luberda, Jul 2001, net-tools 1.60
+.TH IFCONFIG 8 "14 sierpnia 2000" "net-tools" "Podrêcznik programisty linuksowego"
+.SH NAZWA
+ifconfig \- konfiguruj interfejs sieciowy
+.SH SK£ADNIA
+.B "ifconfig [interface]"
+.br
+.B "ifconfig interface [aftype] options | address ..."
+.SH OPIS
+.B Ifconfig
+jest u¿ywany do konfigurowania (a pó¼niej opiekowania siê) rezyduj±cymi w
+j±drze interfejsami sieciowymi. Jest u¿ywany podczas bootowania do
+skonfigurowania wiêkszo¶ci z nich do stanu pracy. Pó¼niej jest zwykle
+potrzebny tylko przy debuggowaniu lub tuningowaniu systemu.
+.LP
+Je¶li nie poda siê argumentów,
+.B ifconfig
+po prostu wy¶wietli status aktywnych interfejsów. Je¶li podany
+jest pojedynczy argument
+.BR interface ,
+to wy¶wietla on status podanego interfejsu. Je¿eli u¿yto pojedynczego
+argumentu
+.BR -a ,
+to wy¶wietlony zostanie status wszystkich interfejsów, nawet tych, które
+s± nieaktywne.
+W przeciwnym wypadku zak³ada, ¿e
+trzeba co¶ skonfigurowaæ.
+
+.SH Rodziny Adresów
+Je¶li pierwszy argument po nazwie interfejsu jest rozpoznany jako nazwa
+wspieranej rodziny adresów, to ta rodzina adresów jest u¿ywana do
+dekodowania i wy¶wietlania wszystkich adresów protoko³owych. Obecnie
+wspierane rodziny adresów to
+.B inet
+(TCP/IP, domy¶lne),
+.B inet6
+(IPv6),
+.B ax25
+(AMPR Packet Radio),
+.B ddp
+(Appletalk Phase 2),
+.B ipx
+(Novell IPX) i
+.B netrom
+(AMPR Packet radio).
+.SH OPCJE
+.TP
+.B interface
+Nazwa interfejsu sieciowego. Jest to zwykle nazwa sterownika, za któr±
+nastêpuje numer jednostki, na przyk³ad
+.B eth0
+oznacza pierwszy interfejs Ethernet.
+.TP
+.B up
+Flaga ta powoduje aktywacjê interfejsu. Jest po¶rednio w³±czana, gdy
+interfejsowi nadano nowy adres.
+.TP
+.B down
+Flaga ta powoduje wy³±czenie sterownika tego interfejsu.
+.TP
+.B "[\-]arp"
+W³±cza lub wy³±cza u¿ywanie protoko³u ARP na tym interfejsie.
+.TP
+.B "[\-]promisc"
+W³±cza lub wy³±cza tryb
+.B promiscous
+na tym interfejsie. Je¿eli w³±czony, to wszystkie pakiety w sieci bêd±
+przechwytywane przez ten interfejs.
+.TP
+.B "[\-]allmulti"
+W³±cza lub wy³±cza tryb
+.BR all-multicast .
+Je¿eli w³±czony, to wszystkie pakiety multicast w sieci bêd± odbierane
+przez interfejs.
+.TP
+.B "metric N"
+.\" FIXME
+Parametr ten ustawia metric interfejsu.
+.TP
+.B "mtu N"
+Parametr ten ustawia maksymaln± jednostkê transferu (Maximum Transfer Unit)
+interfejsu.
+.TP
+.B "dstaddr addr"
+Ustawia adres IP "drugiego koñca" w przypadku po³±czenia point-to-point (
+takiego jak PPP). S³owo to jest przedawnione, gdy¿ istnieje nowe s³owo,
+.B pointopoint
+.TP
+.B "netmask addr"
+Ustawia maskê sieciow± IP dla tego interfejsu. Warto¶æ domy¶lnie przybiera
+warto¶æ zwyk³ej maski sieciowej klasy A, B lub C (jak to wynika z adresu IP
+interfejsu), lecz mo¿e byæ ustawiona na dowoln± warto¶æ.
+.TP
+.B "add addr/prefixlen"
+Dodaje adres IPv6 do interfejsu.
+.TP
+.B "del addr/prefixlen"
+Usuwa adres Ipv6 z interfejsu.
+.TP
+.B "tunnel aa.bb.cc.dd"
+Tworzy nowe urz±dzenie SIT (IPv6-in-IPv4), tworz±c tunel do podanego adresu
+docelowego.
+.TP
+.B "irq addr"
+Ustawia liniê przerwañ u¿ywan± przez to urz±dzenie. Nie wszystkie urz±dzenia
+wspieraj± dynamiczne ustawianie IRQ.
+.TP
+.B "io_addr addr"
+Ustawia pocz±tkowy adres w przestrzeni adresowej I/O u¿ywany przez to
+urz±dzenie.
+.TP
+.B "mem_start addr"
+Ustawia pocz±tkowy adres pamiêci dzielonej u¿ywany przez to urz±dzenie.
+Tylko kilka urz±dzeñ potrzebuje tej opcji.
+.TP
+.B "media type"
+Ustawia fizyczny port lub typ no¶nika, który ma byæ u¿ywany przez
+urz±dzenie. Nie wszystkie urz±dzenia mog± zmieniæ to ustawianie, a te
+które mog±, ró¿ni± siê warto¶ciami, które obs³uguj±. Typowe warto¶ci
+parametru
+.B typ
+s± nastêpuj±ce:
+.B 10base2
+(cienki Ethernet),
+.B 10baseT
+(oparty na skrêtce 10Mbps Ethernet),
+.B AUI
+(external transceiver)
+i tak dalej. Specjalny typ
+.B auto
+mo¿e byæ u¿yty do automatycznego ustawienia no¶nika. Jednak¿e nie wszystkie
+urz±dzenia to potrafi±.
+.TP
+.B "[-]broadcast [addr]"
+Je¶li podano tak¿e argument adresu, ustaw adres broadcastowy protoko³u na
+ten interfejs. W przeciwnym wypadku ustawia to tylko flagê
+.B IFF_BROADCAST
+na interfejsie.
+.TP
+.B "[-]pointopoint [addr]"
+To s³owo kluczowe w³±cza tryb
+.B point-to-point
+interfejsu, który oznacza, ¿e jest to bezpo¶rednie po³±czenie miêdzy dwoma
+maszynami, których nikt inny nie pods³uchuje.
+.br
+Je¶li podano tak¿e argument adresu, ustaw adres protoko³owy drugiej strony
+po³±czenia, tak jak w przedawnionym
+.B dstaddr.
+W przeciwnym wypadku ustawia lub usuwa to tylko flagê
+.B IFF_POINTOPOINT
+interfejsu.
+.TP
+.B hw
+Ustaw adres sprzêtowy interfejsu, je¶li sterownik wspiera tak± operacjê.
+Za s³owem tym musi wystêpowaæ nazwa klasy sprzêtowej i odczytywalnym w ASCII
+ekwiwalentem adresu sprzêtowego. Wspierane obecnie klasy sprzêtowe to
+.B ether
+(Ethernet),
+.B ax25
+(AMPR AX.25),
+.B ARCnet
+i
+.B netrom
+(AMPR NET/ROM).
+.TP
+.B multicast
+W³±cza flagê multicast na interfejsie. Normalnie nie powinno byæ to
+potrzebne, gdy¿ sterowniki ustawiaj± tê flagê same.
+.TP
+.B address
+Adres IP przypisany do interfejsu.
+.TP
+.B txqueuelen length
+Ustawia d³ugo¶æ kolejki transmisji dla danego urz±dzenia. U¿yteczne jest
+ustawienie tego parametru na ma³± warto¶æ dla wolniejszych urz±dzeñ
+o du¿ych opó¼nieniach (po³±czenia modemowe, ISDN), aby zapobiec szybkim
+.\"FIXME
+masowym transferom  generowanym przez na przyk³ad telnet.
+.SH UWAGI
+Od wersji j±dra 2.2 nie s± prowadzone statystyki dla aliasów interfejsów.
+Statystyki wy¶wietlane dla oryginalnego adresu s± dzielone ze wszystkimi
+aliasami adresów na tym samym urz±dzeniu. Aby w³±czyæ statystyki dla ka¿dego
+adresu, nale¿y wyra¼nie okre¶liæ regu³y zliczania dla tego adresu za pomoc±
+polecenia
+.BR ipchains (8).
+.SH PLIKI
+.I /proc/net/socket
+.br
+.I /proc/net/dev
+.br
+.I /proc/net/if_inet6
+.SH B£ÊDY
+Podczas wy¶wietlania adresów appletalk DDP i IPX, nie mo¿na ich poprawiaæ t±
+komend±.
+.SH ZOBACZ TAK¯E
+route(8), netstat(8), arp(8), rarp(8), ipchains(8)
+.SH AUTORZY
+Fred N. van Kempen, <waltje@uwalt.nl.mugnet.org>
+.br
+Alan Cox, <Alan.Cox@linux.org>
+.br
+Phil Blundell, <Philip.Blundell@pobox.com>
+.br
+Andi Kleen

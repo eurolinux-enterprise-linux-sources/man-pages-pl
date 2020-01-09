@@ -1,0 +1,70 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" 1999 PTM Przemek Borys
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\"
+.\" Copyright (c) 1992 Drew Eckhardt (drew@cs.colorado.edu), March 28, 1992
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified by Michael Haardt (michael@moria.de)
+.\" Modified Sat Jul 24 14:48:00 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified 1995 by Mike Battersby (mib@deakin.edu.au)
+.\" Modified 2000 by aeb, following Michael Kerrisk
+.\"
+.TH PAUSE 2 1995-08-31 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+pause \- oczekiwanie na sygna³
+.SH SK£ADNIA
+.B #include <unistd.h>
+.sp
+.B int pause(void);
+.SH OPIS
+Funkcja biblioteczna
+.B pause
+powoduje, ¿e wo³aj±cy proces (lub w±tek) zasypia a¿ do chwili otrzymania
+sygna³u, który wymaga wywo³ania przez niego funkcji przechwytuj±cej, albo
+takiego, który go przerwie.
+.\" Wywo³anie systemowe
+.\" .B pause
+.\" powoduje, ¿e wo³aj±cy proces zasypia a¿ nie odbierze sygna³u.
+.SH "WARTO¦Æ ZWRACANA"
+Powrót a funkcja
+.B pause
+nastêpuje tylko, gdy przechwycony zostanie sygna³ i nast±pi powrót z funkcji
+przechwytuj±cej ten sygna³. W takiej sytuacji
+.B pause
+zwraca \-1 i ustawia 
+.I errno
+na
+.\" .BR ERESTARTNOHAND .
+.BR EINTR .
+.SH B£ÊDY
+.TP
+.B EINTR
+przechwycono sygna³ i nast±pi³ powrót z funkcji przechwytuj±cej ten sygna³.
+.SH "ZGODNE Z"
+SVr4, SVID, POSIX, X/OPEN, BSD 4.3
+.SH "ZOBACZ TAK¯E"
+.BR kill (2),
+.BR select (2),
+.BR signal (2)

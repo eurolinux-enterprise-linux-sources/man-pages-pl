@@ -1,0 +1,248 @@
+.\" {PTM/PB/0.1/11-05-1999/"dekompresja pliku JPEG do pliku z obrazkiem"}
+.TH DJPEG 1 "15 June 1995"
+.SH NAZWA
+djpeg \- dekompresja pliku JPEG do pliku obrazkowego
+.SH SK£ADNIA
+.B djpeg
+.RI [ opcje ]
+.RI [ nazwapliku ]
+.LP
+.SH OPIS
+.LP
+.B djpeg
+dekompresuje podany plik JPEG, albo je¶li nie podano parametru
+standardowe wej¶cie i zapisuje nowy obrazek na standardowym wyj¶ciu. Formatem
+wyj¶ciowym mog± byæ
+PBMPLUS (PPM/PGM), BMP, GIF, Targa, lub RLE (Utah Raster Toolkit).
+(RLE jest obs³ugiwany tylko je¶li jest dostêpna biblioteka URT.)
+.SH OPCJE
+Wszystkie prze³±czniki mog± byæ skracane; np,
+.B \-grayscale
+mo¿e byæ zapisane jako
+.B \-gray
+lub
+.BR \-gr .
+Wiêkszo¶æ "podstawowych" prze³±czników mo¿e byæ skracana nawet do jednej
+litery. Nie ma rozró¿nienia wielko¶ci znaków (tak wiêc
+.B \-GIF
+znaczy to samo co
+.BR \-gif ).
+Brytyjska pisownia jest równie¿ akceptowana (np.
+.BR \-greyscale ),
+lecz z ostro¿no¶ci nie jest ona wymieniona ni¿ej.
+.PP
+Podstawowe prze³±czniki to:
+.TP
+.BI \-colors " N"
+Zredukuj obraz do najwiêcej N kolorów. Redukuje to ilo¶æ kolorów u¿ywanych w
+obrazku wyj¶ciowym. Na przyk³ad, je¶li masz 8-bitowy wy¶wietlacz, mo¿esz
+tego u¿yæ do zredukowania kolorów do liczby 256.
+.TP
+.BI \-quantize " N"
+To samo co
+.BR \-colors .
+.B \-colors
+s± nazw± zalecan±,
+.B \-quantize
+jest udostêpniane ze wzglêdu na kompatybilno¶æ wsteczn±.
+.TP
+.B \-fast
+Wybierz przetwarzanie gwarantuj±ce szybk±, lecz niskiej jako¶ci obróbkê.
+(Domy¶lnie w³±czana jest najwy¿sza jako¶æ.) Jest to obecnie równowa¿ne opcji
+\fB\-dct fast \-nosmooth \-onepass \-dither ordered\fR.
+.TP
+.B \-grayscale
+Wymu¶ wyj¶cie w skali szaro¶ci, nawet je¶li plik JPEG jest kolorowy.
+Przydatne do przegl±dania na wy¶wietlaczach monochromatycznych; poza tym
+.B djpeg
+w tym trybie dzia³a znacz±co szybciej.
+.TP
+.BI \-scale " M/N"
+Przeskaluj wyj¶cie o wspó³czynnik M/N. Obecnie wspó³czynnik ten musi byæ
+1/1,  1/2, 1/4, lub 1/8. Skalowanie jest przydatne je¶li obraz jest wiêkszy
+ni¿ ekran, poza tym 
+.B djpeg
+pracuje tak du¿o szybciej.
+.TP
+.B \-bmp
+Wybierz format wyj¶ciowy BMP. Format 8-bitowy jest w³±czany po u¿yciu opcji
+.B \-colors
+lub
+.BR \-grayscale ,
+lub je¶li plik JPEG by³ w skali szaro¶ci; w przeciwnym wypadku w³aczany jest
+pe³ny, 24-bitowy format.
+.TP
+.B \-gif
+Wybierz format wyj¶ciowy GIF-a. Poniewa¿ GIF nie obs³uguje wiêcej ni¿ 256
+kolorów, zak³adane jest
+.B \-colors 256
+(chyba ¿e podasz mniejsz± liczbê kolorów).
+.TP
+.B \-os2
+Wybierz jako format wyj¶ciowy BMP (z rodzaju OS/2 1.x). Je¶li podano opcje
+.B \-colors
+lub
+.BR \-grayscale ,
+lub gdy plik JPEG by³ w skali szaro¶ci, emitowany jest kolor 8-bitowy; w
+przeciwnych wypadkach kolor jest 24-bitowy.
+.TP
+.B \-pnm
+Wybierz jako format wyj¶cia PBMPLUS (PPM/PGM) (jest to format domy¶lny).
+PGM jest emitowane je¶li plik JPEG by³ w skali szaro¶ci, lub je¶li podano
+opcjê
+.BR \-grayscale ;
+W przeciwnym wypadku wybierany jest PPM.
+.TP
+.B \-rle
+Wybierz format wyj¶cia RLE. (wymaga biblioteki URT.)
+.TP
+.B \-targa
+Wybierz format wyj¶cia Targa. Je¶li plik JPEG by³ w skali szaro¶ci,
+wyj¶cie emitowane jest równie¿ w skali. Dzieje siê tak te¿, je¶li podana
+zostanie opcja
+.BR \-grayscale ;
+w przeciwnym wypadku, je¶li podano
+.B \-colors
+ emitowany jest format kolormapowany; a normalnie emitowany jest format
+24-bitowego koloru.
+.PP
+Prze³±czniki dla zaawansowanych u¿ytkowników:
+.TP
+.B \-dct int
+U¿ywaj ca³kowitej metody DCT (domy¶lne).
+.TP
+.B \-dct fast
+U¿yj szybkiej ca³kowitej DCT (mniej dok³adne).
+.TP
+.B \-dct float
+U¿yj zmiennoprzecinkowej metody DCT.
+Metoda ta jest nieznacznie bardziej dok³adna ni¿ metoda ca³kowita, lecz jest
+wiele wolniejsza, chyba ¿e twoja maszyna posiada bardzo szybki koprocesor
+zmiennoprzecinkowy. Zauwa¿ te¿, ¿e metoda zmiennoprzecinkowa mo¿e dawaæ
+ró¿ne efekty na ró¿nych maszynach, podczas gdy ca³kowita daje wszêdzie takie
+same.
+.TP
+.B \-dither fs
+U¿yj ditheringu Floyda-Steinberga dla kwantyzacji kolorów.
+.TP
+.B \-dither ordered
+U¿yj ditheringu porz±dkowego dla kwantyzacji kolorów.
+.TP
+.B \-dither none
+Nie u¿ywaj ¿adnego ditheringu.
+Domy¶lnie stosowany jest dithering Floyda-Steinberga; jest on powolny, lecz
+zazwyczaj daje najlepsze efekty. Dithering porz±dkowy jest kompromisem
+miêdzy szybko¶cia, a jako¶ci±; brak ditheringu jest szybki, lecz zwykle
+wygl±da okropnie. Zauwa¿, ¿e prze³±czniki nie maj± znaczenia gdy nie jest
+dokonywana kwantyzacja kolorów. Dithering porz±dkowy jest dostêpny tylko w
+trybie
+.BR \-onepass .
+.TP
+.BI \-map " file"
+Kwantuj kolory podanego pliku z obrazkiem. Umo¿liwia to produkowanie wielu
+plików z jednakowymi mapami kolorów, lub wymuszanie predefiniowanego zbioru
+kolorów. Plik
+.I file
+musi byæ plikiem GIF lub PPM. Opcja ta przes³ania
+.B \-colors
+i
+.BR \-onepass .
+.TP
+.B \-nosmooth
+U¿yj szybszej, gorszej jako¶ciowo procedury desamplingu.
+.TP
+.B \-onepass
+U¿yj jednoprzej¶ciowej kwantyzacji kolorów (zamiast dwuprzej¶ciowej). Metoda
+jednoprzej¶ciowa jest szybsza i mniej wymagaj±ca pamiêciowo, lecz produkuje
+gorszy jako¶ciowo obraz.
+.B \-onepass
+jest ignorowane, chyba ¿e wraz z nim zostanie zapodane
+.B \-colors
+.IR N .
+Poza tym, metoda ta jest u¿ywana zawsze dla wyj¶cia w skali szaro¶ci (metoda
+dwuprzej¶ciowa nic wtedy nie wnosi).
+.TP
+.BI \-maxmemory " N"
+Ustaw ograniczenie pamiêci na przetwarzanie du¿ych obrazków. Warto¶æ jest
+wyra¿ana w tysi±cach bajtów, lub w milionach, je¶li na koñcu liczby zostanie
+do³±czone "M". Np.,
+.B \-max 4m
+wybiera 4000000 bajtów. Je¶li potrzebne bêdzie wiêcej miejsca, zostan±
+zastosowane pliki tymczasowe.
+.TP
+.BI \-outfile " name"
+Wy¶lij wyj¶cie do wskazanego pliku (zamiast na standardowe wyj¶cie).
+.TP
+.B \-verbose
+W³±cz komentarze debuggowe. Wiêcej
+.BR \-v -ów
+daje wiêcej komentarzy. Poza tym, podczas startu drukowana jest informacja o
+wersji.
+.TP
+.B \-debug
+To samo co
+.BR \-verbose .
+.SH PRZYK£ADY
+.LP
+Przyk³ad ten dekompresuje plik JPEG foo.jpg, autmatycznie kwantuje go do 256
+kolorów i zachowuje w pliku GIF foo.gif.
+.IP
+.B djpeg \-gif
+.I foo.jpg
+.B >
+.I foo.gif
+.SH WSKAZÓWKI
+Aby szybko przejrzeæ obrazek, u¿yj prze³±czników
+.B \-grayscale
+i/lub
+.BR \-scale .
+.B \-grayscale \-scale 1/8
+jest najszybsze.
+.PP
+Istnieje jeszcze parê opcji, które odrzucaj± jako¶æ na rzecz szybko¶ci.
+.B \-fast
+w³acza zalecane ustawienia.
+.PP
+.B \-dct fast
+i/lub
+.B \-nosmooth
+uzyskuje szybko¶æ w zamian za niewielkie po¶wiêcenie jako¶ci.
+Podczas tworzenia obrazka ze skwantowanymi kolorami,
+.B \-onepass \-dither ordered
+jest szybki, lecz daje du¿o mniejsz± jako¶æ ni¿ zachowanie domy¶lne.
+.B \-dither none
+mo¿e daæ sensowne wyniki w trybie dwuprzej¶ciowym, lecz rzadko jest
+dobry w trybie jednoprzej¶ciowym.
+.PP
+Je¶li masz do¶æ szczê¶cia, by mieæ szybki koprocesor zmiennoprzecinkowy, 
+\fB\-dct float\fR mo¿e okazaæ siê szybsze ni¿ \fB\-dct fast\fR.
+Jednak na wiêkszo¶ci maszyn \fB\-dct float\fR jest wolniejsze ni¿
+\fB\-dct int\fR; w tym wypadku nie jest ono warte u¿ywania, poniewa¿ zysk
+jako¶ci jest zbyt ma³y w porównaniu do kosztu czasowego.
+.SH ¦RODOWISKO
+.TP
+.B JPEGMEM
+Je¶li ta zmienna jest ustawiona, to jej warto¶æ wskazuje na domy¶lny limit
+pamiêci. Warto¶æ jest podawana jak dla opcji
+.BR \-maxmemory .
+.B JPEGMEM
+przes³ania domy¶ln± warto¶æ, podan± podczas kompilacji programu, a sama mo¿e
+zostaæ przes³oniêta przez opcjê
+.BR \-maxmemory .
+.SH ZOBACZ TAK¯E
+.BR cjpeg (1),
+.BR jpegtran (1),
+.BR rdjpgcom (1),
+.BR wrjpgcom (1)
+.br
+.BR ppm (5),
+.BR pgm (5)
+.br
+Wallace, Gregory K.  "The JPEG Still Picture Compression Standard",
+Communications of the ACM, April 1991 (vol. 34, no. 4), pp. 30-44.
+.SH AUTORZY
+Niezale¿na Grupa JPEG (Independent JPEG Group)
+.SH B£ÊDY
+Z powodów legalizacyjnych, kodowanie arytmetyczne nie jest obs³ugiwane.
+.PP
+Wci±¿ nie jest to tak szybkie, jak by¶my chcieli.

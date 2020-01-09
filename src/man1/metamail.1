@@ -1,0 +1,485 @@
+.\" {PTM/LK/0.1/05-01-1999/"obs³uga poczty bazuj±ca na mailcap"}
+.\" T³umaczenie: 5-1-1999 £ukasz Kowalczyk (lukow@tempac.okwf.fuw.edu.pl)
+
+.TH METAMAIL 1 "Wydanie 2" "Bellcore Prototype"
+.SH NAZWA
+metamail - infrastruktura dla oprogramowania pocztowego bazuj±cego na mailcap
+
+.SH STRESZCZENIE
+.ta 8n
+\fBmetamail\fP	[-b] [-B] [-c \fBtyp zawarto¶ci\fP ...] [-d] [-e] 
+[-E \fBkodowanie zawarto¶ci\fP] 
+[-f \fBadres nadawcy\fP] [-h] [-m \fBprogram pocztowy\fP] [-p] [-P] [-r] 
+[-s \fBtemat\fP] [-q] [-w] [-x] [-y] [-z] [\fBnazwa pliku\fP]
+.br
+.SH OPIS
+Program
+.I metamail
+odczytuje plik "mailcap" aby dowiedzieæ siê, jak nale¿y wy¶wietlaæ
+nietekstow± czê¶æ wiadomo¶ci pocztowej w lokalnym systemie. Ka¿dy program
+s³u¿±cy do odczytywania poczty musi wywo³aæ metamail podczas przegl±dania
+wiadomo¶ci nie bêd±cej tekstem, z wyj±tkiem sytuacji, gdy program pocztowy
+jest w stanie samodzielnie poradziæ sobie z wy¶wietleniem tej czê¶ci
+wiadomo¶ci.
+.I Metamail
+na podstawie pliku (plików) mailcap decyduje, jakiego programu nale¿y u¿yæ
+do wy¶wietlenia specyficznego typu wiadomo¶ci.
+
+W systemie, w którym wszystkie programy pocztowe wywo³uj± program
+.I metamail
+w wypadku otrzymania nietekstowej wiadomo¶ci, rozszerzenie ich mo¿liwo¶ci o
+obs³ugê kolejnego formatu wiadomo¶ci sprowadza siê do dodania jednej linii
+do pliku mailcap. (Ta strona opisuje wy³±cznie u¿ywanie programu metamail z
+programami pocztowymi, aczkolwiek metamail jest równie u¿yteczny, gdy trzeba
+dodaæ obs³ugê formatów multimedialnych do programów s³u¿±cych do
+przegl±dania grup dyskusyjnych lub BBS-ów. Jedynym wymogiem jest, aby
+programy te dodawa³y do wiadomo¶ci pole nag³ówka "Content-type" lub w inny
+sposób informowa³y o rodzaju zawarto¶ci przesy³ki).
+
+W wiêkszo¶ci przypadków u¿ytkownicy nie bêd± musieli uruchamiaæ programu
+metamail bezpo¶rednio. Bêdzie on uruchamiany przez program s³u¿±cy do
+czytania poczty zawsze, gdy zajdzie konieczno¶æ obejrzenia nietekstowej
+przesy³ki. Mimo to, ta strona nie jest przeznaczona dla u¿ytkowników
+koñcowych, lecz dla dwóch kategorii osób: tych, którzy dodaj± do programu
+metamail obs³ugê konkretnego programu pocztowego oraz tych, którzy dodaj±
+informacje do pliku mailcap. Osoby nale¿±ce do pierwszej kategorii
+zainteresuje g³ównie sk³adnia linii poleceñ, za¶ pozosta³e osoby mog±
+zignorowaæ tê sekcjê i od razu przej¶æ do opisu sk³adni pliku mailcap.
+
+Uwaga: Metamail okre¶la typ wiadomo¶ci na podstawie nag³ówka "Content-type",
+opisanego w RFC 1049 oraz RFC 1341 (MIME). Mimo to, przy u¿yciu opcji \-b i
+\-c, mo¿na spowodowaæ, by metamail wspó³pracowa³ z poczt± nie stosuj±c± siê
+do formatu obowi±zuj±cego w Internecie, w³±czaj±c w to komunikaty X.400.
+Nale¿y równie¿ zauwa¿yæ, ¿e metamail automatycznie dekoduje pocztê
+zakodowan± w celu unikniêcia problemów z 8-bitowymi warto¶ciami. Wiadomo¶ci
+takie musz± zawieraæ w nag³ówku pole Content-Transfer-Encoding zgodne ze
+specyfikacj± RFC 1341. Je¿eli dane zosta³y zakodowane algorytmem "base64",
+sekwencje CRLF zostan± przekonwertowane do lokalnego sposobu oznaczania
+nowej linii, ale dotyczy to tylko tekstowej czê¶ci wiadomo¶ci; mo¿na to
+rozci±gn±æ na wszystkie typy wiadomo¶ci umieszczaj±c w pliku mailcap pole
+"textualnewlines".
+
+.SH OPCJE
+Metamail uruchomiony bez ¿adnych opcji oczekuje otrzymania na standardowym
+wej¶ciu wiadomo¶ci sformatowanej zgodnie z RFC 822. Nastêpuj±ce opcje mog±
+zmodyfikowaæ to zachowanie:
+.TP 8
+.B \-b
+Ta opcja informuje metamail, ¿e wiadomo¶æ nie stosuje siê do formatu RFC
+822, z wyj±tkiem cia³a wiadomo¶ci (tzn. nie ma nag³ówka). U¿ycie opcji \-b
+implikuje dzia³anie opcji \-c.
+.TP 8
+.B \-B
+Ta opcja informuje metamail, ¿e wiadomo¶æ ma zostaæ wy¶wietlona w tle,
+je¿eli jest nieinteraktywna, tzn. nie posiada w pliku mailcap atrybutu
+"needsterminal". Opcja nie mo¿e zostaæ u¿yta wraz z \-p lub \-P.
+.TP 8
+.B \-c <typ zawarto¶ci>  
+Ta opcja informuje metamail, ¿e powinien u¿ywaæ podanego typu zawarto¶ci,
+zamiast typu podanego w nag³ówku wiadomo¶ci.
+.TP 8
+.B \-d 
+Ta opcja informuje metamail, by nie zadawa³ ¿adnych pytañ przed
+interpretacj± wiadomo¶ci. (Domy¶lnie, metamail zawsze pyta o pozwolenie na
+uruchomienie ka¿dego interpretera, je¿eli dzia³a na interaktywnym
+terminalu i zmienna MM_NOASK nie jest ustawiona. Nie pyta jednak w
+przypadku typu zawarto¶ci "text", tzn. je¿eli domy¶ln± warto¶ci± MM_NOASK
+jest "text,text/us-ascii").
+.TP 8
+.B \-e 
+Ta opcja informuje metamail, by usuwa³ pocz±tkowe znaki nowej linii z cia³a
+wiadomo¶ci. Jest to szczególnie u¿yteczne dla wiadomo¶ci w formacie MH.
+.TP 8
+.B \-f <adres>
+Ta opcja okre¶la nadawcê wiadomo¶ci. Je¿eli nie zostanie podana, nadawca
+zostanie okre¶lony na podstawie nag³ówka, je¿eli bêdzie to mo¿liwe. Ta
+informacja zostanie umieszczona w ¶rodowisku, by by³a dostêpna dla ka¿dego
+interpretera uruchamianego przez metamail.
+.TP 8
+.B \-h
+Ta opcja informuje metamail, ¿e jest on u¿ywany do 
+drukowania wiadomo¶ci. W szczególno¶ci, oznacza ona, ¿e wykonane ma zostaæ
+pole "print" zamiast "command" z pliku mailcap. (Je¿eli pole "print" jest
+puste, ta opcja z pliku mailcap zostanie zignorowana i wznowione zostanie
+poszukiwanie w tym pliku kolejnej linii pasuj±cej do typu wiadomo¶ci i
+posiadaj±cej niepuste pole "print"). Opcja \-h automatycznie implikuje
+u¿ycie opcji \-d.
+.TP 8
+.B \-m <program pocztowy>
+Ta opcja okre¶la nazwê programu wywo³uj±cego metamail. Informacja ta
+zostanie umieszczona w ¶rodowisku, aby by³a dostêpna dla interpreterów
+wywo³ywanych przez metamail.
+.TP 8
+.B \-p
+Ta opcja okre¶la, ¿e w razie takiej konieczno¶ci, wynik dzia³ania programu
+zostanie pokazany strona po stronie. Standardowo zostanie to uzyskane przez
+wywo³anie programu more, ale zmienna ¶rodowiskowa METAMAIL_PAGER mo¿e
+okre¶laæ inny program u¿ywany do tego celu. Zauwa¿, ¿e opcja \-p jest
+preferowan± form± takiego sposobu wypisywania danych wyj¶ciowych w stosunku
+do bezpo¶redniego przekierowywania wyj¶cia programu metamail przez program
+stronicuj±cy, poniewa¿ niektóre interpretery u¿ywane przez metamail mog± byæ
+interaktywne. Metamail jest w stanie okre¶liæ, czy nale¿y u¿ywaæ programu
+stronicuj±cego okre¶lonego w pliku mailcap. Ta opcja nie mo¿e zostaæ u¿yta
+razem z opcj± \-B.
+.TP 8
+.B \-P
+Ta opcja dzia³a tak, jak \-p z wyj±tkiem tego, ¿e powoduje, i¿ metamail
+wy¶wietla napis "Press RETURN to go on" (Naci¶nij RETURN, by kontynuowaæ)
+czekaj±c na naci¶niêcie tego klawisza po skoñczeniu wy¶wietlania wiadomo¶ci.
+Ta opcja jest przeznaczona do u¿ywania w sytuacji, gdy metamail
+rekurencyjnie wywo³uje siebie w nowym oknie terminala stworzonym wy³±cznie w
+tym celu. Tej opcji nie mo¿na u¿ywaæ razem z \-B.
+.TP 8
+.B \-q
+Ta opcja powstrzymuje metamail od wy¶wietlania komunikatów. Standardowo
+metamail przed uruchomieniem interpretera wypisuje na standardowym wyj¶ciu
+kilka istotnych fragmentów nag³ówków wiadomo¶ci (co mo¿na
+konfigurowaæ zmiennymi ¶rodowiskowymi KEYHEADS i KEYIGNHEADS) wraz z innymi
+komunikatami.
+.TP 8
+.B \-r
+Ta opcja informuje metamail, ¿e uruchomienie przez roota jest dozwolone.
+Standardowo metamail odmawia pracy, je¿eli prawdziwym lub efektywnym
+identyfikatorem u¿ytkownika jest root. Ten sam efekt mo¿na osi±gn±æ u¿ywaj±c
+zmiennej ¶rodowiskowej MM_RUNASROOT.
+.TP 8
+.B \-R
+Ta opcja powoduje uruchomienie programu /usr/ucb/reset w celu zresetowania
+stanu terminala przed jego u¿ywaniem.
+.TP 8
+.B \-s <temat>
+Ta opcja okre¶la temat (subject) wiadomo¶ci. Standardowo ta informacja
+pobierana jest z nag³ówka. Temat wiadomo¶ci umieszczany jest w ¶rodowisku,
+by by³ dostêpny dla wszystkich interpreterów uruchamianych przez metamail.
+.TP 8
+.B \-w
+Ta opcja informuje metamail, ¿e zamiast okre¶lania sposobu wy¶wietlania
+danych poprzez plik mailcap, wszystkie czê¶ci wiadomo¶ci powinny zostaæ
+zdekodowane i zapisane w pliku w swoim zwyk³ym formacie.
+Zale¿nie od okoliczno¶ci wywo³ania, metamail mo¿e odgadn±æ nazwê pliku z
+nag³ówka wiadomo¶ci, pytaj±c u¿ytkownika lub generuj±c plik o tymczasowej,
+unikalnej nazwie.
+.TP 8
+.B \-x 
+Ta opcja informuje metamail, ¿e nie jest on uruchomiony na terminalu,
+niezale¿nie od wyników wywo³ania isatty(). U¿ycie tej opcji jest konieczne,
+gdy metamail dzia³a na pseudoterminalu, a isatty(3) zwraca warto¶æ TRUE,
+lecz w rzeczywisto¶ci nie istnieje terminal, za po¶rednictwem którego mo¿na
+siê komunikowaæ z u¿ytkownikiem. Ten sam efekt mo¿na osi±gn±æ przy pomocy
+zmiennej ¶rodowiskowej MM_NOTTTY.
+.TP 8
+.B \-y
+Ta opcja informuje metamail, ¿e nale¿y spróbowaæ "wyci±gn±æ" wiadomo¶æ
+w formacie MIME z cia³a ca³ej wiadomo¶ci. Taki sposób dzia³ania jest
+u¿yteczny, gdy system dostarczania poczty odrzuci³ tê wiadomo¶æ nie wiedz±c,
+jak sformatowaæ odrzucon± czê¶æ zgodnie ze standardem MIME. (Dla wygody
+tych, którzy nie mog± kontrolowaæ sposobu wywo³ywania programu metamail
+przez program odczytuj±cy pocztê, dzia³anie tej opcji mo¿e byæ równie¿
+osi±gniête za pomoc± zmiennej ¶rodowiskowej MM_YANKMODE). Je¿eli u¿ywasz tej
+opcji dla wiadomo¶ci, które NAPRAWDÊ s± w formacie MIME, lub tych, które nie
+zawieraj± w sobie czê¶ci w tym formacie, rezultaty mog± byæ bardzo dziwne.
+Nie stanie siê nic strasznego, ale te¿ wiele nie zobaczysz.
+.TP 8
+.B \-z 
+Ta opcja informuje metamail, by usun±æ swój plik wej¶ciowy po skoñczeniu.
+Opcja \-z wymaga, by argumentem programu metamail by³a nazwa pliku, tzn. nie
+dane nie s± czytanie ze standardowego wej¶cia.
+.TP 8
+.B \-T 
+Ta opcja w zamy¶le ma byæ rekurencyjnie u¿ywana przez program metamail, by
+wy³±czyæ efekt dzia³ania zmiennej ¶rodowiskowej MM_TRANSPARENT. Powinna byæ
+u¿ywana wy³±cznie w wypadku, gdy metamail uruchamia swoj± kolejn± kopiê w oknie
+terminala.
+.TP 8
+.B Nazwy plików w linii poleceñ
+Ka¿dy argument nie zaczynaj±cy siê znakiem "-" jest traktowany jak nazwa pliku
+z którego, zamiast standardowego wej¶cia, powinny byæ pobierane dane.
+.SH NIEROZPONANY RODZAJ WIADOMO¦CI
+Od czasu do czasu metamail wy¶wietli komunikat typu
+
+**** Unrecognized mail type: 'smell-o-vision'.  Writing to file
+/tmp/metamail.1234 ****
+
+Oznacza to, ¿e usi³ujesz obejrzeæ wiadomo¶æ w formacie "smell-o-vision", lecz
+metamail na twojej maszynie (sieci) nie zosta³ jeszcze odpowiednio
+skonfigurowany do wy¶wietlania tego rodzaju wiadomo¶ci. W najbardziej ogólnym
+przypadku taka konfiguracja opiera siê na mechanizmie pliku mailcap, co zosta³o
+opisane w kolejnej sekcji.
+
+Je¿eli metamail trafi na wiadomo¶æ w nieznanym sobie formacie, usuwa z danych
+nag³ówek oraz informacje o rodzaju kodowania, a nastêpnie zapisuje dane w pliku
+tymczasowym. (Je¿eli dzia³aj±ca kopia programu metamail jest interaktywna,
+bêdziesz mia³ wiêkszy wybór - zapisanie do pliku tymczasowego, przegl±danie
+jako tekst lub zignorowanie tej wiadomo¶ci). Do u¿ytkownika nale¿y usuniêcie
+takich plików.
+
+.SH PLIK (PLIKI) MAILCAP 
+
+Nadrzêdnym celem programu metamail jest u³atwienie programom pocztowym
+centralnego dostêpu do informacji multimedialnych. Je¿eli wszystkie programy
+pocztowe wywo³uj± jeden program do interpretacji nietekstowych wiadomo¶ci,
+tylko ten jeden program musi wiedzieæ, jak siê z nimi obchodziæ.
+
+Pliki mailcap bardzo u³atwiaj± przystosowanie programu metamail do tej roli.
+Przeznaczeniem tym plików jest informowanie programu metamail, jakie programy
+nale¿y uruchamiaæ w celu wy¶wietlania wiadomo¶ci w rozmaitych formatach. W ten
+sposób ³atwo mo¿na umo¿liwiæ wszystkim programom pocztowym wy¶wietlanie nowego
+typu danych przez zwyk³e dopisanie linii do pliku mailcap.
+
+Metamail szuka plików mailcap w ¶cie¿ce poszukiwañ. W przeciwieñstwie do
+standardowego zachowania siê programów podczas przeszukiwania ¶cie¿ki, w miarê
+potrzeby metamail bêdzie przeszukiwa³ 
+.I wszystkie
+pliki mailcap, które znajdzie w ¶cie¿ce do czasu, gdy skoñcz± siê pliki
+mailcap, lub znaleziona zostanie odpowiednia linia, z informacj±, jak
+wy¶wietliæ dany typ wiadomo¶ci. Po znalezieniu odpowiedniej linii uruchomiony
+zostanie odpowiedni program w niej wyspecyfikowany.
+
+Domy¶lna ¶cie¿ka poszukiwañ ma nastêpuj±c± postaæ:
+
+$HOME/.mailcap:/usr/local/etc/mailcap:/usr/etc/mailcap:/etc/mailcap:
+.br
+/etc/mail/mailcap:/usr/public/lib/mailcap
+
+Mo¿e byæ ona zmieniona poprzez ustawienie zmienn± systemow± MAILCAPS. 
+Uwaga: Podczas poszukiwañ na ¶cie¿ce metamail nie interpretuje zmiennych
+¶rodowiskowych typu $HOME lub symboli w rodzaju "~".
+
+Format plików mailcap jest opisany na stronie mailcap(4).
+
+.\" .SH NON-ASCII HEADER FIELDS
+
+.SH NIETEKSTOWE POLA NAG£ÓWKÓW
+Metamail posiada wbudowan± podstawow± obs³ugê nietekstowych danych w nag³ówkach
+wiadomo¶ci. Oznacza to, ¿e takie dane zostan± rozpoznane, zdekodowane i wys³ane
+na terminal. To zachowanie mo¿e byæ bardziej lub mniej sensowne, zale¿nie od
+systemu kodowania znaków okre¶lonego w nag³ówku oraz mo¿liwo¶ci terminala,
+rzadko jednak efekt bêdzie gorszy od pokazywania danych w zakodowanej postaci.
+
+.SH ¦RODOWISKO
+.PP 
+.TP 8 
+.B METAMAIL_TMPDIR
+Je¿eli ta zmienna jest ustawiona, okre¶la ona nazwê katalogu tymczasowego
+(normalnie jest to "/tmp"). W tym katalogu metamail oraz programy towarzysz±ce
+tworz± w systemie UNIX pliki tymczasowe. 
+
+.TP 8 
+.B MM_NOASK 
+Je¿eli MM_NOASK ma warto¶æ 1, metamail nigdy nie bêdzie pyta³ o pozwolenie na
+uruchomienie interpretera danego rodzaju wiadomo¶ci. W innym wypadku, zmienna
+MM_NOASK mo¿e zawieraæ rozdzielon± przecinkami listê nazw typów (bez bia³ych
+spacji), dla wy¶wietlenia których nie nale¿y pytaæ o zgodê. Na przyk³ad,
+nadanie tej zmiennej warto¶ci "magicmail,audio" spowoduje, ¿e u¿ytkownik nie
+bêszie pytany o zgodê na uruchomienie interpreterów wiadomo¶ci w formacie
+magicmail i audio, lecz wci±¿ bêdzie pytany przed wy¶wietlaniem pozosta³ych
+rodzajów wiadomo¶ci. (Je¿eli w linii poleceñ podana zostanie opcja \-d, zmienna
+MM_NOASK bêdzie mia³a warto¶æ 1 dla wszystkich procesów potomnych, pozwalaj±c
+opcji -d dzia³aæ rekurencyjnie). 
+
+.TP 8 
+.B KEYHEADS
+Zmienna KEYHEADS mo¿e byæ rozdzielon± przecinkami list± nag³ówków, które jako
+jedyne bêd± wy¶wietlane przez metamail. Domy¶lnie metamail zachowuje siê tak,
+jakby zmienna KEYHEADS mia³a warto¶æ
+
+Date:From:Subject:To:CC:Content-Description
+
+Je¿eli zmienna KEYHEADS jest pustym ci±giem, ¿aden element nag³ówka nie jest
+wy¶wietlany. Je¿eli jej warto¶ci± jest gwiazdka ("*"), wy¶wietlane s± wszystkie
+pola nag³ówka.
+
+.TP 8
+.B KEYINGHEADS
+Zmienna KEYINGHEADS mo¿e byæ rozdzielon± dwukropkami list± pól nag³ówka,
+których to pól metamail nie bêdzie wy¶wietla³. Warto¶æ tej zmiennej jest brana
+pod uwagê tylko wtedy, gdy zmienna KEYHEADS nie jest ustawiona.
+
+Je¿eli zmienna KEYIGNHEADS jest pustym ci±giem, wszystkie pola nag³ówka s±
+wy¶wietlane, je¿eli jej warto¶ci± jest gwiazdka ("*"), ¿adne pole nag³ówka nie
+bêdzie wy¶wietlane.
+
+.TP 8
+.B MM_NOTTTY
+Je¿eli zmienna MM_NOTTTY ma niezerow± warto¶æ, metamail bêdzie zak³ada³, ¿e nie
+dzia³a w oknie terminala. MM_NOTTTY implikuje nadanie zmiennej MM_NOASK
+warto¶ci 1. Je¿eli podana jest opcja \-z, MM_NOTTTY jest ustawiana dla procesów
+potomnych, umo¿liwiaj±c opcji \-z rekurencyjne dzia³anie.
+
+.TP 8
+.B MAILCAPS
+Ta zmienna mo¿e byæ u¿yta, by zmieniæ domy¶ln± ¶cie¿kê poszukiwania plików
+mailcap.
+
+.TP 8
+.B METAMAIL_PAGER
+Je¿eli ta zmienna jest ustawiona, definiuje ona nowy program stronicuj±cy
+zamiast domy¶lnego "more". Zauwa¿, ¿e nie jest u¿ywana zwyk³a zmienna PAGER,
+poniewa¿ wiele programów stronicuj±cych (zw³aszcza "less"), interferuje z
+dzia³aniem programów pocztowych opieraj±cych siê na pliku termcap.
+
+.TP 8
+.B NOMETAMAIL
+Ta zmienna nie jest wprawdzie u¿ywana przez metamail, ale u¿ywa jej wiele
+programów pocztowych kompatybilnych z programem metamail. Je¿eli zmienna
+NOMETAMAIL ma jak±kolwiek warto¶æ, wiêkszo¶æ programów pocztowych nie bêdzie
+uruchamia³a programu metamail, co efektywnie uniemo¿liwia jak±kolwiek
+multimedialn± funkcjonalno¶æ takich programów.
+
+.TP 8
+.B MM_DEBUG
+Je¿eli zmienna MM_DEBUG ma jak±kolwiek warto¶æ, metamail bêdzie produkowa³
+nieco wiêcej informacji na temat swojej aktywo¶ci.
+
+.TP 8
+.B MM_QUIET
+Je¿eli ta zmienna ma warto¶æ "1", metamail bêdzie produkowa³ jeszcze mniej
+informacji, ni¿ zazwyczaj. W szczególno¶ci, wstrzyma komunikaty "Executing...",
+chyba ¿e ustawiona jest zmienna MM_DEBUG.
+
+W innym razie, ta zmienna mo¿e byæ rozdzielon± przecinkami list± krótkich
+poleceñ, wtedy komunikat "Executing..." bêdzie wstrzymany dla tych w³a¶nie
+poleceñ.
+
+Domy¶ln± warto¶ci± zmiennej MM_QUIET jest "cat", co oznacza, ¿e komunikat
+"Executing..." jest wypisywany dla wszystkich poleceñ z wyj±tkiem "cat".
+W ten sposób obs³uga wiadomo¶ci tekstowych jest naturalna, lecz nie po¶wiêca
+siê tym samym mo¿liwo¶ci informowania u¿ytkownika o tym, co siê dzieje w
+bardziej skomplikowanych sytuacjach.
+
+.TP 8
+.B MM_YANKMODE
+Nadanie tej zmiennej niezerowej warto¶ci ma to samo znaczenie, co uruchomienie
+programu metamail z opcj± \-y. Przeczytaj ostrze¿enia przy opisie tej opcji,
+zanim zaczniesz jej u¿ywaæ. Jedyn± sytuacj±, w jakiej chcia³by¶ u¿ywaæ tej
+zmiennej, to potrzeba obejrzenia wiadomo¶ci w formacie MIME, której nie potrafi
+wy¶wietliæ twój program pocztowy. W takim wypadku powiniene¶ obejrzeæ tê
+wiadomo¶æ, wyj¶æ z programu pocztowego i usun±æ zmienn± MM_YANKMODE.
+
+.TP 8
+.B MM_TRANSPARENT
+Je¿eli ta zmienna ma niezerow± warto¶æ, metamail wy¶le ca³± wiadomo¶æ na
+standardowe wyj¶cie, a nastêpnie otworzy nowe okno terminala, w którym
+wy¶wietli co¶ nieco bardziej inteligentnie. Ta opcja s³u¿y do wsparcia pewnych
+nieprzemy¶lanych programów pocztowych, takich, jak mailtool, których dzia³anie
+zale¿y od tego, co na standardowym wyj¶ciu wypisze standardowe w UNIXie
+polecenie "mail", tzn. wiadomo¶æ w takiej postaci, w jakiej znajduje siê ona w
+skrzynce pocztowej.
+
+.TP 8
+.B MM_CHARSET
+Je¿eli ta zmienna jest ustawiona, metamail nie bêdzie wypisywa³
+komunikatów na temat zestawu znaków zadeklarowanego w nag³ówku, je¿eli pokrywa
+siê on z zestawem opisanym przez tê zmienn±. Na przyk³ad, je¿eli MM_CHARSET ma
+warto¶æ "iso-8859-8", metamail wstrzyma ostrze¿enia dla nag³ówków kodowanych w
+tym standardzie.
+
+.TP 8
+.B DISPLAY
+
+Zmienna u¿ywana do tworzenia okna terminala w systemie okien X11.
+
+.TP 8
+.B WINDOW_PARENT
+U¿ywana do tworzenia okna terminala w systemie okien SunTools.
+
+.TP 8
+.B WMHOST
+U¿ywana do tworzenia okna terminala w starym systemie okien Andrew WM.
+
+.SH ¦RODOWISKO INTERPRETERÓW
+
+Gdy metamail wywo³uje interpreter okre¶lony w pliku mailcap, ustawia kilka
+zmiennych ¶rodowiskowych, które w miarê potrzeb mog± byæ przez niego u¿ywane.
+
+.TP 8
+.B MM_HEADERS
+Ta zmienna ma warto¶æ pe³nego zestawu pól nag³ówka zgodnego z RFC822, je¿eli
+jakiekolwiek z nich istniej±.
+
+.TP 8
+.B MM_MAILER
+W tej zmiennej znajduje siê nazwa programu pocztowego, który wywo³a³ metamail,
+gdy u¿yta jest opcja \-m.
+
+.TP 8
+.B MM_CONTENTTYPE
+Ta zmienna zawiera typ zawarto¶ci w tej samej postaci, w jakiej jest okre¶lony
+przez pole nag³ówka Content-type lub w jakiej zosta³ przekazany opcj± \-c.
+Je¿eli typ zawarto¶ci ma podtyp, jest on równie¿ umieszczony w zmiennej
+MM_CONTENTTYPE, np. "multipart/mixed; boundary=foobar".
+
+.TP 8
+.B MM_SUMMARY
+W tej zmiennej znajduje siê "tytu³" wiadomo¶ci, zazwyczaj sk³adaj±cy siê z
+nadawcy i tematu wiadomo¶ci.
+
+.TP 8
+.B MM_USEPAGER
+Ta zmienna ma niezerow± warto¶æ je¿eli nale¿y u¿yæ programu stronicuj±cego
+(np. u¿yto opcji \-p). Je¿eli u¿yto opcji \-p, zmienna MM_USEPAGER jest
+ustawiana dla procesów potomnych, pozwalaj±c opcji \-p dzia³aæ rekurencyjnie.
+Ta opcja nie mo¿e byæ u¿yta razem z \-B.
+
+.TP 8
+.B TERMINAL_CMD
+W tej zmiennej mo¿e znajdowaæ siê polecenie u¿ywane do uruchamiana nowego
+okna terminala, je¿eli jest to potrzebne. Nazwa programu, który ma dzia³aæ w
+tym oknie jest DOKLEJANA do tego polecenia. Domy¶lnie, zmienna ta ma warto¶æ
+"xterm -e", je¿eli istnieje zmienna DISPLAY, lub "shelltool", je¿eli istnieje
+zmienna WINDOW_PARENT. U¿ytkownicy systemu OpenWindows Suna mog± nadaæ tej
+zmiennej warto¶æ "shelltool", je¿eli wol± shelltool od xterma.
+
+.TP 8
+.B MM_RUNASROOT
+Je¿eli ta zmienna ma niezerow± warto¶æ, pozwoli to programowi metamail dzia³aæ
+po uruchomieniu przez roota. To samo dzia³anie ma opcja \-r.
+
+.SH PLIKI
+
+$HOME/.mailcap:/etc/mailcap:/usr/etc/mailcap:/usr/local/etc/mailcap - domy¶lna
+¶cie¿ka poszukiwania plików mailcap.
+
+.SH ZOBACZ TAK¯E
+
+audiocompose(1), audiosend(1), ezview(1), getfilename(1), mailto-hebrew(1),
+mailto(1), metasend(1), mmencode(1), richtext(1), showaudio(1),
+showexternal(1), shownonascii(1), showpartial(1), showpicture(1), mailcap(4)
+
+.SH PROBLEMY
+W wieloczê¶ciowych/alternatywnych wiadomo¶ciach lub ich czê¶ciach, pewne pola
+nag³ówka, które powinny byæ wy¶wietlane, mog± nie zostaæ wy¶wietlone. Ta
+sytuacja rzadko stanowi problem. Równie¿, wszystkie czê¶ci wiadomo¶ci typu
+"multipart" lub "message" w wieloczê¶ciowych wiadomo¶ciach s± traktowane tak,
+jakby by³y w znanym formacie, nawet gdy nie s±. Czy jest to problem, oka¿e siê
+na podstawie do¶wiadczenia.
+
+Pole "textualnewlines" w pliku mailcap ma wp³yw na globaln± tablicê wyj±tków.
+Oznacza to, ¿e je¿eli wiêcej ni¿ jeden opis w pliku mailcap dla danego typu
+wiadomo¶ci (content-type) ma ten sam opis "textualnewlines", mo¿e zostaæ u¿yta
+niew³a¶ciwa warto¶æ. Nie jestem w stanie wyobraziæ sobie sytuacji, w której
+stanowi³oby to problem, poniewa¿ nie zdarza siê, aby jeden rodzaj zawarto¶ci
+wymaga³ traktowania nowych linii na dwa ró¿ne sposoby, niezale¿nie od swojego
+¶rodowiska.
+
+Pola "%n" oraz "%F" w pliku mailcap nie dzia³aj± w klauzulach "test", poniewa¿
+metamail nie przegl±da dalszych czê¶ci wiadomo¶ci w dostateczym stopniu, by
+prawid³owo obs³ugiwaæ te pola.
+
+.SH COPYRIGHT (pozostawiony w postaci oryginalnej)
+
+Copyright (c) 1991 Bell Communications Research, Inc. (Bellcore)
+
+Permission to use, copy, modify, and distribute this material 
+for any purpose and without fee is hereby granted, provided 
+that the above copyright notice and this permission notice 
+appear in all copies, and that the name of Bellcore not be 
+used in advertising or publicity pertaining to this 
+material without the specific, prior written permission 
+of an authorized representative of Bellcore.  BELLCORE 
+MAKES NO REPRESENTATIONS ABOUT THE ACCURACY OR SUITABILITY 
+OF THIS MATERIAL FOR ANY PURPOSE.  IT IS PROVIDED "AS IS", 
+WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
+
+.SH AUTOR
+Nathaniel S. Borenstein

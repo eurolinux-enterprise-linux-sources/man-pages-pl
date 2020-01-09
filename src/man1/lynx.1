@@ -1,0 +1,939 @@
+.\" {PTM/PB/0.1/25-12-1998/"tekstowa przegl±darka www"}
+.\" Translation 1998 Przemek Borys <pborys@dione.ids.pl>
+.\" aktualizacja do wersji v2.7.2 PTM/WK/2001-IV
+.nr N -1
+.nr D 5
+.TH LYNX 1 Local
+.UC 4
+.SH NAZWA
+lynx \- przegl±darka WWW
+.SH SK£ADNIA
+.B Lynx
+[opcje] [¶cie¿ka lub URL]
+.PP
+Pe³n± listê aktualnych opcji wy¶wietla polecenie "lynx -help".
+.SH OPIS
+.\" This defines appropriate quote strings for nroff and troff
+.ds lq \&"
+.ds rq \&"
+.if t .ds lq ``
+.if t .ds rq ''
+.\" Just in case these number registers aren't set yet...
+.if \nN==0 .nr N 10
+.if \nD==0 .nr D 5
+.I Lynx
+jest w pe³ni doskonale wyposa¿onym klientem WWW przeznaczonym dla u¿ytkowników
+pracuj±cych na znakowych urz±dzeniach wy¶wietlaj±cych z adresowalnym kursorem
+(np. terminalach vt110, emulatorach vt100 dzia³aj±cych na Windows 95/NT
+lub Mac-ach, lub dowolnych innych wy¶wietlaczach dzia³aj±cych z curses
+[t³um.: np. linux, ansi, itp.]). Wy¶wietla on dokumenty hipertekstowe (HTML),
+zawieraj±ce odno¶niki zarówno do plików lokalnego systemu, jak i do plików
+znajduj±cych siê na zdalnych systemach z uruchomion± us³ug± Gopher, HTTP,
+FTP, WAIS lub NNTP.
+Obecne wersje 
+.I Lynx
+dzia³aj± na UNIX-ie, VMS, Windows 95/NT, 386DOS i OS/2 EMX.
+.PP
+.I Lynx
+mo¿e byæ wykorzystywany do dostêpu do informacji z WWW lub do budowania
+systemów informacyjnych przeznaczonych g³ównie do dostêpu lokalnego. Np.
+.I Lynx
+zosta³ u¿yty do zbudowania wielu Campus Wide Information Systems (CWIS).
+Prócz tego,
+mo¿e pos³u¿yæ do budowy systemów izolowanych wewn±trz pojedynczej sieci
+lokalnej (LAN).
+.SH OPCJE
+Przy starcie, \fILynx\fR wczytuje dowolny plik lokalny lub URL podany w wierszu
+poleceñ. Tekst pomocy opisuj±cej pracê z URL-ami uzyskuje siê naciskaj±c
+\fB"?"\fR lub \fB"h"\fR podczas pracy z programem. Nastêpnie nale¿y pod±¿aæ
+za odno¶nikiem zatytu³owanym "Help on URLs".
+
+\fILynx\fR u¿ywa tylko d³ugich, pe³nych nazw opcji. Nazwy opcji zaczynaj± siê
+od pojedynczej kreski, ale mo¿na te¿ stosowaæ podwojon±. Mo¿na mieszaæ kreski
+i znaki podkre¶lenia (w opisie poni¿ej opcje podano z jedn± kresk± przed
+nazw± i podkre¶leniami wewn±trz).
+.PP
+.TP
+.B -
+Je¶li jedynym argumentem jest '-', to Lynx oczekuje na podanie mu argumentów
+ze standardowego wej¶cia.
+Umo¿liwia to wprowadzanie potencjalnie bardzo d³ugich wierszy poleceñ, jakie
+mog± byæ zwi±zane z argumentami -get_data lub -post_data (patrz ni¿ej).
+Mo¿na to te¿ wykorzystaæ gdy chcemy unikn±æ umieszczania informacji
+traktowanej jako niejawna w wierszu poleceñ wywo³ania programu (co na
+wiêkszo¶ci systemów by³oby widoczne dla innych procesów), szczególnie,
+gdy równocze¶nie stosowane s± opcji -auth lub -pauth.
+
+.TP
+.B -accept_all_cookies
+akceptowanie wszystkich ciasteczek (cookies).
+.TP
+.B -anonymous
+stosowanie ograniczeñ dla u¿ytkownika anonimowego, zobacz te¿ -restrictions.
+.TP
+.B -assume_charset\fR=\fInazwaMIME
+zestaw znaków przyjmowany dla dokumentów, które go nie okre¶laj±.
+.TP
+.B -assume_local_charset\fR=\fInazwaMIME
+zestaw znaków przyjmowany domy¶lnie dla plików lokalnych.
+.TP
+.B -assume_unrec_charset\fR=\fInazwaMIME
+zestaw znaków stosowany zamiast nierozpoznanych zestawów znaków.
+.TP
+.B -auth\fR=\fIID\fR:\fIHAS£O
+ustalenie na starcie identyfikatora oraz has³a autoryzacji dla dokumentów
+chronionych. Nale¿y upewniæ siê, ¿e chronione s± wszelkie pliki skryptów
+wykorzystuj±cych ten prze³±cznik.
+.TP
+.B -base
+przy zrzutach -source uzyskane wyj¶cie tekstowe/html bêdzie poprzedzone
+komentarzem o ¿±danym URL-u i znacznikiem BASE.
+.TP
+.B -blink
+wymusza w trybie kolorowym podwy¿szon± jasno¶ci kolorów t³a, je¶li jest
+to dostêpne i obs³ugiwane przez terminal.
+Lynx powinien byæ skompilowany z bibliotek± \fBslang\fR, by dzia³a³a ta flaga.
+.TP
+.B -book
+u¿ycie strony z zak³adkami (bookmark page) jako pliku startowego.
+Domy¶lny plik lub plik z wiersza poleceñ jest jednak wci±¿ u¿ywany
+dla komendy Main screen i bêdzie wykorzystany je¶li strona z zak³adkami
+jest niedostêpna lub pusta.
+.TP
+.B -buried_news
+prze³±cznik przegl±dania artyku³ów grup dyskusyjnych (news) w poszukiwaniu
+zagrzebanych odno¶ników. Odnalezione odno¶niki s± konwertowane na odno¶niki
+do artyku³ów news. Nie jest to zalecane, gdy¿ adresy pocztowe zawarte
+wewn±trz nawiasów k±towych zostan± zmienione na nieprawid³owe odno¶niki
+news, a zakodowane programem uuencode wiadomo¶ci mog± zostaæ
+zaprzepaszczone.
+.TP
+.B -cache\fR=\fILICZBA
+ustala liczbê dokumentów buforowanych w pamiêci. Domy¶lnie jest to 10.
+.TP
+.B -case
+w³±cza rozró¿nianie wielko¶ci liter przy wyszukiwaniu napisów.
+.TP
+.B -cfg\fR=\fINAZWAPLIKU
+okre¶la plik konfiguracyjny Lynxa, inny ni¿ domy¶lny lynx.cfg.
+.TP
+.B -child
+powoduje zakoñczenie pracy przy naci¶niêciu strza³ki w lewo w pliku
+startowym, równocze¶nie wy³±cza zapisywanie na dysk.
+.TP
+.B -color
+wymusza w³±czenie trybu koloru, je¶li jest dostêpny.  Je¶li opis mo¿liwo¶ci
+terminala nie okre¶la sposobu obs³ugi koloru, to przyjmowane s± domy¶lne
+sekwencje steruj±ce, dzia³aj±ce dla wielu typów terminali. Lynx powinien byæ
+skompilowany z bibliotek± \fBslang\fR, by flaga ta dzia³a³a, co jest
+równowa¿ne ustawieniu zmiennej ¶rodowiskowej \fBCOLORTERM\fR.
+(Je¶li praca w kolorze jest zamiast tego zapewniana przez bibliotekê curses
+obs³uguj±c± kolory, jak \fBncurses\fR, to Lynx przy ustalaniu, czy mo¿liwy
+jest tryb koloru bêdzie ca³kowicie polega³ na opisie terminala. Wówczas flaga
+ta nie jest potrzebna a zatem niedostêpna.)
+Zapisane w pliku .lynxrc pocz±tkowe ustawienie show_color=always dzia³a
+tak samo. Wpisane w .lynxrc pocz±tkowe ustawienie show_color=never jest
+przes³aniane przez tê flagê.
+.TP
+.B -cookies
+prze³±cznik obs³ugi nag³ówków Set-Cookie.
+.TP
+.B -cookie_file\fR=\fIPLIK
+okre¶la plik, w którym maj± byæ przechowywane ciasteczka.
+.TP
+.B -core
+prze³±cznik wymuszania zrzutów rdzenia przy b³êdach krytycznych.
+.TP
+.B -crawl
+z -traversal, wypisuje ka¿d± stronê do pliku.
+z -dump, formatuje wyj¶cie jak przy -traversal, lecz na standardowe wyj¶cie.
+.TP
+.B -debug_partial
+przyrostowe fazy wy¶wietlania z MessageSecs opó¼nieniem
+.\" incremental display stages with MessageSecs delay
+.TP
+.B -display\fR=\fIDISPLAY
+ustawia zmienn± wy¶wietlacza dla wywo³ywanych programów X-owych.
+.TP
+.B -dont_wrap_pre
+zakazuje zawijania tekstu w <pre> podczas zrzucania (-dump) i ³a¿enia
+(-crawl), zaznacza zawiniête linie w sesji interaktywnej.
+.TP
+.B -dump
+zrzuca na standardowe wyj¶cie sformatowane wyj¶cie domy¶lnego dokumentu
+lub dokumentu podanego w wierszu poleceñ.
+Mo¿e to byæ u¿ywane w nastêpuj±cy sposób:
+lynx -dump http://www.nyu.edu/pages/wsn/subir/lynx.html.
+.TP
+.B -editor\fR=\fIEDYTOR
+w³±cza zewnêtrzn± edycjê, za pomoc± podanego EDYTORA. (vi, ed, emacs, itp.)
+.TP
+.B -emacskeys
+w³±cza klawisze przemieszczania w stylu emacsowym.
+.TP
+.B -enable_scrollback
+prze³±cza zgodno¶æ z klawiszami scrollback programów komunikacyjnych.
+(mo¿e byæ niezgodne z niektórymi wersjami curses).
+.TP
+.B -error_file\fR=\fIPLIK
+definiuje plik, w którym lynx bêdzie zg³asza³ kody dostêpu HTTP.
+.TP
+.B -fileversions 
+w³±cza wszystkie wersje plików w lokalnych listingach katalogów VMS.
+.TP
+.B -force_empty_hrefless_a
+wymusza opró¿nianie elementów 'A' nie zawieraj±cych znacznika HREF (domyka
+je zaraz po napotkaniu).
+.TP
+.B -force_html 
+wymusza interpretacjê pierwszego dokumentu jako HTML.
+.TP
+.B -force_secure
+prze³±cza wymuszanie flagi bezpieczeñstwa dla ciasteczek SSL.
+.TP
+.B -forms_options
+prze³±cza styl opcji (menu lub formularze).
+.TP
+.B -from
+prze³±cza przekazywanie nag³ówków From.
+.TP
+.B -ftp 
+wy³±cza dostêp do ftp.
+.TP
+.B -get_data
+wysy³a dane formularzy ze stdin przy u¿yciu metody GET i kopiuje wyniki.
+.TP
+.B -head
+wysy³a ¿±danie HEAD dla nag³ówków mime.
+.TP
+.B -help
+wypisuje informacjê o sk³adni komend Lynx.
+.TP
+.B -hiddenlinks=[opcja]
+steruje wy¶wietlaniem ukrytych odno¶ników.
+.I merge
+ukryte odno¶niki s± pokazywane jako liczby w nawiasach kwadratowych,
+numerowane wspólnie z innymi odno¶nikami w kolejno¶ci wystêpowania
+w dokumencie.
+
+.I listonly
+ukryte odno¶niki s± pokazywane tylko na ekranach L)ist i zestawieniach
+generowanych przez opcjê
+.I -dump
+lub z menu P)rint, ale pojawiaj± siê osobno na koñcu tych list.
+Jest to zachowanie domy¶lne.
+
+.I ignore
+ukryte odno¶niki na pojawiaj± siê nawet na zestawieniach.
+
+.TP
+.B -historical
+prze³±cza stosowanie '>' lub '-->' jako zakoñczeñ komentarzy.
+.TP
+.B -homepage\fR=\fIURL
+ustawia stronê domow± niezale¿nie od strony startowej.
+.TP
+.B -image_links
+prze³±cza zamieszczanie odno¶ników dla wszystkich obrazków.
+.TP
+.B -index\fR=\fIURL
+ustala domy¶lny plik index dla podanego URL.
+.TP
+.B -ismap
+prze³±cza zamieszczanie odno¶ników ISMAP gdy istniej± MAPy klienckie.
+.TP
+.B -justify
+justuje (wyrównuje) tekst.
+.TP
+.B -link\fR=\fLICZBA
+pocz±tkowy licznik dla plików lnk#.dat, tworzonych przez -crawl.
+.TP
+.B -localhost
+wy³±cza URL-e, które wskazuj± na zdalne maszyny.
+.TP
+.B -locexec
+zezwala na wywo³ywanie lokalnych programów tylko z plików lokalnych
+(je¶li Lynx by³ skompilowany z w³±czonym lokalnym wywo³ywaniem).
+.TP
+.B -mime_header
+wraz ze ¼ród³em pobranego dokumentu wypisuje jego nag³ówek MIME.
+.TP
+.B -minimal
+prze³±cza analizê komentarzy - minimalne kontra poprawne. W starych
+przegl±darkach, b³êdnie za zakoñczenie komentarza by³ uznawany jakikolwiek
+domykaj±cy nawias ostrok±tny. Poprawne zakoñczenie wymaga pary kresek przed
+nawiasem.
+.TP
+.B -newschunksize\fR=\fILICZBA
+ilo¶æ artyku³ów w podzielonych na kawa³ki listingach z grup dyskusyjnych.
+.TP
+.B -newsmaxchunk\fR=\fILICZBA
+maksymalna ilo¶æ artyku³ów w listingach grup dyskusyjnych przed podzia³em
+na czê¶ci.
+.TP
+.B -nobold
+wy³±cza wy¶wietlanie atrybutu pogrubienia.
+.TP
+.B -nobrowse
+wy³±cza przegl±danie katalogów.
+.TP
+.B -nocc
+wy³±cza pro¶by o podanie Cc: w celu zyskania kopii listu do w³asnej
+wiadomo¶ci. Zauwa¿, ¿e nie wy³±cza tych CC, które s± zamieszczone
+w samym URL-u typu mailto czy klauzuli ACTION formularza.
+.TP
+.B -nocolor
+wymusza wy³±czenie koloru, ignoruj±c mo¿liwo¶ci terminala, ewentualn±
+flagê -color, zmienn± COLORTERM i zachowane ustawienia .lynxrc.
+.TP
+.B -noexec
+wy³±cza wywo³ywanie lokalnych programów. (DOMY¦LNE)
+.TP
+.B -nofilereferer
+wy³±cza transmisje nag³ówków Referer dla URL-i plikowych.
+.ig
+.TP
+.B -nofrom
+wy³±cza transmisjê nag³ówków From.
+..
+.TP
+.B -nolist
+wy³±cza tworzenie listy odno¶ników w zrzutach.
+.TP
+.B -nolog
+wy³±cza wysy³anie poczt± elektroniczn± komunikatów o b³êdach do w³a¶cicieli
+dokumentów.
+.TP
+.B -nonrestarting_sigwinch
+Ta flaga nie jest dostêpna na wszystkich systemach, Lynx powinien by³
+skompilowany ze zdefiniowanym symbolem HAVE_SIGACTION.
+Je¶li jest dostêpna, to ta flaga \fImo¿e\fR powodowaæ, ¿e program
+bêdzie znacznie szybciej reagowa³ na zmiany okna w przypadku uruchomienia
+w oknie \fBxterm\fR.
+.TP
+.B -nopause
+wy³±cza wymuszone przerwy na komunikaty w linii stanu.
+.TP
+.B -noprint
+wy³±cza wiêkszo¶æ funkcji wypisywania [drukowania].
+.TP
+.B -noredir
+zapobiega automatycznym przekierowaniom i wypisuje komunikat z odno¶nikiem
+do nowego URL-a.
+.TP
+.B -noreferer
+wy³±cza przekazywanie nag³ówków Referer.
+.TP
+.B -nosocks
+wy³±cza u¿ywanie proxy SOCKS przez uSOCKSowanego Lynxa.
+.TP
+.B -nostatus
+wy³±cza komunikaty o stanie pobierania.
+.TP
+.B -nounderline
+wy³±cza wy¶wietlanie atrybutu podkre¶lenia.
+.TP
+.B -number_fields
+wymusza numerowanie zarówno odno¶ników, jak i pól wej¶ciowych formularzy.
+.TP
+.B -number_links
+wymusza numerowanie odno¶ników.
+.TP
+.B -partial
+prze³±cza wy¶wietlanie czê¶ciowe stron podczas pobierania.
+.TP
+.B partial_thres\fR=\fILICZBA
+liczba wierszy pokazywana przed ponownym utworzeniem obrazu
+podczas wy¶wietlania czê¶ciowego
+.ig
+number of lines to render before repainting display
+with partial-display logic
+..
+.TP
+.B -pauth\fR=\fIID\fR:\fIHAS£O
+ustalenie na starcie identyfikatora oraz has³a autoryzacji dla chronionych
+serwerów proxy. Nale¿y upewniæ siê, ¿e chronione s± wszelkie pliki skryptów
+wykorzystuj±cych ten prze³±cznik.
+.TP
+.B -popup
+prze³±cza sposób obs³ugi opcji pojedynczego wyboru w SELECT: za po¶rednictwem
+okna wyskakuj±cego albo listy przycisków radiowych.
+.TP
+.B -post_data
+wysy³a dane formularzy ze stdin przy u¿yciu metody POST i kopiuje wyniki.
+.TP
+.B -preparsed
+pokazuje wstêpnie przetworzone i sformatowane ¼ród³o HTML, gdy u¿yto
+z -source lub w podgl±dzie ¼ród³a.
+.TP
+.B -prettysrc
+pokazuje podgl±d ¼ród³a HTML z kolorowymi elementami leksykalnymi
+i znacznikami.
+.TP
+.B -print
+w³±cza funkcje wypisuj±ce [drukuj±ce]. (domy¶lne)
+.TP
+.B -pseudo_inlines
+w³±cza pokazywanie zastêpczych pseudoznaczników ALT dla elementów inline
+bez tekstu ALT.
+.TP
+.B -raw
+w³±cza domy¶lne ustawienie 8-bitowych translacji znaków, lub tryb CJK dla
+startowego zestawu znaków.
+.TP
+.B -realm
+.\" in the starting realm
+ogranicza dostêp tylko do URL-i w sferze startowej.
+.TP
+.B -reload
+wymiata bufor na serwerze proxy (dotyczy tylko pierwszego dokumentu).
+.TP
+.B -restrictions\fR=\fI[opcja][,opcja][,opcja]...
+umo¿liwia selektywne wy³±czenie listy us³ug.
+Je¶li nie poda siê opcji, wypisywana jest nastêpuj±ca lista.
+
+.I ?
+- podane samo, wypisuje listê aktywnych ograniczeñ
+
+.I all   
+- zastrzega wszystkie wymienione ni¿ej opcje.
+
+.I bookmark 
+- zabrania zmieniania po³o¿enia pliku zak³adek.
+
+.I bookmark_exec
+- zabrania uruchamiania programów poprzez odno¶niki z pliku zak³adek.
+
+.I change_exec_perms
+- zabrania zmieniania prawa eXecute plików (lecz wci±¿ zezwala dla
+katalogi) kiedy w³±czone jest lokalne zarz±dzanie plikami.
+
+.I default 
+- to samo, co opcja wiersza poleceñ -anonymous.
+Wy³±cza domy¶lne us³ugi dla u¿ytkownika anonimowego.
+Zabrania wszystkich us³ug, oprócz:
+inside_telnet, outside_telnet,
+inside_ftp, outside_ftp,
+inside_rlogin, outside_rlogin,
+inside_news, outside_news, telnet_port,
+jump, mail, print, exec oraz goto.
+Konfiguracja dla tych us³ug oraz stosowane dodatkowe ograniczenia goto
+dla konkretnych schematów URL-i pochodz± z definicji zawartych w userdefs.h.
+
+.I dired_support
+- zabrania lokalnego zarz±dzania plikami.
+
+.I disk_save 
+- zabrania zachowywania plików na dysk w menu download i print.
+
+.I dotfiles
+- zabrania dostêpu do plików ukrytych (kropkowych), równie¿ ich tworzenia.
+
+.I download
+- zabrania u¿ycia niektórych programów do pobierania plików w menu download.
+Nie poci±ga to za sob± ograniczenia disk_save, nie wy³±cza te¿ polecenia
+DOWNLOAD).
+
+.I editor  
+- zabrania zewnêtrznej edycji.
+
+.I exec    
+- wy³±cza skrypty uruchamiania.
+
+.I exec_frozen
+- zabrania u¿ytkownikowi zmieniania opcji lokalnego wykonywania.
+
+.I externals
+- zabrania niektórych wierszy konfiguracyjnych "EXTERNAL" je¶li wkompilowana
+jest obs³uga przesy³ania URL-i do programów zewnêtrznych (poleceniem EXTERN).
+
+.I file_url 
+- zabrania u¿ywania G)oto, obs³u¿onych odno¶ników i zak³adek w stosunku
+do URL-i typu file:
+
+.I goto    
+- wy³±cza polecenie 'g' (goto).
+
+.I inside_ftp
+- zabrania dostêpu FTP dla osób pochodz±cych z wewn±trz naszej w³asnej domeny
+(dla selektywno¶ci wymagane jest utmp).
+
+.I inside_news
+- j.w., lecz dla wysy³ania artyku³ów do grup dyskusyjnych USENET.
+
+.I inside_rlogin
+- j.w., lecz dla rlogin.
+
+.I inside_telnet 
+- j.w., lecz dla telnet.
+
+.I jump
+- wy³±cza polecenie 'j' (jump).
+
+.I multibook
+- zabrania u¿ywania wielu plików z zak³adkami.
+
+.I mail
+- zabrania u¿ywania poczty elektronicznej.
+
+.I news_post
+- zabrania wysy³±nia do grup dyskusyjnych.
+
+.I options_save 
+- zabrania zachowywania opcji w .lynxrc.
+
+.I outside_ftp
+- zabrania operacji FTP dla osób pochodz±cych spoza naszej w³asnej domeny
+(utmp jest wymagane dla selektywno¶ci).
+
+.I outside_news
+- zabrania czytania i wysy³ania artyku³ów USENET dla osób pochodz±cych
+spoza naszej w³asnej domeny (utmp jest wymagane dla selektywno¶ci).
+To ograniczenie odnosi siê do URL-i "news", "nntp", "newspost" i "newsreply",
+ale nie do "snews", "snewspost" czy "snewsreply", je¶li tylko s± obs³ugiwane.
+
+.I outside_rlogin
+- j.w., lecz dla rlogin.
+
+.I outside_telnet 
+- j.w., lecz dla telnet.
+
+.I print   
+- wy³±cza wiêkszo¶æ opcji drukuj±cych.
+
+.I shell   
+- zabrania przechodzenia do pow³oki i G)oto typu lynxexec lub lynxprog.
+
+.I suspend 
+- zabrania zawieszenia pracy programu przez Control-Z i przechodzenia
+do pow³oki.
+
+.I telnet_port
+- zabrania podawania portu w G)oto dla telnetu.
+
+.I useragent
+- zabrania modyfikowania nag³ówka User-Agent.
+
+.TP
+.B -resubmit_posts
+w³±cza wymuszane ponowne dostarczanie (bez bufora) formularzy z metod± POST,
+kiedy dokumenty, które one zwracaj± s± mo¿na uzyskaæ poleceniem PREV_DOC
+lub z History List.
+.TP
+.B -rlogin
+wy³±cza rozpoznawanie poleceñ rlogin.
+.TP
+.B -selective
+wymaga plików .www_browsable do przegl±dania katalogów.
+.TP
+.B -short_url
+powoduje, ¿e bardzo d³ugie URL-e pokazywane s± w wierszu stanu z "___"
+oznaczaj±cym czê¶æ, której nie da siê wy¶wietliæ.
+Wy¶wietlany jest pocz±tek i koniec URL-a, zamiast obcinania samej koñcówki.
+.TP
+.B -show_cursor
+Je¶li w³±czone, kursor nie bêdzie ukrywany w prawym naro¿niku, lecz bêdzie
+umieszczany na pocz±tku aktualnie zaznaczonego odno¶nika. Jest to domy¶lna
+opcja dla systemów bez mo¿liwo¶ci FANCY_CURSES, a domy¶lna konfiguracja mo¿e
+byæ zmieniana w userdefs.h lub lynx.cfg.
+Prze³±cznik wiersza poleceñ zmienia zachowanie domy¶lne.
+.TP
+.B -soft_dquotes
+prze³±cza emulacjê starego b³êdu w Netscape i Mosaic, które traktowa³y '>'
+jako wspólny znak zamkniêcia cudzys³owów (zawieraj±cych warto¶æ atrybutu)
+i znacznika.
+.TP
+.B -source
+dzia³a tak jak dump, lecz produkuje ¼ród³o HTML zamiast przeformatowanego
+tekstu.
+.TP
+.B -stack_dump
+wy³±cza procedurê obs³ugi porz±dkowania po otrzymaniu SIGINT
+.TP
+.B -startfile_ok
+zezwala na plik startowy niezgodny z http i stronê domow± z -validate.
+.TP
+.B -tagsoup
+inicjuje analizator sk³adni, stosuj±c "Tag Soup DTD" zamiast "SortaSGML".
+Metody te ró¿ni± siê rozpoznawaniem i usuwaniem b³êdów.
+"Tag Soup DTD" dopuszcza niepoprawnie zagnie¿d¿one znaczniki, "SortaSGML"
+jest surowsza.
+.TP
+.B -telnet
+wy³±cza rozpoznawanie poleceñ telnetu.
+.TP
+.B -term\fR=\fITERM
+mówi Lynxowi, jakiego rodzaju terminala ma on u¿ywaæ. (Mo¿e byæ
+przydatne przy zdalnym wykonywaniu, np. gdy Lynx ³±czy siê ze zdalnym portem
+TCP/IP, który uruchamia skrypt, który z kolei rozpoczyna inny proces Lynxa.)
+.TP
+.B -tlog
+prze³±cza wyj¶cie ¶ledzenia sesji miêdzy dziennikiem Lynxa (Lynx Trace Log)
+a standardowym wyj¶ciem (stderr).
+.TP
+.B -tna
+w³±cza tryb "Textfields Need Activation"
+("Pola tekstowe wymagaj± aktywacji").
+.TP
+.B -trace
+w³±cza tryb ¶ledzenia. Miejsce, do którego trafiaj± wyniki zale¿y od -tlog.
+.TP
+.B -traversal
+pod±¿a za wszystkimi odno¶nikami http wywodz±cymi siê z pliku startowym.
+Gdy zostanie u¿yte z -crawl, ka¿dy odno¶nik, który zaczyna siê tym samym
+napisem co plik startowy, jest wypisywany do pliku przeznaczonego do
+indeksowania. Zobacz CRAWL.announce dla dalszych informacji.
+.TP
+.B -underscore
+w³±cza u¿ywanie formatu _podkre¶lonego_ w zrzutach.
+.TP
+.B -use_mouse
+w³±cza obs³ugê myszy, je¶li jest dostêpna.
+Klikniêcie lewym przyciskiem myszy odno¶nika powoduje pój¶cie za nim.
+Klikniêcie prawym przyciskiem powoduje zawrócenie.
+Klikniêcie górnego wiersza powoduje przewiniêcie w górê.
+Klikniêcie dolnego wiersza powoduje przewiniêcie w dó³.
+Pierwszych kilka pozycji w górnym i dolnym wierszu mo¿e wywo³ywaæ dodatkowe
+funkcje.
+Lynx musi byæ skompilowany z \fBncurses\fR lub \fBslang\fR, by udostêpnia³
+tê cechê. Je¶li wykorzystywana jest \fBncurses\fR, ¶rodkowy przycisk myszy
+wywo³uje proste menu. Przyciski myszy mog± dzia³aæ bezproblemowo tylko wtedy,
+gdy Lynx pozostaje w stanie oczekiwania na wprowadzanie.
+.TP
+.B -useragent=\fINazwa
+ustala dla programu alternatywn± nazwê nag³ówka User-Agent.
+.TP
+.B -validate
+przyjmuje tylko URL-e http (do sprawdzania uprawnieñ). Zaimplementowane s±
+tak¿e pe³ne ograniczenia zabezpieczaj±ce.
+.TP
+.B -verbose
+prze³±cza komentarze [LINK], [IMAGE] i [INLINE] na nazwy plików tych obrazków.
+.TP
+.B -version
+wypisuje informacjê o wersji.
+.TP
+.B -vikeys
+w³±cza klawisze przemieszczania w stylu vi.
+.TP
+.B -wdebug
+w³±cza diagnostykê pakietów Waterloo tcp/ip (wypisuje do pliku
+diagnostycznego watt). Dotyczy to tylko wersji do DOS skompilowanych
+z WATTCP lub WATT-32.
+.TP
+.B -width\fR=\fILICZBA
+liczba kolumn znaków przy formatowaniu zrzutów, domy¶lnie 80.
+.TP
+.B -with_backspaces
+umieszczanie znaków backspace w tworzonym wyj¶ciu podczas zrzucania
+(-dump) i ³a¿enia (-crawl), tak jak to czyni 'man'.
+.SH KOMENDY
+o Strza³ki \fBw górê\fR i strza³ki \fBw dó³\fR s³u¿± do przewijania
+pomiêdzy odno¶nikami hipertekstowymi.
+.br
+o \fBStrza³ka w prawo\fR lub \fBReturn\fR pod±¿y za pod¶wietlonym
+odno¶nikiem hipertekstowym. 
+.br
+o \fBStrza³ka w lewo\fR wycofa siê z odno¶nika.
+.br
+o Wci¶nij \fB"h"\fR lub \fB"?"\fR aby uzyskaæ wbudowan± pomoc i opisy komend
+klawiszowych.
+.br
+o Wci¶nij \fB"k"\fR, by otrzymaæ pe³n± listê bie¿±cych odwzorowañ komend
+klawiszowych.
+.SH ¦RODOWISKO
+Oprócz rozmaitych "standardowych" zmiennych ¶rodowiskowych, jak
+\fBHOME\fR, \fBPATH\fR, \fBUSER\fR, \fBDISPLAY\fR, \fBTMPDIR\fR itd.,
+\fILynx\fR wykorzystuje kilka w³asnych, swoistych zmiennych, je¶li istniej±.
+.PP
+Inne z kolei mog± byæ tworzone lub zmieniane przez \fILynx\fR w celu
+przekazania danych zewnêtrznemu programowi czy do jakich¶ innych celów.
+Poni¿ej s± one osobno wyszczególnione.
+.PP
+Zobacz te¿ sekcje \fBSYMULACJA OBS£UGI CGI\fR
+i \fBOBS£UGA JÊZYKÓW NARODOWYCH\fR, poni¿ej.
+.PP
+Uwaga:  Nie wszystkie zmienne ¶rodowiskowe maj± zastosowanie na wszystkich
+rodzajach platform, na których dzia³a \fILynx\fR, choæ wiêkszo¶æ ma.
+Autorzy prosz± o informacje o zale¿no¶ciach od platform.
+.PP
+Zmienne ¶rodowiskowe wykorzystywane przez \fILynx\fR:
+.TP 20
+.B COLORTERM
+Je¶li ustawiona, to podczas uruchamiania wymuszane jest w³±czenie mo¿liwo¶ci
+wy¶wielania kolorów terminala. Faktyczna warto¶æ przypisana tej zmiennej
+jest ignorowana. Zmienna \fBCOLORTERM\fP ma znaczenie tylko wtedy, gdy
+\fILynx\fR zbudowano z wykorzystaniem biblioteki obs³ugi ekranu \fBslang\fR.
+.TP 20
+.B LYNX_CFG
+Ta zmienna, je¶li jest ustawiona, przes³ania domy¶lne po³o¿enie i nazwê
+globalnego pliku konfiguracyjnego (normalnie, \fBlynx.cfg\fR), które zosta³y
+zdefiniowane sta³± LYNX_CFG_FILE w pliku userdefs.h, podczas instalacji.
+W pliku userdefs.h mo¿na znale¼æ wiêcej informacji na ten temat.
+.TP 20
+.B LYNX_LSS
+Ta zmienna, je¶li jest ustawiona, podaje po³o¿enie domy¶lnego pliku
+wzorca znaków strony (character style sheet file) \fILynx\fR.
+[Obecnie ma znaczenie tylko je¶li \fILynx\fR zosta³ zbudowany
+z eksperymentaln± obs³ug± styli kolorów.]
+.TP 20
+.B LYNX_SAVE_SPACE
+Ta zmienna, je¶li jest ustawiona, przes³ania domy¶lny przedrostek ¶cie¿ki
+dla plików zachowywanych na dysk. Przedrostek ten jest zdefiniowany
+w \fBlynx.cfg, w instrukcji SAVE_SPACE:\fR. 
+W pliku \fBlynx.cfg\fR mo¿na znale¼æ wiêcej informacji na ten temat.
+.TP 20
+.B LYNX_TEMP_SPACE
+Ta zmienna, je¶li jest ustawiona, przes³ania domy¶lny przedrostek ¶cie¿ki
+dla plików tymczasowych, zdefiniowany podczas instalacji, jak równie¿
+ewentualn± warto¶æ przypisan± zmiennej \fBTMPDIR\fR variable.
+.TP 20
+.B MAIL
+Ta zmienna okre¶la domy¶ln± skrzynkê odbiorcz±, w której \fILynx\fR bêdzie
+szukaæ nowych listów, je¶li takie sprawdzanie w³±czono w pliku \fBlynx.cfg\fR.
+.TP 20
+.B NEWS_ORGANIZATION
+Ta zmienna, je¶li jest ustawiona, podaje napis u¿ywany w nag³ówku
+\fBOrganization:\fR artyku³ów wysy³anych do grup \fBUSENET\fR-u. Przes³ania
+ustawienie zmiennej ¶rodowiskowej \fBORGANIZATION\fP, je¶li jest ona tak¿e
+ustawiona (i, na \fBUNIX\fR-ie, zawarto¶æ pliku /etc/organization, je¶li
+takowy istnieje).
+.TP 20
+.B NNTPSERVER
+Je¶li jest ustawiona, okre¶la domy¶lny serwer NNTP, który bêdzie
+wykorzystywany do czytania i wysy³ania za pomoc± \fILynx\fR artyku³ów
+na grupy dyskusyjne \fBUSENET\fR-u, za po¶rednictwem URL-i news:.
+.TP 20
+.B ORGANIZATION
+Ta zmienna, je¶li jest ustawiona, podaje napis u¿ywany w nag³ówku
+\fBOrganization:\fR artyku³ów wysy³anych do grup \fBUSENET\fR-u.
+Na \fBUNIX\fR-ie przes³ania zawarto¶æ pliku /etc/organization, je¶li takowy
+istnieje.
+.TP 20
+.B PROTOKÓ£_proxy
+\fILynx\fR udostêpnia u¿ycie serwerów proxy, które mog± funkcjonowaæ jako
+bramki zapór ogniowych i serwerów buforuj±cych. S± one preferowane
+w stosunku do starszych serwerów-bramek (zobacz WWW_access_GATEWAY, poni¿ej).
+Ka¿dy z protoko³o u¿ywanych przez \fILynx\fR (http, ftp, gopher itd.) mo¿na
+odwzorowaæ odrêbnie, nadaj±c zmiennym ¶rodowiskowym postaci PROTOKÓ£_proxy
+(mianowicie: http_proxy, ftp_proxy, gopher_proxy itd.),
+warto¶ci "http://jaki¶.serwer.domena:port/".
+W \fBLynx Users Guide\fR znajduj± siê dalsze szczegó³y i przyk³ady.
+.TP 20
+.B WWW_dostêp_GATEWAY
+\fILynx\fR nadal obs³uguje korzystanie z serwerów-bramek, przez serwery
+podane za pomoc± zmiennych "WWW_dostêp_GATEWAY" (gdzie "dostêp" jest napisan±
+ma³ymi literami nazw± "http", "ftp", "gopher" lub "wais"), jednak wiêkszo¶æ
+serwerów-bramek zosta³a ju¿ wy³±czona.  Zauwa¿, ¿e dla bramek nie podaje siê
+koñcówki '/', jak siê to robi dla serwerów proxy okre¶lanych zmiennymi
+¶rodowiskowymi PROTOKÓ£_proxy.
+Szczegó³y mo¿na znale¼æ w \fBLynx Users Guide\fR.
+.TP 20
+.B WWW_HOME
+Ta zmienna, je¶li jest ustawiona, przes³ania domy¶lny startowy URL podany
+w którymkolwiek z plików konfiguracyjnych programu.
+.PP
+Zmienne ¶rodowiskowe \fBtworzone\fR lub \fBzmieniane\fR przez \fILynx\fR:
+.TP 20
+.B LYNX_PRINT_DATE
+Tej zmiennej funkcja p(rint) \fILynx\fR-a nadaje warto¶æ ³añcucha
+\fBDate:\fR
+pokazanego na stronie "\fBInformation about\fR" (polecenie =) aktualnego
+dokumentu, je¶li jest takowa.
+Jest tworzona do wykorzystania przez program zewnêtrzny, okre¶lony
+w instrukcji definiuj±cej \fBPRINTER:\fP pliku \fBlynx.cfg\fP.
+Je¶li dla danego dokumentu pole takie nie istnieje, to zmiennej przypisywany
+jest ³añcuch pusty w \fBUNIX\fR-ie lub "No Date" w \fBVMS\fR.
+.TP 20
+.B LYNX_PRINT_LASTMOD
+Tej zmiennej funkcja p(rint) \fILynx\fR-a nadaje warto¶æ ³añcucha
+\fBLast Mod:\fR
+pokazanego na stronie "\fBInformation about\fR" (polecenie =) aktualnego
+dokumentu, je¶li jest takowa.
+Jest tworzona do wykorzystania przez program zewnêtrzny, okre¶lony
+w instrukcji definiuj±cej \fBPRINTER:\fP pliku \fBlynx.cfg\fP.
+Je¶li dla danego dokumentu pole takie nie istnieje, to zmiennej przypisywany
+jest ³añcuch pusty w \fBUNIX\fR-ie lub "No LastMod" w \fBVMS\fR.
+.TP 20
+.B LYNX_PRINT_TITLE
+Tej zmiennej funkcja p(rint) \fILynx\fR-a nadaje warto¶æ ³añcucha
+\fBLinkname:\fR
+pokazanego na stronie "\fBInformation about\fR" (polecenie =) aktualnego
+dokumentu, je¶li jest takowa.
+Jest tworzona do wykorzystania przez program zewnêtrzny, okre¶lony
+w instrukcji definiuj±cej \fBPRINTER:\fP pliku \fBlynx.cfg\fP.
+Je¶li dla danego dokumentu pole takie nie istnieje, to zmiennej przypisywany
+jest ³añcuch pusty w \fBUNIX\fR-ie lub "No Title" w \fBVMS\fR.
+.TP 20
+.B LYNX_PRINT_URL
+Tej zmiennej funkcja p(rint) \fILynx\fR-a nadaje warto¶æ ³añcucha
+\fBURL:\fR
+pokazanego na stronie "\fBInformation about\fR" (polecenie =) aktualnego
+dokumentu, je¶li jest takowa.
+Jest tworzona do wykorzystania przez program zewnêtrzny, okre¶lony
+w instrukcji definiuj±cej \fBPRINTER:\fP pliku \fBlynx.cfg\fP.
+Je¶li dla danego dokumentu pole takie nie istnieje, to zmiennej przypisywany
+jest ³añcuch pusty w \fBUNIX\fR-ie lub "No URL" w \fBVMS\fR.
+.TP 20
+.B LYNX_VERSION
+Tej zmiennej \fILynx\fR zawsze nadaje warto¶æ. Mo¿e byæ wykorzystywana
+przez zewnêtrzny program do stwierdzenia, czy zosta³ wywo³any przez
+\fILynx\fR. W komentarzach w przyk³adowym \fBmailcap\fR z pakietu
+dystrybucyjnego znajduj± siê uwagi dotycz±ce sposobu u¿ycia tej zmiennej
+w takim pliku.
+.TP 20
+.B TERM
+Normalnie zmienna ta jest u¿ywana przez \fILynx\fR do wyznaczenia typu
+terminala, jakiego u¿yto do wywo³ania programu.  Je¶li jednak nie jest
+ustawiona przy uruchomieniu (lub ma warto¶æ "unknown") lub je¶li u¿yto
+opcji\fB-term\fR wiersza poleceñ, to \fILynx\fR nada lub zmieni jej warto¶æ
+na podany przez u¿ytkownika typ terminala (dla ¶rodowiska wykonywania
+\fILynx\fR).
+Uwaga: je¶li \fILynx\fR nada/zmieni tê zmienn±, warto¶ci zmiennych
+¶rodowiskowych \fBLINES\fR i \fBCOLUMNS\fR mog± równiez ulec zmianie.
+.SH SYMULACJA OBS£UGI CGI
+Je¶li zbudowano go z w³±czon± opcj± \fBcgi-links\fR, to \fILynx\fR
+pozwala na dostêp do skryptów cgi bez potrzeby korzystania z demona http.
+.PP
+Podczas wykonywania takich "skryptów lynxcgi" (je¶li s± dostêpne),
+do symulowania ¶rodowiska CGI mo¿na ustawiæ nastêpuj±ce zmienne:
+.PP
+.B CONTENT_LENGTH
+.PP
+.B CONTENT_TYPE
+.PP
+.B DOCUMENT_ROOT
+.PP
+.B HTTP_ACCEPT_CHARSET
+.PP
+.B HTTP_ACCEPT_LANGUAGE
+.PP
+.B HTTP_USER_AGENT
+.PP
+.B PATH_INFO
+.PP
+.B PATH_TRANSLATED
+.PP
+.B QUERY_STRING
+.PP
+.B REMOTE_ADDR
+.PP
+.B REMOTE_HOST
+.PP
+.B REQUEST_METHOD
+.PP
+.B SERVER_SOFTWARE
+.PP
+Inne zmienne ¶rodowiska nie s± dziedziczone przez skrypt, chyba ¿e
+dostarczono je za po¶rednictwem instrukcji LYNXCGI_ENVIRONMENT w pliku
+konfiguracyjnym.
+Definicje i sposób u¿ycia tych zmiennych zawiera plik \fBlynx.cfg\fR oraz
+(szkic) Specyfikacja CGI 1.1 <http://Web.Golux.Com/coar/cgi/draft-coar-cgi-v11-00.txt>.
+.PP
+Po ogólne informacje o programowaniu skryptów CGI nale¿y siêgn±æ
+do Specyfikacji CGI i innej powi±zanej dokumentacji.
+.SH OBS£UGA JÊZYKÓW NARODOWYCH (NATIVE LANGUAGE SUPPORT - NLS)
+Je¶li zosta³ skonfigurowany i zainstalowany z obs³ug± jêzyków narodowych
+(\fBNative Language Support\fR), \fILynx\fR bêdzie wy¶wietla³ komunikaty
+o stanie i inne w naszym ojczystym jêzyku.
+Wiêcej informacji o internacjonalizacji mo¿na znale¼æ w pliku \fBABOUT_NLS\fR
+z dystrybucji ¼ród³owej lub na miejscowej witrynie \fBGNU\fR.
+.PP
+Do zmiany domy¶lnych ustawieñ s³u¿± poni¿sze zmienne ¶rodowiska:
+.TP 20
+.B LANG
+Ta zmienna, je¶li jest ustawiona, przes³ania domy¶lny jêzyk komunikatów.
+Jest to dwuliterowy kod \fBISO 639\fR identyfikuj±cy jêzyk.
+Kody jêzyków \fBNIE\fR s± takie same, jak kody krajów podane w \fBISO 3166\fR.
+.TP 20
+.B LANGUAGE
+Ta zmienna, je¶li jest ustawiona, przes³ania domy¶lny jêzyk komunikatów.
+Jest to rozszerzenie \fBGNU\fR, maj±ce wy¿szy priorytet przy ustalaniu
+katalogu komunikatów ni¿ \fBLANG\fR czy \fBLC_ALL\fR.
+.TP 20
+.B LC_ALL
+i
+.TP 20
+.B LC_MESSAGES
+Te zmienne, je¶li s± ustawione, okre¶laj± sposób formatowania jêzyka
+narodowego. S± zgodne z \fBPOSIX\fR.
+.TP 20
+.B LINGUAS
+Ta zmienna, je¶li jest ustawiona przed konfiguracj±, ogranicza instalowane
+jêzyki do podanych przez jej warto¶æ.  Jest list± rozdzielonych odstêpami
+dwuliterowych kodów. Obecnie jest niezmienna, stosowna do ¿yczeñ.
+.TP 20
+.B NLSPATH
+Ta zmienna, je¶li jest ustawiona, s³u¿y jako przedrostek ¶cie¿ki katalogów,
+w których znajduj± siê  komunikaty.
+.SH UWAGI
+To jest wersja Lynx v2.8.2
+.PP
+Je¶li chcesz przyczyniæ siê do przysz³ego rozwoju \fILynxa\fR, zapisz siê
+na nasz± listê dyskusyjn±. Wy¶lij email do <majordomo@sig.net>
+z "subscribe lynx-dev" jako jedyn± linijk± cia³a listu.
+.PP
+Informacje o b³êdach, komentarze, sugestie wysy³aj do <lynx-dev@sig.net>
+(po zapisaniu siê).
+.PP
+Wypisaæ siê z listy mo¿na wysy³aj±c email na <majordomo@sig.net>
+z "unsubscribe lynx-dev" jako jedyn± linijk± cia³a listu.
+Proszê nie wysy³aæ wiadomo¶ci unsubscribe na listê lynx-dev.
+.SH ZOBACZ TAK¯E
+.hy 0
+\fIcatgets\fR(3),
+\fIcurses\fR(3),
+\fIenviron\fR(7),
+\fIexecve\fR(2),
+\fIftp\fR(1),
+\fIgettext\fR(GNU),
+\fIlocaleconv\fR(3),
+\fIncurses\fR(3),
+\fIsetlocale\fR(3),
+\fIslang\fR(?),
+\fItermcap\fR(5),
+\fIterminfo\fR(5),
+\fIwget\fR(GNU)
+.hy 1
+.PP
+Zwróæ uwagê, ¿e dostêpno¶æ stron podrêcznika systemowego man i numeracja
+ich sekcji zale¿± do pewnego stopnia od u¿ywanej platformy i mog± odbiegaæ
+od powy¿szych odsy³aczy.
+.PP
+Sekcja wskazana jako (GNU) ma oznaczaæ, ¿e dany temat mo¿e byæ dostêpny
+w postaci strony info, zamiast strony man (tj. nale¿y spróbowaæ "info temat",
+zamiast "man temat").
+.PP
+Sekcja opisana (?) oznacza, ¿e dokumentacja tego tematu istnieje, ale nie
+jest czê¶ci± ustalonego systemu wyszukiwania dokumentacji (wiêcej informacji
+mo¿na znale¼æ w plikach dystrybucji powi±zanych z tym tematem lub
+za po¶rednictwem miejscowego Administratora Systemu).
+.SH PODZIÊKOWANIA
+Lynx zawiera kod z wielu ró¿nych ¼róde³. Najwcze¶niejsze wersje lynxa
+zawiera³y kod od Earla Fogela z Computing Services z University of
+Saskatchewan, który zaimplementowa³ HYPERREZ w ¶rodowisku Unix. HYPERREZ by³
+stworzony przez Niela Larsona z Think.com i s³u¿y³ jako model dla
+pierwszych wersji Lynxa. Te wersje zawiera³y tak¿e biblioteki z klientów
+Gopher (Unix-owych), stworzonych na University of Minnesota, a pó¼niejsze
+wersje lynxa bazuj± na kodzie biblioteki klienta WWW, stworzonej przez Tima
+Berners-Lee i wspólnotê WWW. Dodatkowo, szczególne podziêkowania dla Foteos
+Macrides, który przeniós³ wiêkszo¶æ z Lynxa na VMS i zrobi³ lub
+zorganizowa³ wiêkszo¶æ z jego nowych elementów od czasu odej¶cia Lou Montulli i
+Garretta Blythe z University of Kansas w lecie 1994 do wersji v2.7.2, a
+tak¿e ka¿demu w sieci, kto w³o¿y³ swoj± pracê w rozwój lynxa, zarówno
+bezpo¶rednio (przez patche, komentarze, zg³aszanie b³êdów), lub
+po¶rednio (przez natchnienie i rozwój innych systemów).
+.SH AUTORZY
+Lou Montulli, Garrett Blythe, Craig Lavender, Michael Grobe, Charles Rezac
+.br
+Academic Computing Services
+.br
+University of Kansas
+.br
+Lawrence, Kansas 66047
+.PP
+Foteos Macrides
+.br
+Worcester Foundation for Biomedical Research
+.br
+Shrewsbury, Massachusetts 01545

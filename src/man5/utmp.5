@@ -1,0 +1,246 @@
+.\" Copyright (c) 1993 Michael Haardt (michael@cantor.informatik.rwth-aachen.de), Fri Apr  2 11:32:09 MET DST 1993
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\" 
+.\" Modified 1993-07-25 by Rik Faith (faith@cs.unc.edu)
+.\" Modified 1995-02-26 by Michael Haardt
+.\" Modified 1996-07-20 by Michael Haardt
+.\" Modified 1997-07-02 by Nicolás Lichtmaier <nick@debian.org>
+.\" Modified 2004-10-31 by aeb, following Gwenole Beauchesne
+.\"
+.\" Translation (c) 1998 Przemek Borys <pborys@dione.ids.pl>
+.\" Last update: Robert Luberda <robert@debian.org>, Nov 2004
+.\"              manpages 1.70
+.\" $Id: utmp.5,v 1.8 2004/11/21 11:48:39 robert Exp $
+.\"
+.TH UTMP 5 2004-10-31 "Formaty plików" "Podrêcznik programisty linuksowego"
+.SH NAZWA
+utmp, wtmp \- zapisy o logowaniu
+.SH SK£ADNIA
+#include <utmp.h>
+.SH OPIS
+Plik
+.I utmp
+umo¿liwia znalezienie informacji o tym, kto w danej chwili korzysta z systemu.
+Z systemu mo¿e korzystaæ wiêcej u¿ytkowników, poniewa¿ nie wszystkie programy
+zapisuj± informacje do utmp.
+.PP
+.B Ostrze¿enie:
+.I utmp
+musi byæ niezapisywalnym plikiem, poniewa¿ wiele programów systemowych
+(g³upio) polega na jego integralno¶ci. Istnieje ryzyko sfa³szowania logów
+systemowych i modyfikacji plików systemowych, je¶li
+.I utmp
+bêdzie zapisywalny dla u¿ytkowników.
+.PP
+Plik ten jest sekwencj± wpisów o postaci nastêpuj±cej struktury zdeklarowanej
+w pliku nag³ówkowym (nale¿y zwróciæ uwagê, ¿e jest to jedna z wielu definicji;
+szczegó³y zale¿± od wersji libc):
+.RS
+.nf
+.sp
+.ta 3i
+#define UT_UNKNOWN	0
+#define RUN_LVL		1
+#define BOOT_TIME	2
+#define NEW_TIME	3
+#define OLD_TIME	4
+#define INIT_PROCESS	5
+#define LOGIN_PROCESS	6
+#define USER_PROCESS	7
+#define DEAD_PROCESS	8
+#define ACCOUNTING	9
+
+#define UT_LINESIZE	12
+#define UT_NAMESIZE	32
+#define UT_HOSTSIZE	256
+
+struct exit_status {
+  short int e_termination;	/* kod przerwania procesu. */
+  short int e_exit;	/* kod zakoñczenia procesu. */
+};
+
+struct utmp {
+  short ut_type;	/* rodzaj logowania */
+  pid_t ut_pid;		/* pid procesu loguj±cego */
+  char ut_line[UT_LINESIZE];	/* nazwa urz±dzenia tty \- "/dev/" */
+  char ut_id[4];	/* id init lub skrót nazwy tty */
+  char ut_user[UT_NAMESIZE];	/* nazwa u¿ytkownika */
+  char ut_host[UT_HOSTSIZE];	/* nazwa hosta dla zdalnego logowania */
+  struct exit_status ut_exit;	/* kod zakoñczenia procesu
+	   oznaczonego jako DEAD_PROCESS */
+  long ut_session;	/* ID sesji, s³u¿y do okienkowania */
+  struct timeval ut_tv;	/* czas utworzenia wpisu */
+  int32_t ut_addr_v6[4];	/* adres IP zdalnego hosta */
+  char __unused[20];	/* zarezerwowane na przysz³o¶æ */
+};
+
+/* Dla zgodno¶ci w wcze¶niejszymi wersjami */
+#define ut_name ut_user
+#ifndef _NO_UT_TIME
+#define ut_time ut_tv.tv_sec
+#endif
+#define ut_xtime ut_tv.tv_sec
+#define ut_addr ut_addr_v6[0]
+.sp
+.fi
+.RE
+Struktura ta podaje nazwê pliku specjalnego skojarzonego z terminalem
+u¿ytkownika, nazwê u¿ytkownika i czas zalogowania w postaci
+.IR time (2).
+Pola tekstowe s± zakoñczone przez \fB'\e0'\fP, je¿eli s± krótsze ni¿ rozmiar
+pola.
+.PP
+Pierwsze wpisy, jakie kiedykolwiek utworzono, pochodz± od
+.BR init (8)
+przetwarzaj±cego
+.BR inittab (5).
+Zanim jakikolwiek wpis zostanie utworzony,
+.BR init (8)
+czy¶ci utmp przez wpisanie \fBDEAD_PROCESS\fP do \fIut_type\fP,
+wype³niaj±c \fIut_user\fP, \fIut_host\fP i \fIut_time\fP bajtami NUL we
+wszystkich rekordach, w których \fIut_type\fP nie jest ustawione na
+\fBDEAD_PROCESS\fP lub \fBRUN_LVL\fP i dla których nie istnieje proces o PID
+równym \fIut_pid\fP. Je¶li nie znajdzie siê ¿aden pusty rekord z wymaganym
+\fIut_id\fP, init tworzy nowy. Wpisuje do niego \fIut_id\fP z inittab,
+\fIut_pid\fP i \fIut_time\fP nadaje bie¿±ce warto¶ci, a \fIut_type\fP nadaje
+warto¶æ \fBINIT_PROCESS\fP.
+.PP
+.BR getty (8)
+lokalizuje wpis po numerze PID, zmienia \fIut_type\fP na
+\fBLOGIN_PROCESS\fP, zmienia \fIut_time\fP, ustawia \fIut_line\fP i czeka
+na zestawienie po³±czenia. Po autentykacji u¿ytkownika,
+.BR login (8)
+zmienia \fIut_type\fP na \fBUSER_PROCESS\fP, zmienia \fIut_time\fP i nadaje
+warto¶ci \fIut_host\fP i \fIut_addr\fP. Zale¿nie od wersji
+.BR getty (8)
+i
+.BR login (8),
+rekordy mog± byæ wyszukiwane na podstawie \fIut_line\fP
+zamiast preferowanego \fIut_pid\fP.
+.PP
+Gdy
+.BR init (8)
+stwierdzi, ¿e proces zakoñczy³ pracê, znajduje on jego
+wpis utmp wed³ug \fIut_pid\fP, ustawia \fIut_type\fP na \fBDEAD_PROCESS\fP
+i wype³nia \fIut_user\fP, \fIut_host\fP oraz \fIut_time\fP bajtami NUL.
+.PP
+.BR xterm (1)
+i inne emulatory terminali tworz± bezpo¶rednio rekord
+\fBUSER_PROCESS\fP i generuj± \fIut_id\fP, u¿ywaj±c ostatnich dwóch liter
+\fI/dev/ttyp\fP\fI%c\fP lub u¿ywaj±c \fIp\fP\fI%d\fP dla
+\fI/dev/pts/\fP\fI%d\fP. Je¶li znajd± dla tego id wpis \fBDEAD_PROCESS\fP,
+utylizuj± go, w innym wypadku tworz± nowy wpis. Je¶li mog±, zaznaczaj± go
+jako \fBDEAD_PROCESS\fP podczas koñczenia pracy i jest zalecane, by zerowa³y
+równie¿ \fIut_line\fP, \fIut_time\fP, \fIut_user\fP oraz \fIut_host\fP.
+.PP
+.BR xdm (1)
+nie powinien tworzyæ rekordu w utmp, poniewa¿ nie ma przydzielonego
+terminala. Pozwalanie mu na utworzenie takowego spowoduje b³êdy takie 
+jak 'finger: cannot stat /dev/machine.dom'. Jednak powinien on tworzyæ
+wpisy wtmp, tak jak to czyni
+.BR ftpd (8).
+.PP
+.BR telnetd (8)
+ustawia wpis \fBLOGIN_PROCESS\fP i zostawia po prostu resztê programowi
+.BR login (8).
+Po zakoñczeniu sesji telnetu,
+.BR telnetd (8)
+czy¶ci utmp w opisany sposób.
+.PP
+Plik \fIwtmp\fP ¶ledzi wszystkie zalogowania i wylogowania. Jego format jest
+taki jak \fIutmp\fP, poza tym, ¿e pusta nazwa u¿ytkownika wskazuje na jego
+wylogowanie z odpowiedniego terminala. Co wiêcej, nazwa terminala \fB~\fP
+w po³±czeniu z nazw± u¿ytkownika \fBshutdown\fP czy \fBreboot\fP wskazuje
+na zamkniêcie lub restart systemu, a para nazw terminali \fB|\fP/\fB}\fP
+loguje nowy/stary czas systemowy w przypadku jego zmiany za pomoc±
+.BR date (1).
+\fIwtmp\fP jest obs³ugiwane przez
+.BR login (1),
+.BR init (1)
+oraz niektóre wersje
+.BR getty (1).
+¯aden z tych programów nie tworzy tego
+pliku, wiêc je¶li zostanie on usuniêty, zapisy do niego zostan± wy³±czone.
+.SH PLIKI
+/var/run/utmp
+.br
+/var/log/wtmp
+.SH "ZGODNE Z"
+Wpisy utmp Linuksa nie s± zgodne ani z v7/BSD ani z SYSV: S± one mieszanin±
+tych dwóch. v7/BSD ma mniej pól; najwa¿niejszym problemem jest brak
+\fIut_type\fP, który powoduje ¿e natywne programy v7/BSD wy¶wietlaj± (na
+przyk³ad) wpisy dead lub login. Co wiêcej, nie ma pliku konfiguracyjnego,
+który przydziela rekordy sesjom. BSD tak robi, poniewa¿ nie ma on pól
+\fIut_id\fP. W Linuksie (tak jak w SYSV), pole \fIut_id\fP rekordu nigdy nie
+ulega zmianie, kiedy raz zostanie mu nadana warto¶æ, co rezerwuje ten rekord
+bez potrzeby pliku konfiguracyjnego. Czyszczenie \fIut_id\fP mo¿e prowadziæ do
+sytuacji wy¶cigu, których skutkiem bêd± uszkodzone wpisy w utmp i potencjalne
+dziury w bezpieczeñstwie. Czyszczenie wymienionych wy¿ej pól przez wype³nianie
+ich bajtami NUL nie jest wymagane przy semantyce SYSV, lecz pozwala na
+uruchamianie wielu programów, które zak³adaj± semantykê BSD a nie modyfikuj±
+utmp. Linux u¿ywa konwencji BSD dla zawarto¶ci pola line, jak opisano wy¿ej.
+.PP
+SYSV u¿ywa pola type tylko do ich zaznaczania i logowuje komunikaty
+informacyjne, takie jak np. \& \fB"new time"\fP w polu line. \fBUT_UNKNOWN\fP
+wydaje siê byæ wymy¶lone w Linuksie.
+SYSV nie ma pól \fIut_host\fP czy \fIut_addr_v6\fP.
+.PP
+W przeciwieñstwie do wielu innych systemów, gdzie utmp mo¿na wy³±czyæ przez
+usuniêcie tego pliku, w Linuksie utmp zawsze musi istnieæ. W celu wy³±czenia
+\fIwho\fP(1) nale¿y jedynie uniemo¿liwiæ odczyt utmp dla ca³ego ¶wiata.
+.PP
+Trzeba zwróciæ uwagê, ¿e struktura utmp z libc5 uleg³a zmianie w libc6.
+Z tego powodu binaria korzystaj±ce ze starej struktury libc5 bêd± uszkadzaæ
+.IR /var/run/utmp " i/lub " /var/log/wtmp .
+System Debian zawiera po³atan± wersjê libc5, która korzysta z nowego formatu
+utmp. Natomiast wci±¿ istnieje problem z wtmp, gdy¿ dostêp do tego pliku
+odbywa siê w libc5 bezpo¶rednio.
+.SH OGRANICZENIA
+Format pliku jest zale¿ny od maszyny, wiêc jest zalecane, by plik by³
+przetwarzany tylko na maszynie na której zosta³ utworzony.
+.PP
+Proszê zauwa¿yæ, ¿e na platformach, które mog± uruchamiaæ zarówno 32-bitowe,
+jaki 64-bitowe aplikacje (x86-64, ppc64, s390x itd.), rozmiary pól w 
+strukturze utmp musz± byæ takie same w trybie 32-bitowym, co w 64-bitowym,
+Osi±ga siê to przez zmianê typu 
+.I ut_session
+na int32_t, 
+.I ut_tv
+na strukturê z dwoma polami typu int32_t:
+.I tv_sec
+i
+.IR tv_usec
+(Dlatego, aby j± wype³niæ, nale¿y najpierw  pobraæ czas do rzeczywistej struktury 
+timeval, a nastêpnie skopiowaæ oba pola do
+.IR ut_tv .)
+.SH B£ÊDY
+Ta strona podrêcznika zosta³a oparta o stronê z wersji libc5, rzeczy mog±
+obecnie dzia³aæ inaczej.
+.SH "ZOBACZ TAK¯E"
+.BR ac (1),
+.BR date (1),
+.BR last (1),
+.BR login (1),
+.BR who (1),
+.BR getutent (3),
+.BR updwtmp (3),
+.BR init (8)

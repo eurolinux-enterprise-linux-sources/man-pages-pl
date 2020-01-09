@@ -1,0 +1,74 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" {PTM/PB/0.1/09-05-1999/"ustaw prawa wej¶cia/wyj¶cia do portu"}
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\"
+.\" Copyright (c) 1993 Michael Haardt
+.\" (michael@moria.de)
+.\" Fri Apr  2 11:32:09 MET DST 1993
+.\" 
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" Modified Sat Jul 24 15:12:05 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified Tue Aug  1 16:27    1995 by Jochen Karrer 
+.\"                              <cip307@cip.physik.uni-wuerzburg.de>
+.\" Modified Tue Oct 22 08:11:14 EDT 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified Mon Feb 15 17:28:41 CET 1999 by Andries E. Brouwer <aeb@cwi.nl>
+.\"
+.TH IOPERM 2 1993-01-21 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+ioperm \- ustawienie uprawnieñ dla portu wej¶cia/wyj¶cia
+.SH SK£ADNIA
+.B #include <unistd.h>
+/* dla libc5 */
+.br
+.B #include <sys/io.h>
+/* dla glibc */
+.sp
+.BI "int ioperm(unsigned long " from ", unsigned long " num ", int " turn_on );
+.SH OPIS
+\fBIoperm\fP ustawia bity dostêpu do portów dla procesu dla 
+\fInum\fP bajtów, poczynaj±c od adresu portu \fBfrom\fP do warto¶ci
+\fBturn_on\fP. U¿ycie \fBioperm\fP wymaga uprawnieñ roota.
+
+W ten sposób mo¿na podaæ tylko pierwszych 0x3ff portów we/wy. Dla reszty
+trzeba u¿yæ funkcji 
+.BR iopl .
+Prawa nie s± dziedziczone przy wykonywaniu fork, lecz s± przy exec. Jest to
+przydatne przy udzielaniu dostêpu do portów dla nieuprzywilejowanych zadañ.
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu zwracane jest zero. Po b³êdzie zwracane jest \-1
+i odpowiednio ustawiane
+.IR errno .
+.SH "ZGODNE Z"
+\fBioperm\fP jest specyficzne dla Linuksa i nie powinno byæ u¿ywane
+w przeno¶nych programach.
+.SH UWAGI
+Libc5 traktuje to jak wywo³anie systemowe i posiada dla niego prototyp w
+.IR <unistd.h> .
+Glibc1 nie posiada prototypu. Glibc2 posiada prototyp zarówno w
+.IR <sys/io.h> ,
+jak i w
+.IR <sys/perm.h> .
+Nale¿y unikaæ tego ostatniego, gdy¿ jest dostêpne tylko na i386.
+.SH "ZOBACZ TAK¯E"
+.BR iopl (2)

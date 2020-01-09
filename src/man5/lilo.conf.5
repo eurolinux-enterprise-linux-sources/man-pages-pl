@@ -1,0 +1,406 @@
+.\" {PTM/AB/0.1/27-07-1999/"lilo.conf - plik konfiguracyjny lilo"}
+.\" translated by Adam Byrtek <alpha@irc.pl>
+.\" ------------
+.\" @(#)lilo.conf.5 1.0 950728 aeb
+.\" This page is based on the lilo docs, which carry the following
+.\" COPYING condition:
+.\"
+.\" LILO program code, documentation and auxiliary programs are
+.\" Copyright 1992-1994 Werner Almesberger.
+.\" All rights reserved.
+.\" 
+.\" Redistribution and use in source and binary forms of parts of or the
+.\" whole original or derived work are permitted provided that the
+.\" original work is properly attributed to the author. The name of the
+.\" author may not be used to endorse or promote products derived from
+.\" this software without specific prior written permission. This work
+.\" is provided "as is" and without any express or implied warranties.
+.\"
+.\" ------------
+.TH LILO.CONF 5 "28 Lipiec 1995"
+.SH NAZWA
+lilo.conf \- plik konfiguracyjny lilo
+.SH OPIS
+.LP
+Ten plik, domy¶lnie \fI/etc/lilo.conf\fP, jest odczytywany przez program
+instalacyjny boot loadera lilo (patrz lilo(8)).
+.LP
+Mo¿e on wygl±daæ tak jak poni¿ej:
+.IP
+.nf
+boot = /dev/hda
+delay = 40
+compact
+vga = normal
+root = /dev/hda1
+read-only
+image = /zImage-2.5.99
+        label = try
+image = /zImage-1.0.9
+        label = 1.0.9
+image = /tamu/vmlinuz
+	label = tamu
+	root = /dev/hdb2
+	vga = ask
+other = /dev/hda3
+	label = dos
+	table = /dev/hda
+.fi
+.LP
+Ten plik konfiguracyjny mówi, ¿e lilo korzysta z g³ównego boot rekordu (MBR)
+na /dev/hda (zajrzyj do pliku user.tex dokumentacji lilo, aby dowiedzieæ siê
+wiêcej o ró¿nych sposobach instalacji lilo i wspó³pracy z innymi systemami
+operacyjnymi).
+.LP
+Podczas startu boot loader poczeka cztery sekundy (40 dziesiêtnych sekundy)
+na naci¶niêcie klawisza Shift. Je¶li tego nie zrobisz, wystartowane zostanie
+pierwsze podane j±dro (/zImage-1.5.99). Je¶li naci¶niesz klawisz, boot
+loader spyta, którego j±dra u¿yæ. Gdy zapomnisz jakie j±dra s± do wyboru,
+naci¶nij [TAB] (lub [?] na klawiaturze US) a poka¿e siê menu. Bêdziesz móg³
+wybraæ nowe j±dro, stare i zaufane, j±dro z ca³kiem innym g³ównym
+systemem plików (na wypadek problemów ze starym systemem plików), lub
+ca³kiem inny system operacyjny. W pliku lilo.conf mo¿na podaæ najwy¿ej 16
+obrazów.
+.LP
+Jak widaæ powy¿ej, plik konfiguracyjny rozpoczyna siê opcjami globalnymi (w
+tym przyk³adzie pierwszych 6 linii), za nimi nastêpuj± opcje specyficzne dla
+konkretnych obrazów. Opcja w opisie obrazu nadpisuje opcjê globaln± dla
+danego obrazu.
+
+.SH OPCJE GLOBALNE
+Istnieje wiele mo¿liwych s³ów kluczowych. Poni¿szy opis pochodzi praktycznie
+w ca³o¶ci z pliku user.tex (jest jedynie nieznacznie skrócony).
+.TP
+.BI "backup=" backup-file
+Kopiowanie oryginalnego boot sektora do pliku
+.I backup-file
+(który mo¿e byæ tak¿e urz±dzeniem, np.
+.IR /dev/null ),
+zamiast do standardowego
+.IR /boot/boot.NNNN .
+.TP
+.BI "boot=" boot-device
+Ustala nazwê urz±dzenia (np. partycji dysku twardego) które zawiera boot
+sektor. Je¶li to z³owo kluczowe zostanie pominiête, boot sektor jest
+odczytywany (i zapisywany) z urz±dzenia aktualnie zamontowanego jako
+nadrzêdne (root).
+.TP
+.BI "change-rules"
+Definiuje zmiany numerów typu partycji podczas startowania (`ukrywanie').
+Zajrzyj do dzia³u "Partition type change rules" pliku user.tex aby
+dowiedzieæ siê wiêcej.
+.TP
+.BI "compact"
+Stara siê po³±czyæ ¿±dania odczytu z s±siednich sektorów w jedno ¿±danie.
+Drastycznie zmniejsza to czas ³adowania i zmniejsza rozmiar mapy. U¿ycie
+opcji `compact' jest szczególnie zalecane podczas startu z dyskietki.
+.TP
+.BI "default=" name
+Wybranie podanego obrazu jako domy¶lnego obrazu startowego. Je¶li opcja
+`default' zostanie pominiêta, domy¶lnym obrazem jest pierwszy w pliku
+konfiguracyjnym.
+.TP
+.BI "delay=" tsecs
+Ustala ilo¶æ dziesiêtnych czê¶ci sekundy, jak± boot loader powinien
+odczekaæ przed wystartowaniem pierwszego obrazu. Jest to u¿yteczne w
+systemach, które od razu po w³±czeniu klawiatury startuj± z dysku twardego.
+Boot loader nie czeka, je¶li ominiêto opcjê `delay' lub zosta³a ona
+ustawiona na zero.
+.TP
+.BI "disk=" device-name
+Definiuje niestandardowe parametry dla podanego dysku. Zajrzyj do dzia³u
+"Disk geometry" pliku user.tex po wiêcej szczegó³ów. Szczególnie u¿yteczny
+jest parametr `bios='. BIOS numeruje dyski 0x80, 0x81, itd. i jest
+niemo¿liwym stwierdzenie, który dysk Linux odpowiada danemu dyskowi BIOS
+(jako ¿e zale¿y to od rodzaju i konfiguracji BIOSu), wiêc je¶li dysponujesz
+nietypow± konfiguracj±, musisz zapisaæ zale¿no¶æ miêdzy dyskami Linux a
+BIOS. Na przyk³ad, 
+.sp
+.nf
+    disk=/dev/sda
+            bios=0x80
+    disk=/dev/hda
+            bios=0x81
+.fi
+.sp
+oznacza, ¿e dysk SCSI to pierwszy dysk BIOS, a dysk IDE (primary master)
+jest drugim dyskiem BIOS.
+.TP
+.BI "disktab=" disktab-file
+Ustala nazwê pliku parametrów dysku. Je¶li pominiêto opcjê `disktab',
+instalator mapy szuka pliku
+.IR /etc/disktab .
+Korzystanie z plików disktab nie jest zalecane.
+.TP
+.BI "fix-table"
+Ta opcja pozwala lilo dostoswaæ adrasy 3D w tablicy partycji. Ka¿dy wpis w
+tablicy partycji zawiera trójwymiarowy (sektor/g³owica/cylinder) i liniowy
+adres pierwszego i ostatniego sektora partycji. Je¶li partycja nie jest
+u³o¿ona na granicy ¶cie¿ki i je¶li pewne inne systemy operacyjne (np.
+PC/MS-DOS lub OS/2) korzystaj± z tego samego dysku, mog± zmieniæ adres 3D.
+lilo mo¿e zapisaæ swój boot sektor tylko na partycjach, których oba adresy
+odpowiadaj± sobie. Je¶li opcja `fix-table' jest ustawiona, lilo dostosowuje 
+niepoprawne startowe adresy 3D.
+
+UWAGA: Nie gwarantuje to, ¿e inne systemy operacyjne nie bêd± stara³y siê
+zmieniæ tego adresu pó¼niej. Jest tak¿e mo¿liwe, ¿e zmiana ta bêdzie mia³a
+inne, niepo¿±dane efekty uboczne. Sposobem na to jest ponowne
+przepartycjonowanie dysku przy u¿yciu programu, który uk³ada partycje na
+granicy ¶cie¿ek. W pewnych warunkach na niektórych dyskach (np. pewnych
+du¿ych dyskach EIDE z w³±czon± translacj± adresów), istnienie konfliktowych
+wpisów w tablicy partycji mo¿e okazaæ siê niezapobiegalne.
+.TP
+.BI "force-backup=" backup-file
+Tak jak `backup', ale zmusza do nadpisania istniej±cej kopii zapasowej.
+.TP
+.BI "ignore-table"
+Ka¿e lilo ignorowaæ b³êdne tablice partycji.
+.TP
+.BI "install=" boot-sector
+Instaluje podany plik jako nowy boot sektor. Je¶li pominiêto opcjê
+`install', plik
+.I /boot/boot.b
+jest u¿ywany jako domy¶lny.
+.TP
+.BI "linear"
+Generowanie liniowych adresów zamiast adresów sektora/g³owicy/cylindra.
+Adresy liniowe s± t³umaczone przy starcie systemu, i nie zale¿± od geometrii
+dysku. Zauwa¿, ¿e dyskietki startowe mog± staæ siê nieprzeno¶ne, je¶li
+zostanie u¿yta opcja `linear', poniewa¿ us³uga BIOS sprawdzania geometrii
+dysku nie dzia³a ca³kiem poprawnie dla stacji dysków. Przy u¿yciu opcji
+`linear' na du¿ych dyskach,
+.I /sbin/lilo
+mo¿e wygenerowaæ odwo³ania do niedostêpnych obszarów dysku, poniewa¿ przed
+prze³adowaniem systemu nieznane s± adresy 3D sektora.
+.TP
+.BI "lock"
+W³±cza automatyczne zapisywanie startowej linii poleceñ jako domy¶lnej przy
+nastêpnym starcie. W ten sposób lilo sugeruje wybór, dopóki nie zostanie on
+rêcznie zmieniony.
+.TP
+.BI "map=" map-file
+Ustala po³o¿enie pliku mapy. Je¶li pominiêto opcjê `map', u¿ywany jest plik
+.IR /boot/map .
+.TP
+.BI "message=" message-file
+Ustala plik zawieraj±cy komunikat, który zostanie wy¶wietlony przed
+znakiem zachêty lilo. Wiadomo¶æ nie jest wy¶wietlana podczas oczekiwania na
+naci¶niêcie klawisza po napisie "LILO ". W wiadomo¶ci znak FF ([Ctrl L])
+czy¶ci ekran. Rozmiar pliku wiadomo¶ci jest ograniczony do 65535 bajtów.
+Je¶li wiadomo¶æ zostanie zmieniona lub przeniesiona, mapa musi zostaæ
+odbudowana.
+.TP
+.BI "nowarn"
+Wy³±cza ostrze¿enia o mo¿liwych zagro¿eniach.
+.TP
+.BI "optional"
+Jak specyficzna dla obrazu opcja `optional' (patrz dalej), ale dotyczy
+wszystkich obrazów.
+.TP
+.BI "password=" password
+Jak specyficzna dla obrazu opcja `password=...' (patrz dalej), ale dotyczy
+wszystkich obrazów.
+.TP
+.BI "prompt"
+Wy¶wietla liniê zachêty bez oczekiwania na naci¶niêcie klawisza.
+Prze³adowanie systemu bez udzia³u u¿ytkownika jest niemo¿liwe, je¶li opcja
+`prompt' jest ustawiona, a `timeout' nie.
+.TP
+.BI "restricted"
+Jak specyficzna dla obrazu opcja `restricted' (patrz dalej), ale dotyczy
+wszystkich obrazów.
+.TP
+.BI "serial=" parameters
+W³±cza kontrolê przez ³±cze szeregowe. Podany port szeregowy jest inicjowany
+i boot loader akceptuje dane wys³ane niego oraz z klawiatury PC. Wys³anie
+znaku `break' na linii odpowiada naci¶niêciu klawisza shift na konsoli.
+Je¶li dostêp szeregowy jest mniej bezpieczny ni¿ dostêp przez konsolê,
+wszystke obrazy powinne byæ zabezpieczone has³em, tzn. je¶li linia jest
+pod³±czona do modemu. Ci±g parametrów ma nastêpuj±c± sk³adniê:
+.sp
+.nf
+    <port>[,<bps>[<parity>[<bits>]]]
+.fi
+.sp
+<port>:  numer portu szeregowego, rozpoczynaj±cy siê od zera; 0 odpowiada
+COM1, czyli /dev/ttyS0 itd; mo¿na korzystaæ ze wszystkich czterech portów
+(je¶li s± obecne)
+.sp
+<bps>:  ilo¶æ bodów portu szeregowego; nastêpuj±ce ilo¶ci bodów s±
+obs³ugiwane: 110, 150, 300, 600, 1200, 2400, 4800 oraz 9600 bps;
+domy¶lnie jest to 2400 bps
+.sp
+<parity>:  parzysto¶æ linii szeregowej; boot loader ignoruje parzysto¶æ i
+obcina ósmy bit; nastêpuj±ce (ma³e lub du¿e) znaki s± wykorzystywane do
+opisu parzysto¶ci: `n' brak, `e' parzysta, `o' nieparzysta
+.sp
+<bits>:  ilo¶æ bitów danych na znak; obs³ugiwane jest jedynie 7 i 8 bitów;
+domy¶lnie jest to osiem, je¶li brak parzysto¶ci, 7 je¶li parzysta lub
+nieparzysta
+.sp
+Je¶li w³±czono opcjê `serial', warto¶æ `delay' jest automatycznie zwiêkszana
+do 20.
+.sp
+Przyk³ad: serial=0,2400n8 inicjuje COM1 z domy¶lnymi parametrami.
+.TP
+.BI "timeout=" tsecs
+Ustala czas oczekiwania (w dziesi±tych czê¶ciach sekundy) na naci¶niêcie
+klawisza. Je¶li po up³ywie tego czasu ¿aden klawisz nie zostanie naci¶niêty,
+automatycznie wystartowany zostanie pierwszy obraz. Podobnie, je¶li
+u¿ytkownik nie naci¶nie klawisza przerywane jest oczekiwanie na has³o.
+Domy¶ln± warto¶ci± jest nieskoñczono¶æ.
+.TP
+.BI "verbose=" level
+W³±cza informowanie o aktualnym stanie. Wiêksza liczba daje wiêcej
+informacji. Poziom ten jest tak¿e zwiêkszany przez podanie opcji \-v w linii
+poleceñ. Maksymalny poziom to 5.
+
+.LP
+Dodatkowo, parametry konfiguracyjne j±dra, takie jak
+.BR append ", " ramdisk ", " read-only ", " read-write ", " root
+oraz
+.BR vga ,
+mog± zostaæ ustawione w dziale opcji globalnych. S± one wykorzystywane jako
+warto¶ci domy¶lne, gdyby nie podano ich w sekcji konfiguracji konkretnego
+obrazu.
+
+.SH DZIA£ SPECYFICZNY DLA OBRAZU
+Dzia³ specyficzny dla obrazu zaczyna siê lini±
+.sp
+.nf
+    \fBimage=\fP\fIpathname\fP
+.fi
+.sp
+(aby podaæ plik lub urz±dzenie zawieraj±ce obraz j±dra Linuksa), lub lini±
+.sp
+.nf
+    \fBother=\fP\fIpathname\fP
+.fi
+.sp
+aby oznaczyæ dodatkowy system do wystartowania.
+.LP
+
+W pierwszym przypadku, gdy linia \fBimage\fP oznacza startowanie z
+urz±dzenia, nale¿y podaæ zasiêg mapowanych sektorów korzystaj±c z
+.TP
+.BI "range=" start-end
+.LP
+
+W drugim przypadku (startowanie innego systemu) istniej± trzy mo¿liwo¶ci
+.TP
+.BI "loader=" chain-loader
+Okre¶la program ³aduj±cy, który ma zostaæ u¿yty. Domy¶lnie jest to
+.IR /boot/chain.b .
+Program ³aduj±cy musi zostaæ podany, je¶li obraz ma zostaæ wystartowany z
+urz±dzenia innego ni¿ pierwszy twardy dysk lub stacja dysków.
+.TP
+.BI "table=" device
+Okre¶la urz±dzenie, które zawiera tablicê partycji. Boot loader nie prze¶le
+informacji o partycjach do startowanego systemu operacyjnego je¶li ta
+zmienna zostanie pominiêta (niektóre systemy operacyjne maj± inne sposoby na
+okre¶lenie, z której partycji zosta³y wystartowane, np. MS-DOS zwykle
+przechowuje dane o geometrii dysku startowego lub partycji w swoim boot
+sektorze). Pamiêtaj, ¿e /sbin/lilo musi zostaæ uruchomiony ponownie, je¶li
+tablica partycji do której odwo³uje siê opcja `table' zostanie zmieniona.
+.TP
+.BI "unsafe"
+Zapobiega dostêpowi do boot sektora podczas tworzenia mapy. Wy³±cza to pewne
+testy, takie jak test tablicy partycji. Je¶li boot sektor znajduje siê w
+stacji dysków o sta³ym formacie, u¿ycie `unsafe' zapobiega potrzebie
+wk³adania dyskietki do napêdu przy ka¿dym uruchomieniu instalatora mapy.
+Opcje `unsafe' i `table' wykluczaj± siê wzajemnie.
+.LP
+
+W obu przypadkach mo¿liwe s± poni¿sze opcje.
+.TP
+.BI "label=" name
+Boot loader aby zidentyfikowaæ obraz u¿ywa nazwy pliku (bez ¶cie¿ki) tego
+obrazu. Odmienna nazwa mo¿e zostaæ podana za pomoc± opcji `label'.
+.TP
+.BI "alias=" name
+Druga nazwa dla tego samego obrazu mo¿e zostaæ podana poprzez ustalenie
+aliasu.
+.TP
+.BI "lock"
+(Patrz wcze¶niej).
+.TP
+.BI "optional"
+Ominiêcie obrazu je¶li nie jest on dostêpny podczas tworzenia mapy. Ta opcja
+jest przydatna do testowania j±der które nie zawsze s± obecne.
+.TP
+.BI "password=" password
+Ochrona obrazu has³em.
+.TP
+.BI "restricted"
+Has³o jest wymagane jedynie je¶li podano parametry w linii poleceñ (np.
+single).
+.LP
+
+.SH OPCJE J¡DRA
+Je¶li startowanym obrazem jest j±dro Linux, mo¿na do niego przes³aæ parametry.
+.TP
+.BI "append=" string
+Do³±cza podane opcje do linii parametrów przekazywanej do j±dra. Na ogó³
+jest to u¿ywne do podania parametrów sprzêtu, które nie mog± zostaæ wykryte
+automatycznie, lub których wykrywanie mo¿e byæ niebezpieczne. Na przyk³ad:
+.sp
+.nf
+     append = "hd=64,32,202"
+.fi
+.sp
+.TP
+.BI "literal=" string
+Jak `append', ale anuluje wszystkie inne opcje (np. ustawienia nadrzêdnego
+urz±dzenia). Poniewa¿ przy u¿yciu opcji `literal' przypadkowo mog± zostaæ
+usuniête wa¿ne opcje, ta opcja nie mo¿e znale¼æ siê w dziale opcji globalnych.
+.TP
+.BI "ramdisk=" size
+Ta opcja okre¶la rozmiar opcjonalnego ramdysku. Warto¶æ zero oznacza, ¿e
+ramdysk nie powinien byæ tworzony. Je¶li ta opcja zostanie pominiêta,
+u¿ywany jest rozmiar ramdysku zapisany w obrazie.
+.TP
+.BI "read-only"
+Okre¶la, ¿e g³ówny system plików powinien byæ zamontowany tylko do odczytu.
+Na ogó³ procedura startowa systemu pó¼niej ponownie montuje g³ówny system
+plików do odczytu i zapisu (np. po jego sprawdzeniu).
+.TP
+.BI "read-write"
+Okre¶la, ¿e g³ówny system plików powinien zostaæ zamontowany do odczytu i
+zapisu.
+.TP
+.BI "root=" root-device
+Okre¶la urz±dzenie, które powinno zostaæ zamontowane jako katalog nadrzêdny
+(root). Je¶li u¿yta zostanie specjalna nazwa \fBcurrent\fP, nadrzêdnym
+urz±dzeniem zostanie urz±dzenie, którego g³ówny system plików jest aktualnie
+zamontowany. Je¶li katalog nadrz±dny zostanie zmieniony za pomoc± \-r,
+odpowiednie urz±dzenie zostanie u¿yte. Je¶li pominiêto opcjê `root', u¿yte
+zostanie g³ówne urz±dzenie ustalone przez j±dro (i które zosta³o okre¶lone
+przy kompilacji za pomoc± zmiennej ROOT_DEV w Makefile j±dra, lub zmienione
+przez program rdev(8)).
+.TP
+.BI "vga=" mode
+Okre¶la tryb tekstowy VGA który powinien zostaæ wybrany przy starcie
+systemu. Rozpoznawane s± nastêpuj±ce warto¶ci (rozmiar liter jest
+nieistotny).:
+.sp
+.BR normal :
+standardowy tryb tekstowy 80x25
+.sp
+.BR extended " (lub " ext ):
+tryb tekstowy 80x50
+.sp
+.BR ask :
+zapytanie u¿ytkownika podczas startu systemu
+.sp
+<number>:  u¿ycie odpowiedniego trybu tekstowego; liste dostêpnych trybów
+mo¿na otrzymaæ startuj±c system z opcj± vga=ask i naciskaj±c [Enter].
+.sp
+Je¶li pominiêto tê opcjê, u¿yty zostanie tryb graficzny VGA ustalony przez
+j±dro (i który zosta³ okre¶lony przy kompilacji za pomoc± zmiennej SVGA_MODE
+w Makefile j±dra, lub zmieniony przez program rdev(8)).
+
+.SH PATRZ TAK¯E
+lilo(8), rdev(8).
+.br
+Dystrybucja lilo jest rozpowszechniana z bardzo szczegó³ow± dokumentacj±,
+której powy¿szy dokument jest jedynie ma³ym wycinkiem.

@@ -1,0 +1,342 @@
+.\" Copyright (c) 1995-1997 Free Software Foundation              -*-Text-*-
+.\" See section COPYING for conditions for redistribution
+.\" FIXME: no info here on predefines.  Should there be?  extra for F77...
+.TH G77 1 "1998-09-01" "Narzêdzia GNU" "Narzêdzia GNU"
+.de BP
+.sp
+.ti \-.2i
+\(**
+..
+.SH NAZWA 
+g77 \- Kompilator Fortranu GNU (v0.5.24)
+
+.SH SK£ADNIA 
+.RB g77 " [" \c
+.IR  opcje " | " "nazwa pliku " ]. \|.\|.
+
+.SH OSTRZERZENIE
+Informacje na tej stronie podrêcznika systemowego s± 
+jedynie streszczeniem pe³nej dokumentacji kompilatora fortranu GNU
+(w wersji  0.5.24). W zwi±zku z tym ta strona opisuje tylko 
+pewne wybrane opcje.
+.PP
+Ta strona nie jest i nie bêdzie aktualna,
+tak d³ugo jak nie znajd± siê chêtni do jej aktualizowania 
+wolontariusze. Je¿eli znajdziesz rozbie¿no¶ci pomiêdzy strona 
+podrêcznika systemowego a programem, sprawd¼ proszê plik Info, który
+zawiera pe³n± dokumentacje do kompilatora Fortran GNU.
+
+Gdyby okaza³o siê, ¿e informacje na tej stronie s± zupe³nie nie aktualne i 
+wprowadzaj± w b³±d, przestaniemy rozprowadzaæ tê 
+stronê. Aktualizowanie i tej strony i pliku Info,
+jest niepraktyczne i nie mamy na to czasu.
+
+.PP
+Po kompletn± i aktualn± inforamcjê, zajrzyj do pliku Info `\|\c
+.B g77\c
+\&\|' lub do
+.I 
+Using and Porting GNU Fortran (dla wersji 0.5.24)\c
+\&. Oba te ¼ród³a informacji zosta³y stworzone z 
+tego samego pliku 
+.BR g77.texi .
+.PP
+
+Je¿eli twój system ma zainstalowan± komendê `\|\c
+.B info\c
+\&\|', wówczas komenda `\|\c
+.B info g77\c
+\&\|' powinna dzia³aæ, pod warunkiem, ¿e 
+.B g77
+zosta³o poprawnie zainstalowane. 
+.SH OPIS 
+Kompilatory  C i F77 s± zintegrowane; 
+.B g77
+jest programem wywo³ujacym
+.B gcc
+z opcjami umo¿liwjaj±cymi kompilacjê programów napisanych w Fortranie 
+(ANSI FORTRAN 77, nazywany równie¿ F77).
+W pracy 
+.B gcc
+wyró¿niæ mo¿na cztery etapy: preprocesing, w³a¶ciwa kompilacja,
+kompilacja z u¿yciem assemblera oraz linkowanie. 
+Ta strona manuala zawiera pe³ny opis 
+.I tylko
+aspektów specyficznych dla kompilatora F77. 
+Chociarz zawiera ona równierz opis pewnych opcji o szerszym zastsowaniu. 
+Po pe³niejsze wyja¶nienia pracy kompilatora, siêgnij do 
+.BR gcc ( 1 ) .
+
+Pliki ¼ród³owe F77 u¿ywaj± rozszerzeñ `\|\c
+.B .f \c
+\&\|' lub `\|\c
+.B .for \c
+\&\|'; 
+Pliki ¼ród³owe F77 preprocesowane przez
+.BR cpp ( 1 )
+u¿ywaj± rozszerzenia `\|\c
+.B .F\c
+\&\|' lub `\|\c
+.B .fpp\c
+\&\|'; Pliki ¼ród³owe Ratfot uzywaj± roozsze¿enia `\|\c
+.B .r\c
+\&\|' (
+.B ratfor
+jako taki nie jest cze¶ci± 
+.B g77\c
+\&).
+.SH OPCJE
+Istnieje bardzo du¿o opcji wywo³ywanych z linii komend, w³±czaj±c w 
+to opcjê konroluj±ce: szczegó³y optymalizacyjne, ostrzerzenia i generacjê
+kodu wspólne dla obu programów
+.B gcc
+i
+.B g77\c
+\&. Po pe³na dokumentacje wszystkich opcji, zobacz
+.BR gcc ( 1 ).
+
+Opcjê musz± byæ oddzielone: `\|\c
+.B \-dr\c
+\&\|' jest zupe³nie czym innym ni¿ `\|\c
+.B \-d \-r
+\&\|'.
+
+Wiêkszo¶æ opcji zaczynaj±cych siê od `\|\c
+.B \-f\c
+\&\|' i `\|\c
+.B \-W\c
+\&\|'posiada dwie formy:
+.BI \-f name
+i
+.BI \-fno\- name\c
+\& (lub 
+.BI \-W name
+i
+.BI \-Wno\- name\c
+\&).  Na tej stronie opisanê s± tylko nie standardowe opcje.
+
+.TP
+.B \-c
+Skompiluj kompilatorem fortranu i kompilatorem assemblera pliki 
+¼ród³owe, ale nie linkuj ich. 
+Wynikiem pracy programu z t± opcj± jest po jednym pliku typu object dla
+ka¿dego pliku ¼ród³owego.
+.TP
+.BI \-D macro
+Zdefinjuj makro \c
+.I macro\c
+\& z ci±giem znaków `\|\c
+.B 1\c
+\&\|' jako jego definicj±.
+.TP
+.BI \-D macro = defn
+Zdefinjuj makro \c
+.I macro\c
+\& jako \c
+.I defn\c
+\&.
+.TP
+.B \-E
+Zatrzymaj po etapie preprocesowania; nie uruchamiaj w³a¶ciwego kompilatora.
+Wynikiem jest preprocesowany kod ¼ród³owy, wysy³any na standardowe wyj¶cie.
+.TP
+.B \-g
+Do³±cz inforamcje do "odpluskwiania" w formacje w³a¶ciwym dla systemu
+operacyjnego (dla DBX, SDB lub DWARF). GDB potrafi pracowaæ z tymi
+informacjami. Na wiêkszo¶ci systemów u¿ywaj±cych formatu DBX, opcja `\|\c
+.B \-g\c
+\&\|' powodóje do³±czenie dodatkowej informacji, któr± tylko GDB potrafi u¿yæ.
+W przeciwienstwie do wiêkszosci compilatorów Fortranu, Fortran GNU pozwala
+³±czyæ opcje
+.B \-g\c
+\&\|' z opcj± 
+`\|\c
+.B \-O\c
+\&\|'. 
+Skróty  czynione przez zoptymalizowany kod mog± czasami
+byæ du¿± niespodziank±. Pewnych zadeklarownych zmiennych mo¿e 
+wogóle nie byæ;   
+przep³yw kontroli mo¿e ciê ogólnie mówi±c przenie¶æ tam, gdzie tego nie
+oczekiwa³e¶;
+.\" flow of control may briefly move where you did not expect it;
+Pewne fragmenty kodu mog± zostaæ wyciête poniewa¿ zwraca³y sta³y wynik,
+lub ich warto¶æ by³a ustalona od pocz±tku; Pewne fragmenty kodu mog± zostaæ
+przeniesione na zewn±trz pêtli. 
+Jednak mimo to, mo¿liwe jest debugowanie wyj¶cia zoptymalizowanego.
+Powoduje to, ¿e jest sens u¿ywaæ optymizera w programach, które mog± mieæ
+b³êdy.
+
+.TP
+.BI "\-I" "dir"\c
+\&
+Do³±cz katalog \c
+.I dir\c
+\& do listy katalogów przeszukiwanych w trakcje do³anczania plików.  
+.TP
+.BI "\-L" "dir"\c
+\&
+Do³±cz katalog \c
+.I dir\c
+\& do listy katalogów przeszukiwanych w poszukiwaniu bibliotek.
+.TP
+.BI \-l library\c
+\&
+U¿yj biblioteki \c
+.I library\c
+\& podczas linkowania.
+.TP
+.B \-nostdinc
+Nie przeszukój standardowego systemu plików w poszukiwaniu plików 
+nag³ówkowych. Tylko katalogi wskazane opcj±    
+.B \-I
+(i katalog bie¿±cy) maj± byæ przeszukiwane. 
+.TP
+.B \-O
+Optymalizuj. Optymalizacja zabiera du¿o czasu, i 
+pamieci szczególnie dla du¿ych funkcji. Zajrzyj do dokumentacji 
+GCC aby zapoznaæ siê z innymi opcjami optymalizacyjnymi.
+W szczególno¶ci "odwijanie petli", 
+mo¿e byæ dobr± inwestycj± w typowych numerycznych programach Fortranowskich. 
+.TP
+.BI "\-o " plik\c
+\&
+Zapisz wynik w pliku \c
+.I plik\c
+\&.
+.TP
+.B \-S
+Zatrzymaj po etapie w³a¶ciwej kompilacji; nie uruchamiaj kompilatora assemblera;
+Wynikiem jest jeden plik zawieraj±cy kod assemblerowy dla ka¿dego 
+nie-assemblerowego
+pliku zród³owego.
+.TP
+.BI \-U macro
+Skasuj definicje makra \c
+.I macro\c
+\&.
+.TP
+.B \-v
+Powoduje wypisywanie (na standardowym wyj¶ciu dla b³êdów), 
+komend wywo³ywanych podczas kolejnych  
+etapów kompilacji. Wypisuje równie¿ numer wersji: programu steruj±cego 
+kompilatorem, preprocesora oraz w³a¶ciwego kompilatora. Numery wersji 
+g77 i dystrybucji GCC na której bazuje s± ró¿ne. 
+.TP
+.B \-Wall
+Wypisuje ostrze¿enia dla sytuacji, które pretenduj± do konstrukcji, których
+u¿ywania siê nie poleca i których u¿ycie jest proste, nawet w po³±czeniu z
+makrami.
+.PP
+
+.SH PLIKI 
+.ta \w'LIBDIR/g77\-include 'u
+.br
+file.h	Plik nag³ówkowy C 
+.br
+file.f	Plik ¼ród³owy Fortranu 
+.br
+file.for	Plik ¼ród³owy Fortranu 
+.br
+file.F	Wynik dzia³ania preprocesora na plik ¼ród³owy Fortranu. 
+.br
+file.fpp	Wynik dzia³ania preprocesora na plik ¼ród³owy Fortranu. 
+.br
+file.r	Plik ¼ród³owy Ratfor (ratfor nie jest obs³ugiwany)
+.br
+file.s	Plik w jezyku assemblera 
+.br
+file.o	Plik object
+.br
+a.out	Zlinkowane wyj¶cie. 
+.br
+\fITMPDIR\fR/cc\(**	Plik tymaczasowy	
+.br
+\fILIBDIR\fR/cpp	preprocesor
+.br
+\fILIBDIR\fR/f771	kompilator	
+.br
+\fILIBDIR\fR/libg2c.a	Biblioteka Fortranu czasu wykonywania.	
+.br
+\fILIBDIR\fR/libgcc.a	Biblioteka procedur GCC	
+.br
+/lib/crt[01n].o	start-up routine
+.br
+/lib/libc.a	standardowa biblioteka C, zobacz
+.IR intro (3)
+.br
+/usr/include	standardowy katalog dla plików
+.B #include
+.br
+\fILIBDIR\fR/include	standardowy katalog gcc plików
+.B #include
+.br
+.sp
+.I LIBDIR
+jest to zwykle	
+.B /usr/local/lib/\c
+.IR machine / version .
+.sp
+.I TMPDIR
+ustawiane jest jako zmienna ¶rodowiskowa
+.B TMPDIR
+(standardowo
+.B /usr/tmp
+je¼eli jest to mo¿liwe w przeciwnym wypadku
+.B /tmp\c
+\&).
+.SH "ZOBACZ TAK¯E"
+gcc(1), cpp(1), as(1), ld(1), gdb(1), adb(1), dbx(1), sdb(1).
+.br
+.RB "`\|" g77 "\|', `\|" gcc "\|', `\|" cpp "\|',"
+.RB "`\|" as "\|', `\|" ld "\|',"
+i
+.RB "`\|" gdb "\|'"
+u¿ywaj±c
+.B info\c
+\&.
+.br
+.I
+Using and Porting GNU Fortran (for version 0.5.24)\c
+, James Craig Burley;
+.I
+Using and Porting GNU CC (for version 2.0)\c
+, Richard M. Stallman;
+.I
+The C Preprocessor\c
+, Richard M. Stallman;
+.I
+Debugging with GDB: the GNU Source-Level Debugger\c
+, Richard M. Stallman and Roland H. Pesch;
+.I
+Using as: the GNU Assembler\c
+, Dean Elsner, Jay Fenlason & friends;
+.I
+gld: the GNU linker\c
+, Steve Chamberlain and Roland Pesch.
+
+.SH B£ÊDY
+Instrukcjê jak informowaæ o b³êdach otrzymasz po wydaniu 
+komendy `\|\c 
+.B info g77 -n Bugs\c
+\&\|'.
+
+.SH KOPIOWANIE 
+Copyright (c) 1991-1998 Free Software Foundation, Inc.
+.PP
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+.PP
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+.PP
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be included in
+translations approved by the Free Software Foundation instead of in
+the original English.
+.SH AUTORZY
+Zajrzyj do GNU CC Manual, aby poznaæ wspó³pracowników GNU CC oraz
+do GNU Fortran Manual, aby poznaæ wspó³pracownikow GNU Fortran. 

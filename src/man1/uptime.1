@@ -1,0 +1,35 @@
+.\" {PTM/PB/0.1/02-10-1998/"Powiedz, jak d³ugo system pracuje"}
+.\" Translation 1998 Przemek Borys <pborys@dione.ids.pl>
+.\"             -*-Nroff-*-
+.\"
+.TH UPTIME 1 "26 Jan 1993" "Cohesive Systems" "Podrêcznik programisty linuksowego"
+.SH NAZWA
+uptime \- Powiedz jak d³ugo system jest w³±czony.
+.SH SK£ADNIA
+.B uptime
+.br
+.BR uptime " [" "\-V" ]
+.SH OPIS
+.B uptime
+wy¶wietla w jednej linijce nastêpuj±ce dane.
+Bie¿±cy czas,
+jak d³ugo system jest w³±czony,
+jak wielu u¿ytkowników jest obecnie zalogowanych,
+load average (obci±¿enie) z ostatnich 1, 5 i 15 minut.
+.sp
+S± to te same dane, które mo¿na uzyskaæ w nag³ówkowej linii wy¶wietlanej
+przez
+.BR w (1).
+.SH PLIKI
+.IR /var/run/utmp "	dane o tym, kto obecnie jest zalogowany"
+.br
+.IR /proc "	informacje o procesach"
+.SH AUTORZY
+.B uptime
+zosta³ napisany przez Larry'ego Greenfielda (greenfie@gauss.rutgers.edu) i
+Michaela K. Johnsona (johnsonm@sunsite.unc.edu).
+.SH "ZOBACZ TAK¯E"
+.BR ps (1),
+.BR top (1),
+.BR utmp (5),
+.BR w (1)

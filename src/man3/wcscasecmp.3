@@ -1,0 +1,42 @@
+.\" 2002 PTM Przemek Borys <pborys@dione.ids.pl>
+.\" Copyright (c) Bruno Haible <haible@clisp.cons.org>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" References consulted:
+.\"   GNU glibc-2 source code and manual
+.\"   Dinkumware C library reference http://www.dinkumware.com/
+.\"   OpenGroup's Single Unix specification http://www.UNIX-systems.org/online.html
+.\"
+.TH WCSCASECMP 3  1999-07-25 "GNU" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+wcscasecmp \- porównuje dwa ³añcuchy szerokich znaków, nie zwa¿aj±c na
+wielko¶æ liter
+.SH SK£ADNIA
+.nf
+.B #include <wchar.h>
+.sp
+.BI "int wcscasecmp(const wchar_t *" s1 ", const wchar_t *" s2 );
+.fi
+.SH OPIS
+Funkcja \fBwcscasecmp\fP jest równowa¿nikiem szeroko-znakowym dla funkcji
+\fBstrcasecmp\fP(3). Porównuje ona dwa ³añcuchy szerokich znaków, okre¶lane
+przez \fIs1\fP i \fIs2\fP, nie zwa¿aj±c przy tym na ró¿nice wielko¶ci liter
+(\fBtowupper\fP(3), \fBtowlower\fP(3)).
+.SH "WARTO¦Æ ZWRACANA"
+Funkcja \fBwcscasecmp\fP zwraca zero gdy ³añcuchy s± sobie równe (nie licz±c
+ró¿nic w rozmiarach liter). Warto¶æ dodatnia zwracana jest gdy \fIs1\fP jest
+wiêkszy ni¿ \fIs2\fP przy zaniedbaniu rozmiarów liter. Warto¶æ ujemna jest
+zwracana je¶li \fIs1\fP jest mniejszy od \fIs2\fP przy zaniedbaniu rozmiarów
+liter.
+.SH "ZGODNE Z"
+Funkcja ta jest rozszerzeniem GNU.
+.SH "ZOBACZ TAK¯E"
+.BR strcasecmp (3),
+.BR wcscmp (3)
+.SH UWAGI
+Zachowanie tej funkcji zale¿y od kategorii LC_CTYPE bie¿±cych ustawieñ
+locale.

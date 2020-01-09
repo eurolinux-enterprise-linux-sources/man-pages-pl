@@ -1,0 +1,81 @@
+.\" {PTM/MM/0.1/27-12-1998/"nohup.1 - uruchamia polecenie niewra¿liwe na zawieszenie wykonywania"}
+.\" Translation (c) 1998 Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.\" poszerzenie i aktualizacja do GNU sh-utils 2.0 PTM/WK/2000-VI
+.ig
+Transl.note: based on GNU man page nohup.1 and sh-utils.info
+
+Copyright (C) 1994, 95, 96 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+..
+.TH NOHUP "1" FSF "maj 2000" "Narzêdzia pow³okowe GNU 2.0"
+.SH NAZWA
+nohup \- uruchom polecenie niewra¿liwe na zawieszenia wykonywania, z wyj¶ciem
+skierowanym na non-tty
+.SH SK£ADNIA
+.B nohup
+.I polecenie
+.RI [ arg ...]
+.br
+.B nohup
+.RB [ \-\-help ]
+.RB [ \-\-version ]
+.SH OPIS
+Ta strona podrêcznika opisuje polecenie \fBnohup\fP w wersji GNU.
+.PP
+.B nohup
+uruchamia podane
+.IR polecenie ,
+które ignoruje sygna³ "hungup" i z ustawionym priorytetem dzia³ania
+zwiêkszonym o 5,
+aby polecenie mog³o kontynuowaæ dzia³anie po Twoim wylogowaniu siê.
+Je¶li standardowym wyj¶ciem jest tty, to jest ono razem z standardowym
+wyj¶ciem b³êdów przekierowywane do pliku \fInohup.out\fP; je¶li pisanie do
+niego nie jest mo¿liwe wyj¶cie jest dopisywane do pliku
+\fI$HOME/nohup.out\fP.  Je¶li to tak¿e nie jest mo¿liwe, polecenie nie jest
+uruchamiane.
+.PP
+.B nohup
+tworzy plik \fInohup.out\fP lub \fI$HOME/nohup.out\fP, bez prawa dostêpu
+dla grupy czy innych u¿ytkowników. Nie zmienia natomiast praw plików, które
+ju¿ zosta³y stworzone.
+.PP
+.B nohup
+nie uruchamia automatycznie polecenia w tle; musisz to zrobiæ sam, przez
+dodanie na koñcu polecenia znaku `&'.
+.SH OPCJE
+Kiedy GNU
+.B nohup
+jest uruchomione z dok³adnie jednym argumentem, rozpoznawane s± nastêpuj±ce
+opcje:
+.TP
+.B \-\-help
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach, koñczy
+pracê.
+.TP
+.B \-\-version
+Wy¶wietla numer wersji programu i koñczy pracê.
+.SH "ZG£ASZANIE B£ÊDÓW"
+B³êdy proszê zg³aszaæ, w jêz.ang., do <bug-sh-utils@gnu.org>.
+.SH COPYRIGHT
+Copyright \(co 1999 Free Software Foundation, Inc.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH ZOBACZ TAK¯E
+.BR sh-utils (1).
+.SH OD T£UMACZA
+Zaktualizowano i poszerzono wg dokumentacji Texinfo dla narzêdzi pow³okowych
+GNU wersji 2.0.

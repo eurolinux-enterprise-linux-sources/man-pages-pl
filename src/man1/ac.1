@@ -1,0 +1,279 @@
+.TH AC 1 "31 pa¼dziernika 1995"
+.SH NAZWA
+ac \- wypisuje statystyki odno¶nie czasu po³±czenia u¿ytkowników
+.SH SK£ADNIA
+.hy 0
+.na
+.TP
+.B ac
+[
+.B \-d
+|
+.B \-\-daily-totals
+]
+[
+.B \-y
+|
+.B \-\-print-year
+]
+.br
+[
+.B \-p
+|
+.B \-\-individual-totals
+]
+[
+.I people
+]
+.br
+[
+.B \-f
+|
+.B \-\-file
+.I filename
+]
+[
+.B \-a
+|
+.B \-\-all-days
+]
+.br
+[ 
+.B \-\-complain 
+]
+[
+.B \-\-reboots 
+]
+[
+.B \-\-supplants
+]
+.br
+[
+.B \-\-timewarps 
+]
+[
+.B \-\-compatibility
+]
+.br
+[
+.B \-\-tw-leniency
+.I num
+]
+[
+.B \-\-tw-suspicious
+.I num
+]
+.br
+[
+.B \-z
+|
+.B \-\-print-zeros
+]
+[
+.B \-\-debug
+]
+.br
+[
+.B \-V
+|
+.B \-\-version 
+]
+[
+.B \-h
+|
+.B \-\-help 
+]
+.ad b
+.hy 1
+.SH OPIS
+.LP
+.B ac 
+wypisuje czas po³±czenia (w godzinach) na podstawie zalogowañ
+i wylogowañ zapisanych w bie¿±cym pliku
+.IR /var/log/wtmp .
+Ca³o¶æ po³±czeñ jest tak¿e wypisywana.
+.LP
+.I /var/log/wtmp
+jest nadzorowany przez
+.BR init (8)
+i
+.BR login (1).
+Ani 
+.B ac
+ani
+.B login
+nie tworz± 
+.I /var/log/wtmp;
+Je¶li plik nie istnieje, dane nie s± wypisywane.
+Aby zacz±æ prowadziæ statystyki(?) , utwórz pusty plik.
+.LP
+UWAGA:  Plik 
+.I /var/log/wtmp
+mo¿e szybko staæ siê bardzo du¿y.
+Bêdziesz chcia³ go skracaæ za ka¿dym razem.
+.LP
+GNU 
+.B ac 
+pracuje podobnie do u*x 
+.BR ac , 
+czasem jest trochê sprytniejsze
+w pewnych zadaniach. Mo¿esz siê spodziewaæ ró¿nic w wyniku dzia³ania
+GNU i ac 
+.B ac
+i 
+.BR ac 
+na innych systemach.
+U¿yj komendy
+.BI info " accounting"
+, aby dowiedzieæ siê wiêcej.
+.SH OPCJE
+\..PD 0
+.TP
+.B \-d, \-\-daily-totals
+Wypisuje ca³o¶æ po³±czeñ dla ka¿dego dnia, a nie ca³o¶æ
+dla ca³ego pliku. Wynik dzia³ania wygl±da tak:
+        Jul  3  total     1.17
+        Jul  4  total     2.10
+        Jul  5  total     8.23
+        Jul  6  total     2.10
+        Jul  7  total     0.30
+.TP
+.B \-p, \-\-individual-totals
+Wypisuje czas po³±czeñ dla ka¿dego u¿ytkownika, w 
+przeciwieñstwie do zwyk³ej zsumowanej warto¶ci.
+Wygl±da to tak:
+        bob       8.06
+        goff      0.60
+        maley     7.37
+        root      0.12
+        total    16.15
+.TP
+.I people
+Wypisuje sumê czasu po³±czeñ wszystkich u¿ytkowników
+zawartych w 
+.IR people .
+.I people
+People jest list± u¿ytkowników
+oddzielonych spacjami. Maski s± niedozwolone.
+.TP
+.BI "\-f, \-\-file " filename
+.BI pliku
+Czyta z pliku
+.I filename
+zamiast z systemowego
+.I /var/log/wtmp
+.TP
+.B \-\-complain
+Kiedy plik  
+.I /var/log/wtmp
+znajduje b³±d (brakuj±cy rekord, lub cokolwiek),
+wypisuje odpowiedni b³±d.
+.TP
+.B \-\-reboots
+Rekordy zamkniêcia systemu nie s± zapisywane w czasie
+zamykania systemu, lecz gdy system ponownie startuje;
+dlatego, jest niemo¿liwe aby znaæ dok³adny czas
+zamkniêcia systemu.
+U¿ytkownicy mogli zostaæ zalogowani do systemu
+podczas zamkniêcia systemu; wiele
+.B ac's
+automagicznie liczy czas pomiêdzy rekordem zalogowania a zamkniêcia
+systemu dla ka¿dego u¿ytkownika (nawet gdy nie powinien,
+na przyk³ad gdy system jest wy³±czony przez d³u¿szy czas).
+Je¶li chcesz wzi±æ pod uwagê ten czas, w³±cz tê flagê.
+*Dla kompatybilno¶ci z vanilla
+.B ac
+w³±cz tê flagê.
+.TP
+.B \-\-supplants
+Czasami rekord wylogowania nie jest zapisywany dla danego
+terminala, dlatego czas ostatniego po³±czenia dla
+danego u¿ytkownika nie mo¿e byæ obliczony.
+Je¶li chcesz wzi±æ pod uwagê ten czas od zalogowania
+danego u¿ytkownika do nastêpnego zalogowania na terminal (chocia¿ mo¿liwe, ¿e
+niew³a¶ciwy) w³±cz tê flagê.
+*Dla kompatybilno¶ci z vanilla
+.B ac
+w³±cz tê flagê.
+.TP
+.B \-\-timewarps
+Czasami wpisy w pliku
+.I @WTMP_FILE_LOC
+bêd± nagle przeskakiwa³y w ty³, bez wpisu o zmianie zegara systemowego.
+Je¶li co¶ takiego wyst±pi, niemo¿liwe jest przewidzenie jak d³ugo u¿ytkownik 
+by³ zalogowany. Je¶li chcesz wzi±æ pod uwagê czas pomiêdzy zalogowaniem
+u¿ytkownika, a b³êdem czasowym w³±cz tê flagê.
+*Dla kompatybilno¶ci z vanilla 
+.B ac
+w³±cz tê flagê.*
+.TP
+.B \-\-compatibility
+To jest skrót dla wpisywania trzech powy¿szych opcji.
+.TP
+.B \-a, \-\-all-days
+Je¶li wypisujesz dzienne statystyki, wypisuj rekordy dla ka¿dego dnia 
+zamiast pomijaæ up³ywaj±ce dni, w których nie by³o zalogowañ. 
+Bez tej flagi, czas, który up³yn±³ podczas tych up³ywaj±cych dni,
+jest wypisywany pod nastêpnym dniem, w którym nie by³o zalogowañ.
+.TP
+.BI \-\-tw-leniency " num"
+Ustawia tolerancjê b³êdu czasowego na 
+.I num 
+sekund. Rekordy w pliku
+.I /var/log/wtmp
+mog± byæ lekko nie pouk³adane (czêsto spotyka³em, gdy dwa zalogowania 
+wystêpuj± w jednej sekundzie - drugie zalogowanie jest wpisywane pierwsze).
+Standardowo, warto¶æ ta jest ustawiana na 60. Je¶li program napotka na 
+problemy, czas nie jest dodawany dla u¿ytkowników, chyba ¿e u¿yta jest flaga
+.B \-\-timewarps.
+.TP
+.BI \-\-tw-suspicious " num"
+Ustawia podejrzenie b³êdu czasowego na 
+.I num 
+sekund. Je¶li dwa rekordy w pliku
+.I /var/log/wtmp
+s± oddalone od siebie dalej ni¿ podana liczba sekund, masz problem z plikiem
+.I @WTMP_FILE_LOC
+(lub twoja maszyna nie by³a w³±czana od roku). Je¶li program napotka
+na ten problem, czas nie jest dodawany dla u¿ytkowników, chyba ¿e u¿yta jest flaga
+.B \-\-timewarps.
+.TP
+.B \-y, \-\-print-year
+Wypisuje rok podczas wy¶wietlania daty.
+.TP
+.B \-z, \-\-print-zeros
+Je¶li ca³o¶æ dla dowolnej kategorii jest równa zero, wypisz j±. 
+Standardowo pomija siê wypisywanie.
+.TP
+.B \-\-debug
+Wypisuj wewnêtrzne informacje.
+.TP
+.B \-V, \-\-version
+Wypisuj numer wersji 
+.B ac
+na standardowe wyj¶cie i zakoñcz.
+.TP
+.B \-h, \-\-help
+Wypisuj sposób u¿ycia
+.B ac 
+na standardowe wyj¶cie i zakoñcz.
+.SH PLIKI
+.I /var/log/wtmp
+.RS
+Systemowy plik z zapisanymi rekordami zalogowañ.
+Zobacz 
+.BR wtmp (5),
+aby uzyskaæ wiêcej informacji.
+.LP
+
+.SH AUTOR
+Narzêdzia statystyczne GNU zosta³y napisane przez Noel Cragg 
+<noel@gnu.ai.mit.edu>. Strona podrêcznika systemowego
+przerobiona ze strony texinfo o statystykach napisanej przez
+Susan Kleinmann <sgk@sgk.tiac.net>.
+
+.SH "ZOBACZ TE¯"
+.BR login (1),
+.BR wtmp (5),
+.BR init (8),
+.BR sa (8)

@@ -1,0 +1,147 @@
+.\" {PTM/PB/0.1/02-04-1999/"edytuj quoty u¿ytkowników"}
+.\" Translation 1999 Przemek Borys <pborys@dione.ids.pl>
+.\" Last update: Andrzej M. Krzysztofowicz <ankry@mif.pg.gda.pl>, Apr 2002
+.\"              quota 3.04
+.\"
+.TH EDQUOTA 8
+.SH NAZWA
+edquota \- edycja kwot dla u¿ytkowników
+.SH SK£ADNIA
+.B edquota
+[
+.B \-p
+.I wzorcowy-u¿ytkownik
+] [
+.BR \-u \ |
+.B \-g
+] [
+.B \-r
+] [
+.B \-F
+.I nazwa-formatu
+] [
+.B \-f
+.I system-plików
+]
+.IR u¿ytkownik .\|.\|.
+.LP
+.B edquota
+[
+.BR \-u \ |
+.B \-g
+] [
+.B \-F
+.I nazwa-formatu
+] [
+.B \-f
+.I system-plików
+]
+.B \-t
+.SH OPIS
+.IX  "edquota command"  ""  "\fLedquota\fP \(em edit user quotas"
+.IX  edit "user quotas \(em \fLedquota\fP"
+.IX  "user quotas"  "edquota command"  ""  "\fLedquota\fP \(em edit user quotas"
+.IX  "disk quotas"  "edquota command"  ""  "\fLedquota\fP \(em edit user quotas"
+.IX  "quotas"  "edquota command"  ""  "\fLedquota\fP \(em edit user quotas"
+.IX  "filesystem"  "edquota command"  ""  "\fLedquota\fP \(em edit user quotas"
+.B edquota
+jest edytorem kwot. W linii polecenia mo¿na podaæ jednego lub wiêcej
+u¿ytkowników lub grup. Dla ka¿dego u¿ytkownika lub grupy tworzony jest plik
+tymczasowy z okre¶lonymi w postaci
+.SM ASCII
+obecnymi ograniczeniami kwot dyskowych u¿ytkownika lub grupy. Po jego
+utworzeniu uruchamiany jest edytor. Mo¿na wówczas zmieniaæ kwoty, dodawaæ
+nowe, itd.
+Ustawienie warto¶ci zerowej kwoty oznacza, ¿e nie zostanie narzucona ¿adna
+kwota.
+.PP
+U¿ytkownikom wolno prekraczaæ ograniczenie miêkkie na okre¶lony dla danego
+systemu plików czas ulgi. Po up³yniêciu czasu ulgi, miêkkie ograniczenie staje
+siê twardym ograniczeniem.
+.PP
+Informacje o aktualnym zu¿yciu znajduj±ce siê w pliku pe³ni± rolê
+informacyjn±. Zmieniæ mo¿na jedynie ograniczenia twarde i miêkkie.
+.PP
+Po wyj¶ciu z edytora,
+.B edquota
+odczytuje plik tymczasowy i modyfikuje binarne pliki kwot, aby
+odzwierciedliæ wprowadzone zmiany.
+.LP
+Wywo³ywanym edytorem jest
+.BR vi (1),
+chyba ¿e zdefiniowano zmienn± ¶rodowiskow±
+.SB EDITOR
+lub
+.SB VISUAL
+\, które wskazuj± na co¶ innego.
+.LP
+Zmiany kwot mo¿e dokonywaæ tylko superu¿ytkownik.
+.SH OPCJE
+.TP
+.B \-r
+Zmiana równie¿ kwot zdalnych za pomoc± rpc.rquotad na zdalnym serwerze.
+OPcja
+.B \-n
+jest jej równowa¿na i wspierana jedynie dla zachowanai zgodno¶ci
+z wcze¶niejszymi wersjami.
+.TP
+.B \-u
+Edycja kwot u¿ytkowników. Jest to zachowanie domy¶lne.
+.TP
+.B \-g
+Edycja kwot grup.
+.TP
+.B \-p \f2wzorcowy-u¿ytkownik\f1
+Powiela ustawienia kwot u¿ytkownika wzorcowego dla wszystkich podanych
+u¿ytkowników. Jest to normalny mechanizm inicjalizowania udzia³ów dla grup
+u¿ytkowników.
+.TP
+.B \-F \f2nazwa-formatu\f1
+Zmiana kwot wed³ug podanego formatu (tzn. nie jest wykonywana autodetekcja
+formatu). Dozwolone s± nastêpuj±ce nazwy formatów:
+.B vfsold
+(wersja 1 kwot),
+.B vfsv0
+(wersja 2 kwot),
+.B rpc
+(kwoty na NFS),
+.B xfs
+(kwoty na systemie plików XFS)
+.TP
+.B \-f \f2system-plików\f1
+Przeprowadza zadane operacje wy³acznie na podanym systemie plików (domy¶lnym
+zachowaniem jest przeprowadzenie ich na wszystkich systemach plików
+obs³uguj±cych kwoty).
+.TP
+.B \-t
+Zmiana czasów wa¿no¶ci miêkkich ograniczeñ dla poszczególnych systemów plików.
+W starym formacie kwot, je¶li czasy wa¿no¶ci wynosz± zero, u¿ywane s± domy¶lne
+ograniczenia z
+.BR <linux/quota.h> .
+W nowym formacie kwot, warto¶ci musz± zostaæ podane (nie ma warto¶ci
+domy¶lnych, ustawianych przez j±dro). Rozumiane s± nastêpuj±ce jednostki
+czasu: seconds (sekundy), minutes (minuty), hours (godziny), days (dni),
+weeks (tygodnie) i months (miesi±ce).
+Czasy wa¿no¶ci s± wypisywane w mo¿liwie najwiêkszych jednostkach takich, ¿e
+wyra¿ona w nich warto¶æ jest wiêksza lub równa jedno¶ci.
+.SH PLIKI
+.PD 0
+.TP 20
+.BR aquota.user " i " aquota.group
+pliki kwot dyskowych umieszczone w g³ównym katalogu systemu plików (wersja 2
+kwot, systemy plików inne ni¿ XFS)
+.TP 20
+.BR quota.user " i " quota.group
+pliki kwot dyskowych umieszczone w g³ównym katalogu systemu plików (wersja 1
+kwot, systemy plików inne ni¿ XFS)
+.TP
+.B /etc/mtab
+domy¶lne systemy plików
+.PD
+.SH "ZOBACZ TAK¯E"
+.BR quota (1),
+.BR vi (1),
+.BR quotactl (2),
+.BR quotacheck (8),
+.BR quotaon (8),
+.BR repquota (8)

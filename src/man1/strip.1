@@ -1,0 +1,178 @@
+.\" 1999 PTM Przemek Borys
+.\" Copyright (c) 1991 Free Software Foundation
+.\" See section COPYING for conditions for redistribution
+.TH strip 1 "5 Listopad 1991" "cygnus support" "Narzêdzia developerskie GNU"
+.de BP
+.sp
+.ti \-.2i
+\(**
+..
+
+.SH NAZWA
+strip \- Usuñ symbole z plików obiektowych
+
+.SH SK£ADNIA
+.hy 0
+.na
+.TP
+.B strip
+.RB "[\|" \-F\ \fIbfdname\fR\ |\ \fB\-\-target=\fIbfdname\fP "\|]"
+.RB "[\|" \-I\ \fIbfdname\fR\ |\ \fB\-\-input\-target=\fIbfdname\fP "\|]"
+.RB "[\|" \-O\ \fIbfdname\fR\ |\ \fB\-\-output\-target=\fIbfdname\fP "\|]"
+.RB "[\|" \-R\ \fIsectionname\fR\ |\ \fB\-\-remove\-section=\fIsectionname\fP "\|]"
+.RB "[\|" \-s\fR\ |\ \fB\-\-strip\-all "\|]"
+.RB "[\|" \-S\fR\ |\ \fB\-g\fR\ |\ \fB\-\-strip\-debug "\|]"
+.RB "[\|" \-\-strip\-unneeded\fR "\|]"
+.RB "[\|" \-x\fR\ |\ \fB\-\-discard\-all "\|]"
+.RB "[\|" \-X\fR\ |\ \fB\-\-discard\-locals "\|]"
+.RB "[\|" \-K\ \fIsymbolname\fR\ |\ \fB\-\-keep\-symbol=\fIsymbolname\fR "\|]" 
+.RB "[\|" \-N\ \fIsymbolname\fR\ |\ \fB\-\-strip\-symbol=\fIsymbolname\fR "\|]"
+.RB "[\|" \-o\ \fIfile\f\R "\|]"
+.RB "[\|" \-v\fR\ |\ \fB\-\-verbose "\|]"
+.RB "[\|" \-V\fR\ |\ \fB\-\-version "\|]"
+.RB "[\|" \-V\fR\ |\ \fB\-\-help "\|]"
+.I objfile\c
+\&.\|.\|.
+
+.SH OPIS
+GNU
+.B strip
+usuwa wszystkie symbole z plików obiektowych
+.IR objfile .
+Lista plików obiektowych mo¿e zawieraæ archiwa.
+Podany musi byæ przynajmniej jeden plik obiektowy.
+
+.P
+.B strip
+modyfikuje pliki podane w argumencie--nie zapisuje zmodyfikowanych kopii pod
+innymi nazwami.
+
+.SH OPCJE
+.TP
+.B "\-F \fIbfdname"
+.TP
+.B "\-\-target=\fIbfdname"
+Traktuj oryginalny \fIobjfile\fP
+jak plik obiektowy w formacie \fIbfdname\fP,
+i zapisz go w tym samym formacie.
+
+.TP
+.B \-\-help
+Wydrukuj zestawienie opcji
+.B strip
+i zakoñcz.
+
+.TP
+.B "\-I \fIbfdname
+.TP
+.B "\-\-input\-target=\fIbfdname"
+Traktuj oryginalny \fIobjfile\fP jako plik o formacie kodu obiektowego
+\fIbfdname\fR.
+
+.TP
+.B "\-O \fIbfdname\fP"
+.TP
+.B "\-\-output\-target=\fIbfdname"
+Zamieñ \fIobjfile\fP plikiem w formacie wyj¶ciowym \fIbfdname\fP.
+
+.TP
+.B "\-R \fIsectionname\fP"
+.TP
+.B "\-\-remove\-section=\fIsectionname"
+Usuñ nazwan± sekcjê z pliku. Opcja ta mo¿e byæ podana wiêcej ni¿ raz.
+Zauwa¿, ¿e jej nieodpowiednie u¿ywanie mo¿e spowodowaæ, ¿e plik obiektowy
+bêdzie bezu¿yteczny.
+
+.TP
+.B \-s
+.TP
+.B \-\-strip\-all
+Usuñ wszystkie symbole.
+
+.TP
+.B \-S
+.TP
+.B \-g
+.TP
+.B \-\-strip\-debug
+Usuñ tylko symbole debuggowe.
+
+.TP
+.B \-\-strip\-unneeded
+Usuñ wszystkie symbole, które nie s± potrzebne do przetwarzania relokacji.
+
+.TP
+.B \-N \fIsymbolname\fR
+.TP
+.B \-\-strip\-symbol=\fIsymbolname
+Usuñ symbol \fIsymbolname\fP z pliku ¼ród³owego. Opcja ta mo¿e byæ podana
+wiêcej ni¿ jeden raz i mo¿e byæ ³±czona z innymi opcjami usuwania.
+
+.TP
+.B \-o \fIfile\fR
+Umie¶æ ogo³ocone wyj¶cie w \fIfile\fR, a nie zamieniaj istniej±cego pliku. Z
+tym argumentem, podany mo¿e byæ tylko jeden argument \fIobjfile\fR.
+
+.TP
+.B \-x
+.TP
+.B \-\-discard\-all
+Usuñ symbole nieglobalne.
+
+.TP
+.B \-X
+.TP
+.B \-\-discard\-locals
+Usuñ generowane przez kompilator symbole lokalne.
+(Zaczynaj± siê zwykle od ``L'' lub ``.''.)
+
+.TP
+.B \-K \fIsymbolname\fR, \fB\-\-keep\-symbol=\fIsymbolname
+Z pliku ¼ród³owego kopiuj tylko symbol \fIsymbolname\fP. Opcja ta mo¿e byæ
+podawana wiêcej ni¿ jeden raz.
+
+.TP
+.B \-N \fIsymbolname\fR, \fB\-\-strip\-symbol=\fIsymbolname
+Nie kopiuj symbolu \fIsymbolname\fP z pliku ¼ród³owego. Opcja ta mo¿e byæ
+podawana wiêcej ni¿ raz i ³±czona z innymi opcjami usuwania, poza \fB\-K\fR.
+
+.TP
+.B \-v
+.TP
+.B \-\-verbose
+Gadatliwe wyj¶cie: listuj wszystkie zmodyfikowane pliki obiektowe. W wypadku
+archiwów,
+.B "strip \-V"
+listuje wszystkich cz³onków archiwum.
+
+.TP
+.B \-V
+.TP
+.B \-\-version
+Podaj wersjê \fBstrip\fP i zakoñcz.
+
+.SH "ZOBACZ TAK¯E"
+Opis
+.RB "`\|" binutils "\|'" 
+w
+.BR info ;
+.IR "The GNU Binary Utilities" ,
+Roland H. Pesch (October 1991).
+
+.SH KOPIOWANIE
+Copyright (c) 1991 Free Software Foundation, Inc.
+.PP
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+.PP
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+.PP
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be included in
+translations approved by the Free Software Foundation instead of in
+the original English.

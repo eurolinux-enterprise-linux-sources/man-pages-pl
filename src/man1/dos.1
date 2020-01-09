@@ -1,0 +1,817 @@
+.\" -*- nroff -*-  (This is for Emacs)
+.\" {PTM/LK/0.1/03-10-1998/"emulator DOS-u"}
+.\" T³umaczenie: 03-10-1998 £ukasz Kowalczyk (lukow@tempac.okwf.fuw.edu.pl)
+.\" Aktualizacja do wersji z dosemu-1.0.1 - listopad 2001
+.\" 		Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" 
+.TH DOS 1 "luty 2000" "Wersja 1.0.0" "Emulacja MS-DOS-u"
+.SH NAZWA
+dos, xdos, dosexec, dosdebug \- uruchamianie MS-DOS-u i programów 
+DOS-owych w Linuksie
+.SH SK£ADNIA
+.B dos
+[
+.B \-ABCcdkVNXtsgKm234OU
+]
+[
+.B \-h
+.I poziom
+]
+[
+.B \-F
+.I plik
+]
+[
+.B \-f
+.I plik
+]
+[
+.B \-L
+.I plik_dexe
+]
+[
+.B \-u
+.I zmienna
+]
+[
+.B \-D
+.I opcje
+]
+[ 
+.B \-M 
+.I rozmiar
+]
+[ 
+.B \-e 
+.I rozmiar
+]
+[ 
+.B \-x 
+.I rozmiar
+]
+[
+.B \-P 
+.I plik
+]
+[
+.B \-o
+.I plik
+]
+[
+2\>
+.I plik_diagnostyczny
+]
+[
+.B \-I
+.I opcje_konfiguracyjne
+]
+[
+.B \-U
+.I potok_wejsciowy[:potok_wyjsciowy]
+]
+.sp
+.B dosexec
+[
+.B \-ABCcdkVNXtsgKm234OU
+]
+[
+.B \-h
+.I poziom
+]
+[
+.B \-H
+.I opcje_diagnostyczne
+]
+[
+.B \-F
+.I plik
+]
+[
+.B \-u
+.I zmienna
+]
+[
+.B \-D
+.I opcje
+]
+[ 
+.B \-M 
+.I rozmiar
+]
+[ 
+.B \-e 
+.I rozmiar
+]
+[ 
+.B \-x 
+.I rozmiar
+]
+[
+.B \-P 
+.I plik
+]
+[
+.B \-o
+.I plik
+]
+[
+2\>
+.I plik_diagnostyczny
+]
+[
+.B \-I
+.I opcje_konfiguracyjne
+]
+plik_dexe
+[
+.B \-U
+.I potok_wejsciowy[:potok_wyjsciowy]
+]
+.sp
+.B dosdebug
+.sp
+.B xdos
+[
+.B \-ABCbdNtsK234O 
+]
+[
+.B \-h
+.I poziom
+]
+[
+.B \-H
+.I opcje_diagnostyczne
+]
+[
+.B \-F
+.I plik
+]
+[
+.B \-f
+.I plik
+]
+[
+.B \-L
+.I plik_dexe
+]
+[
+.B \-u
+.I zmienna
+]
+[
+.B \-D
+.I opcje
+]
+[ 
+.B \-M 
+.I rozmiar
+]
+[ 
+.B \-e 
+.I rozmiar
+]
+[ 
+.B \-x 
+.I rozmiar
+]
+[
+.B \-P 
+.I plik
+]
+[
+.B \-o
+.I plik
+]
+[
+2\>
+.I plik_diagnostyczny
+]
+[
+.B \-U
+.I potok_wejsciowy[:potok_wyjsciowy]
+]
+.SH OPIS
+.B dos
+uruchamia emulator DOS-u, znany równie¿ jako 
+.BR DOSEMU .
+.br
+.I plik_diagnostyczny
+jest opcjonalnie podawanym plikiem, do którego bêd± kierowane wszelkie
+komunikaty diagnostyczne.
+.PP
+.B dosdebug
+s³u¿y do sterowania i odpluskwiania w³a¶nie dzia³aj±cego
+.BR DOSEMU .
+.PP
+.B xdos
+uruchamia
+.B DOSEMU
+w oddzielnym okienku X. Jest to równowa¿ne poleceniu
+.B dos -X
+.PP
+.B dosexec
+uruchamia
+.B DOSEMU
+i wykonuje plik DEXE. Jest to równowa¿ne poleceniu
+.B dos -L
+.PP
+Chocia¿ ten program znany jest jako 
+.I emulator 
+DOS-u, jest on w rzeczywisto¶ci wirtualn± maszyn± dla MS-DOS-u, która
+pozwala DOS-owi i programom dla niego napisanym dzia³aæ w ¶rodowisku
+przypominaj±cym komputer IBM PC/AT z procesorem Intel 80x86 w trybie
+rzeczywistym.
+.B DOSEMU
+emuluje takie us³ugi, jak obs³uga karty graficznej przez BIOS, dyski,
+klawiatura, port szeregowy i równoleg³y (drukarka), pamiêæ CMOS zawieraj±ca
+informacje o konfiguracji komputera, zegar czasu rzeczywistego, alokacja
+pamiêci przez standard XMS 3.0, EMS 4.0 oraz DPMI 0.9.
+.PP
+Poniewa¿ w rzeczywisto¶ci
+.B DOSEMU
+nie jest emulatorem DOS-u, do pracy wymagana jest kopia systemu MS-DOS
+3.3-7.00. (Przysz³e wersje DOS-u przypuszczalnie bêd± dzia³aæ, choæ
+oczywi¶cie nie zosta³o to sprawdzone. DR-DOS 6.0 równie¿ wspó³pracuje z
+tym programem).
+.PP
+Przeczytaj pliki
+.I QuickStart,
+.I ChangeLog, 
+.I doc/announce, 
+oraz
+.B Makefile
+zawarte w dystrybucji ¼róde³, aby dowiedzieæ siê, jak skonfigurowaæ,
+skompilowaæ i uruchomiæ
+.BR DOSEMU .
+
+.SH WYMAGANIA W STOSUNKU DO KERNELA
+Obecnie wymagany jest Linux w wersji 2.0.28 lub wy¿szej z wkompilowan±
+obs³ug± SYSV IPC (System V InterProcess Communication - komunikacja miêdzy
+procesami zgodna z Systemem V, przeczytaj
+.BR ipc (2)).
+SYSV IPC jest opcj±, któr± mo¿na ustawiæ podczas kompilacji j±dra.
+
+Poczynaj±c od wersji dosemu 0.64.3 domy¶ln± wersj± jest
+.IR kompletna " dystrybucja " dosemu .
+Szczegó³y znajduj± sie w pliku
+.IR doc/README.vm86plus .
+Aby skompilowaæ niepe³n± wersjê powiniene¶ uruchomiæ configure
+z opcj± --enable-novm86plus.
+
+Je¿eli u¿ywasz j±dra w wersji 1.2.13 postaraj siê o ostatni± stabiln±
+wersjê. Podczas pisania tego opisu dostêpn± wersj± by³ Linux 2.0.28 dostêpny
+przez anonimowe ftp z ftp.funet.fi w katalogu /pub/Linux/kernel/linux/v2.0/
+oraz w wielu mirrorach na ca³ym ¶wiecie.
+
+.SH OPCJE
+.TP
+.I -A
+uruchomienie z dyskietki A (nie musi to byæ prawdziwa stacja dysków - patrz
+ni¿ej)
+.TP
+.I -B
+uruchomienie z dyskietki B (nie musi to byæ prawdziwa stacja dysków - patrz
+ni¿ej)
+.TP
+.I -C
+uruchomienie z dysku twardego C (nie musi to byæ prawdziwy napêd ani nawet
+system plików typu msdos - patrz ni¿ej)
+.TP
+.I -c
+u¿ycie bezpo¶redniego zapisu do pamiêci konsoli (program musi byæ uruchomiony
+na konsoli z ustawionym bitem suid na roota)
+.TP
+.I -d
+od³±czenie od bie¿±cej konsoli wirtualnej lub tty i przy³±czenie do
+pierwszej dostêpnej konsoli wirtualnej
+.TP
+.I -V
+u¿ycie optymalizacji wideo charakterystycznej dla VGA
+.TP
+.I -k
+u¿ycie bezpo¶redniego odczytu klawiatury (program musi byæ uruchomiony na
+konsoli)
+.TP
+.I -F
+Pobieranie opcji z podanego pliku konfiguracyjnego zamiast z
+/etc/dosemu.conf (trzeba mieæ uprawnienia roota lub program musi
+mieæ ustawiony bit suid na roota)
+.TP
+.I -f
+Pobieranie opcji z podanego pliku konfiguracyjnego zamiast z .doserc
+.TP
+.I -u zmienna
+ustawia zmienn± konfiguracyjn± dla u¿ytjkownika, której istnienie mo¿e byæ
+sprawdzone w plikach /etc/dosemu.conf i /var/lib/dosemu/global.conf w celu
+uzykania specyficznej konfiguracji. Do podanej nazwy zmiennej zostanie
+dodany przyrostek
+.BR u_ ,
+aby unikn±æ konfliktu nazw.
+.TP
+.I -L
+£aduje i uruchomia plik DEXE (specjalny obraz dysku sytemowego zawieraj±cy
+tylko jeden program DOS-owy)
+.TP
+.I -I
+analizuje ci±g opcji wystepuj±cy po
+.I -I
+maj±cy tê sam± sk³adniê, co pliki /etc/dosemu.conf i .dosrc, np.
+.TP
+		dos ... -I 'video { mda }'
+
+Ta opcja jest przydatna do tymczasowej zmiany ustawienia jakiej¶ opcji
+konfiguracyjnej. Mo¿esz równie¿ uruchamiaæ dosemu z w³asn± konfiguracj±
+za pomoc± skryptu, np.
+.TP
+		dos ... -I "`mojakonfiguracja.sh`"
+
+gdzie 
+.I mojakonfiguracja.sh
+jest skryptem wypisuj±cym opcje konfiguracyjne na standardowe wyj¶cie.
+Je¿eli u¿ytkownik oprócz .dosrc posiada jeszcze inny plik konfiguracyjny,
+mo¿e go u¿yæ w nastêpuj±cy sposób:
+.TP
+		dos ... -I "`cat innakonfiguracja.conf`"
+
+Nale¿y pamiêtaæ o dodatkowym ujêciu parametru po
+.I -I
+w cudzys³owy, poniewa¿ ma to byæ
+.I pojedynczy
+argument.
+.TP
+.I -D
+okre¶la, jakie komunikaty diagnostyczne maj± siê pojawiaæ/nie pojawiaæ
+.TP
+.I -h
+wypisuje konfiguracjê na stderr (standardow± diagnostykê) i koñczy pracê
+(ustawia -D+c). Ta opcja jest przydatna do odpluskwiania plików
+konfiguracyjnych. Zalecane jest u¿ycie równie¿
+.IR -O ,
+aby przekierowaæ komunikaty typu +c na stderr. `poziom' mo¿e wynisiæ 0, 1
+lub 2 i steruje ilo¶ci± informacji uruchomieniowych wypisywanych przez
+analizatora konfiguracji: brak informacji uruchomieniowych (0),
+informacje uruchomieniowe o pêtlach (1), informacje uruchomieniowe dla
+if_else_endif (2).
+.TP
+.I -H
+podanie opcji obs³ugi dosdebug, aktualnie obs³ugiwana jest jedynie `1'.
+Za pomoc±
+.I -H1
+mo¿na zmusiæ dosemu do czakania a¿ terminal programu terminal zostanie
+pod³±czony. Aby analizowaæ sesjê DOS-ow± od samego pocz±tku, nale¿y najpierw
+uruchomiæ dosemu z opcj± -H1, a nastêpnie uruchomiæ dosdebug.
+Wówczas, DOSEMU zatrzyma siê przed skokiem do za³adowanego sektora
+startowego oczekuj±c na pod³±czenie siê dosdebuga. Po pod³±czeniu znajdzie
+siê on w stanie `stopped', co umo¿liwi ustawienie pu³apek lub wykonywanie
+krok po kroku dla kodu inicjuj±cego. 
+.TP
+.I -O
+wysy³anie komunikatów diagnostycznych na standardow± diagnostykê
+.TP
+.I -o
+wysy³anie komunikatów diagnostycznych do podanego pliku
+.TP
+.I -M
+ustawienie pamiêci podstawowej na 
+.I rozmiar
+kilobajtów
+.TP
+.I -m
+w³±czenie wewnêtrznej obs³ugi myszy
+.TP
+.I -P
+wysy³anie kopii komunikatów diagnostycznych równie¿ do podanego pliku
+.TP
+.I -2,3,4
+wybiranie emulowanego procesora: 286, 386 lub 486 (OSTRO¯NIE: 
+.B DOSEMU
+jest nie w pe³ni dzia³a 32-bitowe, wiêc je¿eli program wykrywaj±c procesor
+386 lub 486 u¿ywa 32-bitowych rejestrów i funkcji BIOS-u, to mo¿e dzia³aæ
+niew³a¶ciwie. Je¿eli wydaje siê, ¿e to w³a¶nie jest przyczyn± problemów,
+nale¿y u¿yæ opcji -2 by wymusiæ na
+.B DOSEMU
+tryb 286)
+.TP
+.I -U
+definiuje potoki: wej¶ciowy i wyj¶ciowy dla asynchronicznego sterowania
+.B DOSEMU
+z innego procesu. Format ma postaæ (bez bia³ych znaków pomiêdzy)
+.TP
+		potok_wejsciowy:potok_wyjsciowy
+
+gdzie `:potok_wyjsciowy' mo¿na pomin±æ. Jednak w tym przypadku ¿adnego
+sprzê¿enia zwrotnego ze strony
+.B DOSEMU
+nie nale¿y oczekiwaæ.
+
+Ze wzglêdów bezpieczeñstwa
+.B DOSEMU
+nie tworzy samodzielnie nazwanych potoków, wiêc za nadanie prawid³owych
+uprawnieñ potokom odpowiedzialny jest u¿ytkownik. Nale¿y zwróciæ uwagê, ¿e
+w przypadku u¿ycia tej opcji, obcy proces mo¿e sterowaæ sesj±
+.B DOSEMU
+(np. powoduj±c naci¶niêcia klawiszy). Zatem ta opcja powinna byæ u¿ywana
+wy³±cznie przez nak³adki (takie jak kdos), które najpierw tworz± odpowiednie
+nazwane potoki, a nastêpnie odpalaj±
+.BR DOSEMU .
+Aby zmusiæ
+.B DOSEMU
+do zwracania poprzez potok znaczników uzgadniaj±cych informuj±cych nak³adkê
+o chwili uruchomienia lub zakoñczenia polecenia steruj±cego i czy zakoñczy³o
+siê ono pomy¶lnie mo¿na u¿yæ specjalnego polecenia steruj±cego (
+.I ack on
+). Format takiego znakowania jest nastêpuj±cy
+.TP
+		SYN: <polecenie>
+.TP
+		<dowolny wynik polecenia>
+.TP
+		ACK: code=n
+
+gdzie
+.I n
+jest równe 0 w przypadku pomy¶lnego zakoñczenia.
+Prostym terminalem sterujacym, mog±cym s³u¿yæ za przyk³ad jest do³±czony
+program
+.IR dosctrl .
+Pobiera on dwa potoki jako argumenty i umo¿liwia podawanie poleceñ
+steruj±cych, w¶ród których `help' jest najwa¿niejszym;-)
+Nale¿y zwróciæ uwagê, ¿e
+.I dosctrl
+nie odpala
+.BR DOSEMU ,
+trzeba to zrobiæ samodzielnie.
+
+.PD 1
+.SH "DYSKI TWARDE"
+.B DOSEMU
+obs³uguje cztery metody udostêpniania DOS-owi twardego dysku:
+.IP 1.
+plik zawieraj±cy obraz dysku spoczywaj±cy w systemie plików Linuksa,
+emuluj±cy twardy dysk.
+.IP 2.
+bezpo¶redni dostêp do dysku z partycj± DOS-ow± przez plik urz±dzenia dysku
+(np. /dev/hda, /dev/hdb, /dev/sdX).
+.IP 3.
+bezpo¶redni dostêp do partycji DOS-owej przez dostêp do urz±dzenia
+pojedynczej partycji (np. /dev/hda1, /dev/hdb2, /dev/sdxx). 
+Nale¿y uruchomiæ program
+.B mkpartition
+by
+.B DOSEMU
+móg³ miec dostêp do partycji DOS-owych przez SPA.
+.IP 4.
+dostêp do systemu plików Linuksa jako do dysku "sieciowego" przez u¿ycie
+sterownika emufs.sys dostarczanego z programem
+.B DOSEMU
+w katalogu commands/emufs.sys.
+.PP
+Te motody s± wyja¶nione dok³adniej w pliku 
+.BR QuickStart .
+.PP
+Konfiguracja zasobów dyskowych
+.B DOSEMU
+jest okre¶lona w pliku
+.B /etc/dosemu.conf
+przed uruchomieniem programu.
+Zajrzyj do doc/README.txt.
+
+.SH DYSKIETKI
+.B DOSEMU
+obs³uguje dwie metody udostêpniania DOS-owi dostêpu do dyskietek:
+.IP 1.
+obraz dyskietki w pliku spoczywaj±cym w systemie plików Linuksa, emuluj±cy
+napêd dyskietek.
+.IP 2.
+bezpo¶redni dostêp do urz±dzenia reprezentuj±cego napêd dyskietek
+(np. /dev/fd0, /dev/fd1).
+.PP
+Te opcje równie¿ s± wyja¶nione dok³adniej w pliku
+.BR QuickStart .
+.PP
+Sposób korzystania przez
+.B DOSEMU
+z dyskietek okre¶la siê w pliku
+.B /etc/dosemu.conf
+przed uruchomieniem programu.
+.BR DOSEMU .
+
+.SH EKRAN
+.B DOSEMU
+mo¿e byæ uruchomiony na dowolnym typie terminala, jednak korzystanie z niego
+na konsoli Linuksa umo¿liwia wykorzystanie zwiêkszonej funkcjonalno¶ci oraz
+szybko¶ci dzia³ania.
+Uruchamiaj±c
+.B DOSEMU
+na konsoli, warto przeczytaæ opis opcji
+.IR \-c ,
+.IR \-k ,
+i
+.I \-V
+w pliku
+.BR QuickStart .
+Istnieje równie¿ skrócona wersja dokumentacji w pliku etc/config.dist, któr±
+mo¿na skopiowaæ do /etc/dosemu.conf i dopasowaæ do w³asnych potrzeb.
+.PP
+Krótko mów±c, odpowiednio u¿yta konsola oraz w³a¶ciwe opcje pozwalaj±
+uruchamiaæ programy DOS-owe z oryginalnym kolorami i czcionkami, bez
+problemów z od¶wie¿aniem ekranu, które wystêpuj± przy uruchamianiu
+na zwyk³ym terminalu.
+
+.SH KLAWIATURA
+Uruchamiaj±c 
+.B DOSEMU
+na konsoli, warto te¿ u¿yæ bezpo¶redniego dostêpu do klawiatury. Ten tryb
+pracy, uruchamiany opcj±
+.IR \-k ,
+pozwala u¿ytkownikowi na dostêp do ca³ej klawiatury. Dowolna kombinacja
+klawiszy CTRL, ALT i SHIFT mo¿e byæ u¿yta do generacji najdziwniejszych
+kombinacji wymaganych przez programy DOS-owe.
+
+.SH DRUKOWANIE
+Obs³uga drukowania przez BIOS jest emulowana poprzez pisanie
+do plików
+.IR dosemulpt1 , 
+.IR dosemulpt2 , 
+i 
+.IR dosemulpt3 ,
+odpowiadaj±cych DOS-owym oznaczeniom portów LPT1, LPT2 i LPT3.
+Wszytkie znaki wysy³ane do LPTx bêd± przekierowane do plików dosemulptx w
+bie¿±cym katalogu.
+.PP
+.B OSTRZE¯ENIE!
+.B DOSEMU 
+nie zapisuje na dysk zawarto¶ci buforów dyskowych. Stan tych plików jest
+niezdefiniowany przed zakoñczeniem pracy emulatora. Przykro nam z powodu tej
+niedogodno¶ci.
+
+.SH "KOMUNIKATY DIAGNOSTYCZNE"
+Emitowanie komunikatów diagnostycznych mo¿e byæ kontrolowane poprzez opcje
+linii poleceñ b±d¼ te¿ w pliku konfiguracyjnym. Zajrzyj do dokumentacji w
+pliku config.dist zawartym w dystrybucji
+.B DOSEMU
+w podkatalogu z przyk³adami, aby znale¼æ opis opcji diagnostycznych. W linii
+poleceñ mo¿na okre¶liæ, jakie kategorie komunikatów maj± byæ emitowane przez
+.BR dos .
+Sk³adnia jest nastêpuj±ca: po opcji
+\-D nastêpuj± litery reprezentuj±ce kategorie komunikatów.
+.B DOSEMU
+analizuje ciag znaków od lewej do prawej.
+
+   +   w³±cza nastêpuj±c± po nim kategoriê (stan domy¶lny)
+   -   wy³±cza nastêpuj±c± po nim kategoriê
+   a   w³±cza lub wy³±cza wszystkie kategorie (zale¿nie od parametru)
+   0   wy³±cza wszystkie kategorie
+   1-9 ustawia poziom diagnostyczny, im wy¿szy, tym wiêcej komunikatów
+   #   gdzie # jest liter± z listy kategorii
+       w³±cza lub wy³±cza dan± kategoriê zale¿nie 
+       od stanu prze³±cznika +/-.
+
+.I Kategorie komunikatów:
+
+ d  dysk		R  odczyt dysku		
+ W  zapis na dysk	D  przerwanie 21h		
+ C  cdrom		v  ekran
+ X  obs³uga X		k  klawiatura		
+ i  porty WE/WY		s  port szeregowy		
+ m  mysz		#  domy¶lne przerwania
+ p  drukarka		g  ogólne		
+ c  konfiguracja	w  ostrze¿enia		
+ h  sprzêt		I  IPC
+ E  EMS			x  XMS			
+ M  DPMI		n  sieæ IPX 	
+ P  Pkt-driver		S  d¼wiêk
+ r  PIC			T  ¶ledzenie WE/WY
+ Z  BIOS PCI		A  sterownik ASPI
+ Q  rozmieszczenie sterowników
+
+
+Wszystkie kategorie wystêpuj±ce po znaku
+.I \+ 
+a¿ do znaku
+.I \- 
+bêd± w³±czone. Wszystkie po znaku
+.I \-
+a¿ do znaku
+.I \+
+bêd± wy³±czone. Znak
+.I a
+dzia³a jak ci±g wszystkich kategorii, wiêc
+.I \+a
+w³±cza wszystkie komunikaty, a
+.I \-a
+je wy³±cza. Znaki
+.I 0 
+i
+.I 1-9
+te¿ maj± specjalne znaczenie:
+.I 0
+wy³±cza wszystkie komunikaty, a
+.I 1-9
+je w³±cza ustawiaj±c jednocze¶nie poziom diagnostyczny. 
+
+Na pocz±tku ci±gu znaków kategorii zak³ada siê dzia³anie znaku
+.IR \+ .
+Niektóre kategorie, np. b³êdy nie mog± zostaæ wy³±czone.
+Je¿eli standardowa diagnostyka nie zosta³a przekierowana, prawie wszystkie 
+komunikaty id± do
+.BR /dev/null .
+
+Przyk³ady:
+  "-D+a-v" or "-D1-v"  : wszystkie komunikaty oprócz ekranu
+  "-D+kd"              : domy¶lne + klawiatura i dysk
+  "-D0+RW"             : tylko zapis i odczyt z dysku
+
+Ka¿da litera mo¿e siê pojawiæ w dowolnym miejscu, nawet bezsensowne
+kombinacje, jak
+.I -D01-a-1+0,
+bêd± zaakceptowane, wiêc nale¿y byæ ostro¿nym.
+Niektóre opcje s± standardowo w³±czone, a niektóre nie. Jest to zupe³nie
+arbitralna decyzja autora i mo¿e to ulec zmianie w nastêpnych wersjach. 
+Aby mieæ pewno¶æ, ¿e opcja jest w³±czona, nale¿y j± jawnie w³±czyæ.
+
+.SH "SPECJALNE KLAWISZE"
+W trybie bezpo¶redniego dostepu do klawiatury (opcja
+.BR \-k )
+.B DOSEMU
+reaguje na pewne kombinacje klawiszy.
+.PP
+.PD 0
+.IP 
+ctrl-scrlock   =  pokazuje wektor przerwania 0x32 
+.IP 
+alt-scrlock    =  pokazuje rejestry vm86
+.IP
+rshift-scrlock =  generuje przerwanie 8 (timer)
+.IP
+lshift-scrlock =  generuje przerwanie 9 (klawiatura)
+.IP
+ctrl-break     =  ctrl-break jak w DOS-ie.
+.IP
+ctrl-alt-pgup  =  restart DOS. Ta opcja mo¿e byæ niebezpieczna.
+.IP
+ctrl-alt-pgdn  =  koniec pracy.
+.PD 1
+.PP
+Do prze³±czania na inn± konsolê wirtualn± nale¿y U¿ywaæ
+<LEFT CTRL>-<LEFT ALT>-<klawisz funkcyjny>.
+
+.SH PAMIÊÆ
+Obs³uga pamiêci XMS w
+.B DOSEMU
+jest zgodna ze specyfikacj± opracowan± przez firmy
+Lotus/Intel/Microsoft/AST w wersji 3.0. Zaimplementowano wszystkie funkcje
+oprócz 0x12 (realokacja bloku UMB).
+.PP
+Wszystkie funkcje UMB sa na razie niedopracowane. W kolejnej wersji zostanie
+to poprawione.
+.PP
+.B DOSEMU
+0.97 obs³uguje te¿ standard EMS 4.0 oraz DPMI 0.9 (czê¶ciowo 1.0).
+
+.SH LOGI SYSTEMOWE
+.B DOSEMU
+mo¿e logowaæ wszystkie operacje poprzez email lub
+.BR syslogd (8).
+Plik
+.I /etc/dosemu.loglevel
+zawiera informacje o tej funkcji. Przeczytaj te¿ plik
+.IR doc/README.txt .
+
+
+.SH AUTOR
+.B DOSEMU
+(sk³adaj±cy siê z plików
+.B dos 
+i
+.B libdosemu
+) opiera siê na wersji 0.4 oryginalnego programu napisanego przez
+Matthiasa Lautnera (nie znam jego aktualnego adresu).
+.PP
+Robert Sanders <gt8134b@prism.gatech.edu> 
+sprawuje opiekê nad wersj± 
+.BR DOSEMU ,
+z któr± ukaza³ siê ten opis (strona podrêcznika man). Przez cztery lata
+James B. MacLean <macleajb@ednet.ns.ca> bez chwili odpoczynku kierowa³
+rozwijaniem DOSEMU, implementacj± DPMI (dziêki któremu mo¿na uruchomiæ m.in.
+Windows 3.1, dos4gw, djgpp) doprowadzaj±c go niemal do wersji beta.
+Teraz program jest rozwijany przez Hansa Lermena <lermen@fgan.de>.
+
+.SH PROBLEMY
+Jest ich zbyt du¿o, by wszystkie wyliczyæ, jednak du¿o mniej siê
+zamanifestowa³o.
+.PP
+Zg³aszaj problemy do autora. Chcia³by on te¿ wiedzieæ, które programy DZIA£AJ¡.
+Po prostu wy¶lij mu informacjê jakiego programu u¿ywasz, w jakiej wersji; co
+dzia³a, a co nie itd.
+
+.SH DOSTÊPNO¦Æ
+Najnowsza publiczna wersja
+.B DOSEMU
+mo¿e byc pobrana przez ftp z tsx-11.mit.edu w katalogu /pub/linux/ALPHA/dosemu
+Je¿eli chcesz mieæ dostêp do wersji rozwojowych, do³±cz do zespo³u
+.BR DOSEMU
+\- przydadz± ci siê nawet raporty o zauwa¿onych b³êdach.
+
+.SH PLIKI
+.PD 0
+.TP
+.I /usr/bin/dos
+G³ówny plik programu.
+.TP
+.I /usr/bin/xdos
+Wersja do X Window.
+.TP
+.I $HOME/dosemu
+lokalny katalog
+.B DOSEMU
+u¿ytkownika. Zostanie on po cichu utworzony, je¶li nie istnieje.
+.TP
+.I $HOME/dosemu/tmp
+Wszystkie pliki tymczasowe s± tworzone w tym katalogu, katalog /tmp nie
+jest ju¿ u¿ywany.
+.TP
+.I /var/run/dosemu.*
+lub
+.TP
+.I $HOME/dosemu/run
+Rozmaite pliki u¿ywane przez
+.B DOSEMU
+w³±czaj±c potoki u¿ywane do ¶ledzenia.
+.TP
+.TP
+lub
+.TP
+.I $HOME/dosemu/lib
+Rozmaite pliki u¿ywane przez
+.B DOSEMU
+w³±cznie z obrazami dysków i plikami konfiguracyjnymi do obs³ugi tych¿e.
+W tym katalogu znajduje siê równie¿ g³ówny plik konfiguracyjny dla
+.B DOSEMU
+.IR global.conf ,
+który w³±cza
+.IR /etc/dosemu.conf .
+Je¶li
+.I /etc/dosemu.users
+danemu u¿ytkownikowi na to pozwala (o ile program nie jest suid root), to
+zamiast
+.I /var/lib/dosemu/*
+mo¿e byæ u¿ywany
+.IR $HOME/dosemu/lib .
+U¿ytkownik mo¿e wówczas mieæ swoj± ca³kowicie w³asn± konfiguracjê.
+.TP
+.I /etc/dosemu.conf
+G³ówny plik konfiguracyjny 
+.BR DOSEMU ,
+w³±czony w
+.IR global.conf .
+.TP
+.I /etc/dosemu.users
+Okre¶la prawa dostêpu do
+.B DOSEMU
+dla poszczególnych u¿ytkowników i ustawia pewne ¿ywotne opcje konfiguracyjne.
+Jest to jedyny plik konfiguracyjny o ustalonej lokalizacji,
+.B DOSEMU
+najpierw szuka
+.I /etc/dosemu.users
+a, gdy go nie znajdzie,
+.I /etc/dosemu/dosemu.users .
+Przy u¿yciu s³owa kluczowego
+.I default_lib_dir=
+w
+.I dosemu.users
+mo¿na przenie¶æ katalog systemowy
+.I /var/lib/dosemu
+gdziekolwiek. Wiêcej informacji na ten temat znajduje siê w
+.IR ./doc/README.txt .
+.TP
+.I /etc/dosemu/dos.ini
+Plik konfiguracyjny IPX.
+
+.TP
+.I doc/DPR
+Zespó³ DOSEMU: kto co robi przy programie.
+.TP
+.I doc/DANG
+Pomoc w poprawianiu kodu ¼ród³owego.
+.BR DOSEMU .
+.TP
+.I doc/README.*
+Pliki dokumentacyjne.
+.TP
+.I QuickStart
+Szybkie wprowadzenie do
+.BR DOSEMU .
+.TP
+.I ChangeLog
+Zmiany w programie od ostatniej wersji.
+.TP
+.IR "Lista pocztowa MS-DOS " \-
+wy¶lij list do
+.I linux-msdos@vger.rutgers.edu
+aby uzyskaæ wiêcej informacji.
+
+
+
+.SH "ZOBACZ TAK¯E"
+.BR mkfatimage16 "(1), " mtools "(1)"

@@ -1,0 +1,112 @@
+.\" Copyright (C) 1995 Andries Brouwer (aeb@cwi.nl)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Written 11 June 1995 by Andries Brouwer <aeb@cwi.nl>
+.\" Modified 22 July 1995 by Michael Chastain <mec@duracef.shout.net>:
+.\"   Derived from 'readdir.2'.
+.\" Modified Tue Oct 22 08:11:14 EDT 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Translation (c) 1998 Przemek Borys <pborys@dione.ids.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\"
+.TH GETDENTS 2 1995-07-22 "Linux 1.3.6" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+getdents \- pobranie wpisów z katalogu
+.SH SK£ADNIA
+.nf
+.B #include <unistd.h>
+.B #include <linux/types.h>
+.B #include <linux/dirent.h>
+.B #include <linux/unistd.h>
+.sp
+.B _syscall3(int, getdents, uint, fd, struct dirent *, dirp, uint, count);
+.sp
+.BI "int getdents(unsigned int " fd ", struct dirent *" dirp ", unsigned int " count );
+.fi
+.SH OPIS
+.B getdents
+odczytuje kolejne struktury
+.I dirent
+z katalogu wskazywanego przez
+.I fd
+do obszaru pamiêci wskazywanego przez
+.IR dirp .
+Parametr
+.I count
+jest rozmiarem obszaru pamiêci.
+.PP
+Struktura
+.I dirent
+jest zadeklarowana nastêpuj±co:
+.PP
+.RS
+.nf
+struct dirent
+{
+    long d_ino;                 /* numer i-wêz³a */
+    off_t d_off;                /* offset do nastêpnego \fIdirent\fP */
+    unsigned short d_reclen;    /* d³ugo¶æ tego \fIdirent\fP */
+    char d_name [NAZWA_MAX+1];   /* nazwa pliku (zakoñczona NUL) */
+}
+.fi
+.RE
+.PP
+.I d_ino
+jest numerem i-wêz³a.
+.I d_off
+jest odleg³o¶ci± od pocz±tku katalogu do pocz±tku nastêpnej struktury
+.IR dirent .
+.I d_reclen
+jest wielko¶ci± tej ca³ej struktury
+.IR dirent .
+.I d_name
+jest nazw± pliku zakoñczon± znakiem NUL.
+.PP
+Ta funkcja zastêpuje 
+.BR readdir (2).
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu zwracana jest ilo¶æ odczytanych bajtów.
+Na koñcu katalogu zwracane jest 0.
+Przy b³êdzie zwracane jest \-1 i odpowiednio ustawiane
+.IR errno .
+.SH "B£ÊDY"
+.TP
+.B EBADF
+Nieprawid³owy deskryptor pliku
+.IR fd .
+.TP
+.B EFAULT
+Argument wskazuje poza przestrzeñ adresow± wywo³uj±cego procesu.
+.TP
+.B EINVAL
+Bufor wynikowy jest za ma³y.
+.TP
+.B ENOENT
+Nie ma takiego katalogu.
+.TP
+.B ENOTDIR
+Deskryptor pliku nie odnosi siê do katalogu.
+.SH "ZGODNE Z"
+SVr4, SVID.  SVr4 dokumentuje dodatkowe b³êdy ENOLINK, EIO.
+.SH "ZOBACZ TAK¯E"
+.BR readdir (2),
+.BR readdir (3)

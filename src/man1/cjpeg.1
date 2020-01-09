@@ -1,0 +1,302 @@
+.\" {PTM/LK/0.1/03-10-1998/"konwersja plików graficznych do formatu JPEG"}
+.\" T³umaczenie: 05-10-1998 £ukasz Kowalczyk (lukow@tempac.okwf.fuw.edu.pl)
+.TH cjpeg 1 "20 marca 1998"
+.SH NAZWA
+cjpeg \- konwersja plików graficznych do formatu JPEG
+.SH SK£ADNIA
+.B cjpeg
+[
+.I opcje
+]
+[
+.I plik
+]
+.LP
+.SH OPIS
+.LP
+.B cjpeg
+dokonuje kompresji podanego pliku (b±d¼ danych ze standardowego wej¶cia,
+je¿eli nie podano nazwy pliku) i zapisuje na standardowym wyj¶ciu plik w
+formacie JPEG/JFIF. Bie¿±ca wersja programu obs³uguje nastêpuj±ce standardy
+wej¶ciowych plików graficznych: PPM (format PBMPLUS color), 
+PGM (format PBMPLUS w skali szaro¶ci), BMP, Targa, and RLE (format Utah Raster
+Toolkit).  (RLE tylko w wypadku, gdy zainstalowana jest biblioteka URT).
+.SH OPCJE
+Wszystkie nazwy opcji mog± byæ skracane, np.
+.B \-grayscale
+mo¿e byæ zapisana jako
+.B \-gray
+lub
+.BR \-gr .
+Wiêkszo¶æ "podstawowych" opcji mo¿e byæ skrócona nawet do jednej litery.
+Wielkie i ma³e litery w nazwach opcji nie s± rozró¿niane (np.
+.B \-BMP
+jest równowa¿ne z
+.BR \-bmp ).
+Akceptowana jest te¿ brytyjska pisownia niektórych opcji (np.
+.BR \-greyscale ),
+choæ nie jest ona poni¿ej wspominana ze wzglêdu na zwiêz³o¶æ.
+.PP
+Podstawowe opcje to:
+.TP
+.BI \-quality " N"
+Skalowanie tablicy kwantyzacji dla dostrojenia jako¶ci obrazu. Jako¶æ mo¿e
+przybieraæ warto¶ci od 0 (najgorsza) do 100 (najlepsza). Warto¶ci± domy¶ln±
+jest 75. (Wiêcej informacji poni¿ej).
+.TP
+.B \-grayscale
+Tworzenie monochromatycznego pliku JPEG z kolorowego pliku wej¶ciowego. U¿yj tej
+opcji podczas kompresji plików BMP w skali szaro¶ci, poniewa¿
+.B cjpeg
+nie jest w stanie samodzielnie rozpoznaæ takiego pliku. Dziêki opcji
+.BR \-grayscale 
+otrzymasz mniejszy plik wyj¶ciowy.
+.TP
+.B \-optimize
+Zoptymalizuj parametry kodowania entropii. Bez tej opcji u¿ywane s± domy¶lne
+parametry.
+Opcja
+.B \-optimize
+powoduje wyprodukowanie mniejszego pliku JPEG, lecz 
+.B cjpeg
+dzia³a wolniej i potrzebuje znacznie wiêcej pamiêci. Jako¶æ obrazu i prêdko¶æ
+dekompresji pozostaj± bez zmian.
+.TP
+.B \-progressive
+Stwórz plik JPEG z przeplotem (patrz ni¿ej).
+.TP
+.B \-targa
+Plik wej¶ciowy jest w formacie Targa. Pliki Targa zawieraj±ce pole
+"identyfikacji" nie s± automatycznie rozpoznawane przez program
+.BR cjpeg ;
+dla takich plików trzeba u¿yæ opcji
+.B \-targa
+by 
+.B cjpeg
+traktowa³ te pliki w³a¶ciwie. Dla wiêkszo¶ci plików tego typu ta opcja nie
+bêdzie potrzebna.
+.PP
+Opcja
+.B \-quality
+pozwala na zmniejszanie rozmiaru pliku kosztem jako¶ci obrazu. Im wy¿sza
+warto¶æ parametru tej opcji, tym bardziej plik wyj¶ciowy bêdzie zbli¿ony
+jako¶ci± do pliku wej¶ciowego. Zazwyczaj powiniene¶ u¿ywaæ najmniejszej
+warto¶ci tej opcji, która jeszcze produkuje plik wizualnie nieodró¿nialny od 
+orygina³u. W tym celu warto¶æ parametru powinna zawieraæ siê pomiêdzy 50 a
+95. Domy¶lna warto¶æ 75 przewa¿nie jest zadowalaj±ca. Je¿eli przy domy¶lnym
+ustawieniu (75) jako¶æ obrazu jest niewystarczaj±ca, spróbuj zwiêkszaæ
+warto¶æ o 5 lub 10 za jednym razem, a¿ uzyskasz zadowalaj±ce rezultaty (dla
+ka¿dego pliku warto¶æ optymalna jest inna).
+.PP
+.B \-quality
+100 wygeneruje tablicê kwantyzacji sk³adaj±c± siê z samych cyfr 1,
+minimalizuj±c straty jako¶ci podczas kwantyzacji (wci±¿ jednak wystêpuje
+strata przy podpróbkowaniu (subsampling) i zaokr±glaniu (roundoff) ). To
+ustawienie nadaje siê tylko do celów eksperymentalnych. Warto¶ci powy¿ej 95
+nie s± zalecane przy normalnym u¿ytkowaniu; rozmiar skompresowanego pliku
+gwa³townie ro¶nie przy znikomym wzro¶cie jako¶ci obrazu.
+.PP
+Id±c w drug± stronê, warto¶ci poni¿ej 50 wyprodukuj± bardzo ma³y plik o bardzo
+niskiej jako¶ci. Warto¶ci oko³o 5 lub 10 mog± byæ przydatne podczas
+przygotowywania biblioteki plików graficznych. Na przyk³ad, spróbuj opcji
+.B \-quality
+2 (lub w pobli¿u), aby uzyskaæ zadziwiaj±ce efekty kubistyczne. (Notabene:
+warto¶ci poni¿ej 25 generuj± 2-bajtowe tablice kwantyzacji, które w
+standardzie JPEG s± opcjonalne.
+.B cjpeg
+wypisuje ostrze¿enie gdy podasz tak± warto¶æ jako¶ci obrazu, poniewa¿
+niektóre dekodery JPEG mog± nie byæ w stanie zdekompresowaæ takiego pliku,
+u¿yj opcji
+.B \-baseline
+aby zapewniæ kompatybilno¶æ przy tak niskich warto¶ciach jako¶ci).
+.PP
+Opcja
+.B \-progressive
+tworzy plik JPEG z przeplotem. W pliku tego typu dane s± przechowywane jako
+wiele ekranów o powiêkszaj±cej siê jako¶ci. Je¿eli plik jest transmitowany
+przez powolne ³±cze, dekoder mo¿e bardzo szybko wy¶wietlic pierwszy ekran,
+jako niskojako¶ciow± wersjê obrazu, nastêpnie podnosz±c jako¶æ podczas
+wy¶wietlania kolejnych ekranów.
+Koñcowy efekt jest identyczny ze standardowym plikiem JPEG o
+tym samym ustawieniu jako¶ci. Rozmiar pliku równie¿ jest taki sam, a czêsto
+nieco mniejszy.
+.B Uwaga:
+pliki JPEG z przeplotem nie s± jeszcze rozpoznawane przez wiele programów,
+wiêc znaczna liczba dekoderów nie bêdzie w stanie ich wy¶wietliæ.
+.PP
+Opcje dla zaawansowanych u¿ytkowników:
+.TP
+.B \-dct int
+u¿yj ca³kowitoliczbowej metody DCT (warto¶æ domy¶lna).
+.TP
+.B \-dct fast
+u¿yj szybkiej ca³kowitoliczbowej metody DCT (ni¿sza jako¶æ)
+.TP
+.B \-dct float
+u¿yj zmiennoprzecinkowej metody DCT. Jest ona odrobinê dok³adniejsza ni¿
+metoda ca³kowitoliczbowa, lecz du¿o wolniejsza, je¿eli twój komputer nie ma
+szybkiego koprocesora arytmetycznego. Rezultaty u¿ywania tej metody mog± siê
+ró¿niæ na rozmaitych komputerach, podczas gdy metoda ca³kowitoliczbowa
+powina dawaæ zawsze te same rezultaty. Szybka metoda ca³kowitoliczbowa jest
+du¿o mniej dok³adna ni¿ dwie pozosta³e.
+.TP
+.BI \-restart " N"
+Do³±cz do pliku JPEG znacznik restartu co N rzêdów MCU (lub co N bloków MCU,
+je¿eli do liczby jest do³±czona litera "B").
+.B \-restart 0
+(warto¶æ domy¶lna) oznacza brak znaczników restartu.
+.TP
+.BI \-smooth " N"
+Wyg³adzanie obrazu wej¶ciowego w celu wyeliminowania zak³óceñ wynik³ych z
+zastosowania ditheringu.
+N (od 1 do 100) opisuje poziom wyg³adzania obrazu. 0 (warto¶æ
+domy¶lna) oznacza brak wyg³adzania.
+.TP
+.BI \-maxmemory " N"
+Na³o¿enie limitu na ilo¶æ pamiêci zu¿ywanej podczas przetwarzania du¿ych
+obrazów. Warto¶æ liczona jest w tysi±cach bajtów b±d¼ w milionach bajtów,
+je¿eli do liczby do³±czona jest litera "M". Na przyk³ad:
+.B \-max 4m
+oznacza 4000000 bajtów. Je¿eli wymagana jest wiêksza ilo¶æ pamiêci, u¿yte
+zostan± pliki tymczasowe.
+.TP
+.BI \-outfile " nazwa"
+Zapisanie pliku wynikowego pod nazw± "nazwa", zamiast na standardowym wyj¶ciu.
+.TP
+.B \-verbose
+Wypisuj komunikaty diagnostyczne. Im wiêcej opcji
+.BR \-v 
+tym wiêcej informacji bêdzie wypisywanych. Podczas startu programu
+wypisywana jest równie¿ informacja o wersji.
+.TP
+.B \-debug
+To samo, co
+.BR \-verbose .
+.PP
+Opcja
+.B \-restart
+wstawia do pliku znaczniki pozwalaj±ce dekoderowi JPEG na zniwelowanie
+efektów uszkodzenia pliku np. podczas transmisji. Bez znaczników restartu
+dowolne uszkodzenie pliku spowoduje niemo¿no¶æ wy¶wietlenia pliku w ca³o¶ci.
+Gdy w pliku znajduj± siê znaczniki, pominiêta zostanie tylko czê¶æ pliku
+znajduj±ca siê pomiêdzy uszkodzeniem, a kolejnym znacznikiem. Znaczniki
+zajmuj± oczywi¶cie dodatkow± przestrzeñ w pliku. Zalecane jset u¿ywanie opcji
+.B \-restart 1
+dla plików, które maj± byæ transmitowane przez sieci o niskim poziomie
+transmisji, jak np. Usenet.
+.PP
+Opcja
+.B \-smooth
+odfiltrowuje z pliku zak³ócenia wp³ywaj±ce na jako¶æ odtworzenia drobnych
+szczegó³ów obrazu. Jest ona u¿yteczna podczas konwersji plików poddanych
+ditheringowi. Niedu¿y wpó³czynnik wyg³adzania (10 do 50) usuwa zak³ócenia
+powsta³e podczas ditheringu, dziêki czemu wynikowy plik JPEG jest mniejszy i
+ma lepsz± jako¶æ. Zbyt du¿y wspó³czynnik wyg³adzania spowoduje rozmycie
+obrazu.
+.PP
+Opcje dla magików:
+.TP
+.B \-baseline
+Generacja tabel kwantyzacji kompatybilnych z podstawowym standardem JPEG.
+Powoduje to u¿ywanie 8-bitowych warto¶ci kwantyzacji nawet przy niskim
+ustawieniu jako¶ci obrazu (opcja \-quality). Ta opcja jest dosyæ
+nieszczê¶liwie nazwana, poniewa¿ nie zawsze wymusza zgodno¶æ z podstawow±
+wersj± formatu JPEG. Na przyk³ad, mo¿esz u¿yæ
+.B \-baseline
+i
+.B \-progressive
+jednocze¶nie.)
+.TP
+.BI \-qtables " plik"
+U¿yj tablic kwantyzacji zawartych w podanym pliku.
+.TP
+.BI \-qslots " N[,...]"
+Wybierz tablice kwantyzacji u¿ywane dla ka¿dego z kolorów bazowych.
+.TP
+.BI \-sample " HxV[,...]"
+Ustaw wspó³czynnik próbkowania dla ka¿dego z kolorów bazowych.
+.TP
+.BI \-scans " plik"
+Do skanowania u¿yj skryptu (scan script) o podanej nazwie.
+.PP
+Opcje dla "magików" przeznaczone s± do eksperymentowania ze standardem JPEG.
+Je¿eli nie wiesz do czego s³u¿±, \fBnie u¿ywaj ich\fR. S± one dok³adniej
+opisane w pliku wizard.doc.
+.SH PRZYK£ADY
+.LP
+Przyk³ad konwersji pliku PPM o nazwie foo.ppm do pliku foo.jpg ze
+wspó³czynnikiem jako¶ci 60.
+.IP
+.B cjpeg \-quality
+.I 60 foo.ppm
+.B >
+.I foo.jpg
+.SH PODPOWIEDZI
+Kolorowe pliki GIF nie s± zbyt dobrze kompresowane do standardu JPEG,
+poniewa¿ standard ten s³u¿y zasadniczo do kompresji plików o 24-bitowym
+kolorze. W szczególno¶ci, nie staraj siê kompresowaæ komiksów, grafiki
+sk³adaj±cej siê g³ównie z linii oraz generalnie obrazów sk³adajacych siê
+z jedynie
+kilku ró¿nych kolorów. Do tych zastosowañ nadaje siê format GIF. Je¿eli
+jednak koniecznie chcesz skompresowaæ plik GIF do formatu JPEG, powiniene¶
+skupiæ siê na doborze warto¶ci dla opcji
+.B \-quality
+i
+.BR \-smooth .
+.B \-smooth 10
+czêsto mo¿e byæ pomocne.
+.PP
+Unikaj kilkukrotnej kompresji/dekompresji  do/z formatu JPEG, poniewa¿
+straty jako¶ci bêd± siê nawarstwiaæ. Po oko³o 10 cyklach jako¶æ obrazu
+wyra¼nie spadnie w stosunku do jako¶ci po zaledwie jednym cyklu. Podczas
+dokonywania zmian w obrazie najlepiej jest u¿ywaæ innego formatu, który
+u¿ywa bezstratnej kompresji.
+.PP
+Opcji
+.B \-optimize
+warto u¿ywaæ podczas tworzenia "ostatecznej" wersji do celów archiwizacji
+lub publikacji (elektronicznej). Dobrym rozwi±zaniem jest te¿ u¿ywanie niskiego wpó³czynnika
+jako¶ci (\-quality) do tworzenia bardzo ma³ych plików JPEG; kompresja daje
+wtedy znacznie lepsze rezultaty ni¿ dla du¿ych plików. (Tryb
+.B \-optimize
+jest zawsze u¿ywany podczas tworzenia plików JPEG z przeplotem).
+.SH ¦RODOWISKO
+.TP
+.B JPEGMEM
+Warto¶æ tej zmiennej stanowi limit pamiêci. Sposób okre¶lania warto¶ci jest
+opisany przy opcji
+.BR \-maxmemory .
+Je¿eli
+.B JPEGMEM
+istnieje, jej warto¶æ ma wy¿szy priorytet ni¿ warto¶æ ustalona podczas
+kompilacji. Z kolei jeszcze wy¿szy priorytet ma opcja
+.BR \-maxmemory .
+.SH ZOBACZ TAK¯E
+.BR djpeg (1),
+.BR jpegtran (1),
+.BR rdjpgcom (1),
+.BR wrjpgcom (1)
+.br
+.BR ppm (5),
+.BR pgm (5)
+.br
+Wallace, Gregory K.  "The JPEG Still Picture Compression Standard",
+Communications of the ACM, April 1991 (vol. 34, no. 4), pp. 30-44.
+.SH AUTOR
+Independent JPEG Group
+.SH PROBLEMY
+Kodowanie arytmetyczne nie jest obs³ugiwane z przyczyn prawnych.
+.PP
+Pliki wej¶ciowe w formacie GIF nie s± ju¿ obs³ugiwane, aby nie naruszaæ
+patentu Unisys LZW. Do odczytywania plików GIF u¿yj programu
+licencjonowanego przez Unisys (mimo wszystko, konwersja plików GIF do
+formatu JPEG nie jest zalecana).
+.PP
+Nie s± obs³ugiwane wszystkie wersje plików BMP i Targa.
+.PP
+Opcja
+.B \-targa
+to nie b³±d, jest ona bardzo pomocna. (By³aby b³êdem, gdyby twórcy formatu
+Targa lepiej go przemy¶leli).
+.PP
+Program wci±¿ nie jest tak szybki, jak by¶my chcieli.

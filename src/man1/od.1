@@ -1,0 +1,293 @@
+.\" {PTM/GSN/0.5/23-02-1999/"zrzuæ pliki w formacie ósemkowym i innych"}
+.\" poszerzenie i aktualizacja do GNU textutils 2.0 PTM/WK/2000-IV
+.ig
+Transl.note: based on GNU man page od.1 and textutils.info
+ 
+Copyright 1994, 95, 96, 1999 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+..
+.TH OD "1" FSF "sierpieñ 1999" "Narzêdzia tekstowe GNU 2.0"
+.SH NAZWA
+od \- zrzuæ pliki w formacie ósemkowym i innych
+.SH SK£ADNIA
+.TP 4
+.B od
+.RB [ \-abcdfhiloxv ]
+.RB [ \-s [\fIbajty\fP]]
+.RB [ \-w [\fIbajty\fP]]
+.RB [ \-A
+.IR podstawa ]
+.br
+.RB [ \-j
+.IR bajty ]
+.RB [ \-N
+.IR bajty ]
+.RB [ \-t
+.IR typ ]
+.RB [ \-\-skip\-bytes= \fIbajty\fP]
+.br
+.RB [ \-\-address\-radix= \fIpodstawa\fP]
+.RB [ \-\-read\-bytes= \fIbajty\fP]
+.br
+.RB [ \-\-output\-duplicates ]
+.RB [ \-\-strings [ = \fIbajty\fP]]
+.br
+.RB [ \-\-format= \fItyp\fP]
+.RB [ \-\-width [ = \fIbajty\fP]]
+.RB [ \-\-traditional ]
+.br
+.RB [ \-\-help ]
+.RB [ \-\-version ]
+.RI [ plik ...]
+.SH OPIS
+Dokumentacja niniejsza nie jest ju¿ utrzymywana i mo¿e byæ niedok³adna
+lub niekompletna.  Autorytatywnym ¼ród³em jest obecnie dokumentacja
+Texinfo.  Dostêp do niej uzyskasz wpisuj±c w wierszu poleceñ:
+.RS
+.B pinfo od
+.RE
+lub
+.RS
+.BR "info od" .
+.RE
+.PP
+Ta strona podrêcznika opisuje polecenie \fBod\fP w wersji GNU.
+.PP
+.B od
+wypisuje na standardowe wyj¶cie zawarto¶æ podanych plików, lub standardowego
+wej¶cia je¶li podano nazwê '\-'.  Ka¿da linia wynikowa sk³ada siê
+z offsetu w pliku wej¶ciowym oraz grup danych z pliku.  Domy¶lnie,
+.B od
+wypisuje offsety pliku ósemkowo, za¶ ka¿da grupa danych jest dwoma bajtami
+wej¶cia wypisanymi jako jedna liczba ósemkowa.
+.SH OPCJE
+.TP
+.BR \-A ", " \-\-address\-radix= \fIpodstawa
+Wybiera system liczbowy, w którym wypisywane bêd± offsety w pliku.
+.I podstawa
+mo¿e byæ jedn± z poni¿szych:
+.RS
+.IP \fBd
+dziesiêtna
+.IP \fBo
+ósemkowa
+.IP \fBx
+szesnastkowa
+.IP \fBn
+¿adna (nie wypisuje offsetów)
+.RE
+.sp
+Warto¶æ domy¶lna to podstawa ósemkowa.
+.TP
+.BR \-j ", " \-\-skip\-bytes= \fIbajty
+Pomija
+.I bajty
+bajtów wej¶cia zanim rozpocznie formatowanie i pisanie.  Je¶li
+.I bajty
+zaczyna siê od '0x' lub '0X', interpretowane jest szesnastkowo; w przeciwnym
+razie, je¶li zaczyna siê od '0', ósemkowo; w przeciwnym razie, dziesiêtnie.
+Dopisanie po liczbie litery '\fBb\fP' mno¿y podan± liczbê przez 512,
+\fB'k\fP' przez 1024, a '\fBm\fP' przez 1048576.
+.TP
+.BR \-N ", " \-\-read\-bytes= \fIbajty
+Wypisuje co najwy¿ej
+.I bajty
+bajtów ka¿dego pliku wej¶ciowego.  Wszystkie przedrostki i przyrostki do
+.I bajty
+interpretowane s± jak przy opcji
+.BR \-j .
+.TP
+.BR \-t ", " \-\-format= \fItyp
+Wybiera format, w jakim bêdzie nastêpowaæ wypisywanie danych z pliku.
+.I typ
+to ³añcuch jednego lub wiêcej z poni¿szych znaków wskazuj±cych typ.
+Je¶li w pojedynczym ³añcuchu
+.I typu
+poda siê wiêcej ni¿ jeden znak lub u¿yje siê tej opcji wiêcej ni¿ raz, to
+.B od
+zapisze po jednej kopii ka¿dej linii wyj¶cia u¿ywaj±c ka¿dego z podanych
+typów danych, w podanej kolejno¶ci.
+Dodanie koñcz±cego "\fBz\fP" do dowolnego okre¶lnika typu powoduje do³±czenie
+znakowej reprezentacji ASCII znaków drukowalnych do linii wynikowej tworzonej
+przez ten typ.
+.RS
+.IP \fBa
+znaki nazwane
+.IP \fBc
+znaki ascii lub sekwencje specjalne (z odwrotnym uko¶nikiem)
+.IP \fBd
+liczba dziesiêtna ze znakiem
+.IP \fBf
+liczba zmiennoprzecinkowa
+.IP \fBo
+ósemkowo
+.IP \fBu
+liczba dziesiêtna bez znaku
+.IP \fBx
+szesnastkowo
+.RE
+Typ 'a' daje w wyniku np. 'sp' dla spacji, 'nl' dla znaku nowej linii,
+a 'nul' dla bajtu zerowego (null). Typ 'c' daje odpowiednio ' ', '\n' i '\0'.
+.PP
+Za wyj±tkiem typów 'a' i 'c', mo¿na okre¶liæ ilo¶æ bajtów, które bêd± u¿yte
+przy interpretacji ka¿dej liczby w podanym typie danych, dopisuj±c
+po znaku okre¶lnika typu dziesiêtn± liczbê ca³kowit±.  Zamiast tego,
+mo¿na te¿ podaæ rozmiar jednego z wbudowanych typów danych kompilatora
+C dopisuj±c po znaku okre¶lnika typu jeden z nastêpuj±cych znaków: dla
+liczb ca³kowitych (d, o, u, x):
+.RS
+.IP \fBC
+char
+.IP \fBS
+short
+.IP \fBI
+int
+.IP \fBL
+long
+.RE
+.sp
+Dla liczb zmiennoprzecinkowych (f):
+.RS
+.IP \fBF
+float
+.IP \fBD
+double
+.IP \fBL
+long double
+.RE
+.TP
+.BR \-v ", " \-\-output\-duplicates
+Wypisuje kolejne linie, które s± identyczne.  Domy¶lnie, gdy dwie lub wiêcej
+kolejnych linii jest takich samych,
+.B od
+wypisuje tylko pierwsz± liniê i stawia gwiazdkê w linii nastêpnej
+zaznaczaj±c, ¿e identyczne linie zosta³y opuszczone.
+.TP
+.BR \-s ", " \-\-strings [ = \fIbajty\fP]
+Zamiast normalnego wyniku, wypisuje tylko sta³e ³añcuchowe z wej¶cia.
+Powinny byæ one ci±giem co najmniej
+.I bajty
+znaków graficznych (lub formatuj±cych) ASCII, zakoñczonych znakiem NUL.
+Je¶li
+.I bajty
+pominiêto, warto¶ci± domy¶ln± jest 3.
+.TP
+.BR \-w ", " \-\-width [ = \fIbajty\fP]
+Liczba bajtów wej¶cia do sformatowania w jednej linii wynikowej.  Musi byæ
+to wielokrotno¶æ najmniejszej wspólnej wielokrotno¶ci rozmiarów skojarzonych
+z podanymi typami wyj¶cia.  Je¶li
+.I bajty
+pominiêto, warto¶ci± domy¶ln± jest 32.  Je¶li nie w ogóle podano tej opcji,
+warto¶ci± domy¶ln± jest 16.
+.TP
+.B "\-\-help"
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach, koñczy pracê.
+.TP
+.B "\-\-version"
+Wy¶wietla numer wersji programu i koñczy pracê.
+.PP
+Nastêpne kilka opcji odwzorowuje stare, przed-POSIX-owe opcje okre¶laj±ce
+format na odpowiednie POSIX-owe specyfikacje formatu.  GNU
+.B od
+akceptuje ka¿d± kombinacjê opcji w starym i nowym stylu.  Opcje
+okre¶laj±ce format sumuj± siê.
+.TP
+.B "\-a"
+Wypisuje jako znaki nazwane.  Równowa¿ne
+.BR "\-t a" .
+.TP
+.B "\-b"
+Wypisuje jako bajty ósemkowe.  Równowa¿ne
+.BR "\-t oC" .
+.TP
+.B "\-c"
+Wypisuje jako znaki ASCII albo sekwencje specjalne z odwrotnym uko¶nikiem.
+Równowa¿ne
+.BR "\-t c" .
+.TP
+.B "\-d"
+Wypisuje jako liczby ca³kowite typu short bez znaku.  Równowa¿ne
+.BR "\-t u2" .
+.TP
+.B "\-f"
+Wypisuje jako liczby dziesiêtne.  Równowa¿ne
+.BR "\-t fF" .
+.TP
+.B "\-h"
+Wypisuje jako liczby szesnastkowe typu short.  Równowa¿ne
+.BR "\-t x2" .
+.TP
+.B "\-i"
+Wypisuje jako liczby ca³kowite typu short.  Równowa¿ne
+.BR "\-t d2" .
+.TP
+.B "\-l"
+Wypisuje jako liczby ca³kowite typu long.  Równowa¿ne
+.BR "\-t d4" .
+.TP
+.B "\-o"
+Wypisuje jako liczby ósemkowe typu short.  Równowa¿ne
+.BR "\-t o2" .
+.TP
+.B "\-x"
+Wypisuje jako liczby szesnastkowe typu short.  Równowa¿ne
+.BR "\-t x2" .
+.TP
+.B "\-\-traditional"
+Rozpoznaje przed-POSIXowe argumenty nie bêd±ce opcjami, akceptowane przez
+niektóre starsze wersje
+.BR od .
+Poni¿sza sk³adnia
+.nf
+
+od \-\-traditional [plik] [[+]offset[.][b]
+   [[+]etykieta[.][b]]]
+
+.fi
+mo¿e byæ u¿ywana do okre¶lenia co najwy¿ej jednego pliku i opcjonalnych
+argumentów okre¶laj±cych offset i adres pseudo-startowy
+.IR "etykieta" .
+Domy¶lnie
+.IR "offset"
+interpretowany jest jako liczba ósemkowa okre¶laj±ca ile bajtów wej¶cia
+nale¿y przeskoczyæ przed formatowaniem i wypisywaniem.  Opcjonalna
+koñcowa kropka dziesiêtna wymusza interpretacjê
+.IR "offset"
+jako liczby dziesiêtnej.
+Je¶li nie podano kropki, a offset zaczyna siê od '0x' lub '0X', interpretowany
+jest on jako liczba szesnastkowa.  Je¶li znajduje siê tam dodatkowe 'b',
+liczba przeskoczonych bajtów bêdzie równa
+.IR "offset"
+pomno¿ony przez 512.
+Argument
+.IR "etykieta"
+interpretowany jest tak jak offset, ale okre¶la on pocz±tkowy pseudo-adres.
+Pseudo-adresy wypisywane s± w nawiasach po ka¿dym normalnym adresie.
+.SH "ZG£ASZANIE B£ÊDÓW"
+B³êdy proszê zg³aszaæ, w jêz. ang., do <bug-textutils@gnu.org>.
+.SH COPYRIGHT
+Copyright \(co 1999 Free Software Foundation, Inc.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH ZOBACZ TAK¯E
+.BR cat (1),
+.BR tac (1),
+.BR nl (1),
+.BR textutils (1).
+.SH OD T£UMACZA
+Zaktualizowano i poszerzono wg dokumentacji Texinfo dla narzêdzi tekstowych
+GNU wersji 2.0.

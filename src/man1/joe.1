@@ -1,0 +1,806 @@
+.\" {PTM/WK/0.1/25-07-1999/"w³asny edytor Joe'go"}
+.TH JOE 1
+.SH NAZWA
+joe - "w³asny edytor Joe'go" (Joe's Own Editor)
+.SH SK£ADNIA
+.BR joe " [" opcje_globalne "] [ [" opcje_lokalne ]
+.IR nazwapliku " ]..."
+
+.BR jstar " [" opcje_globalne "] [ [" opcje_lokalne ]
+.IR nazwapliku " ]..."
+
+.BR jmacs " [" opcje_globalne "] [ [" opcje_lokalne ]
+.IR nazwapliku " ]..."
+
+.BR rjoe " [" opcje_globalne "] [ [" opcje_lokalne ]
+.IR nazwapliku " ]..."
+
+.BR jpico " [" opcje_globalne "] [ [" opcje_lokalne ]
+.IR nazwapliku " ]..."
+.SH OPIS
+JOE jest pe³noekranowym edytorem ASCII maj±cym du¿e mo¿liwo¶ci.
+Brak trybów pracy interfejsu (w przeciwieñstwie do np. \fBvi\fR) powoduje,
+¿e bardziej przypomina przyjazne edytory PC. U¿ytkownicy WordStara czy
+¶rodowisk "turbo" firmy Borland poczuj± siê jak w domu. JOE jest w pe³ni
+funkcjonalnym ekranowym edytorem unixowym i posiada wiele funkcji edycji
+programów i tekstu.
+.PP
+JOE emuluje równie¿ kilka innych edytorów. JSTAR jest do¶æ wiern± imitacj±
+WordStara z wieloma rozszerzeniami JOE. JPICO jest blisk± imitacj± edytora
+PICO z systemu pocztowego Pine. JMACS jest imitacj± GNU-EMACSa. RJOE jest
+okrojon± wersj± JOE, umo¿liwiaj±c± edycjê tylko tych plików, które zosta³y
+podane w linii poleceñ.
+.PP
+Mimo, i¿ JOE jest faktycznie piêcioma ró¿nymi edytorami, to nadal wymaga
+tylko jednego pliku wykonywalnego, jedynie z piêcioma ró¿nymi nazwami.
+Nazwa edytora z dodanym \fIrc\fR stanowi nazwê pliku inicjuj±cego JOE'go;
+decyduje on zachowaniu siê edytora.
+.PP
+JOE jest darmowym oprogramowaniem: mo¿esz go rozpowszechniaæ i/lub zmieniaæ
+na warunkach licencji GNU General Public License opublikowanej przez Free
+Software Foundation. Nie planujê przekszta³cenia JOE w produkt komercyjny
+czy shareware'owy. JOE jest dostêpny przez Internet za po¶rednictwem
+anonimowego FTP z \fBftp.std.com\fR, plik: \fIsrc/editors/joe*.tar.Z\fR.
+.SH U¯YCIE
+Uruchomienie edytora nastêpuje przez wpisanie \fBjoe\fR oraz zera lub wiêcej
+nazw plików, jakie chcesz edytowaæ. Ka¿da z nazw pliku mo¿e byæ poprzedzona
+ustawieniem opcji lokalnej (patrz tablica opcji lokalnych, ni¿ej). W linii
+poleceñ mog± byæ te¿ umieszczone inne opcje, globalne, odnosz±ce siê do ca³ego
+edytora (patrz poni¿ej tablica opcji globalnych). Je¶li edytujesz nowy plik,
+to mo¿esz nadaæ mu nazwê albo przy wywo³aniu edytora albo w edytorze,
+w momencie zapisu pliku. Dostêpna jest zmodyfikowana sk³adnia nazw plików,
+tak by umo¿liwiæ ci edycjê wyników programów, standardowego wej¶cia/wyj¶cia
+czy czê¶ci plików lub urz±dzeñ. Szczegó³y znajdziesz dalej, w sekcji
+\fBNazwy plików\fR.
+.PP
+Po uruchomieniu edytora mo¿esz wpisywaæ tekst lub pos³ugiwaæ siê specjalnymi
+sekwencjami znaków sterujacych, by wykonaæ inne zadania edycyjne. Opis
+sekwencji steruj±cych znajduje siê w dalszej czê¶ci niniejszej dokumentacji.
+Mo¿esz te¿ u¿yæ kombinacji klawiszy \fB^K H\fR, przywo³uj±cej pomoc w edytorze.
+.PP
+Teraz trochê wyja¶nieñ mêtnych nauk komputerowych:
+.\" Now for some obscure computer-lore:
+.PP
+Zapis \fB^\fR oznacza, ¿e przytrzymujesz klawisz \fBControl\fR w trakcie
+naciskania nastêpnego klawisza (w ten sam sposób dzia³a \fBShift\fR przy
+uzyskiwaniu du¿ych liter). Wiele sekwencji steruj±cych powielonych jest
+przez inne klawisze, zatem nie zawsze musisz naciskaæ klawisz Control:
+\fBESC\fR bêdzie dzia³aæ jak \fB^[\fR, \fBDel\fR zadzia³a zamiast \fB^?\fR,
+\fBBackspace\fR zamiast \fB^H\fR, \fBTab\fR zamiast \fB^I\fR,
+\fBReturn\fR lub \fBEnter\fR dzia³aj± jak \fB^M\fR, za¶
+\fBLinefeed\fR dzia³a tak jak \fB^J\fR.
+Niektóre klawiatury mog± sprawiæ k³opoty z pewnymi klawiszami steruj±cymi.
+\fB^_\fR, \fB^^\fR oraz \fB^@\fR zwykle mog± byæ wprowadzone bez naci¶niêcia
+shift (spróbuj \fB^-\fR, \fB^6\fR i \fB^2\fR).
+Inne klawiatury mog± przypisywaæ je do innych klawiszy. Wypróbuj:
+\fB^.\fR, \fB^,\fR i \fB^/\fR. Zwykle zamiast \fB^@\fR mo¿esz u¿yæ
+\fB^SPACE\fR.
+\fB^\\\fR i \fB^]\fR interpretowane s± przez wiele programów komunikacyjnych,
+w³±czaj±c w to telnet i kermit. Zwykle po prostu naciskasz klawisz dwukrotnie,
+by przeszed³ przez program komunikacyjny.
+.\" to pass through the communication program.
+.PP
+Po wpisaniu \fB^K H\fR na górze ekranu pojawi siê okno pierwszej pomocy.
+Mo¿esz nadal wprowadzaæ i edytowaæ tekst przy w³±czonym oknie pomocy.
+Zmianê stron z kolejnymi tematami pomocy uzyskasz naciskaj±c ^[ i ^[
+(to jest ESC i ESC). Wygaszenie okna z pomoc± uzyskasz kombinacj± \fB^K H\fR.
+.PP
+Mo¿esz dostosowaæ uk³ad klawiatury, ekrany pomocy i wiele domy¶lnych
+sposobów zachowywania siê edytora kopiuj±c plik inicjuj±cy JOE'go
+(zwykle \fIusr/local/lib/joerc\fR) jako \fI.joerc\fR do swego katalogu
+domowego i zmieniaj±c go. Patrz sekcja \fBjoerc\fR poni¿ej.
+.PP
+Je¶li chcesz by JOE by³ u¿ywany jako twój domy¶lny edytor dla e-mail i News,
+powiniene¶ ustawiæ zmienne ¶rodowiska \fBEDITOR\fR oraz \fBVISUAL\fR
+w pliku inicjuj±cym swojej pow³oki (\fI.cshrc\fR lub \fI.profile\fR),
+tak by wskazywa³y na JOE'go (zwykle znajduje siê on
+w \fI/usr/local/bin/joe\fR).
+.PP
+.\" There are a number of other obscure invocation parameters
+Istnieje wiele innych nieoczywistych parametrów wywo³ania, jakie byæ mo¿e musz±
+byæ ustawione, szczególnie, gdy ekran twojego terminala nie jest od¶wie¿any
+tak, jakby¶ tego oczekiwa³.
+Patrz sekcja \fBZmienne ¶rodowiska\fR.
+.SH OPCJE LINII POLECEÑ
+W linii poleceñ mo¿na podaæ nastêpuj±ce opcje globalne:
+.TP
+.B -asis
+Znaki o kodach powy¿ej 127 bêd± wysy³ane do terminala bez zmian, zamiast
+zastêpowania ich negatywami odpowiednich znaków o kodach poni¿ej 128.
+Je¶li nie dzia³a, to sprawd¼ serwer terminala.
+.br
+[od t³um: opcja niezbêdna do prawid³owej obs³ugi polskich znaków]
+.TP
+.BI -backpath " ¶cie¿ka"
+Po podaniu tej opcji, pliki kopii zapasowych bêd± zapisywane w zadanym
+katalogu zamiast w pierwotnych katalogach ka¿dego z plików.
+.TP
+.BI -baud " nnn"
+Ustawia prêdko¶æ transmisji (baud rate) dla celów optymalizacji ekranu
+terminala.
+Joe wstawia opó¼nienia dla prêdko¶ci ni¿szych od 19200, które omijaj±
+buforowanie terminala, tak ¿e znaki pisane z wyprzedzeniem mieszaj± siê
+z wyj¶ciem ekranu. Polecenia przewijania nie bêd± u¿ywane dla 38400 bitów/s.
+Przydatne dla X-terminali oraz innych terminali konsoli, które nie s±
+naprawdê po³±czone przez ³±cze szeregowe.
+.TP
+.B -beep
+Joe bêdzie sygnalizowa³ d¼wiêkiem b³êdy poleceñ i przekroczenie przez
+kursor granic tekstu.
+.\" Joe will beep on command errors and when the cursor goes past extremes.
+.TP
+.BI -columns " nnn"
+Ustala liczbê kolumn ekranu.
+.TP
+.B -csmode
+Tryb kontynuacji wyszukiwania: wyszukiwanie nastêpuj±ce bezpo¶rednio po
+innym bêdzie powtarzaæ poprzednie zamiast pro¶by o nowy ³añcuch znakowy
+do wyszukania. Przydatne dla poleceñ ^[S i ^[R oraz gdy joe próbuje
+udawaæ emacsa.
+.TP
+.B -dopadding
+Joe zwykle zak³ada, ¿e pomiêdzy nim a temirnalem istnieje jaki¶ rodzaj
+sterowania przep³ywem danych. Je¶li tak nie jest, opcja ta spowoduje,
+¿e joe bêdzie wysy³a³ dodatkowe ^@ do terminala, jak podano we wpisie
+do termcap.
+Dodatkowe ^@ pozwalaj± terminalowi nadgoniæ po d³ugich poleceniach tty.
+.\" will make joe output extra ^@s to the tty as specified by the termcap
+.\" entry.  The extra ^@s allow the terminal to catch up after long terminal
+.\" commands.
+.TP
+.B -exask
+Powoduje weryfikacjê przez ^KX nazwy pliku, jaki ma zostaæ zapisany.
+.TP
+.B -force
+Ta opcja upewnia siê, ¿e ostatnia linia tekstu zakoñczona jest znakiem
+line-feed (koniec linii).
+.TP
+.B -help
+Po podaniu tej opcji edytor uruchomi siê z ekranem pomocy.
+.TP
+.B -keepup
+Normalnie numer kolumny tekstu oraz pola przedrostka klawisza steruj±cego
+w liniach statusu wy¶wietlane s± z jednosekundowym opó¼nieniem, by
+zredukowaæ obci±¿enie procesora. Opcja ta powoduje, ¿e s± one aktualizowane
+po ka¿dym naci¶niêciu klawisza.
+.TP
+.B -lightoff
+U¿ycie tej opcji powoduje wy³±czanie pod¶wietlenia bloku tekstu po dowolnym
+poleceniu dzia³aj±cym na bloku.
+.TP
+.BI -lines " nnn"
+Ustala liczbê linii ekranu.
+.TP
+.B -marking
+Pod¶wietlany jest tekst pomiêdzy ^KB a kursorem (u¿yj z opcj± -lightoff
+i zmienionym plikiem joerc by uzyskaæ wybieranie bloku metod± ci±gniêcia).
+(drop-anchor style block selection).
+.TP
+.B -mid
+Przy w³±czeniu tej opcji je¶li kursor przesuwa siê poza okno, to okno jest
+przewijane, tak by kursor by³ po¶rodku. Opcja ta jest wymuszana na powolnych
+terminalach, które nie posiadaj± poleceñ przewijania (scrolling).
+.TP
+.B -nobackups
+Ocja ta wy³±cza tworzenie plików kopii zapasowych.
+.TP
+.B -nonotice
+Wy³±cza wy¶wietlanie informacji o prawach autorskich podczas uruchamiania
+edytora.
+.TP
+.B -nosta
+Wy³±cza górn± liniê statusu. Mi³e, je¶li chcesz widzieæ na ekranie
+tylko swój tekst lub u¿ywasz vt52.
+.TP
+.B -noxon
+Próbuje wy³±czyæ przetwarzanie ^S/^Q. Przydatne, gdy joe próbuje byæ 
+WordStarem lub emacsem.
+.TP
+.B -orphan
+Je¿eli w³±czona jest ta opcja, to dodatkowe pliki z linii poleceñ bêd±
+umieszczone w nieprzypisanych buforach (orphaned buffers), zamiast
+w dodatkowych oknach. Przydatne, gdy joe próbuje byæ emacsem.
+.TP
+.BI -pg " nnn"
+Podaje liczbê linii pozostawianych po u¿yciu PgUp/PgDn (^U/^V). U¿ycie
+warto¶ci -1 oznacza po³owê okna.
+.TP
+.BI -skiptop " nnn"
+Nie u¿ywaj nnn górnych linii ekranu. Przydatna, gdy joe u¿ywany jest jako
+edytor BBS.
+.PP
+Ka¿da z powy¿szych opcji mo¿e tak¿e zostaæ u¿yta w pliku joerc. Ponadto,
+opcje NOXON, BAUD, LINES, COLUMNS i DOPADDING mog± zostaæ ustawione jako
+zmienne ¶rodowiska.
+.PP
+Do ustalenia typu swego terminala mo¿esz ustawiæ zmienn± ¶rodowiska JOETERM,
+zas³aniaj±c± typow± zmienn± TERM.
+.PP
+Przed ka¿d± nazw± pliku mo¿na u¿yæ poni¿szych opcji:
+.TP
+.BI + nnn
+Kursor na starcie ustawia siê w zadanej linii.
+.TP
+.B -crlf
+Joe u¿ywa CR-LF jako sekwencji koñcz±cej liniê zamiast tylko LF. Do edycji
+plików MS-DOS lub VMS.
+.TP
+.B -wordwrap
+Joe przenosi poprzedni wyraz, je¶li piszesz poza prawym marginesem.
+.TP
+.B -autoindent
+Je¿eli naci¶niesz Return w linii z wciêciem, to wciêcie jest powtarzane
+w nowej linii.
+.TP
+.B -overwrite
+Pisanie nadpisuje istniej±ce znaki zamiast wstawiania przed nimi.
+.TP
+.BI -lmargin " nnn"
+Ustawia lewy margines.
+.TP
+.BI -rmargin " nnn"
+Ustawia prawy margines.
+.TP
+.BI -tab " nnn"
+Ustawia szeroko¶æ tabulacji.
+.TP
+.BI -indentc " nnn"
+Ustawia znak wciêcia (indent) dla ^K, i ^K. (32 dla SPACE, 9 dla TAB).
+.TP
+.BI -istep " nnn"
+Ustawia krok wciêcia dla ^K, i ^K..
+.TP
+.B -linums
+Przed ka¿d± lini± wy¶wietlany jest numer linii.
+.TP
+.B -rdonly
+Plik jest tylko do odczytu.
+.TP
+.BI -keymap " nazwa"
+U¿yj innej sekcji pliku joerc do przypisañ sekwencji klawiszy.
+.\" Use an alternate section of the joerc file for the key sequence bindings.
+.PP
+Opcje te mog± byæ tak¿e podane w pliku joerc. Mog± byæ ustawione w zale¿no¶ci
+od rozszerzenia pliku. Programy (rozszerzenia .c, .h lub .p) maj± zwykle
+w³±czone automatyczne wciêcia (autoindent). Dla innych plików w³±czone jest
+przenoszenie wyrazów (wordwrap), ale pliki rc maj± je wy³±czone.
+.SH ZADANIA EDYCJI
+.SS Prosta edycja
+Kiedy wpisujesz znaki w edytorze, s± one zwykle wstawiane do edytowanego
+pliku (lub do³±czane do pliku, je¶li kursor jest na koñcu pliku). Jest to
+normalny tryb pracy edytora. Je¿eli chcesz zast±piæ fragment istniej±cego
+tekstu, musisz usun±æ stary tekst przed lub po wpisaniu tekstu go
+zastêpuj±cego. Do usuwania tekstu mo¿na u¿yæ klawisza \fBbackspace\fR:
+przesuñ kursor w prawo, za tekst, który chcesz usun±æ i naciskaj
+\fBbackspace\fR a¿ do uzyskania po¿±danego efektu.
+.PP
+Naci¶nij klawisz \fBEnter\fR lub \fBReturn\fR by wstawiæ z³amanie linii.
+Na przyk³ad, je¶li kursor by³ po¶rodku linii i nacisn±³e¶ \fBReturn\fR,
+to wówczas linia zostanie podzielona na dwa linie, a kursor pojawi siê
+na pocz±tku drugiej linii.
+Naci¶nij \fBbackspace\fR na pocz±tku linii aby zlikwidowaæ podzia³ linii.
+.PP
+Do przemieszczania siê wewn±trz pliku u¿yj klawiszy strza³ek. Je¿eli twoja
+klawiatura nie ma klawiszy strza³ek (lub z jakiego¶ powodu nie dzia³aj±),
+u¿yj \fB^F\fR do przesuniêcia naprzód (w prawo), oraz \fB^N\fR, by przesun±æ
+siê do nastêpnego linii (w dó³). Klawisze strza³ek w prawo i w lewo po prostu
+przesuwaj± w tek¶cie do przodu i do ty³u o jeden znak: je¶li jeste¶ na pocz±tku
+linii i naci¶niesz strza³kê w lewo, przesuniesz siê na koniec poprzedniej
+linii. Strza³ki w górê i w dó³ przesuwaj± w przód i wstecz o liczbê znaków
+niezbêdn±, by kursor pojawi³ siê w tej samej kolumnie, w której by³
+w linii pocz±tkowej.
+.PP
+Je¿eli chcesz utworzyæ wciêcie we wprowadzanym tek¶cie, mo¿esz pos³u¿yæ siê
+klawiszem \fRTAB\fR. Wstawia on specjalny znak steruj±cy, który powoduje, ¿e
+nastêpuj±ce po nim znaki rozpoczynaj± siê od nastêpnej pozycji tabulacji
+(tab stop). Pozycje tabulacji normalnie rozmieszczone s± co 8 kolumn, ale
+mo¿na to zmieniæ przy pomocy polecenia \fB^T D\fR. Programuj±cy w Pascalu
+czy C czêsto ustawiaj± pozycje tabulacji co 4 kolumny.
+.PP
+Je¿eli z jakiego¶ powodu zobaczysz ba³agan na ekranie swojego terminala
+(na przyk³ad, gdy otrzymasz powiadomienie o poczcie z biff), mo¿esz nakazaæ
+edytorowi od¶wie¿enie ekranu naciskaj±c \fB^R\fR.
+.PP
+Istnieje jeszcze wiele innych klawiszy s³u¿±cych do usuwania tekstu
+i nawigacji w obrêbie pliku. Na przyk³ad, naci¶niêcie \fB^D\fR usuwa znak,
+na którym stoi kursor zamiast usuwania wstecz jak czyni to \fBbackspace\fR.
+\fB^D\fR usunie równie¿ znak podzia³u linii, je¶li kursor znajduje siê
+na koñcu linii. Naci¶nij \fB^Y\fR by usun±æ ca³± liniê, w której znajduje
+siê kursor lub \fB^J\fR by usun±æ tekst od kursora do koñca linii.
+.PP
+Naci¶niêcie \fB^A\fR przesuwa kursor na pocz±tek linii, w której siê on
+znajduje. Podobnie \fB^E\fR przemieszcza kursor na koniec linii. Klawisze
+\fB^U\fR i \fB^V\fR przewijaj± kursor odpowiednio w górê i w dó³ o po³owê
+wysoko¶ci ekranu. "Przewijanie" oznacza, ¿e przesuwa siê tekst na ekranie,
+lecz kursor pozostaje w tym samym miejscu na ekranie. Mo¿esz przesun±æ kursor
+na pocz±tek lub na koniec pliku naciskaj±c \fB^K U\fR lub \fB^K V\fR.
+Przegl±daj±c ekrany pomocy edytora zapoznasz siê z wieloma innymi poleceniami
+kasowania i przemieszczania.
+.PP
+W przypadku pope³nienia pomy³ki mo¿esz nacisn±æ \fB^_\fR by j± wycofaæ (undo).
+Na wiêkszo¶ci klawiatur wystarczy nacisn±æ \fB^-\fR by uzyskaæ \fB^_\fR, ale
+na niektórych byæ mo¿e bêdziesz musia³ przytrzymaæ równocze¶nie klawisze
+\fBShift\fR i \fBControl\fR by uzyskaæ prawid³owy efekt.
+Je¿eli wycofasz zbyt du¿o zmian, mo¿esz je przywróciæ (redo) do stanu
+przed cofniêciem - naci¶nij \fB^^\fR (wystarczy \fB^6\fR na wiêkszo¶ci
+klawiatur).
+.PP
+Jesli prowadzisz edycjê w jednym miejscu pliku, a chcia³by¶ na chwilê
+ogl±dn±æ lub poprawiæ inne miejsce pliku, mo¿esz powróciæ do poprzedniego
+miejsca naciskaj±c \fB^K -\fR. Polecenie to faktycznie cofa ciê do ostatniego
+miejsca, w którym dokona³e¶ zmian w pliku. Mo¿esz chodziæ po historii miejsc
+przy pomocy \fB^K -\fR i \fB^K =\fR w ten sam sposób, w jaki przemieszczasz
+siê przez historiê zmian poleceniami "wycofaj" i "przywróæ".
+.PP
+Po zakoñczeniu edycji pliku naci¶nij \fB^K X\fR, by opu¶ciæ edytor. Je¿eli
+jeszcze nie nazwa³e¶ edytowanego pliku zostaniesz zapytany o nazwê.
+.PP
+Podczas edycji pliku pracujesz faktycznie na kopii pliku. Tak wiêc, je¿eli
+zdecydujesz, ¿e nie chcesz zmian przeprowadzonych w danej sesji edycji, mo¿esz
+nacisn±æ \fB^C\fR. Opu¶cisz wówczas edytor bez zapisywania zmian.
+.PP
+Je¿eli edytujesz plik i zachowasz zmiany, w bie¿±cym katalogu zostanie
+utworzona jego kopia zapasowa. Zawiera ona pierwotn± wersjê pliku i ma
+nazwê orygina³u zakoñczon± przyrostkiem \fB~\fR.
+.SS Przenoszenie wyrazów i formatowanie
+Je¶li w pliku z kodem Pascala lub C piszesz poza praw± krawêdzi± ekranu, to
+ekran przewinie siê w prawo, pod±¿aj±c za kursorem. Je¿eli piszesz poza
+praw± krawêdzi± ekranu w zwyk³ym pliku (którego nazwa nie koñczy siê na
+.c, .h czy .p), JOE automatycznie przeniesie ostatni wyraz do nastêpnej linii,
+tak ¿e nie musisz naciskaæ \fBReturn\fR. Nazywa siê to trybem przenoszenia
+(zawijania) wyrazów (word-wrap mode). Przenoszenie wyrazów mo¿na w³±czaæ
+i wy³±czaæ poleceniem \fB^T W\fR. Plik inicjuj±cy JOE'go jest zwykle
+skonfigurowany tak, ¿e tryb ten jest automatycznie w³±czany dla wszystkich
+plików nie bêd±cych programami. Poni¿ej, w sekcji opisuj±cej \fBjoerc\fR
+dowiesz siê, jak zmieniaæ tê i inne akcje domy¶lne.
+.PP
+Poza trybem przenoszenia wyrazów JOE nie formatuje automatycznie akapitów
+jak niektóre procesory tekstu. Natomiast, je¿eli chcesz zreformatowaæ
+akapit, naci¶nij \fB^K J\fR. Polecenie to "wype³nia" akapit, w którym
+znajduje siê kursor, umieszczaj±c tyle wyrazów w linii, ile to jest mo¿liwe.
+Akapit, w tym przypadku, jest blokiem tekstu oddzielonym powy¿ej i poni¿ej
+pust± lini±. 
+.PP
+Marginesy, u¿ywane przez JOE'go do formatowania akapitów i przenoszenia
+wyrazów mog± byæ ustawione poleceniami \fB^T L\fR i \fB^T R\fR. Je¿eli lewy
+margines ustawiony jest na warto¶æ ró¿n± od 1, to gdy rozpoczniesz pisanie
+na pocz±tku linii, kursor natychmiast przeskoczy do lewego marginesu.
+.PP
+Mo¿esz wycentrowaæ liniê pomiêdzy marginesami u¿ywaj±c polecenia \fB^K A\fR.
+.SS Tryb nadpisywania
+Konieczno¶æ usuwania starego tekstu przed lub po wstawianiu nowego bywa
+mêcz±ca. Zdarza siê to, na przyk³ad, je¶li zmieniasz tabelê i chcesz
+zachowaæ pozycjê kolumny po prawej stronie tabeli. W tym przypadku mo¿esz
+przestawiæ edytor w tryb nadpisywania przy pomocy \fB^T T\fR.
+Gdy edytor pracuje w tym trybie, wpisywane przez ciebie znaki zastêpuj±
+istniej±cy tekst jak zrobi³aby to idealna maszyna do pisania.
+.\" +in the way an idealized typewriter would.
+Równie¿ \fBbackspace\fR po prostu przesuwa w lewo zamiast usuwania znaku
+po lewej, je¿eli nie jest na koñcu lub na pocz±tku linii. Nadpisywanie
+nie jest naturalnym sposobem pracy elektronicznej z tekstem, powiniene¶ wiêc
+mo¿liwie szybko powróciæ do trybu wstawiania naciskaj±c powtórnie \fB^T T\fR.  
+.PP
+Je¿eli potrzebujesz wstawienia w trybie nadpisywania, naci¶nij \fB^@\fR.
+Polecenie to wstawia pojedynczy odstêp (SPACE) do tekstu.
+.SS Znaki steruj±ce Ctrl i metaznaki
+Ka¿dy znak reprezentowany jest przez numer. Na przyk³ad, `A' ma numer 65,
+za¶ `1' ma numer 49. Wszystkie znaki, które zwykle widzisz, maj± numery
+od 32 do 126 [t³um.:nie dotyczy to specyficznych polskich znaków].
+To szczególne, arbitralne przypisanie znaków do numerów nazywane jest
+zestawem znaków ASCII. Liczby poza tym zakresem, od 0 do 255, nie s± zwykle
+wy¶wietlane, lecz czasami maj± inne, specjalne znaczenie. Liczba 10,
+na przyk³ad, u¿ywana jest do zmiany (³amania) linii. Mo¿esz wprowadzaæ takie
+specjalne, nie wy¶wietlane \fBznaki steruj±ce Ctrl\fR (control characters)
+naciskaj±c najpierw \fB`\fR a nastêpnie znak z zakresu
+\fB@ A B C ... X Y Z [ ^ ] \e _\fR, by uzyskaæ znaki o numerach  0 - 31
+oraz \fB?\fR by uzyskaæ znak 127. Na przyk³ad, je¿eli naci¶niesz
+\fB` J\fR, wstawisz znak koñca linii; wci¶niêcie \fB` I\fR wstawia znak TAB
+(który robi to samo, co klawisz TAB). Przydatnym znakiem steruj±cym jest
+znak numer 12 (\fB` L\fR), który w wiêkszo¶ci drukarek powoduje wysuw
+do pocz±tku strony. Zauwa¿ysz, ¿e JOE wy¶wietla go jako podkre¶lone L.
+Mo¿esz te¿ wprowadzaæ znaki o numerach (kodach) powy¿ej 127,
+\fBmetaznaki\fR (meta characters), naciskaj±c najpierw \fB^\e\fR.
+Dodaje to 128 do nastêpnego wprowadzonego znaku (prawdopodobnie steruj±cego).
+JOE wy¶wietla zaki o kodach powy¿ej 128 w negatywie (inwersji). Niektóre
+jêzyki, posuiadaj±ce wiêcej liter ni¿ jêzyk angielski, u¿ywaj± metaznaków
+dla pozosta³ych, brakuj±cych liter alfabetu. Musisz prze³±czyæ edytor w tryb
+\fBASIS\fR (dos³."tak jak jest"), opisany dalej, by znaki te nie podlega³y
+t³umaczeniu przy przesy³aniu do terminala.
+.SS Zapytania edytora
+Je¶li naci¶niesz \fBTAB\fR w dowolnym zapytaniu o nazwê pliku, to joe
+spróbuje, je¶li to mo¿liwe, uzupe³niæ wprowadzon± przez ciebie nazwê.
+Je¿eli nie mo¿e uzupe³niæ ca³ej nazwy, gdy¿ istnieje wiêcej ni¿ jedna
+mo¿liwo¶æ uzupe³nienia, zasygnalizuje to d¼wiêkiem. Po ponownym naci¶niêciu
+\fBTAB\fR, joe wy¶wietli listê pasuj±cych nazw. Mo¿esz u¿yæ klawiszy strza³ek
+do nawigacji po menu katalogu i nacisn±æ RETURN lub SPACE, by wybraæ pozycjê.
+Je¿eli naci¶niesz piersz± literê jednej z pozycji katalogu, zostanie ona
+wybrana. Je¶li wiêcej ni¿ jedna pozycja zaczyna siê t± liter±, to kursor
+bêdzie przemieszcza³ siê pomiêdzy nimi. Wybór podkatalogu lub \fI..\fR
+powoduje, ¿e nazwa katalogu zostanie dodana do nazwy pliku a do menu zostanie
+za³adowany nowy katalog. Mo¿esz nacisn±æ \fBbackspace\fR, by powróciæ
+do poprzedniego katalogu.
+.PP
+Wiêkszo¶æ zapytañ pamiêta odpowiedzi, jakich im udzieli³e¶. Mo¿esz u¿yæ
+strza³ek w górê i w dó³, by korzystaæ z list historii odpowiedzi.
+.PP
+Zapytania s± faktycznie prostymi jednolinijkowymi oknami bez linii statusu.
+Mo¿esz wiêc u¿yæ w nich dowolnego z poleceñ, jakich normalnie u¿ywasz przy
+pracy z tekstem. Historia zapytania jest naprawdê po prostu innymi liniami
+tego samego "pliku zapytania". Zatem, je¶li chcesz, mo¿esz w niej u¿yæ
+wyszukiwania przy pomocy polecenia \fB^K F\fR.
+.PP
+Poniewa¿ polecenia s± oknami, mo¿esz tak¿e prze³±czaæ siê z nich sekwencjami
+\fB^K P\fR i \fB^K N\fR.
+.SS Gdzie jestem?
+Naci¶nij \fB^K SPACE\fR, by JOE poda³ ci w ostatniej linii ekranu numer linii,
+kolumny i numer kolejny bajtu. Mo¿esz na sta³e w³±czyæ wy¶wietlanie numeru
+linii i/lub kolumny w linii statusu umieszczaj±c odpowiednie sekwencje escape
+w ³añcuchach znakowych ustalaj±cych liniê statusu. Szczegó³y znajdziesz
+w pliku \fIjoerc\fR.
+Pokazana jest równie¿ liczba skojarzona ze znakiem, na którym stoi kursor
+(jego kod ASCII).
+.SS Operacje na plikach
+Polecenie \fB^K D\fR zapisuje bie¿±cy plik (niekoniecznie pod nazw±, pod jak±
+by³ pierwotnie wywo³any). Po zapisie pliku mo¿esz nacisn±æ \fB^K E\fR
+i edytowaæ inny plik.
+.PP
+Je¿eli chcesz zachowaæ jedynie wybrany fragment pliku, przeczytaj ni¿ej
+sekcjê na temat \fBbloków\fR.
+.PP
+Mo¿esz w³±czyæ zawarto¶æ innego piku do pliku aktualnie edytowanego,
+naciskaj±c \fB^K R\fR.
+.SS Chwilowe wstrzymanie pracy z edytorem
+Je¿eli potrzebujesz chwilowo opu¶ciæ edytor i wróciæ do pow³oki, naci¶nij
+\fB^K Z\fR. Mo¿esz w ten sposób wstrzymaæ pracê, by odpowiedzieæ na wiadomo¶æ
+e-mail czy, na przyk³ad, poczytaæ tê stronê podrêcznika. W celu powrotu
+do edytora bêdziesz musia³ wpisaæ \fBfg\fR albo \fBexit\fR (dowiesz siê,
+które z nich, po naci¶niêciu \fB^K Z\fR).
+.SS Wyszukiwanie tekstu
+Naci¶niêcie \fB^K F\fR powoduje, ¿e edytor bêdzie szuka³ w przód lub wstecz
+fragmentu tekstu (\fB³añcucha znaków\fR - string). Zostaniesz zapytany o tekst
+do wyszukania. Po naci¶niêciu \fBReturn\fR, otrzymasz kolejne pytanie, o opcje.
+Mo¿esz po prostu powtórnie nacisn±æ \fBReturn\fR - edytor natychmiast poszuka
+tekstu w pozosta³ej czê¶ci pliku (wyszukiwanie  do przodu). Mo¿esz równie¿
+wybraæ jedn± z poni¿sych opcji:
+.TP
+.B b
+Wyszukaj wstecz zamiast w przód.
+.TP
+.B i
+Podczas wyszukiwania traktuj du¿e i ma³e litery jak takie same. Normalnie
+du¿e litery i ma³e litery uwa¿ane s± za ró¿ne.
+.TP
+.I nnn
+(gdzie \fBnnn\fR jest liczb±) Je¶li wprowadzisz liczbê, JOE szuka N-tego
+wyst±pienia tekstu. Jest to przydatne do przechodzenia do szczególnych
+miejsc pliku maj±cego jak±¶ regularn± strukturê.
+.TP
+.B r
+Zast±p tekst. Po wprowadzeniu opcji \fBr\fR zostaniesz zapytany o tekst
+zastêpuj±cy. Ka¿dorazowo, gdy edytor znajdzie szukany tekst, bêdziesz pytany,
+czy chcesz zast±piæ znaleziony tekst tekstem zastêpuj±cym. Naciskasz: \fBy\fR
+by zast±piæ tekst i wyszukaæ nastêpne wyst±pienie, \fBn\fR by nie zastêpowaæ
+tekstu, ale szukaæ kolejnego wyst±pienia, \fBr\fR by zast±piæ wszystkie
+pozosta³e wyst±pienia tekstu w pozosta³ej czê¶ci pliku bez pytania
+o potwierdzenie (z zastrze¿eniem opcji \fInnn\fR, omówionej powy¿ej), albo
+\fB^C\fR by zatrzymaæ wyszukiwanie i zastêpowanie.
+.PP
+Polecenie \fB^L\fR powtarza poprzednie wyszukiwanie.
+.SS Wyra¿enia regularne
+Jako tekst szukany mog± byæ wprowadzone specjalne sekwencje znaków:
+.TP
+.B \e*
+Znajduje zero lub wiêcej znaków. Na przyk³ad, je¿eli jako tekst szukany podasz
+\fBA\e*B\fR, JOE spróbuje znale¼æ A, po którym nastêpuje dowolna liczba znaków,
+a nastêpnie B.
+.TP
+.B \e?
+Znajduje dok³adnie jeden znak. Na przyk³ad, je¶li jako tekst do wyszukania
+podasz \fBA\e?B\fR, to JOE znajdxie AXB, ale nie AB czy AXXB.
+.TP
+.B \e^\ \e$
+Oznaczaj± odpowiednio pocz±tek i koniec linii. Na przyk³ad, podanie
+\fB\e^test\e$\fR spowoduje wyszukanie linii zawieraj±cej wy³±cznie \fBtest\fR.
+.TP
+.B \e<\ \e>
+Oznaczaj±c poczatek i koniec wyrazu. Na przyk³ad, podanie
+\fB\e<\e*kot\e*\e>\fR powoduje wyszukiwanie ca³ych s³ów, w których znajduje siê
+podci±g (fragment) \fBkot\fR (np. kot, kotwica, stukot).
+.TP
+.B \e[...]
+Dopasowuje dowolny pojedynczy znak spo¶ród wymienionych w nawiasach
+kwadratowych. Na przyk³ad, je¿eli jako tekst do wyszukania podano
+\fB\e[Cc]o¶\fR, to JOE odnajduje zarówno \fBCo¶\fR jak i \fBco¶\fR. Wewn±trz
+nawiasów kwadratowych mo¿na u¿yæ zakresu znaków. Na przyk³ad, \fB\e[A-Z]\fR
+znajduje dowoln± du¿± literê ³aciñsk±. Je¶li pierwszym znakiem wewn±trz
+nawiasów jest \fB^\fR, to JOE szuka dowolnego znaku ró¿nego od podanych
+w nawiasach.
+.TP
+.B \ec
+Dzia³a jak \fB\e*\fR, ale dopasowuje ca³e wyra¿enie jêzyka C.
+.\" a balanced C-language expression.
+Na przyk³ad, je¿eli szukasz \fBmalloc(\ec)\fR, to JOE odnajdzie wszystkie
+wywo³ania funkcji \fBmalloc\fR, nawet je¶li wewn±trz nawiasów jest
+inny \fB)\fR.
+.\" function calls to \fBmalloc\fR, even if there was a \fB)\fR within the
+.\" parenthesis.
+.TP 
+.B \e+
+Znajduje zero lub wiêcej znaków nastêpuj±cych bezpo¶rednio po \fB\e+\fR.
+Na przyk³ad, po podaniu \fB\e[ ]\e+\e[ ]\fR, gdzie znakami wewn±trz nawiasów
+s± zarówno SPACE jak i TAB, JOE odnajdzie bia³e znaki.
+.TP
+.B \e\e
+Oznacza pojedyncze \e.
+.TP
+.B \en
+Znajduje znak specjalny koñca linii lub zmiany linii.
+.PP
+Wiele specjalnych sekwencji znaków mo¿e byæ równie¿ u¿ytych w tek¶cie
+zastêpuj±cym:
+.TP
+.B \e&
+Ta sekwencja zastêpowana jest przez tekst dopasowany w szukanym ³añcuchu
+znaków. Na przyk³ad, je¿eli szukano ³añcucha \fB\e<\e*\e>\fR, który
+dopasowuje s³owa, za¶ jako ³añcuch zastêpuj±cy podano \fB"\e&"\fR, to JOE
+umie¶ci znaki cudzys³owu wokó³ wyrazów.
+.TP
+.B \e0\ - \e9
+Zastêpuj± tekst dopasowany przez N-te wyst±pienie \fB\e*\fR, \fB\e?\fR,
+\fB\e+\fR, \fB\ec\fR, \fB\e+\fR lub \fB\e[...]\fR w szukanym ³añcuchu.
+.TP
+.fB \e\e
+U¿yj tej sekwencji, je¶li potrzebujesz \fB\e\fR w ³añcuchu zastêpuj±cym.
+.TP
+.B \en  
+U¿yj tej sekwencji, je¶li potrzebujesz zmiany linii w ³añcuchu zastêpuj±cym.
+.PP
+Kilka przyk³adów:
+.PP
+Za³ó¿my, ¿e masz listê adresów, ka¿dy w osobnej linii. Linie zaczynaj± siê
+od "Adres:" a ka¿dy element adresu jest oddzielony przecinkiem. Jak to:
+.PP
+Adres: S. Holmes, 221b Baker St., London, England
+.PP
+Je¿eli chcia³by¶ zmieniæ uk³ad listy, tak by na pocz±tku by³ kraj, potem
+miasto, nazwisko osoby a na koñcu adres, mo¿esz zrobiæ to tak:
+.PP
+Wpisz \fB^K F\fR by rozpocz±æ szukanie. Nastêpnie wprowad¼ ³añcuch
+do wyszukania:
+.PP
+\fBAdres:\e*,\e*,\e*,\e*\e$\fR 
+.PP
+by dopasowaæ "Adres:", cztery elementy rozdzielone przecinkami oraz koniec
+linii. Przy zapytaniu o opcje, wybierz \fBr\fR, gdyz chcemy zastêpowaæ
+wyszukany ³añcuch. Potem podaj ³añcuch zastêpuj±cy:
+.PP
+\fBAdres:\e3,\e2,\e0,\e1\fR
+.PP
+co powinno przetasowaæ informacjê w wymagany przez ciebie sposób.
+Po naci¶niêciu return rozpocznie siê wyszukiwanie, a przyk³adowa linia
+zostanie zmieniona na:
+.PP
+Adres: England, London, S. Holmes, 221b Baker St.
+.SS Bloki tekstu
+Chc±c przesuwaæ, powielaæ, zapisywaæ czy usuwaæ zadane fragmenty tekstu
+mo¿esz pos³u¿yæ siê pod¶wietlanymi blokami. Najpierw przesuñ kursor
+na pocz±tek fragmentu tekstu, z którym chcesz pracowaæ i naci¶nij \fB^K B\fR.
+Nastêpnie przesuñ kursor na znak zaraz za koñcem interesuj±cego ciê tekstu
+i naci¶nij \fB^K K\fR. Tekst pomiêdzy \fB^K B\fR i \fB^K K\fR powinien
+siê pod¶wietliæ. Mo¿esz teraz przemie¶ciæ kursor w jakie¶ inne miejsce
+dokumentu i nacisn±æ \fB^K C\fR by wstawiæ kopiê pod¶wietlonego tekstu
+w miejsce wskazane kursorem. \fB^K Y\fR usuwa pod¶wietlony tekst.
+\fB^K W\fR zapisuje pod¶wietlony tekst do pliku.  
+.PP
+Bardzo przydatnym poleceniem jest \fB^K /\fR, które filtruje blok tekstu
+przy pomocy polecenia unixowego. Na przyk³ad, je¿eli przez \fB^K B\fR
+i \fB^K K\fR wybierzesz listê wyrazów, a nastêpnie wpiszesz  \fB^K / sort\fR,
+to lista ta zostanie posortowana. Innym u¿ytecznym poleceniem unixowym
+zastosowanym na blokach tekstu jest \fBtr\fR. Je¶li wpiszesz
+\fB^K / tr a-z A-Z\fR, to wszystkie litery alfabetu ³aciñskiego u¿yte
+w pod¶wietlonym tek¶cie zostn± zamienione na du¿e.
+.PP
+Po zakoñczeniu pracy z blokiem tekstu mo¿esz, je¶li ci to nie przeszkadza,
+pozostawiæ pod¶wietlenie (oczywi¶cie, je¿eli przypadkowo naci¶niesz
+\fB^K Y\fR i nie zauwa¿ysz...). Jednak, je¿eli naprawdê ci to przeszkadza,
+po prostu naci¶nij \fB^K B ^K K\fR, co wy³±czy pod¶wietlenie (pusty blok).
+.SS Wciêcia bloków tekstu programu
+Tryb automatycznych wciêæ prze³±czany poleceniem \fB^T I\fR.
+Plik \fIjoerc\fR jest zwykle skonfigurowany tak, ¿e pliki o nazwach
+koñcz±cych siê na .p, .c lub .h maj± w³±czony tryb automatycznych wciêæ.
+W takim trybie po naci¶niêciu \fBReturn\fR kursor zostanie umieszczony
+w tej samej kolumnie, w której znajdowa³ siê pierwszy ró¿ny od SPACE/TAB znak
+pierwotnej linii.
+.PP
+Do przesuwania bloku tekstu w lewo lub w prawo mo¿esz u¿yæ poleceñ
+\fB^K ,\fR i \fB^K .\fR. Je¿eli w czasie ich wydawania ¿aden tekst nie jest
+pod¶wietlony, to zostanie wybrany i przesuniêty przez kolejne polecenia
+blok programu, w obrêbie którego znajduje siê kursor.
+Liczba kolumn, o ile przesuwaj± tekst te polecenia, mo¿e byæ ustawiona
+opcj± \fB^T\fR.
+.SS Okna
+Mo¿esz prowadziæ jednoczesn± edycjê wielu plików lub wielu ró¿nych miejsc
+w tym samym pliku. Aby to zrobiæ naci¶nij \fB^K O\fR, co podzieli ekran
+na dwa okna. Polecenia \fB^K P\fR i \fB^K N\fR przesuwaj± kursor odpowiednio
+do górnego i dolnego okna. \fB^K E\fR rozpoczyna edycjê nowego pliku w jednym
+z okien. Okno znika po zapisaniu pliku przez \fB^K X\fR lub porzuceniu edycji
+poleceniem \fB^C\fR. Je¶li porzucasz edycjê pliku otwartego w dwu oknach,
+to znika tylko jedno z okien; nie oznacza to ca³kowitego zaniechania pracy
+z plikiem.
+.PP
+Mo¿esz nacisn±æ \fB^K O\fR w oknie, by utworzyæ wiêcej okien. Je¿eli
+na ekranie masz zbyt wiele okien, ale nie chcesz ich usuwaæ, naci¶nij 
+\fB^K I\fR. Spowoduje to pokazanie tylko okna, w którym znajduje siê kursor,
+lub, je¶li na ekranie by³o tylko jedno okno, próbê umieszczenia na ekranie
+wszystkich ukrytych okien. Je¿eli okien ukrytych jest wiêcej, ni¿ mo¿na
+pomie¶ciæ na ekranie, mo¿esz u¿yæ \fB^K N\fR w najni¿szym z nich lub
+\fB^K P\fR na najwy¿szym, by siê do nich dostaæ.
+.PP
+Je¿eli przy wywo³aniu JOE'go podano wiêcej ni¿ jedn± nazwê pliku, to ka¿dy
+plik zostanie umieszczony w osobnym oknie.
+.PP
+Mo¿esz zmieniaæ wysoko¶æ okien przy pomocy poleceñ \fB^K G\fR i \fB^K T\fR.
+.SS Makra klawiaturowe 
+Makra pozwalaj± na zapisanie szeregu naci¶niêæ klawiszy i odtworzenie ich
+za naci¶niêciem dwu klawiszy. Przydaje siê to do automatyzacji powtarzalnych
+zadañ. W celu rozpoczêcia rejestracji makra naci¶nij \fB^K [\fR oraz cyfrê
+od 0 do 9. W linii statusu zostanie wy¶wietlone (Macro n recording...).
+Teraz u¿yj serii klawiszy, któr± chcia³by¶ móc powtarzaæ. Polecenia, które
+wprowadzisz bêd± mieæ zwyk³e znaczenie. Naci¶niêcie \fB^K ]\fR zatrzymuje
+rejestracjê makra. Mo¿esz teraz nacisn±æ \fB^K\fR zakoñczone numerem, pod
+jakim zapisa³e¶ makro, co powinno jednokrotnie wykonaæ sekwencjê
+zarejestrowanych naci¶niêæ.
+.PP
+Na przyk³ad, je¶li chcesz wstawiæ "**" na pocz±tku pewnej liczby linii,
+mo¿esz wpisaæ:
+.PP
+\fB^K [ ^A ** \fR<strza³ka w dó³> \fB^K ]\fR
+.PP
+Rozpoczyna to proces rejestrowania makra, przesuwa kursor na pocz±tek linii,
+wstawia "**", przesuwa kursor w dó³ o jedn± liniê i koñczy rejestracjê makra.
+Poniewa¿ zawarli¶my w nim naci¶niêcia klawiszy niezbêdne do ustawienia kursora
+w nastêpnej linii, mo¿emy powtarzaæ u¿ycie tego makra bez potrzeby
+w³asnorêcznego przesuwania kursora. Warto o tym pamiêtaæ rejestruj±c makra.
+.PP
+Je¿eli zauwa¿ysz, ¿e makro, które rejestrujesz posiada ju¿ samo w sobie
+powtarzaj±c± siê sekwencjê klawiszy, to mo¿esz zapisaæ jedno makro wewn±trz
+innego, u¿ywaj±c oczywi¶cie innego numeru makra. Mo¿esz równie¿ wykonywaæ
+poprzednio zarejestrowane makra wewn±trz nowych makr.
+.SS Powtarzanie
+Mo¿esz u¿yæ polecenia powtarzania, \fB^K \e\fR, by powtórzyæ zadan± ilo¶æ razy
+makro lub jakiekolwiek inne polecenie czy nawet zwyk³y znak. Naci¶nij
+\fB^K \e\fR, wpisz ile razy chcesz by zosta³o powtórzone polecenie i naci¶nij
+\fBReturn\fR. Nastêpne u¿yte polecenie edycji zostanie powtórzone zadan±
+liczbê razy.
+.PP
+Na przyk³ad, by usun±æ 20 linii tekstu, wpisz:
+.PP
+\fB^K \\ 20\fR<return>\fB^Y\fR
+.SS Tryb bloków prostok±tnych
+Po u¿yciu \fB^T X\fR, sekwencje \fB^K B\fR i \fB^K K\fR bêd± zaznaczaæ
+prostok±tne bloki tekstu zamiast bloków ci±g³ego tekstu (stream-of-text).
+Tryb ten przydaje siê do przesuwania, kopiowania, usuwania czy zapisu kolumn
+tekstu. Mo¿esz te¿ filtrowaæ kolumny tekstu przy pomocy polecenia \fB^K /\fR,
+je¶li chcesz, na przyk³ad, posortowaæ kolumnê. Tryb ten wp³ywa równie¿
+na polecenie wstawiania pliku, \fB^K R\fR.
+Gdy wybrany jest tryb pracy z blokami prostok±tnymi, przydaje siê równie¿
+tryb nadpisywania tekstu (\fB^T T\fR). Po wybraniu trybu nadpisywania
+prostok±ty nie bêd± wstawiane przed istniej±cy tekst - zamiast tego bêd±
+go zastêpowaæ. Równie¿ polecenie usuniêcia bloku (\fB^K Y\fR) wyczy¶ci wybrany
+obszar spacjami i tabulatorami zamiast usuwania go. Tryb zastêpowania jest
+szczególnie u¿yteczny w poleceniu filtrowania bloku (\fB^K /\fR), gdy¿
+zachowuje pierwotn± szeroko¶æ wybranej kolumny.
+.SS Wyszukiwanie znaczników (tags)
+Je¿eli tworzysz du¿y program w jêzyku C z wieloma plikami ¼ród³owymi, mo¿esz
+u¿yæ programu \fBctags\fR do utworzenia pliku \fBtags\fR. Plik ten
+zawiera listê symboli programu oraz plików i miejsc, gdzie symbole s±
+definiowane.
+Mo¿esz pos³u¿yæ siê poleceniem \fB^K ;\fR wyszukuj±cym symbol (funkcje,
+sta³e symboliczne itd.), wczytuj±cym plik, w którym jest on zdefiniowany,
+do bie¿±cego okna i ustawiaj±cym kursor w miejscu, gdzie zdefiniowano symbol.
+\fB^K ;\fR pyta o po¿±dany symbol, ale domy¶lnie u¿ywa symbolu, na którym
+stoi kursor. Poniewa¿ \fB^K ;\fR wczytuje plik z definicj± do bie¿±cego okna,
+zapewne zechcesz uprzednio podzieliæ okna sekwencj± \fB^K O\fR, by mieæ
+wczytany do edytora zarówno pierwotny plik jak i plik z definicj±.
+.SS Okna pow³oki
+Naci¶niêcie \fB^K '\fR uruchamia pow³okê poleceñ w jednym z okien JOE'go.
+Gdy kursor jest na koñcu okna pow³oki (naci¶nij \fB^K V\fR, je¶li nie jest),
+cokolwiek wpiszesz przesy³ane jest do pow³oki zamiast okna. Wyniki zwracane
+przez pow³okê lub polecenia wykonywane w pow³oce do³±czane s± na koniec okna
+pow³oki. Kursor bêdzie przemieszcza³ siê za nimi, je¶li by³ na koñcu okna.
+Polecenie to przydaje siê do zapisywania wyników poleceñ pow³oki
+- na przyk³ad wyj¶cia polecenia \fBmake\fR, rezultatu wyszukiwania przez
+\fBgrep\fR ci±gu znaków w plikach czy listy katalogów z sesji \fBFTP\fR.
+Oprócz mo¿liwych do wpisania znaków (typeable characters), przesy³ane s±
+do pow³oki klawisze ^C, Backspace, DEL, Return i ^D. Wpisz polecenie pow³oki
+\fBexit\fR, by zatrzymaæ zapisywanie wyników z pow³oki. Je¿eli naci¶niesz
+\fB^C\fR w oknie pow³oki, gdy kursor nie znajduje siê na koñcu okna,
+proces pow³oki zostanie zabity.
+.\" the shell is \fBkill\fRed.
+.SH ZMIENNE ¦RODOWISKA 
+Poprawna praca JOE'go wymaga w³a¶ciwego ustawienia wielu innych zmiennych
+¶rodowiska. Powinna byæ prawid³owo ustawiona prêdko¶æ transmisji dla po³±czenia
+miêdzy komputerem a twoim terminalem; tylko wtedy JOE bêdzie g³adko
+aktualizowa³ ekran i umo¿liwi wpisywanie znaków z wyprzedzeniem opó¼niaj±c
+od¶wie¿anie ekranu.
+.\" to update the screen smoothly and allow typeahead to defer the screen update. 
+Ustaw prêdko¶æ poleceniem \fBstty \fInnn\fR. Powinna zostaæ ustawiona na
+warto¶æ najbli¿sz± faktycznej prêdko¶ci po³±czenia. Na przyk³ad, je¿eli
+jeste¶ po³±czony za po¶rednictwem modemu 1200 bodów, to tej w³a¶nie warto¶ci
+powiniene¶ u¿yæ jako parametru \fBstty\fR. Je¿eli jeste¶ po³±czony modemem
+14.4k, ale "terminal server", z którym jeste¶ po³±czony ³±czy siê z komputerem
+z 9600 bodów, to powiniene¶ ustawiæ prêdko¶æ na 9600. Specjalna prêdko¶æ
+38400 lub \fBextb\fR wskazuje, ¿e u¿ywasz bardzo szybkiego po³±czenia, jak
+na przyk³ad konsoli maj±cej bezpo¶rednie odwzorowanie w pamiêci (memory
+mapped console) lub pseudoterminala X-window (X-window terminal emulator).
+Je¿eli nie mo¿esz u¿yæ polecenia \fBstty\fR do ustawienia rzeczywistej
+przepustowo¶ci,
+.\" (byæ mo¿e gdy¿ modemu ³±czy siê z komputerem z inn± prêdko¶ci±
+.\" ni¿ ³±czy siê on za po¶rednictwem linii telefonicznej)
+.\" (perhaps because of a modem communicating with the computer at a 
+.\" different rate than it's communicating over the phone line)
+mo¿esz zamiast tego nadaæ warto¶æ numeryczn± zmiennej ¶rodowiska \fBBAUD\fR
+(\fBsetenv BAUD 9600\fR dla pow³oki csh lub \fBBAUD=9600; export BAUD\fR
+dla sh).
+.PP
+Zmienna ¶rodowiska \fBTERM\fR musi byæ ustawiona na typ terminala, z którego
+korzystasz. Je¿eli rozmiar (liczba linii/kolumn) twojego terminala ró¿ni siê
+od wskazanej we wpisie w TERMCAP czy TERMINFO, mo¿esz go ustawiæ przy pomocy
+polecenia \fBstty rows \fInn\fB cols \fInn\fR albo ustawiaj±c zmienne
+¶rodowiska \fBLINES\fR i \fBCOLUMNS\fR.
+.PP
+Zwykle JOE spodziewa siê, ¿e sterowanie przep³ywem danych (flow control)
+pomiêdzy komputerem a twoim terminalem u¿ywa programowych potwierdzeñ ^S/^Q
+(tzn. je¶li komputer wysy³a do terminala znaki zbyt szybko, to terminal
+przesy³a ^S, by zasygnalizowaæ ¿±danie wstrzymania nadawania kolejnych danych,
+za¶ ^Q, by wznowiæ nadawanie). Je¿eli sterowanie przep³ywem danych u¿ywa
+potwierdzenia sprzêtowego (hardware handshaking) lub "out-of-hand" albo
+terminal jest dostatecznie szybki by zawsze nad±¿aæ za danymi nadawanymi
+z komputera, mo¿esz przypisaæ sekwencje ^S i ^Q do poleceñ edycyjnych JOE'go.
+W tym celu powiniene¶ ustawiæ zmienn± ¶rodowiska \fBNOXON\fR, by JOE móg³
+wy³±czyæ potwierdzanie przez ^S/^Q. Je¶li po³±czenie miêdzy komputerem
+a twoim terminalem nie u¿ywa potwierdzeñ, za¶ terminal nie jest do¶æ szybki
+by poprawnie odbieraæ wszystkie nadsy³ane dane, to mo¿esz ustawiæ zmienn±
+¶rodowiska \fBDOPADDING\fR, co spowoduje, ¿e \fBJOE\fR spowolni wysy³anie
+przeplataj±c znakami wype³niaj±cymi (PAD) sekwencje aktualniania
+ekranu terminala.
+.\" JOE slow down the output by interspersing PAD characters between
+.\" the terminal screen update sequences.
+.SH NAZWY PLIKÓW
+Wszêdzie, gdzie JOE oczekuje wprowadzenia nazwy pliku, zarówno w linii poleceñ
+jak i w zapytaniach edytora, mo¿esz równie¿ wpisaæ:
+.TP
+.BI ! polecenie
+Odczyt lub zapis danych do lub z polecenia pow³oki. Na przyk³ad, u¿yj
+\fBjoe '!ls'\fR, by otrzymaæ kopiê listingu katalogu gotow± do edycji, albo
+wewn±trz edytora u¿yj \fB^K D !mail jhallen@world.std.com\fR, aby wys³aæ
+do autora JOE'go edytowany plik.
+.TP
+.BI >> nazwapliku
+Nakazuje JOE'mu do³±czenie edytowanego tekstu na koniec pliku \fInazwapliku\fR.
+.TP
+.I nazwapliku, START, ROZMIAR
+Daje dostêp do konkretnego fragmentu pliku lub urz±dzenia.
+\fISTART\fR oraz \fIROZMIAR\fR mog± byæ wprowadzone w postaci dziesiêtnej
+(np. 123), ósemkowej (np. 0777) lub szesnastkowej (np. 0xFF). Na przyk³ad,
+\fBjoe /dev/fd0,508,2\fR umo¿liwia edycjê 508-go i 509-go bajtu pierwszego
+napêdu dyskietek w Linuksie.
+.TP
+.B \-
+Pobiera dane ze standardowego wej¶cia lub zapisuje wyniki na standardowe
+wyj¶cie. Na przyk³ad, mo¿esz w³±czyæ joe'go do potoku poleceñ:
+\fBquota -v | joe - | mail root\fR, je¶li chcesz ponarzekaæ na swoje
+zbyt ma³e udzia³y w przestrzeni dyskowej (quota).
+.SH PLIK joerc
+Opcje \fB^T\fR, ekrany pomocy i przypisania sekwencji klawiszy do poleceñ
+edytora zdefiniowane s± w pliku inicjuj±cym JOE'go. Po zrobieniu kopii
+tego pliku (który zwykle znajduje siê w \fI/usr/local/lib/joerc\fR) do katalogu
+domowego, pod nazw± \fI$HOME/.joerc\fR, mo¿esz zmieniaæ te ustawienia wed³ug
+w³asnych upodobañ. Sk³adnia pliku inicjuj±cego powinna byæ do¶æ oczywista,
+poza tym s± w nim zawarte dalsze wskazówki.
+.SH PODZIÊKOWANIA
+.\" Acknowledgements
+JOE'go napisa³ Joseph H. Allen. Zg³oszenia b³êdów i pytania nadsy³aj na adres
+jhallen@world.std.com.
+W pracy nad stworzeniem JOE'go pomogli równie¿ Larry Foard
+(entropy@world.std.com) i Gary Gray (ggray@world.std.com).

@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# prymitywny skrypt kopiuj±cy do bie¿±cego katalogu
+# pliki man nale¿±ce do pakietu podanego jako argument
+
+PTM=$PTM_PL_DIR # np. $HOME/pl_PL
+PAKIETY=$PTM/zasoby/pakiety
+pakiet=$PAKIETY/$1
+
+if [ "$1" = "" ]; then
+    echo Brak nazwy pakietu
+    exit
+fi
+if [ -e $pakiet ]; then
+    cat $pakiet|awk "/^\s*$/||/^\s*#/{next}; {print}"| \
+	while read plik sciezka; do
+	    if [ -e $PTM/$sciezka ]; then
+		cp $PTM/$sciezka ./$plik
+	    else
+		echo Brak w PTM pliku $sciezka
+	    fi
+	done
+else
+    echo Brak pakietu $1
+fi
+
+# koniec skryptu

@@ -1,0 +1,229 @@
+.\" {PTM/LK/0.1/20-10-1998/"system hipertekstu"}
+.\" T³umaczenie: 20-10-1998 £ukasz Kowalczyk (lukow@tempac.okwf.fuw.edu.pl)
+.TH info 1 "7 grudnia 1990"
+.SH NAZWA
+info \- system hipertekstu GNU
+.SH SK£ADNIA
+.B info
+[
+.B \-\-nazwa-opcji warto¶æ-opcji
+]
+.B opcja-menu "..."
+
+.SH COPYRIGHT
+.if n Copyright (C) 1989, 1993 Free Software Foundation, Inc.
+.if t Copyright \(co 1989, 1993 Free Software Foundation, Inc.
+.SH OPIS
+.LP
+W ramach projektu GNU stworzono system hipertekstu o nazwie
+.I Info
+pozwalaj±cy na drukowanie pliku pomocy lub jego przegl±danie 
+za pomoc± programu
+.B info.
+Programu 
+.B info
+mo¿na u¿ywaæ
+wewn±trz edytora Emacs, lub te¿ uruchamiaæ samodzielny program, który zosta³
+opisany w tej instrukcji.
+Ta strona opisuje w skrócie mo¿liwo¶ci programu.
+
+.SH OPCJE
+.TP
+.B \-\-directory katalog
+Dodanie
+.B katalogu
+do listy katalogów przegl±danych, gdy 
+.B info
+poszukuje pliku. Mo¿esz u¿yæ opcji
+.B \-\-directory 
+wielokrotnie.
+Mo¿esz zamiast tej opcji u¿yæ zmiennej ¶rodowiskowej
+.B INFOPATH;
+je¿eli opcja
+.B \-\-directory
+nie zostanie u¿yta, wówczas u¿ywana jest zmienna
+.B INFOPATH.
+Warto¶ci±
+.B INFOPATH 
+jest lista katalogów rozdzielonych dwukropkami. Je¿eli zmienna
+.B INFOPATH
+nie istnieje i nie u¿yto opcji
+.B \-\-directory-path,
+.B info
+u¿ywa domy¶lnej ¶cie¿ki.
+.TP
+.B \-f plik
+Otworzenie konkretnego pliku
+.B info.
+Domy¶lnie jest to plik
+.B dir;
+je¿eli u¿yjesz tej opcji,
+.B info
+rozpocznie przegl±danie wêz³a
+.B Top
+pliku, tzn. wêz³a (PLIK)Top.
+
+.TP
+.B \-n wêze³
+Przegl±danie konkretnego wêz³a w pliku startowym wczytywanym przez
+.B info.
+Ta opcja jest szczególnie u¿yteczna we wspó³dzia³aniu z opcj±
+.B \-\-file.
+Mo¿esz u¿yæ opcji
+.B \-\-node
+wielokrotnie.
+
+.TP
+.B -o plik
+Zapisanie tre¶ci pliku info do 
+.B pliku, 
+zamiast uruchomienia interaktywnej sesji info.
+
+.TP
+.B \-h
+Wy¶wietlenie krótkiego opisu dostêpnych opcji programu
+.B info.
+
+.TP
+.B \-\-version
+Wy¶wietlenie wersji programu
+.B info
+i zakoñczenie dzia³ania.
+
+.TP
+.B menu-item
+Pozosta³e argumenty s± traktowane przez
+.B info
+jako nazwy elementów menu. Pierwsza z nich jest opcj± menu w pierwszym
+otwieranym pliku. Drugi argument jest opcj± menu w wê¼le okre¶lonym
+pierwszym argumentem. Mo¿esz siê ³atwo przenosiæ miêdzy wêz³ami korzystaj±c
+z opcji menu je okre¶laj±cych. Na przyk³ad:
+
+.B       info emacs buffers
+
+wybiera najpierw opcjê menu
+.B emacs 
+w wê¼le
+.B (dir)Top,
+a nastêpnie opcjê menu
+.B buffers
+w wê¼le
+.B (emacs)Top.
+.SH POLECENIA
+Podczas u¿ywania programu
+.B info
+dostêpne s± nastêpuj±ce polecenia:
+.TP
+.B h
+Wprowadzenie do u¿ywania programu Info.
+.TP
+.B ?
+Krótki opis poleceñ Info.
+.TP
+.B h
+Wybór opcji menu 'info' w g³ównym wê¼le; daje to znacznie bardziej
+wyczerpuj±cy zbiór informacji ni¿
+.B ?.
+.TP
+.B Ctrl-g
+Anulowanie jakiejkolwiek wykonywanej w³a¶nie czynno¶ci.
+.TP
+.B Ctrl-l
+Od¶wie¿enie ekranu.
+.PP
+Wybór innych wêz³ów:
+.TP
+.B n
+Wybranie wêz³a 'nastêpnego' w stosunku do bie¿±cego.
+.TP
+.B p
+Wybranie wêz³a 'poprzedniego' w stosunku do bie¿±cego.
+.TP
+.B u
+Wybranie wêz³a 'nadrzêdnego' w stosunku do bie¿±cego.
+.TP
+.B m
+Wybór opcji menu okre¶lonej przez wpisanie jej nazwy. Wybranie opcji menu
+powoduje przej¶cie do innego wêz³a. Nie trzeba wpisywaæ kompletnej nazwy
+wêz³a; po wpisaniu kilku pocz±tkowych liter i naci¶niêciu spacji lub
+tabulatora
+.B info
+spróbuje uzupe³niæ nazwê. Je¿eli do wpisanych pocz±tkowych liter pasuje
+kilka opcji menu to po ponownym naci¶niêciu spacji lub tab zostanie
+wy¶wietlona ich lista. Mo¿esz te¿ uzyskaæ tê listê naciskaj±c
+.B ?. 
+Po wpisaniu kilku znaków i naci¶niêciu klawisza return 
+.B info
+spróbuje uzupe³niæ nazwê; je¿eli do pocz±tkowych liter pasowa³o kilka nazw
+opcji, wybrana zostanie pierwsza z nich.
+.TP
+.B f
+Przej¶cie do wêz³a okre¶lonego przez odno¶nik (hiperlink). Zostaniesz
+poproszony o wpisanie nazwy odno¶nika (dzia³a uzupe³nianie nazw jak dla opcji 
+.BR m ")."
+.TP
+.B l
+Przej¶cie do ostatnio odwiedzonego wêz³a.
+.PP
+przenoszenie siê w granicach wêz³a:
+.TP
+.B Space
+Jedna strona w dó³.
+.TP
+.B DEL
+Jedna strona w górê.
+.TP
+.B b
+Pocz±tek wêz³a.
+.PP
+Polecenia zaawansowane:
+.TP
+.B q
+Koniec pracy programu
+.B info.
+.TP
+.B 1
+Pierwsza opcja w menu danego wêz³a.
+.TP
+.B 2 \-\- 5
+Druga ... pi±ta opcja w menu danego wêz³a.
+.TP
+.B g
+Przeniesienie siê do wêz³a okre¶lonego nazw±. Mo¿na podaæ równie¿ nazwê
+pliku, jak np.
+.B (PLIK)WÊZE£.
+.TP
+.B s
+Poszukiwanie w danym pliku
+.B info
+danego ci±gu znaków.
+.TP
+.B M-x print-node
+Potokowe przes³anie (pipe) zawarto¶ci bie¿±cego wêz³a do polecenia
+okre¶lonego przez zmienn± ¶rodowiskow±
+.B INFO_PRINT_COMMAND.
+Je¿eli zmienna nie istnieje, zawarto¶æ wêz³a jest przesy³ana bezpo¶rednio do 
+.B lpr.
+.SH ¦RODOWISKO
+.TP
+.B INFOPATH
+Lista nazw katalogów poprzedzielanych dwukropkami, w których nale¿y szukaæ
+plików
+.B info.
+U¿ywana, je¿eli nie u¿yto opcji 
+.B \-\-directory.
+.TP
+.B INFO_PRINT_COMMAND
+Nazwa polecenia s³u¿±cego do drukowania.
+.SH ZOBACZ TAK¯E
+.BR emacs (1) ", pinfo" (1)
+.SH AUTOR
+.RS
+Brian Fox, Free Software Foundation
+.br
+bfox@ai.mit.edu
+.SH AUTOR OPISU
+.RS
+Robert Lupton; updated by Robert J. Chassell.
+.br
+rhl@astro.princeton.edu; bob@gnu.ai.mit.edu

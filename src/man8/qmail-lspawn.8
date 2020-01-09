@@ -1,0 +1,49 @@
+.\" Translation (C) 1999 Pawel Wilk <siefca@pl.qmail.org>
+.\" {PTM/PW/0.1/14-06-1999/"planuje lokalne dostarczanie poczty"}
+.TH qmail-lspawn 8
+.SH NAZWA
+qmail-lspawn \- planuj lokalne dostarczanie poczty
+.SH SK£ADNIA
+.B qmail-lspawn
+.I defaultdelivery
+.SH OPIS
+.B qmail-lspawn
+czyta seriê komend lokalnego dorêczania z deskryptora 0 i wywo³uje
+.B qmail-local
+by przeprowadziæ dorêczanie.
+Rezultaty wyrzuca na deskryptor 1 (a gdzie by indziej! - przyp. t³.).
+Przekazuje informacjê
+.I defaultdelivery
+do programu
+.B qmail-local
+jako domy¶ln± instrukcjê dostarczenia poczty.
+
+.B qmail-lspawn
+wywo³uje
+.B qmail-local
+asynchronicznie,
+wiêc rezultaty wcale nie musz± byæ uporz±dkowane w tej samej kolejno¶ci co
+komendy.
+
+Dla ka¿dego adresu odbiorcy,
+.B qmail-lspawn
+sprytnie dowiaduje siê, który lokalny u¿ytkownik kontroluje ten adres.
+Najpierw do sprawdzania u¿ywa mechanizmu
+.B qmail-users ; 
+je¶li adres nie jest tam wyszczególniony to wzywa na pomoc
+.BR qmail-getpw .
+Nastêpnie
+.B qmail-lspawn
+uruchamia
+.B qmail-local
+na prawach danego u¿ytkownika (uid i gid).
+Nie ustawia on ¿adnych dodatkowych grup.
+
+.B qmail-lspawn
+traktuje pust± nazwê skrzynki jako adres kub³a na ¶mieci. :)
+.SH "ZOBACZ TAK¯E"
+envelopes(5),
+qmail-users(5),
+qmail-getpw(8),
+qmail-send(8),
+qmail-local(8)

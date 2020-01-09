@@ -1,0 +1,193 @@
+.\" {PTM/GSN/0.5/23-02-1999/"po³±cz linie dwóch plików wed³ug wspólnych pól"}
+.\" poszerzenie i aktualizacja do GNU textutils 2.0 PTM/WK/2000-IV
+.ig
+Transl.note: based on GNU man page join.1 and textutils.info
+ 
+Copyright 1994, 95, 96, 1999 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+..
+.TH JOIN "1" FSF "sierpieñ 1999" "Narzêdzia tekstowe GNU 2.0"
+.SH NAZWA
+join \- po³±cz linie dwóch plików wed³ug wspólnych pól
+.SH SK£ADNIA
+.TP 6
+.B join
+.RB [ \-a
+.BR 1 | 2 ]
+.RB [ \-v
+.BR 1 | 2 ]
+.RB [ \-e
+.IR ³añcuch ]
+.RB [ \-i ]
+.RB [ \-\-ignore\-case ]
+.br
+.RB [ \-o
+.IR lista-pól ...]
+.RB [ \-t
+.IR znak ]
+.RB [ \-j [ 1 | 2 ]
+.IR pole ]
+.br
+.RB [ \-1
+.IR pole ]
+.RB [ \-2
+.IR pole ]
+.I plik1
+.I plik2
+.TP 6
+.B join
+.RB [ \-\-help ]
+.RB [ \-\-version ]
+.SH OPIS
+Dokumentacja niniejsza nie jest ju¿ utrzymywana i mo¿e byæ niedok³adna
+lub niekompletna.  Autorytatywnym ¼ród³em jest obecnie dokumentacja
+Texinfo.  Dostêp do niej uzyskasz wpisuj±c w wierszu poleceñ:
+.RS
+.B pinfo join
+.RE
+lub
+.RS
+.BR "info join" .
+.RE
+.PP
+Ta strona podrêcznika opisuje polecenie \fBjoin\fP w wersji GNU.
+.PP
+.B join
+wypisuje na standardowe wyj¶cie liniê dla ka¿dej pary linii wej¶ciowych
+o identycznych polach po³±czeniowych.
+Domy¶lnym polem po³±czeniowym jest
+pierwsze, separowane pustym znakiem. Ka¿d± z nazw plików
+(ale nie obydwoma) mo¿e byæ '\-', oznaczaj±cy standardowe wej¶cie.
+.I plik1
+oraz
+.I plik2
+powinny zostaæ uprzednio posortowane w porz±dku rosn±cym (nie numerycznie)
+wed³ug pól po³±czeniowych, z zastosowaniem porz±dku znaków okre¶lonego
+ustawieniem narodowym \fBLC_COLLATE\fP.
+Sortowanie winno byæ wykonane z pominiêciem
+znaków pustych na pocz±tku pola po³±czeniowego, tak jak dzia³a
+.B sort
+z podan± opcj±
+.BR \-b ,
+chyba ¿e podano opcjê
+.BR \-t ,
+zmieniaj±c± znak rozdzielaj±cy pola.
+Je¿eli podano opcjê
+.BR --ignore-case ,
+linie powinny byæ posortowane bez rozró¿niania wielko¶ci znaków w polu
+po³±czeniowym, jak w
+.BR "sort -f".
+.PP
+Pola numerowane s± od 1.
+Warto¶ci domy¶lne to: pola po³±czeniowe s± pierwszymi polami w ka¿dej
+linii; pola w wej¶ciu rozdzielone s± jednym lub wiêcej znakami pustymi;
+znaki puste zaczynaj±ce liniê s± ignorowane (chyba ¿e jawnie podano
+separator pól); pola w wyj¶ciu rozdzielone s± spacj±; ka¿da linia wyj¶cia
+sk³ada siê z pola po³±czeniowego, pozosta³ych pól z
+.IR plik1 ,
+a potem pozosta³ych pól z
+.IR plik2 .
+.SH OPCJE
+.TP
+.BR \-a " \fInumer-pliku"
+Oprócz normalnego wyj¶cia, wypisuje te¿ niesparowane linie z pliku
+.I numer-pliku
+(1 albo 2).
+.TP
+.BR \-e " \fI³añcuch"
+Zastêpuje puste pola wynikowe (te, których brakuje na wej¶ciu)
+.IR ³añcuchem .
+.TP
+.BR \-i ", " \-\-ignore\-case
+Ignoruje ró¿nice miêdzy ma³ymi i du¿ymi literami przy porównywaniu pól.
+Pola wej¶ciowe musz± byæ wówczas uporz±dkowane wed³ug tej samej regu³y.
+.TP
+.BR \-1 ", " \-j1 " \fIpole"
+£±czy wed³ug pola
+.I pole
+(dodatnia liczba ca³kowita) pliku 1
+.TP
+.BR \-2 ", " \-j2 " \fIpole"
+£±czy wed³ug pola
+.I pole
+(dodatnia liczba ca³kowita) pliku 2
+.TP
+.BR \-j " \fIpole"
+Równowa¿ne
+.BR \-1 " \fIpole " \-2 " \fIpole\fP."
+.TP
+.BR \-o " \fIlista-pól\fP..."
+Konstruuje ka¿d± liniê wyj¶cia wed³ug formatu zawartego w
+.IR li¶cie-pól .
+Ka¿dy element listy jest albo pojedynczym znakiem '\fB0\fP' albo ma postaæ
+.IB M . N\fR,
+gdzie M to numeru pliku (1 albo 2), za¶ N - numer pola (liczba naturalna).
+Element '0' odpowiada polu po³±czeniowemu.
+
+W wiêkszo¶ci przypadków funkcjonalno¶æ specyfikacji '0' mo¿na zast±piæ
+u¿yciem bezpo¶redniego zapisu M.N, odpowiedniego dla pola po³±czeniowego.
+Jednak przy wydruku linii niesparowanych (u¿ycie opcji \fB\-a\fP lub \fB\-v\fP)
+nie mo¿na w ¿aden sposób okre¶liæ takiego pola przez u¿ycie M.N w li¶cie pól
+je¿eli linie niesparowane wystêpuj± w obu plikach. Dla uzyskania takiej
+funkcjonalno¶ci \fBjoin\fP POSIX wynalaz³ notacjê '0'.
+
+Elementy listy pól oddzielone s± przecinkami lub znakami pustymi.
+Mo¿na podawaæ wielokrotne argumenty
+.I lista-pól
+po jednej opcji
+.BR \-o ;
+warto¶ci wszystkich list podanych po
+.B \-o
+s± ³±czone razem.
+Zadana lista pól jest stosowana do wszystkich linii wyj¶ciowych - tak¿e
+tworzonych wskutek dzia³ania opcji \fB\-a\fP czy \fB\-v\fP.
+.TP
+.BR \-t " \fIznak"
+U¿ywa znaku
+.I znak
+jako separatora pól wej¶cia i wyj¶cia.
+.TP
+.BR \-v " \fInumer-pliku"
+Wypisuje tylko niesparowane linie z pliku
+.I numer-pliku
+(1 albo 2), zamiast normalnego wyj¶cia. Jak opcja
+.BR \-a ,
+ale eliminuje wspólne, po³±czone linie wynikowe.
+.PP
+Dodatkowo, kiedy GNU
+.B join
+wywo³ywane jest z dok³adnie jednym argumentem, rozpoznawane s±
+nastêpuj±ce opcje:
+.TP
+.B "\-\-help"
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach, koñczy pracê.
+.TP
+.B "\-\-version"
+Wy¶wietla numer wersji programu i koñczy pracê.
+.SH "ZG£ASZANIE B£ÊDÓW"
+B³êdy proszê zg³aszaæ, w jêz. ang., do <bug-textutils@gnu.org>.
+.SH COPYRIGHT
+Copyright \(co 1999 Free Software Foundation, Inc.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH ZOBACZ TAK¯E
+.BR cut (1),
+.BR paste (1),
+.BR textutils (1).
+.SH OD T£UMACZA
+Zaktualizowano i poszerzono wg dokumentacji Texinfo dla narzêdzi tekstowych
+GNU wersji 2.0.

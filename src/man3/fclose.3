@@ -1,0 +1,108 @@
+.\" {PTM/AB/0.1/20-12-1998/"fclose - zamkniêcie strumienia"}
+.\" translated by Adam Byrtek <abyrtek@priv.onet.pl>
+.\" Aktualizacja do wersji man-pages 1.45 - grudzieñ 2001 PTM
+.\" ------------
+.\" Copyright (c) 1990, 1991 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" This code is derived from software contributed to Berkeley by
+.\" Chris Torek and the American National Standards Committee X3,
+.\" on Information Processing Systems.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     @(#)fclose.3	6.7 (Berkeley) 6/29/91
+.\"
+.\" Converted for Linux, Mon Nov 29 15:19:14 1993, faith@cs.unc.edu
+.\"
+.\" ------------
+.TH FCLOSE 3 1993-11-29 "BSD" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+fclose \- zamkniêcie strumienia
+.SH SK£ADNIA
+.B #include <stdio.h>
+.sp
+.BI "int fclose(FILE *" stream );
+.SH OPIS
+Funkcja
+.B fclose
+od³±cza strumieñ
+.I stream
+od pliku czy zestawu funkcji. Je¶li strumieñ by³ wykorzystywany do
+wyprowadzania danch, wszystkie buforowane dane s± najpierw zapisywane
+za pomoc±
+.BR fflush (3).
+.SH "WARTO¦Æ ZWRACANA"
+Je¶li funkcja zakoñczy³a siê pomy¶lnie, zwracane jest 0. W przeciwnym
+przypadku zwracana jest warto¶æ
+.B EOF
+a globalna zmienna
+.I errno
+przyjmuje warto¶æ oznaczaj±c± b³±d. W ka¿dym przypadku nastêpna próba
+dostêpu (w³±czaj±c w to kolejne wywo³anie \fBfclose()\fP) do strumienia
+prowadzi do niezdefiniowanego zachowania.
+.SH B£ÊDY
+.TP
+.B EBADF
+Deskryptor pliku okre¶laj±cy
+.I stream
+nie jest poprawny.
+.\"  This error cannot occur unless you are mixing ANSI C stdio operations and
+.\"  low-level file operations on the same stream. If you do get this error,
+.\"  you must have closed the stream's low-level file descriptor using
+.\"  something like close(fileno(fp)).
+.PP
+Funkcja
+.B fclose
+mo¿e tak¿e zawie¶æ i ustawiæ warto¶æ
+.I errno
+na dowolny b³±d wymieniony w opisie funkcji
+.BR close (2),
+.BR write (2)
+i
+.BR fflush (3).
+.SH UWAGI
+Nale¿y zauwa¿yæ, ¿e
+.B fclose
+opró¿nia jedynie bufory w przestrzeni u¿ytkownika obs³ugiwane przez
+bibliotekê C. Aby upewniæ siê, ¿e dane zosta³y fizycznie zapisane na
+dysku, nale¿y zrzuciæ rownie¿ bufory j±dra, np. za pomoc±
+.BR sync (2)
+lub
+.BR fsync (2).
+.SH "ZGODNE Z"
+Funkcja
+.B fclose
+jest zgodna ze standardem ANSI X3.159-1989 (`ANSI C').
+.SH "ZOBACZ TAK¯E"
+.BR close (2),
+.BR fcloseall (3),
+.BR fflush (3),
+.BR fopen (3),
+.BR setbuf (3)

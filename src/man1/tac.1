@@ -1,0 +1,94 @@
+.\"  {PTM/GSN/0.5/23-02-1999/"po³±cz i wypisz pliki odwrócone"}
+.\" poszerzenie i aktualizacja do GNU textutils 2.0 PTM/WK/2000-IV
+.ig
+Transl.note: based on GNU man page tac.1 and textutils.info
+ 
+Copyright 1994, 95, 96, 1999 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+..
+.TH TACT "1" FSF "sierpieñ 1999" "Narzêdzia tekstowe GNU 2.0"
+.SH NAZWA
+tac \- po³±cz i wypisz pliki odwrócone
+.SH SK£ADNIA
+.TP 5
+.B tac
+.RB [ \-br ]
+.RB [ \-s
+.IR separator ]
+.RB [ \-\-before ]
+.RB [ \-\-regex ]
+.br
+.RB [ \-\-separator= \fI³añcuch\fP]
+.RB [ \-\-help ]
+.RB [ \-\-version ]
+.RI [ plik... ]
+.SH OPIS
+Dokumentacja niniejsza nie jest ju¿ utrzymywana i mo¿e byæ niedok³adna
+lub niekompletna.  Autorytatywnym ¼ród³em jest obecnie dokumentacja
+Texinfo.  Dostêp do niej uzyskasz wpisuj±c w wierszu poleceñ:
+.RS
+.B pinfo tac
+.RE
+lub
+.RS
+.BR "info tac" .
+.RE
+.PP
+Ta strona podrêcznika opisuje polecenie \fBtac\fP w wersji GNU.
+.PP
+.B tac
+kopiuje na standardowe wyj¶cie ka¿dy podany plik, lub standardowe wej¶cie
+je¶li nie podano ¿adnego lub napotkano nazwê pliku '\-',
+odwracaj±c w ka¿dym z nich porz±dek rekordów.  Rekordy oddzielone s±
+wyst±pieniami pewnego ³añcucha, lub now± lini± je¶li nie podano
+¿adnego.  Domy¶lnie w pliku ³añcuch separuj±cy wystêpuje za rekordem,
+który rozgranicza.
+.SH OPCJE
+.TP
+.BR \-b ", " \-\-before
+Separator wystêpuje przed rekordem (jest do³±czony do pocz±tku rekordu).
+.TP
+.BR \-r ", " \-\-regex
+Separator jest wyra¿eniem regularnym. U¿ytkownicy `tac' w systemach
+MS-DOS/MS-Windows powinni zwróciæ uwagê na fakt, ¿e z powodu czytania przez
+`tac' plików w trybie binarnym, ka¿da linia pliku tekstowego mo¿e koñczyæ siê
+par± CR/LF zamiast uniksowego LF.
+.TP
+.BR \-s " \fI³añcuch\fP, " \-\-separator= \fI³añcuch
+U¿ywa
+.I ³añcucha
+jako separatora rekordów.
+.TP
+.B "\-\-help"
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach, koñczy pracê.
+.TP
+.B "\-\-version"
+Wy¶wietla numer wersji programu i koñczy pracê.
+.SH "ZG£ASZANIE B£ÊDÓW"
+B³êdy proszê zg³aszaæ, w jêz. ang., do <bug-textutils@gnu.org>.
+.SH COPYRIGHT
+Copyright \(co 1999 Free Software Foundation, Inc.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH ZOBACZ TAK¯E
+.BR cat (1),
+.BR nl (1),
+.BR od (1),
+.BR textutils (1).
+.SH OD T£UMACZA
+Zaktualizowano i poszerzono wg dokumentacji Texinfo dla narzêdzi tekstowych
+GNU wersji 2.0.

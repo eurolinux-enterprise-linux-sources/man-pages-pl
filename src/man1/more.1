@@ -1,0 +1,205 @@
+.\" T³umaczenie: Gwidon S. Naskrent (naskrent@hoth.amu.edu.pl), IX 1998
+.\" Copyright (c) 1988, 1990 The Regents of the University of California.
+.\" Copyright (c) 1988 Mark Nudleman
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"	@(#)more.1	5.15 (Berkeley) 7/29/91
+.\"
+.\" Revised: Fri Dec 25 15:27:27 1992 by root
+.\" 25Dec92: Extensive changes made by Rik Faith (faith@cs.unc.edu) to
+.\" conform with the more 5.19 currently in use by the Linux community.
+.\"
+.\" T³umaczenie: Gwidon S. Naskrent (naskrent@hoth.amu.edu.pl), IX 1998
+.\" {PTM/GSN/0.1/04-10-1998/"filtrowa przegl±darka plików dla CRT"}
+.Dd July 29, 1991 (Modified December 25, 1992)
+.Dt more 1
+.Os "Linux 0.98"
+.Sh NAZWA
+.Nm more
+.Nd filtrowa przegl±darka plików dla CRT
+.Sh STRESZCZENIE
+.Nm more
+.Op Fl dlfpcsu
+.Op Fl num
+.Op +/ wzór
+.Op + numlinii
+.Op plik...
+.Sh OPIS
+.Nm More
+jest filtrem s³u¿±cym do przegl±dania tekstu strona po stronie, jeden
+ekran na raz.  Bie¿±ca wersja jest szczególnie prymitywna.  U¿ytkownicy
+powinni zdaæ sobie sprawê ¿e
+.Xr less(1)
+dostarcza emulacji
+.Xr more(1)
+wraz z licznymi ulepszeniami.
+.Sh OPCJE
+Opcje linii komend podano poni¿ej.  Opcje pobierane s± tak¿e ze
+zmiennej ¶rodowiskowej
+.Ev MORE
+(upewnij siê ¿e poprzedzi³e¶ je my¶lnikiem (``-'')), ale opcje linii
+komend mog± je uniewa¿niæ.
+.Bl -tag -width flag
+.It Fl num
+Opcja ta okre¶la liczbê ca³kowit± bêd±c± rozmiarem ekranu (w liniach).
+.It Fl d
+.Nm more
+zachêci u¿ytkownika komunikatem "[Press space to continue, 'q' to
+quit.]" i wy¶wietli "[Press 'h' for instructions.]" zamiast wysy³aæ
+znak dzwonka, kiedy naci¶niêto nieprawid³owy klawisz.
+.It Fl l
+.Nm more
+zwykle traktuje
+.Ic \&^L
+(koniec strony) jako znak specjalny, i bêdzie pauzowaæ po ka¿dej
+linii która zawiera koniec strony.  Opcja
+.Fl l
+zakazuje takiego zachowania.
+.It Fl f
+Powoduje ¿e
+.Nm more
+liczy linie ekranu zamiast logicznych (tj. d³ugie linie nie s±
+zawijane).
+.It Fl p
+Nie przewijaj ekranu.  Zamiast tego wyczy¶æ ca³y ekran i potem wy¶wietlaj
+tekst.
+.It Fl c
+Nie przewijaj ekranu.  Zamiast tego, narysuj ka¿dy ekran od pocz±tku,
+czyszcz±c resztê ka¿dej linii w momencie jej wy¶wietlania.
+.It Fl s
+¦ci¶nij wielokrotne puste linie w jedn±.
+.It Fl u
+Zabroñ podkre¶lania.
+.It Ic +/
+Opcja
+.Ic +/
+okre¶la ³añcuch który nale¿y przeszukaæ zanim zostanie wy¶wietlony
+ka¿dy z plików.
+.It Ic +num
+Zacznij od linii numer
+.Ic num .
+.Sh KOMENDY
+Interaktywne komendy dla
+.Nm more
+oparte s± na
+.Xr vi(1)  .
+Niektóre komendy mog± byæ poprzedzone liczb± dziesiêtn±, zwan± k
+w opisach poni¿ej.  W poni¿szych opisach, ^X oznacza Control-X.
+.Pp
+.Bl -tag -width Ic
+.It Ic h No lub Ic ?
+Pomoc: wy¶wietl podsumowanie tych komend.  Je¶li zapomnisz wszystkich
+innych komend, pamiêtaj o tej.
+.It Ic SPACJA
+Wy¶wietl poprzednie k linii tekstu.  Domy¶lnie bie¿±cy rozmiar ekranu.
+.It Ic z
+Wy¶wietl nastêpne k linii tekstu.  Domy¶lnie bie¿±cy rozmiar ekranu.
+Argument staje siê now± warto¶ci± domy¶ln±.
+.It Ic RETURN
+Wy¶wietl nastêpne k linii tekstu.  Domy¶lnie jedn±.  Argument staje siê
+now± warto¶ci± domy¶ln±.
+.It Ic d No lub Ic \&^D
+Przewiñ o k linii.  Domy¶lnie bie¿±cy rozmiar przewijania, pocz±tkowo 11.
+Argument staje siê now± warto¶ci± domy¶ln±.
+.It Xo
+.Ic q
+.No lub
+.Ic Q
+.No lub
+.Ic INTERRUPT [to co stty oznacza przez intr - GSN]
+.Xc
+Wyjd¼.
+.It Ic s
+Przeskocz k linii tekstu w przód.  Domy¶lnie jedn±.
+.It Ic f
+Przeskocz k ekranów tekstu w przód.  Domy¶lnie jeden.
+.It Ic b No lub Ic \&^B
+Przeskocz k ekranów tekstu w ty³.  Domy¶lnie jeden.
+.It Ic '
+Id¼ do miejsca rozpoczêcia poprzedniego wyszukiwania.
+.It Ic =
+Wy¶wietl bie¿±cy numer linii.
+.It Ic \&/ Ns Ar wzór
+Poszukaj k-tego wyst±pienia wyra¿enia regularnego.  Domy¶lnie pierwszego.
+.It Ic n
+Poszukaj k-tego wyst±pienia poprzedniego wyra¿enia regularnego.  Domy¶lnie 
+pierwszego.
+.It Ic !<cmd> No lub Ic :!<cmd>
+Wykonaj <cmd> w podpow³oce.
+.It Ic v
+Uruchom /usr/bin/vi od bie¿±cej linii.
+.It Ic \&^L
+Od¶wie¿ ekran.
+.It Ic :n
+Id¼ do k-tego nastêpnego pliku.  Domy¶lnie pierwszego nastêpnego.
+.It Ic :p
+Id¼ do k-tego poprzedniego pliku.  Domy¶lnie pierwszego poprzedniego.
+.It Ic :f
+Wy¶wietl bie¿±c± nazwê pliku i numer linii.
+.It Ic \&.
+Powtórz poprzedni± komendê.
+.El
+.Sh ¦RODOWISKO
+.Nm more
+wykorzystuje nastêpuj±ce zmienne ¶rodowiskowe, je¶li istniej±:
+.Bl -tag -width Fl
+.It Ev MORE
+Zmienn± t± mo¿na ustawiæ na ulubione opcje dla
+.Nm more .
+.It Ev SHELL
+Bie¿±ca u¿ywana pow³oka (normalnie ustawiana przez pow³okê w
+czasie logowania).
+.It Ev TERM
+Okre¶la typ terminala, u¿ywany przez 
+.Nm more
+do pobrania charakterystyk terminala koniecznych do manipulowania ekranem.
+.El
+.Sh PATRZ TAK¯E
+.Xr vi(1)
+.Xr less(1)
+.Sh AUTORZY
+Eric Shienbrood, UC Berkeley
+.br
+Zmodyfikowany przez Geoffa Pecka z UCB, który doda³ podkre¶lenia i
+pojedyncze odstêpy liniowe.
+.br
+Zmodyfikowany przez Johna Foderaro z UCB, który doda³ -c i zmienn±
+¶rodowiskow± MORE.
+.Sh HISTORY
+Komenda
+.Nm more
+pojawi³a siê w
+.Bx 3.0 .
+Ta manpage dokumentuje wersjê 5.19
+.Nm more
+(Berkeley 29 VI 88), która jest obecnie u¿ywana w ¶rodowisku Linuksowym.
+Dokumentacja zosta³a stworzona z u¿yciem kilku innych wersji manpage,
+oraz szczegó³owej inspekcji kodu ¼ród³owego.

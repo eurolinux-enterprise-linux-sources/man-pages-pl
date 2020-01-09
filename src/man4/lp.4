@@ -1,0 +1,124 @@
+'\" t
+.\" Copyright (c) Michael Haardt (michael@cantor.informatik.rwth-aachen.de), Sun Jan 15 19:16:33 1995
+.\" 
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\" 
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\" 
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\" 
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\" 
+.\" Modified, Sun Feb 26 15:02:58 1995, faith@cs.unc.edu
+.\" 
+.\" Polish translation (c) nov.1996 piotr.pogorzelski@ippt.gov.pl
+.\" Aktualno¶æ: man-pages 1.48
+.\" 
+.TH LP 4 1995-01-15 "" "Pliki specjalne"
+.SH NAZWA
+lp \- urz±dzenia drukarek wierszowych
+.SH SK£ADNIA
+#include <linux/lp.h>
+.SH KONFIGURACJA
+Pliki \fBlp\fP[0\(en2] s± urz±dzeniami znakowymi obs³uguj±cymi drukarki
+do³±czone do portów równoleg³ych; numer g³ówny tych urz±dzeñ jest równy 6,
+numer podrzêdny 0\(en2. Numery podrzêdne odpowiadaj± adresom portu
+równoleg³ego kolejno 0x03bc, 0x0378 and 0x0278. Zwykle prawa dostêpu do plików
+tych urz±dzeñ wynosz± 220 i nale¿± do u¿ytkownika root i grupy lp.
+Porty równoleg³e mog± byæ obs³ugiwane zarówno przy wykorzystaniu próbkowania,
+jak i przerwañ. Stosowanie przerwañ jest zalecane gdy spodziewamy siê du¿ego
+ruchu, np. wynikaj±cego z u¿ywania drukarki laserowej. W przypadku zwyk³ych
+drukarek mozaikowych wystarczaj±ce jest próbkowanie. Standardowym trybem
+obs³ugi portu jest próbkowanie.
+.SH OPIS
+Urz±dzenia lp obs³uguj± nastêpuj±ce wywo³ania funkcji
+.IR ioctl (2):
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPTIME, int \fP\fIarg\fP\fB)\fP"
+Ustawia okres przez jaki sterownik jest u¶piony, zanim powtórnie sprawdzi
+stan drukarki w sytuacji, gdy bufor drukarki zdaje siê byæ wype³nionym do
+\fIarg\fP. Je¶li posiadamy szybk± drukarkê mo¿emy zmniejszyæ ten parametr.
+Je¶li drukarka jest wolna, nale¿y zwiêkszyæ ten parametr. Jest to liczba
+okre¶laj±ca czas w setnych czê¶ciach sekundy, warto¶æ domy¶lna wynosi 2, co
+oznacza 0,02 s. Parametr ten ma wp³yw jedynie w trybie próbkowania.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPCHAR, int \fP\fIarg\fP\fB)\fP"
+Ustawia maksymaln± liczbê iteracji aktywnego oczekiwania (busy-wait), jakie
+wykonuje sterownik próbkuj±cy czekaj±c a¿ drukarka bêdzie gotowa na
+otrzymywanie znaków do \fIarg\fP. Je¶li drukowanie odbywa siê zbyt wolno
+nale¿y zwiêkszyæ tê liczbê; je¶li system za bardzo zwalnia - nale¿y j±
+zmniejszyæ. Standardow± warto¶ci± tego parametru jest 1000. Parametr ma wp³yw
+na sterownik jedynie w trybie próbkowania.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPABORT, int \fP\fIarg\fP\fB)\fP"
+Je¶li parametr \fIarg\fP jest równy 0, wtedy sterownik drukarki bêdzie
+powtarza³ operacjê po wyst±pieniu b³êdu; w przeciwmym wypadku przerwie
+w dzia³anie. Standardow± warto¶ci± tego parametru jest 0.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPABORTOPEN, int \fP\fIarg\fP\fB)\fP"
+Je¶li \fIarg\fP jest równy 0, funkcja
+.IR open (2)
+zostanie przerwana po wyst±pieniu b³êdu; w przeciwnym wypadku b³±d zostanie
+zignorowany. Standardowe zachowanie polega na ignorowaniu b³êdów.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPCAREFUL, int \fP\fIarg\fP\fB)\fP"
+Je¶li \fIarg\fP jest równy 0, wtedy wymaga siê aby sygna³y out-of-paper,
+offline oraz sygna³y b³êdów by³y puste (false) we wszystkich operacjach zapisu,
+w przeciwnym wypadku s± ignorowane. Ustawienie standardowe polega na
+ignorowaniu b³êdów.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPWAIT, int \fP\fIarg\fP\fB)\fP"
+Ustawia na \fIarg\fP liczbê iteracji aktywnego oczekiwania (busy-wait) przed
+spróbkowaniem, czy drukarka zaakceptowa³a w³a¶nie zapisany znak oraz liczbê
+iteracji, które nale¿y przeczekaæ przed kolejnym próbkowaniem. 
+Specyfikacje okre¶laj± ten czas jako 0.5 mikrosekundy, lecz do¶wiadczenie
+wykaza³o, ¿e opó¼nienie spowodowane wykonaniem kodu jest ju¿ wystarczaj±ce.
+Z tego powodu warto¶ci± domy¶ln± dla tego ustawienia jest 0. Jest ono
+wykorzystywane w sterowniku zarówno w trybie próbkowania, jak i w trybie
+przerwañ.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPSETIRQ, int \fP\fIarg\fP\fB)\fP"
+To wywo³anie funkcji ioctl() wymaga uprawnieñ administratora. Funkcja pobiera
+argument typu int zawieraj±cy nowe przerwanie IRQ. Skutekiem ubocznym
+jest inicjalizacja drukarki. Gdy \fIarg\fP jest zerem, to stosowany bêdzie
+sterownik z próbkowaniem; jest to równocze¶nie zachowanie domy¶lne.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPGETIRQ, int *\fP\fIarg\fP\fB)\fP"
+Zachowuje w parametrze \fIarg\fP aktualnie stosowane przerwanie IRQ.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPGETSTATUS, int *\fP\fIarg\fP\fB)\fP"
+Zachowuje warto¶æ stanu portu w zmiennej \fIarg\fP.
+Poszczególne bity maj± nastêpuj±ce znazenie:
+.sp
+.TS
+l l.
+LP_PBUSY	odwrócony sygna³ zajêto¶ci, aktywny w stanie wysokim
+LP_PACK	niezmienione potwierdzenie wej¶cia, aktywny w stanie
+	niskim
+LP_POUTPA	niezmieniony sygnal braku papieru, aktywny
+	w stanie wysokim
+LP_PSELECD	niezmieniony sygna³ wyboru, aktywny w stanie wysokim
+LP_PERRORP	niezmieniony sygna³ b³êdu, aktywny w stanie niskim
+.TE
+.sp
+Znaczenia sygna³ów nale¿y szukaæ w dokumentacji drukarki.
+Nale¿y pamiêtaæ, ¿e dla niektórych drukarek ustawiane mog± byæ te¿
+nieudokumentowane tu bity.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPRESET)\fP"
+Inicjalizuje drukarkê. Nie stosuje siê ¿adnych parametrów.
+.SH PLIKI
+/dev/lp*
+.SH AUTORZY
+Sterownik drukarki zosta³ napisany przez Jima Weiganda i Linusa
+Torvaldsa. Pó¼niej zosta³ on ulepszony przez Michaela K.\& Johnsona.
+Oprogramowanie przerwañ wykona³ Nigel Gamble. Zmodularyzowa³ go
+Alan Cox. LPCAREFUL, LPABORT, LPGETSTATUS doda³ Chris Metcalf.
+.SH "ZOBACZ TAK¯E"
+.BR mknod (1),
+.BR chown (1),
+.BR chmod (1),
+.BR tunelp (8),
+.BR lpcntl (8)

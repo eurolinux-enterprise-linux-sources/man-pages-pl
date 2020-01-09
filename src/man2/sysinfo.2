@@ -1,0 +1,93 @@
+.\" -*- nroff -*-
+.\" 
+.\" {PTM/AB/0.1/11-09-1999/"sysinfo - zwraca informacje statystyczne systemu"}
+.\" translated by Adam Byrtek <alpha@irc.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Mar 2002,
+.\"              manpages 1.48
+.\" 
+.\" (C)opyright 1993 by Dan Miner (dminer@nyx.cs.du.edu)
+.\" 
+.\"  Permission is granted to freely distribute or modify this file
+.\"  for the purpose of improving Linux or its documentation efforts.
+.\"  If you modify this file, please put a date stamp and HOW you
+.\"  changed this file.  Thanks.   -DM
+.\" 
+.\" Modified Sat Jul 24 12:35:12 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified Tue Oct 22 22:29:51 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified Mon Aug 25 16:06:11 1997 by Nicolás Lichtmaier <nick@debian.org>
+.\"
+.TH SYSINFO 2 1997-08-25 "Linux 2.0" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+sysinfo \- zwraca informacje statystyczne dotycz±ce ca³ego systemu
+.SH SK£ADNIA
+.B #include <sys/sysinfo.h>
+.sp
+.BI "int sysinfo(struct sysinfo *" info );
+.SH OPIS
+A¿ do Linuksa 2.3.16
+.B sysinfo
+zwraca³o informacje w nastêpuj±cej strukturze:
+
+.RS
+.nf
+struct sysinfo {
+	long uptime;             /* ilo¶æ sekund od startu systemu */
+	unsigned long loads[3];  /* ¶rednie obci±¿enie w ci±gu 1, 5 i 15min.*/
+	unsigned long totalram;  /* ilo¶æ pamiêci */
+	unsigned long freeram;   /* ilo¶æ wolnej pamiêci */
+	unsigned long sharedram; /* ilo¶æ pamiêci wspólnej */
+	unsigned long bufferram; /* pamiêæ wykorzystywana przez bufory */
+	unsigned long totalswap; /* ilo¶æ pamiêci wymiany */
+	unsigned long freeswap;  /* ilo¶æ wolnej pamiêci wymiany */
+	unsigned short procs;    /* ilo¶æ procesów */
+	char _f[22];             /* dope³nienie do 64 bajtów */
+};
+.fi
+.RE
+
+i rozmiary by³y podawane w bajtach. Pocz±wszy od Linuksa 2.3.23 (i386), 2.3.48
+(wszystkie architektury) struktura ta ma postaæ
+
+.RS
+.nf
+struct sysinfo {
+	long uptime;             /* ilo¶æ sekund od startu systemu */
+	unsigned long loads[3];  /* ¶rednie obci±¿enie w ci±gu 1, 5 i 15min.*/
+	unsigned long totalram;  /* ilo¶æ pamiêci */
+	unsigned long freeram;   /* ilo¶æ wolnej pamiêci */
+	unsigned long sharedram; /* ilo¶æ pamiêci wspólnej */
+	unsigned long bufferram; /* pamiêæ wykorzystywana przez bufory */
+	unsigned long totalswap; /* ilo¶æ pamiêci wymiany */
+	unsigned long freeswap;  /* ilo¶æ wolnej pamiêci wymiany */
+	unsigned short procs;    /* ilo¶æ procesów */
+	unsigned long totalhigh; /* ilo¶æ pamiêci wysokiej */
+	unsigned long freehigh;  /* ilo¶æ wolnej pamiêci wysokiej */
+	unsigned int mem_unit;   /* wielko¶æ jednostki pamiêci w bajtach */
+	char _f[20-2*sizeof(long)-sizeof(int)]; /* dope³nienie dla libc5 */
+};
+.fi
+.RE
+
+i rozmiary s± podawane jako wielokrotno¶ci \fImem_unit\fP bajtów.
+
+.B sysinfo
+w prosty sposób udostêpnia ogólnosystemowe statystyki. Metoda ta jest bardziej
+przeno¶na ni¿ odczytywanie \fI/dev/kmem\fP. Przyk³ad u¿ycia mo¿na znale¼æ w
+intro(2).
+.SH "WARTO¦Æ ZWRACANA"
+W razie pomy¶lnego zakoñczenia zwracane jest zero. W przypadku b³êdu
+zwracane jest \-1 i odpowiednio ustawiane
+.IR errno .
+.SH B£ÊDY
+.TP
+.B EFAULT
+wska¼nik do \fIstruct\ sysinfo\fP jest nieprawid³owy
+.SH "ZGODNE Z"
+Ta funkcja jest specyficzna dla Linuksa i nie powinna byæ wykorzystywana w
+programach, które maj± byæ przeno¶ne.
+.sp
+J±dro Linuksa dysponuje wywo³aniem systemowym sysinfo od wersji 0.98.pl6.
+Linoksowa boblioteka libc zawiera funkcjê sysinfo() od wersji 5.3.5, a glibc
+od 1.90.
+.SH "ZOBACZ TAK¯Ê"
+.BR proc (5)

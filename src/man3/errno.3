@@ -1,0 +1,362 @@
+.\" {PTM/AB/0.1/16-12-1998/"errno - numer ostatniego b³êdu"}
+.\" t³umaczenie Adam Byrtek <abyrtek@priv.onet.pl>
+.\" Aktualizacja do man-pages 1.54 - A. Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" ------------
+.\" Copyright (c) 1996 Andries Brouwer (aeb@cwi.nl)
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" 5 Oct 2002, Modified by Michael Kerrisk <mtk-manpages@gmx.net>
+.\" 	Updated for POSIX 1003.1 2001
+.\" 2004-12-17 Martin Schulze <joey@infodrom.org>, mtk
+.\"	Removed errno declaration prototype, added notes
+.\"
+.TH ERRNO 3 2004-12-17 "" "Funkcje biblioteczne"
+.SH NAZWA
+errno \- numer ostatniego b³êdu
+.SH SK£ADNIA
+#include <errno.h>
+.\".sp
+.\".BI "extern int " errno ;
+.SH OPIS
+Plik nag³ówkowy
+.I <errno.h>
+definiuje zmienn± ca³kowit±
+.BR errno ,
+która jest ustawiana w razie b³êdu przez wywo³ania systemowe oraz pewne 
+funkcje biblioteczne tak, aby zaznaczyæ, co posz³o ¼le. Warto¶æ ta jest istotna 
+tylko gdy wywo³anie zwróci³o b³±d (zwykle \-1), ale funkcja biblioteczna, która
+zakoñczy³a siê sukcesem, tak¿e mo¿e zmieniæ
+.BR errno .
+
+Czasami, gdy \-1 jest tak¿e poprawn± warto¶ci± zwracan±, aby wykryæ b³êdy
+nale¿y przed wywo³aniem wyzerowaæ
+.BR errno .
+
+\fBerrno\fP jest definiowana przez standard ISO C jako modyfikowalna
+l-warto¶æ typu \fBint\fR, które nie mo¿e zostaæ jawnie zadeklarowana;
+\fBerrno\fP mo¿e byæ makrem. Warto¶æ \fBerrno\fP jest lokalna w obrêbie w±tku,
+jej zmiana w jednym w±tku nie wp³ywa na warto¶æ w innym.
+
+Wszystkie poprawne numery b³êdów s± ró¿ne od zera, funkcja biblioteczna nigdy
+nie przypisuje \fBerrno\fP zera. Ka¿dej nazwie b³êdu okre¶lonej przez POSIX.1
+musi odpowiadaæ inna warto¶æ z wyj±tkiem
+.B EAGAIN
+i 
+.BR EWOULDBLOCK ,
+które mog± mieæ tê sam± warto¶æ.
+
+
+.\" FIXME EILSEQ is in C99.
+POSIX.1 (wydanie z 2001 roku) wyszczególnia nastêpuj±ce symboliczne nazwy
+b³êdów. Dwie z nich \fBEDOM\fP oraz \fBERANGE\fP s± zawarte tak¿e w
+standardzie ISO C. Pierwsza poprawka ISO C definiuje dodatkowy numer b³êdu
+\fBEILSEQ\fP dla kodowania b³êdów w wielobajtowych lub szerokich znakach.
+
+.TP
+.B E2BIG
+Lista argumentów za d³uga
+.TP
+.B EACCES
+Brak dostêpu
+.TP
+.B EADDRINUSE
+Adres jest u¿ywany
+.TP
+.B EADDRNOTAVAIL
+Adres niedostêpny
+.TP
+.B EAFNOSUPPORT
+Niewspierana rodzina adresów
+.TP
+.B EAGAIN
+Zasoby chwilowo niedostêpne
+.TP
+.B EALREADY
+Po³±czenie trwa
+.TP
+.B EBADF
+B³êdny deskryptor pliku
+.TP
+.B EBADMSG
+B³êdny komunikat
+.TP
+.B EBUSY
+Zasób zajêty
+.TP
+.B ECANCELED
+Operacja anulowana
+.TP
+.B ECHILD
+Brak procesów potomnych
+.TP
+.B ECONNABORTED
+Po³±czenie przerwane
+.TP
+.B ECONNREFUSED
+Odmowa po³±czenia
+.TP
+.B ECONNRESET
+Po³±czenie zrestartowane
+.TP
+.B EDEADLK
+Unikniêto zakleszczenia zasobów
+.TP
+.B EDESTADDRREQ
+Wymagany jest adres docelowy
+.TP
+.B EDOM
+B³±d dziedziny
+.TP
+.B EDQUOT
+Zarezerwowane
+.TP
+.B EEXIST
+Plik istnieje
+.TP
+.B EFAULT
+B³êdny adres
+.TP
+.B EFBIG
+Plik jest za du¿y
+.TP
+.B EHOSTUNREACH
+Host jest nieosi±galny
+.TP
+.B EIDRM
+Usuniêto identyfikator
+.TP
+.B EILSEQ
+Nieprawid³owa kolejno¶æ bajtów
+.TP
+.B EINPROGRESS
+Operacja jest ju¿ wykonywana
+.TP
+.B EINTR
+Przerwane wywo³anie funkcji
+.TP
+.B EINVAL
+Z³y argument
+.TP
+.B EIO
+B³±d wej¶cia/wyj¶cia
+.TP
+.B EISCONN
+Gniazdo jest po³±czone
+.TP
+.B EISDIR
+Jest katalogiem
+.TP
+.B ELOOP
+Za du¿o poziomów dowi±zañ symbolicznych
+.TP
+.B EMFILE
+Za du¿o otwartych plików
+.TP
+.B EMLINK
+Za du¿o dowi±zañ
+.TP
+.B EMSGSIZE
+Nieodpowiednia d³ugo¶æ bufora komunikatów
+.TP
+.B EMULTIHOP
+Zarezerwowane
+.TP
+.B ENAMETOOLONG
+Za d³uga nazwa pliku
+.TP
+.B ENETDOWN
+Sieæ jest wy³±czona
+.TP
+.B ENETRESET
+Po³±czenie przerwane przez sieæ
+.TP
+.B ENETUNREACH
+Sieæ jest niedostêpna
+.TP
+.B ENFILE
+Za du¿o otwartych plików w systemie
+.TP
+.B ENOBUFS
+Brak dostêpnej przestrzeni buforów
+.\" ENODATA is part of XSR option
+.TP
+.B ENODATA
+Brak komunikatów w nag³ówku czytanej kolejki STREAM
+.\" No message is available on the STREAM head read queue
+.TP
+.B ENODEV
+Nie ma takiego urz±dzenia
+.TP
+.B ENOENT
+Nie ma takiego pliku ani katalogu
+.TP
+.B ENOEXEC
+B³êdny format pliku wykonywalnego
+.TP
+.B ENOLCK
+Brak dostêpnych blokad
+.TP
+.B ENOLINK
+Zarezerwowane
+.TP
+.B ENOMEM
+Brak miejsca
+.TP
+.B ENOMSG
+Brak komunikatów zadanego rodzaju
+.TP
+.B ENOPROTOOPT
+Protokó³ jest niedostêpny
+.TP
+.B ENOSPC
+Brak miejsca na urz±dzeniu
+.\" ENOSR is part of XSR option
+.TP
+.B ENOSR
+Brak zasobów STREAM
+.\" ENOSTR is part of XSR option
+.TP
+.B ENOSTR
+To nie jest STREAM
+.TP
+.B ENOSYS
+Niezaimplementowana funkcja
+.TP
+.B ENOTCON
+Gniazdo nie jest po³±czone
+.TP
+.B ENOTDIR
+To nie jest katalog
+.TP
+.B ENOTEMPTY
+Katalog nie jest pusty
+.TP
+.B ENOTSOCK
+To nie jest gniazdo
+.TP
+.B ENOTSUP
+Niedostêpne
+.TP
+.B ENOTTY
+Nieodpowiednia operacja kontroli wej¶cia/wyj¶cia
+.TP
+.B ENXIO
+Brak urz±dzenia lub adresu
+.TP
+.B EOPNOTSUPP
+Operacja niedozwolona na gnie¼dzie
+.TP
+.B EOVERFLOW
+Warto¶æ za du¿a dla typu danych
+.TP
+.B EPERM
+Operacja niedozwolona
+.TP
+.B EPIPE
+Przerwany potok
+.TP
+.B EPROTO
+B³±d protoko³u
+.TP
+.B EPROTONOSUPPORT
+Protokó³ nie wspierany
+.TP
+.B EPROTOTYPE
+Niew³a¶ciwy rodzaj protoko³u dla gniazda
+.TP
+.B ERANGE
+Rezultat zbyt du¿y
+.TP
+.B EROFS
+System plików wy³±cznie do odczytu
+.TP
+.B ESPIPE
+Nieprawid³owe przesuniêcie
+.TP
+.B ESRCH
+Nie ma takiego procesu
+.TP
+.B ESTALE
+Zarezerwowane
+.\" ETIME is part of XSR option
+.TP
+.B ETIME
+Timeout ioctl() dla STREAM
+.TP
+.B ETIMEDOUT
+Operacja przeterminowana
+.TP
+.B ETXTBSY
+Plik tekstowy jest zajêty
+.TP
+.B EWOULDBLOCK
+Operacja blokuj±ca (mo¿e to byæ ta sama warto¶æ, co dla
+.BR EAGAIN )
+.TP
+.B EXDEV
+Nieprawid³owe dowi±zanie
+.SH UWAGI
+Powszechnym b³êdem jest robienie
+.RS
+.nf
+
+if (somecall() == -1) {
+    printf("somecall() zwróci³o b³±d\en");
+    if (errno == ...) { ... }
+}
+
+.fi
+.RE
+gdzie
+.I errno
+niekoniecznie musi mieæ tê sam± warto¶æ, jak± mia³o po powrocie z
+.IR somecall() 
+(tj. mog³a zostaæ zmieniona przez
+.IR printf() ).
+Je¿eli warto¶æ
+.I errno
+powinna byæ utrzymana pomiêdzy wywo³aniami funkcji, musi byæ zachowywana:
+.RS
+.nf
+
+if (somecall() == -1) {
+    int errsv = errno;
+    printf("somecall() zwróci³o b³±d\en");
+    if (errsv == ...) { ... }
+}
+.fi
+.RE
+.PP
+Powszechnie w tradycyjnym C deklarowa³o siê rêcznie
+.I errno
+(np.
+.IR "extern int errno" )
+zamiast w³±czaæ plik
+.IR <errno.h> .
+.BR "Nie rób tego" .
+To nie bêdzie dzia³a³o z nowoczesnymi wersjami biblioteki C.
+Jednak¿e na (bardzo) starych systemach Unix,
+.I <errno.h>
+mo¿e nie istnieæ i ta deklaracja bêdzie potrzebna,
+.SH "ZOBACZ TAK¯E"
+.BR perror (3),
+.BR strerror (3)

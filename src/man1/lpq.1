@@ -1,0 +1,144 @@
+.\" {PTM/WK/2000-V}
+.ds VE LPRng-3.6.12
+.TH LPQ 1 \*(VE "LPRng"
+.ig
+lpq.1,v 3.39 1998/03/29 18:37:49 papowell Exp
+Revised for LPRng
+Thu Jul 20 07:07:31 PDT 1995 Patrick Powell
+..
+.SH NAZWA
+lpq \- program badaj±cy kolejkê buforowania druku
+.SH SK£ADNIA
+.B lpq
+.RB [ \-a ]
+.RB [ \-A ]
+.RB [ \-l ]
+.RB [ \-L ]
+.RB [ \-P
+.IR printer ]
+.RB [ \-s ]
+.RB [ -t
+.IR  sleeptime ]
+.RB [ \-V ]
+.RB [ \-D
+.IR debugopt ]
+.RI [ jobid \|.\|.\|.]
+.SH OPIS
+.B lpq
+¿±da od
+.BR lpd (8)
+raportu o stanie zadanych drukarek lub zadañ.
+Wywo³ane bez argumentów powiadamia o stanie o drukarki domy¶lnej
+(zobacz opcja
+.BR \-P ).
+Format krótki (domy¶lny) podaje po prostu drukarkê, hosta i liczbê zadañ
+w kolejce druku.
+W d³ugim formacie wy¶wietlania (opcja \fB-l\fP), dla ka¿dego zadania
+wypisywany jest jego identyfikator, tworzony z nazwy u¿ytkownika
+i hosta inicjuj±cego, aktualna pozycja w kolejce, numer zadania (mo¿na go
+podaæ poleceniu
+.BR lprm (1),
+by usun±æ konkretne zadanie), opis zadania i ca³kowity rozmiar w bajtach.
+Je¿eli wyst±pi³ b³±d lub inny k³opot z zadaniem, informacja ta mo¿e byæ
+zmieniona, tak by odzwierciedla³a k³opoty.
+Zadania w kolejce buforowania druku uporz±dkowane s± wed³ug
+FIFO (First In First Out, pierwszy na wej¶ciu - pierwszy na wyj¶ciu),
+ze zmianami zale¿nymi od klasy i priorytetu zadania.
+.PP
+Dostêpne s± nastêpuj±ce opcje:
+.IP "\fB-A\fR"
+Przy wysy³aniu ¿±dañ do serwera u¿ywa uwierzytelniania.
+.BR lpd (1).
+.IP "\fB-D\fR\fIdebugoptions\fR"
+Steruje debugowaniem. Przyjmuje listê rozdzielanych przecinkami ustawieñ
+diagnostycznych. Ustawienia te maj± jedn± z dwu postaci:
+.IB podsystem = warto¶æ
+lub
+.IR warto¶æ ,
+ustawiaj±ca ogóln± warto¶æ domy¶ln±.
+.IP "\fB\-P \fIprinter\fR"
+Okre¶la, jaka kolejka drukarki ma byæ wypisana. Je¿eli nie ustawiono nazwy
+kolejki przy pomocy tej opcji, to stosowana jest domy¶lna. Kolejkê domy¶ln±
+wskazuj± (w kolejno¶ci priorytetu): zmienna ¶rodowiskowa \fBPRINTER\fP,
+pierwsza pozycja w bazie \fIprintcap\fP, wpis \fBdefault_printer\fP pliku
+konfiguracyjnego i, na koniec, wkompilowana (zale¿na od hosta) warto¶æ
+\fBdefault_printer\fP.
+Zauwa¿, ¿e podanie drukarki specjalnej
+.B all
+(wszystkie) ma ten sam skutek, co opcja
+.BR \-a .
+.IP "\fB\-V\fR"
+Wypisuje informacjê o wersji.
+.IP "\fB\-a\fR"
+Wypisuje jest raport dla wszystkich drukarek ujêtych w bazie
+.IR printcap (5).
+Zestawienie to jest tworzone przez serwer, i mo¿e siê ró¿niæ od tego, co
+zawiera printcap u¿ytkownika.
+.IP "\fB\-l\fR"
+Powiêksza wymowno¶æ d³ugiego (\fB-\fPong) formatu wy¶wietlania.
+Pojedyncza opcja \-l okre¶la niewielk± opisowo¶æ, wielokrotna zwiêksza
+rozwlek³o¶æ informacji.
+.IP "\fB\-L\fR"
+U¿ywa maksymalnej gadatliwo¶ci d³ugiego formatu wy¶wietlania.
+.IP "\fB-s\fR"
+Wy¶wietla krótkie, jednowierszowe podsumowanie stanu ka¿dej kolejki
+i podkolejki.
+.IP "\fB-t\fR\fIsleeptime\fR"
+Wymusza na
+.B lpq
+okresowe wy¶wietlanie kolejek druku i odczekiwanie
+.I sleeptime
+sekund pomiêdzy kolejnymi badaniami kolejki.
+.IP "\fIjobid\fR ... [\fBall\fR]"
+Po opcjach wystêpuje lista zadañ, których ma dotyczyæ raport.
+Zadanie (\fIjobid\fP) mo¿e byæ wskazane przez nazwê u¿ytkownika,
+identyfikator zadania, numer zadania lub wzorzec uogólniaj±cy, do jakiego
+powinny pasowaæ identyfikatory zadañ.
+S³owo kluczowe \fBall\fP (wszystkie) oznacza wypisanie wszystkich zadañ.
+Jest to opcja domy¶lna.
+.PP
+.B lpq
+zg³asza stan kolejki druku ('enabled' dla buforowania druku, 'disabled'
+dla braku buforowania) i brak serwera, je¶li w³±czony jest brak buforowania.
+Do uruchomienia serwera druku mo¿na wówczas pos³u¿yæ siê poleceniem
+.br
+.I "lpc start <drukarka>"
+.SH PLIKI
+.PP
+Nazwy plików u¿ywane przez LPRng ustawiane s± warto¶ciami w pliku
+konfiguracyjnym drukarek.
+Poni¿ej podano powszechnie u¿ywany zestaw warto¶ci domy¶lnych.
+.nf
+.ta \w'/var/spool/lpd/printcap.<hostname>           'u
+/etc/lpd.conf                        plik konfiguracyjny LPRng
+/etc/printcap                        plik opisu drukarek
+/etc/lpd.perms                       uprawnienia drukarek
+/var/spool/printer*                  katalogi buforowania
+/var/spool/printer*/printer          plik blokuj±cy sterowania kolejk±
+/var/spool/printer*/control.printer  sterowanie kolejk±
+/var/spool/printer*/active.printer   aktywne zadanie
+/var/spool/printer*/log.printer      plik dziennika drukarki
+.fi
+.SH "ZOBACZ TAK¯E"
+.BR lpd.conf (5),
+.BR lpc (8),
+.BR lpd (8),
+.BR lpr (1),
+.BR lpq (1),
+.BR lprm (1),
+.BR printcap (5),
+.BR lpd.perms (5),
+.BR pr (1).
+.SH DIAGNOSTYKA
+Wiêkszo¶æ komunikatów diagnostycznych jest oczywista. Je¶li dok³adny powód
+niepowodzenia pozostaje niejasny, nale¿y w³±czyæ poziom debugowania (-D5)
+i uruchomiæ ponownie. Informacja diagnostyczna pomo¿e uchwyciæ dok³adn±
+przyczynê.
+.SH "HISTORIA"
+LPRng jest rozszerzonym systemem buforowania wydruku o funkcjonalno¶ci podobnej
+do oprogramowania Berkeley LPR. List± dyskusyjn± o LPRng jest lprng@lprng.com;
+subskrypcja przez wys³anie listu do lprng-request@lprng.com ze s³owem
+`subscribe` w tre¶ci.
+Oprogramowanie to jest dostêpne z ftp://ftp.astart.com/pub/LPRng.
+.SH "AUTOR"
+Patrick Powell <papowell@astart.com>.

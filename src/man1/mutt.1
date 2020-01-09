@@ -1,0 +1,211 @@
+.\" -*-nroff-*-
+.\"
+.\"
+.\"     Copyright (C) 1996-2000 Michael R. Elkins <me@cs.hmc.edu>
+.\" 
+.\"     This program is free software; you can redistribute it and/or modify
+.\"     it under the terms of the GNU General Public License as published by
+.\"     the Free Software Foundation; either version 2 of the License, or
+.\"     (at your option) any later version.
+.\" 
+.\"     This program is distributed in the hope that it will be useful,
+.\"     but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\"     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\"     GNU General Public License for more details.
+.\" 
+.\"     You should have received a copy of the GNU General Public License
+.\"     along with this program; if not, write to the Free Software
+.\"     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
+.\"
+.\"
+.\"     {PTM/TW/0.1/30-06-1999/"agent pocztowy u¿ytkownika"}
+.\"     Translation (c) 1999 Tomasz Wendlandt <juggler@cp.pl>.
+.\" Transl.updated: Robert Luberda <robert@debian.org>, May 2003, mutt 1.5.4
+.\" $Id: mutt.1,v 1.6 2003/05/19 10:10:38 robert Exp $
+.\"
+.TH mutt 1 "styczeñ 2002" Unix "Podrêcznik u¿ytkownika"
+.SH NAZWA
+mutt - agent pocztowy u¿ytkownika (MUA)
+.SH SK£ADNIA
+.PP
+.B mutt
+[-nRyzZ] 
+[-e \fIpolecenie\fP] [-F \fIplik\fP] [-m \fItyp\fP] [-f \fIplik\fP]
+.PP
+.B mutt 
+[-nx] 
+[-e \fIpolecenie\fP] 
+[-a \fIplik\fP]
+[-F \fIplik\fP]
+[-H \fIplik\fP]
+[-i \fIplik\fP]
+[-s \fItemat\fP]
+[-b \fIadres\fP]
+[-c \fIadres\fP] \fIadres\fP [...]
+.PP
+.B mutt
+[-n] [-e \fIpolecenie\fP] [-F \fIplik\fP] -p
+.PP
+.B mutt
+[-n] [-e \fIpolecenie\fP] [-F \fIplik\fP] -Q \fIzapytanie\fP
+.PP
+.B mutt
+[-n] [-e \fIpolecenie\fP] [-F \fIplik\fP] -A \fIalias\fP
+.PP
+.B mutt 
+-v[v]
+.SH OPIS
+.PP
+Mutt jest ma³ym, lecz bardzo silnym programem tekstowym, przeznaczonym do
+czytania poczty elektronicznej pod systemami operacyjnymi Unix, wyposa¿onym w takie
+funkcje jak kolory, MIME i sortowanie wiadomo¶ci wed³ug w±tków.
+.SH OPCJE
+.PP
+.IP "-A \fIalias\fP"
+Wypisuje na wyj¶ciu rozwiniêt± wersjê danego aliasu.
+.IP "-a \fIplik\fP"
+Za³±cza plik do twojej wiadomo¶ci, u¿ywaj±c MIME.
+.IP "-b \fIadres\fP"
+Okre¶la odbiorcê ¶lepej kopii wiadomo¶ci (BCC).
+.IP "-c \fIadres\fP"
+Okre¶la odbiorcê kopii wiadomo¶ci (CC).
+.IP "-e \fIpolecenie\fP"
+Okre¶la polecenie konfiguracyjne, które ma byæ wykonane po 
+wczytaniu plików inicjalizacyjnych.
+.IP "-f \fIskrzynka\fP"
+Okre¶la, któr± skrzynkê pocztow± wczytaæ.
+.IP "-F \fImuttrc\fP"
+Okre¶la plik inicjalizacji, który ma byæ u¿yty zamiast ~/.muttrc
+.IP "-h"
+Wy¶wietla pomoc.
+.IP "-H \fIszkic\fP"
+Okre¶la plik ze szkicem zawieraj±cy nag³ówek i tre¶æ wiadomo¶ci,
+które bêd± u¿yte do wys³ania wiadomo¶ci.
+.IP "-i \fIplik w³±czany\fP"
+Okre¶la plik do w³±czenia w tre¶æ wiadomo¶ci.
+.IP "-m \fItyp\fP       "
+Okre¶la domy¶lny typ skrzynki pocztowej.
+.IP "-n"
+Sprawia, i¿ Mutt pomija ogólnosystemowy plik konfiguracyjny.
+.IP "-p"
+Ponownie otwiera zarzucony list.
+.IP "-Q \fIzapytanie\fP" 
+Zapytanie o warto¶æ zmiennej konfiguracyjnej. Jest ono wykonywane
+po sparsowaniu wszystkich plików konfiguracyjnych i wykonaniu wszystkich
+poleceñ podanych w linii poleceñ.
+.IP "-R"
+Otwiera skrzynkê w trybie \fItylko do odczytu\fP.
+.IP "-s \fItemat\fP"
+Okre¶la temat wiadomo¶ci.
+.IP "-v"
+Wy¶wietla wersjê Mutta i wkompilowane parametry.
+.IP "-x"
+Symuluje tryb tworzenia wiadomo¶ci programu mailx.
+.IP "-y"
+Uruchamia Mutta z list± wszystkich skrzynek pocztowych okre¶lonych
+poleceniem \fBmailboxes\fP.
+.IP "-z"
+Kiedy jest u¿ywane z \fB-f\fP powoduje, ¿e Mutt nie uruchamia siê, je¿eli
+w skrzynce nie ma ¿adnych wiadomo¶ci.
+.IP "-Z"
+Powoduje, ¿e Mutt otwiera pierwsz± skrzynkê zawieraj±c± now± wiadomo¶æ,
+spo¶ród okre¶lonych przez polecenie \fBmailboxes\fP.
+.SH ¦RODOWISKO
+.IP "EDITOR"
+Edytor wywo³ywany podczas komponowania wiadomo¶ci, je¿eli nie jest ustawiona
+zmienna VISUAL.
+.IP "EMAIL"
+Adres e-mail u¿ytkownika.
+.IP "HOME"
+Pe³na ¶cie¿ka do katalogu domowego u¿ytkownika.
+.IP "MAIL"
+Pe³na ¶cie¿ka do katalogu buforowania skrzynki u¿ytkownika.
+.IP "MAILDIR"
+Pe³na ¶cie¿ka do katalogu skrzynki u¿ytkownika. Zwykle u¿ywana,
+je¿eli skrzynka jest folderem
+.B maildir (5).
+.IP "MAILCAPS"
+¦cie¿ka przeszukiwania plików mailcap.
+.IP "MM_NOASK"
+Je¿eli ta zmienna jest ustawiona, to mailcap s± zawsze u¿ywane bez uprzedniego
+pytania.
+.IP "PGPPATH"
+Katalog, w którym znajduje siê pêk kluczy PGP (keyring) u¿ytkownika.
+.IP "TMPDIR"
+Katalog, w którym tworzone s± pliki tymczasowe.
+.IP "REPLYTO"
+Standardowy adres, na który maj± byæ odsy³ane odpowiedzi na wys³an± przez
+u¿ytkownika pocztê.
+.IP "VISUAL"
+Edytor u¿ywany do tworzenia wiadomo¶ci
+.SH PLIKI
+.PP
+.IP "~/.muttrc lub ~/.mutt/muttrc"
+Plik konfiguracyjny u¿ytkownika.
+.IP "/etc/Muttrc"
+Ogólnosystemowy plik konfiguracyjny.
+.IP "/tmp/muttXXXXXX"
+Pliki tymczasowe tworzone przez Mutta.
+.IP "~/.mailcap"
+Definicja u¿ytkownika do obs³ugi nietekstowych typów MIME.
+.IP "/etc/mailcap"
+Definicja systemu do obs³ugi nietekstowych typów MIME.
+.IP "~/.mime.types"
+Osobiste mapowanie u¿ytkownika pomiêdzy typami MIME i rozszerzeniami plików.
+.IP "/etc/mime.types"
+Mapowanie systemowe pomiêdzy typami MIME i rozszerzeniami plików.
+.IP "/usr/bin/mutt_dotlock"
+Uprzywilejowany program do dotlockingu.
+.IP "/usr/share/doc/mutt/manual.txt.gz"
+Podrêcznik Mutta.
+.SH B£ÊDY
+.\" .SH BUGS
+.\" .PP
+.\" None.  Mutts have fleas, not bugs.
+.\" .SH FLEAS
+.PP
+Zawieszenie/wznawianie pracy podczas edytowania pliku za pomoc± edytora
+zewnêtrznego nie dzia³a pod SunOS 4.x, je¿eli u¿ywasz bibliotek curses
+w /usr/5lib. Jednak¿e \fIdzia³a\fP to z bibliotekami S-Lang.
+.PP
+Zmiana wielko¶ci ekranu podczas korzystania z zewnêtrznego pagera powoduje,
+i¿ Mutt wariuje na niektórych systemach.
+.PP
+Zawieszenie/wznawianie nie dzia³a pod Ultrix.
+.PP
+Linia help dla menu nie jest uaktualniana, je¿eli zmienisz powi±zania dla
+jednej z pokazanych w niej funkcji podczas pracy z Muttem.
+.PP
+Aby uzyskaæ bardziej aktualn± listê b³êdów
+.\" , errm, fleas, 
+proszê odwiedziæ stronê systemu ¶ledzenia b³êdów mutta znajduj±c± siê 
+pod adresem http://bugs.guug.de/.  Aby zg³osiæ raport o b³êdzie, prosimy
+u¿yæ programu
+.BR flea (1).
+.SH BRAK GWARANCJI
+Niniejszy program rozpowszechniany jest z nadziej±, i¿ bêdzie on u¿yteczny
+\-\- jednak BEZ JAKIEJKOLWIEK GWARANCJI, nawet domy¶lnej gwarancji
+PRZYDATNO¦CI HANDLOWEJ albo PRZYDATNO¦CI DO OKRE¦LONYCH ZASTOSOWAÑ.
+W celu uzyskania bli¿szych informacji - Powszechna Licencja Publiczna GNU.
+.SH ZOBACZ TAK¯E
+.PP
+.BR curses (3),
+.BR flea (1),
+.BR mailcap (5),
+.BR maildir (5),
+.BR mbox (5),
+.BR mutt_dotlock (1),
+.BR muttrc (5),
+.BR ncurses (3),
+.BR sendmail (1),
+.BR smail (1)
+.PP
+Strona domowa Mutta: http://www.mutt.org/
+.PP
+Podrêcznik Mutta
+.PP
+Powszechna Licencja Publiczna GNU (The GNU General Public License).
+.SH AUTOR
+.PP
+Michael Elkins i inni. U¿yj adresu <mutt-dev@mutt.org>, aby skontaktowaæ
+siê z twórcami.

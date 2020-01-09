@@ -1,0 +1,175 @@
+.\" T³umaczenie na podstawie wersji man-pages 1.45
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" ------------
+.\" Copyright (c) 1990, 1991 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" This code is derived from software contributed to Berkeley by
+.\" Chris Torek and the American National Standards Committee X3,
+.\" on Information Processing Systems.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     @(#)fseek.3	6.11 (Berkeley) 6/29/91
+.\"
+.\" Converted for Linux, Mon Nov 29 15:22:01 1993, faith@cs.unc.edu
+.\"
+.TH FSEEK 3 1993-11-29 "BSD" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+fgetpos, fseek, fsetpos, ftell, rewind \- zmiana pozycji w strumieniu
+.SH SK£ADNIA
+.B #include <stdio.h>
+.sp
+.BI "int fseek(FILE *" stream ", long " offset ", int " whence );
+.br
+.BI "long ftell(FILE *" stream );
+.br
+.BI "void rewind(FILE *" stream );
+.br
+.BI "int fgetpos(FILE *" stream ", fpos_t *" pos );
+.br
+.BI "int fsetpos(FILE *" stream ", fpos_t *" pos );
+.SH OPIS
+Funkcja
+.B fseek
+ustawia wska¼nik pozycji pliku dla strumienia wskazywanego prez
+.IR stream .
+Now± pozycjê, okre¶lon± w bajtach, otrzymuje siê dodaj±c
+.I offset
+bajtów do pozycji okre¶lonej przez
+.IR whence .
+Gdy
+.I whence
+jest ustawine na
+.BR SEEK_SET ,
+.B SEEK_CUR
+lub
+.BR SEEK_END ,
+ofset jest okre¶lany, odpowiednio, wzglêdem pocz±tku pliku, wska¼nika bie¿±cej
+pozycji, lub koñca plku. Pomy¶lne wywo³anie funkcji
+.B fseek
+powoduje wyczyszczenie sygnalizatora koñca pliku dla strumienia i wycofuje
+wszelkie efekty funkcji
+.BR ungetc (3)
+dla tego samego strumienia.
+.PP
+Funkcja
+.B ftell
+pobiera bie¿±c± warto¶æ wska¼nika pozycji pliku dla strumienia wskazywanego
+przez 
+.IR stream .
+.PP
+Funkcja
+.B rewind
+ustawia wska¼nik pozycji pliku dla strumienia wskazywanego przez
+.I stream
+na pocz±tku pliku. Jest równowa¿na:
+.PP
+.RS
+(void)fseek(stream, 0L, SEEK_SET)
+.RE
+.PP
+z t± ró¿nic±, ¿e jest równie¿ czyszczony wska¼nik b³êdu dla tego strumienia
+(zobacz
+.BR clearerr (3)).
+.PP
+Funkcje
+.B fgetpos
+i
+.B fsetpos
+stanowi± alternatywne interfejsy rownowa¿ne
+.B ftell
+i
+.B fseek
+(z whence ustawionym na
+.BR SEEK_SET ),
+s³u¿±ce odpowiednio, do zachowania bie¿±cej warto¶ci ofsetu pliku w obiekcie
+wskazywanym przez
+.IR pos ,
+i do ustawienia tej warto¶ci na podstawie podanego obiektu.
+W niektórych systemach nieuniksowych obiekt
+.B fpos_t
+mo¿e byæ z³o¿onym obiektem i powy¿sze funkcje mog± routines dawaæ jedyn±
+przeno¶n± mo¿liwo¶æ zmiany pozycji strumienia tekstowego.
+.SH "RETURN VALUE"
+Funkcja
+.B rewind
+nie zwraca warto¶ci. Przy pomy¶lnym zakoñczeniu,
+.BR fgetpos ,
+.BR fseek
+i
+.B fsetpos
+zwracaj± 0,
+a
+.B ftell
+zwraca bie¿±cy ofset. W przeciwnym przyoadku zwracane jest \-1, a rodzaj
+b³êdu jest okre¶lony poprzez ustawienie zmiennej globalnej errno.
+.SH B£ÊDY
+.TP
+.B EBADF
+Podanego strumienia
+.I stream
+nie mo¿na pozycjonowaæ.
+.TP
+.B EINVAL
+Argument
+.B fseek
+.I whence
+nie jest jednym z
+.BR SEEK_SET ,
+.BR SEEK_END
+lub
+.BR SEEK_CUR .
+.PP
+Funkcje
+.BR fgetpos ,
+.BR fseek ,
+.BR fsetpos ,
+i
+.B ftell
+mog± równie¿ zawie¶æ ustawiaj±c w
+.I errno
+dowolny z  b³êdów okre¶lonych dla funkcji
+.BR fflush (3),
+.BR fstat (2),
+.BR lseek (2)
+i
+.BR malloc (3).
+.SH "ZGODNE Z"
+Funkcje
+.BR fgetpos ,
+.BR fsetpos ,
+.BR fseek ,
+.BR ftell
+i
+.BR rewind
+spe³niaj± wymogi ANSI X3.159-1989 (``ANSI C'').
+.SH "ZOBACZ TAK¯E"
+.BR lseek (2),
+.BR fseeko (3)

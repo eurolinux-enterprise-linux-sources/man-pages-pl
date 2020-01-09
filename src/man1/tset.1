@@ -1,0 +1,236 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+.\"***************************************************************************
+.\" Copyright (c) 1998 Free Software Foundation, Inc.                        *
+.\"                                                                          *
+.\" Permission is hereby granted, free of charge, to any person obtaining a  *
+.\" copy of this software and associated documentation files (the            *
+.\" "Software"), to deal in the Software without restriction, including      *
+.\" without limitation the rights to use, copy, modify, merge, publish,      *
+.\" distribute, distribute with modifications, sublicense, and/or sell       *
+.\" copies of the Software, and to permit persons to whom the Software is    *
+.\" furnished to do so, subject to the following conditions:                 *
+.\"                                                                          *
+.\" The above copyright notice and this permission notice shall be included  *
+.\" in all copies or substantial portions of the Software.                   *
+.\"                                                                          *
+.\" THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS  *
+.\" OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF               *
+.\" MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.   *
+.\" IN NO EVENT SHALL THE ABOVE COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,   *
+.\" DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR    *
+.\" OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR    *
+.\" THE USE OR OTHER DEALINGS IN THE SOFTWARE.                               *
+.\"                                                                          *
+.\" Except as contained in this notice, the name(s) of the above copyright   *
+.\" holders shall not be used in advertising or otherwise to promote the     *
+.\" sale, use or other dealings in this Software without prior written       *
+.\" authorization.                                                           *
+.\"***************************************************************************
+.\"
+.\" $Id: tset.1,v 1.2 2000/09/30 17:08:37 wojtek2 Exp $
+.TH tset 1 ""
+.SH NAZWA
+\fBtset\fR - inicjalizacja terminala
+.SH SK£ADNIA
+tset [-IQqrs] [-] [-e \fIch\fR] [-i \fIch\fR] [-k \fIch\fR] [-m \fImapowanie\fR] [\fIterminal\fR]
+.br
+reset [-IQqrs] [-] [-e \fIch\fR] [-i \fIch\fR] [-k \fIch\fR] [-m \fImapowanie\fR] [\fIterminal\fR]
+.SH OPIS
+\&\fBTset\fR inicjalizuje terminale.
+Program najpierw okre¶la rodzaj terminala, z którego korzystasz. Robi to
+w nastêpuj±cy sposób, szukaj±c pierwszego pasuj±cego typu terminala:
+.PP
+1. Poprzez argument \fBterminal\fR, podany w linii poleceñ.
+.PP
+2. Poprzez warto¶æ zmiennej ¶rodowiskowej \fBTERM\fR.
+.PP
+3. (Tylko systemy BSD.) Typ terminala, zwi±zany poprzez plik \fI/etc/ttys\fR
+z urz±dzeniem stderr. (Pod Linuksem i UNIX-ami w rodzaju System V, 
+robotê t± wykonuje \fIgetty\fR, ustawiaj±c \fBTERM\fR
+zgodnie z typem, przekazanym mu przez \fI/etc/inittab\fR.)
+.PP
+4. Poprzez wybranie domy¶lnego typu terminala, ``unknown''.
+.PP
+Je¶li rodzaj terminala nie by³ podany w linii poleceñ, to za³±czane s±
+mapowania opcji -m (zobacz ni¿ej opis).
+Potem, je¶li typ terminala zaczyna siê od pytajnika (``?''), u¿ytkownik jest
+pytany o potwierdzenie. Pusta odpowied¼ potwierdza typ, a
+niepusta wprowadza inny. Gdy terminal zostanie ju¿ okre¶lony, odczytywany
+jest opis terminala z terminfo. Je¶li nie ma dla niego opisu w terminfo,
+u¿ytkownik jest proszony o podanie innego typu terminala.
+.PP
+Gdy opis terminfo zostanie ju¿ pobrany, ustawiane s± rozmiar okna, znaki
+backspace, przerwania (interrupt) i zabicia liniii i wysy³ane s± na wyj¶cie
+stderr ³añcuchy inicjalizacji tab i terminala. Na koniec, je¶li znaki
+kasowania (erase), przerwania (interrupt) i usuniêcia linii (line kill)
+zmieni³y siê, lub nie s± ustawione na warto¶ci domy¶lne, ich warto¶ci s±
+wy¶wietlane na wyj¶cie stderr.
+.PP
+Po wywo³aniu jako \fBreset\fR, \fBtset\fR ustawia tryby cooked i echo,
+wy³±cza tryby cbreak i raw, w³±cza t³umaczenie nowej linii i resetuje
+wszystkie nieustawione znaki specjalne na warto¶ci domy¶lne. Nastêpnie
+zachodzi inicjalizacja terminala, opisana wy¿ej. Jest to przydatne je¶li
+program umrze, pozostawiaj±c terminal w nienormalnym stanie. Zauwa¿, ¿e
+mo¿liwe, ¿e bêdzie trzeba wpisaæ
+
+    \fB<LF>reset<LF>\fR
+
+(znak line-feed to zazwyczaj control-J) aby terminal zacz±³ dzia³aæ, gdy¿ CR
+mo¿e w stanie nienormalnym nie dzia³aæ. Poza tym, terminal czêsto nie
+bêdzie odbija³ echa komendy.
+.PP
+Opcje s± nastêpuj±ce:
+.TP 5
+-q
+Typ terminala jest wy¶wietlany na standardowe wyj¶cie i nie jest on w
+¿aden sposób inicjalizowany. Opcja `-' jest równowa¿na, lecz archaiczna.
+.TP 5
+-e
+Ustaw znak kasowania (erase) na \fIch\fR.
+.TP 5
+-I
+Nie wysy³aj na terminal ³añcuchów inicjalizacji tab lub terminala.
+.TP 5
+-i
+Ustaw znak przerwania (interrupt) na \fIch\fR.
+.TP 5
+-k
+Ustaw znak usuwania linii (line kill) na \fIch\fR.
+.TP 5
+-m
+Podaj mapowanie z typu portu na terminal. Patrz ni¿ej.
+.TP 5
+-Q
+Nie wy¶wietlaj ¿adnych warto¶ci dla znaków erase, interrupt i line kill.
+.TP 5
+-r
+Drukuj na stderr typ terminala.
+.TP 5
+-s
+Drukuj na stdout sekwencjê komend pow³okowych, inicjalizuj±cych zmienn±
+¶rodowiskow± \fBTERM\fR.
+Zobacz te¿ sekcjê ni¿ej o ustawianiu ¶rodowiska.
+.PP
+Argumenty dla -e, -i, -k mog± byæ wprowadzane jako normalne znaki, z u¿yciem
+notacji `kapeluszowej', tj. control-h mo¿e byæ podawany jako ``^H'' czy ``^h''.
+.SH USTAWIANIE ¦RODOWISKA
+Czêsto do ¶rodowiska pow³oki przydaje siê wstawiæ typ terminala i informacjê
+o jego w³a¶ciwo¶ciach. Dokonuje siê tego przy u¿yciu opcji -s.
+.PP
+Gdy podana jest opcja -s, komendy wymagane do wstawienia informacji do
+¶rodowiska pow³oki s± zapisywane na stdout. Je¶li zmienna ¶rodowiskowa
+\fBSHELL\fR koñczy siê na ``csh'', komendy s± preparowane dla \fBcsh\fR, 
+w przeciwnym wypadku tworzone s± dla \fBsh\fR. Nastêpuj±ca linia w \fB.login\fR 
+czy \fB.profile\fR powinna prawid³owo zainicjalizowaæ ¶rodowisko:
+
+    eval \`tset -s options ... \`
+
+.SH MAPOWANIE TYPU TERMINALA
+Gdy terminal nie jest ¶ci¶le przywi±zany do systemu (lub bie¿±ca informacja
+systemowa mo¿e nie byæ prawid³owa), typ terminala wyprowadzony z pliku
+\fI/etc/ttys\fR lub ze zmiennej ¶rodowiskowej \fBTERM\fR mo¿e byæ czêsto czym¶
+podstawowym, w rodzaju \fBnetwork\fR, \fBdialup\fR czy \fBunknown\fR.
+Gdy \fBtset\fR jest u¿ywany w skrypcie startowym, czêsto dobrze jest
+udostêpniæ informacjê o typie terminala u¿ywanym na takich portach.
+.PP
+Celem opcji -m jest mapowanie z pewnych warunków na typ terminala, tj.
+mówienie \fBtset\fR
+``Jestem na tym porcie, z tak± prêdko¶ci±, wiêc chyba jestem na tym typie
+terminala''.
+.PP
+Argument opcji -m sk³ada siê z opcjonalnego typu portu, opcjonalnego
+operatora i opcjonalnej szybko¶ci oraz znaku dwukropka i typu terminala. Typ
+portu jest ³añcuchem (rozdzielanym przez operator albo znak dwukropka).
+Operator mo¿e byæ dowoln± kombinacj± ``>'', ``<'', ``@'' i ``!''; ``>''
+oznacza wiêkszy od, ``<'' mniejszy od, ``@'' równy, a ``!'' odwraca sens
+testu.
+Szybko¶æ jest podawana jako liczba i jest porównywana z szybko¶ci± wyj¶cia
+standardowego b³êdów (które powinno byæ kontroluj±cym terminalem). Typ
+terminala jest ³añcuchem.
+.PP
+Je¶li w linii poleceñ nie podano typu terminala, do typu stosowane s±
+mapowania -m. Je¶li typ portu i szybko¶æ odpowiadaj± mapowaniu, terminal
+podany w mapowaniu podmienia typ obecny. Je¶li podanych jest wiêcej ni¿
+jedno mapowanie, u¿yte zostanie pierwsze pasuj±ce.
+.PP
+Na przyk³ad, rozwa¿ nastêpuj±ce mapowanie: \fBdialup>9600:vt100\fR.
+Typ portu to dialup, operator to >, szybko¶æ to 9600, a typ terminala to
+vt100. Wynikiem mapowania jest okre¶lenie, ¿e je¶li typ terminala to
+\fBdialup\fR, szybko¶æ jest wiêksza ni¿ 9600 bodów, to nale¿y u¿ywaæ
+terminala \fBvt100\fR.
+.PP
+Je¶li nie poda siê szybko¶ci, typ terminala bêdzie pasowa³ do dowolnej
+szybko¶ci. Je¶li nie poda siê typu portu, terminal bêdzie pasowa³ do
+dowolnego portu. Na przyk³ad,
+\fB-m dialup:vt100 -m :?xterm\fR
+spowoduje, ¿e dowolny port dialupowy, niezale¿nie od szybko¶ci bêdzie
+odpowiada³ terminalowi vt100, podczas gdy dowolny port niedialupowy bêdzie
+traktowany jako ?xterm.
+Zauwa¿, ¿e z uwagi na pytajnik, u¿ytkownik bêdzie zapytany o domy¶lnym
+porcie czy rzeczywi¶cie u¿ywa terminala xterm.
+.PP
+W argumencie opcji -m dozwolone s± znaki bia³ych spacji. Ponadto, aby
+zapobiec problemom z metaznakami, ca³± opcjê -m zaleca siê umieszczaæ
+wewn±trz cytatów, a u¿ytkownikom \fBcsh\fR umieszczanie lewych uko¶ników
+(``\e'') przed znakami wykrzykników (``!'').
+.SH HISTORIA
+Komenda \fBtset\fR pojawi³a siê w BSD 3.0. Implementacja \fBncurses\fR
+zosta³a czê¶ciowo zaadaptowana ze ¼róde³ 4.4BSD do ¶rodowiska terminfo przez
+Erica S. Raymonda <esr@snark.thyrsus.com>.
+.SH KOMPATYBILNO¦Æ
+Narzêdzie \fBtset\fR zosta³o udostêpnione do wstecznej kompatybilno¶ci ze
+¶rodowiskami BSD (pod wiêkszo¶ci± UNIX-ów \fB/etc/inittab\fR i
+\fIgetty\fR(1) mog± ustawiaæ odpowiednio \fBTERM\fR dla dowolnej linii
+dial-up, a to trywializuje to, co by³o najwa¿niejszym zastosowanem
+\fBtset\fR). Implementacja ta zachowuje siê jak tset z 4.4BSD, lecz zawiera
+kilka wyj±tków.
+.PP
+Opcja -S z BSD tset nie dzia³a; drukuje na stderr komunikat o b³êdzie i
+umiera. Opcja -s ustawia tylko \fBTERM\fR, nie \fBTERMCAP\fP. Obydwie te
+zmiany s± spowodowane tym, ¿e zmienna \fBTERMCAP\fR nie jest ju¿ obs³ugiwana
+w opartych o terminfo \fBncurses\fR, co powoduje ¿e \fBtset -S\fR jest
+bezu¿yteczny.
+.PP
+Istnia³a nieudokumentowana w³a¶ciwo¶æ 4.4BSD, wed³ug której wywo³anie tset
+poprzez dowi±zanie o nazwie `TSET` (lub poprzez inn± nazwê, rozpoczynaj±c±
+siê od du¿ej litery) ustawia³o terminal na u¿ywanie tylko du¿ych liter.
+W³a¶ciwo¶æ ta zosta³a pominiêta.
+.PP
+Opcje -A, -E, -h, -u i -v skasowano z narzêdzia \fBtset\fR w 4.4BSD. ¯adne z
+nich nie by³o udokumentowane w 4.3BSD i wszystkie mia³y w najlepszym wypadku
+ograniczon± przydatno¶æ. Opcje -a, -d i -p s± podobnie nieopisane lub
+nieu¿yteczne, lecz zosta³y utrzymane, gdy¿ okazuje siê ¿e s± powszechnie
+u¿ywane. Jest mocno zalecane zmienienie wykorzystywania tych opcji na opcjê -m.
+Opcja -n pozostaje, lecz nie ma ¿adnego efektu. Opcje -adnp s± z tej
+przyczyny pominiête w opisie powy¿ej.
+.PP
+Wci±¿ jest dozwolone podawanie opcji -e, -i i -k bez argumentów, choæ mocno
+jest zalecane, by zmieniæ to na jawne podawanie znaku.
+.PP
+Od 4.4BSD, wywo³ywanie \fBtset\fR jako \fBreset\fR nie implikuje ju¿ opcji -Q.
+Poza tym, interakcja miêdzy opcj± - a argumentem \fIterminal\fR, pochodz±ca
+z historycznych implementacji \fBtset\fR zosta³a usuniêta.
+.SH ¦RODOWISKO
+Komenda \fBtset\fR u¿ywa zmiennych ¶rodowiskowych \fBSHELL\fR i \fBTERM\fR.
+.SH PLIKI
+.TP 5
+/etc/ttys
+baza mapowañ nazw portów na typy terminali (tylko wersje BSD).
+.TP 5
+/usr/share/terminfo
+baza w³a¶ciwo¶æi terminala
+.SH ZOBACZ TAK¯E
+csh(1),
+sh(1),
+stty(1),
+tty(4),
+termcap(5),
+ttys(5),
+environ(7)
+.\"#
+.\"# The following sets edit modes for GNU EMACS
+.\"# Local Variables:
+.\"# mode:nroff
+.\"# fill-column:79
+.\"# End:
+

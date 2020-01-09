@@ -1,0 +1,133 @@
+# Format of the file:
+# manpage old_section new_section
+# id new_section is empty then manpage will be removed
+alien	1	1p
+environ	5	7
+Tcl	n	3tcl
+expr	n	3tcl
+config  1	5ssl
+ncurses 3x	3ncurses
+pam	8	7
+chroot  1	8
+startx  1X	1x
+xinit	1X	1x
+xwd	1X	1x
+
+# List of manpages that should not be installed in the Debian package
+apropos	1
+catman	8
+man	1
+mandb	8
+manpath	1
+manpath	5
+whatis	1
+zsoelim	1
+man.config 5
+scp	1.com
+
+# translation of rpm.8 is included in the rpm package
+gendiff		1
+rpmbuild	8
+rpmcache	8
+rpmdeps		8
+rpmgraph	8
+rpm		8
+rpm2cpio	8
+
+# We are using shadow-utils in Debian, so remove unnecessary manpages
+chfn	1
+chsh	1
+groups	1s
+login	1
+su	1
+
+# those manpages are now in shadow-utils
+chfn		1s
+chsh		1s
+login		1s
+su		1s
+chage		1
+chpasswd	8
+d_passwd	5
+dpasswd		8
+expiry		1
+faillog		5
+faillog		8
+gpasswd		1
+groupadd	8
+groupdel	8
+groupmod	8
+grpck		8
+grpconv		8
+grpunconv	8
+lastlog		8
+limits		5
+login.access	5
+login.defs	5
+mkpasswd	8
+newgrp		1
+newusers	8
+passwd		1
+passwd		5
+porttime	5
+pwck		8
+pwconv		8
+pwunconv	8
+shadow		5
+shadowconfig	8
+suauth		5
+useradd		8
+userdel		8
+usermod		8
+vigr		8
+vipw		8
+
+# mc(1) is in its package 
+mc	1
+# polish(5) in its package
+polish	5
+
+# hostname.1a is closer to Debian version
+hostname 1
+
+# Debian apt does not support rpm packages 
+apt-cache 8r
+apt-cdrom 8r
+apt-get   8r
+apt       8r
+
+# Not yet translated
+arp		7
+getnameinfo	3
+getopt		3
+getutent	3
+setquota	8
+warnquota	8
+
+# duplicated man pages in section 1 and 8
+depmod		1
+insmod		1
+lsmod		1
+modprobe	1
+rmmod		1
+sync		8
+
+# Let's make linitian happy and correct .TH lines
+captoinfo	1m	1m
+checkalias	1	1
+find		1	1
+forward		1q	1q
+frm		1	1
+getrpcport	3	3
+hostname	1a	1a
+httpd		8	8
+id		1s	1s
+lbxproxy	1x	1x
+locate		1	1
+locatedb	5	5
+make		1	1
+mt		1	1
+updatedb	1	1
+x25		7	7
+xargs		1	1
+xvpictoppm	1	1

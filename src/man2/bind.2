@@ -1,0 +1,211 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright 1993 Rickard E. Faith (faith@cs.unc.edu)
+.\" Portions extracted from /usr/include/sys/socket.h, which does not have
+.\" any authorship information in it.  It is probably available under the GPL.
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\"
+.\" Other portions are from the 6.9 (Berkeley) 3/10/91 man page:
+.\"
+.\" Copyright (c) 1983 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"     This product includes software developed by the University of
+.\"     California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\" Modified Mon Oct 21 23:05:29 EDT 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified 1998 by Andi Kleen
+.\" $Id: bind.2,v 1.5 2002/06/04 21:29:12 ankry Exp $
+.\" Translation (c) 1998 Przemek Borys <pborys@dione.ids.pl> 
+.\" Last Update: Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\"
+.TH BIND 2 1998-10-03 "Linux 2.2" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+bind \- przywi±zanie nazwy do gniazda
+.SH SK£ADNIA
+.B #include <sys/types.h>
+.br
+.B #include <sys/socket.h>
+.sp
+.BI "int bind(int " sockfd ", struct sockaddr *" my_addr ", socklen_t " addrlen );
+.SH OPIS
+.B bind
+nadaje gniazdu, 
+.IR sockfd ,
+lokalny adres
+.IR my_addr .
+.I my_addr
+ma d³ugo¶æ
+.I addrlen
+bajtów. Tradycyjnie nazywa siê to "przyznaniem gniazdu nazwy". Gdy gniazdo
+jest utworzone za pomoc± polecenia
+.BR socket (2),
+istnieje ono w przestrzeni nazw (rodzina adresów), ale nie ma przyznanej
+¿adnej nazwy.
+.PP
+Normalnie, zanim gniazdo
+.B SOCKET_STREAM
+bêdzie mog³o odbieraæ po³±czenia (zobacz
+.BR accept (2)),
+niezbêdne jest przypisanie mu lokalnego adresu za pomoc±
+.BR bind .
+
+Regu³y dotycz±ce przywi±zywania nazw s± ró¿ne w ró¿nych rodzinach adresów.
+Szczegó³owe informacje znajduj± siê na stronach podrêcznika man w sekcji 7.
+Dla
+.B AF_INET
+zobacz
+.BR ip (7),
+dla
+.B AF_UNIX
+zobacz
+.BR unix (7),
+dla
+.B AF_APPLETALK
+zobacz
+.BR ddp (7),
+dla
+.B AF_PACKET
+zobacz
+.BR packet (7),
+dla
+.B AF_X25
+zobacz
+.BR x25 (7),
+a dla
+.B AF_NETLINK
+zobacz
+.BR netlink (7).
+
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu, zwracane jest zero. W przeciwnym wypadku zwracane
+jest \-1 i odpowiednio ustawiane
+.I errno .
+.SH B£ÊDY
+.TP
+.B EBADF
+.I sockfd
+nie jest prawid³owym deskryptorem.
+.TP
+.B EINVAL
+Gniazdo ju¿ jest przywi±zane do adresu. Mo¿e to siê zmieniæ w przysz³o¶ci:
+szczegó³y mo¿na znale¼æ w
+.IR linux/unix/sock.c .
+.TP
+.B EACCES
+Adres jest chroniony, a u¿ytkownik nie jest superu¿ytkownikiem.
+.TP
+.B ENOTSOCK
+Argument jest deskryptorem pliku, a nie gniazda.
+.PP
+Nastêpuj±ce b³êdy odnosz± siê do gniazd domeny UNIX-owej
+.RB ( AF_UNIX ):
+.TP
+.B EINVAL
+Parametr
+.I addrlen
+jest nieprawid³owy, lub gniazdo nie nale¿y do rodziny
+.BR AF_UNIX .
+.TP
+.B EROFS
+I-wêze³ gniazda rezyduje na systemie plików przeznaczonym tylko do odczytu.
+.TP
+.B EFAULT
+.I my_addr
+wskazuje poza dostêpn± dla u¿ytkownika przestrzeñ adresow±.
+.TP
+.B ENAMETOOLONG
+.I my_addr
+jest zbyt d³ugie.
+.TP
+.B ENOENT
+Plik nie istnieje.
+.TP
+.B ENOMEM
+Brak pamiêci kernela.
+.TP
+.B ENOTDIR
+Element sk³adowy ¶cie¿ki nie jest katalogiem.
+.TP
+.B EACCES
+Brak praw do przeszukiwania dla sk³adnika ¶cie¿ki.
+.TP
+.B ELOOP
+Podczas rozwi±zywania
+.I my_addr
+napotkano zbyt wiele dowi±zañ symbolicznych.
+.SH USTERKI
+Nie opisano opcji przezroczystych proxy.
+.SH "ZGODNE Z"
+SVr4, 4.4BSD (funkcja
+.B bind
+pojawi³a siê najpierw w BSD 4.2). SVr4 dokumentuje dodatkowe ogólne b³êdy,
+.BR EADDRNOTAVAIL ,
+.B EADDRINUSE
+i
+.B ENOSR
+oraz dodatkowe b³êdy domeny UNIX-owej,
+.B EIO
+i
+.BR EISDIR .
+.SH UWAGA
+Trzeci argument
+.B bind
+jest w rzeczywisto¶ci typu int (i tak jest w BSD 4.*, libc4 i libc5).
+Pewne zamieszanie w POSIX doprowadzi³o jego zmiany na obecny socklen_t.
+Zobacz tak¿e
+.BR accept (2).
+.SH "ZOBACZ TAK¯E"
+.BR accept (2),
+.BR connect (2),
+.BR listen (2),
+.BR socket (2),
+.BR getsockname (2),
+.BR ip (7),
+.BR socket (7)

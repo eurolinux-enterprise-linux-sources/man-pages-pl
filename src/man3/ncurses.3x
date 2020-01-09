@@ -1,0 +1,615 @@
+.\" vim:ft=nroff
+.\" $Id: ncurses.3x,v 1.7 2003/05/29 11:06:06 robert Exp $
+.\" {PTM/PB/0.1/21-06-1999/"Pakiet obs³ugi CRT i jego optymalizacji"}
+.TH ncurses 3X ""
+.ds n 5
+.ds d /usr/lib/terminfo
+.SH NAZWA
+\fBncurses\fR - pakiet obs³ugi CRT i jego optymalizacji
+.SH STRESZCZENIE
+\fB#include <curses.h>\fR
+.br
+.SH OPIS
+Funkcje biblioteki \fBcurses\fR daj± u¿ytkownikowi niezale¿ne od terminala
+metody obs³ugiwania ekranów znakowych z sensown± optymalizacj±. Ta
+implementacja to ,,nowe curses'' (ncurses). Jest ona zatwierdzonym
+zamiennikiem dla klasycznych curses z 4.4BSD, których rozwoju zaprzestano.
+
+Funkcje \fBncurses\fR emuluj± bibliotekê \fBcurses\fR(3X) Systemu Vr4, a
+tak¿e standard XPG4 (XSI curses), lecz biblioteka ncurses jest wolnodostêpna
+w postaci ¼ród³owej. Ró¿nice miêdzy curses z SVr4 podsumowano w sekcjach
+ROZSZERZENIA i B£ÊDY, wystêpuj±cych poni¿ej, a opisano szczegó³owo
+w takich samych sekcjach stron podrêcznika systemowego po¶wiêconych
+poszczególnym funkcjom.
+
+Program, który korzysta z tych funkcji, musi byæ skonsolidowany z opcj±
+\fB-lncurses\fR (lub je¶li zosta³ wygenerowany) z bibliotek± debuggow±
+\fB-lncurses_g\fR. Biblioteka ncurses_g generuje logi ¶ledzenia (plik o
+nazwie 'trace', w bie¿±cym katalogu), które opisuj± akcje curses.
+
+Pakiet \fBncurses\fR obs³uguje: dzia³anie na ekranie, oknach i padach;
+wyj¶cie do okien i padów; odczytywanie wej¶cia z terminala; sterowanie
+terminalem oraz opcje wej¶cia/wyj¶cia \fBcurses\fR; funkcje zapytañ
+¶rodowiskowych; dzia³anie na kolorach; u¿ywanie klawiszy o miêkkich
+etykietach; w³a¶ciwo¶ci terminfo; i dostêp do niskopoziomowych funkcji
+obs³ugi terminala.
+
+Aby zainicjalizowaæ pakiet, nale¿y na samym pocz±tku wywo³aæ funkcjê
+\fBinitscr\fR, lub \fBnewterm\fR. Przed wyj¶ciem nale¿y wywo³aæ funkcjê
+\fBendwin\fR. Aby uzyskaæ wej¶cie znakowe znak-po-znaku bez echa (wiêkszo¶æ
+interaktywnie zorientowanych programów tego chce), powinno siê u¿yæ
+nastêpuj±cej sekwencji:
+
+      \fBinitscr(); cbreak(); noecho();\fR
+
+Wiêkszo¶æ programów chêtnie wykorzystuje te¿ sekwencje:
+
+      \fBnonl();\fR
+      \fBintrflush(stdscr, FALSE);\fR
+      \fBkeypad(stdscr, TRUE);\fR
+
+Przed uruchomieniem programu \fBcurses\fR, nale¿y ustawiæ <tab stops>
+(pozycje tabulacji) terminala, oraz wys³aæ doñ ³añcuchy inicjuj±ce. Mo¿na tego
+dokonaæ, wywo³uj±c polecenie \fBtput init\fR po uprzednim wyeksportowaniu
+zmiennej ¶rodowiskowej \fBTERM\fR.
+Odpowiedzialny za to jest \fBtset(1)\fR.
+[Szczegó³y - zobacz \fBterminfo\fR(\*n).]
+
+Biblioteka \fBcurses\fR zezwala na dzia³anie na strukturach danych,
+nazywanych \fIoknami\fR, o których mo¿na my¶leæ jak o dwuwymiarowych
+tablicach znaków, reprezentuj±cych czê¶æ lub ca³o¶æ ekranu CRT. Dostarczane
+jest domy¶lne okno, o nazwie \fBstdscr\fR, którego wymiary odpowiadaj±
+ekranowi terminala. Inne okna mo¿na utworzyæ przy u¿yciu funkcji
+\fBnewwin\fR.
+
+Zauwa¿, ¿e \fBcurses\fR nie obs³uguje zachodz±cych okien - jest to robione
+przez bibliotekê \fBpanels(3x)\fR. Znaczy to, ¿e mo¿esz albo u¿ywaæ
+\fBstdscr\fR, albo podzieliæ ekran na okna i nie u¿ywaæ \fBstdscr\fR w
+ogóle. £±czenie tych dwóch spowoduje niepraktyczne i niepo¿±dane efekty.
+
+Do okien mo¿na odnosiæ siê poprzez zmienne zadeklarowane jako \fBWINDOW *\fR. 
+Dzia³añ na tych strukturach dokonuje siê funkcjami opisanymi na tej
+stronie oraz w innych miejscach stron podrêcznika \fBncurses\fR.
+Najbardziej podstawowymi funkcjami s± \fBmove\fR i \fBaddch\fR. Ogólniejsze
+wersje tych funkcji figuruj± pod nazwami zaczynaj±cymi siê od \fBw\fR
+i umo¿liwiaj± podanie okna. Funkcje nie zaczynaj±ce siê od \fBw\fR dzia³aj±
+na \fBstdscr\fR.
+
+Po u¿yciu funkcji dzia³ania na oknie, wywo³ywany jest \fBrefresh\fR,
+nakazuj±cy \fBcurses\fR, by ekran CRT zacz±³ wygl±daæ tak jak \fBstdscr\fR.
+Znaki okna s± w³a¶ciwie typu \fBchtype\fR (znak i dane atrybutu), wiêc dane
+o znaku mo¿na przechowywaæ w nim samym.
+
+Mo¿na te¿ operowaæ szczególnymi oknami, \fIpadami\fR. Okna te nie s±
+ograniczone rozmiarami ekranu, a ich zawarto¶æ nie musi byæ w ca³o¶ci
+wy¶wietlana. Wiêcej szczegó³ów znajdziesz w curs_pad(3X).
+
+Oprócz rysowania na ekranie znaków, mog± byæ obs³ugiwane atrybuty i kolory,
+a wiêc znaki mog± pokazywaæ siê w trybach takich jak podkre¶lenie,
+inwersja, lub w kolorze, o ile terminal na to pozwala. Mo¿na wy¶wietlaæ
+znaki sk³adaj±ce siê na linie. Na wej¶ciu, ncurses potrafi t³umaczyæ
+klawisze strza³ek i funkcyjne, które przekazuj± sekwencje eskejpowe, na
+zwyk³e warto¶ci. Atrybuty wideo, znaki rysowania linii i nazwy warto¶ci
+wej¶ciowych s± zdefiniowane w \fB<curses.h>\fR i maj± nazwy typu
+\fBA_REVERSE\fR, \fBACS_HLINE\fR, czy \fBKEY_LEFT\fR.
+
+Je¶li ustawiono zmienne ¶rodowiskowe \fBLINES\fR i \fBCOLUMNS\fR, lub je¶li
+program jest uruchomiony w ¶rodowisku okienkowym, to informacje o rozmiarze
+ekranu przes³oni± dane odczytywane z \fIterminfo\fR. 
+
+Je¶li zdefiniowana jest zmienna ¶rodowiskowa \fBTERMINFO\fR, to ka¿dy
+program u¿ywaj±cy \fBcurses\fR bêdzie szuka³ najpierw lokalnej definicji 
+terminala, a dopiero potem zajrzy do standardowego miejsca. Np. Je¶li
+\fBTERM\fR jest ustawione na \fBatt4424\fR, to wkompilowana definicja
+terminala jest znajdywana w
+
+      \fB\*d/a/att4424\fR.
+
+(\fBa\fR jest kopiowane z pierwszej litery \fBatt4424\fR, aby zapobiec
+tworzeniu wielkich katalogów.) Jednak je¶li ustawiono \fBTERMINFO\fR, np. na
+warto¶æ \fB$HOME/myterms\fR, to \fBcurses\fR zajrzy wpierw do
+
+      \fB$HOME/myterms/a/att4424\fR,
+
+a je¶li to zawiedzie, do
+
+      \fB\*d/a/att4424\fR.
+
+Jest to przydatne dla rozwijania eksperymentalnych definicji, lub gdy nie ma
+praw zapisu do \fB\*d\fR.
+
+Zmienne ca³kowite \fBLINES\fR i \fBCOLS\fR s± zdefiniowane w
+\fB<curses.h>\fR i s± wype³niane przez \fBinitscr\fR warto¶ciami,
+odpowiadaj±cymi rozmiarowi ekranu. Sta³e
+\fBTRUE\fR i \fBFALSE\fR maj± odpowiednio warto¶ci \fB1\fR i
+\fB0\fR.
+
+Zmienne \fBcurses\fR definiuj± równie¿ zmienn± \fBWINDOW *curscr\fR,
+która jest u¿ywana do pewnych niskopoziomowych operacji, jak np.
+oczyszczanie i od¶wie¿anie ekranu, zawieraj±cego ¶mieci. \fBcurscr\fR mo¿e
+byæ u¿yte tylko w niektórych funkcjach.
+
+.SS Nazwy funkcji i argumentów
+Wiele funkcji \fBcurses\fR ma dwie lub wiêcej wersji. Zmienne, poprzedzone
+\fBw\fR, wymagaj± argumentu okna. Zmienne poprzedzone \fBp\fR wymagaj±
+argumentu padu. Funkcje bez przedrostka odnosz± siê w ogólno¶ci do
+\fBstdscr\fR.
+
+Zmienne z przedrostkiem \fBmv\fR wymagaj± wspó³rzêdnych \fIy\fR i \fIx\fR,
+wskazuj±cych miejsce ekranu, do którego nale¿y siê przenie¶æ przed
+dokonaniem akcji.  Funkcje te wymuszaj± wywo³anie \fBmove\fR przed
+wywo³aniem innej funkcji. Wspó³rzêdna \fIy\fR zawsze odnosi siê do wiersza
+(okna), a \fIx\fR do kolumny. Górny lewy naro¿nik ma wspó³rzêdne (0,0), nie
+(1,1).
+
+Funkcje z przedrostkiem \fBmvw\fR pobieraj± zarówno argument okna, jak i
+parametry wspó³rzêdnych. Argument okna jest zawsze podawany przed
+wspó³rzêdnymi.
+
+W ka¿dym wypadku, \fIwin\fR jest oknem, a \fIpad\fR padem, na które wp³ywa
+funkcja. \fIwin\fR i \fIpad\fR s± zawsze wska¼nikami do typu 
+\fBWINDOW\fR.
+
+Funkcje ustawiaj±ce opcje wymagaj± flagi logicznej \fIbf\fR, której
+warto¶æ wynosi albo \fBTRUE\fR, albo \fBFALSE\fR; \fIbf\fR jest zawsze typu
+\fBbool\fR. Zmienne \fIch\fR i \fIattrs\fR ni¿ej, s± zawsze typu
+\fBchtype\fR. 
+Typy \fBWINDOW\fR, \fBSCREEN\fR, \fBbool\fR, i
+\fBchtype\fR s± zdefiniowane w \fB<curses.h>\fR.  Typ  \fBTERMINAL\fR
+jest zdefiniowany w \fB<term.h>\fR.  Wszystkie pozosta³e argumenty s± typu
+integer.
+
+.SS Indeks nazw funkcji
+W poni¿szej tablicy podano ka¿d± z funkcji \fBcurses\fR, wskazuj±c przy
+okazji odpowiadaj±c± jej stronê podrêcznika man. Funkcje oznaczone `*',
+s± specyficzne dla ncurses, nieopisane przez XPG4 i SVr4.
+
+.nf 
+Nazwa funkcji    Nazwa strony podrêcznika
+___________________________________________
+addch                  curs_addch(3X)
+addchnstr              curs_addchstr(3X)
+addchstr               curs_addchstr(3X)
+addnstr                curs_addstr(3X)
+addstr                 curs_addstr(3X)
+attroff                curs_attr(3X)
+attron                 curs_attr(3X)
+attrset                curs_attr(3X)
+baudrate               curs_termattrs(3X)
+beep                   curs_beep(3X)
+bkgd                   curs_bkgd(3X)
+bkgdset                curs_bkgd(3X)
+border                 curs_border(3X)
+box                    curs_border(3X)
+can_change_color       curs_color(3X)
+cbreak                 curs_inopts(3X)
+clear                  curs_clear(3X)
+clearok                curs_outopts(3X)
+clrtobot               curs_clear(3X)
+clrtoeol               curs_clear(3X)
+color_content          curs_color(3X)
+copywin                curs_overlay(3X)
+curs_set               curs_kernel(3X)
+def_prog_mode          curs_kernel(3X)
+def_shell_mode         curs_kernel(3X)
+del_curterm            curs_terminfo(3X)
+delay_output           curs_util(3X)
+delch                  curs_delch(3X)
+deleteln               curs_deleteln(3X)
+delscreen              curs_initscr(3X)
+delwin                 curs_window(3X)
+derwin                 curs_window(3X)
+doupdate               curs_refresh(3X)
+dupwin                 curs_window(3X)
+echo                   curs_inopts(3X)
+echochar               curs_addch(3X)
+endwin                 curs_initscr(3X)
+erase                  curs_clear(3X)
+erasechar              curs_termattrs(3X)
+filter                 curs_util(3X)
+flash                  curs_beep(3X)
+flushinp               curs_util(3X)
+getbegyx               curs_getyx(3X)
+getch                  curs_getch(3X)
+getmaxyx               curs_getyx(3X)
+getmouse               curs_mouse(3X)*
+getparyx               curs_getyx(3X)
+getstr                 curs_getstr(3X)
+getsyx                 curs_kernel(3X)
+getwin                 curs_util(3X)
+getyx                  curs_getyx(3X)
+halfdelay              curs_inopts(3X)
+has_colors             curs_color(3X)
+has_ic                 curs_termattrs(3X)
+has_il                 curs_termattrs(3X)
+hline                  curs_border(3X)
+idcok                  curs_outopts(3X)
+idlok                  curs_outopts(3X)
+immedok                curs_outopts(3X)
+inch                   curs_inch(3X)
+inchnstr               curs_inchstr(3X)
+inchstr                curs_inchstr(3X)
+init_color             curs_color(3X)
+init_pair              curs_color(3X)
+initscr                curs_initscr(3X)
+innstr                 curs_instr(3X)
+insch                  curs_insch(3X)
+insdelln               curs_deleteln(3X)
+insertln               curs_deleteln(3X)
+insnstr                curs_insstr(3X)
+insstr                 curs_insstr(3X)
+instr                  curs_instr(3X)
+intrflush              curs_inopts(3X)
+is_linetouched         curs_touch(3X)
+is_wintouched          curs_touch(3X)
+isendwin               curs_initscr(3X)
+keyname                curs_util(3X)
+keypad                 curs_inopts(3X)
+killchar               curs_termattrs(3X)
+leaveok                curs_outopts(3X)
+longname               curs_termattrs(3X)
+meta                   curs_inopts(3X)
+mouseinterval          curs_mouse(3X)*
+mousemask              curs_mouse(3X)*
+move                   curs_move(3X)
+mvaddch                curs_addch(3X)
+mvaddchnstr            curs_addchstr(3X)
+mvaddchstr             curs_addchstr(3X)
+mvaddnstr              curs_addstr(3X)
+mvaddstr               curs_addstr(3X)
+mvcur                  curs_terminfo(3X)
+mvdelch                curs_delch(3X)
+mvderwin               curs_window(3X)
+mvgetch                curs_getch(3X)
+mvgetstr               curs_getstr(3X)
+mvinch                 curs_inch(3X)
+mvinchnstr             curs_inchstr(3X)
+mvinchstr              curs_inchstr(3X)
+mvinnstr               curs_instr(3X)
+mvinsch                curs_insch(3X)
+mvinsnstr              curs_insstr(3X)
+mvinsstr               curs_insstr(3X)
+mvinstr                curs_instr(3X)
+mvprintw               curs_printw(3X)
+mvscanw                curs_scanw(3X)
+mvwaddch               curs_addch(3X)
+mvwaddchnstr           curs_addchstr(3X)
+mvwaddchstr            curs_addchstr(3X)
+mvwaddnstr             curs_addstr(3X)
+mvwaddstr              curs_addstr(3X)
+mvwdelch               curs_delch(3X)
+mvwgetch               curs_getch(3X)
+mvwgetstr              curs_getstr(3X)
+mvwin                  curs_window(3X)
+mvwinch                curs_inch(3X)
+mvwinchnstr            curs_inchstr(3X)
+mvwinchstr             curs_inchstr(3X)
+mvwinnstr              curs_instr(3X)
+mvwinsch               curs_insch(3X)
+mvwinsnstr             curs_insstr(3X)
+mvwinsstr              curs_insstr(3X)
+mvwinstr               curs_instr(3X)
+mvwprintw              curs_printw(3X)
+mvwscanw               curs_scanw(3X)
+napms                  curs_kernel(3X)
+newpad                 curs_pad(3X)
+newterm                curs_initscr(3X)
+newwin                 curs_window(3X)
+nl                     curs_outopts(3X)
+nocbreak               curs_inopts(3X)
+nodelay                curs_inopts(3X)
+noecho                 curs_inopts(3X)
+nonl                   curs_outopts(3X)
+noqiflush              curs_inopts(3X)
+noraw                  curs_inopts(3X)
+notimeout              curs_inopts(3X)
+overlay                curs_overlay(3X)
+overwrite              curs_overlay(3X)
+pair_content           curs_color(3X)
+pechochar              curs_pad(3X)
+pnoutrefresh           curs_pad(3X)
+prefresh               curs_pad(3X)
+printw                 curs_printw(3X)
+putp                   curs_terminfo(3X)
+putwin                 curs_util(3X)
+qiflush                curs_inopts(3X)
+raw                    curs_inopts(3X)
+redrawwin              curs_refresh(3X)
+refresh                curs_refresh(3X)
+reset_prog_mode        curs_kernel(3X)
+reset_shell_mode       curs_kernel(3X)
+resetty                curs_kernel(3X)
+restartterm            curs_terminfo(3X)
+ripoffline             curs_kernel(3X)
+savetty                curs_kernel(3X)
+scanw                  curs_scanw(3X)
+scr_dump               curs_scr_dump(3X)
+scr_init               curs_scr_dump(3X)
+scr_restore            curs_scr_dump(3X)
+scr_set                curs_scr_dump(3X)
+scrl                   curs_scroll(3X)
+scroll                 curs_scroll(3X)
+scrollok               curs_outopts(3X)
+set_curterm            curs_terminfo(3X)
+set_term               curs_initscr(3X)
+setscrreg              curs_outopts(3X)
+setsyx                 curs_kernel(3X)
+setterm                curs_terminfo(3X)
+setupterm              curs_terminfo(3X)
+slk_attroff            curs_slk(3X)
+slk_attron             curs_slk(3X)
+slk_attrset            curs_slk(3X)
+slk_clear              curs_slk(3X)
+slk_init               curs_slk(3X)
+slk_label              curs_slk(3X)
+slk_noutrefresh        curs_slk(3X)
+slk_refresh            curs_slk(3X)
+slk_restore            curs_slk(3X)
+slk_set                curs_slk(3X)
+slk_touch              curs_slk(3X)
+standend               curs_attr(3X)
+standout               curs_attr(3X)
+start_color            curs_color(3X)
+subpad                 curs_pad(3X)
+subwin                 curs_window(3X)
+syncok                 curs_window(3X)
+termattrs              curs_termattrs(3X)
+termname               curs_termattrs(3X)
+tgetent                curs_termcap(3X)
+tgetflag               curs_termcap(3X)
+tgetnum                curs_termcap(3X)
+tgetstr                curs_termcap(3X)
+tgoto                  curs_termcap(3X)
+tigetflag              curs_terminfo(3X)
+tigetnum               curs_terminfo(3X)
+tigetstr               curs_terminfo(3X)
+timeout                curs_inopts(3X)
+touchline              curs_touch(3X)
+touchwin               curs_touch(3X)
+tparm                  curs_terminfo(3X)
+tputs                  curs_termcap(3X)
+tputs                  curs_terminfo(3X)
+typeahead              curs_inopts(3X)
+unctrl                 curs_util(3X)
+ungetch                curs_getch(3X)
+ungetmouse             curs_mouse(3X)*
+untouchwin             curs_touch(3X)
+use_env                curs_util(3X)
+vidattr                curs_terminfo(3X)
+vidputs                curs_terminfo(3X)
+vline                  curs_border(3X)
+vwprintw               curs_printw(3X)
+vwscanw                curs_scanw(3X)
+waddch                 curs_addch(3X)
+waddchnstr             curs_addchstr(3X)
+waddchstr              curs_addchstr(3X)
+waddnstr               curs_addstr(3X)
+waddstr                curs_addstr(3X)
+wattroff               curs_attr(3X)
+wattron                curs_attr(3X)
+wattrset               curs_attr(3X)
+wbkgd                  curs_bkgd(3X)
+wbkgdset               curs_bkgd(3X)
+wborder                curs_border(3X)
+wclear                 curs_clear(3X)
+wclrtobot              curs_clear(3X)
+wclrtoeol              curs_clear(3X)
+wcursyncup             curs_window(3X)
+wdelch                 curs_delch(3X)
+wdeleteln              curs_deleteln(3X)
+wechochar              curs_addch(3X)
+wenclose               curs_mouse(3X)*
+werase                 curs_clear(3X)
+wgetch                 curs_getch(3X)
+wgetnstr               curs_getstr(3X)
+wgetstr                curs_getstr(3X)
+whline                 curs_border(3X)
+winch                  curs_inch(3X)
+winchnstr              curs_inchstr(3X)
+winchstr               curs_inchstr(3X)
+winnstr                curs_instr(3X)
+winsch                 curs_insch(3X)
+winsdelln              curs_deleteln(3X)
+winsertln              curs_deleteln(3X)
+winsnstr               curs_insstr(3X)
+winsstr                curs_insstr(3X)
+winstr                 curs_instr(3X)
+wmove                  curs_move(3X)
+wnoutrefresh           curs_refresh(3X)
+wprintw                curs_printw(3X)
+wredrawln              curs_refresh(3X)
+wrefresh               curs_refresh(3X)
+wresize                curs_resize(3x)*
+wscanw                 curs_scanw(3X)
+wscrl                  curs_scroll(3X)
+wsetscrreg             curs_outopts(3X)
+wstandend              curs_attr(3X)
+wstandout              curs_attr(3X)
+wsyncdown              curs_window(3X)
+wsyncup                curs_window(3X)
+wtimeout               curs_inopts(3X)
+wtouchln               curs_touch(3X)
+wvline                 curs_border(3X)
+.fi
+.SH "WARTO¦Æ ZWRACANA"
+Funkcje, które zwracaj± integer, zwracaj± \fBERR\fR w wypadku b³êdu, a po
+sukcesie dowolny inny integer. (chyba ¿e zaznaczono inaczej w opisie
+funkcji).
+
+Wszystkie makra zwracaj± warto¶æ wersji \fBw\fR, poza \fBsetscrreg\fR,
+\fBwsetscrreg\fR, \fBgetyx\fR, \fBgetbegyx\fR, \fBgetmaxyx\fR.  Warto¶ci
+zwracane \fBsetscrreg\fR, \fBwsetscrreg\fR, \fBgetyx\fR, \fBgetbegyx\fR, i
+\fBgetmaxyx\fR s± niezdefiniowane (\fInp\fR. nie powinny byæ u¿ywane
+jako instrukcje prawej strony przypisañ).
+
+Funkcje, które zwracaj± wska¼niki, po b³êdzie zwracaj± \fBNULL\fR.
+.SH ZOBACZ TAK¯E
+\fBterminfo\fR(\*n) oraz strony 3X , których nazwa zaczyna siê od "curs_".
+.SH ROZSZERZENIA
+Biblioteka \fBcurses\fR mo¿e byæ skompilowana z opcj±
+(\fB-DTERMCAP_FILE\fR), która powoduje skok wstecz, do starodawnego pliku
+/etc/termcap, je¶li nie ma odpowiedniego wpisu w terminfo. U¿ycie tej
+w³a¶ciwo¶ci nie jest zalecane, gdy¿ w zasadzie w³±cza ona do kodu startowego
+\fBcurses\fR ca³y kompilator termcapa.
+
+Kompilowanie z \fB-DTERMCAP_FILE\fR zmienia sekwencjê inicjalizacji
+biblioteki, na sposób podobny do 4.4BSD curses. Je¶li nie ma ¿adnego
+terminfo, opowiadaj±cego \fBTERM\fR, to biblioteka zaczyna szukaæ wpisów
+termcap. Robi to w nastêpuj±cych miejscach:
+(1) je¶li \fBTERMINFO\fR nie jest zdefiniowane, w pliku o nazwie
+\fBTERMCAP_FILE\fR; (2) je¶li zdefiniowano \fBTERMINFO\fR, i nazwa zaczyna
+siê od uko¶nika, to jest interpretowane jako nazwa pliku termcap, w którym
+nale¿y szukaæ \fBTERM\fR; (3) gdy \fBTERMINFO\fR ma napis prowadz±cy, który
+wygl±da jak lista wpisów nazw terminala i odpowiada \fBTERM\fR, to zawarto¶æ
+\fBTERMINFO\fR jest interpretowana jako termcap; (4) je¶li terminfo wygl±da
+jak termcap, lecz nie zawiera \fBTERM\fR, plik termcap jest przeszukiwany
+w¶ród oddzielonych dwukropkami ¶cie¿ek \fBTERMPATHS\fR, o ile jest ono
+zdefiniowane i w ~/.termcap i ostatecznie w warto¶ci plikowej 
+\fBTERMCAP_FILE\fR.
+
+Wersje \fBcurses\fR, skompilowane na PC, wspieraj± znaki PC ROM (zawieraj±ce
+znaki 0-31, których curses z SVr4 nie potrafi wy¶wietliæ). Zobacz sekcje
+ROZSZERZENIA w \fBcurs_addch\fR(3x) i
+\fBcurs_attr\fR(3x).
+.SH PRZENO¦NO¦Æ
+Bibliotekê \fBcurses\fR zaprojektowano jako zgodn± ze standardem XSI Curses
+na poziomie podstawowym. Obs³ugiwane s± pewne partie rozszerzonych XSI Curses
+(³±cznie z obs³ug± koloru). Nie zaimplementowano jeszcze nastêpuj±cych wywo³añ
+rozszerzonego XSI Curses, zwi±zanych z obs³ug± szerokich (wielobajtowych)
+znaków:
+\fBaddnwstr\fB,
+\fBaddwstr\fB,
+\fBmvaddnwstr\fB,
+\fBmvwaddnwstr\fB,
+\fBmvaddwstr\fB,
+\fBwaddnwstr\fB,
+\fBwaddwstr\fB,
+\fBadd_wch\fB,
+\fBwadd_wch\fB,
+\fBmvadd_wch\fB,
+\fBmvwadd_wch\fB,
+\fBadd_wchnstr\fB,
+\fBadd_wchstr\fB,
+\fBwadd_wchnstr\fB,
+\fBwadd_wchstr\fB,
+\fBmvadd_wchnstr\fB,
+\fBmvadd_wchstr\fB,
+\fBmvwadd_wchnstr\fB,
+\fBmvwadd_wchstr\fB,
+\fBbkgrndset\fB,
+\fBbkgrnd\fB,
+\fBgetbkgrnd\fB,
+\fBwbkgrnd\fB,
+\fBwbkgrndset\fB,
+\fBwgetbkgrnd\fB,
+\fBborder_set\fB,
+\fBwborder_set\fB,
+\fBbox_set\fB,
+\fBhline_set\fB,
+\fBmvhline_set\fB,
+\fBmvvline_set\fB,
+\fBmvwhline_set\fB,
+\fBmvwvline_set\fB,
+\fBwhline_set\fB,
+\fBvhline_set\fB,
+\fBwvline_set\fB,
+\fBecho_wchar\fB,
+\fBwecho_wchar\fB,
+\fBerasewchar\fB,
+\fBkillwchar\fB,
+\fBget_wch\fB,
+\fBmvget_wch\fB,
+\fBmvwget_ch\fB,
+\fBwget_wch\fB,
+\fBgetwchtype\fB,
+\fBget_wstr\fB,
+\fBgetn_wstr\fB,
+\fBwget_wstr\fB,
+\fBwgetn_wstr\fB,
+\fBmvget_wstr\fB,
+\fBmvgetn_wstr\fB,
+\fBmvwget_wstr\fB,
+\fBmvwgetn_wstr\fB,
+\fBinnwstr\fB,
+\fBinwstr\fB,
+\fBwinnwstr\fB,
+\fBwinwstr\fB,
+\fBmvinnwstr\fB,
+\fBmvinwstr\fB,
+\fBmvwinnwstr\fB,
+\fBmvwinwstr\fB,
+\fBins_nwstr\fB,
+\fBins_wstr\fB,
+\fBmvins_nwstr\fB,
+\fBmvins_wstr\fB,
+\fBmvwins_nwstr\fB,
+\fBmvwins_wstr\fB,
+\fBwins_nwstr\fB,
+\fBwins_wstr\fB,
+\fBins_wch\fB,
+\fBwins_wch\fB,
+\fBmvins_wch\fB,
+\fBmvwins_wch\fB,
+\fBin_wch\fB,
+\fBwin_wch\fB,
+\fBmvin_wch\fB,
+\fBmvwin_wch\fB,
+\fBinwchstr\fB,
+\fBinwchnstr\fB,
+\fBwinwchstr\fB,
+\fBwinwchnstr\fB,
+\fBmvinwchstr\fB,
+\fBmvinwchnstr\fB,
+\fBmvinwchstr\fB,
+\fBmvwinwchnstr\fB.
+.PP
+Niewielka ilo¶æ ró¿nic (to jest poszczególnych ró¿nic miêdzy XSI Curses, a
+wywo³aniami \fBcurses\fR) jest opisywana w sekcjach \fBPRZENO¦NO¦Æ\fR
+konkretnych stron podrêcznika man.
+.PP
+Format terminfo, obs³ugiwany przez \fBcurses\fR jest binarnie zgodny z
+SVr$, lecz nie jest zgodny z XSI curses. Jest tak, poniewa¿ ludzie od XSI
+Curses, w przyp³ywie uszkodzenia mózgu, zmienili nieudokumentowan±
+w³a¶ciwo¶æ SVr4 \fBgetm\fR z napisu na warto¶æ logiczn±, zmieniaj±c przez to
+offsety binarne wszystkich pozosta³ych w³a¶ciwo¶ci.
+.PP
+Funkcje \fBgetmouse\fR, \fBmousemask\fR, \fBungetmouse\fR,
+\fBmouseinterval\fR i \fBwenclose\fR, zwi±zane z mysz±, nie s± czê¶ci± XPG4
+ani SVr$. Zobacz dla dalszych szczegó³ów \fBcurs_mouse\fR(3X).
+.PP
+Funkcja \fBwresize\fR nie jest czê¶ci± XPG4, i nie jest obecna w SVr4.  Wiêcej
+szczegó³ów znajdziesz w \fBcurs_resize\fR(3X).
+.PP
+W historycznych wersjach curses, opó¼nienia zawarte we w³a¶ciwo¶ciach
+\fBcr\fR, \fBind\fR, \fBcub1\fR, \fBff\fR i \fBtab\fR uaktywnia³y
+odpowiadaj±ce im bity opó¼nieñ w UNIX-owym sterowniku tty. W tej
+implementacji wype³nianie jest dokonywane wys³aniami znaków NUL. Metoda ta jest
+trochê bardziej kosztowna, lecz znacz±co zawê¿a interfejs z j±drem UNIX-a
+i odpowiednio do tego polepsza przeno¶no¶æ pakietu.
+.PP
+W standardzie XSI i w stronach podrêcznika SVr4, wiele wpisów ma argumenty 
+prototypopwe \fBchar *const\fR (lub \fBcchar_t *const\fR, lub \fBwchar_t
+*const\fR, lub \fBvoid *const\fR).  Zale¿nie od interpretacji standardu
+ANSI C (zobacz sekcjê 3.5.4.1), deklaracje te s± (a) bez znaczenia, lub (b)
+bez znaczenia i niedozwolone. Deklaracja \fBconst char *x\fR to modyfikowalny
+wska¼nik do modyfikowalnych danych, lecz \fBchar *const x\fR to
+niemodyfikowalny wska¼nik do modyfikowalnych danych. Poniewa¿ C przekazuje
+argumenty przez warto¶æ, \fB<typ> *const\fR jako typ formalny jest co
+najmniej w±tpliwy. Ta wiêc w tej implementacji zamieniono je globalnie na
+\fBconst <type> *\fR.
+.SH UWAGI
+Plik nag³ówkowy \fB<curses.h>\fR automatycznie w³±cza pliki
+\fB<stdio.h>\fR i \fB<unctrl.h>\fR.
+
+Jesli standardowe wyj¶cie, programu \fBcurses\fR jest przekierowywane
+do czego¶, co nie jest tty, od¶wie¿enia ekranu bêd± kierowane na standardowe
+wyj¶cie b³êdu. Jest to nieudokumentowana w³a¶ciwo¶æ curses z AT&T SVr3.
+.SH AUTORZY
+Zeyd M. Ben-Halim, Eric S. Raymond. Zej¶cie z oryginalnych pcurses zrobi³
+Pavel Curtis.
+.\"#
+.\"# The following sets edit modes for GNU EMACS
+.\"# Local Variables:
+.\"# mode:nroff
+.\"# fill-column:79
+.\"# End:

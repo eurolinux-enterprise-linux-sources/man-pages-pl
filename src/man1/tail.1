@@ -1,0 +1,231 @@
+.\"  {PTM/GSN/0.5/23-02-1999/"wypisz koñcow± czê¶æ pliku"}
+.\" poszerzenie i aktualizacja do GNU textutils 2.0 PTM/WK/2000-IV
+.ig
+Transl.note: based on GNU man page tail.1 and textutils.info
+ 
+Copyright 1994, 95, 96, 1999 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+..
+.TH TAIL "1" FSF "sierpieñ 1999" "Narzêdzia tekstowe GNU 2.0"
+.SH NAZWA
+tail \- wypisz koñcow± czê¶æ pliku
+.SH SK£ADNIA
+.TP 5
+.B tail
+.RB [ \-c
+.RB [ + ]\fIN\fP[ bkm ]]
+.RB [ \-n [ + ]\fIN\fP]
+.RB [ \-fqsv ]
+.RB [ \-\-bytes= [ + ]\fIN\fP[ bkm ]]
+.br
+.RB [ \-\-lines= [ + ]\fIN\fP]
+.RB [ \-\-follow [ = \fIhow\fP]]
+.RB [ \-\-retry ]
+.br
+.RB [ \-\-sleep\-interval= \fIN\fP]
+.RB [ \-\-pid= \fIPID\fP]
+.br
+.RB [ \-\-max\-consecutive\-size\-changes= \fIN\fP]
+.RB [ \-\-max\-unchanged\-stats= \fIN\fP]
+.RB [ \-\-quiet ]
+.RB [ \-\-silent ]
+.br
+.RB [ \-\-verbose ]
+.RB [ \-\-help ]
+.RB [ \-\-version ]
+.RI [ plik ...]
+.TP 5
+.B tail
+.RB [{ \- , + } \fIN\fPbcfklmqsv ]
+.RI [ plik ...]
+.SH OPIS
+Dokumentacja niniejsza nie jest ju¿ utrzymywana i mo¿e byæ niedok³adna
+lub niekompletna.  Autorytatywnym ¼ród³em jest obecnie dokumentacja
+Texinfo.  Dostêp do niej uzyskasz wpisuj±c w wierszu poleceñ:
+.RS
+.B pinfo tail
+.RE
+lub
+.RS
+.BR "info tail" .
+.RE
+.PP
+Ta strona podrêcznika opisuje polecenie \fBtail\fP w wersji GNU.
+.PP
+.B tail
+wypisuje koñcow± czê¶æ (domy¶lnie 10 linii) ka¿dego podanego pliku;
+czyta ze standardowego wej¶cia je¶li nie podano plików, albo je¶li
+napotkano nazwê pliku '\-'.  Je¶li podano wiêcej ni¿ jedn± nazwê
+pliku, wypisuje tak¿e nag³ówek sk³adaj±cy siê z nazwy pliku otoczonej
+`==>' i `<==', przed wypisem dla ka¿dego pliku.
+.PP
+GNU
+.B tail
+mo¿e wypisaæ dowoln± ilo¶æ danych, w odró¿nieniu od wersji UNIX-owych,
+które u¿ywaj± bufora o sta³ym rozmiarze.  Nie ma on opcji
+.B \-r
+(wypisywanie odwrotnie), gdy¿ odwracanie pliku to faktycznie zupe³nie inne
+zadanie ni¿ wypisywanie koñca pliku; 
+.B tail
+z BSD potrafi odwróciæ tylko pliki, które s± nie wiêksze ni¿ jego
+bufor, przewa¿nie 32k.  Bardziej niezawodnym i wszechstronnym sposobem
+odwracania plików jest polecenie
+GNU
+.BR tac .
+.SH OPCJE
+.PP
+.B tail
+akceptuje dwa formaty opcji: nowy, w którymi liczby s± argumentami opcji
+literowych (`-n 1'), i stary, w którym +, \-, i opcjonalne liczby poprzedzaj± 
+jakiekolwiek opcje literowe (`-1' lub `+1').
+.PP
+Je¶li liczba ('N') zaczyna siê od znaku +,
+.B tail
+zaczyna wypisywanie od N-tego elementu od pocz±tku ka¿dego pliku,
+a nie od koñca.
+.TP
+.BI - Nopcje "\fR, \fP+" Nopcje
+Opcja taka jest rozpoznawana tylko je¶li jest podana jako pierwsza.
+\fIN\fP jest liczb± dziesiêtn±, po której opcjonalnie wystêpuje litera
+rozmiaru (`b', `k', `m') jak w opcji `-c', lub litera `l' oznaczaj±ca 
+zliczanie linii, albo inne litery opcji (`cfqv').
+.TP
+.BR \-c " \fIN\fR, " \-\-bytes= \fIN\fR
+Wypisuje koñcowe N bajtów.  N to liczba naturalna, po której
+opcjonalnie nastêpuje jeden z poni¿szych znaków okre¶laj±cy inn±
+jednostkê.
+.RS
+.IP \fBb
+bloki 512-bajtowe.
+.IP \fBk
+bloki kilobajtowe.
+.IP \fBm
+bloki megabajtowe.
+.RE
+.TP
+.BR \-f ", " \-\-follow= [\fIjak\fP]
+Pracuje w nieskoñczonej pêtli próbuj±c przeczytaæ wiêcej znaków z koñca
+pliku, zak³adaj±c, ¿e plik ro¶nie.  Ignorowana je¶li czytanie odbywa siê
+z potoku. Je¶li podano wiêcej ni¿ jeden plik,
+.B tail
+wypisuje nag³ówek za ka¿dym razem gdy dostaje wynik od innego pliku,
+aby zaznaczyæ, z którego pliku on pochodzi.
+
+Istniej± dwa sposoby okre¶lania, jak maj± byæ ¶ledzone pliki przy u¿yciu
+tej opcji, ale ró¿nica ta jest zauwa¿alna tylko wtedy, gdy ¶ledzony plik
+zostanie usuniêty lub zmieni nazwê. Chc±c ¶ledziæ koniec powiêkszaj±cego
+siê pliku nawet po jego usuniêciu (unlink), nale¿y u¿yæ
+\fB--follow=descriptor\fP. Jest to zachowanie domy¶lne, ale nie jest przydatne
+je¿eli ¶ledzi siê plik dziennika, który mo¿e podlegaæ cyklicznej wymianie
+(usuniêcie lub zmiana nazwy, nastêpnie ponowne otwarcie). W takim przypadku,
+nale¿y u¿yæ \fB--follow=name\fP, by ¶ledziæ plik o danej nazwie przez okresowe
+ponowne otwieranie go i sprawdzanie czy zosta³ usuniêty i ponownie utworzony
+przez jaki¶ inny program.
+
+Bez wzglêdu na wykorzystan± metodê, je¿eli zostanie stwierdzone skurczenie siê
+pliku, \fBtail\fP wypisuje komunikat mówi±cy o tym, ¿e plik zosta³ obciêty
+i wznawia ¶ledzenie koñca pliku od ponownie wyznaczonego punktu koñcowego.
+
+Gdy plik jest usuniêty, zachowanie siê \fBtail\fP zale¿y od tego czy ¶ledzi on
+nazwê czy deskryptor. Pod±¿aj±c za nazw± potrafi rozpoznaæ, ¿e plik zosta³
+usuniêty i daje odpowiedni komunikat, a je¶li u¿yto opcji \fB\-\-retry\fP
+bêdzie wykonywa³ cykliczne sprawdzanie czy plik nie pojawi siê znowu.
+Pod±¿aj±c za deskryptorem, tail nie wykrywa, ¿e plik zosta³ usuniêty czy
+zmieni³ nazwê i nie wysy³a komunikatów; mimo, i¿ plik mo¿e nie byæ ju¿ dostêpny
+pod pierwotn± nazw±, mo¿e on wci±¿ powiêkszaæ siê.
+
+Warto¶ci opcji \fBdescriptor\fP i \fBname\fP mo¿na podaæ tylko przy d³ugiej
+postaci opcji, nie z \fB\-f\fP.
+.TP
+.B \-\-retry
+Ponawia próby otwarcia pliku nawet, je¶li jest niedostêpny w momencie
+rozpoczêcia pracy przez tail lub staje siê niedostêpny pó¼niej -- przydatne
+tylko z opcj± \fB\-f\fP. Bez opcji \-\-retry tail napotykaj±c plik, który nie
+istnieje lub jest niedostêpny w inny sposób, zg³asza ten fakt i nie sprawdza
+ju¿ powtórnie.
+.TP
+.BI \-\-sleep\-interval= N
+Zmienia liczbê sekund odczekiwania pomiêdzy iteracjami (domy¶lnie jest to 1).
+Podczas pojedynczej iteracji, dla ka¿dego z podanych plików wykonywane jest
+sprawdzenie jest czy nie zmieni³ on rozmiaru.
+.TP
+.BI --pid= PID
+Pod±¿aj±c za deskryptorem lub nazw±, mo¿na podaæ identyfikator procesu, PID,
+jedynego pisz±cego do wszystkich \fIplików\fP wymienionych jako argumenty.
+Nastêpnie, wkrótce po zakoñczeniu tego procesu, tail równie¿ zakoñczy pracê.
+Dzia³a to poprawnie tylko wtedy, gdy pisz±cy i proces tail uruchomione s±
+na tej samej maszynie. Na przyk³ad, by zachowaæ wyniki kompilacji w pliku
+i obserwowaæ jego wzrost, mo¿na wywo³aæ `make' i `tail' a proces tail zatrzyma
+siê po ukoñczeniu kompilacji. Bez tej opcji, trzeba by³o by samodzielnie
+unicestwiæ proces `tail -f'.
+.nf
+    $ make >& makerr & tail --pid=$! -f makerr
+.fi
+Je¶li zostanie podany nie u¿ywany PID lub nie odpowiadaj±cy procesowi
+pisz±cemu do przegl±danych plików, to 'tail' mo¿e zakoñczyæ pracê du¿o
+wcze¶niej ni¿ \fPplik\fR(i) przestan± siê powiêkszaæ lub mo¿e nie ukoñczyæ
+pracy d³ugo po tym, jak faktyczny pisz±cy skoñczy³.
+.TP
+.BI --max-consecutive-size-changes= N
+Opcja znacz±ca tylko, je¶li wystêpuje pod±¿anie za nazw± (\fB--follow=name\fP).
+S³u¿y do okre¶lania, jak d³ugo \fBtail\fP ma pod±¿aæ za deskryptorem gwa³townie
+rosn±cego pliku, nawet je¶li zostanie on usuniêty lub zmieni siê jego nazwa.
+Po wykryciu \fIN\fP kolejnych zmian rozmiaru pliku \fBtail\fP wykonuje
+\fIopen\fP/\fIfstat\fP pliku, by stwierdziæ czy dana nazwa pliku jest wci±¿
+skojarzona z tym sam± par± urz±dzenie/numer-iwêz³a, co uprzednio. Zobacz
+wynik \fBtail --help\fP by zapoznaæ siê z warto¶ci± domy¶ln± [t³um:5].
+.TP
+.BI --max-unchanged-stats =N
+Przy przegl±daniu koñca pliku wed³ug nazwy, je¶li wyst±pi³o \fIN\fP kolejnych
+iteracji, podczas których rozmiar pozosta³ ten sam, to \fBtail\fP wykonuje
+\fIopen\fP/\fIfstat\fP pliku. Stwierdza w ten sposób czy dana nazwa pliku jest
+wci±¿ skojarzona z tym sam± par± urz±dzenie/numer-iwêz³a, co uprzednio.
+Przy pod±¿aniu za plikiem dziennika podlegaj±cym cyklicznej wymianie jest to
+w przybli¿eniu liczba sekund pomiêdzy momentem, kiedy tail wypisze ostatnie
+linie sprzed rotacji a czasem, kiedy wypisze linie, jakie nagromadzi³y siê
+w nowym pliku dziennika. Zobacz wynik \fBtail --help\fP by zapoznaæ siê
+z warto¶ci± domy¶ln± [t³um.: 200]. Opcja ta jest znacz±ca tylko przy pod±¿aniu
+za nazw±.
+.TP
+.BR \-l ", " \-n " \fIN\fR, " \-\-lines= \fIN\fR
+Wypisuje ostatnie N linii. \fB-l\fP jest rozpoznawana tylko z u¿yciem starego
+formatu opcji.
+.TP
+.BR \-q ", " \-\-quiet ", " \-\-silent
+Nigdy nie wypisuje nag³ówków z nazwami plików.
+.TP
+.BR \-v ", " \-\-verbose
+Zawsze wypisuje nag³ówki z nazwami plików.
+.TP
+.B "\-\-help"
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach, koñczy pracê.
+.TP
+.B "\-\-version"
+Wy¶wietla numer wersji programu i koñczy pracê.
+.SH "ZG£ASZANIE B£ÊDÓW"
+B³êdy proszê zg³aszaæ, w jêz. ang., do <bug-textutils@gnu.org>.
+.SH COPYRIGHT
+Copyright \(co 1999 Free Software Foundation, Inc.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH ZOBACZ TAK¯E
+.BR head (1),
+.BR less (1),
+.BR textutils (1).
+.SH OD T£UMACZA
+Zaktualizowano i poszerzono wg dokumentacji Texinfo dla narzêdzi tekstowych
+GNU wersji 2.0.

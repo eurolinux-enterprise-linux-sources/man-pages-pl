@@ -1,0 +1,288 @@
+.\" 1999 PTM, Przemek Borys
+.\" Last Update: Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>, Maj 2002,
+.\"              manpages 1.49
+.\"
+.\" Copyright (c) 1983, 1990, 1991 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     $Id: accept.2,v 1.11 2002/05/31 23:22:30 ankry Exp $
+.\"
+.\" Modified Sat Jul 24 16:42:42 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified Mon Oct 21 23:05:29 EDT 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified 1998,1999 by Andi Kleen to match Linux 2.2 reality
+.\" Modified Tue Apr 23 20:33:18 CEST 2002 by Roger Luethi <rl@hellgate.ch>
+.TH ACCEPT 2 2002-04-23 "Linux 2.2" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+accept \- przyjmowanie po³±czenia na gnie¼dzie
+.SH SK£ADNIA
+.B #include <sys/types.h>
+.br
+.B #include <sys/socket.h>
+.sp
+.BI "int accept(int " s ", struct sockaddr *" addr ", socklen_t *" addrlen );
+.SH OPIS
+
+Funkcja
+.B accept
+jest u¿ywana z po³±czeniowymi typami gniazd 
+.RB ( SOCK_STREAM ,
+.B SOCK_SEQPACKET
+i
+.BR SOCK_RDM ).
+Wyci±ga ona pierwsze ¿±danie po³±czenia z kolejki oczekuj±cych po³±czeñ,
+tworzy nowo pod³±czone gniazdo o tych samych w³a¶ciwo¶ciach co
+.I s
+i alokuje nowy deskryptor pliku dla gniazda, który to deskryptor jest
+zwracany. Nowo utworzone gniazdo nie jest ju¿ w stanie nas³uchiwania.
+Oryginalne gniazdo
+.I s
+pozostaje po wywo³aniiu funkcji niezmienione. Nale¿y zauwa¿yæ, ¿e ¿adne
+znaczniki dotycz±ce deskryptora pliku (wszystko, co mo¿na ustawiæ za pomoc±
+.BR F_SETFL ,
+jak stan nieblokuj±cy czy asynchroniczny) nie s± poprzez
+.I accept
+dziedziczone.
+.PP
+Argument
+.I s
+jest gniazdem, które zosta³o utworzone wywo³aniem
+.BR socket (2),
+przywi±zanym do adresu lokalnego z pomoc±
+.BR bind (2),
+i nas³uchuj±cym po³±czeñ po wywo³aniu
+.BR listen (2).
+
+Argument
+.I addr
+jest wska¼nikiem do struktury sockaddr. Do struktury tej jest wpisywany adres
+³±cz±cej siê jednostki, przekazany przez warstwê komunikacyjn±. Dok³adny
+format adresu przekazywanego w parametrze
+.I addr
+jest okre¶lony poprzez rodzinê gniazda (zobacz
+.BR socket (2)
+i strony podrêcznika dotycz±ce odpowiedniego protoko³u).
+Argument
+.I addrlen
+jest parametrem warto¶ciowo-wynikowym: powinien pocz±tkowo zawieraæ rozmiar
+struktury, na któr± wskazuje 
+.IR addr ;
+po zakoñczeniu bêdzie zawiera³ rzeczywist± d³ugo¶æ zwracanego adresu
+(w bajtach). Gdy
+.B addr
+jest równe NULL, to nic nie jest wype³niane.
+.PP
+Je¶li nie ma zalegaj±cych po³±czeñ w kolejce, a gniazdo nie jest zaznaczone
+jako nieblokuj±ce, to
+.B accept
+blokuje proces wywo³uj±cy a¿ do uzyskania po³±czenia. Gdy gniazdo jest
+zaznaczone jako nieblokuj±ce i nie ma zalegaj±cych po³±czeñ w kolejce,
+.B accept
+zwraca EAGAIN.
+.PP
+Aby byæ informowanym o nadchodz±cych do gniazda po³±czeniach, mo¿na u¿yæ
+.BR select (2)
+lub
+.BR poll (2).
+Podczas próby nowego po³±czenia zostanie dostarczone zdarzenie
+odczytywalno¶ci (readable) i wtedy mo¿na wywo³aæ
+.B accept
+aby uzyskaæ gniazdo tego po³±czenia. Inaczej, mo¿na ustawiæ gniazdo tak, by
+dostarcza³o
+.B SIGIO
+za ka¿dym razem, gdy siê na nim co¶ zacznie dziaæ; szczegó³y mo¿na znale¼æ w
+.BR socket (7).
+.PP
+Dla niektórych protoko³ów wymagaj±cych bezpo¶redniego potwierdzania, takich
+jak
+DECNet,
+.B accept
+mo¿e byæ uwa¿ane za funkcjê zdejmuj±c± z kolejki nastêpne ¿±danie po³±czenia,
+nie powoduj±c potwierdzenia. Potwierdzenie mo¿na spowodowaæ przez normalny
+odczyt, lub zapis na nowym deskryptorze pliku, a odrzucenie mo¿na spowodowaæ,
+zamykaj±c gniazdo. Obecnie pod Linuksem tak± semantykê ma tylko
+DECNet.
+.SH UWAGI
+Nie zawsze po dostarczeniu
+.B SIGIO
+musi istnieæ oczekuj±ce po³±czenie. To samo dotyczy
+.BR select (2)
+i
+.BR poll (2),
+zwracaj±cych zdarzenie odczytywalno¶ci, poniewa¿ po³±czenie mog³o zostaæ
+usuniête przez asynchroniczny b³±d sieci lub inny w±tek, przed wywo³aniem
+.BR accept .
+Je¶li to siê zdarzy, to wywo³anie bêdzie blokowaæ, oczekuj±c nastêpnego
+po³±czenia.
+Aby upewniæ siê, ¿e
+.B accept
+nigdy nie bêdzie blokowa³o,
+.I s
+powinno mieæ ustawiony znacznik
+.B O_NONBLOCK
+(zobacz
+.BR socket (7)).
+.SH "WARTO¦Æ ZWRACANA"
+Wywo³anie w przypadku b³êdu zwraca \-1. Gdy zakoñczy sie pomy¶lnie zwraca
+nieujemn± liczbê ca³kowit±, która jest deskryptorem przyjêtego gniazda.
+.SH "OBS£UGA B£ÊDÓW"
+Linuksowe
+.B accept 
+przekazuje zalegaj±ce ju¿ na nowym gnie¼dzie b³êdy sieciowe jako kod b³êdu z
+.BR accept . 
+Zachowanie to ró¿ni siê od implementacji gniazd w BSD. Dla sensownego
+dzia³ania, aplikacja powinna wykrywaæ po wykonaniu
+.B accept
+b³êdy sieciowe, zdefiniowane dla danego protoko³u i traktowaæ je jak
+.BR EAGAIN ,
+czyli ponawiaæ próbê. W wypadku TCP/IP s± to
+.BR ENETDOWN ,
+.BR EPROTO ,
+.BR ENOPROTOOPT ,
+.BR EHOSTDOWN ,
+.BR ENONET ,
+.BR EHOSTUNREACH ,
+.B EOPNOTSUPP
+i
+.BR ENETUNREACH .
+.SH B£ÊDY
+Funkcja
+.B accept
+musi zakoñczyæ siê niepomy¶lnie gdy:
+.TP
+.BR EAGAIN " lub " EWOULDBLOCK
+Gniazdo jest zaznaczone jako nieblokuj±ce a brak jest po³±czeñ, które mog³yby
+zostaæ przyjête.
+.TP
+.B EBADF
+Deskryptor jest nieprawid³owy.
+.TP
+.B ENOTSOCK
+Deskryptor odnosi siê do pliku, zamiast do gniazda.
+.TP
+.B EOPNOTSUPP
+Przekazane gniazdo nie jest typu
+.BR SOCK_STREAM . 
+.TP
+.B EINTR
+Funkcja systemowa zosta³a przerwana wskutek odebrania sygna³u przed
+prawid³owym nawi±zaniem po³±czenia.
+.TP
+.B ECONNABORTED
+Po³±czenie zosta³o przerwane.
+.TP
+.B EINVAL
+Gniazdo nie nas³uchuje po³±czeñ.
+.TP
+.B EMFILE
+Osi±gniête zosta³o ograniczenie liczby otwartych deskryptorów plików dla
+procesu.
+.TP
+.B ENFILE
+Osi±gniête zosta³o systemowe ograniczenie liczby otwartych deskryptorów
+plików.
+.PP
+Funkcja
+.B accept
+mo¿e zakoñczyæ siê niepomy¶lnie gdy:
+.TP
+.B EFAULT
+Parametr
+.I addr
+nie znajduje siê w przestrzeni adresowej dostêpnej do zapisu dla u¿ytkownika.
+.TP
+.B ENOBUFS, ENOMEM
+Jest niedostateczna ilo¶æ wolnej pamiêci.
+Oznacza to zazwyczaj, ¿e istnieje ograniczenie dla przydzielania pamiêci na
+bufory gniazd, nie za¶ ¿e zabrak³o pamiêci w systemie.
+.TP
+.B EPROTO
+Wyst±pi³ b³±d protoko³u.
+.PP
+W Linuksie
+.B accept
+mo¿e równie¿ zakoñczyæ siê niepomy¶lnie gdy:
+.TP
+.B EPERM
+Regu³y firewalla zabraniaj± po³±czenia.
+.TP
+Dodatkowo, dla nowego gniazda mog± byæ zwracane b³êdy sieciowe zdefiniowane
+dla danego protoko³u. Ró¿ne j±dra Linuksa mog± zwracaæ inne b³êdy, takie jak
+.BR ENOSR ,
+.BR ESOCKTNOSUPPORT ,
+.BR EPROTONOSUPPORT ,
+.BR ETIMEDOUT .
+Warto¶æ
+.B ERESTARTSYS
+mo¿e byæ obserwowana podczas ¶ledzenia.
+.SH "ZGODNE Z"
+SVr4, 4.4BSD (funkcja
+.B accept
+pojawi³a siê pierwotnie w BSD 4.2).
+Strona podrêcznika BSD opisuje piêæ mo¿liwych zwracanych b³êdów
+(EBADF, ENOTSOCK, EOPNOTSUPP, EWOULDBLOCK, EFAULT).
+SUSv3 opisuje b³êdy EAGAIN, EBADF, ECONNABORTED, EINTR, EINVAL, EMFILE,
+ENFILE, ENOBUFS, ENOMEM, ENOTSOCK, EOPNOTSUPP, EPROTO, EWOULDBLOCK.
+SUSv2 opisuje dodatkowo b³êdy EFAULT i ENOSR.
+.LP
+Linuksowe accept _nie_ dziedziczy znaczników gniazda, takich jak
+.BR O_NONBLOCK .
+Takie zachowanie ró¿ni siê od innych implementacji gniazd BSD.
+Przeno¶ne programy nie powinny zak³adaæ takiego zachowania i zawsze ustawiaæ
+dla gniazda zwracanego przez accept wszystkie potrzebne znaczniki.
+.SH UWAGA
+Trzeci argument
+.B accept
+by³ pierwotnie zadeklarowany jako `int *' (i jest pod libc4 i libc5 oraz
+na wielu innych systemach, takich jak BSD 4.*, SunOS 4, SGI); W szkicu
+standardu POSIX 1003.1g chciano to zmieniæ na `size_t *' i tak jest w SunOS 5.
+Pó¼niejsze szkice POSIX u¿ywaj± tu `socklen_t *' i tak samo robi± Single
+Unix Specification i glibc2.
+Cytuj±c Linusa Torvaldsa:
+.\" .I fails: only italicizes a single line
+\fI_Any_ sane library _must_ have "socklen_t" be the same size
+as int.  Anything else breaks any BSD socket layer stuff.
+POSIX initially _did_ make it a size_t, and I (and hopefully others, but
+obviously not too many) complained to them very loudly indeed.  Making
+it a size_t is completely broken, exactly because size_t very seldom is
+the same size as "int" on 64-bit architectures, for example.  And it
+_has_ to be the same size as "int" because that's what the BSD socket
+interface is.
+Anyway, the POSIX people eventually got a clue, and created "socklen_t".
+They shouldn't have touched it in the first place, but once they did
+they felt it had to have a named type for some unfathomable reason
+(probably somebody didn't like losing face over having done the original
+stupid thing, so they silently just renamed their blunder).\fP
+.SH "ZOBACZ TAK¯E"
+.BR bind (2),
+.BR connect (2),
+.BR listen (2),
+.BR select (2),
+.BR socket (2)

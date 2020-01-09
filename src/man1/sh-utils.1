@@ -1,0 +1,653 @@
+.\" {PTM/WK/2000-I}
+.ig
+Transl.note: based on GNU sh-utils.info
+FSF notice for sh-utils docs follows:
+
+Copyright 1994, 95, 96 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+..
+.TH SH-UTILS "1" FSF "maj 2000" "Narzêdzia pow³okowe GNU 2.0"
+.SH NAZWA
+sh-utils - opis pakietu narzêdzi pow³okowych GNU
+.SH OD T£UMACZA
+Podrêczniki man dla narzêdzi pow³okowych GNU nie s± ju¿ rozwijane.
+Niniejsza strona podrêcznika powsta³a jako t³umaczenie, u¿ywanej
+przez twórców jako podstawowej, dokumentacji formatu info.
+W pliku, który czytasz umieszczono czê¶æ dokumentacji dotycz±c± wspólnych
+cech i opcji programów oraz informacje, które z ró¿nych przyczyn nie znalaz³y
+siê na stronach opisuj±cych poszczególne polecenia pakietu.
+Szczegó³owe opisy samych poleceñ znajdziesz we w³a¶ciwych, osobnych
+stronach podrêcznika.
+.SH WSTÊP
+Niniejszy podrêcznik opisuje zestaw narzêdzi pow³okowych GNU w wersji 2.0.
+
+Podrêcznik ten nie jest wyczerpuj±cy. Zak³ada siê, ¿e na ogó³ wiesz,
+co zrobiæ, i potrzebujesz tylko przypomnienia jak to zrobiæ.
+Nie usi³owano wyja¶niæ podstawowych pojêæ w sposób odpowiedni dla nowicjuszy.
+Zatem, je¶li jeste¶ zainteresowany, w³±cz siê, proszê, w udoskonalanie
+podrêcznika. Skorzysta na tym ca³a wspólnota GNU.
+
+Niektóre z wymienionych programów przydatne s± tylko przy pisaniu skryptów
+pow³oki. Narzêdzia takie stanowi±, de facto, "jêzyk" skryptów pow³oki
+(w du¿ym stopniu). Inne s± czasami przydatne interaktywnie.
+
+Narzêdzia pow³okowe GNU s± w wiêkszo¶ci zgodne ze standardem POSIX.2.
+
+B³êdy proszê zg³aszaæ, w jêz.angielskim, do <bug-sh-utils@gnu.org>. Pamiêtaj,
+by zamie¶ciæ numer wersji, architekturê maszyny, pliki wej¶ciowe i inne
+informacje potrzebne do powielenia b³êdu: wprowadzane znaki, czego siê
+spodziewa³e¶, co otrzyma³e¶ i dlaczego jest to ¼le. Pliki diff s± mile
+widziane, ale proszê do³±czyæ równie¿ opis problemu, gdy¿ czasem ciê¿ko
+jest wyci±gn±æ wnioski.
+
+Podrêcznik ten powsta³ pierwotnie na bazie uniksowych stron man napisanych
+przez Davida MacKenzie i aktualizowanych przez Jima Meyeringa. Autorytatywn±
+dokumentacj± jest obecnie dokumentacja w formacie info; strony man nie s±
+ju¿ rozwijane i aktualizowane.
+Franc,ois Pinard wykona³ wstêpn± konwersjê do formatu Texinfo. Karl
+Berry wykona³ indeksy, trochê reorganizacji i edycji wyników.
+Richard Stallman wniós³ swój zwyk³y nieoceniony wgl±d w ca³o¶æ procesu.
+.SH ZAWARTO¦Æ PAKIETU
+Obecnie pakiet narzêdzi pow³okowych GNU zawiera kilkadziesi±t programów:
+.SS Wypisywanie tekstu
+Polecenia wy¶wietlaj±ce ³añcuchy tekstowe
+.RS 4
+.nf
+echo        wypisuje wiersz tekstu
+printf      formatuje i wypisuje dane
+yes         wypisuje ³añcuch a¿ do przerwania programu
+.fi
+.RE
+.SS Warunki
+Polecenia przydatne przede wszystkim z uwagi na ich kod zakoñczenia, nie za¶
+wy¶wietany wynik. St±d, czêsto u¿ywane s± jako warunek instrukcji `if'
+pow³oki lub te¿ jako ostatnie polecenie potoku.
+.RS 4
+.nf
+false       nic nie robi, zwraca niepowodzenie
+true        nic nie robi, zwraca powodzenie
+test        sprawdza typy plików, porównuje warto¶ci
+expr        rozwija (interpretuje) wyra¿enia
+.fi
+.RE
+.SS Przekierowanie
+Pow³oki Uniksów powszechnie zapewniaj± kilka postaci "przekierowania" --
+sposobów zmiany ¼ród³a wej¶cia lub celu wyj¶cia polecenia. Jednak jedno
+przydatne przekierowanie wykonywane jest przez odrêbne polecenie, nie przez
+pow³okê:
+.RS 4
+.nf
+tee         przekierowuje wyj¶cie do wielu plików
+.fi
+.RE
+.SS Operacje na nazwach plików
+Polecenia do manipulacji nazwami plików
+.RS 4
+.nf
+basename    obcina katalog i przyrostek z nazwy pliku
+dirname     obcina niekatalogowy przyrostek nazwy pliku
+pathchk     sprawdza przeno¶no¶æ nazwy pliku
+.fi
+.RE
+.SS Kontekst pracy
+Polecenia wy¶wietlaj±ce lub zmieniaj±ce kontekst, w którym pracujesz:
+bie¿±cy katalog, ustawienia terminala i tak dalej. Zobacz tak¿e
+polecenia zwi±zane z u¿ytkownikiem, w nastêpnej sekcji.
+.RS 4
+.nf
+pwd         wypisuje katalog roboczy
+stty        wypisuje lub zmienia charakterystyki terminala
+printenv    wypisuje zmienne ¶rodowiska
+tty         wypisuje nazwê pliku terminala
+.fi
+.RE
+.SS Informacja o u¿ytkowniku
+Polecenia wypisuj±ce informacje zwi±zane z u¿ytkownikiem: nazwy zg³oszeniowe,
+grupy i tak dalej.
+.RS 4
+.nf
+id          wypisuje rzeczywisty i efektywny uid i gid
+logname     wypisuje bie¿±c± nazwê zg³oszeniow± (loginname)
+whoami      wypisuje efektywny id u¿ytkownika
+groups      nazwy grup, do których nale¿y u¿ytkownik
+users       nazwy aktualnie zalogowanych u¿ytkowników
+who         wypisuje kto jest obecnie zalogowany
+.fi
+.RE
+.SS Kontekst systemowy
+Polecenia wypisuj±ce lub zmieniaj±ce informacjê ogólnosystemow±.
+.RS 4
+.nf
+date        wypisuje lub ustawia datê i czas systemowy
+uname       wypisuje informacjê o systemie
+hostname    wypisuje lub ustawia nazwê systemu
+hostid      wypisuje numeryczny identyfikator systemu
+.fi
+.RE
+.SS Zmienione wywo³ywanie poleceñ
+Polecenia uruchamiaj±ce inne polecenia w kontek¶cie ró¿ni±cym siê od
+bie¿±cego: zmienionym ¶rodowisku, jako inny u¿ytkownik itp.
+.RS 4
+.nf
+chroot      zmienia katalog g³ówny (korzeñ)
+env         zmienia zmienne ¶rodowiska
+nice        zmienia priorytet obs³ugi zadañ
+nohup       uodpornia na sygna³ zawieszenia wykonywania
+su          zmienia id u¿ytkownika i grupy
+.fi
+.RE
+.SS Opó¼nianie
+.RS 4
+.nf
+sleep       pauzuje przez zadany czas
+.fi
+.RE
+.SS Operacje numeryczne
+Programy wykonuj±ce operacje zwi±zane z liczbami.
+.RS 4
+.nf
+factor      pokazuje czynniki liczby
+seq         wypisuje ci±gi liczb
+.fi
+.RE
+.SH OPCJE WSPÓLNE
+Pewne opcje dostêpne s± we wszystkich opisywanych programach (naprawdê
+powinien je przyjmowaæ ka¿dy z programów GNU). Odstêpstwa od tej zasady s±
+jawnie opisane w dokumentacji danego polecenia.
+`--help' lub `--version' traktowane s± jako opcja tylko je¶li wystêpuj± jako
+jedyny argument wiersza poleceñ.
+.TP
+.B --help
+Wy¶wietla informacjê o stosowaniu programu i listê wszystkich dostêpnych opcji,
+pomy¶lnie koñczy pracê.
+.TP
+.B --version
+Wy¶wietla numer wersji programu i pomy¶lnie koñczy pracê.
+.SH FORMATY WPROWADZANIA DATY
+.ig
+Najpierw cytat:
+.PP
+.\" Piêkny cytat -- na pewno jest kto¶ lepszy w t³umaczeniu literatury... [WK]
+.RS
+Our units of temporal measurement, from seconds on up to months,
+are so complicated, asymmetrical and disjunctive so as to make
+coherent mental reckoning in time all but impossible.  Indeed, had
+some tyrannical god contrived to enslave our minds to time, to
+make it all but impossible for us to escape subjection to sodden
+routines and unpleasant surprises, he could hardly have done
+better than handing down our present system.  It is like a set of
+trapezoidal building blocks, with no vertical or horizontal
+surfaces, like a language in which the simplest thought demands
+ornate constructions, useless particles and lengthy
+circumlocutions.  Unlike the more successful patterns of language
+and science, which enable us to face experience boldly or at least
+level-headedly, our system of temporal calculation silently and
+persistently encourages our terror of time.
+
+ ...  It is as though architects had to measure length in feet,
+width in meters and height in ells; as though basic instruction
+manuals demanded a knowledge of five different languages.  It is
+no wonder then that we often look into our own immediate past or
+future, last Tuesday or a week from Sunday, with feelings of
+helpless confusion.  ...
+
+-- Robert Grudin, `Time and the Art of Living'.
+.RE
+.PP
+..
+Ta sekcja opisuje tekstowe postaci daty akceptowane przez programy GNU.
+S± to ³añcuchy znakowe, które mo¿esz, jako u¿ytkownik, podaæ jako
+argumenty ró¿nych programów. Nie jest tu opisany interfejs C (poprzez funkcjê
+\fIgetdate\fP).
+
+Mimo, ¿e opisywana sk³adnia daty umo¿liwia przedstawienie dowolnej daty
+od roku zerowego naszej ery, to liczby ca³kowite komputera nie s± wystarczaj±co
+du¿e dla takich (wzglêdnie) d³ugich okresów czasu. Najwcze¶niejsz± dat± jaka
+jest dozwolona semantycznie w systemach uniksowych jest pó³noc 1 stycznia 1970
+czasu uniwersalnego (UTC).
+.SS Ogólna sk³adnia daty
+"Data" jest ³añcuchem znakowym (mo¿e byæ pusty) zawieraj±cym wiele elementów
+rozdzielonych bia³ymi znakami. Bia³y znak mo¿e byæ pominiêty je¶li nie
+spowoduje to niejednoznaczno¶ci. Pusty ³añcuch oznacza pocz±tek dzisiejszego
+dnia (tj.pó³noc). Kolejno¶æ elementów jest nieistotna. £añcuch daty mo¿e
+zawieraæ wiele ró¿nych odmian elementów:
+.nf
+    * datê kalendarzow±
+    * czas dnia (godzinê)
+    * strefê czasow±
+    * dzieñ tygodnia
+    * element wzglêdny
+    * czyste liczby
+.fi
+Opiszemy poni¿ej po kolei ka¿dy z typów elementu daty.
+
+W wiêkszo¶ci kontekstów kilka liczb mo¿e byæ zapisanych s³ownie. Najbardziej
+przydaje siê to do okre¶lania elementów dnia tygodnia lub elementów wzglêdnych
+(patrz poni¿ej). Oto lista: `first' (pierwszy) dla 1, `next' (nastêpny) dla 2,
+`third' (trzeci) dla 3, `fourth' (czwarty) dla 4, `fifth' dla 5, `sixth' dla 6,
+`seventh' dla 7, `eighth' dla 8, `ninth' dla 9, `tenth' dla 10, `eleventh' dla
+11 i `twelfth' dla 12.  Równie¿, `last' (ostatni) oznaczaj±cy dok³adnie -1.
+
+Kiedy w ten sposób zapisywany jest miesi±c, wci±¿ traktowany jest tak, jakby
+zosta³ zapisany liczbowo, zamiast potraktowania w sposób "w pe³ni zgodny
+z wymow±"; zmienia to dozwolone ³añcuchy.
+
+Wielko¶æ liter w datach jest ca³kowicie ignorowana. Pomiêdzy nawiasami
+okr±g³ymi mo¿na umieszczaæ komentarze, póki zawarte nawiasy s± poprawnie
+zagnie¿d¿one. My¶lniki, po których nie wystêpuj± cyfry s± obecnie ignorowane.
+Wiod±ce zera w liczbach s± ignorowane.
+.SS Zapis daty kalendarzowej
+"Zapis daty kalendarzowej" okre¶la dzieñ roku. Podawany jest rozmaicie,
+w zale¿no¶ci od tego, czy miesi±c okre¶lono liczbowo czy s³ownie. Wszystkie
+te ³añcuchy okre¶laj± tê sam± datê kalendarzow±:
+.nf
+    1970-09-17           # ISO 8601.
+    70-9-17              # za³ó¿ 19xx dla 69 do 99, 20xx dla 00 do 68.
+    70-09-17             # wiod±ce zera s± ignorowane.
+    9/17/72              # powszechny zapis amerykañski.
+    24 September 1972
+    24 Sept 72           # wrzesieñ (September) ma specjalny skrót.
+    24 Sep 72            # zawsze dozwolone trzyliterowe skróty.
+    Sep 24, 1972
+    24-sep-72
+    24sep72
+.fi
+Mo¿na te¿ omin±æ rok. W takim przypadku, u¿ywany jest ostatnio okre¶lony rok,
+lub rok bie¿±cy, je¶li nie okre¶lono ¿adnego. Na przyk³ad:
+.nf
+    9/17
+    sep 17
+.fi
+A oto regu³y...
+
+Dla miesiêcy podanych liczbowo dozwolony jest format liczbowy ISO 8601 postaci
+`ROK-MIESI¡C-DZIEÑ', gdzie ROK jest dowoln± liczb± ca³kowit±, MIESI¡C jest
+liczb± od 01 do 12, za¶ DZIEÑ jest liczb± od 01 do 31. Je¶li liczba jest
+mniejsza ni¿ dziesiêæ to musi byæ zapisana z zerem wiod±cym. Je¿eli ROK jest
+wynosi 68 lub mniej, to dodawane jest do niego 2000; w przeciwnym razie, je¶li
+ROK jest mniejszy od 100, to jest do niego dodawane 1900. Akceptowana jest
+konstrukcja postaci `MIESI¡C/DZIEÑ/ROK', popularna w Stanach Zjednoczonych.
+Równie¿ `MIESI¡C/DZIEÑ', z pominiêciem roku.
+
+Miesi±ce s³ownie mog± byæ zapisane w pe³nej formie: `January' (styczeñ),
+`February' (luty), `March' (marzec), `April' (kwiecieñ), `May' (maj),
+`June' (czerwiec), `July' (lipiec), `August' (sierpieñ),
+`September' (wrzesieñ), `October' (pa¼dziernik), `November' (listopad)
+lub `December' (grudzieñ). S³owne okre¶lenia miesiêcy mog± byæ
+skracane do pierwszych trzech liter, z mo¿liwym dodaniem kropki koñcz±cej
+skrót. Dozwolony jest równie¿ zapis `Sept' zamiast `September'.
+
+Przy s³ownym zapisie miesiêcy data kalendarzowa mo¿e byæ podana na jeden
+z poni¿szych sposobów:
+.nf
+    DZIEÑ MIESI¡C ROK
+    DZIEÑ MIESI¡C
+    MIESI¡C DZIEÑ ROK
+    DZIEÑ-MIESI¡C-ROK
+.fi
+Albo, pomijaj±c rok:
+.nf
+    MIESI¡C DZIEÑ
+.fi
+.SS Zapis czasu (godziny)
+"Zapis czasu" w ³añcuchach daty okre¶la czas (godzinê) zadanego dnia.
+Oto kilka przyk³adów, oznaczaj±cych tê sam± godzinê:
+.nf
+    20:02:0
+    20:02
+    8:02pm
+    20:02-0500      # w strefie EST (Eastern US Standard Time)
+.fi
+Ogólniej, czas mo¿e zostaæ podany jako `GODZINA:MINUTA:SEKUNDA', gdzie
+GODZINA jest liczb± od 0 do 23, MINUTA liczb± od 0 do 59, za¶ SEKUNDA liczb±
+od 0 do 59. Cz³on `:SEKUNDA' mo¿na pomin±æ, jest on wówczas przyjmowany
+jako zero.
+
+Je¶li po okre¶leniu czasu wystêpuje `am' lub `pm' (lub `a.m.' czy `p.m.'),
+to GODZINA ograniczona jest do zakresu od 1 do 12 a `:MINUTA' mo¿e byæ
+pominiêta (przyjmowana za zero). `am' wskazuje na pierwsz± po³owê dnia, `pm'
+na drug± po³owê. W tej notacji, godzina 12 poprzedza godzinê 1: pó³noc jest
+zapisywana jako `12am', za¶ po³udnie jako `12pm'.
+
+Po zapisie czasu mo¿e równie¿ wyst±piæ okre¶lenie korekty z uwagi
+na strefê czasow±. Jest ono wyra¿ane jako `ZGGMM', gdzie Z jest znakiem `+'
+lub `-', GG jest liczb± godzin ró¿nicy dla strefy a MM liczb± minut.
+Podanie w ten sposób strefy czasowej wymusza interpretacjê podanego czasu
+wzglêdem czasu uniwersalnego (UTC - Coordinated Universal Time), uniewa¿niaj±c
+wcze¶niejsze okre¶lenia strefy czasowej czy lokalnej strefy czasowej. Czê¶æ
+opisuj±ca MINUTY w okre¶leniu czasu nie mo¿e byæ pomijana, je¶li u¿ywana jest
+korekta z uwagi na strefê czasow±. Jest to jedyny sposób okre¶lania korekty
+strefy czasowej o u³amkowe czê¶ci godziny.
+
+Mo¿na podaæ korektê `am'/`pm' albo korektê z uwagi na strefê czasow±, ale
+nie obie jednocze¶nie.
+.SS Strefa czasowa
+Element typu "strefa czasowa" okre¶la miêdzynarodow± strefê czasow±, wskazywan±
+przez niewielki zestaw liter. S± one obs³ugiwane w celu zachowania wstecznej
+zgodno¶ci. Ich u¿ywanie nie jest jednak¿e zalecane, gdy¿ praktycznie s± one
+dwuznaczne: na przyk³ad, skrót `EST' posiada inne znaczenie w Australii, a inne
+w Stanach Zjednoczonych. Zawarte w nim kropki s± ignorowane.
+Wojskowe miana stref czasowych u¿ywaj± pojedynczych liter.
+Obecnie jako pozycje typu strefa czasowa mog± byæ przedstawiane wy³±cznie
+strefy o przesuniêciu o ca³kowit± liczbê godzin.
+W poprzedniej sekcji znajdziesz opis precyzyjniejszego sterowania korekt±
+z uwagi na strefê czasow±.
+
+Poni¿ej podano wiele stref czasowych (z wy³±czeniem stref "czasów letnich"),
+uporz±dkowanych wed³ug przesuniêcia w czasie (parametr GODZINA strefy).
+.TP
+-1200
+`Y' wojskowo.
+.TP
+-1100
+`X' wojskowo.
+.TP
+-1000
+`W' wojskowo.
+.TP
+-0900
+`V' wojskowo.
+.TP
+-0800
+`PST' dla amerykañskiej strefy Pacific Standard, za¶ `U' wojskowo.
+.TP
+-0700
+`MST' dla amerykañskiej strefy Mountain Standard, za¶ `T' wojskowo.
+.TP
+-0600
+`CST' dla amerykañskiej strefy Central Standard, za¶ `S' wojskowo.
+.TP
+-0500
+`EST' dla amerykañskiej strefy Eastern Standard, za¶ `R' wojskowo.
+.TP
+-0400
+`AST' dla amerykañskiej strefy Atlantic Standard, za¶ `Q' wojskowo.
+.TP
+-0300
+`P' wojskowo.
+.TP
+-0200
+`O' wojskowo.
+.TP
+-0100
+`N' wojskowo.
+.TP
++0000
+`GMT' dla ¶redniego czasu Greenwich (Greenwich Mean), `UT' dla czasu
+uniwersalnego, `UTC' dla Coordinated Universal, `WET' dla czasu
+zachodnioeuropejskiego (Western European), za¶ `Z' dla ISO 8601
+i zapisu wojskowego.
+.TP
++0100
+`A' wojskowo, `CET' dla czasu ¶rodkowoeuropejskiego (Central European),
+`MET' dla Midden Europesche Tijd (holenderski), and `MEZ' dla Mittel-Europa"ische
+Zeit (Niemcy).
+.TP
++0200
+`B' wojskowo, za¶ `EET' dla wschodnioeuropejskiego (Eastern European).
+.TP
++0300
+`C' wojskowo.
+.TP
++0400
+`D' wojskowo.
+.TP
++0500
+`E' wojskowo.
+.TP
++0600
+`F' wojskowo.
+.TP
++0700
+`G' wojskowo.
+.TP
++0800
+`H' wojskowo.
+.TP
++0900
+`I' wojskowo, za¶ `JST' dla strefy japoñskiej (Japan Standard).
+.TP
++1000
+`GST' dla amerykañskiej strefy Guam (Guam Standard), za¶ `K' wojskowo.
+.TP
++1100
+`L' wojskowo.
+.TP
++1200
+`M' wojskowo, za¶ `NZST' dla strefy nowozelandzkiej (New Zealand Standard).
+.PP
+Istnieje wiele stref czasowych wynikaj±cych z oszczêdzania ¶wiat³a dziennego
+("czas letni", strefy DST - daylight-saving time). Równie¿ umieszczaj±c
+po okre¶leniu strefy zwyk³ej ³añcuch `DTS' jako odrêbne s³owo (tj. oddzielone
+bia³ymi znakami), mo¿na podaæ odpowiedni± strefê czasow± oszczêdzania energii.
+.TP
+-0700
+`PDT' dla amerykañskiej strefy Pacific Daylight.
+.TP
+-0600
+`MDT' dla amerykañskiej strefy dla Mountain Daylight.
+.TP
+-0500
+`CDT' dla amerykañskiej strefy Central Daylight.
+.TP
+-0400
+`EDT' dla amerykañskiej strefy Eastern Daylight.
+.TP
+-0300
+`ADT' dla amerykañskiej strefy Atlantic Daylight.
+.TP
++0100
+`BST' dla brytyjskiego czasu letniego (British Summer) oraz `WEST' dla
+zachodnioeuropejskiego czasu letniego (Western European Summer).
+.TP
++0200
+`CEST' dla ¶rodkowoeuropejskiego czasu letniego (Central European Summer),
+`MEST' dla Midden Europesche S. Tijd (holenderski) oraz `MESZ' dla
+Mittel-Europa"ische Sommerzeit (Niemcy).
+.TP
++1300
+`NZDT' dla nowozelandzkiego czasu New Zealand Daylight.
+.SS Dzieñ tygodnia
+Bezpo¶rednie powo³anie siê na dzieñ tygodnia bêdzie wystêpowaæ po dacie
+(tylko je¶li to konieczne) w celu okre¶lenia takiego dnia tygodnia
+w przysz³o¶ci.
+
+Dni tygodnia mog± byæ pisane w postaci pe³nej: `Sunday' (niedziela),
+`Monday' (poniedzia³ek), `Tuesday' (wtorek), `Wednesday' (¶roda),
+`Thursday' (czwartek), `Friday' (pi±tek) lub `Saturday' (sobota).
+Mo¿na je skracaæ do pierwszych trzech liter, opcjonalnie zakoñczonych kropk±.
+Dozwolone s± tak¿e specjalne skróty `Tues' dla wtorku (Tuesday),
+`Wednes' dla ¶rody (Wednesday) oraz `Thur' lub `Thurs' dla czwartku (Thursday).
+
+Dzieñ tygodnia mo¿e byæ poprzedzony liczb±, by wyraziæ przesuniêcie w czasie
+o dan± liczbê tygodni. Najlepiej u¿ywany jest w wyra¿eniach takich jak
+`third monday' (trzeci poniedzia³ek). W tym kontek¶cie dopuszczalne s± równie¿
+`last DZIEÑ' lub `next DZIEÑ'; przesuwaj± one o tydzieñ wstecz lub w przód
+w stosunku do dnia reprezentowanego przez DZIEÑ.
+
+Przecinek nastêpuj±cy po okre¶leniu dnia tygodnia jest jest ignorowany.
+.SS Elementy wzglêdne w ³añcuchach dat
+"Elementy wzglêdne" wskazuj± na datê przesuniêta wzglêdem danej (lub daty
+bie¿±cej, je¶li nie podano innej) w przód i wstecz. Efekty elementów
+wzglêdnych sumuj± siê. Oto kilka przyk³adów:
+.nf
+    1 year        # 1 rok
+    1 year ago    # 1 roku temu
+    3 years       # 3 lata
+    2 days        # 2 dni
+.fi
+Jednostkê przemieszczenia w czasie mo¿na wybraæ przy pomocy ³añcucha
+\fByear\fP lub \fBmonth\fP dla przesuniêcia odpowiednio o ca³e lata
+lub miesi±ce. S± to jednostki do¶æ rozmyte, gdy¿ lata i miesi±ce nie
+maj± jednakowej d³ugo¶ci. Precyzyjniejszymi jednostkami s± \fBfortnight\fP,
+czyli okres 14 dni, \fBweek\fP (tydzieñ) maj±cy 7 dni, \fBday\fP (dzieñ) maj±cy
+24 godziny, \fBhour\fP (godzina) o 60 minutach, \fBminute\fP (minuta)
+lub \fBmin\fP o 60 sekundach i \fBsecond\fP (sekunda) lub \fBsec\fP
+o d³ugo¶ci jednej sekundy. Przyrostek \fBs\fP, oznaczaj±cy w jêzyku angielskim
+liczbê mnog±, do³±czony do tych jednostek jest akceptowany i ignorowany.
+
+Jednostka czasu mo¿e zostaæ poprzedzona mno¿nikiem, podanym jako liczba (mo¿e
+byæ ze znakiem). Liczby bez znaku traktowane s± jako liczby dodatnie
+ze znakiem. Brak liczby oznacza mno¿nik 1. Nastêpuj±ce po elemencie wzglêdnym
+s³owo \fBago\fP (..temu) jest równowa¿ne poprzedzeniu jednostki dodatkowym
+mno¿nikiem o warto¶ci -1.
+
+£añcuch znaków \fBtommorow\fP (jutro) ma warto¶æ jednego dnia w przysz³o¶ci
+(równowa¿ne \fBday\fP), ³añcuch \fByesterday\fP (wczoraj) ma warto¶æ jednego
+dnia w przesz³o¶ci (równowa¿ny \fBday ago\fP, dzieñ temu).
+
+£añcuchy \fB now\fP (teraz) lub \fBtoday\fP (dzi¶) s± jednostkami wzglêdnymi
+odpowiadaj±cymi zerowemu przesuniêciu w czasie; bior± siê one z tego, ¿e
+przesuniêcie w czasie o warto¶ci zerowej reprezentuje bie¿±cy czas, je¶li
+nie zostanie to zmienione przez poprzedzaj±ce elementy. £añcuchów okre¶laj±cych
+bie¿±cy czas mo¿na u¿yæ do uwydatnienia innych elementów, jak w `12:00 today'
+(12:00 dzi¶). £añcuch \fBthis\fP (ten) ma równie¿ znaczenie przesuniêcia
+w czasie o zerowej warto¶ci, ale u¿ywany jest raczej w ³añcuchach daty jak
+`this thursday' (ten czwartek).
+
+Gdy element wzglêdny powoduje, ¿e data wynikowa przekracza granicê miêdzy DST
+(np.czasem letnim, zobacz podsekcja `Strefa czasowa') a czasem zwyk³ym
+(nie-DST), lub odwrotnie, godzina jest korygowana stosownie do czasu lokalnego.
+.SS Czyste liczby w ³añcuchach daty
+Dok³adna interpretacja czystej liczby dziesiêtnej zale¿y od kontekstu
+w ³añcuchu znakowym okre¶laj±cym datê.
+
+Je¿eli liczba dziesiêtna ma postaæ RRRRMMDD i nie pojawia siê przez ni± ¿aden
+inny element daty kalendarzowej (patrz `Zapis daty kalendarzowej'), to RRRR
+odczytywane jest jako rok, MM jako numer miesi±ca a DD jako dzieñ miesi±ca
+opisywanej daty.
+
+Je¿eli liczba dziesiêtna ma postaæ GGMM i w ³añcuchu daty nie pojawia siê
+przed ni± ¿aden inny element okre¶laj±cy czas, to GG jest odczytywane jako
+godzina a MM jako minuty godziny opisywanego czasu dnia. MM mo¿e byæ te¿
+pominiête.
+
+Je¶li po lewej stronie liczby pojawia siê zarówno data kalendarzowa jak i czas,
+ale nie ma elementu wzglêdnego, to liczba uniewa¿nia wcze¶niej okre¶lony rok.
+.SS Autorzy `getdate'
+`getdate' zosta³o pierwotnie zaimplementowane przez Stevena M. Bellovin
+(<smb@research.att.com>) podczas pobytu w Chapel Hillwhile na University
+of North Carolina.
+Kod zosta³ pó¼niej nieco zmodyfikowany przez kilku ludzi na Usenecie,
+a nastêpnie gruntownie zmieniony przez Richa $alz (<rsalz@bbn.com>)
+i Jima Berets (<jberets@bbn.com>) w sierpniu 1990. Rozmaite wersje
+dla systemu GNU zrobi³ David MacKenzie, Jim Meyering i inni.
+
+Rozdzia³ ten zosta³ pierwotnie utworzony przez Franc,oisa Pinard
+(<pinard@iro.umontreal.ca>) z kodu ¼ród³owego `getdate.y', a nastêpnie
+poprawiony przez K. Berry (<kb@cs.umb.edu>).
+
+.SH ZOBACZ TAK¯E
+.TP 12
+.BR echo (1)
+wypisuje wiersz tekstu
+.TP
+.BR printf (1)
+formatuje i wypisuje dane
+.TP
+.BR yes (1)
+wypisuje ³añcuch a¿ do przerwania programu
+.TP
+.BR false (1)
+nic nie robi, zwraca niepowodzenie
+.TP
+.BR true (1)
+nic nie robi, zwraca powodzenie
+.TP
+.BR test (1)
+sprawdza typy plików, porównuje warto¶ci
+.TP
+.BR expr (1)
+rozwija (interpretuje) wyra¿enia
+.TP
+.BR tee (1)
+przekierowuje wyj¶cie do wielu plików
+.TP
+.BR basename (1)
+obcina katalog i przyrostek z nazwy pliku
+.TP
+.BR dirname (1)
+obcina niekatalogowy przyrostek nazwy pliku
+.TP
+.BR pathchk (1)
+sprawdza przeno¶no¶æ nazwy pliku
+.TP
+.BR pwd (1)
+wypisuje katalog roboczy
+.TP
+.BR stty (1)
+wypisuje lub zmienia charakterystyki terminala
+.TP
+.BR printenv (1)
+wypisuje zmienne ¶rodowiska
+.TP
+.BR tty (1)
+wypisuje nazwê pliku terminala
+.TP
+.BR id (1)
+wypisuje rzeczywisty i efektywny uid i gid
+.TP
+.BR logname (1)
+wypisuje bie¿±c± nazwê zg³oszeniow±
+.TP
+.BR whoami (1)
+wypisuje efektywny id u¿ytkownika
+.TP
+.BR groups (1)
+nazwy grup, do których nale¿y u¿ytkownik
+.TP
+.BR users (1)
+nazwy aktualnie zalogowanych u¿ytkowników
+.TP
+.BR who (1)
+wypisuje, kto jest obecnie zalogowany
+.TP
+.BR date (1)
+wypisuje lub ustawia datê i czas systemowy
+.TP
+.BR uname (1)
+wypisuje informacjê o systemie
+.TP
+.BR hostname (1)
+wypisuje lub ustawia nazwê systemu
+.TP
+.BR hostid (1)
+wypisuje numeryczny identyfikator systemu
+.TP
+.BR chroot (1)
+zmienia katalog g³ówny
+.TP
+.BR env (1)
+zmienia zmienne ¶rodowiska
+.TP
+.BR nice (1)
+zmienia priorytet obs³ugi zadañ
+.TP
+.BR nohup (1)
+uodpornia na sygna³ zawieszenia wykonywania
+.TP
+.BR su (1)
+zmienia id u¿ytkownika i grupy
+.TP
+.BR sleep (1)
+pauzuje przez zadany czas
+.TP
+.BR factor (1)
+pokazuje czynniki liczby
+.TP
+.BR seq (1)
+wypisuje ci±gi liczb
+.PP

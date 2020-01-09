@@ -1,0 +1,67 @@
+.\" 1999 PTM Przemek Borys
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright 1993 Rickard E. Faith (faith@cs.unc.edu)
+.\" Portions extracted from linux/mm/swap.c:
+.\"                Copyright (C) 1991, 1992  Linus Torvalds
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified 21 Aug 1994 by Michael Chastain (mec@shell.portal.com):
+.\"   Added text about calling restriction (new in kernel 1.1.20 I believe).
+.\"   N.B. calling "idle" from user process used to hang process!
+.\" Modified Thu Oct 31 14:41:15 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Translation ???
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\" "
+.TH IDLE 2 1994-08-21 "Linux 1.1.46" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+idle \- powoduje pracê ja³ow± (bezczynno¶æ) procesu 0
+.SH SK£ADNIA
+.B #include <unistd.h>
+.sp
+.B int idle(void);
+.SH OPIS
+.B idle
+jest wewnêtrzn± funkcj± systemow±, u¿ywan± podczas startu systemu.
+Zaznacza ona strony procesu jako podlegaj±ce wymianie, obni¿a jego priorytet
+i wchodzi w g³ówn± pêtlê przydzielaj±c± zadania.
+.B idle
+nigdy siê nie koñczy.
+.PP
+.BR idle .
+mo¿e byæ wywo³ywane tylko przez proces 0. Ka¿dy inny proces, nawet z
+uprawnieniami superu¿ytkownika otrzyma
+.BR EPERM .
+.SH "WARTO¦Æ ZWRACANA"
+.B idle
+dla procesu 0 nigdy nie wraca, a dla procesów u¿ytkownika zawsze zwracane jest
+\-1.
+.SH B£ÊDY
+.TP
+.B EPERM
+Zawsze dla procesów u¿ytkownika.
+.SH "ZGODNE Z"
+Ta funkcja jest specyficzna dla Linuksa, i nie powinna byæ u¿ywana
+w programach przeno¶nych.
+.SH UWAGI
+Pocz±wszy od 2.3.13 ta funkcja systemowa ju¿ nie istnieje.

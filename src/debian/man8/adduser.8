@@ -1,0 +1,286 @@
+.\" Translation: Robert Luberda <robert@debian.org>, May 2002, adduser 3.47
+.\" Translation-update: Robert Luberda <robert@debian.org>, Apr 2004; adduser 3.52
+.\" $Id: adduser.8,v 1.2 2004/04/05 11:04:55 robert Exp $
+.\"
+.\" Someone tell emacs that this is an -*- nroff -*- source file.
+.\" Copyright 1997, 1998, 1999 Guy Maor.
+.\" Adduser and this manpage are copyright 1995 by Ted Hajek,
+.\" With much borrowing from the original adduser copyright 1994 by
+.\" Ian Murdock.
+.\"
+.\" This is free software; see the GNU General Public License version
+.\" 2 or later for copying conditions.  There is NO warranty.
+.TH ADDUSER 8 "wersja 3.52" "Debian GNU/Linux"
+.SH NAZWA
+adduser, addgroup \- dodaje u¿ytkownika lub grupê do systemu
+.SH SK£ADNIA
+.BR adduser " [opcje] [\-\-home KATALOG] [\-\-shell PROW£OKA] [--no-create-home] [\-\-uid ID] [\-\-firstuid ID] [\-\-lastuid ID] [\-\-ingroup GRUPA | \-\-gid ID] [--disabled-password] [--disabled-login] [--gecos GECOS] u¿ytkownik"
+.PP
+.BR adduser " \-\-system [opcje] [\-\-home KATALOG] [\-\-shell POW£OKA] [--no-create-home] [\-\-uid ID] [\-\-group | \-\-ingroup GRUPA | \-\-gid ID] [--disabled-password] [--disabled-login] [--gecos GECOS] u¿ytkownik"
+.PP
+.BR adduser " \-\-group [opcje] [--gid ID] grupa"
+.br
+.BR addgroup " [opcje] [--gid ID] grupa"
+.PP
+.BR adduser " \-\-group \-\-system [opcje] [--gid ID] grupy"
+.br
+.BR addgroup " \-\-system [opcje] [--gid ID] grupa"
+.PP
+.BR adduser " [opcje] u¿ytkownik grupa"
+.SS WSPÓLNE OPCJE
+.br
+[\-\-quiet] [\-\-force-badname] [\-\-help] [\-\-version] [\-\-conf PLIK]
+.SH OPIS
+.PP
+.BR adduser " i " addgroup
+dodaj± u¿ytkowników i grupy do systemu zgodnie z opcjami wymienionymi w linii poleceñ
+oraz konfiguracj± zawart± w pliku
+.IR /etc/adduser.conf .
+Te programy s± bardziej przyjaznym dla u¿ytkownika interfejsem do programów
+.BR useradd " i " groupadd ", "
+zgodnymi ze standardami Debiana dotycz±cymi warto¶ci identyfikatora u¿ytkownika (UID)
+i identyfikatora grupy (GID), tworz±cymi katalogi domowe, uruchamiaj±ce lokalne skrypty
+i maj±cymi inne dodatkowe funkcje.
+.\" FIXME!!!!
+.\"programs, choosing Debian policy conformant UID and GID values, creating a
+.\"home directory with skeletal configuration, running a custom script, and
+.\"other features.
+.BR adduser " i " addgroup
+mog± byæ u¿yte w jednym z piêciu trybów:
+.SS "Dodawanie zwyk³ych u¿ytkowników"
+.BR adduser ,
+wywo³any z jednym argumentem nie bêd±cym opcj± oraz bez opcji
+.BR \-\-system " lub " \-\-group ,
+doda zwyk³ego u¿ytkownika.
+
+.B adduser
+wybierze pierwszy mo¿liwy UID z zakresu przeznaczonego dla zwyk³ych
+u¿ytkowników w pliku konfiguracyjnym. Ten UID mo¿e zostaæ nadpisany
+za pomoc± opcji
+.BR \-\-uid .
+
+Zakres okre¶lony w pliku konfiguracyjnym równie¿ mo¿e zostaæ nadpisany opcjami
+.B \-\-firstuid
+i
+.BR \-\-lastuid .
+
+Domy¶lnie, ka¿demu u¿ytkownikowi w systemie Debian GNU/Linux zostaje przypisana
+grupa maj±ca tê sam± nazwê i identyfikator co u¿ytkownik. Umieszczanie ka¿dego
+u¿ytkownika w grupie o takiej samej pozwala na ³atwe zarz±dzanie katalogami
+dostêpnymi do zapisu dla grupy poprzez dodanie odpowiednich u¿ytkowników do nowej grupy,
+ustawienie flagi set-group-ID na katalogu i ustawienie ka¿demu u¿ytkownikowi warto¶ci
+umask równej 002.
+Je¿eli ta opcja zostanie wy³±czona przez ustawienie
+.B USERGROUPS
+na
+.IR no ,
+wszyscy nowo tworzeni u¿ytkownicy bêd± mieli identyfikator grupy ustawiony na
+.BR USERS_GID .
+Grupy u¿ytkowników mog± zostaæ równie¿ nadpisane przez podanie w linii poleceñ
+opcji
+.BR \-\-gid " lub " \-\-ingroup ,
+które ustawiaj± grupê przez podanie, odpowiednio, jej id lub nazwy.
+
+.B adduser
+utworzy katalog domowy u¿ytkownika zgodnie z ustawieniami
+.BR DHOME ", " GROUPHOMES ", " LETTERHOMES
+w pliku konfiguracyjnym.
+Katalog domowy mo¿e zostaæ nadpisany przez opcjê linii poleceñ
+.BR \-\-home ,
+a pow³oka - przez opcjê
+.BR \-\-shell .
+Je¿eli
+.B USERGROUPS
+jest ustawione na
+.IR yes ,
+to katalogowi domowemu u¿ytkownika zostanie nadany bit set-group-ID, co powoduje,
+¿e jakikolwiek plik utworzony w tym katalogu bêdzie mia³ przydzielon± w³a¶ciw± grupê.
+
+.B adduser
+skopiuje pliki z katalogu
+.B SKEL
+do katalogu domowego u¿ytkownika, poprosi o dane u¿ytkownika (GECOS)
+oraz o has³o. Dane u¿ytkownika mog± byæ tak¿e ustawione opcj±
+.BR \-\-gecos .
+Podanie opcji
+.B \-\-disabled-login
+spowoduje utworzenia konta u¿ytkownika, które bêdzie niedostêpne (zablokowane)
+dopóki nie zostanie ustawione has³o.
+Opcja
+.B \-\-disabled-password
+nie ustawi has³a, ale dostêp u¿ytkownika do systemu bêdzie mo¿liwy na przyk³ad
+przez u¿ycie programu SSH z kluczami RSA.
+
+Po utworzeniu i ustawieniu konta u¿ytkownika, je¿eli istnieje plik
+.BR /usr/local/sbin/adduser.local ,
+to zostanie on uruchomiony w celu wykonania lokalnych ustawieñ.
+Argumenty przekazywane do
+.B adduser.local
+s± nastepuj±ce:
+.br
+nazwa_u¿ytkownika uid gid katalog_domowy, 
+a zmiennym ¶rodowiskowym DEBUG i VERBOSE zostan± nadane warto¶ci
+zgodne z ustawieniami g³ównego programu.
+.SS "Dodawanie u¿ytkowników systemowych"
+.BR adduser ,
+zostanie uruchomiony z jednym argumentem, nie bêd±cym opcj±, oraz
+z opcj±
+.BR \-\-system ,
+doda u¿ytkownika systemowego. Je¿eli taki u¿ytkownik z identyfikatorem
+u¿ytkownika (uid) mieszcz±cym siê w zakresie identyfikatorów u¿ytkowników systemowych
+(lub je¿eli uid jest podany w linii poleceñ, to z tym identyfikatorem)
+ju¿ istnieje, adduser po prostu zakoñczy dzia³anie bez b³êdu.
+
+.B adduser
+wybierze pierwszy mo¿liwy UID z zakresu identyfikatorów systemowych okre¶lonych
+w pliku konfiguracyjnym. UID ten mo¿e zostaæ nadpisany przez podanie opcji
+.BR \-\-uid .
+
+Domy¶lnie u¿ytkownicy systemowi maj± przypisan± grupê
+.BR nogroup .
+Aby przypisaæ nowego u¿ytkownika systemowego do istniej±cej grupy, nale¿y
+u¿yæ opcji
+.BR \-\-gid " lub " \-\-ingroup .
+Aby nowemu u¿ytkownikowi systemowemu zosta³a przypisana nowa grupa z tym samym
+identyfikatorem, trzeba u¿yæ opcji
+.BR \-\-group .
+
+Katalog domowy jest tworzony zgodnie z tymi samymi zasadami jak dla zwyk³ych u¿ytkowników.
+Nowy u¿ytkownik systemowy bêdzie mia³ pow³okê
+.I /bin/false
+(chyba ¿e zostanie to nadpisane opcj±
+.BR \-\-shell )
+oraz wy³±czone has³o. Pliki z katalogu
+.B SKEL
+nie zostan± skopiowane.
+.SS "Dodawanie zwyk³ych grup"
+Je¿eli 
+.BR adduser " zostanie uruchomiony  z opcj± " \-\-group ", ale bez opcji
+.BR \-\-system " lub odpowiednio jako program " addgroup ", "
+to zostanie dodana grupa dla zwyk³ych u¿ytkowników.
+
+Grupie zostanie nadany identyfikator (GID) z zakresu okre¶lonego w pliku
+konfiguracyjnym dla identyfikatorów u¿ytkowników (UID),
+jednak¿e mo¿e zostaæ nadpisany opcj±
+.BR \-\-gid .
+
+Utworzenie grupy nie powoduje przypisania do niej ¿adnych u¿ytkowników.
+.SS "Dodawanie grup systemowych"
+Je¿eli
+.BR addgroup " zostanie wywo³any z opcj±"
+.BR \-\-system ","
+to bêdzie utworzona nowa grupa systemowa.
+
+Grupie zostanie nadany identyfikator (GID) z zakresu okre¶lonego
+w pliku konfiguracyjnym dla identyfikatorów u¿ytkowników (UID),
+jednak¿e mo¿e zostaæ nadpisany opcj±
+.BR \-\-gid .
+
+Utworzenie grupy nie powoduje przypisania do niej ¿adnych u¿ytkowników.
+.SS "Przydzielanie istniej±cego u¿ytkownika do istniej±cej grupy"
+.B adduser
+wywo³any z dwoma argumentami nie bêd±cymi opcjami doda istniej±cego u¿ytkownika
+do istniej±cej grupy.
+
+.SH OPCJE
+.TP
+.B \-\-conf PLIK
+U¿yj pliku PLIK zamiast
+.IR /etc/adduser.conf .
+.TP
+.B \-\-disabled-login
+Nie uruchamia programu passwd do ustanowienia has³a. U¿ytkownik nie bêdzie móg³
+u¿ywaæ swojego konta, dopóki has³o nie zostanie nadane.
+.TP
+.B \-\-disabled-password
+Jak \-\-disabled-login, ale dostêp u¿ytkownika do systemu bêdzie mo¿liwy na przyk³ad
+przez u¿ycie programu SSH z kluczami RSA, tj. bez autoryzacji za pomoc± has³a.
+.TP
+.B \-\-force\-badname
+Domy¶lnie nazwy u¿ytkowników i grup mog± siê sk³adaæ z ma³ej litery, po której
+nastêpuje zero lub wiêcej ma³ych liter b±d¼ cyfr. W nazwie u¿ytkownika mog± wyst±piæ
+równie¿ znaki my¶lnika.
+U¿ycie tej opcji spowoduje, ¿e
+.B adduser
+i
+.B addgroup
+bêd± mniej restrykcyjne w odniesieniu do tych nazw.
+.TP
+.B \-\-gecos GECOS
+Ustawia pole z informacjami GECOS dla nowego u¿ytkownika. Je¶li ta
+opcja jest podana, to adduser nie bêdzie prosi³ o podanie tych informacji
+interakcyjnie.
+.TP
+.B \-\-gid ID
+Przy tworzeniu nowej grupy, ta opcja ustawia identyfikator grupy na podan±
+warto¶æ. Przy tworzeniu u¿ytkownika, u¿ycie tej opcji spowoduje umieszczenie u¿ytkownika
+w zadanej grupie.
+.TP
+.B \-\-group
+U¿yte razem z
+.BR \-\-system ,
+spowoduje utworzenie grupy o takiej samej nazwie i identyfikatorze, jak nowo
+tworzony u¿ytkownik systemowy.
+Je¿eli nie zostanie u¿yte razem z opcj±
+.BR \-\-system ,
+to zostanie utworzone grupa o podanej nazwie. Ta opcja jest opcj± domy¶ln±, je¿eli
+program zosta³ wywo³any jako
+.BR addgroup .
+.TP
+.B \-\-help
+Wy¶wietla krótk± instrukcjê u¿ywania programu.
+.TP
+.B \-\-home KATALOG
+U¿ywa katalogu KATALOG jako katalogu domowego u¿ytkownika, nadpisuj±c tym samym domy¶ln±
+warto¶æ okre¶lon± w pliku konfiguracyjnym. Je¿eli ten katalog nie istnieje, to
+bêdzie utworzony i zostan± skopiowane pliki z katalogu
+.IR SKEL .
+.TP
+.B \-\-shell POW£OKA
+Ustawia POW£OKA jako pow³okê logowania u¿ytkownika, nadpisuj±c domy¶ln± warto¶æ okre¶lon±
+w pliku konfiguracyjnym.
+.TP
+.B \-\-ingroup GRUPA
+Umieszcza nowego u¿ytkownika w grupie GRUPA, zamiast w grupie okre¶lonej przez opcjê
+USERS_GID w pliku adduser.conf.
+.TP
+.B \-\-no-create-home
+Nie tworzy katalogu domowego, nawet je¿eli on nie istnieje.
+.TP
+.B \-\-quiet
+Program wy¶wietla mniej komunikatów ni¿ zazwyczaj.
+.TP
+.B \-\-system
+Tworzy u¿ytkownika systemowego.
+.TP
+.B \-\-uid ID
+Ustawia identyfikator nowego u¿ytkownika na podan± warto¶æ. adduser zakoñczy siê
+b³êdem, je¿eli taki identyfikator jest ju¿ zajêty.
+.TP
+.B \-\-firstuid ID
+Nadpisuje warto¶æ pierwszego dostêpnego identyfikatora u¿ytkownika.
+.TP
+.B \-\-lastuid ID
+Nadpisuje warto¶æ pierwszego ostatniego identyfikatora u¿ytkownika.
+.TP
+.B \-\-version
+Wy¶wietla informacjê o wersji i prawach autorskich.
+.SH PLIKI
+/etc/adduser.conf
+.SH "ZOBACZ TAK¯E"
+adduser.conf(5), deluser(8), useradd(8), groupadd(8)
+
+.SH COPYRIGHT
+Copyright (C) 1997, 1998, 1999 Guy Maor. Modyfikowany przez Rolanda
+Bauerschmidta i Marca Habera.
+.br
+Copyright (C) 1995 Ted Hajek, z du¿ym wk³adem oryginalnego programu
+.B adduser
+z Debiana.
+.br
+Copyright (C) 1994 Ian Murdock.
+.B adduser
+jest wolnym oprogramowaniem, warunki licencji - patrz GNU General Public
+Licence w wersji 2 lub wy¿szej. Nie ma
+.I ¿adnych
+gwarancji.

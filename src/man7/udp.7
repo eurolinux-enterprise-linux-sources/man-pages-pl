@@ -1,0 +1,162 @@
+.\" T³umaczenie wersji man-pages 1.58 - sierpieñ 2003 PTM
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\"
+.\" This man page is Copyright (C) 1999 Andi Kleen <ak@muc.de>.
+.\" Permission is granted to distribute possibly modified copies
+.\" of this page provided the header is included verbatim,
+.\" and in case of nontrivial modification author and date
+.\" of the modification is added to the header.
+.\" $Id: udp.7,v 1.1 2003/08/21 22:12:32 ankry Exp $
+.TH UDP 7 1998-10-02 "Linux" "Podrêcznik programisty Linuksa" 
+.SH NAZWA
+udp \- protokó³ datagramów u¿ytkownika dla IPv4
+.SH SK£ADNIA
+.B #include <sys/socket.h>
+.br
+.B #include <netinet/in.h>
+.br
+.B udp_socket = socket(PF_INET, SOCK_DGRAM, 0); 
+.SH OPIS
+Jest to implementacja opisanego w RFC768 protoko³u datagramów u¿ytkownika.
+Implementuje ona us³ugê bezpo³±czeniowych, niepewnych pakietów datagramowych. 
+Kolejno¶æ pakietów mo¿e ulec zmianie przed ich dotarciem do celu, mog± one
+te¿ zostaæ powielone. UDP generuje i sprawdza sumy kontrolne, aby wykryæ b³êdy
+transmisji. 
+
+Podczas tworzenia gniazda UDP, jego adresy: lokalny i zdalny s± nieokre¶lone.
+Datagramy mo¿na wysy³aæ natychmiast za pomoc±
+.BR sendto (2)
+lub
+.BR sendmsg (2)
+podaj±c jako argument prawid³owy adres docelowy. Gdy dla gniazda jest wywo³ane
+.BR connect (2),
+ustawiany jest domy¶lny adres docelowy i od tego momentu mo¿na wysy³aæ
+datagramy za pomoc±
+.BR send (2)
+lub 
+.BR write (2)
+nie podaj±c adresu docelowego.
+Nadal mo¿liwe jest wysy³anie do innych adresów docelowych podaj±c adres
+funkcji
+.BR sendto (2)
+lub
+.BR sendmsg (2).
+Aby odbieraæ pakiety, gniazdo mo¿e zostaæ najpierw przypisane do adresu
+lokalnego za pomoc±
+.BR bind (2).
+W przeciwnym przypadku, warstwa gniazd automatycznie przypisze wolny port
+lokalny spoza zakresu zdefiniowanego przez
+.I net.ipv4.ip_local_port_range
+i przypisze gniazdo do
+.IR INADDR_ANY .
+
+Wszystkie operacje odbioru zwracaj± tylko jeden pakiet. Gdy pakiet jest
+mniejszy ni¿ przekazany bufor, zwracane s± tylko dane o rozmiarze pakietu, gdy
+pakiet jest wiêkszy ni¿ bufor, pakiet jest obcinany i ustawiany jest znacznik
+.BR MSG_TRUNC .
+.I MSG_WAITALL
+nie jest wspierane.
+
+Opcje IP mog± byæ wysy³ane lub odbierane za pomoc± opcji gniazda opisanych w
+.BR ip (7).
+S± one przetwarzane przez j±dro tylko wtedy, gdy w³±czona jest odpowiednia
+kontrolka wej¶cia/wyj¶cia (ale nadal s± przekazywane do programu u¿ytkownika,
+nawet gdy kontrolka jest wy³±czona). Zobacz
+.BR ip (7).
+
+Gdy przy wysy³aniu ustawiony jest znacznik
+.BR MSG_DONTROUTE ,
+adres docelowy musi odnosiæ siê do lokalnego adresu interfejsu i pakiet jest
+wysy³any jedynie do tego interfejsu.
+
+UDP rozcz³onkowuje pakiet, gdy jego ca³kowity rozmiar przekracza warto¶æ MTU
+(Maximum Transmission Unit) dla interfejsu.
+Bardziej przyjazn± dla sieci alternatyw± jest korzystanie z badania MTU
+¶cie¿ki, jak opisano w rozdziale
+.B IP_PMTU_DISCOVER 
+.BR ip (7).
+
+.SH "FORMAT ADDRESU"
+UDP stosuje format adresu IPv4 
+.B sockaddr_in
+opisany w
+.BR ip (7). 
+
+.SH "OBS£UGA B£ÊDÓW"
+Wszystkie b³êdy krytyczne s± przekazywane do programu u¿ytkownika jako
+warto¶æ zwracana, nawet gdy gniazdo nie jest po³±czone. Dotyczy to tak¿e
+b³êdów asynchronicznych otrzymywanych z sieci. Mo¿na te¿ otrzymaæ b³±d
+dotycz±cy pakietu wcze¶niej wys³anego z danego gniazda. To zachowanie ró¿ni
+siê od wielu innych implementacji gniazd BSD, które nie przekazuj± ¿adnych
+b³êdów, gdy gniazdo nie jest po³±czone. Zachowanie Linuksa ma oparcie w
+.BR RFC1122 .
+
+Dla zgodno¶ci z kodem odziedziczonym mo¿liwe jest ustawienie opcji SOL_SOCKET
+.BR SO_BSDCOMPAT ,
+aby otrzymywaæ b³êdy zdalne tylko wtedy, gdy gniazdo jest po³±czone (z
+wyj±tkiem
+.B EPROTO
+i
+.BR EMSGSIZE ).
+Jednak zamiast w³±czaæ tê opcjê lepiej poprawiæ kod tak, by obs³ugiwa³
+prawid³owo b³êdy. B³êdy wygenerowane lokalnie s± zawsze przekazywane.
+
+Gdy w³±czona jest opcja
+.BR IP_RECVERR ,
+wszystkie b³êdy s± przechowywane w kolejce b³êdów gniazda i mog± byæ
+odczytywane za pomoc±
+.BR recvmsg (2)
+z ustawionym znacznikiem
+.BR MSG_ERRQUEUE .
+.SH IOCTL
+Do poni¿szych kontrolek wej¶cia/wyj¶cia mo¿na uzyskaæ dostêp za pomoc± funkcji
+.BR ioctl (2).
+Prawid³owa sk³adnia to:
+.PP
+.RS
+.nf
+.BI int " value";
+.IB error " = ioctl(" tcp_socket ", " ioctl_type ", &" value ");"
+.fi
+.RE
+.TP
+.B SIOCINQ
+Pobiera wska¼nik do argumentu ca³kowitego. Zwraca rozmiar nastêpnego
+oczekuj±cego datagramu w podanej liczbie bajtów lub 0, gdy nie czeka ¿aden
+pakiet.
+.TP
+.B SIOCOUTQ
+Zwraca liczbê bajtów danych w lokalnej kolejce pakietów wychodz±cych.
+Wspierane przez Linuksa 2.4 i pó¼niejsze wersje.
+.PP
+Ponadto wspierane s± wszystkie kontrolki wej¶cia/wyj¶cia opisane w
+.BR ip (7)
+i
+.BR socket (7).
+.SH B£ÊDY
+Przy wysy³aniu lub odbieraniu za poi¶rednictwem gniazd UDP mog± wyst±piæ
+wszyskie b³êdy zdefiniowane dla
+.BR socket (7)
+lub 
+.BR ip (7).
+
+.B ECONNREFUSED
+Z adresem docelowym nie by³ skojarzony ¿aden odbiorca. Mo¿e to byæ spowodowane
+przez uprzednie wys³anie pakietu za po¶rednictwem danego gniazda.
+
+.SH WERSJE
+IP_RECVERR pojawi³o siê w Linuksie 2.2.
+
+.SH PODZIÊKOWANIA
+Tê strone podrêcznika napisa³ Andi Kleen.
+
+.SH "ZOBACZ TAK¯E"
+.BR ip (7),
+.BR socket (7),
+.BR raw (7)
+
+RFC768 dla protoko³u datagramów u¿ytkownika.
+.br
+RFC1122 dla wymagañ hostów.
+.br
+RFC1191 dla opisu badania MTU ¶cie¿ki.

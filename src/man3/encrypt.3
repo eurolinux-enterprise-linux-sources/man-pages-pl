@@ -1,0 +1,51 @@
+.\" T³umaczenie wersji man-pages 1.39 - wrzesieñ 2001 PTM
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" 
+.\" Copyright 2000 Nicolás Lichtmaier <nick@debian.org>
+.\" Created 2000-07-22 00:52-0300
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.TH ENCRYPT 3 2000-07-22 GNU "Podrêcznik programisty Linuksa"
+.SH NAZWA
+encrypt \- Szyfrowanie 64-bitowych komunikatów
+.SH SK£ADNIA
+.B #define _XOPEN_SOURCE
+.sp
+.B #include <unistd.h>
+.sp
+.BI "void encrypt(char " block "[64], int " edflag );
+.br
+.BI "void setkey(const char *" key );
+.SH OPIS
+Funkcje te szyfruj± i rozszyfrowuj± 64-bitowe komunikaty.
+Funkcja setkey() ustawia klucz u¿ywany przez encrypt(). U¿ywany tu parametr
+.I key
+jest tablic± bajtów, z których ka¿dy ma wartoæ numeryczn± 1 lub 0.
+Bajty key[n], gdzie n=8*q-1, s± ignorowane tak, ¿e u¿ywany klucz jest
+56-bitowy.
+.PP
+Funkcja setkey() modyfikuje przekazany bufor, koduj±c go gdy
+.I edflag
+wynosi 0, a rozkodowuj±c gdy przekazano 1.
+.PP
+Funkcje te nie s± wielobie¿ne.
+.SH "WARTO¦Æ ZWRACANA"
+Funkcje te nie zwracaj± ¿adnej warto¶ci.
+.SH "ZGODNE Z"
+SVID, SUSv2
+.SH "ZOBACZ TAK¯E"
+.BR crypt (3)

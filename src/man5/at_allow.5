@@ -1,0 +1,47 @@
+.\" {PTM/WK/2000-I}
+.Id $Id: at_allow.5,v 1.1 2000/02/05 10:18:03 wojtek2 Exp $
+.TH AT_ACCESS 5 "sierpieñ 1997" "" "Podrêcznik programisty linuksowego"
+.SH NAZWA
+at.access, at.deny \- okre¶l, kto mo¿e przekazywaæ zadania do at lub batch
+.SH OPIS
+Pliki
+.I /etc/at/at.access
+i
+.I /etc/at/at.deny
+decyduj± o tym, którzy u¿ytkownicy mog± przekazywaæ polecenia do pó¼niejszego
+wykonania za po¶rednictwem
+.BR at (1)
+lub
+.BR batch (1).
+.PP
+Pliki te stanowi± listy nazw u¿ytkowników, po jednej w wierszu. Odstêpy
+(spacja, tabulator) nie s± dozwolone.
+.PP
+Obowi±zuj± nastêpuj±ce regu³y ograniczaj±ce dostêp do poleceñ at i batch:
+.IP
+Superu¿ytkownik zawsze mo¿e siê nimi pos³ugiwaæ.
+.IP
+Je¶li istnieje plik
+.IR /etc/at/at.allow ,
+to zezwala siê na u¿ywanie at wy³±cznie u¿ytkownikom w nim wymienionym.
+Osoby spoza tej listy nie mog± uruchamiaæ ani at ani batch.
+.IP
+Je¿eli nie istnieje
+.IR /etc/at/at.allow ,
+to sprawdzany jest
+.IR /etc/at/at.deny .
+U¿ytkownicy w nim wymienieni maj± zakaz dostêpu do at.
+Wszyscy pozostali mog± korzystaæ z omawianych poleceñ.
+.br
+W szczególno¶ci, je¶li istnieje
+.IR /etc/at/at.deny ,
+ale jest on pusty, to dostêp do at maj± wszyscy u¿ytkownicy systemu.
+.IP
+Je¶li nie istnieje ¿aden z plików kontroluj±cych dostêp do at, to korzystaæ
+z nich mo¿e wy³±cznie superu¿ytkownik.
+.SH "ZOBACZ TAK¯E"
+.BR at (1),
+.BR atrun (1),
+.BR cron (8),
+.BR crontab (1),
+.BR atd (8).

@@ -1,0 +1,155 @@
+.\" {PTM/WK/2000-VI}
+.ds VE LPRng-3.6.13
+'\" e
+.\" @(#)lp.1 1.36 95/10/09 SMI; from SVr4
+.\" Copyright 1989 AT&T
+.\" Copyright (c) 1995, Sun Microsystems, Inc.
+.\" All Rights Reserved
+.\" Portions Copyright (c) 1992, X/Open Company Limited
+.\" Portions Copyright (c) 1996, Patrick Powell
+.\" All Rights Reserved
+.ig
+.EQ
+gsize 10
+delim $$
+.EN
+..
+.TH CANCEL 1 \*(VE "LPRng"
+.SH NAZWA
+cancel \- wysy³a ¿±dania anulowania do us³ugi druku LPRng
+.SH SK£ADNIA
+.B cancel
+.RB [ \-P
+.IR printer ]
+.RB [ \-D
+.IR debug-options ]
+.if n .ti +5n
+.RI [ job-ID \|.\|.\|.]
+.SH OPIS
+.IX "cancel command" "" "\fLcancel\fP \(em cancel requests to an LP print service"
+.IX "LPRng print services" "cancel requests" "" "cancel requests \(em \fLcancel\fP"
+.IX "printers" "cancel requests" "" "cancel requests \(em \fLcancel\fP"
+.LP
+Gdy nale¿±cy do LPRng klient
+.B lprm
+zostanie wywo³any pod nazw± \fBcancel\fP, to obs³uguje interfejs
+.BR cancel .
+Jest to podobne do zachowania programów
+.BR ex (1)
+i
+.BR vi (1).
+Obs³ugiwana postaæ polecenia \fBcancel\fP organizuje usuwanie wskazanych
+\fIzadañ\fP z podanych kolejek druku.
+Czynno¶æ ta jest identyczna z wykonywan± przez
+.BR lprm (1) .
+Identyczne s± te¿ opcje, ró¿ni± siê tylko tym, ¿e dla \fBcancel\fP
+ostatni argument wiersza poleceñ mo¿e byæ opcjonaln± nazw± drukarki.
+Je¿eli ta nazwa nie pojawia siê w bazie printcap LPRng, to przyjmuje siê,
+¿e jest ona identyfikatorem zadania.
+.PP
+Format
+.I job-ID
+powinien byæ albo warto¶ci± pola identyfikatora albo numerem zadania
+zg³aszanym przez LPQ.
+.br
+.ne 10
+.SH OPCJE
+.LP
+.TP
+.BI \-P printer
+Nazwa drukarki. Alternatywna metoda okre¶lania drukarki. Nadal sprawdzany
+jest ostatni argument wiersza poleceñ, by stwierdziæ, czy jest on wpisem
+printcap.
+.TP
+.BI \-D debug-options
+Opcje debuggowania programu.
+.ne 10
+.SH ARGUMENTY
+.B cancel
+obs³uguje nastêpuj±ce argumenty:
+.TP 8
+.I ID
+identyfikator zadania, zwracany przez
+.BR lp .
+Podanie
+.I ID
+zadania anuluje to zadanie, nawet je¶li jest ono aktualnie drukowane.
+.TP
+.I printer
+Nazwa drukarki (pe³ne zestawienie nazw drukarek mo¿na uzyskaæ dziêki
+.BR lpq ).
+Podanie drukarki anuluje zadanie aktualnie na niej drukowane.
+.SH ¦RODOWISKO
+W podrêczniku
+.BR environ (5)
+znajdziesz opis poni¿szych zmiennych ¶rodowiska, wp³ywaj±cych na dzia³anie
+.BR cancel :
+.TP 8
+.SB LPDEST
+Okre¶la kolejkê druku. Je¿eli zmienna
+.SB LPDEST
+nie jest ustawiona, to zastosowana zostanie zmienna
+.SB PRINTER\s0\f1.
+Opcja
+.BI \-P \0dest
+ma pierwszeñstwo nad
+.SB LPDEST\s0\f1.
+Je¿eli nie podano
+.B \-P
+a
+.SB LPDEST
+zawiera warto¶æ nie bêd±c± poprawnym urz±dzeniem lub nazw± okre¶laj±c±
+miejsce przeznaczenia, to wyniki bêd± niezdefiniowane.
+.TP
+.SB PRINTER
+Okre¶la urz±dzenie wyj¶ciowe lub miejsce przeznaczenia.
+Je¿eli nie ustawiono
+.SB LPDEST
+ani
+.SB PRINTER\s0\f1,
+to stosowane jest nieokre¶lone urz±dzenie wyj¶ciowe.
+Opcja
+.BI \-P \0dest
+i zmienna ¶rodowiska
+.SB LPDEST
+maj± pierwszeñstwo nad
+.SB PRINTER\s0\f1.
+Je¿eli nie podano
+.BR \-P ,
+.SB LPDEST
+nie jest ustawione, za¶
+.SB PRINTER
+zawiera warto¶æ nie bêd±c± poprawnym urz±dzeniem lub nazw± okre¶laj±c±
+miejsce przeznaczenia, to wyniki bêd± niezdefiniowane.
+.SH "KOD ZAKOÑCZENIA"
+.B cancel
+zwraca poni¿sze kody zakoñczenia:
+.TP
+.B 0
+Wykonanie pomy¶lne.
+.TP
+.B >0
+Wyst±pi³ b³±d.
+.SH "ZOBACZ TAK¯E"
+.BR lpd.conf (5),
+.BR lpc (8),
+.BR lpd (8),
+.BR lpr (1),
+.BR lpq (1),
+.BR lprm (1),
+.BR printcap (5),
+.BR lpd.conf (5),
+.BR pr (1).
+.SH DIAGNOSTYKA
+Wiêkszo¶æ komunikatów diagnostycznych jest oczywista. Je¶li dok³adny powód
+niepowodzenia pozostaje niejasny, nale¿y w³±czyæ poziom debugowania (-D5)
+i uruchomiæ ponownie. Informacja diagnostyczna pomo¿e uchwyciæ dok³adn±
+przyczynê.
+.SH "HISTORIA"
+LPRng jest rozszerzonym systemem buforowania wydruku o funkcjonalno¶ci podobnej
+do oprogramowania Berkeley LPR. List± dyskusyjn± o LPRng jest lprng@lprng.com;
+subskrypcja przez wys³anie listu do lprng-request@lprng.com ze s³owem
+`subscribe` w tre¶ci.
+Oprogramowanie to jest dostêpne z ftp://ftp.astart.com/pub/LPRng.
+.SH "AUTOR"
+Patrick Powell <papowell@astart.com>.

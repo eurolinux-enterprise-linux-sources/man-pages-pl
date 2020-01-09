@@ -1,0 +1,178 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" This manpage is Copyright (C) 1992 Drew Eckhardt;
+.\"                               1993 Michael Haardt, Ian Jackson.
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Wed Jul 21 19:36:29 1993, Rik Faith (faith@cs.unc.edu)
+.\" Modified 21 Aug 1994 by Michael Chastain (mec@shell.portal.com):
+.\"   Removed note about old kernel (pre-1.1.44) using wrong id on path.
+.\" Modified 18 Mar 1996 by Martin Schulze (joey@infodrom.north.de):
+.\"   Stated more clearly how it behaves with symbolic links.
+.\" Added correction due to Nick Duffek (nsd@bbc.com), aeb, 960426
+.\" Modified Sat Sep 07 18:17:26 MET DST 1996 by Michael Haardt:
+.\"   Restrictions for NFS
+.\" Modified by Joseph S. Myers <jsm28@cam.ac.uk>, 970909
+.\" Modified Tue Jan 13 21:21:03 MET 1998 by Michael Haardt:
+.\"   Using access is often insecure
+.\" Modified Tue Oct 16 02:40:48 CEST 2001 by aeb
+.\" Modified Tue Apr 23 19:51:15 CEST 2002 by Roger Luethi <rl@hellgate.ch>
+.\"
+.\" Translation 1998 (c) Przemek Borys <pborys@dione.ids.pl>
+.\" Last Update: Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>, Jun 2002,
+.\"              manpages 1.51
+.\"
+.TH ACCESS 2 2002-04-23 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+access \- sprawdzenie praw u¿ytkownika do pliku
+.SH SK£ADNIA
+.nf
+.B #include <unistd.h>
+.sp
+.BI "int access(const char *" pathname ", int " mode );
+.fi
+.SH OPIS
+.B access
+sprawdza, czy proces mo¿e odczytywaæ, zapisywaæ i sprawdzaæ istnienie
+pliku (lub innego obiektu systemu plików) o nazwie
+.IR pathname .
+Je¶li
+.I pathname
+jest dowi±zaniem symbolicznym, sprawdzane s± prawa do pliku wskazywanego przez
+to dowi±zanie.
+
+.I mode
+jest mask± sk³adaj±c± siê z jednego lub wiêcej znaczników spo¶ród
+.BR R_OK ", " W_OK ", " X_OK " i " F_OK .
+
+.BR R_OK ", " W_OK " i " X_OK
+sprawdzaj±, czy plik istnieje i ma odpowiednio prawa do odczytu, zapisu
+i uruchamiania.
+.B F_OK
+sprawdza tylko, czy plik istnieje.
+
+Testy zale¿± od praw do katalogów, wystêpuj±cych na ¶cie¿ce do pliku,
+podanej w parametrze
+.IR pathname ,
+a tak¿e od praw do katalogów i plików wskazywanych przez wystêpuj±ce po drodze
+dowi±zania symboliczne.
+
+Sprawdzenie jest dokonywane z
+.I prawdziwymi
+uid i gid procesu, a nie efektywnymi, jak to siê zwykle robi przy
+wykonywaniu rzeczywistych operacji. Pozwala to programom z ustawionym bitem
+set-UID na ³atwe okre¶lenie autoryzacji u¿ytkownika wywo³uj±cego.
+
+Sprawdzane s± jedynie bity dostêpu, nie zawarto¶æ pliku czy jego typ.
+Dlatego, je¶li katalog okazuje siê "zapisywalny", znaczy to prawdopodobnie,
+¿e mo¿na w nim tworzyæ pliki, a nie, ¿e do katalogu mo¿na pisaæ jak do pliku.
+Podobnie, plik DOS-u mo¿e zostaæ okre¶lony jako "wykonywalny", lecz funkcja
+.BR execve (2)
+mimo to zawiedzie.
+
+Je¶li proces posiada odpowiednie uprawninia, implementacja mo¿e spowodowaæ
+pomy¶lne zakoñczenie dla
+.B X_OK
+nawet, gdy nie jest ustawiony ¿aden z bitów uruchamialno¶ci w prawach dostêpu
+do pliku.
+.SH "WARTO¦Æ ZWRACANA"
+Gdy wszystko pójdzie dobrze (wszystkie ¿±dane prawa s± zapewnione), zwracane
+jest zero. W wypadku b³êdu (przynajmniej jeden bit z ¿±danych w
+.I mode
+uprawnieñ nie jest ustawiony lub wyst±pi³y inne b³êdy), zwracane jest \-1
+i odpowiednio ustawiane jest
+.IR errno .
+.SH B£ÊDY
+Funkcja
+.B access
+musi zakoñczyæ siê niepomy¶lnie gdy:
+.TP
+.B EACCES
+Brak uprawnieñ dla ¿±danego dostêpu do pliku, albo brak uprawnieñ do
+przegl±dania dla którego¶ z katalogów w
+.IR pathname .
+.TP
+.B ELOOP
+Napotkano zbyt wiele dowi±zañ symbolicznych podczas rozwi±zywania
+.IR pathname .
+.TP
+.B ENAMETOOLONG
+.I pathname
+jest zbyt d³ugie.
+.TP
+.B ENOENT
+Sk³adnik
+.I pathname
+bêd±cy katalogiem
+by³by dostêpny, ale nie istnieje lub jest wisz±cym dowi±zaniem symbolicznym.
+.TP
+.B ENOTDIR
+Sk³adnik
+.IR pathname ,
+który powinien byæ katalogiem w rzeczywisto¶ci katalogiem nie jest.
+.TP
+.B EROFS
+¯±dano zapisu do pliku po³o¿onego w systemie plików tylko do odczytu.
+.TP
+.B EFAULT
+.I pathname
+wskazuje poza dostêpn± dla u¿ytkownika przestrzeñ adresow±.
+.TP
+.B EINVAL
+.I mode
+zosta³o nieprawid³owo podane.
+.TP
+.B EIO
+Wyst±pi³ b³±d wej¶cia/wyj¶cia.
+.TP
+.B ENOMEM
+Nie starczy³o pamiêci kernela.
+TP
+.B ETXTBSY
+Wyst±pi³a próba dostêpu z prawem zapisu do pliku aktualnie uruchomionego
+programu.
+.SH OGRANICZENIA
+.B access
+zwraca b³±d, je¶li jakikolwiek z ¿±danych w wywo³aniu rodzajów dostêpu nie
+zostanie zapewniony, nawet je¶li reszta zostanie.
+.PP
+.B access
+mo¿e nie dzia³aæ prawid³owo na systemach plików NFS z w³±czonym mapowaniem
+UID, poniewa¿ mapowanie to jest dokonywane na serwerze i ukryte przed
+klientem sprawdzaj±cym prawa dostêpu.
+.PP
+U¿ycie funkcji
+.B access
+w celu sprawdzenia, czy u¿ytkownik ma uprawnienia na przyk³ad do otwarcia
+pliku, przed otwarciem tego pliku za pomoc±
+.BR open (2)
+tworzy dziurê w bezpieczeñstwie, poniewa¿ u¿ytkownik mo¿e wykorzystaæ krótki
+okres czas pomiêdzy sprawdzeniem pliku a otwarciem go do manipulacji na pliku.
+.SH "ZGODNE Z"
+SVID, AT&T, POSIX, X/OPEN, BSD 4.3
+.SH "ZOBACZ TAK¯E"
+.BR stat (2),
+.BR open (2),
+.BR chmod (2),
+.BR chown (2),
+.BR setuid (2),
+.BR setgid (2)

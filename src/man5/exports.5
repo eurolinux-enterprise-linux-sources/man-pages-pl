@@ -1,0 +1,230 @@
+.\"
+.\" Polish Translation nov.1996 piotr.pogorzelski@ippt.gov.pl
+.\"
+.TH EXPORTS 5 "6 styczeñ 1996" "" "Administracja Systemem Linux"
+.UC 5
+.SH NAZWA
+exports \- systemy plików eksportowane w systemie NFS 
+.SH SK£ADNIA
+.B /etc/exports
+.SH OPIS
+Plik
+.I /etc/exports
+zawiera listê systemu plików, które mog± byæ eksportowane
+dla klientów systemu NFS. Jest wykorzystywany zarówno przez demona
+.BR mountd (8)
+jak i przez demona servera plików w systemie NFS
+.BR nfsd (8).
+.PP
+Format pliku jest zbli¿ony do stosowanego w systemie SunOS,
+z wieloma dodatkowymi rozszerzeniami.
+Ka¿dy wiersz zawiera punkt montowania oraz listê komputerów lub
+nazwy grup (netgroups), które s± uprawnione do montowania tego
+punktu. Po nazwie ka¿dego komputera mo¿na podaæ umieszczon± w nawiasie listê
+parametrów, jakie nale¿y zastosowaæ w przypadku montowania danego
+punktu przez ten komputer. Puste wiersze s± ignorowane, a znak
+# rozpoczyna komentarz koñcz±cy siê wraz z wierszem.
+.PP
+.SS Opcje ogólne
+.TP
+.IR secure "\*d
+ta opcja wymaga aby ¿±dania pochodz±ce z portu mniejszego ni¿ IPPORT_RESERVED
+(1024). Standardowa ta opcja jest w³±czona, aby j± wy³±czyæ nale¿y napisaæ
+.IR insecure .
+.TP
+.IR ro
+ta opcja zezwala na zamontowanie punktu w trybie tylko do czytania.
+Standardowo zezwala siê na operacjê pisania, co mo¿na zaznaczyæ jawnie
+za pomoc± opcji
+.IR rw " .
+.TP
+.IR link_relative
+ta opcja powoduje zamienianie bezwzglêdnych dowi±zañ symbolicznych
+(zawarto¶æ dowi±zania rozpoczyna siê znakiem '/') na dowi±zania
+wzglêdne, przed dostawianie odpowiedniej liczby sekwencji '../' tak,
+aby z katalogu zawieraj±cego dowi±zanie dostaæ siê na katalog
+g³ówny. Ta opcja ma subteln±, mo¿e nawet niepoprawn±, semantykê
+w przypadkach, gdy hierarchia plików nie jest montowana w
+katalogu g³ównym '/'.
+.TP
+.IR link_absolute
+ta opcja powoduje pozostawienie wszystkich dowi±zañ symbolicznych
+bez ¿adnych zmian. Jest to zachowanie standardowe.
+.SS Przyporz±dkowywanie identyfikatora UID
+.PP
+Demon
+.I nfsd
+opiera sw± kontrolê dostêpu plików serwera na identyfikatorach uid i gid
+przesy³anych z ka¿dym ¿±daniem NFS. Standardowym zachowaniem, jakiego
+mo¿na siê spodziewaæ jest dostêp do w³asnych plików, tak jak by³yby
+one umieszczone na lokalnym systemie plików. Wymaga to u¿ycia tych
+samych identyfikatorów u¿ytkownika (uid) i grupy (gid) zarówno 
+na serwerze, jak i na kliencie. Warunek ten nie jest zawsze spe³niony,
+a czasami wrêcz niepo¿±dany.
+.PP
+Bardzo czêsto jest niepo¿±dane, by uzyskuj±c dostêp do plików
+umieszczonych na serwerze administrator na komputerze kliencie
+by³ traktowany tak samo, jak gdyby by³ administratorem serwera.
+W tym celu identyfikator uid 0 pochodz±cy z ¿±dañ NFS jest
+zamieniony przez serwer na inny identyfikator, tzw. anonymous (anonimowy) lub 
+.I nobody
+(nikt).
+Ten tryb pracy (zwany 'root squashing') jest zachowaniem domy¶lnym serwera,
+i mo¿e byæ wy³±czony za pomoc± opcji 
+.IR no_root_squash .
+.PP
+Domy¶lnie demon
+.I nfsd
+podczas uruchamiania 
+próbuje pobraæ identyfikatory uid i gid anonimowego u¿ytkownika
+sprawdzaj±c czy istnieje u¿ytkownik
+.I nobody
+w pliku /etc/passwd.
+Je¶li taki u¿ytkownik nie istnieje anonimowym identyfikatorom
+uid i guid jest nadawana wartosc -2 (65534). Warto¶ci te mog± zostaæ zmienione
+za pomoc± opcji 
+.IR anonuid " i " anongid .
+.PP
+Dodatkowo demon
+.I nfsd
+pozwala na okre¶lenie dowolnych identyfikatorów uid i guid jakie
+powinny zostaæ nadane anonimowemu u¿ytkwnikowi (nobody).
+Ostatecznie mo¿na zmieniaæ wszystkie ¿±dania na ¿±dania pochodz±ce od
+anonimowego u¿ytkownika przez podanie opcji
+.IR all_squash .
+.PP 
+Serwer 
+.I nfsd
+udostêpnia równie¿ mo¿liwo¶æ dynamicznej zamiany identyfikatorów uid i
+gid servera na identyfikatory klienta i na odwrót. W³±czane jest to 
+za pomoc± opcji
+.IR map_daemon ,
+za¶ w tym celu wykorzystywany jest protokó³ UGID RPC. Dlatego, aby to
+przekodowanie pracowa³o poprawnie wymagane jest uruchomienie na komputerze
+kliencie demona
+.BR ugidd (8).
+.PP
+Poni¿ej kompletna lista opcji zamiany identyfikatorów:
+.TP
+.IR root_squash
+Zamieñ ¿±dania z identyfikatorami uid/gid 0 na ¿±dania pochodz±ce od
+anonimowych identyfikatorów uid/gid. Nale¿y zwróciæ uwagê, ¿e nie dotyczy
+to ¿adnych innych identyfikatorów, które mog³yby byæ podobnie wra¿liwe np.
+u¿ytkownik 
+.IR bin .
+.TP
+.IR no_root_squash
+Wy³±cz 'root squashing'. Ta opcja jest u¿yteczna przede wszystkim w odniesieniu
+do bezdyskowych klientów.
+.TP
+.IR squash_uids " i " squash_gids
+Te opcje okre¶laj± listê identyfikatorów uid i gid, które powinny
+podlegaæ zamianie na identyfikatory anonimowe. Poprawna lista identyfikatorów
+mo¿e wygl±daæ nastêpuj±co:
+.IP
+squash_uids=0-15,20,25-50
+.IP
+Zwykle wygl±da to trochê pro¶ciej:
+.IP
+squash_uids=0-100
+.IP
+.TP
+.IR all_squash
+Zamieñ wszystkie identyfikatory uid i gid na identyfikatory anomimowego
+u¿ytkownika. Po¿yteczne w przypadku publicznie dostêpnych katalogów FTP,
+news itp. Opcj± o przeciwnym znaczeniu jest
+.IR no_all_squash ,
+która obowi±zuje domy¶lnie.
+.TP
+.IR map_daemon
+Ta opcja w³±cza dynamiczn± zamianê identyfikatorów uid/gid. Ka¿dy
+identyfikator w ¿±daniu NFS bêdzie zamieniony na odpowiedni identyfikator
+obowi±zuj±cy na serwerze i ka¿dy identyfikator w odpowiedzi NFS bêdzie
+zamieniany w przeciwn± stronê. Ta opcja wymaga uruchomienia na komputerze
+kliencie demona
+.BR rpc.ugidd (8).
+Ustawieniem domy¶lnym jest
+.IR map_identity ,
+pozostawiaj±ce wszystkie identyfikatory bez zmian. Zwyk³e opcje
+zamiany (squash options) maj± zastosowanie niezale¿nie od zastosowania
+zamiany dynamicznej.
+.TP
+.IR anonuid " i " anongid
+Te opcje pozwalaj± na jawne nadanie identyfikatorom uid i gid u¿ytkownika
+anonimowego dowolnych warto¶ci. S± szczególnie u¿yteczne
+dla klientów PC/NFS, kiedy czêsto chcemy aby wszystkie ¿±dania
+pochodz±ce z klientów PC/NFS by³y traktowane tak, jak gdyby pochodzi³y
+od jednego u¿ytkownika. Rozwa¿my podany poni¿ej przyk³ad dla katalogu
+.IR /home/joe ,
+który zamienia wszyskie ¿±dania tak, jak gdyby pochodzi³y od
+u¿ytkownika o identyfikatorze 150 (prawdopodobnie identyfikator u¿ytkownika
+joe).
+.IP
+.nf
+.fi
+.SH PRZYK£AD
+.PP
+.nf
+.ta +3i
+# przyk³adowy plik /etc/exports
+/               master(rw) trusty(rw,no_root_squash)
+/projects       proj*.local.domain(rw)
+/usr            *.local.domain(ro) @trusted(rw)
+/home/joe       pc001(rw,all_squash,anonuid=150,anongid=100)
+/pub            (ro,insecure,all_squash)
+.fi
+.PP
+Pierwszy wiersz eksportuje ca³y system plików dla komputerów master i trusty.
+Prócz prawa do zapisu w przypadku komputera trusty wy³±czona jest
+równie¿ jakakolwiek zamiana identyfikatorów.
+Dryuga i trzecia pozycja daj± przyk³ad wykorzystania wzorców i grup 
+(pozycja/grupa  @trusted). Czwarty wiersz przedstawia przyk³ad klienta PC/NFS
+omówionego powy¿ej. Ostatni wiersz eksportuje publicznie dostêpny katalog
+FTP dla ka¿dego komputera na ¶wiecie z zamian± identyfikatorów 
+wszystkich ¿±dañ tak, jakby pochodzi³y od anonimowego u¿ytkownika.
+Opcja
+.I insecure
+w tym wierszu pozwala na dostêp klientom z implementacj± systemu NFS,
+która nie korzysta z zarezerwowanych portów (poni¿ej 1024).
+
+.SH SZTUCZKI
+W przeciwieñstwie do innych implementacji serwer
+.B nfsd
+pozwala na eksportowanie do jednego klienta zarówno katalogu, 
+jak i podkatalogów, np
+.IR /usr " i " /usr/X11R6 .
+W tym przypadku maj± zastosowanie opcje wystêpuj±ce przy
+pozycji pliku /etc/exports najbardziej zbli¿onej do montowanego katalogu.
+Np. je¶li u¿ytkownik na komputerze kliencie siêga do pliku w katalogu 
+.IR /usr/X11R6 ,
+maj± zastosowanie opcje podane dla pozycji 
+.IR /usr/X11R6 .
+Ma to zastosowanie równie¿ wtedy, gdy ta pozycja zawiera wzorce lub grupy
+komputerów.
+.SH PLIKI
+.TP
+.I /etc/exports
+Plik konfiguracyjny demona
+.BR nfsd (8).
+.TP
+.I /etc/passwd
+Plik konfiguracyjny z informaj± o u¿ytkownikach.
+.TP
+.PP
+.SH DIAGNOSTYKA
+Przy ka¿dorazowym uruchomieniu
+.BR nfsd (8)
+lub
+.BR mountd (8)
+b³êdy przy czytaniu pliku s± raportowane za pomoc±
+.BR syslogd (8)
+na poziomie NOTICE od DAEMON'a.
+Raportowany jest ka¿dy nieznany komputer, lecz w czasie startu systemu
+czêsto nie wszystkie komputery s± ju¿ znane demonowi named(8), wiêc je¶li
+zostan± znalezione pó¼niej, to informacja o tym fakcie jest równie¿ raportowana
+przez syslogd(8), z tymi samymi parametrami co poprzednio.
+.SH ZOBACZ TAK¯E
+.BR mountd (8),
+.BR nfsd (8),
+.BR nfs (5),
+.BR passwd (5).

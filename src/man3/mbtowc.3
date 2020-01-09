@@ -1,0 +1,72 @@
+.\" T³umaczenie wersji man-pages 1.39 - wrzesieñ 2001 PTM
+.\" aktualizacja do man-pages 1.47 - grudzieñ 2001
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" 
+.\" Copyright (c) Bruno Haible <haible@clisp.cons.org>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" References consulted:
+.\"   GNU glibc-2 source code and manual
+.\"   Dinkumware C library reference http://www.dinkumware.com/
+.\"   OpenGroup's Single Unix specification http://www.UNIX-systems.org/online.html
+.\"   ISO/IEC 9899:1999
+.\"
+.TH MBTOWC 3  2001-07-04 "GNU" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+mbtowc \- przekszta³ca ci±g wielobajtowy na znak szeroki
+.SH SK£ADNIA
+.nf
+.B #include <stdlib.h>
+.sp
+.BI "int mbtowc(wchar_t *" pwc ", const char *" s ", size_t " n );
+.fi
+.SH OPIS
+Podstawow± dla tej funkcji jest sytuacja gdy \fIs\fP jest ró¿ne od NULL i
+\fIpwc\fP jest ró¿ne od NULL. W tym przypadku, funkcja \fBmbtowc\fP sprawdza
+co najwy¿ej \fIn\fP bajtów ci±gu wielobajtowego, zaczynaj±c od \fIs\fP,
+wydziela nastêpny pe³ny znak wielobajtowy, przetwarza go na znak szeroki
+i umieszcza w \fI*pwc\fP. Aktualizuje ona wewnêtrzny, znany tylko funkcji
+mbtowc, stan przesuniêty. Je¶li \fIs\fP nie wskazuje na bajt '\\0', funkcja
+zwraca liczbê bajtów \fIs\fP, które zosta³y zu¿yte; w pozosta³ych przypadkach
+zwracane jest 0.
+.PP
+Je¶li \fIn\fP bajtów, poczynaj±c od \fIs\fP nie zawiera pe³nego znaku
+wielobajtowego, lub je¶li zawieraj± one niepoprawny ci±g wielobajtowy,
+\fBmbtowc\fP zwraca \fI-1\fP. Mo¿e siê to zdarzyæ nawet gdy \fIn\fP >=
+\fIMB_CUR_MAX\fP, je¶li wielobajtowy ³añcuch zawiera nadmiarowe ci±gi
+przesuniêæ.
+.PP
+Inna sytuacja ma miejsce, gdy \fIs\fP jest ró¿ne od NULL, ale \fIpwc\fP jest
+równe NULL. Wówczas funkcja \fBmbtowc\fP zachowuje siê jak powy¿ej, z tym
+wyj±tkiem, ¿e nie przechowuje przetworzonego znaku szerokiego w pamiêci.
+.PP
+Trzecia sytuacja wystêpuje, gdy \fIs\fP jest równe NULL. Wówczas \fIpwc\fP
+i \fIn\fP s± ignorowane. Funkcja \fBmbtowc\fP
+.\" The Dinkumware doc and the Single Unix specification say this, but
+.\" glibc doesn't implement this.
+sprowadza stan przesuniêty, znany tylko tej funkcji, do stanu wyj¶ciowego
+i zwraca warto¶æ ró¿n± od zera gdy kodowanie posiada nietrywialne stany
+przesuniête, a zero je¶li kodowanie jest bezstanowe.
+.SH "WARTO¦Æ ZWRACANA"
+Je¶li \fIs\fP jest ró¿ne od NULL, funkcja \fBmbtowc\fP zwraca liczbê zu¿ytych
+bajtów, poczynaj±c od \fIs\fP, a 0 je¶li \fIs\fP wskazuje na bajt null, lub
+\-1 w przypadku b³êdu.
+.PP
+Je¶li \fIs\fP jest równe NULL, funkcja \fBmbtowc\fP zwraca warto¶æ ró¿n± od
+zera gdy kodowanie posiada nietrywialne stany przesuniête, a zero gdy
+kodowanie jest bezstanowe.
+.SH "ZGODNE Z"
+ISO/ANSI C, UNIX98
+.SH "ZOBACZ TAK¯E"
+.BR mbrtowc (3),
+.BR mbstowcs (3),
+.BR MB_CUR_MAX (3)
+.SH UWAGI
+Zachowanie \fBmbtowc\fP zale¿y od kategorii LC_CTYPE bie¿±cego locale.
+.PP
+Funkcja ta nie jest przystosowana do wielow±tkowo¶ci. Funkcja \fBmbrtowc\fP
+zapewnia lepszy interfejs przy tym samym dzia³aniu.

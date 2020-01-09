@@ -1,0 +1,291 @@
+.\" {PTM/PB/0.1/11-06-1999/"edytor strumieniowy"}
+.\" Translation 1999 Przemek Borys
+.TH sed 1 "Listopad 19, 1995"
+.SH NAZWA
+sed \- edytor strumieniowy
+.SH SK£ADNIA
+sed [-n] [-g] [-e skrypt ] [-f splik ] [ plik ] ...
+.SH OPIS
+Sed kopiuje podane pliki (lub domy¶lnie standardowe wej¶cie) na standardowe
+wyj¶cie, przy okazji edytuj±c przep³ywaj±ce dane wed³ug komend zadanych w
+skrypcie.
+.P
+Opcja -e za³±cza pojedyncz± komendê edycyjn± z nastêpuj±cego po niej
+argumentu; je¶li jest ich [komend] wiêcej, to s± one wykonywane w kolejno¶ci
+pojawienia siê. Je¶li jest tam tylko opcja -e i nie ma -f, flagê -e mo¿na
+pomin±æ.
+.P
+Opcja -f powoduje, ¿e komendy s± pobieranego z pliku "splik"; je¶li jest ich
+kilka, to s± one wykonywane w kolejno¶ci pojawienia siê; komendy -e i -f
+mo¿na ze sob± ³±czyæ.
+.P
+Opcja -g powoduje, ¿e sed zachowuje siê tak, jakby ka¿da z komend skryptu
+mia³a przyrostek g.
+.P
+Opcja -n hamuje domy¶lne wyj¶cie.
+.P
+Skrypt sk³ada siê z komend, po jednej na liniê, u³o¿onych w nastêpuj±cej
+postaci:
+
+	[adres [, adres] ] funkcja [argumenty]
+
+Normalnie sed cyklicznie kopiuje linie wej¶cia do bie¿±cego bufora
+tekstowego, a nastêpnie dokonuje kolejno wszystkich komend edycyjnych, których
+adresy wybieraj± bufor, a potem przesy³a bufor na standardowe
+wyj¶cie i czy¶ci go.
+.P
+Opcja -n hamuje normalne wyj¶cie (tak, ¿e ma miejsce tylko wyj¶cie p i w).
+Podobnie niektóre komendy (n,M) robi± samodzielne odczyty linii, a niektóre
+inne (d,D) powoduj±, ¿e komendy nastêpuj±ce za nimi w danym skrypcie s±
+pomijane (komenda D hamuje te¿ czyszczenie bie¿±cego bufora tekstowego, co
+ma normalnie miejsce przed nastêpnym cyklem).
+.P
+Pomocnym jest te¿ wiedzieæ, ¿e istnieje drugi bufor (nazywany `miejscem
+przechowywania', który mo¿e byæ kopiowany, lub doklejany, lub sk³adany z
+bie¿±cym buforem.
+.P
+Adres jest: liczb± dziesiêtn± (która odpowiada linii, gdzie numery linii to
+liczby zaczynaj±ce siê od 1, do ostatniej linii pliku), lub `$', który
+adresuje ostatni± liniê wyj¶cia, lub kontekstowym adresem, który jest
+`/wyra¿eniem regularnym/' w zmodyfikowanym stylu ed (1), wiêc:
+.P
+.TP 5
+(1)
+Sekwencja specjalna `\n' odpowiada nowej linii osadzonej w buforze, a `\t'
+odpowiada tabulacji.
+.TP 5
+(2)
+Linia komend bez adresów wybiera ka¿dy bufor.
+.TP 5
+(3)
+Linia komend z jednym adresem wybiera ka¿dy bufor, który odpowiada temu
+adresowi.
+.TP 5
+(4)
+Linia komend z dwoma adresami odpowiada w³±cznemu zasiêgowi od pierwszego
+bufora wej¶ciowego, do drugiego, odpowiadaj±cego adresowi. (Je¶li drugi
+adres jest liczb± mniejsz± lub równ± numerowi podanemu najpierw, to
+wybierana jest tylko jedna linia.) Gdy dopasowany jest drugi adres, sed
+zaczyna ponownie szukaæ pierwszego; tak wiêc dowolna liczba tych zasiêgów
+bêdzie porównywana.
+.P
+Operator negacji `!', znany z C, mo¿e i tu mieæ zastosowanie, wskazuj±c, ¿e
+komenda odnosi siê do linii nie wybranych w adresach.
+.P
+W nastêpuj±cych funkcjach, maksymalna liczba adresów jest wskazana w
+nawiasie.
+.P
+Argument oznaczony jako "tekst" sk³ada siê z jednej, lub wiêkszej ilo¶ci
+linii, w których wszystkie, poza ostatni± musz± koñczyæ siê `\', aby ukryæ
+now± liniê.
+.P
+Odwrotne uko¶niki w tek¶cie s± traktowane jak odwrotne uko¶niki w ³añcuchu 
+zamiany komendy
+`s' i mog± byæ u¿ywane do chronienia pocz±tkowych bia³ych spacji.
+.P
+Argument oznaczony jako "rplik" i "wplik" musi byæ ostatnim w linii komend.
+Ka¿dy wplik jest tworzony zanim rozpocznie siê przetwarzanie. Dopuszczaln±
+ilo¶ci± argumentów wplików jest 10.
+.TP 5
+a "tekst"   (1)
+Doklej. Do³±cz tekst na wyj¶cie przed odczytaniem nastêpnej linii wej¶cia.
+.TP 5
+b "etykieta"  (2)
+Przejd¼ siê do komendy `:', przechowuj±cej etykietê. Je¶li nie podano
+etykiety, przejd¼ na koniec skryptu.
+.TP 5
+c "tekst"   (2)
+Zmieñ. Skasuj bie¿±cy tekst z bufora. Z adresem 0 lub 1, lub na koñcu
+dwuadresowego zasiêgu, do³±cz tekst na wyj¶ciu. Rozpocznij nastêpny cykl.
+.TP 5
+d          (2)
+Skasuj bie¿±cy bufor tekstowy. Rozpocznij nowy cykl.
+.TP 5
+D          (2)
+Skasuj pierwsz± liniê bie¿±cego bufora tekstowego (wszystkie znaki, a¿ do
+pierwszej nowej linii). Rozpocznij nowy cykl.
+.TP 5
+g          (2)
+Zamieñ zawarto¶æ bie¿±cego bufora tekstowego z zawarto¶ci± miejsca
+przechowywania.
+.TP 5
+G          (2)
+Doklej zawarto¶æ miejsca przechowywania do bie¿±cego bufora tekstowego.
+.TP 5
+h          (2)
+Skopiuj bie¿±cy bufor tekstowy do miejsca przechowywania.
+.TP 5
+H          (2)
+Doklej kopiê bie¿±cego bufora tekstowego do miejsca przechowywania.
+.TP 5
+i "tekst"   (1)
+Wstaw. Wstaw tekst na standardowe wyj¶cie.
+.TP 5
+l          (2)
+Listuj. Wysy³a przestrzeñ wzorców na standardowe wyj¶cie. Opcja "w" mo¿e
+wyst±piæ jak w komendzie s, opisanej ni¿ej. Niedrukowane znaki s±
+rozszerzane do:
+
+   \\b  --  backspace  (ASCII 08)
+   \\t  --  tabulacja  (ASCII 09)
+   \\n  --  nowa linia (ASCII 10)
+   \\r  --  return     (ASCII 13)
+   \\e  --  escape     (ASCII 27)
+   \\xx --  znak ASCII odpowiadaj±cy dwóm cyfrom szesnastkowym.
+.TP 5
+n          (2)
+Kopiuj bie¿±cy bufor tekstowy na standardowe wyj¶cie. Wczytaj do bufora now±
+liniê.
+.TP 5
+N          (2)
+Doklej nastêpn± liniê wej¶cia do bie¿±cego bufora tekstowego, wstawiaj±c
+miêdzy nie osadzon± now± liniê. Zmienia siê bie¿±cy numer linii.
+.TP 5
+p          (2)
+Drukuj. Kopiuj bie¿±cy bufor tekstowy na standardowe wyj¶cie.
+.TP 5
+P          (2)
+Kopiuj pierwsz± liniê bie¿±cego bufora tekstowego (wszystkie znaki a¿ do
+pierwszej nowej linii) na standardowe wyj¶cie.
+.TP 5
+q          (1)
+Zakoñcz. Przejd¼ na koniec skryptu. Nie rozpoczynaj nowego cyklu.
+.TP 5
+r "rplik"  (1)
+Czytaj zawarto¶æ rpliku. Wstaw j± na wyj¶ciu przed przeczytaniem nastêpnej
+linii wej¶ciowej.
+.TP 5
+s /wyra¿enie regularne/zamiennik/flagi         (2)
+Podmieñ znalezione wyra¿enia regularne na zamiennik (w bie¿±cym buforze
+tekstowym). Zamiast `/' mo¿na u¿yæ dowolnego znaku. Dla dok³adniejszego
+opisu zobacz ed (1).
+Flagi to zero lub wiêcej z nastêpuj±cych:
+
+g -- Globalnie. Podmieniaj wszystkie niezachodz±ce na siebie instancje
+     ³añcucha, a nie tylko pierwsz± z nich.
+
+p -- Drukuj przestrzeñ wzorców po dokonaniu podmiany.
+
+w -- Zapisuj. Doklej bie¿±cy bufor tekstowy do argumentu plikowego, tak jak
+     w komendzie w (o ile zostanie dokonana podmiana). Standardowe wyj¶cie
+     jest u¿ywane je¶li nie podano argumentu plikowego.
+
+.TP 5
+t "etykieta"  (2)
+Ga³êziowy test `je¿eli'. Przejd¼ do komendy `:' o podanej etykiecie, je¶li
+dokonano jakichkolwiek podmian od ostatniego odczytu linii wej¶ciowej, lub
+wywo³ania `t' lub `T'. Je¶li nie podano etykiety, przejd¼ na koniec skryptu.
+.TP 5
+T "etykieta"  (2)
+Przeskocz przy b³êdzie. Przejd¼ do komendy `:' o podanej etykiecie, je¶li
+nie dokonano podmian od ostatniego wczytania linii wej¶ciowej, lub od u¿ycia
+komendy `t' lub `T'. Je¶li nie podano etykiety, przejd¼ na koniec pliku.
+.TP 5
+w "wplik"  (2)
+Zapisz. Doklej bie¿±cy bufor tekstowy do wpliku.
+.TP 5
+W "wplik"  (2)
+Zapisz pierwsz± liniê. Doklej pierwsz± liniê bie¿±cego bufora tekstowego do
+wpliku.
+.TP 5
+x          (2)
+Wymieñ zawarto¶æ bie¿±cego bufora tekstowego i miejsca przechowywania.
+.TP 5
+y /³añcuch1/³añcuch2/      (2)
+T³umacz. Podmieñ ka¿de pojawienie siê znaku ze ³añcucha1 odpowiadaj±cym mu
+znakiem z ³añcucha2. D³ugo¶ci tych znaków musz± byæ identyczne.
+.TP 5
+! "komenda"              (2)
+Wszystko-poza. Zastosuj funkcjê (lub grupê, je¶li funkcj± jest `{') tylko do
+linii nie wybranych przez adres(y).
+.TP 5
+: "etykieta"  (0)
+Komenda ta nie robi niczego poza przechowywaniem etykiety dla komend `b' i
+`t'.
+.TP 5
+=          (1)
+Wstaw bie¿±cy numer linii na standardowe wyj¶cie jako liniê.
+.TP 5
+{          (2)
+Wywo³aj nastêpuj±ce komendy, a¿ do zamykaj±cego `}' tylko je¶li bie¿±ca
+linia odpowiada adresowi lub podanemu zasiêgowi adresów.
+.P
+Pusta komenda jest ignorowana.
+.P
+.SH PRZENO¦NO¦Æ
+Narzêdzie to by³o wyprowadzone z UNIX-a 4.1 BSD i (o ile wiadomo
+autorowi) jest z nim kompatybilne. Wszystkie udokumentowane w³a¶ciwo¶ci
+seda z BSD s± wspierane.
+.P
+Pominiêto jedn± nieudokumentowan± w³a¶ciwo¶æ (prowadz±cy `n' w pierwszym
+komentarzu, maj±cy takie same dzia³anie jak -n opcja linii komend).
+.P
+Poprawiono nastêpuj±ce b³êdy i ograniczenia:
+.TP 5
+*
+Nie ma ukrytego limitu d³ugo¶ci (40 w sedzie BSD) na d³ugo¶ci nazw plików.
+.TP 5
+*
+Nie ma limitu d³ugo¶ci (8 w sedzie BSD) na d³ugo¶æ etykiet.
+.TP 5
+*
+Komenda `exchange' dzia³a teraz dla d³ugich wzorców i miejsc przechowania.
+.P
+Poczyniono nastêpuj±ce rozszerzenia istniej±cych komend:
+.TP 5
+*
+komendy a, i nie naciskaj± na prowadz±cy znak odwrotnego uko¶nika-\\n w 
+tek¶cie.
+.TP 5
+*
+komendy r, w nie naciskaj± na bia³± spacjê przed nazw± pliku.
+.TP 5
+*
+Opcje g, p i P w komendach s mog± byæ podawane w dowolnej kolejno¶ci.
+.P
+Poczyniono pewne rozszerzenia do sk³adni wyra¿eñ regularnych:
+.TP 5
+*
+\\t jest rozpoznawane jako sekwencja specjalna tabulacji.
+.TP 5
+*
+Wewn±trz RE, + wo³a o 1..n powtórzeñ poprzedniego wzorca.
+.P
+Nastêpuj±ce w³a¶ciwo¶ci s± ca³kowicie nowe:
+.TP 5
+*
+Komenda l (listuj, nieudokumentowana i s³absza w BSD)
+.TP 5
+*
+Komenda W (zapisz pierwsz± liniê przestrzeni wzorców do pliku).
+.TP 5
+*
+Komenda T (przeskocz, je¶li nie uda³o siê podstawienie).
+.TP 5
+*
+Dozwolone s± w liniach komend koñcz±ce komentarze.
+.P
+Dodatkowo, komunikaty o b³êdach seda sta³y siê bardziej konkretne i
+informatywne.
+.P
+Implementacja jest równie¿ sporo mniejsza i szybsza ni¿ sed z 4.1 BSD. U¿ywa
+jedynie standardowej biblioteki I/O i exit(3).
+.P
+.SH UWAGA
+.P
+Jest to komponent freeware systemów operacyjnych GNU i MINIX. U¿ytkownik ma
+wiêc pozwolenie na u¿ywanie, modyfikowanie i reprodukcjê oraz dystrybucjê
+jego pod nastêpuj±cymi warunkami:
+.P
+1. Notka o autorze, pojawiaj±ca siê w ka¿dym pliku ¼ród³owym nie mo¿e zostaæ
+skasowana, ani poprawiana.
+.P
+2. Forma obiektowa nie mo¿e byæ rozprowadzana bez ¼róde³.
+.P
+.SH ZOBACZ TAK¯E
+.P
+ed(1), grep(1), awk(1), lex(1), regexp(5)
+.P
+.SH AUTOR
+Ta strona podrêcznika man zosta³a napisana przez Erica S. Raymonda 
+<esr@snark.thyrsus.com>, a za³±czony pakiet jest z GNU.

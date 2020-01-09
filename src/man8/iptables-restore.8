@@ -1,0 +1,49 @@
+.TH IPTABLES-RESTORE 8 "Jan 04, 2001" "" ""
+.\"
+.\" Man page written by Harald Welte <laforge@gnumonks.org>
+.\" It is based on the iptables man page.
+.\"
+.\"	This program is free software; you can redistribute it and/or modify
+.\"	it under the terms of the GNU General Public License as published by
+.\"	the Free Software Foundation; either version 2 of the License, or
+.\"	(at your option) any later version.
+.\"
+.\"	This program is distributed in the hope that it will be useful,
+.\"	but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\"	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\"	GNU General Public License for more details.
+.\"
+.\"	You should have received a copy of the GNU General Public License
+.\"	along with this program; if not, write to the Free Software
+.\"	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+.\"
+.\"
+.SH NAZWA
+iptables-restore \- Przywraca tabele IP
+.SH SK£ADNIA
+.BR "iptables-restore " "[-c] [-n]"
+.br
+.SH OPIS
+.PP
+.B iptables-restore
+jest u¿ywany aby przywróciæ tabele IP z danych z STDIN ( standardowego wej¶cia). U¿yj
+przekierowania wej¶cia/wyj¶cia dostarczonego przez twój shell aby przeczytaæ dane z pliku
+.TP
+\fB\-c\fR, \fB\-\-counters\fR
+przywraca warto¶ci wszystkich pakietów i liczników bajtów
+.TP
+\fB\-n\fR, \fB\-\-noflush\fR 
+.TP
+nie opró¿nia poprzedniej zawarto¶ci tabeli. Je¶li nie podano, 
+.B iptables-restore
+opró¿ni (usunie) ca³± poprzedni± zawarto¶æ tabeli IP.
+.SH B£ÊDY
+Nie znane dla wersji iptables-1.2.1
+.SH AUTOR
+Harald Welte <laforge@gnumonks.org>
+.SH ZOBACZ RÓWNIE¯
+.BR iptables-save "(8), " iptables "(8) "
+.PP
+iptables-HOWTO, które podaje wiêcej na temat u¿ycia iptables , NAT-HOWTO,
+które podaje szczegó³y na temat NAT i netfilter-hacking-HOWTO które podaje szczegó³y
+na temat ograniczeñ.

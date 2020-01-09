@@ -1,0 +1,202 @@
+.\" {PTM/WK/1999-XII}
+.\" Copyright 1992, 1993 Rickard E. Faith (faith@cs.unc.edu)
+.\" May be distributed under the GNU General Public License
+.\" Changes from sct@dcs.ed.ac.uk added Sat Oct  9 09:54:00 1993.
+.TH RDEV 8 "20 listopada 1993" "Linux 0.99" "Podrêcznik Programisty Linuksa"
+.SH NAZWA
+rdev \- zapytaj o/ustaw urz±dzenie obrazu korzenia, urz±dzenie wymiany,
+wielko¶æ dysku RAM lub tryb video
+.SH SK£ADNIA
+.B rdev
+.RB [ \-rsvh ]
+.RB [ \-o 
+.IR offset ]
+.RI [ image 
+.RI [ warto¶æ
+.RI [ offset ]]]
+.br
+.B rdev
+.RB [ \-o 
+.IR  offset ]
+.RI [ image
+.RI [ root_device
+.RI [ offset ]]]
+.br
+.B swapdev
+.RB [ \-o
+.IR offset ]
+.RI [ image 
+.RI [ swap_device 
+.RI [ offset ]]]
+.br
+.B ramsize
+.RB [ \-o
+.IR offset ]
+.RI [ image
+.RI [ size
+.RI [ offset ]]]
+.br
+.B vidmode
+.RB [ \-o
+.IR offset ]
+.RI [ image 
+.RI [ mode
+.RI [ offset ]]]
+.br
+.B rootflags
+.RB [ \-o
+.IR offset ]
+.RI [ image
+.RI [ flagi
+.RI [ offset ]]]
+.SH OPIS
+.\" " for emacs hilit19
+Wywo³ane bez argumentów
+.B rdev
+wy¶wietla wiersz z
+.I /etc/mtab
+dla bie¿±cego g³ównego systemu plików (root file system).
+Bez argumentów
+.BR swapdev ", " ramsize ", " vidmode " i " rootflags
+wy¶wietlaj± informacjê o sposobie u¿ycia.
+
+W startowym obrazie (bootable image) j±dra Linuksa istnieje kilka par bajtów
+okre¶laj±cych urz±dzenie g³ówne (root device), tryb video, rozmiar dysku RAM
+i urz±dzenie wymiany (swap). Powy¿sze pary bajtów domy¶lnie rozpoczynaj± siê
+od offsetu 504 (dziesiêtnie) w obrazie j±dra:
+
+.nf
+.RS
+ 498 flagi korzenia (root flags)
+(500 i 502 zarezerwowane)
+ 504 Rozmiar dysku RAM
+ 506 Tryb VGA
+ 508 Urz±dzenie g³ówne (root device)
+(510 sygnatura startowa: boot signature)
+.RE
+.fi
+
+.B rdev
+zmieni te warto¶ci.
+
+Typowymi warto¶ciami parametru
+.IR image ,
+okre¶laj±cego obraz startowego j±dra Linuksa, s±
+
+.nf
+.RS
+/vmlinux
+/vmlinux.test
+/vmunix
+/vmunix.test
+/dev/fd0
+/dev/fd1
+.RE
+.fi
+
+Przy u¿yciu poleceñ
+.BR rdev " lub " swapdev
+parametry
+.IR root_device " lub " swap_device
+maj± poni¿sze warto¶ci:
+
+.nf
+.RS
+/dev/hda[1-8]
+/dev/hdb[1-8]
+/dev/sda[1-8]
+/dev/sdb[1-8]
+.RE
+.fi
+
+Dla polecenia
+.B ramsize
+parametr
+.B size
+okre¶la rozmiar dysku RAM w kilobajtach.
+
+Dla polecenia
+.B rootflags
+parametr
+.B flagi
+zawiera dodatkowe informacje u¿ywane podczas montowania g³ównego systemu plików
+(korzenia). Obecnie jedynym skutkiem tych flag jest wymuszenie na j±drze
+montowania g³ównego systemu plików w trybie tylko-do-odczytu je¶li
+.B flagi
+s± niezerowe.
+
+Dla polecenia
+.B vidmode
+parametr
+.B mode
+okre¶la tryb karty video:
+
+.nf
+.RS
+-3 = pytaj (prompt)
+-2 = Rozszerzona VGA (extended VGA)
+-1 = Zwyk³a VGA
+ 0 = tak jakby naci¶niêto "0" przy pytaniu
+ 1 = tak jakby naci¶niêto "1" przy pytaniu
+ 2 = tak jakby naci¶niêto "2" przy pytaniu
+ n = tak jakby naci¶niêto "n" przy pytaniu
+.RE
+.fi
+
+Je¶li dana
+.I warto¶æ
+nie jest okre¶lona, to sprawdzony zostanie obraz
+.I image
+by okre¶liæ bie¿±ce ustawienia.
+.SH OPCJE
+.TP
+.B \-s
+Powoduje, ¿e
+.B rdev
+dzia³a jak
+.BR swapdev .
+.TP
+.B \-r
+Powoduje, ¿e
+.B rdev
+dzia³a jak
+.BR ramsize .
+.TP
+.B \-R
+Powoduje, ¿e
+.B rdev
+dzia³a jak
+.BR rootflags .
+.TP
+.B \-v
+Powoduje, ¿e
+.B rdev
+dzia³a jak
+.BR vidmode .
+.TP
+.B \-h
+Zapewnia pomoc.
+.SH B£ÊDY
+Z powodów historycznych istniej± dwa sposoby podawania alternatywnych warto¶ci
+dla offsetu.
+.sp
+Interfejs u¿ytkownika jest niewygodny, nieintuicyjny i raczej powinien zostaæ
+napisany ponownie od zera, umo¿liwiaj±c na zmianê lub sprawdzenie wielu
+parametrów obrazu j±dra przy pomocy pojedynczego polecenia.
+.sp
+Je¿eli stosowane jest LILO, to
+.B rdev
+nie jest ju¿ potrzebne do ustawiania g³ównego urz±dzenia (root device) czy
+trybu VGA, gdy¿ te parametry, które zmienia
+.B rdev
+mog± byæ ustawiane podczas wy¶wietlania zachêty LILO przy starcie. Jednak 
+.B rdev
+nadal potrzebne jest obecnie do ustawiania rozmiaru dysku RAM. Zachêca siê
+u¿ytkowników do przeczytania dokumentacji LILO, gdzie mo¿na znale¼æ wiêcej
+informacji, i pos³ugiwania siê LILO przy starcie systemu.
+.SH AUTORZY
+.nf
+Pierwotnie napisane przez Wernera Almesbergera (almesber@nessie.cs.id.ethz.ch)
+Zmodyfikowane przez Petera MacDonalda (pmacdona@sanjuan.UVic.CA)
+Obs³uga rootflags dodana przez Stephena Tweedie (sct@dcs.ed.ac.uk)
+.fi

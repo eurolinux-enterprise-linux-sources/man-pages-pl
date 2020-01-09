@@ -1,0 +1,181 @@
+.\" {PTM/WK/2000-VII}
+.\" Copyright (c) 1983, 1991, 1993
+.\"	The Regents of the University of California.  All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     @(#)lpc.8	8.5 (Berkeley) 4/28/95
+.\"
+.Dd April 28, 1995
+.Dt LPC 8
+.Os BSD 4.2
+.Sh NAZWA
+.Nm lpc
+.Nd program sterowania drukark± wierszow±
+.Sh SK£ADNIA
+.Nm lpc
+.Oo
+.Ar polecenie
+.Op Ar argument ...
+.Oc
+.Sh OPIS
+.Nm Lpc
+stosowane jest przez administratora do sterowania dzia³aniami
+systemu drukarki wierszowej.
+Dla ka¿dej z drukarek skonfigurowanych w
+.Pa /etc/printcap ,
+.Nm lpc
+mo¿e s³u¿yæ do:
+.Bl -bullet -offset indent
+.It
+w³±czenia lub wy³±czenia dostêpno¶ci drukarki,
+.It
+w³±czenia lub wy³±czenia kolejki buforowania drukarki,
+.It
+zmiany kolejno¶ci zadañ w kolejce druku,
+.It
+wskazania statusu drukarek i skojarzonych z nimi kolejek i demonów druku.
+.El
+.Pp
+Bez argumentów,
+.Nm lpc
+prosi o podanie poleceñ ze standardowego wej¶cia.
+Je¿eli podano argumenty, to
+.Nm lpc
+interpretuje pierwszy z nich jako polecenie, za¶ pozosta³e jako parametry
+tego polecenia. Standardowe wej¶cie mo¿na przekierowaæ, powoduj±c, ¿e
+.Nm lpc
+bêdzie czytaæ polecenia z pliku.
+Polecenia mog± byæ skracane. Poni¿ej podano zestawienie rozpoznawanych
+poleceñ.
+.Pp
+.Bl -tag -width Ds -compact
+.It Ic \&? No [ polecenie ... ]
+.It Ic help No [ polecenie ... ]
+Wypisuje krótki opis ka¿dego z poleceñ podanych na li¶cie argumentów, lub,
+je¿eli nie podano argumentów, listê rozpoznawanych poleceñ.
+.Pp
+.It Ic abort  No {\ all\ |\ drukarka\ }
+Natychmiast koñczy pracê aktywnego demona buforowania druku na lokalnym
+ho¶cie dla zadanych drukarek a nastêpnie wy³±cza dostêpno¶æ drukowania
+(zapobiegaj±c uruchamianiu nowych demonów przez
+.Xr lpr ).
+.Pp
+.It Ic clean  No {\ all\ |\ drukarka\ }
+Usuwa pliki tymczasowe, pliki danych i pliki steruj±ce, które nie mog± byæ
+wydrukowane (tj. nie tworz± kompletnego zadania druku) z zadanej kolejki
+(kolejek) druku na lokalnej maszynie.
+.Pp
+.It Ic disable  No {\ all\ |\ drukarka\ }
+Wy³±cza kolejkê zadanej drukarki. Zapobiega to dodawaniu przez 
+.Xr lpr
+nowych zadañ do kolejki.
+.Pp
+.It Ic down No {\ all\ |\ drukarka\ } komunikat ...
+Wy³±cza kolejkê zadanej drukarki, wy³±cza dostêpno¶æ drukowania a do pliku
+statusu drukarki wpisuje
+.Em komunikat .
+Komunikat nie musi byæ umieszczony w cudzys³owach, pozosta³e argumenty s±
+traktowane jak w
+.Xr echo 1 .
+Zwykle jest to stosowane do wy³±czania drukarki i powiadamiania innych
+o przyczynie. 
+.Xr lpq 1
+wyka¿e wy³±czenie drukarki i wypisze zadany komunikat statusu.
+.Pp
+.It Ic enable  No {\ all\ |\ drukarka\ }
+Udostêpnia buforowanie kolejki lokalnej zadanych drukarek. Pozwala to
+.Xr lpr 1
+na dodawanie nowych zadañ do kolejki.
+.Pp
+.It Ic exit
+.It Ic quit
+Zakoñczenie pracy lpc.
+.ne 1i
+.Pp
+.It Ic restart  No {\ all\ |\ drukarka\ }
+Usi³uje uruchomiæ nowego demona drukarki.
+Przydatne gdy jakie¶ nienormalne warunki sprawi³y, ¿e demon niespodziewanie
+umar³, pozostawiaj±c w kolejce zadania.
+.Xr Lpq
+zg³osi, ¿e nie ma ¿adnego demona, je¶li wyst±pi± takie okoliczno¶ci.
+Je¿eli u¿ytkownik jest superu¿ytkownikiem, to powinien najpierw spróbowaæ
+przerwaæ dzia³anie bie¿±cego demona (tj. zabiæ i zrestartowaæ zawieszonego
+demona).
+.Pp
+.It Ic start  No {\ all\ |\ drukarka\ }
+W³±cza dostêpno¶æ drukowania i uruchamia demona buforowania dla zadanych
+drukarek.
+.Pp
+.It Ic status  No {\ all\ |\ drukarka\ }
+Wy¶wietla status demonów i kolejek z maszyny lokalnej.
+.Pp
+.It Ic stop  No {\ all\ |\ drukarka\ }
+Zatrzymuje demona po zakoñczeniu bie¿±cego zadania i wy³±cza dostêpno¶æ
+drukowania.
+.Pp
+.It Ic topq No drukarka\ [\ nr_zad\ ...\ ]\ [\ u¿ytk\ ...\ ]
+Umieszcza zadania w podanej kolejno¶ci na pocz±tku kolejki druku.
+.Pp
+.It Ic up  No {\ all\ |\ drukarka\ }
+W³±cza dostêpno¶æ wszystkiego i uruchamia nowego demona druku. Odwo³uje
+efekty dzia³ania
+.Ic down .
+.Sh PLIKI
+.Bl -tag -width /var/spool/*/lockx -compact
+.It Pa /etc/printcap
+plik opisów drukarek
+.It Pa /var/spool/*
+katalogi buforowania druku
+.It Pa /var/spool/*/lock
+blik blokady do sterowania kolejk±
+.El
+.Sh ZOBACZ TAK¯E
+.Xr lpd 8a ,
+.Xr lpr 1a ,
+.Xr lpq 1a ,
+.Xr lprm 1a ,
+.Xr printcap 5a
+.Sh DIAGNOSTYKA
+.Bl -tag -width Ds
+.It Sy "?Ambiguous command"
+(polecenie niejednoznaczne)
+skrót pasuje do wiêcej ni¿ jednego polecenia
+.It Sy "?Invalid command"
+(nieprawid³owe polecenie)
+nie znaleziono pasuj±cych poleceñ
+.It Sy "?Privileged command"
+(polecenie uprzywilejowane)
+musisz byæ cz³onkiem grupy "operator" lub root-em by wykonaæ to polecenie.
+.El
+.Sh HISTORIA
+Polecenie
+.Nm
+pojawi³o siê w
+.Bx 4.2 .

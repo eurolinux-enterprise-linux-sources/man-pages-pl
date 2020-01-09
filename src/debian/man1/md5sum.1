@@ -1,0 +1,82 @@
+.\" {PTM/PR/0.2/16-01-2000/"oblicz i sprawd¼ sumê kontroln± MD5"}
+.\" Translation 1999-2000 by Piotr Roszatycki
+.\" Translation update: Robert Luberda <robert@debian.org>, Jul 2004, dpkg 1.10.22
+.\" $Id: md5sum.1,v 1.5 2004/07/09 13:22:54 robert Exp $
+.\"
+.\" Hey, Emacs!  This is an -*- nroff -*- source file.
+.TH MD5SUM 1 "29 listopada 1995" "Projekt Debiana" "Debian GNU/Linux"
+.SH NAZWA
+md5sum \- oblicza i sprawdza sumê kontroln± MD5
+
+.SH SK£ADNIA
+.B md5sum
+[\-bv] [\-c [plik]] | [plik...]
+
+.SH OPIS
+.B md5sum
+oblicza lub sprawdza sumê kontroln± MD5. Algorytm wykorzystywany
+do wygenerowania sumy kontrolnej jest na tyle szybki i skuteczny,
+¿e wystarcza to przy wiêkszo¶ci zastosowañ. Dok³adny opis
+algorytmu znajduje siê w dokumencie
+.IR RFC 1321 .
+
+Normalnie,
+.B md5sum
+oblicza sumy kontrolne dla wszystkich plików, podanych jako parametr,
+i wy¶wietla sumê wraz z nazw± pliku. Je¶li podana zosta³a opcja
+.BR \-c ,
+dozwolone jest podanie tylko jednego pliku. Ten plik powinien zawieraæ
+obliczone sumy wraz z nazwami plików odpowiadaj±cych tym sumom.
+Dla tych plików zostanie
+obliczona suma, która zostanie porównana z t± obliczon± wcze¶niej.
+Zobacz te¿ opis opcji
+.BR \-c .
+
+.SS OPCJE
+.TP
+.B \-b
+U¿ywa trybu binarnego. W ¶rodowisku uniksowym jedyn± ró¿nic± miêdzy
+trybem binarnym a normalnym, jest dodanie znaku gwiazdki przed
+nazw± pliku w danych wyj¶ciowych.
+.TP
+.B \-c
+Sprawdza sumy kontrolne dla plików podanych w
+.I pliku
+i porównuje je z sumami zapisanymi w tym samym pliku. Bie¿±cy format
+tego pliku jest taki sam jak format wyj¶ciowy
+.BR md5sum .
+Ka¿da linia opisuje jeden plik, a jej format wygl±da nastêpuj±co:
+
+.B <suma kontrolna MD5>\  <nazwa pliku>
+
+Dla przyk³adu, je¿eli plik zosta³ utworzony poleceniem:
+
+.B echo foo > md5\-test\-file; md5sum md5\-test\-file
+
+.B md5sum
+wygeneruje:
+
+.B d3b07384d113edec49eaa6238ad5ff00\  md5\-test\-file
+
+.TP
+.B \-v
+Wy¶wietlanie nazw plików podczas porównywania sum kontrolnych (dla opcji
+\-c).
+
+.SH B£ÊDY
+Wcze¶niejszy algorytm MD4 zosta³ z³amany w pa¼dzierniku 1995 roku.
+MD5 nie wydaje siê byæ tak bezpieczny, na jakiego wygl±da³.
+
+Ten podrêcznik nie jest zbyt ¶cis³y, a jego format nie jest spójny z reszt±
+podrêczników.
+
+.B md5sum
+nie akceptuje standardowych opcji, jak na przyk³ad
+.BR \-\-help .
+
+.SH AUTOR
+
+.B md5sum
+oryginalnie napisa³ Branko Lankester, pó¼niej zmodyfikowa³ Colin Plumb
+i Ian Jackson (ijackson@gnu.ai.mit.edu). Podrêcznik do³±czy³ Juho Vuori
+(javuori@cc.helsinki.fi).

@@ -1,0 +1,206 @@
+.\" Copyright (c) 1993 Luigi P. Bai (lpb@softint.com) July 28, 1993
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Wed Jul 28 11:03:24 1993, Rik Faith <faith@cs.unc.edu>
+.\" Modified Sun Nov 28 16:43:30 1993, Rik Faith <faith@cs.unc.edu>
+.\"          with material from Giorgio Ciucci <giorgio@crcc.it>
+.\" Portions Copyright 1993 Giorgio Ciucci <giorgio@crcc.it>
+.\" Modified Fri Jan 31 17:24:31 1997 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified Sun Feb 18 01:59:29 2001 by Andries Brouwer <aeb@cwi.nl>
+.\" Modified 5 Jan 2002 Michael Kerrisk <mtk16@ext.canterbury.ac.nz>
+.\"
+.\" Translated by Rafa³ Lewczuk, 24 Aug 1999
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Mar 2002,
+.\"              manpages 1.48
+.\"
+.TH SHMCTL 2 2002-01-05 "Linux 2.4.1" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+shmctl \- sterowanie segmentami pamiêci wspólnej
+.SH SK£ADNIA
+.ad l
+.B #include <sys/ipc.h>
+.sp
+.B #include <sys/shm.h>
+.sp
+.BI "int shmctl(int " shmid ", int " cmd ", struct shmid_ds *" buf );
+.ad b
+.SH OPIS
+\fBshmctl()\fP
+pozwala u¿ytkownikowi pobieraæ informacje dotycz±ce segmentu pamiêci wspólnej,
+zmieniaæ w³a¶ciciela, grupê i prawa dostêpu do tego segmentu oraz usun±æ
+segment. Informacje dotycz±ce segmentu okre¶lonego przez \fIshmid\fP zwracane
+s± w strukturze \fIshmid_ds\fP zdefiniowanej nastêpuj±co:
+.PP
+.in +4n
+.nf
+struct shmid_ds {
+    struct ipc_perm shm_perm;  /* prawa dostêpu */
+    int shm_segsz;             /* rozmiar segmentu (w bajtach) */
+    time_t shm_atime;          /* czas ostatniego do³±czenia */
+    time_t shm_dtime;          /* czas ostatniego od³±czenia */
+    time_t shm_ctime;          /* czas ostatniej modyfikacji */
+    unsigned short shm_cpid;   /* PID twórcy segmentu */
+    unsigned short shm_lpid;   /* PID ostatniego operatora segmentu */
+    short shm_nattch;          /* liczba do³±czeñ */
+    ...
+};
+.fi
+.in -4n
+.PP
+Mo¿na nadaæ warto¶æ wyró¿nionym polom struktury \fIshm_perm\fP opisuj±cej prawa
+dostêpu:
+.PP
+.in +4n
+.nf
+struct ipc_perm
+{
+    key_t  key;
+    \fBushort uid\fP;   /* euid oraz egid \fBw³a¶ciciela\fP segmentu */
+    \fBushort gid\fP;
+    ushort cuid;  /* euid oraz egid twórcy segmentu */
+    ushort cgid;
+    \fBushort mode\fP;  /* 9 najmniej znacz±cych bitów praw dostêpu */
+    ushort seq;   /* numer porz±dkowy */
+};
+.fi
+.in -4n
+.PP
+Nastêpuj±ce polecenia mog± byæ przekazane za pomoc± parametru
+.B cmd :
+.br
+.TP 12
+.B IPC_STAT
+s³u¿y do kopiowania informacji o segmencie pamiêci wspólnej do bufora
+\fIbuf\fP. U¿ytkownik musi mieæ prawo do \fBodczytu\fP segmentu pamiêci
+wspólnej.
+.TP
+.B IPC_SET
+s³u¿y do modyfikacji praw dostêpu do segmentu. Z pola \fIshm_perms\fP
+struktury wskazanej przez parametr
+.I buf
+pobierane s± \fIuid\fP, \fIgid\fP i \fImode\fP.
+System uwzglêdnia tylko 9 najmniej znacz±cych bitów parametru \fImode\fP.
+Polu
+.I shm_ctime
+przypisywane jest aktualny czas. U¿ytkownik musi byæ w³a¶cicielem segmentu,
+jego twórc± lub administratorem systemu.
+.TP
+.B IPC_RMID
+s³u¿y do zaznaczenia segmentu do usuniêcia. Zostanie on naprawdê usuniêty
+w momencie, gdy wszystkie procesy od³±cz± siê. (Tj. gdy pole
+.I shm_nattch
+struktury
+.I shmid_ds
+opisuj±cej segment osi±gnie warto¶æ zero.) U¿ytkownik musi byæ w³a¶cicielem
+segmentu, jego twórc± lub administratorem systemu.
+.PP
+U¿ytkownik \fImusi\fP zapewniæ, ¿e segment po u¿yciu zostanie na pewno
+usuniêty. W przeciwnym przypadku, pamiêæ lub obszar wymiany zajmowane przez
+segment nie zostan± zwolnione.
+.PP
+Dodatkowo, \fBadministrator systemu\fP mo¿e zabroniæ lub zezwoliæ na wymianê 
+obszarów pam iêci zajmowanych przez segment (tylko w systemie Linux). S³u¿±
+do tego nastêpuj±ce warto¶ci \fIcmd\fP:
+.br
+.TP 12
+.B SHM_LOCK
+zabezpiecza segment pamiêci wspólnej przed wymian±. Strony, które wcze¶niej
+uleg³y wymianie zostan± ponownie za³adowane do pamiêci dopiero w momencie,
+gdy u¿ytkownik wykona do nich dostêp.
+.TP
+.B SHM_UNLOCK
+zezwala na wymianê stron nale¿±cych do segmentu pamiêci wspólnej.
+.PP
+Polecenia steruj±ce
+.BR IPC_INFO ,
+.B SHM_STAT
+oraz
+.B SHM_INFO
+s± u¿ywane przez program 
+.BR ipcs (8)
+do pobierania informacji o u¿ywanych zasobach w systemie.
+Je¶li zajdzie potrzeba, polecenia te mog± w przysz³o¶ci ulec zmianie lub
+ich obs³uga mo¿e zostaæ zawarta w systemie plików /proc.
+.SH "WARTO¦Æ ZWRACANA"
+Funkcja zwraca 0, je¶li operacja zakoñczy siê pomy¶lnie, a \-1, gdy wyst±pi
+b³±d.
+.SH B£ÊDY
+W przypadku wyst±pienia b³êdu, zmiennej
+.B errno
+przypisana zostanie jedna z poni¿szych warto¶æi:
+.TP 12
+.B EACCES
+je¶li wydano polecenie \fBIPC_STAT\fP, a prawa dostêpu okre¶lone w
+\fIshm_perm.modes\fP nie pozwalaj± na odczyt segmentu
+.IR shmid .
+.TP
+.B EFAULT
+Parametr 
+.I cmd
+ma warto¶æ
+.B IPC_SET
+lub
+.BR IPC_STAT ,
+ale adres wskazany przez 
+.I buf
+jest niedostêpny.
+.TP
+.B EINVAL
+je¶li 
+.I shmid
+nie jest poprawnym identyfikatorem segmentu lub
+.I cmd
+nie jest poprawnym poleceniem.
+.TP
+.B EIDRM
+je¶li 
+.I shmid_ds
+wskazuje na segment, który zosta³ usuniêty.
+.TP
+.B EPERM
+je¶li u¿ytkownik próbowa³ wywo³aæ polecenie
+.B IPC_RMID
+lub
+.BR IPC_SET ,
+ale efektywny UID w³a¶ciciela procesu wywo³uj±cego funkcjê nie odpowiada
+twórcy segmentu (okre¶lonemu w
+.IR shm_perm.cuid ),
+w³a¶cicielowi segmentu (okre¶lonemu w
+.IR shm_perm.uid ),
+ani administratorowi systemu.
+.TP
+.B EOVERFLOW
+jest zwracane, gdy wydano polecenie \fBIPC_STAT\fP, a warto¶æ gid lub uid
+jest za du¿a, aby j± umie¶ciæ w strukturze wskazywanej przez
+.IR buf .
+.SH UWAGA
+Niektóre pola struktury \fIstruct shmid_ds\fP by³y w Linuksie 2.2 typu short
+a sta³y siê typu long w Linuksie 2.4. Aby to wykorzystaæ, powinna wystarczyæ
+rekompilacja pod glibc-2.1.91 lub nowsz±.
+(J±dro rozró¿nia stare i nowe wywo³ania za pomoc± znacznika IPC_64 w
+.IR cmd .)
+.SH "ZGODNE Z"
+SVr4, SVID. SVr4 dokumentuje dodatkowe kody b³êdów: EINVAL, ENOENT, ENOSPC, 
+ENOMEM, EEXIST. Ani SVr4 ani SVID nie dokumentuj± kodu b³êdu EIDRM.
+.SH "ZOBACZ TAK¯E"
+.BR shmget (2),
+.BR shmop (2)

@@ -1,0 +1,64 @@
+.\" Translation (c) 1999 Pawe³ Wilk <siewca@dione.ids.pl>
+.\" {PTM/PW/0.1/16-06-1999/"lokalizowanie pod³añcucha"}
+.\" Aktualizacja do man-pages 1.53 - A. Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" --------
+.\" Copyright 1993 David Metcalfe (david@prism.demon.co.uk)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" References consulted:
+.\"     Linux libc source code
+.\"     Lewine's _POSIX Programmer's Guide_ (O'Reilly & Associates, 1991)
+.\"     386BSD man pages
+.\" Modified Sat Jul 24 17:56:43 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Added history, aeb, 980113.
+.\" --------
+.TH STRSTR 3 1993-04-12 "GNU" "Linux Programmer's Manual"
+.SH NAZWA
+strstr \- szukanie podci±gu
+.SH SK£ADNIA
+.nf
+.B #include <string.h>
+.sp
+.BI "char *strstr(const char *" haystack ", const char *" needle );
+.fi
+.SH OPIS
+Funkcja \fBstrstr()\fP znajduje pierwsze wyst±pienie pod³añcucha
+\fIneedle\fP w ³añcuchu \fIhaystack\fP.  Koñcz±ce znaki `\\0' nie s±
+porównywane.
+.SH "WARTO¦Æ ZWRACANA"
+Funkcja \fBstrstr()\fP zwraca wska¼nik do pocz±tku pod³añcucha lub warto¶æ
+NULL je¶li pod³añcuch ten nie zostanie znaleziony.
+.SH USTERKI
+Wczesne wersje biblioteki libc Linuksa (np. 4.5.26) nie pozwala³y na 
+przekazywanie pustych argumentów. Wersje pó¼niejsze (np. 4.6.27) 
+dzia³aj± prawid³owo i zwracaj± \fIhaystack\fP gdy \fIneedle\fP jest puste.
+.SH "ZGODNE Z"
+ISO 9899
+.SH "ZOBACZ TAK¯E"
+.BR index (3),
+.BR memchr (3),
+.BR rindex (3),
+.BR strchr (3),
+.BR strpbrk (3),
+.BR strsep (3),
+.BR strspn (3),
+.BR strtok (3)

@@ -1,0 +1,26 @@
+.\" {PTM/PB/0.1/28-06-1999/"."}
+.TH WALL 1 "10 Pa¼dziernik 1994" "" "Podrêcznik u¿ytkownika Linuksa"
+.SH NAZWA
+wall - wy¶lij wiadomo¶æ do terminali wszystkich u¿ytkowników
+.SH OPIS
+.B wall
+.RB [ plik ]
+.SH OPIS
+.B Wall
+wysy³a wiadomo¶æ do wszystkich zalogowanych u¿ytkowników, których zezwolenie
+\fBmesg\fR(1) jest ustawione na \fByes\fR. Przekazywana (wy¶wietlana) jest
+zawarto¶æ pliku bêd±cego argumentem komendy. Brak argumentu spowoduje
+pobranie tre¶ci wiadomo¶ci ze standardowego wej¶cia.
+W tym przypadku, wiadomo¶æ powinna byæ zakoñczona znakiem \fBEOF\fR
+(zwykle Control-D).
+.PP
+Tylko superu¿ytkownik mo¿e wys³aæ wiadomo¶æ do na terminale u¿ytkowników,
+którzy ustawili odrzucanie wiadomo¶ci lub pracuj± z programem, który robi to
+automatycznie.
+.SH ZOBACZ TAK¯E
+.BR mesg (1),
+.BR talk (1),
+.BR write (1),
+.BR shutdown (8).
+.SH AUTOR
+Miquel van Smoorenburg, miquels@cistron.nl

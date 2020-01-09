@@ -1,0 +1,146 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" 1999 PTM Przemek Borys
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\"
+.\" This manpage is Copyright (C) 1992 Drew Eckhardt;
+.\"                               1993 Michael Haardt, Ian Jackson.
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Fri Jul 23 22:01:51 1993 Rik Faith <faith@cs.unc.edu>
+.\" Modified Sun Aug 21 18:18:14 1994: Michael Haardt's NFS diffs were
+.\"          applied by hand <faith@cs.unc.edu>
+.\"
+.TH LINK 2 1997-12-10 "Linux 2.0.30" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+link \- utworzenie nowej nazwy dla pliku
+.SH SK£ADNIA
+.B #include <unistd.h>
+.sp
+.BI "int link(const char *" oldpath ", const char *" newpath );
+.SH OPIS
+.B link
+tworzy nowe dowi±zanie (nazywane te¿ dowi±zaniem twardym) do istniej±cego
+pliku.
+
+Je¶li plik
+.I newpath
+ju¿ istnieje, to
+.I nie
+bêdzie nadpisany.
+
+Ta nowa nazwa mo¿e byæ u¿ywana dok³±dnie tak samo jak stara w dowolnych\
+operacjach; obie nazwy odnosz± siê do tego samego pliku (i w zwi±zku z tym
+maj± te same prawa i w³a¶cicielstwo). Nie mo¿na te¿ powiedzieæ, która nazwa
+jest `oryginalna'.
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu zwracane jest zero. Po b³êdzie zwracane jest \-1
+i odpowiednio ustawiane
+.IR errno .
+.SH B£ÊDY
+.TP
+.B EXDEV
+.IR oldpath " i " newpath
+nie le¿± na tym samym systemie plików.
+.TP
+.B EPERM
+system plików zawieraj±cy
+.IR oldpath " i " newpath
+nie obs³uguje tworzenia twardych dowi±zañ.
+.TP
+.B EFAULT
+.IR oldpath " lub " newpath
+wskazuje poza dostêpn± dla u¿yrkownika przestrzeñ adresow±.
+.TP
+.B EACCES
+Zapis do katalogu zawieraj±cego
+.I newpath
+nie jest dozwolony dla efekywnego UID procesu, lub jeden z katalogów w
+.IR oldpath " lub " newpath
+nie daje uprawnieñ przeszukiwania (wykonania).
+.TP
+.B ENAMETOOLONG
+.IR oldpath " lub " newpath " by³o zbyt d³ugie."
+.TP
+.B ENOENT
+Sk³adnik katalogu w
+.I oldpath " lub " newpath
+nie istnieje, lub jest wisz±cym dowi±zaniem symbolicznym.
+.TP
+.B ENOTDIR
+Sk³adnik
+.IR oldpath " lub " newpath
+u¿ywany jako katalog nie jest w rzeczywisto¶ci katalogiem.
+.TP
+.B ENOMEM
+Brak dostêpnej pamiêci j±dra.
+.TP
+.B EROFS
+Plik le¿y na systemie plików tylko dla odczytu.
+.TP
+.B EEXIST
+.I newpath
+ju¿ istnieje.
+.TP
+.B EMLINK
+Plik wskazywany przez
+.I oldpath
+ma ju¿ maksymaln± ilo¶æ dowi±zañ.
+.TP
+.B ELOOP
+Podczas rozwi±zywania
+.IR oldpath " lub " newpath
+napotkano zbyt wiele dowi±zañ symbolicznych.
+.TP
+.B ENOSPC
+Na urz±dzeniu, zawieraj±cym plik nie ma miejsca na nowy wpis w katalogu.
+.TP
+.B EPERM
+.I oldpath
+jest katalogiem.
+.TP
+.B EIO
+Wyst±pi³ b³±d we/wy.
+.SH UWAGI
+Twarde dowi±zania, tworzone z pomoc±
+.BR link ,
+nie mog± wykraczaæ poza jeden system plików. W takich sytuacjach mo¿na u¿yæ
+funkcji
+.BR symlink .
+.SH "ZGODNE Z"
+SVr4, SVID, POSIX, BSD 4.3, X/OPEN. SVr4 dokumentuje dodatkowe b³êdy ENOLINK
+i EMULTIHOP; POSIX.1 nie dokumentuje ELOOP. X/OPEN nie dokumentuje EFAULT,
+ENOMEM ani EIO.
+.SH USTERKI
+Na systemach NFS, warto¶æ zwracana mo¿e byæ nieprawid³owa w wypadku gdy
+serwer NFS dokonuje tworzenia dowi±zania i umiera przed zakomunikowaniem
+tego faktu. Mo¿na u¿yæ
+.BR stat (2)
+aby dowiedzieæ siê czy dowi±zanie zosta³o utworzone.
+.SH "ZOBACZ TAK¯E"
+.BR symlink (2),
+.BR unlink (2),
+.BR rename (2),
+.BR open (2),
+.BR stat (2),
+.BR ln (1)

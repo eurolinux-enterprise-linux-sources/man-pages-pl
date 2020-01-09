@@ -1,0 +1,195 @@
+.\" {PTM/WK/2000-IV}
+.TH HOSTNAME 1 "28 stycznia 1996" "narzêdzia sieciowe" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+hostname \- pokazuje lub ustawia nazwê hosta systemu
+.br
+domainname \- pokazuje/ustawia nazwê domeny NIS/YP systemu
+.br
+dnsdomainname \- pokazuje nazwê domeny systemu
+.br
+nisdomainname \- pokazuje/ustawia nazwê domeny NIS/YP
+.br
+ypdomainname \- pokazuje/ustawia nazwê domeny NIS/YP
+.br
+nodename \- pokazuje/ustawia nazwê wêz³a DECnet systemu
+.SH SK£ADNIA
+.TP 14
+.B hostname
+.RB [ \-v ]
+.RB [ \-a ]
+.RB [ \-\-alias ]
+.RB [ \-d ]
+.RB [ \-\-domain ]
+.RB [ \-f ]
+.RB [ \-\-fqdn ]
+.RB [ \-i ]
+.RB [ \-\-ip-address ]
+.RB [ \-\-long ]
+.RB [ \-s ]
+.RB [ \-\-short ]
+.RB [ \-y ]
+.RB [ \-\-yp ]
+.RB [ \-\-nis ]
+.RB [ \-n ]
+.RB [ \-\-node ]
+.TP
+.B hostname
+.RB [ \-v ]
+.RB [ \-F
+.IR plik ]
+.RB [ \-\-file
+.IR plik ]
+.RI [ nazwahosta ]
+.TP
+.B domainname
+.RB [ \-v ]
+.RB [ \-F
+.IR plik ]
+.RB [ \-\-file
+.IR plik ]
+.RI [ nazwa ]
+.TP
+.B nodename
+.RB [ \-v ]
+.RB [ \-F
+.IR plik ]
+.RB [ \-\-file
+.IR plik ]
+.RI [ nazwa ]
+.PP
+.PD 0
+.TP 14
+.B hostname
+.RB [ \-v ]
+.RB [ \-h ]
+.RB [ \-\-help ]
+.RB [ \-V ]
+.RB [ \-\-version ]
+.TP
+.B dnsdomainname
+.RB [ \-v ]
+.TP
+.B nisdomainname
+.RB [ \-v ]
+.TP
+.B ypdomainname
+.RB [ \-v ]
+.SH OPIS
+.B Hostname
+jest programem s³u¿±cym do nadawania b±d¼ wy¶wietlania nazw hosta, domeny
+lub wêz³a systemu. Nazwy te s± u¿ywane przez wiele programów sieciowych
+do identyfikacji maszyny. nazwa domeny wykorzystywana jest te¿ przez NIS/YP.
+.SS "POBRANIE NAZWY"
+Wywo³any bez argumentów program wy¶wietla aktualne nazwy:
+.LP
+.B hostname
+wydrukuje nazwê systemu zwracan± przez funkcjê
+.BR gethostname (2).
+.LP
+.BR domainname ", " nisdomainname ", " ypdomainname
+wydrukuje nazwê systemu zwracan± przez funkcjê
+.IR getdomainname (2).
+Jest ona równie¿ zwana nazw± domeny YP/NIS systemu.
+.LP
+.B nodename
+wydrukuje nazwê wêz³a DECnet systemu zwracan± przez funkcjê
+.IR getnodename (2).
+.LP
+.B dnsdomainname
+wydrukuje czê¶æ pe³nej nazwy domenowej (FQDN) okre¶laj±c± domenê. Pe³na nazwa
+domeny systemu zwracana jest przez funkcjê
+.BR "hostname \-\-fqdn" .
+.SS "NADAWANIE NAZWY"
+Wywo³ane z jednym argumentem lub z opcj±
+.BR \-\-file ,
+opisywane polecenie ustawia nazwê hosta, nazwê domeny NIS/YP lub nazwê wêz³a.
+.LP
+Zauwa¿, ¿e tylko superu¿ytkownik mo¿e zmieniæ te nazwy.
+.LP
+Przy pomocy polecenia
+.B dnsdomainname
+nie jest mo¿liwe nadanie pe³nej nazwy domenowy (FQDN) lub nazwy domeny DNS
+(zobacz
+.B FQDN
+poni¿ej).
+.LP
+Nazwa hosta jest zwykle nadawana jednorazowo podczas startu systemu -
+odbywa siê to w skrypcie
+.I /etc/rc.d/rc.inet1
+lub
+.I /etc/init.d/boot
+(zazwyczaj przez odczytanie zawarto¶ci pliku zawieraj±cego nazwê hosta, np.
+.IR /etc/hostname ).
+.SS FQDN - pe³na z³o¿ona nazwa domeny
+Opisywanym poleceniem nie mo¿esz zmieniaæ pe³nej nazwy domeny (zwracanej
+przez
+.BR "hostname \-\-fqdn" )
+ani nazwy domeny DNS (zwracanej przez
+.BR "dnsdomainname" ).
+Pe³na nazwa domeny systemu jest nazw±, jak±
+.BR resolver (3)
+zwraca jako nazwê hosta.
+.LP
+Technicznie: pe³na nazwa domeny jest nazw± jak± zwraca
+.IR gethostbyname (2)
+dla nazwy zwracanej przez
+.IR gethostname (2).
+Nazwa domeny DNS jest wystêpuj±c± po pierwszej kropce czê¶ci± pe³nej nazwy.
+.LP
+Dlatego te¿ od danej konfiguracji (zwykle okre¶lanej w
+.IR /etc/host.conf )
+zale¿y, w jaki sposób mo¿esz j± zmieniæ. Na ogó³ (je¶li plik nazw hostów jest
+analizowany przed DNS lub NIS), mo¿esz zmieniæ j± w pliku
+.IR /etc/hosts .
+.SH OPCJE
+.TP
+.BR \-a ", " \-\-alias
+Wy¶wietla alternatywn± nazwê hosta (alias), je¶li jest u¿ywana.
+.TP
+.BR \-d ", " \-\-domain
+Wy¶wietla nazwê domeny DNS. Do uzyskania domeny DNS nie u¿ywaj polecenia
+.BR domainname ,
+gdy¿ poka¿e ono nazwê domeny NIS a nie DNS. Zamiast tego pos³u¿ siê poleceniem
+.BR dnsdomainname .
+.TP
+.BR \-F ", " \-\-file " " \fIplik\fP
+Czyta nazwê hosta z zadanego pliku. Komentarze (wiersze rozpoczynaj±ce siê
+znakiem `#') s± ignorowane.
+.TP
+.BR \-f ", " \-\-fqdn ", " \-\-long
+Wy¶wietla pe³n± nazwê domeny hosta (FQDN - Fully Qualified Domain Name).
+Pe³na nazwa FQDN sk³ada siê z krótkiej nazwy hosta i nazwy domeny DNS.
+Mo¿esz zmieniaæ pe³n± nazwê i nazwê domeny DNS (która jest czê¶ci± FQDN)
+w pliku \fI/etc/hosts\fP, chyba ¿e u¿ywasz bind lub NIS do wyszukiwania
+hostów.
+.TP
+.BR \-h ", " \-\-help
+Drukuje komunikat o u¿ytkowaniu i koñczy pracê.
+.TP
+.BR \-i ", " \-\-ip-address
+Wy¶wietla adres(y) IP hosta.
+.TP
+.BR \-n ", " \-\-node
+Wy¶wietla nazwê wêz³a DECnet. Je¶li podano parametr (lub opcjê
+\fB--file\fP \fInazwa\fP), to root mo¿e te¿ nadaæ now± nazwê wêz³u.
+.TP
+.BR \-s ", " \-\-short
+Wy¶wietla krótk± nazwê hosta. Jest to nazwa hosta obciêta przed pierwsz± kropk±.
+.TP
+.BR \-V ", " \-\-version
+Drukuje informacjê o wersji na standardowym wyj¶ciu i pomy¶lnie koñczy pracê.
+.TP
+.BR \-v ", " \-\-verbose
+Jest gadatliwy i mówi, co siê dzieje.
+.TP
+.BR \-y ", " \-\-yp ", " \-\-nis
+Wy¶wietla nazwê domeny NIS. Je¿eli podano parametr (lub opcjê
+\fB--file\fP \fInazwa\fP) to root mo¿e te¿ nadaæ now± nazwê domenie NIS.
+.SH PLIKI
+.I /etc/hosts
+.SH AUTOR
+Peter Tobias, <tobias@et-inf.fho-emden.de>
+.br
+Bernd Eckenfels, <net-tools@lina.inka.de> (NIS i strona podrêcznika).
+.br
+Steve Whitehouse, <SteveW@ACM.org> (obs³uga DECnet i strona podrêcznika).

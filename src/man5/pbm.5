@@ -1,0 +1,90 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+.TH pbm 5 "27 wrze¶nia 1991"
+.SH NAZWA
+pbm - przeno¶ny format bitmap
+.SH OPIS
+Przeno¶ny format bitmapowy to najprostszy format monochromatyczny.
+.IX "format PBM"
+Pocz±tkowo by³ odpowiedzialny za przesy³anie bitmap poprzez g³upie mailery
+sieciowe. 
+Dzisiaj jest popularnym jêzykiem ró¿nych narzêdzi konwersji.
+Definicja jest nastêpuj±ca:
+.IP - 2
+"Numer magiczny", okre¶laj±cy rodzaj pliku. Numer magiczny pliku pbm to
+dwa pierwsze znaki, ustawione na "P1".
+.IX "numery magiczne"
+.IP - 2
+Bia³a spacja (spacje, tabulacje, CR, LF).
+.IP - 2
+Szeroko¶æ, sformatowana jako dziesiêtne znaki ASCII.
+.IP - 2
+Bia³a spacja.
+.IP - 2
+Wysoko¶æ, znów jako dziesiêtne znaki ASCII.
+.IP - 2
+Bia³a spacja.
+.IP - 2
+Bity szeroko¶ci * wysoko¶ci, z których ka¿dy jest albo '1', albo '0';
+zaczynaj± siê od górnego, lewego rogu bitmapy i nastêpuj± w normalnym
+kierunku czytania.
+.IP - 2
+Znak '1' oznacza czerñ, '0' biel.
+.IP - 2
+Bia³a spacja w sekcji bitów jest ignorowana.
+.IP - 2
+Znaki nastêpuj±ce po "#" (wraz z nim), a¿ do koñca linii s± ignorowane
+(komentarze).
+.IP - 2
+Linie nie powinny byæ d³u¿sze ni¿ 70 znaków.
+.PP
+Oto przyk³ad ma³ej bitmapy w tym formacie:
+.nf
+P1
+# feep.pbm
+24 7
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 1 1 1 1 0 0 1 1 1 1 0 0 1 1 1 1 0 0 1 1 1 1 0
+0 1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 1 0
+0 1 1 1 0 0 0 1 1 1 0 0 0 1 1 1 0 0 0 1 1 1 1 0
+0 1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0
+0 1 0 0 0 0 0 1 1 1 1 0 0 1 1 1 1 0 0 1 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+.fi
+.PP
+Programy, odczytuj±ce ten format powinny byæ jak najwyrozumialsze, przyjmuj±c
+wszystko, co z daleka wygl±da na bitmapê.
+.PP
+Istnieje te¿ wariant tego formatu, dostêpny po w³±czeniu podczas kompilacji
+opcji RAWBITS. Wariant ten jest inny pod kilkoma wzglêdami:
+.IP - 2
+"Numer magiczny" to "P4" zamiast "P1".
+.IP - 2
+Bity s± zachowywane w postaci o¶miu na bajt, najpierw znacz±cy bit, a potem
+mniej znacz±cy.
+.IP - 2
+W sekcji bitów nie jest dozwolona bia³a spacja, a po wysoko¶ci dozwolony
+jest tylko jeden znak bia³ej spacji (zwykle nowa linia).
+.IP - 2
+Pliki s± o¶miokrotnie razy mniejsze i o wiele szybsze w zapisie i odczycie.
+.SH "ZOBACZ TAK¯E"
+atktopbm(1), brushtopbm(1), cmuwmtopbm(1), g3topbm(1),
+gemtopbm(1), icontopbm(1),
+macptopbm(1), mgrtopbm(1), pi3topbm(1), xbmtopbm(1),
+ybmtopbm(1),
+pbmto10x(1), pnmtoascii(1), pbmtoatk(1), pbmtobbnbg(1),
+pbmtocmuwm(1), pbmtoepson(1),
+pbmtog3(1), pbmtogem(1), pbmtogo(1), pbmtoicon(1), pbmtolj(1),
+pbmtomacp(1), pbmtomgr(1), pbmtopi3(1), pbmtoplot(1), pbmtoptx(1),
+pbmtox10bm(1), pbmtoxbm(1), pbmtoybm(1),
+pbmtozinc(1),
+pbmlife(1), pbmmake(1), pbmmask(1), pbmreduce(1),
+pbmtext(1), pbmupc(1),
+pnm(5), pgm(5), ppm(5)
+.SH AUTOR
+Copyright (C) 1989, 1991 Jef Poskanzer.
+.\" Permission to use, copy, modify, and distribute this software and its
+.\" documentation for any purpose and without fee is hereby granted, provided
+.\" that the above copyright notice appear in all copies and that both that
+.\" copyright notice and this permission notice appear in supporting
+.\" documentation.  This software is provided "as is" without express or
+.\" implied warranty.

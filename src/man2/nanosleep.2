@@ -1,0 +1,137 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" 1999 PTM Przemek Borys
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\"
+.\" Copyright (C) Markus Kuhn, 1996
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" 1996-04-10  Markus Kuhn <mskuhn@cip.informatik.uni-erlangen.de>
+.\"             First version written
+.\"
+.TH NANOSLEEP 2 1996-04-10 "Linux 1.3.85" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+nanosleep \- zatrzymanie wykonywania na okre¶lony czas
+.SH SK£ADNIA
+.B #include <time.h>
+.sp
+\fBint nanosleep(const struct timespec *\fIreq\fB, struct timespec *\fIrem\fB);
+.fi
+.SH OPIS
+.B nanosleep
+opó¼nia wykonywanie programu przynajmniej o czas podany w
+.IR *req .
+Funkcja mo¿e zakoñczyæ siê wcze¶niej, je¶li procesowi dostarczono sygna³.
+W tym wypadku zwraca \-1, ustawia \fIerrno\fR na warto¶æ
+.B EINTR
+i zapisuje pozosta³y czas do do struktury wskazywanejj przez
+.IR rem ,
+o ile
+.I rem
+nie by³o równe
+.BR NULL .
+Warto¶æ
+.I *rem
+mo¿na wykorzystaæ do ponownego wywo³ania
+.B nanosleep
+i dokoñczenia zadanej pauzy.
+
+Do podawania interwa³ów czasowych z dok³adno¶ci± nanosekundow±, u¿ywana jest
+struktura
+.IR timespec ,
+zdefiniowana w
+.IR <time.h> ,
+a maj±ca postaæ
+.sp
+.RS
+.nf
+.ne 12
+.ta 8n 16n 32n
+struct timespec
+{
+	time_t	tv_sec;			/* sekundy */
+	long	tv_nsec;		/* nanosekundy */
+};
+.ta
+.fi
+.RE
+.PP
+Warto¶æ pola nanosekund musi byæ w zakresie od 0 do 999 999 999.
+
+W porównaniu ze
+.BR sleep  (3)
+i
+.BR usleep (3),
+.B nanosleep
+jest lepsze, gdy¿ nie wp³ywaj± na nie sygna³y i jest zestandaryzowane przez
+POSIX. Ponadto daje lepsz± rozdzielczo¶æ czasow± i pozwala na ³atwiejsz±
+kontynuacjê u¶pienia po przerwaniu przez sygna³.
+.SH B£ÊDY
+W wypadku b³êdu, lub wyj±tku,
+.B nanosleep
+zwraca zamiast 0 warto¶æ \-1 i ustawia
+.I errno
+na jedn± z nastêpuj±cych warto¶ci:
+.TP
+.B EINTR
+Pauza zosta³a przerwana nieblokowanym sygna³em, dostarczonym procesowi.
+Pozosta³y czas pauzy zosta³ zapisany do *\fIrem\fR, wiêc proces mo¿e ³atwo
+wywo³aæ ponownie
+.B nanosleep
+i dokoñczyæ pauzê.
+.TP
+.B EINVAL
+Warto¶æ z pola
+.I tv_nsec
+nie by³a w zakresie 0 to 999\ 999\ 999 lub
+.I tv_sec
+by³o ujemne.
+.SH USTERKI
+Obecna implementacja
+.B nanosleep
+jest oparta o mechanizm zwyk³ego zegara w j±drze, którego rozdzielczo¶æ
+wynosi 1/\fIHZ\fR\ s (np., dla Linuksa/i386 10\ ms i 1\ ms dla Linuksa/Alpha).
+Tak wiêc
+.B nanosleep
+przerywa wykonanie zawsze przynajmniej na zadany czas, choæ mo¿e wznowiæ
+dzia³anie programu do 10ms pó¼niej ni¿ podano. Z tej samej przyczyny, warto¶æ
+zwracana w *\fIrem\fR przy pojawieniu siê sygna³u, jest zaokr±glana do
+wielokrotno¶ci 1/\fIHZ\fR\ s.
+
+Jako, ¿e niektóre aplikacje wymagaj± bardziej dok³adnych pauz (np. aby
+sterowaæ sprzêtem o krytycznych zale¿no¶ciach czasowych),
+.B nanosleep
+mo¿e te¿ dawaæ krótkie, bardzo dok³adne pauzy. Je¶li proces podlega
+szeregowaniu zadañ wed³ug polityki czasu rzeczywistego, takiej jak
+.I SCHED_FIFO
+czy
+.IR SCHED_RR ,
+to wtedy pauzy do 2\ ms bêd± wykonywane jako oczekiwania zajêto¶ci (busy
+waits) z precyzj± mikrosekundow±.
+.SH "ZGODNE Z"
+POSIX.1b (poprzednio POSIX.4)
+.SH "ZOBACZ TAK¯E"
+.BR sleep (3),
+.BR usleep (3),
+.BR sched_setscheduler (2),
+.BR timer_create (2)

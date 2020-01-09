@@ -1,0 +1,41 @@
+.\" Copyright (C) 1996 Free Software Foundation, Inc.
+.\" This file is distributed accroding to the GNU General Public License.
+.\" See the file COPYING in the top level source directory for details.
+.\"
+.\" Translation (c) 1998 Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.TH DELETE_MODULE 2 "26 grudnia 1996" Linux "Wsparcie dla modu³ów"
+.SH NAZWA
+delete_module \- usuwa wpis ³adowalnego modu³u.
+.SH SK£ADNIA
+.nf
+.B #include <linux/module.h>
+.sp
+.BI "int delete_module(const char *" name );
+.fi
+.SH OPIS
+.B delete_module
+próbuje usun±æ wpis nieu¿ywanego ³adowalnego modu³u. Je¶li \fIname\fP jest
+równe \fBNULL\fP, to zostan± usuniête wszystkie nieu¿ywane modu³y zaznaczone
+jako usuwalne automatycznie. Tê funkcjê mo¿e wywo³ywaæ tylko superu¿ytkownik.
+.SH "WARTO¦Æ ZWRACANA"
+W przypadku sukcesu zwracane jest zero. W przypadku b³êdu, \-1 i odpowiednio
+ustawiane jest \fIerrno\fP.
+.SH B£ÊDY
+.TP
+.B EPERM
+U¿ytkownik nie jest superu¿ytkownikiem.
+.TP
+.B ENOENT
+Nie istnieje modu³ o tej nazwie.
+.TP
+.B EINVAL
+\fIname\fP by³ pustym ci±giem znaków.
+.TP
+.B EBUSY
+Modu³ jest u¿ywany.
+.TP
+.B EFAULT
+.I name 
+jest poza dostêpn± przestrzeni± adresow±.
+.SH "ZOBACZ TAK¯E
+.BR create_module "(2), " init_module "(2), " query_module "(2).

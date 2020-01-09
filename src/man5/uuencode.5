@@ -1,0 +1,87 @@
+'.\" Copyright (c) 1989, 1991 The Regents of the University of California.
+'.\" All rights reserved.
+'.\"
+'.\" Redistribution and use in source and binary forms, with or without
+'.\" modification, are permitted provided that the following conditions
+'.\" are met:
+'.\" 1. Redistributions of source code must retain the above copyright
+'.\"    notice, this list of conditions and the following disclaimer.
+'.\" 2. Redistributions in binary form must reproduce the above copyright
+'.\"    notice, this list of conditions and the following disclaimer in the
+'.\"    documentation and/or other materials provided with the distribution.
+'.\" 3. All advertising materials mentioning features or use of this software
+'.\"    must display the following acknowledgement:
+'.\"	This product includes software developed by the University of
+'.\"	California, Berkeley and its contributors.
+'.\" 4. Neither the name of the University nor the names of its contributors
+'.\"    may be used to endorse or promote products derived from this software
+'.\"    without specific prior written permission.
+'.\"
+'.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+'.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+'.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+'.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+'.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+'.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+'.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+'.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+'.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+'.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+'.\" SUCH DAMAGE.
+'.\"
+'.\"     @(#)uuencode.format.5	6.4 (Berkeley) 5/10/91
+'.\"
+'.\" Translation (c) 1998 "Gwidon S. Naskrent" <naskrent@hoth.amu.edu.pl>
+.TH uuencode 5
+.SH NAZWA
+uuencode \- format zakodowanego pliku uuencode
+.SH OPIS
+Pliki które produkuje
+.B uuencode(1)
+sk³adaj± siê z linii nag³ówka, po którym nastêpuje pewna liczba linii
+tre¶ci, oraz linia koñcz±ca.
+Komenda
+.B uudecode(1)
+zignoruje wszelkie linie poprzedzaj±ce nag³ówek lub nastêpuj±ce po
+linii koñcz±cej.  Linie poprzedzaj±ce nag³ówek nie mog± oczywi¶cie
+wygl±daæ jak nag³ówek.
+.PP
+Linia nag³ówka odró¿niana jest po pierwszych sze¶ciu znakach, które brzmi±
+.I begin\ \&
+Po s³owie
+.I begin
+nastêpuj± prawa dostêpu (ósemkowo), oraz ³añcuch bêd±cy nazw± zakodowanego
+pliku.  Wszystkie trzy elementy linii nag³ówkowej rozdziela spacja.
+.PP
+Tre¶æ sk³ada siê z pewnej liczby linii, ka¿dej o d³ugo¶ci co najwy¿ej
+62 znaków (³±cznie z koñcowym znakiem nowej linii).  Sk³adaj± siê one
+z licznika znaków, zakodowanych znaków i znaku nowej linii.  Licznik
+znaków to pojedynczy znak drukowalny reprezentuj±cy liczbê ca³kowit±
+bêd±c± ilo¶ci± bajtów, jakie posiada reszta linii.  Takie liczby s± zawsze
+w zakresie od 0 do 63 i mo¿na je okre¶liæ odejmuj±c znak spacji (40
+ósemkowo) od tego znaku.
+.PP
+Grupy trzybajtowe przechowywane s± w czterech znakach, sze¶æ bitów
+na znak.  Wszystkie s± przesuniête o spacjê tak aby daæ znaki drukowalne.
+Ostatnia linia mo¿e byæ krótsza ni¿ zwyk³e 45 bajtów.  Je¶li wielko¶æ
+pliku nie jest wielokrotno¶ci± trzech, fakt ten mo¿na ustaliæ licz±c
+znaki w ostatniej linii.  Dodatkowe ¶miecie s± do³±czane aby liczba
+znaków by³a wielokrotno¶ci± czterech.
+.PP
+Tre¶æ koñczona jest lini± o d³ugo¶ci zerowej. Linia ta sk³ada siê z jednej
+spacji
+.B ASCII.
+.PP
+Linia koñcz±ca sk³ada siê ze s³owa
+.I end
+w osobnej linii.
+.SH ZOBACZ TAK¯E
+.BR uuencode(1), 
+.BR uudecode(1), 
+.BR uusend(1), 
+.BR uucp(1), 
+.BR mail(1)
+.SH HISTORIA
+Format plików
+.I uuencode
+pojawi³ siê w BSD 4.0

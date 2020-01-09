@@ -1,0 +1,360 @@
+#! /usr/bin/perl
+
+# Skrypt do sprawdzania stanu t³umaczonych pakietów podrêczników
+# 
+# Wywo³any bez opcji czy argumentów poda nam listê pakietów
+# gotowych i niedokoñczonych.
+#
+# OPCJE:
+# -a		- pytamy o stan WSZYSTKICH pakietów
+# -q NAZWA	- pytamy o stan pakietu o podanej NAZWIE
+# -m nazwa.X	- pytamy o stan podrêcznika o podanej nazwie.X
+# -g - ka¿e wy¶wietliæ zbiór pakietów gotowych
+# -n - ka¿e wy¶wietliæ zbiór pakietów niekompletnych
+# -r NAZWA - usuwa wpisy dotycz±ce sprawdzania pakietów z pliku 
+#              ispell.sprawdzane - pomocne, gdy pojawi siê nowa wersja
+#              pakietu z ró¿nicami w dokumentacji.
+# -f NAZWA	- wrapperek do polecenia rpm, który podaje informacjê
+#		  o podrêcznikach zawartych w pakiecie
+
+# ¦cie¿ka dostêpu do modu³u (katalogu) pl_DICT w CVS
+#
+$PLPL = "..";
+
+# Katalog z plikami opisuj±cymi pakiety.
+#
+$ROOT_DIR = "$PLPL/zasoby/pakiety";
+
+# A tutaj wyci±gamy alternatywne, wzglêdne po³o¿enie.
+#
+$PLALTERNATE = $ENV{PTM_PL_DIR};
+
+#####################################################
+
+sub errorek {
+    local ($plik) = @_;
+
+    print "Brak informacji o pakiecie $plik\n";
+    $ERRMARK = 1;
+    return (0);
+    }
+
+sub clearerrorek {
+    $ERRMAK = 0;
+    }
+
+# Tutaj zbieramy wszystkie pliki.
+#
+sub dajpliki {
+    local($katalog) = @_;
+    local @wynik = ();
+
+    opendir(DIR, $katalog) or die "Nie powiód³ siê opendir $katalog: $!";
+    @wynik = grep { /^[^\.]/ && -f "$katalog/$_"} readdir(DIR);
+    closedir DIR;
+    
+    return @wynik;
+}
+
+# Wczytuje sprawdzone
+#
+
+sub wczytajsprawdzone {
+    local ($plik) = @_;
+    local @spr = ();
+
+    open (OUTPUT, "<$plik") or die ("Nie mogê otworzyæ do odczytu $plik");
+    while (<OUTPUT>) {
+        chop;
+	if ($_ !~ /\/.*/) {
+	    push (@spr, $_);
+	    }
+        }
+    close (OUTPUT);
+    return (@spr);
+    }
+
+# Tutaj sprawdzamy stan pakietu.
+# plik, wszystko?, gotowe?,
+#
+
+sub dajstan {
+    local($plik, $v, $g, $n, $manual, @spr) = @_;
+    local $nazwa, $szukany, $dopsze, $dospr, $gotowy, $sekcja, $registered;
+    local @ISTNIEJACE = ();
+    local %podreczniki = ();
+    
+    open (OUTPUT, "<$ROOT_DIR/$plik") or &errorek($plik);
+
+    if ($ERRMARK) {
+	return (1);
+	&clearerrorek;
+	}
+
+    $dopsze = 0;
+    $gotowy = 1;
+    
+    if ($v) {
+	print "Do przet³umaczenia:\t";
+	}
+
+    while (<OUTPUT>) {
+	chop;
+	$_ =~ s/(.*)(\#)(.*)/$1/s;
+	if ($_ =~ /(\S+)(\s+)(\S+)/s) {
+	    $podreczniki{"$1"} = "$3";
+	    }
+	}
+    
+    close (OUTPUT);
+
+    if ($manual) {
+    return (0) if ! exists $podreczniki{$manual};
+    }
+	
+	foreach $nazwa (keys %podreczniki) {
+	    $szukany = $podreczniki{$nazwa};
+	    
+	    if ("$nazwa" eq "$manual") {
+		print "W pakiecie:\t$plik\n";
+		}
+	    
+	    if (! -f "$PLPL/$szukany")	# BRAK PLIKU
+		{
+		$dopsze = 1;
+		if ($v) {
+		    print "\n$nazwa";
+		    }
+		if ($manual) {
+		    if ("$nazwa" eq "$manual") {
+			print "Przet³umaczony:\tNIE\n";
+			last;
+			}
+		    # TU BINARNIE!
+		    }
+		}
+	    else	# PLIK ISTNIEJE
+		{
+		push (@ISTNIEJACE, $nazwa);
+		$registered = 0;
+		$sekcja = $nazwa;
+		$sekcja = chop($sekcja);
+		open (LOJALNY, "<$PLPL/man$sekcja/CVS/Entries") or die ("Aaaa! Nie mam informacji CVS!\n");
+		while (<LOJALNY>) {
+		    chop;
+		    if ($_ =~ /\/([^\/]+).*/ && "$1" eq "$nazwa") {
+		        $registered = 1;	# jest w CVS
+		        }
+		    }
+		close (LOJALNY);
+		
+		if ($registered == 0) {
+		    if ($v) {
+			$dopsze = 1;
+			pop @ISTNIEJACE;
+			print "\n$nazwa (istnieje tylko lokalnie)";
+			}
+		    if ($n) {
+			print "$plik\n";
+			return;
+			}
+		    if ("$nazwa" eq "$manual") {
+			print "Przet³umaczony:\t??? (istnieje tylko lokalnie).\n";
+			last;
+			}
+		    }
+		else
+		    {
+		    if ("$nazwa" eq "$manual") {
+			print "Przet³umaczony:\tTAK\n";
+			last;
+			}
+		    }
+		}
+	    }
+    if ($dopsze == 0)
+	{
+	if ($v) {
+	    print "(nic)";
+	    }
+	}
+    else
+	{
+	$gotowy = 0;
+	}
+	
+    if ($v) {
+	print "\n";
+	}
+    
+    if ($v) {
+	print "\nDo sprawdzenia:\t\t";
+	}
+    $dopsze = 0;
+    foreach $nazwa (@ISTNIEJACE) {
+	$dospr = 1;
+	foreach (@spr) {
+	    if ("$_" eq "$nazwa") {
+		$dospr = 0;
+		}
+	    last if ("$_" ge "$nazwa");
+	    }
+	if ($dospr)
+	    {
+	    $dopsze = 1;
+	    if ($v) {
+		print "\n$nazwa";
+		}
+	    if ($n) {
+	    	print "$plik\n";
+		return;
+		}
+	    if ("$nazwa" eq "$manual") {
+		print "Sprawdzony:\tNIE\n";
+		return (2);
+		}
+	    }
+	else
+	    {
+	    if ("$nazwa" eq "$manual") {
+		print "Sprawdzony:\tTAK\n";
+		return (2);
+		}
+	    }
+	}
+    
+    if ($dopsze == 0)
+	{
+	if ($v) {
+	    print "(nic)";
+	    }
+	}
+    else
+	{
+	$gotowy = 0;
+	}
+    if ($v) {
+	print "\n";
+	}
+    if ($gotowy)
+	{
+	if ($v) {
+	    print "\n\nZBIÓR GOTOWY DO DYSTRYBUCJI!\n";
+	    }
+	if ($g) {
+	    print "$plik\n";
+	    }
+	}
+    else
+	{
+	if ($n)
+	    {
+	    print "$plik\n";
+	    }
+	}
+}
+
+#
+# "main"
+#
+
+$arg = @ARGV[0];
+
+print "Heniu v.0.06 (GPL) by P.Wilk <siewca\@dione.ids.pl>\n\n";
+
+if (! -d "$PLPL/CVS" || ! -d "$PLPL/zasoby" || ! -f "$PLPL/FAQ")
+	{
+	if ("$PLALTERNATE" ne "")
+	    {
+	    $PLPL = "$PLALTERNATE";
+	    $ROOT_DIR = "$PLPL/zasoby/pakiety";
+	    }
+	else
+	    {
+	    print "\nUWAGA!\nObecna wersja programu przystosowana jest do pracy\nbezpo¶rednio z poziomu katalogu CVS.\
+Je¶li chcesz u¿ywaæ jej z tej lokacji musisz ustawiæ zmienn± ¶rodowiskow± PTM_PL_DIR,\nwskazuj±c± na po³o¿enie katalogu pl_PL z CVS-u.\
+Na przyk³ad: export PTM_PL_DIR=\"\$HOME/cvs/pl_PL\"\n";
+	    exit (1);
+	    }
+	}
+
+if ($arg eq "") {
+print STDERR <<EOFIK;
+-a - wy¶wietla stan WSZYSTKICH pakietów
+
+-q NAZWA - wy¶wietla stan pakietu o podanej NAZWIE
+-m nazwa.X - wy¶wietla stan podrêcznika o podanej nazwie.X
+-g - wy¶wietla zbiór pakietów gotowych
+-n - wy¶wietla zbiór pakietów niekompletnych
+
+-r [NAZWA] - usuwa wpisy dotycz±ce sprawdzania pakietów z pliku 
+              ispell.sprawdzane - pomocne, gdy pojawi siê nowa wersja
+              pakietu z ró¿nicami w dokumentacji
+
+-f NAZWA - wrapperek do polecenia rpm, który podaje informacjê
+	   o podrêcznikach zawartych w pakiecie
+
+EOFIK
+exit (0);
+    }
+
+$recik = 0;
+@SPRAWDZONE = &wczytajsprawdzone ("$PLPL/zasoby/ispell.sprawdzane");
+@SPRAWDZONE = sort (@SPRAWDZONE);
+@PLIKI = &dajpliki ($ROOT_DIR);
+@PLIKI = sort(@PLIKI);
+
+if ($arg eq "-a") {
+    print "Raport stanu wszystkich pakietów.";
+    foreach (@PLIKI) {
+	print "\n--------------------------------------------------\n";
+	print "PAKIET: $_\n\n";
+	&dajstan ($_, 1, 0, 0, 0, @SPRAWDZONE);
+	}
+    }
+    
+if ($arg eq "-q") {
+    print "Raport stanu pakietu.\n";
+    print "--------------------------------------------------\n";
+    print "PAKIET: $ARGV[1]\n\n";
+    $recik = &dajstan ($ARGV[1], 1, 0, 0, 0, @SPRAWDZONE);
+    }
+    
+if ($arg eq "-g") {
+    print "Raport gotowo¶ci pakietów.\n";
+    print "--------------------------------------------------\n";
+    foreach (@PLIKI) {
+	&dajstan ($_, 0, 1, 0, 0, @SPRAWDZONE);
+	}
+    }
+	
+if ($arg eq "-n") {
+    print "Raport pakietów niedokoñczonych.\n";
+    print "--------------------------------------------------\n";
+    foreach (@PLIKI) {
+	&dajstan ($_, 0, 0, 1, 0, @SPRAWDZONE);
+	}
+    }
+    
+if ($arg eq "-m") {
+    print "Raport stopnia gotowo¶ci podrêcznika.\n";
+    print "--------------------------------------------------\n";
+    print "PODRÊCZNIK: $ARGV[1]\n\n";
+    foreach (@PLIKI) {
+	$recik = &dajstan ($_, 0, 0, 0, $ARGV[1], @SPRAWDZONE);
+	last if ($recik);
+	}
+    if ($recik != 2) {
+	print "Brak takiego podrêcznika!\n";
+	}
+    }
+
+if ($arg eq "-f") {
+    print "Pliki podrêczników zawarte w pakiecie " . $ARGV[1] . "\n";
+    print "--------------------------------------------------\n";
+    $naz=$ARGV[1];
+    print `rpm -ql $naz | grep "/usr/share/man" | cut -d'/' -f5,6`;
+    }
+
+print "\n";
+exit ($recik);

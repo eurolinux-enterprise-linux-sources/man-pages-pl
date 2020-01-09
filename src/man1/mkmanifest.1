@@ -1,0 +1,78 @@
+.\" {PTM/WK/0.1/15-07-1999/"tworzy skrypt do odtworzenia nazw plików Unixa"}
+.TH mkmanifest 1 "15 lipca 1999" mtools-3.9.6
+.SH NAZWA
+mkmanifest - tworzy skrypt pow³oki do odtworzenia nazw plików Unixa
+.SH SK£ADNIA
+.B mkmanifest
+.RI [ pliki ]
+.SH OPIS
+\fBmkmanifest\fR tworzy skrypt pow³oki pomagaj±cy w odtworzeniu unixowych
+nazw plików, które zosta³y zmienione w celu dopasowania do ograniczeñ nazw
+plików systemu MS-DOS. Nazwy plików DOSu ograniczone s± do 8 znaków nazwy
+i 3 znaków rozszerzenia, wy³±cznie du¿ymi literami, bez nazw urz±dzeñ
+i niedozwolonych znaków (patrz \fBmtools\fR(1)).
+.PP
+Program \fBmkmanifest\fR jest zgodny z metodami u¿ywanymi przez
+\fBpcomm\fR, \fBarc\fR oraz \fBmtools\fR do zamiany poprawnych nazw plików
+Unixa, tak by spe³nia³y ograniczenia DOSu. Polecenie to jest przydatne, gdy
+system docelowy, w którym nast±pi odczyt dyskietki, nie potrafi obs³ugiwaæ
+d³ugich nazw plików systemu VFAT.
+.SS Przyk³ad
+Chcemy skopiowaæ nastêpuj±ce pliki Uniksa na dyskietkê DOS (przy pomocy
+polecenia \fBmcopy\fR):
+.IP
+.I dosc_dluga_nazwa
+.br
+.I za.duzo.kropek
+.br
+.I zakaz:
+.br
+.I dobry.c
+.br
+.I prn.dev
+.PP
+\fBmcopy\fR zamieni nazwy na:
+.IP
+.I dosc_dlu
+.br
+.I zaxduzo.kro
+.br
+.I zakazx
+.br
+.I dobry.c
+.br
+.I xprn.dev
+.PP
+Polecenie:
+.IP
+.B mkmanifest
+.I dosc_dluga_nazwa za.duzo.kropek zakaz: dobry.c prn.dev
+.BI > manifest
+.PP 
+da nastêpuj±cy wynik:
+.IP
+.BI mv " dosc_dlu dosc_dluga_nazwa"
+.br
+.BI mv " zaxduzo.kro za.duzo.kropek"
+.br
+.BI mv " zakazx zakaz:"
+.br
+.BI mv " xprn.dev prn.dev"
+.PP
+Zauwa¿, ¿e \fIdobry.c\fR nie wymaga ¿adnej konwersji, wiêc nie pojawia siê
+na wyj¶ciu.
+.PP
+Za³ó¿my, ¿e pliki te zosta³y skopiowane z dyskietki do innego systemu
+unixowego i chcieliby¶my przywróciæ im ich pierwotne nazwy. Je¶li do³±czono
+plik \fImanifest\fR (przechwycony powy¿szy wynik dzia³ania
+\fBmkmanifest\fR), to mo¿e on zostaæ wykorzystany do konwersji nazw.
+.SH B£ÊDY
+Krótkie nazwy tworzone przez \fBmkmanifest\fR stosuj± star± konwencjê
+(z mtools-2.0.7), nie za¶ tê u¿ywan± w Windows 95 i mtools-3.0.
+.SH UWAGI
+Niniejsza, polska wersja dokumentacji, powsta³a jako t³umaczenie pliku
+Texinfo pakietu mtools wersji 3.9.6. W stosunku do automatycznie generowanej
+z Textinfo dokumentacji oryginalnej dokonano przesuniêcia sekcji opisuj±cej
+konwersjê dokumentacji do \fBmtools\fR(1). Tam te¿ znajdziesz notê prawn±
+dotycz±c± rozpowszechniania, modyfikacji i t³umaczenia dokumentacji pakietu
+mtools

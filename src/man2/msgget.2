@@ -1,0 +1,210 @@
+.\" Copyright 1993 Giorgio Ciucci <giorgio@crcc.it>
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Added correction due to Nick Duffek <nsd@bbc.com>, aeb, 960426
+.\" Modified Wed Nov  6 04:00:31 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified, 8 Jan 2003, Michael Kerrisk, <mtk16@ext.canterbury.ac.nz>
+.\"    Removed EIDRM from errors - that can't happen...
+.\"
+.\" Translated by Rafa³ Lewczuk, 9 May 1999
+.\" Aktualno¶æ: man-pages 1.55
+.\"
+.TH MSGGET 2 1993-11-01 "Linux 0.99.13" "Podrêcznik programisty Linuksa" 
+.SH NAZWA
+msgget \- pobranie identyfikatora kolejki komunikatów
+.SH SK£ADNIA
+.nf
+.B
+#include <sys/types.h>
+.B
+#include <sys/ipc.h>
+.B
+#include <sys/msg.h>
+.fi
+.sp
+.BI "int msgget(key_t " key ,
+.BI "int " msgflg );
+.SH OPIS
+Funkcja zwraca identyfikator kolejki komunikatów skojarzonej
+z warto¶ci± parametru
+.IR key .
+Je¶li 
+.I key
+ma warto¶æ
+.B IPC_PRIVATE
+lub je¶li nie istnieje kolejka o zadanym kluczu
+.IR key ,
+a w parametrze
+.I msgflg
+zostanie przekazany znacznik
+.B IPC_CREAT
+(tzn.
+.IB msgflg & IPC_CREAT
+bêdzie ró¿ne od zera), to zostanie utworzona nowa kolejka.
+Obecno¶æ znaczników
+.B IPC_CREAT
+i
+.B IPC_EXCL
+w parametrze
+.I msgflg
+ma to samo znaczenie, je¶li chodzi o istnienie kolejki komunikatów,
+co obecno¶æ znaczników
+.B O_CREAT
+i
+.B O_EXCL
+w argumencie mode funkcji systemowej
+.BR open (2):
+tzn. funkcja
+.B msgget
+nie wykona siê prawid³owo, je¶li
+.I msgflg
+bêdzie zawieraæ jednocze¶nie oba znaczniki
+.B IPC_CREAT
+i
+.BR IPC_EXCL ,
+za¶ kolejka komunikatów skojarzona z
+.IR key
+ju¿ bêdzie istnieæ.
+.PP
+Podczas tworzenia, dziewiêæ najmniej znacz±cych bitów argumentu
+.I msgflg
+definiuje prawa dostêpu do kolejki.
+Prawa te maj± one tak± sam± postaæ i znaczenie (semantykê) jak parametr
+funkcji systemowych
+.BR open (2)
+i
+.BR creat (2)
+okre¶laj±cy prawa dostêpu. (Prawa do uruchamiania nie s± u¿ywane.)
+.PP
+Je¶li tworzona jest nowa kolejka komunikatów, wywo³anie to w nastêpuj±cy
+sposób inicjalizuje strukturê danych
+.B msqid_ds
+opisuj±c± systemow± kolejkê komunikatów:
+.IP
+.B msg_perm.cuid
+i
+.B msg_perm.uid
+przyjmuj± warto¶æ efektywnego identyfikatora w³a¶ciciela procesu wywo³uj±cego.
+.IP
+.B msg_perm.cgid
+i
+.B msg_perm.gid
+przyjmuj± warto¶æ efektywnego identyfikatora grupy procesu wywo³uj±cego.
+.IP
+9 najmniej znacz±cych bitów pola 
+.B msg_perm.mode
+jest kopiowanych z 9 najmniej znacz±cych bitów 
+.IR msgflg .
+.IP
+.BR msg_qnum ,
+.BR msg_lspid ,
+.BR msg_lrpid ,
+.B msg_stime
+i
+.B msg_rtime
+przyjmuj± warto¶æ 0.
+.IP
+.B msg_ctime
+jest ustawiane na aktualny czas.
+.IP
+.B msg_qbytes
+przyjmuje warto¶æ równ± ograniczeniu systemowemu
+.BR MSGMNB .
+.PP
+Je¶li kolejka istnieje to prawa dostêpu s± weryfikowane i system sprawdza,
+czy kolejka nie jest przeznaczona do usuniêcia.
+.SH "WARTO¦Æ ZWRACANA"
+W przypadku pomy¶lnego zakoñczenia, funkcja zwraca identyfikator kolejki
+komunikatów (liczbê nieujemn±), a w przeciwnym przypadku zwraca
+.B \-1
+i przypisuje zmiennej
+.B errno
+stosown± warto¶æ.
+.SH B£ÊDY
+W przypadku niepowodzenia, zmienna
+.B errno
+mo¿e przyj±æ jedn± z nastêpuj±cych warto¶ci:
+.TP 11
+.B EACCES
+Kolejka skojarzona z
+.IR key ,
+istnieje, ale proces wywo³uj±cy funkcjê nie ma wystarczaj±cych praw dostêpu
+do tej kolejki.
+.TP
+.B EEXIST
+Kolejka skojarzona z warto¶ci±
+.B key
+istnieje a
+.I msgflg
+zawiera jednocze¶nie oba znaczniki
+.B IPC_CREAT
+i
+.BR IPC_EXCL .
+.TP
+.B ENOENT
+Kolejka skojarzona z warto¶ci±
+.I key
+nie istnieje, za¶ 
+.I msgflg
+nie zawiera flagi 
+.BR IPC_CREAT .
+.TP
+.B ENOMEM
+Kolejka komunikatów powinna zostaæ utworzona, ale w systemie brak jest
+pamiêci na utworzenie nowej struktury danych.
+.TP
+.B ENOSPC
+Kolejka komunikatów powinna zostaæ utworzona, ale przekroczone zosta³oby
+systemowe ograniczenie
+.RB ( MSGMNI )
+na ilo¶æ istniej±cych kolejek komunikatów.
+.SH UWAGI
+.B IPC_PRIVATE
+nie jest znacznikiem tylko szczególn± warto¶ci± typu
+.BR key_t .
+Je¶li warto¶æ ta zostanie u¿yta jako parametr
+.IR key ,
+to system uwzglêdni jedynie 9 najni¿szych bitów parametru
+.IR msgflg ,
+stanowi±cych bity uprawnieñ, i (w razie powodzenia) utworzy now± kolejkê.
+.PP
+Wywo³ania
+.B msgget
+dotycz± nastêpuj±ce ograniczenia systemowe:
+.TP 11
+.B MSGMNI
+Maksymalna liczba kolejek komunikatów w systemie:
+zale¿ne od lokalnej strategii (policy dependent).
+.SH USTERKI
+Wybrana nazwa, IPC_PRIVATE, prawdopodobnie nie jest najszczê¶liwsza.
+IPC_NEW w sposób bardziej przejrzysty odzwierciedla³o by rolê tej warto¶ci.
+.SH "ZGODNE Z"
+SVr4, SVID.
+Do wersji 2.3.20, Linux zwraca³ EIDRM dla
+.B msgget
+na kolejce komunikatów przeznaczonej do skasowania.
+.SH "ZOBACZ TAK¯E"
+.BR ftok (3),
+.BR ipc (5),
+.BR msgctl (2),
+.BR msgsnd (2),
+.BR msgrcv (2).

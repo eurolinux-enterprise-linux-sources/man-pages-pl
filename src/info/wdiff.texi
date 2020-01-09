@@ -1,0 +1,465 @@
+%& -translate-file=il2-pl
+\def\fontprefix{pl}
+\input texinfo
+@c %**start of header
+@setfilename wdiff.info
+@settitle Szukacz ró¿nic wyrazów
+@documentencoding ISO-8859-2
+@documentlanguage pl
+@finalout
+@c %**end of header
+
+@c WK: zrezygnowa³em z
+@c   @include version.texi
+@c bo gryz³o siê z innymi w jednym katalogu
+@set EDITION 0.5
+@set UPDATED listopad 1994
+@set VERSION 0.5
+
+@ifinfo
+@set Francois Franc,ois
+@end ifinfo
+@tex
+@set Francois Fran\noexpand\ptexc cois
+@end tex
+
+@ifinfo
+@format
+START-INFO-DIR-ENTRY
+* wdiff: (wdiff).       Szukacz ró¿nic wyrazów.
+END-INFO-DIR-ENTRY
+@end format
+@end ifinfo
+
+@ifinfo
+Niniejszy podrêcznik opisuje polecenie @code{wdiff}, które porównuje dwa
+pliki, stwierdzaj±c, które wyrazy usuniêto lub dodano do pierwszego,
+by uzyskaæ drugi.
+
+Copyright (C) 1992, 1994 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end ifinfo
+
+@titlepage
+@title GNU wdiff, wersja @value{VERSION}
+@subtitle Szukacz ró¿nic wyrazów
+@subtitle Edycja @value{EDITION}, @value{UPDATED}
+@author @value{Francois} Pinard
+
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1992, 1994 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end titlepage
+
+@ifinfo
+@node Top, Od t³umacza, (dir), (dir)
+@top GNU @code{wdiff}
+
+@c @item @b{@code{wdiff}} @value{hfillkludge} (UtilT, SrcCD)
+@c
+@code{wdiff} jest interfejsem do programu GNU @code{diff}.
+Porównuje dwa pliki, stwierdzaj±c, które wyrazy usuniêto lub dodano
+do pierwszego, by uzyskaæ drugi.  Ma wiele formatów wyj¶ciowych i dobrze
+wspó³pracuje z terminalami i programami stronicuj±cymi (w szczególno¶ci
+z @code{less}).  @code{wdiff} jest szczególnie przydatmy, gdy dwa teksty
+ró¿ni± siê tylko kilkoma wyrazami i zmienionym wype³nieniem akapitów.
+
+Niniejszy podrêcznik opisuje zestaw @code{wdiff} w wersji @value{VERSION}.
+
+@c We still hope integrating it, as
+@c well as some ideas from a similar program called @code{spiff}, into
+@c future releases of GNU @code{diff}.
+
+@menu
+* Od t³umacza::                 Parê s³ów od t³umacza
+* Wprowadzenie::                Informacje wstêpne.
+* Wywo³anie wdiff::             Jak uruchamiaæ @code{wdiff}.
+* Przyk³ady::                   Rzeczywiste przyk³ady u¿ycia @code{wdiff}.
+@end menu
+
+@end ifinfo
+
+@node Od t³umacza
+@unnumbered Od t³umacza
+Niniejszy przek³ad powsta³
+w ramach @uref{http://ptm.linux.pl/, Projektu T³umaczenia Manuali}.  Zg³oszenia
+b³êdów, komentarze i sugestie proszê przesy³aæ na listê dyskusyjn± Projektu:
+@email{ptm@@amg.net.pl} lub ewentualnie do autora t³umaczenia.
+
+W.Kotwica (@email{wkotwica@@post.pl})
+
+@unnumberedsec Rozpowszechnianie
+To jest nieoficjalne t³umaczenie warunków rozpowszechniania na jêzyk polski.
+Nie zosta³o ono opublikowane przez Free Software Foundation
+i pod wzglêdem prawnym nie stanowi warunków rozpowszechniania -- ustanawia
+je wy³±cznie oryginalny tekst angielski.  Jednak t³umacz ma nadziejê, ¿e
+pomo¿e ono lepiej zrozumieæ warunki rozpowszechniania osobom mówi±cym
+po polsku.
+
+This is an unofficial translation of the distribution terms into
+Polish language. It was not published by the Free Software Foundation, and
+does not legally state the distribution terms--only the original English text
+does that. However, the translator hopes that it will help Polish language
+speakers understand distribution terms better.
+
+Zezwala siê na tworzenie i rozpowszechnianie wiernych kopii
+tego podrêcznika, pod warunkiem, ¿e na wszystkich kopiach zostanie zachowana
+informacja o prawach autorskich i niniejsze zezwolenie.
+
+Zezwala siê na kopiowanie i rozpowszechnianie zmienionych wersji
+tego podrêcznika na warunkach jak dla wiernych kopii, pod warunkiem, ¿e
+ca³a praca pochodna bêdzie rozpowszechniana na warunkach zezwolenia
+identycznego jak niniejsze.
+
+Zezwala siê na kopiowanie i rozpowszechnianie t³umaczeñ tego
+podrêcznika na inny jêzyk, pod wy¿ej podanymi warunkami dla zmienionych
+wersji, z wyj±tkiem tego, ¿e niniejsze zezwolenie mo¿e byæ ustanowione
+w t³umaczeniu zaakceptowanym przez Fundacjê.
+
+@node Wprowadzenie
+@chapter Wprowadzenie
+
+Program @code{wdiff} stanowi interfejs do programu @code{diff} s³u¿±cy do
+porównywania plików wyrazami.  Wyrazem jest cokolwiek ograniczone bia³ymi
+znakami.  Przydaje siê to porównywania dwu tekstów, w których zmieniono tylko
+kilka wyrazów i ponownie wype³niono akapity.  Dzia³a tworz±c dwa pliki
+tymczasowe, zawieraj±ce po jednym wyrazie w wierszu, a nastêpnie uruchamiaj±c
+dla nich @code{diff}.  Wyniki z s± zbierane i u¿ywane do utworzenia
+³adniejszego obrazu ró¿nic w wyrazach miêdzy pierwotnymi plikami.
+
+Idealnie by³oby, gdyby @code{wdiff} nie wywo³ywa³ @code{diff} tylko wykonywa³
+ca³± pracê wewnêtrznie, dziêki czemu móg³by byæ szybszy i bardziej
+dopracowany.  Jednak brzydzi mnie powielanie algorytmu @code{diff} i wysi³ku
+konstrukcyjnego, zamiast usprawniania samego @code{diff}.  Sensowniej by³oby
+zintegrowaæ @code{wdiff} w @code{diff} ni¿ stosowaæ dookoln± metodê.
+Zrobi³em to w taki sposób tylko dlatego, ¿e mia³em nag³± i piln± potrzebê,
+a poprawne scalenie z GNU @code{diff} zabra³oby zbyt wiele czasu.
+Rady i opinie na ten temat bêd± mile widziane.
+
+@code{wdiff} napisa³ @value{Francois} Pinard.  Proszê zg³aszaæ b³êdy na adres
+@w{@file{bug-gnu-utils@@prep.ai.mit.edu}}.  Za³±cz numer wersji, który mo¿esz
+uzyskaæ uruchamiaj±c @w{@samp{wdiff --version}}.
+W li¶cie za³±cz dane wej¶ciowe wystarczaj±ce do powielenia problemu
+a tak¿e wyj¶cie, jakiego siê spodziewa³e¶.
+
+@node Wywo³anie wdiff
+@chapter Wywo³anie @code{wdiff}
+
+Format uruchamiania programu @code{wdiff} jest nastêpuj±cy:
+
+@example
+wdiff @var{opcja} @dots{} @var{stary_plik} @var{nowy_plik}
+@end example
+
+@code{wdiff} porównuje pliki @var{stary_plik} i @var{nowy_plik} i tworzy
+na standardowym wyj¶ciu skomentowan± kopiê @var{nowego_pliku}.  £añcuch pusty
+lub ³añcuch @samp{-} oznaczaj± standardowe wej¶cie, ale nie mo¿e ono byæ
+u¿yte dwa razy w tym samym wywo³aniu.  Powinna byæ podana pe³na ¶cie¿ka pliku,
+nazwa katalogu nie jest akceptowana.  @code{wdiff} koñczy pracê z kodem 0
+je¶li nie odnaleziono ró¿nic, 1 je¿eli znaleziono ró¿nice, a 2 w przypadku
+b³êdu.
+
+W tej dokumentacji,  @dfn{usuniêty tekst} oznacza tekst w @var{starym_pliku},
+którego nie ma w @var{nowym_pliku}, podczas gdy @dfn{wstawiony tekst} oznacza
+tekst w @var{nowym_pliku}, którego brak w @var{starym_pliku}.
+
+@code{wdiff} udostêpnia nastêpuj±ce opcje wiersza poleceñ:
+
+@table @samp
+@item --help
+@itemx -h
+Wypisuje komunikat pomocy opisuj±cy opcje.
+
+@item --version
+@itemx -v
+Wypisuje numer wersji @code{wdiff} na standardowym wyj¶ciu diagnostycznym.
+
+@item --no-deleted
+@itemx -1
+Zabrania tworzenia w wyj¶ciu usuniêtych wyrazów. Je¶li nie wybrano ani opcji
+@samp{-1} ani @samp{-2}, to w niektórych wierszach mo¿e zostaæ przekroczony
+pierwotny prawy margines.
+
+@item --no-inserted
+@itemx -2
+Zabrania tworzenia w wyj¶ciu wstawionych wyrazów.  Je¶li podano tê flagê,
+to bia³y znak w wyj¶ciu brany jest ze @var{starego_pliku}, a nie
+z @var{nowego_pliku}.  Je¶li nie wybrano ani opcji @samp{-1} ani @samp{-2},
+to w niektórych wierszach mo¿e zostaæ przekroczony pierwotny prawy margines.
+
+@item --no-common
+@itemx -3
+Zabrania tworzenia w wyj¶ciu wstawionych wyrazów.  
+Zabrania tworzenia w wyj¶ciu wspólnych wyrazów. Je¶li nie u¿yto tej opcji,
+wspólne wyrazy i bia³e znaki s± pobierane z @var{nowego_pliku}, chyba ¿e
+podano opcjê @samp{-2}, wówczas bêd± brane ze @var{starego_pliku}.
+Gdy jej u¿yto, to ró¿nice zostan± od siebie oddzielone wierszami kresek.
+Jednak, je¶li opcji tej u¿yto równocze¶nie z @samp{-1} lub @samp{-2}, to
+w utworzonym wyj¶ciu nie bêdzie wyró¿nieñ, tzn. pogrubieñ ani podkre¶leñ.
+Na koniec, je¶li nie u¿yto tej opcji, ale u¿yto obu opcji @samp{-1}
+i @samp{-2}, to sekcje wspólnych wyrazów pomiêdzy ró¿nicami bêd± oddzielane
+wierszami kresek.
+
+@item --ignore-case
+@itemx -c
+Nie rozró¿nia wielko¶ci liter przy porównywaniu wyrazów.  Na u¿ytek
+decyzji czy dwa wyrazy s± takie same ka¿da ma³a litera jest postrzegana jako
+identyczna z odpowiadaj±c± jej wielk± liter±.
+
+@item --statistics
+@itemx -s
+Na zakoñczenie wypisywana jest, dla ka¿dego pliku, ca³kowita liczba wyrazów,
+wyrazów wspólnych dla obu plików, usuniêtych b±d¼ wstawionych i liczba
+zmienionych.  (Wyraz zmieniony to taki, który zosta³ zast±piony lub jest
+czê¶ci± zast±pienia.)  Z wyj±tkiem ca³kowitej liczby wyrazów, po wszystkich
+pozosta³ych liczbach wystêpuje procent wzglêdem ca³kowitej liczby wyrazów
+w pliku.
+
+@item --auto-pager
+@itemx -a
+Niektóre z czynno¶ci, które uprzednio by³y wykonywane automatycznie
+w poprzednich wersjach @code{wdiff} zosta³y obecnie oddane pod kontrolê tej
+opcji.  Przy jej u¿yciu, je¶li wyj¶cie @code{wdiff} jest kierowane na
+terminal, to pomiêdzy nie wstawiany jest program stronicowania (pager).
+Bez tej opcji nie bêdzie wywo³ywany ¿aden program stronicuj±cy.
+Wówczas, je¶li to potrzebne, u¿ytkownik sam odpowiada za jawne skierowanie
+potokiem wyj¶cia z @code{wdiff} to pagera.
+
+Program stronicuj±cy okre¶la siê warto¶ci± zmiennej ¶rodowiskowej
+@samp{PAGER}.  Je¶li podczas wykonywania @code{wdiff} zmienna @samp{PAGER}
+nie jest zdefiniowana, to zostanie u¿yty domy¶lny program stronicuj±cy,
+wybrany podczas instalacji.  Zdefiniowana, lecz pusta warto¶æ @samp{PAGER}
+oznacza brak w ogóle jakiegokolwiek programu stronicowania.
+
+Gdy przez u¿ycie tej opcji stosowany jest program stronicuj±cy, w³±czana
+jest tak¿e jedna z opcji @samp{-l} lub @samp{-t}, w zale¿no¶ci od tego, czy
+w nazwie pagera pojawia siê ³añcuch @samp{less} czy nie.
+
+Czêsto warto zdefiniowaæ @samp{wdiff} jako alias dla @samp{wdiff -a}.
+Jednak @emph{ukrywa} to zwyk³e zachowanie siê programu.  Mo¿na je przywróciæ
+po prostu przepuszczaj±c potokiem wyj¶cie @code{wdiff} przez @code{cat}.
+Taki sposób od³±cza wyj¶cie od terminala.
+
+@item --printer
+@itemx -p
+Stosuje nadruk do wyró¿nienia czê¶ci wyj¶cia. Ka¿dy ze znaków usuniêtego
+tekstu jest podkre¶lany przez wypisanie najpierw znaku podkre¶lenia @samp{_},
+a nastêpnie znaku cofniêcia (backspace) i litery, jaka ma zostaæ podkre¶lona.
+Ka¿dy ze znaków wstawionego tekstu jest pogrubiany przez wypisanie go
+dwukrotnie, z cofniêciem pomiêdzy przebiegami.  Domy¶lnie ta opcja nie jest
+w³±czona.
+
+@item --less-mode
+@itemx -l
+Stosuje nadruk do wyró¿nienia czê¶ci wyj¶cia.  Dzia³a jak opcja @code{-p},
+ale dodatkowo nadpisuje bia³e znaki zwi±zane z wstawianym tekstem.
+@code{less} pokazuje takie bia³e znaki stosuj±c negatyw obrazu.  Domy¶lnie
+ta opcja nie jest w³±czona. Jest jednak w³±czana automatycznie ka¿dorazowo
+gdy @code{wdiff} uruchamia @code{less}.
+Zobacz opcjê @samp{-a}.
+
+Jest czêsto stosowana w po³±czeniu z @code{less}:
+
+@example
+wdiff -l @var{stary_plik} @var{nowy_plik} | less
+@end example
+
+@item --terminal
+@itemx -t
+Wymusza tworzenie ³añcuchów @code{termcap} do wyró¿niania czê¶ci wyj¶cia,
+nawet je¶li standardowe wyj¶cie nie jest zwi±zane z terminalem.  Zmienna
+¶rodowiskowa @samp{TERM} musi zawieraæ nazwê poprawnego wpisu
+z @code{termcap}.  Je¶li pozwala na to opis danego terminala, do oznaczania
+usuniêtego tekstu stosowane jest podkre¶lenie, a do wstawionego tekstu
+pogrubienie lub negatyw.  Domy¶lnie ta opcja nie jest w³±czona. Jest jednak
+w³±czana automatycznie ka¿dorazowo gdy @code{wdiff} uruchamia program
+stronicuj±cy i wiadomo, ¿e @emph{nie} jest to @code{less}.
+Zobacz opcjê @samp{-a}.
+
+Tê opcjê stosuje siê powszechnie gdy wyj¶cie @code{wdiff} nie jest
+przekierowane, ale wysy³ane wprost na terminal, jak w:
+
+@example
+wdiff -t @var{stary_plik} @var{nowy_plik}
+@end example
+
+Czêste rozwi±zanie to korzystanie z @code{wdiff} razem z programem
+stronicuj±cym @code{more}:
+
+@example
+wdiff -t @var{stary_plik} @var{nowy_plik} | more
+@end example
+
+Jednak niektóre wersje @code{more} wykorzystuj± wyró¿nienia @code{termcap}
+do w³asnych celów, wiêc mog± wyst±piæ dziwne wzajemne oddzia³ywania.
+
+@item --start-delete @var{argument}
+@itemx -w @var{argument}
+Stosuje @var{argument} jako ³añcuch @dfn{pocz±tku usuwania}.  Zostanie on
+wypisany przed ka¿d± sekwencj± usuniêtego tekstu, zaznaczaj±c jej pocz±tek.
+Domy¶lnie nie jest u¿ywany ¿aden ³añcuch pocz±tku usuwania, chyba ¿e nie ma
+innych ¶rodków, dziêki którym mo¿na by rozpoznaæ, gdzie siê zaczyna taki
+tekst. Wówczas domy¶lnym ³añcuchem pocz±tku usuwania jest @samp{[-}.
+
+@item --end-delete @var{argument}
+@itemx -x @var{argument}
+Stosuje @var{argument} jako ³añcuch @dfn{koñca usuwania}.  Zostanie on
+wypisany po ka¿dej sekwencji usuniêtego tekstu, zaznaczaj±c jej koniec.
+Domy¶lnie nie jest u¿ywany ¿aden ³añcuch koñca usuwania, chyba ¿e nie ma
+innych ¶rodków, dziêki którym mo¿na by rozpoznaæ, gdzie siê koñczy taki
+tekst. Wówczas domy¶lnym ³añcuchem koñca usuwania jest @samp{-]}.
+
+@item --start-insert @var{argument}
+@itemx -y @var{argument}
+Stosuje @var{argument} jako ³añcuch @dfn{pocz±tku wstawiania}.  Zostanie on
+wypisany przed ka¿d± sekwencj± wstawionego tekstu, zaznaczaj±c jej pocz±tek.
+Domy¶lnie nie jest u¿ywany ¿aden ³añcuch pocz±tku wstawiania, chyba ¿e nie ma
+innych ¶rodków, dziêki którym mo¿na by rozpoznaæ, gdzie siê zaczyna taki
+tekst. Wówczas domy¶lnym ³añcuchem pocz±tku wstawiania jest @samp{@{+}.
+
+@item --end-insert @var{argument}
+@itemx -z @var{argument}
+Stosuje @var{argument} jako ³añcuch @dfn{koñca wstawiania}.  Zostanie on
+wypisany po ka¿dej sekwencji wstawionego tekstu, zaznaczaj±c jej koniec.
+Domy¶lnie nie jest u¿ywany ¿aden ³añcuch koñca wstawiania, chyba ¿e nie ma
+innych ¶rodków, dziêki którym mo¿na by rozpoznaæ, gdzie siê koñczy taki
+tekst. Wówczas domy¶lnym ³añcuchem koñca wstawiania jest @samp{+@}}.
+
+@item --avoid-wraps
+@itemx -n
+Zabrania ³±czenia koñców wiersza podczas pokazywania usuniêtego lub
+wstawionego tekstu. Ka¿dy pojedynczy fragment usuniêtego lub wstawionego
+tekstu rozci±gaj±cy siê na wiele wierszy bêdzie uwa¿any za z³o¿ony z wielu
+mniejszych kawa³ków nie zawieraj±cych znaku nowej linii.  Zatem na przyk³ad,
+usuniêty tekst bêdzie mia³ ³añcuch koñca usuwania na koñcu ka¿dego wiersza,
+zaraz przed znakiem nowej linii, i ³añcuch pocz±tku usuwania na pocz±tku
+nastêpnego wiersza. Ka¿dy wiersz w d³ugim akapicie wstawionego tekstu bêdzie
+ujêty pomiêdzy ³añcuchy pocz±tku wstawiania i koñca wstawiania.
+To zachowanie domy¶lnie nie jest w³±czone.
+@end table
+
+Zauwa¿, ¿e opcje @samp{-p}, @samp{-t} i @samp{-[wxyz]} nie wykluczaj± siê
+wzajemnie.  U¿ywaj±c dowolnej ich kombinacji sumuje siê po prostu efekty
+ka¿dej z nich.  Opcja @samp{-l} jest wariantem opcji @samp{-p}.
+
+@node Przyk³ady
+@chapter Rzeczywiste przyk³ady u¿ycia @code{wdiff}
+
+W tej czê¶ci przedstawiono kilka przyk³adów wykorzystania, z których
+wiêkszo¶æ przekazali u¿ytkownicy @code{wdiff}.
+
+@itemize @bullet
+@item Przyk³ad pionowych kresek zmian.
+
+Ten przyk³ad pochodzi z dyskusji z Joe Wellsem,
+@samp{jbw@@cs.bu.edu}.
+
+Poni¿sze polecenie tworzy kopiê @var{nowego_pliku}, przesuniêt± o jedno
+miejsce w prawo w celu pomieszczenia pionowych kresek zmian od ostatniej
+wersji, ignoruj±c zmiany wynikaj±ce wy³±cznie z ponownego wype³nienia akapitów.
+Ka¿da linia z nowym lub zmienionym tekstem otrzyma @samp{|} w pierwszej
+kolumnie. Jednak tekst usuniêty nie bêdzie ani pokazywany, ani oznaczany.
+
+@example
+wdiff -1n @var{stary_plik} @var{nowy_plik} |
+  sed -e 's/^/  /;/@{+/s/^ /|/;s/@{+//g;s/+@}//g'
+@end example
+
+A teraz powiemy, jak to dzia³a.  Odnajdywane s± ró¿nice w wyrazach, przy czym
+uwzglêdniane s± tylko dodane, jak to wymusza opcja @samp{-1}. Przy wiêkszych
+zmianach, rozci±gaj±cych siê poza granice wierszy, w ka¿dym wierszu wyj¶cia
+powtarzane s± ³añcuchy z nawiasem kwadratowym wstawiania, co wymusza opcja
+@samp{-n}.  Nastêpnie wyj¶cie jest ponownie formatowane przez skrypt
+@code{sed}, który przesuwa tekst o dwie kolumny w prawo, przekszta³ca
+pocz±tkow± spacjê w pionow± kreskê tylko wtedy, gdy w tym wierszu jest jaki¶
+nowy tekst, a nastêpnie usuwa wszystkie wstawione ³añcuchy nawiasów
+kwadratowych.
+
+@item Przyk³ad @code{La@TeX{}}-owy.
+
+Ten przyk³ad dostarczy³ Steve Fisk,
+@samp{fisk@@polar.bowdoin.edu}.
+
+Poni¿sze korzysta z La@TeX{}-u do wstawienia usuniêtego tekstu w ramki,
+a nowego w podwójne ramki:
+
+@example
+wdiff -w "\fbox@{" -x "@}" -y "\fbox@{\fbox@{" -z "@}@}" @dots{}
+@end example
+
+@noindent
+dzia³a ¶wietnie.
+
+@item Przyk³ad @code{troff}.
+
+Ten przyk³ad pochodzi od Paula Fox, @samp{pgf@@cayman.com}.
+
+Stosowanie @code{wdiff} z niektórymi specyficznymi dla @code{troff}
+ogranicznikami daje @emph{du¿o} lepsze wyj¶cie.  Ograniczniki, których u¿ywam:
+
+@example
+wdiff -w'\s-5' -x'\s0' -y'\fB' -z'\fP' @dots{}
+@end example
+
+Powoduje to, ¿e stopieñ pisma dla usuniêæ jest o 5 punktów mniejszy ni¿
+zwyk³y, a wstawienia s± pogrubiane.  Fantastyczne!
+
+Eksperymentowa³em z:
+
+@example
+wdiff -w'\fI' -x'\fP' -y'\fB' -z'\fP'
+@end example
+
+gdy¿ bardziej przypomina domy¶lne ustawienia dla terminali/drukarek, ale
+poniewa¿ faktycznie w swoich dokumentach do wyró¿nienia u¿ywam kursywy,
+rozwi±zanie ze zmian± stopnia pisma wydawa³o mi siê czytelniejsze.
+
+Próbowa³em tego tak¿e na kodzie i dzia³a³o równie¿ zaskakuj±co dobrze...
+
+Marty Leisner @samp{leisner@@eso.mc.xerox.com} pisze:
+
+W poprzednim przyk³adzie wystêpuje mniejszy tekst, który usuniêto i pogrubiony
+tekst, który wstawiono.  Osobi¶cie mam mniejszy tekst usuniêty i wiêkszy
+wstawiony, stosujê pogrubienie do innych rzeczy, wiêc tak jest czytelniej.
+
+@example
+wdiff -w '\s-3' -x'\s0' -y'\s+3' -z'\s0'
+@end example
+
+@end itemize
+
+@bye

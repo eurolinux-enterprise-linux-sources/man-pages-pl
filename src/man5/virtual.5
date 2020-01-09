@@ -1,0 +1,102 @@
+.\" PTM/WK/2001-VI
+.TH VIRTUAL 5 
+.SH NAZWA
+virtual \- format tabeli virtual programu Postfix
+.SH SK£ADNIA
+.B postmap /etc/postfix/virtual
+.SH OPIS
+Opcjonalna tabela \fBvirtual\fR okre¶la przeadresowania dla lokalnych
+i nie-lokalnych odbiorców lub domen. Przeadresowania te s± wykorzystywane
+przez demona \fBcleanup\fR(8). S± one rekurencyjne.
+
+Przeadresowanie \fBvirtual\fR stosowane jest tylko do adresu kopertowego
+odbiorcy i nie ma wp³ywu na nag³ówki wiadomo¶ci. Mo¿na to traktowaæ tak,
+jak zestaw regu³ \fBS0\fR Sendmaila. Ogólne przepisanie adresów z nag³ówka
+i etykiety wykonuje siê za pomoc± odwzorowania \fBcanonical\fR(5).
+
+Plik \fBvirtual\fR s³u¿y jako wej¶cie polecenia \fBpostmap\fR(1). W wyniku
+jego dzia³ania powstaje zaindeksowany plik w formacie \fBdbm\fR lub \fBdb\fR,
+wykorzystywany do szybkiego wyszukiwania przez system pocztowy.
+Po aktualizacji mo¿e up³yn±æ oko³o minuty zanim zmiany stan± siê widoczne.
+Wydanie polecenia \fBpostfix reload\fR eliminuje opó¼nienie.
+
+Typowa realizacja domeny wirtualnej wygl±da tak:
+
+.in +4
+.nf
+\fIdomena.witrualna        cokolwiek\fR (zawarto¶æ po prawej
+                                         bez znaczenia)
+\fIu¿ytk1@domena.witrualna adres1\fR
+\fIu¿ytk2@domena.witrualna adres2, adres3\fR
+.fi
+.in -4
+
+Przy takim ustawieniu serwer SMTP akceptuje pocztê do \fIdomena.witrualna\fP
+i odrzuca pocztê do \fIunknown\fR@\fIdomena.witrualna\fP jako niemo¿liw±
+do dostarczenia.
+
+Tabela virtual ma podany ni¿ej format, przy czym odwzorowania s± próbowane
+w takiej kolejno¶ci, w jakiej je tu wymieniono:
+.IP "odstêpy i komentarze"
+Puste linie s± ignorowane, tak samo jak linie zaczynaj±ce siê od `#'.
+.IP "\fIu¿ytkownik\fR@\fIdomena adres, adres, ...\fR"
+Poczta do \fIu¿ytkownik\fR@\fIdomena\fR jest przeadresowywana na \fIadres\fR.
+Ta postaæ na najwy¿szy priorytet.
+.IP "\fIu¿ytkownik adres, adres, ...\fR"
+Poczta do \fIu¿ytkownik\fR@\fImiejsce\fR jest przeadresowywana na \fIadres\fR
+gdy \fImiejsce\fR jest równe $\fBmyorigin\fR albo je¶li jest wymienione
+w $\fBmydestination\fR lub w $\fBinet_interfaces\fR.
+.sp
+Ten sposób dzia³ania nak³ada siê na dzia³anie lokalnej bazy \fIalias\fR(5).
+Ró¿ni± siê tym, ¿e odwzorowanie \fBvirtual\fR mo¿na stosowaæ tak¿e do adresów,
+które nie s± lokalne.
+.IP "@\fIdomena adres, adres, ...\fR"
+Poczta do ka¿dego u¿ytkownika z \fIdomeny\fR zostanie przeadresowana
+na \fIadres\fR.
+Ta postaæ ma najni¿szy priorytet.
+.PP
+We wszystkich powy¿szych postaciach, gdy \fIadres\fR ma postaæ
+@\fIinnadomena\fR, wynikiem jest ten sam u¿ytkownik w \fIinnejdomenie\fR.
+Dzia³a to tylko dla pierwszego adresu w rozszerzeniu.
+.SH ROZSZERZANIE ADRESÓW
+Kiedy wyszukiwanie siê nie powiedzie, a lokalna czê¶æ adresu zawiera
+opcjonalny ogranicznik odbiorcy (np. \fIuzytk+foo\fR@\fIdomena\fR),
+to wyszukiwanie jest powtarzane dla adresu nierozszerzonego
+(np. \fIuzytk\fR@\fIdomena\fR), a niedopasowane rozszerzenie
+adresu przenosi siê na wynik rozwiniêcia. Kolejno¶æ dopasowañ:
+\fIuzytk+foo\fR@\fIdomena\fR, \fIuzytk\fR@\fIdomena\fR,
+\fIuzytk+foo\fR, \fIuzytk\fR i @\fIdomena\fR.
+.SH B£ÊDY
+.ad
+.fi
+W formacie tabeli nie s± rozpoznawane konwencje cytowania.
+.SH PARAMETRY KONFIGURACYJNE
+Tego zagadnienia dotycz± szczególnie ni¿szej wymienione parametry
+\fBmain.cf\fR. W pliku \fBmain.cf\fR Postfiksa mo¿na znale¼æ szczegó³y
+sk³adni i warto¶ci domy¶lne. Po zmianie konfiguracji nale¿y u¿yæ polecenia
+\fBpostfix reload\fR.
+.IP \fBvirtual_maps\fR
+Lista tabel odwzorowañ wirtualnych.
+.PP
+Inne powi±zane parametry:
+.IP \fBinet_interfaces\fR
+Adresy interfejsów sieciowych, na których ten system otrzymuje pocztê.
+.IP \fBmydestination\fR
+Lista domen, które s± przez ten system pocztowy uwa¿ane za lokalne.
+.IP \fBmyorigin\fR
+Domena, która jest doklejana do lokalnie wysy³anej poczty.
+.IP \fBowner_request_special\fR
+Powoduje specjaln± obróbkê adresów \fBowner-\fIxxx\fR i \fIxxx\fB-request\fR.
+.SH ZOBACZ TAK¯E
+.BR cleanup (8)
+sprowadza do postaci kanonicznej i kolejkuje pocztê
+.br
+.BR postmap (1)
+tworzy tablicê odwzorowañ
+.SH LICENCJA
+Z tym oprogramowaniem musi byæ rozpowszechniana licencja Secure Mailer.
+.SH AUTOR
+Wietse Venema
+IBM T.J. Watson Research
+P.O. Box 704
+Yorktown Heights, NY 10598, USA

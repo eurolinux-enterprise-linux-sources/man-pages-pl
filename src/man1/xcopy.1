@@ -1,0 +1,28 @@
+.\" {PTM/WK/0.1/22-07-1999/"rekurencyjne kopiowanie katalogów MSDOS"}
+.TH xcopy 1 "22 lipca 1999" mtools-3.9.6
+.SH NAZWA
+xcopy - rekurencyjne kopiowanie katalogów MSDOS
+.SH SK£ADNIA
+.B xcopy
+.I katalog_¼ród³owy katalog_docelowy
+.SH OPIS
+Skrypt \fBxcopy\fR s³u¿y do rekurencyjnego kopiowania jednego katalogu do
+innego.
+.PP
+Je¶li \fIkatalog docelowy\fR nie istnieje, to jest zak³adany. Je¿eli
+istnieje, to pliki z \fIkatalogu ¼ród³owego\fR s± kopiowane wprost do niego,
+nie jest za¶ w nim tworzony podkatalog \fIkatalog_¼ród³owy\fR,
+w przeciwieñstwie do dzia³ania \fBcp -rf\fR.
+.SH B£ÊDY
+Polecenie to jest "a big kludge". Poprawna implementacja wymaga³aby
+przerobienia znacznych czê¶ci mtools, ale niestety nie mam na to teraz
+czasu. G³ówn± wad± tego rozwi±zania jest jego nieefektywno¶æ w niektórych
+systemach (kilka kolejnych wywo³añ mtoools, co podwa¿a sens buforowania
+wykorzystywanego przez mtools).
+.SH UWAGI
+Niniejsza, polska wersja dokumentacji, powsta³a jako t³umaczenie pliku
+Texinfo pakietu mtools wersji 3.9.6. W stosunku do automatycznie generowanej
+z Textinfo dokumentacji oryginalnej dokonano przesuniêcia sekcji opisuj±cej
+konwersjê dokumentacji do \fBmtools\fR(1). Tam te¿ znajdziesz notê prawn±
+dotycz±c± rozpowszechniania, modyfikacji i t³umaczenia dokumentacji pakietu
+mtools

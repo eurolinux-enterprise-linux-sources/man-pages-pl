@@ -1,0 +1,287 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" 1999 PTM Przemek Borys
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Apr 2003,
+.\"              manpages 1.54
+.\"
+.\" Copyright (C) Tom Bjorkholm & Markus Kuhn, 1996
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" 1996-04-01 Tom Bjorkholm <tomb@mydata.se>
+.\"            First version written
+.\" 1996-04-10 Markus Kuhn <mskuhn@cip.informatik.uni-erlangen.de>
+.\"            revision
+.\" 1999-08-18 David A. Wheeler <dwheeler@ida.org> added Note.
+.\" Modified, 25 Jun 2002, Michael Kerrisk <mtk16.ext.canterbury.ac.nz>
+.\"    Corrected description of queue placement by sched_setparam() and
+.\"            sched_setscheduler()
+.\"    A couple of grammar clean-ups
+.\"
+.TH SETSCHEDULER 2 2002-06-25 "Linux 2.4.18" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+sched_setscheduler, sched_getscheduler \-
+ustawienie i pobranie algorytmu/parametrów szeregowania zadañ
+.SH SK£ADNIA
+.B #include <sched.h>
+.sp
+\fBint sched_setscheduler(pid_t \fIpid\fB, int \fIpolicy\fB, 
+const struct sched_param *\fIp\fB);
+.sp
+\fBint sched_getscheduler(pid_t \fIpid\fB);
+.sp
+.nf
+.ta 4n
+\fBstruct sched_param {
+	...
+	int \fIsched_priority\fB;
+	...
+};
+.ta
+.fi
+.SH OPIS
+.B sched_setscheduler
+ustawia dla procesu identyfikowanego przez \fIpid\fP politykê szeregowania
+zadañ oraz zwi±zane z ni± parametry. Je¶li \fIpid\fP jest równe zeru, to
+skonfigurowane zostanie szeregowanie dla procesu wo³aj±cego tê funkcjê.
+Interpretacja parametru \fIp\fP zale¿y od wybranej polityki. Obecnie, pod
+Linuksem obs³ugiwane s± nastêpuj±ce trzy polityki:
+.IR SCHED_FIFO , 
+.I SCHED_RR
+i
+.IR SCHED_OTHER ;
+ich semantyki s± opisane poni¿ej.
+
+.B sched_getscheduler
+zapytuje o bie¿±c± politykê szeregowania zadañ, która dotyczy procesu
+okre¶lonego przez \fIpid\fP. Je¶li \fIpid\fP jest równe zeru, to pobierana
+jest polityk± dotycz±ca procesu wywo³uj±cego tê funkcjê.
+
+
+.SS Polityki szeregowania zadañ
+Procedura szereguj±ca jest czê¶ci± j±dra, która decyduje o kolejno¶ci
+wykonywania dzia³aj±cych procesów przez procesor. Linuksowa procedura 
+szereguj±ca oferuje trzy ró¿ne polityki szeregowania zadañ: jedn± dla zwyk³ych
+procesów oraz dwie dla aplikacji czasu rzeczywistego. Ka¿demu procesowi
+przypisywana jest warto¶æ priorytetu statycznego, \fIsched_priority\fP, która
+mo¿e byæ zmieniana tylko poprzez wywo³ania systemowe. Koncepcyjnie, procedura
+szereguj±ca zarz±dza listami dzia³aj±cych procesów przypisanymi ka¿dej
+z mo¿liweych warto¶ci \fIsched_priority\fP, która to warto¶æ musi mie¶ciæ siê
+w zakresie od 0 do 99. Aby zdecydowaæ, który proces nale¿y uruchomiæ jako
+nastêpny, procedura szereguj±ca poszukuje niepustej listy o najwy¿szym
+priorytecie statycznym i bierze proces z pocz±tku tej listy. Polityka
+szeregowania zadañ okre¶la dla ka¿dego z procesów o danyej warto¶ci priorytetu
+statycznego, gdzie zostanie on wstawiony na listê i jak bêdzie siê w jej
+obrêbie przemieszcza³.
+
+\fISCHED_OTHER\fP jest domy¶ln±, uniwersaln± polityk± dzielenia czasu,
+u¿ywan± przez wiêkszo¶æ procesów. \fISCHED_FIFO\fP i \fISCHED_RR\fP s±
+przeznaczone dla specjalnych aplikacji, dla których czas jest spraw± krytyczn±
+i które musz± mieæ dok³adn± kontrolê nad sposobem, w jaki podejmowane s±
+decyzje o wykonywaniu dzia³aj±cych procesów. Procesy korzystaj±ce z polityki
+szeregowania \fISCHED_OTHER\fP musz± mieæ przypisany priorytet statyczny równy
+0, a procesy korzystaj±ce z \fISCHED_FIFO\fP lub \fISCHED_RR\fP mog± mieæ
+warto¶æ tego priorytetu z zakresu od 1 do 99. Priorytet statyczny wy¿szy ni¿ 0
+mog± uzyskiwaæ tylko procesy dzia³aj±ce z uprawnieniami superu¿ytkownika i
+wobec tego tylko one mog± korzystaj±ce z polityk szeregowania \fISCHED_FIFO\fP
+i \fISCHED_RR\fP. Wywo³ania systemowe \fBsched_get_priority_min\fP
+i \fBsched_get_priority_max\fP s³u¿± do okre¶lania zakresów priorytetów
+odpowiadaj±cych okre¶lonym politykom w sposób przeno¶ny, w³a¶ciwy dla systemów
+zgodnych z POSIX.1b.
+
+Szeregowanie zadañ jest wyw³aszczaj±ce: je¶li proces o wy¿szym priorytecie
+statycznym staje siê gotowy do dzia³ania, proces bie¿±cy zostanie wyw³aszczony
+i wróci do swojej kolejki oczekiwania. Polityka szeregowania zadañ okre¶la
+tylko kolejno¶æ na li¶cie dzia³aj±cych procesów o tym samym priorytecie
+statycznym.
+
+.SS SCHED_FIFO: Szeregowanie typu "pierwszy na wej¶ciu-pierwszy na wyj¶ciu"
+(First In-First Out), \fISCHED_FIFO\fP, mo¿e byæ u¿ywane tylko ze statycznymi
+priorytetami wy¿szymi ni¿ 0 oznaczaj±cymi, ¿e gdy proces \fISCHED_FIFO\fP
+stanie siê gotowy do dzia³ania, to zawsze i natychmiast wyw³aszczy wszystkie
+aktualnie dzia³aj±ce procesy \fISCHED_OTHER\fP. \fISCHED_FIFO\fP jest prostym
+algorytmem szeregowania bez kwantowania czasu. Procesów szeregowanych wed³ug
+polityki \fISCHED_FIFO\fP dotycz± nastêpuj±ce regu³y:
+Proces \fISCHED_FIFO\fP, który zosta³ wyw³aszczony przez inny proces o
+wy¿szym priorytecie pozostanie na pocz±tku listy dla swojego priorytetu i jego
+wykonywanie zostanie wznowione, gdy tylko procesy o wy¿szym priorytecie
+zostan± znów zablokowane. Gdy proces \fISCHED_FIFO\fP staje siê gotowy do
+dzia³ania, jest on wstawiany na koniec listy dla swojego priorytetu. Wywo³anie
+\fBsched_setscheduler\fP lub \fBsched_setparam\fP wstawia proces
+\fISCHED_FIFO\fP (lub \fISCHED_RR\fP), okre¶lony przez \fIpid\fP na pocz±tek
+listy (o ile by³ on uruchamialny). W wyniku tego, mo¿e on wyw³aszczyæ
+aktualnie dzia³aj±cy proces, je¶li oba maj± ten sam priorytet. (POSIX 1003.1
+okre¶la, ¿e proces powinien trafiaæ na koniec listy.)
+.\" W 2.2.x i 2.4.x proces jest umieszczany na czele kolejki
+.\" W 2.0.x, dziej± siê W³a¶ciwe Rzeczy: proces idzie na jej koniec -- MTK
+Proces wywo³uj±cy \fBsched_yield\fP zostanie wstawiony na
+koniec listy. ¯adne inne zdarzenia nie mog± przesun±æ procesu, szeregowanego
+wed³u polityki \fISCHED_FIFO\fP, a znajduj±cego siê na li¶cie procesów
+oczekuj±cych o jednakowych statycznych priorytetach. Proces \fISCHED_FIFO\fP
+dzia³a dopóki nie zostanie zablokowany przez ¿±danie we/wy, wyw³aszczenie
+przez proces o wy¿szym priorytecie, lub przez wywo³anie (samodzielne) funkcji
+\fBsched_yield\fP.
+
+.SS SCHED_RR: Szeregowanie typu cyklicznego (Round Robin),
+\fISCHED_RR\fP, jest prostym rozszerzeniem \fISCHED_FIFO\fP. Wszystko, co
+powiedziano o \fISCHED_FIFO\fP, dotyczy tak¿e \fISCHED_RR\fP, z tym ¿e ka¿dy
+z procesów mo¿e dzia³aæ tylko przez okre¶lony okres (kwant) czasu. Je¶li
+proces dzia³aj±cy wed³ug polityki \fISCHED_RR\fP dzia³a przez czas d³u¿szy lub
+równy temu okresowi, zostanie on wstawiony na koniec listy dla swojego
+priorytetu. Proces \fISCHED_RR\fP, który zosta³ wyw³aszczony przez proces
+o wy¿szym priorytecie i wznowi³ dzia³anie, dokoñczy niewykorzystan± czê¶æ
+cyklicznego kwantu czasu. D³ugo¶æ kwantu czasu mo¿na odczytaæ za pomoc±
+funkcji \fBsched_rr_get_interval\fP.
+.\" W Linuksie 2.4 na d³ugo¶æ of the przedzia³u RR ma wp³yw warto¶æ nice
+.\" procesu -- MTK
+
+.SS SCHED_OTHER: Domy¶lne szeregowanie linuksowe,
+\fISCHED_OTHER\fP, mo¿e byæ u¿ywane tylko ze statycznym priorytetem równym 0.
+\fISCHED_OTHER\fP jest standardow± linuksow± procedur± szeregowania zadañ
+poprzez przydzielanie czasu, przeznaczon± dla wszystkich procesów, które nie
+maj± specjalnych wymagañ odno¶nie czasu rzeczywistego wymagaj±cych
+wykorzystania mechanizmu priorytetów statycznych. Proces, który ma byæ
+uruchomiony, jest wybierany z listy dla priorytetu statycznego 0 w oparciu
+o okre¶lany jedynie wewn±trz tej listy priorytet dynamiczny. Wspomniany
+priorytet dynamiczny jest oparty na warto¶ci "nice" (ustawianej za pomoc±
+funkcji systemowych \fBnice\fP i \fBsetpriority\fP) i zwiêkszany
+w ka¿dym kwancie czasu, w którym proces jest gotów do dzia³ania, lecz
+procedura szereguj±ca mu tego zabrania. Zapewnia to uczciwy postêp wszystkim
+procesom polityki \fISCHED_OTHER\fP.
+
+.SS Czas odpowiedzi
+Zablokowany proces o wysokim priorytecie, oczekuj±cy na we/wy ma okre¶lony
+czas odpowiedzi przed ponownym jego szeregowaniem. Autor sterownika urz±dzenia
+mo¿e znacznie zmniejszyæ czas odpowiedzi, u¿ywaj±c procedury obs³ugi przerwañ
+typu "slow interrupt".
+.\" , opisanej w
+.\" .BR request_irq (9).
+
+.SS Ró¿ne
+Procesy potomne dziedzicz± poprzez
+.BR fork (2)
+algorytm szeregowania i parametry.
+
+Procesom czasu rzeczywistego do unikania opó¼nieñ stronicowania zazwyczaj
+potrzebne jest blokowanie pamiêci. Mo¿e ono byæ wykonane za pomoc±
+.BR mlock (2)
+lub
+.BR mlockall (2).
+
+Poniewa¿ nieblokuj±ca nieskoñczona pêtla w procesie, szeregowanym weg³ug
+polityki \fISCHED_FIFO\fP lub \fISCHED_RR\fP bêdzie (wiecznie) blokowaæ
+wszystkie procesy o ni¿szym priorytecie, twórca oprogramowania powinien na
+konsoli zawsze trzymaæ dostêpn± pow³okê, szeregowan± z wy¿szym priorytetem
+statycznym ni¿ testowana aplikacja. Umo¿liwi ona awaryjne ubicie testowanych
+aplikacji czasu rzeczywistego, które nie blokuj±, lub nie koñcz± siê zgodnie
+z oczekiwaniami. Jako ¿e procesy \fISCHED_FIFO\fP i \fISCHED_RR\fP mog±
+wyw³aszczaæ inne procesy na zawsze, tylko procesy roota mog± w³±czaæ te
+polityki szeregowania zadañ.
+
+Systemy POSIX-owe, na których dostêpne s±
+.B sched_setscheduler
+i
+.BR sched_getscheduler ,
+definiuj± w <unistd.h>
+.IR _POSIX_PRIORITY_SCHEDULING .
+
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu,
+.BR sched_setscheduler
+zwraca zero.
+Po pomy¶lnym zakoñczeniu,
+.BR sched_getscheduler
+zwraca politykê dla procesu (nieujemna liczba ca³kowita).
+Po b³êdzie, zwracane jest \-1 i odpowiednio ustawiane
+.IR errno .
+.SH B£ÊDY
+.TP
+.B ESRCH
+Proces o identyfikatorze \fIpid\fP nie zosta³ znaleziony.
+.TP
+.B EPERM
+Proces wo³aj±cy nie ma odpowiednich uprawnieñ. Tylko procesy roota mog±
+w³±czaæ polityki \fISCHED_FIFO\fP oraz \fISCHED_RR\fP. Proces wo³aj±cy
+.BR sched_setscheduler
+musi mieæ efektywny uid równy euid lub uid procesu identyfikowanego przez
+.I pid
+lub musi byæ procesem superu¿ytkownika.
+.TP
+.B EINVAL
+Polityka szeregowania zadañ \fIpolicy\fP nie jest ¿adn± ze znanych polityk
+lub parametr \fIp\fP nie ma sensu dla danej polityki.
+.SH "ZGODNE Z"
+POSIX.1b (wcze¶niej POSIX.4)
+.SH USTERKI
+W systemie linux-1.3.81 polityka \fISCHED_RR\fP nie zosta³a jeszcze dok³adnie
+przetestowana i mo¿e nie zachowywaæ siê dok³adnie tak, jak opisano w POSIX.1b.
+.SH UWAGA
+Standardowy Linux jest systemem operacyjnym do ogólnych zastosowañ i wspiera:
+procesy drugoplanowe, aplikacje interakcyjne i aplikacje miêkkiego czasu
+rzeczywisyego (aplikacje, które zazwyczaj napotykaj± na nieprzekraczalne
+terminy w przebiegach czasowych). Niniejsza strona podrêcznika jest
+zorientowana na te rodzaje aplikacji.
+.PP
+Standardowy Linux
+.I nie
+jest zaprojektowany do obs³ugi
+aplikacji twardego czasu rzeczywistego, to znaczy aplikacji, w których
+nieprzekraczalne terminy (czêsto znacznie krótsze ni¿ sekunda) musz± byæ
+zagwarantowane lub system zawiedzie katastroficznie.
+Podobnie, jak wszystkie systemy do ogólnych zastosowañ, Linux zosta³
+zaprojektowany aby zmaksymalizowaæ wydajno¶æ dla przypadków przeciêtnych,
+zamiast wydajno¶ci dla przypadków najgorszych. Wydajno¶æ Linuksa w obs³udze
+przerwañ jest dla przypadków najgorszych znacznie gorsza ni¿ dla przypadków
+przeciêtnych. Jego liczne blokady kernela (takie, jak dla SMP) powoduj± d³ugie
+maksymalne czasy oczekiwania, a wiele z zastosowanych w nim technik
+zwiêkszaj±cych wydajno¶æ, zmniejsza ¶redni czas poprzez zwiêkszenie czasu
+dla przypadków najgorszych.
+W wiêkszo¶ci sytuacji jest to to, czego siê oczekuje, lecz gdy rzeczywi¶cie
+rozwijana jest aplikacja twardego czasu rzeczywistego, nale¿y rozwa¿yæ
+zastosowanie rozszerzeñ twardego czasu rzeczywistego dla Linuksa, takich jak
+RTLinux (http://www.rtlinux.org) lub skorzystaæ z innego systemu operacyjnego,
+zaprojektowanego specjalnie dla aplikacji twardego czasu rzeczywistego.
+.SH "ZOBACZ TAK¯E"
+.BR sched_setaffinity (2),
+.BR sched_getaffinity (2),
+.BR sched_setparam (2), 
+.BR sched_getparam (2), 
+.BR sched_yield (2), 
+.BR sched_get_priority_max (2), 
+.BR sched_get_priority_min (2), 
+.BR sched_rr_get_interval (2),
+.BR nice (2), 
+.BR setpriority (2), 
+.BR getpriority (2), 
+.BR mlockall (2), 
+.BR munlockall (2), 
+.BR mlock (2), 
+.BR munlock (2)
+.PP
+.I Programming for the real world \- POSIX.4
+Billa O. Gallmeistera, O'Reilly & Associates, Inc., ISBN 1-56592-074-0
+.br
+.I IEEE Std 1003.1b-1993
+(standard POSIX.1b)
+.br
+.I ISO/IEC 9945-1:1996
+\- jest to nowa rewizja (1996) POSIX.1, która zawiera jako jednolity tekst
+standardy POSIX.1(1990), POSIX.1b(1993), POSIX.1c(1995) i POSIX.1i(1995).

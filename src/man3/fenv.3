@@ -1,0 +1,245 @@
+.\" T³umaczenie wersji man-pages 1.39 - wrzesieñ 2001 PTM
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" 
+.\" Copyright (c) 2000 Andries Brouwer (aeb@cwi.nl)
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" 2000-08-14 added GNU additions from Andreas Jaeger
+.\" 2000-12-05 some changes inspired by acahalan's remarks
+.\"
+.TH FENV 3 2000-08-12 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+feclearexcept, fegetexceptflag, feraiseexcept, fesetexceptflag,
+fetestexcept, fegetenv, fegetround, feholdexcept, fesetround,
+fesetenv, feupdateenv - zaokr±glanie zmiennoprzecinkowe i obs³uga wyj±tków
+w C99
+.SH SK£ADNIA
+.nf
+.B #include <fenv.h>
+.sp
+.BI "void feclearexcept(int " excepts );
+.br
+.BI "void fegetexceptflag(fexcept_t *" flagp ", int " excepts );
+.br
+.BI "void feraiseexcept(int " excepts );
+.br
+.BI "void fesetexceptflag(const fexcept_t *" flagp ", int " excepts );
+.br
+.BI "int fetestexcept(int " excepts );
+.sp
+.B "int fegetround(void);"
+.br
+.BI "int fesetround(int " rounding_mode );
+.sp
+.BI "void fegetenv(fenv_t *" envp );
+.br
+.BI "int feholdexcept(fenv_t *" envp );
+.br
+.BI "void fesetenv(const fenv_t *" envp );
+.br
+.BI "void feupdateenv(const fenv_t *" envp );
+.fi
+.SH OPIS
+Tych jedena¶cie funkcji zdefiniowano w C99. Realizuj± one obs³ugê
+zmiennoprzecinkowego zaokr±glania i wyj±tków (nadmiar, dzielenie przez
+zero, itp.).
+.SS Wyj±tki
+Wyj±tek DivideByZero (dzielenie przez zero) wystêpuje gdy dok³adnym wynikiem
+operacji na liczbach skoñczonych jest nieskoñczono¶æ.
+.LP
+Wyj±tek Overflow (nadmiar) wystêpuje gdy wynik musi byæ przedstawiony jako
+liczba zmiennoprzecinkowa, ale ma on (du¿o) wiêksz± warto¶æ bezwzglêdn± ni¿
+najwiêksza (skoñczona) liczba zmiennoprzecinkowa posiadaj±ca przedstawienie.
+.LP
+Wyj±tek Underflow (niedomiar) wystêpuje gdy wynik musi byæ przedstawiony
+jako liczba zmiennoprzecinkowa, ale ma on mniejsz± warto¶æ bezwzglêdn± ni¿
+najmniejsza dodatnia znormalizowana iczba zmiennoprzecinkowa (i nast±pi³aby
+du¿a utrata precyzji, gdyby przedstawiæ go jako liczbê nieznormalizowan±).
+.LP
+Wyj±tek Inexact (niedok³adny) wystêpuje gdy wynik operacji zaokr±glenia
+nie jest równy wynikowi o nieskoñczonej precyzji. Mo¿e on towarzyszyæ
+wyst±pieniu Overflow lub Underflow.
+.LP
+Wyj±tek Invalid (nieprawid³owy) wystêpuje gdy operacja nie ma dobrze
+zdefiniowanego wyniku, jak dla 0/0, nieskoñczono¶æ - nieskoñczono¶æ lub
+sqrt(-1).
+.SS "Obs³uga wyj±tków"
+Wyj±tki s± reprezentowane na dwa sposoby: jako pojedyncze bity
+(wyj±tek obecny/nieobecny), które to bity odpowiadaj± w pewien zale¿ny
+od implementacji sposób pozycjom bitowym w liczbie ca³kowitej,
+i jako nieprzezroczysta struktura, która mo¿e zawieraæ wiêcej informacji
+o wyj±tkach (zapewne adres kodu, gdzie wyj±tek wyst±pi³).
+.LP
+Ka¿de z makr
+.BR FE_DIVBYZERO ,
+.BR FE_INEXACT ,
+.BR FE_INVALID ,
+.BR FE_OVERFLOW ,
+.BR FE_UNDERFLOW
+jest zdefiniowane, gdy implementacja wspiera obs³ugê odpowiedniego wyj±tku,
+i wówczas definiuje ono odpowiedni(e) bit(y), umo¿liwiaj±c wywo³ywanie
+funkcji obs³ugi wyj±tków, np. podaj±c argument ca³kowity
+.BR FE_OVERFLOW | FE_UNDERFLOW .
+Dla innych wyj±tków mo¿e nie byæ wsparcia. Makro
+.B FE_ALL_EXCEPT
+jest bitowym OR wszystkich bitów odpowiadaj±cym wspieranym wyj±tkom.
+.PP
+Funkcja
+.B feclearexcept
+zeruje wspierane wyj±tki reprezentowane przez bity jej argumentu.
+.LP
+Funkcja
+.B fegetexceptflag
+umieszcza odwzorowanie stanu znaczników przypisanych wyj±tkom reprezentowanym
+przez argument
+.I excepts
+w nieprzezroczystym obiekcie
+.RI * flagp .
+.LP
+Funkcja
+.B feraiseexcept
+zg³asza wspierane wyj±tki reprezentowane przez bity
+.IR excepts .
+.LP
+Funkcja
+.B fesetexceptflag
+ustawia pe³ny stan o warto¶ci
+.RI * flagp
+dla wyj±tków reprezentowanych przez
+.IR excepts .
+Warto¶æ ta musi byæ otrzymana jako wynik wcze¶niejszego wywo³ania
+.B fegetexceptflag
+z ostatnim argumentem zawieraj±cym wszystkie bity
+.IR excepts .
+.LP
+Funkcja
+.B fetestexcept
+zwraca s³owo z ustawionymi tymi bitami, które s± ustawione w argumencie
+.IR excepts ,
+i dla których jest aktualnie ustawiony odpowiedni wyj±tek.
+.SS Rounding
+Ka¿de z makr
+.BR FE_DOWNWARD ,
+.BR FE_TONEAREST ,
+.BR FE_TOWARDZERO ,
+.BR FE_UPWARD
+jest zdefiniowane, gdy implementacja wspiera pobieranie i ustawianie
+odpowiedniego kierunku zaokr±glania.
+.LP
+Funkcja
+.B fegetround
+zwraca makro odpowiedaj±ce aktualnemu trybowi zaokr±glania.
+.LP
+Funkcja
+.B fesetround
+ustawia tryb zaokr±glania podany jako jej argument i zwraca zero gdy siê
+powiedzie.
+.SS "¦rodowisko zmiennoprzecinkowe"
+Ca³e ¶rodowisko zmiennoprzecinkowe, w³±czaj±c w to tryby sterowania i
+znaczniki stanu, mo¿e byæ obs³ugiwane jako jeden nieprzezroczysty obiekt
+typu
+.IR fenv_t .
+¦rodowisko domy¶lne jest okre¶lone przez
+.B FE_DFL_ENV
+(typu
+.IR "const fenv_t *" ).
+S± to ustawienia ¶rodowiska przy uruchomieniu programu i s± one zdefiniowane
+przez ISO C jako: zaokr±glanie do najbli¿szej, wszystkie wyj±tki wyzerowane
+i tryb nieprzerywany (kontynuacja w przypadku wyst±pienia wyj±tku).
+.LP
+Funkcja
+.B fegetenv
+zachowuje aktualne ¶rodowisko zmiennoprzecinkowe w obiekcie
+.RI * envp .
+.LP
+Funkcja
+.B feholdexcept
+robi to samo, a nastêpnie zeruje wszystkie znaczniki wyj±tków i ustawia
+tryb nieprzerywany (kontynuacja w przypadku wyst±pienia wyj±tku), o ile to
+mo¿liwe. Zwraca zero, gdy siê powiedzie.
+.LP
+Funkcja
+.B fesetenv
+odtwarza ¶rodowisko zmiennoprzecinkowe z obiektu
+.RI * envp .
+Obiekt ten musi byæ znany jako poprawny, np. jako wynik wywo³ania 
+.B fegetenv
+lub
+.B feholdexcept
+lub jako równy
+.BR FE_DFL_ENV .
+To wywo³anie nie zg³asza wyj±tków.
+.LP
+Funkcja
+.B feupdateenv
+instaluje ¶rodowisko zmiennoprzecinkowe odwzorowane w obiekcie
+.RI * envp ,
+poza tym, ¿e aktualnie zg³oszone wyj±tki nie s± zerowane.
+Po jej wywo³aniu, zg³oszone wyj±tki bêd± bitowym OR tych zg³oszonych
+wcze¶niej oraz zawartych w
+.RI * envp .
+Jak poprzednio, obiekt
+.RI * envp
+musi byæ znany jako poprawny.
+
+.SH "SZCZEGÓ£Y GNU"
+O ile to mo¿liwe, biblioteka GNU C definiuje makro
+.B FE_NOMASK_ENV
+odwzorowuj±ce ¶rodowisko, w którym ka¿de zg³oszenie wyj±tku powoduje
+wyst±pienie pu³apki. Mo¿na sprawdzaæ warto¶æ tego makra za pomoc±
+.BR #ifdef .
+Jest ono zdefiniowane jedynie, gdy zdefiniowane jest
+.BR _GNU_SOURCE .
+Standard C99 nie okre¶la sposobu ustawiania poszczególnych bitów w masce
+zmiennoprzecinkowej, np. aby przechwytywaæ tylko wybrane znaczniki.
+glibc 2.2 bêdzie obs³ugiwaæ funkcje
+.I feenableexcept
+i
+.I fedisableexcept
+ustawiaj±ce wybrane znaczniki zmiennoprzecinkowe oraz
+.I fegetexcept
+odpytuj±c± o stan.
+.sp
+.nf
+.BI "int feenableexcept (int " excepts );
+.br
+.BI "int fedisableexcept (int " excepts );
+.br
+.BI "int fegetexcept (void);"
+.br
+.fi
+.LP
+Funkcje
+.B feenableexcept
+i
+.B fedisableexcept
+w³±czaj± (wy³±czaj±) pu³apkowanie poszczególnych wyj±tków odwzorowanych w
+przez
+.I excepts
+i zwracaj± poprzednie ustawienie pu³apkowania wyj±tków, je¶li siê powiod±,
+a \-1 w pozosta³ych przypadkach.
+Funkcja
+.B fegetexcept
+zwraca aktualne ustawienie pu³apkowania wyj±tków.
+
+.SH "ZGODNE Z"
+IEC 60559 (IEC 559:1989), ANSI/IEEE 854, ISO C99 (ISO/IEC 9899:1999).

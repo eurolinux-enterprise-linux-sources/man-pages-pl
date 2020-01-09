@@ -1,0 +1,481 @@
+Ka¿dy z plików posiada zestaw @dfn{praw dostêpu} kontroluj±cych rodzaje
+dostêpu, jakie maj± do niego u¿ytkownicy. Prawa dla pliku s± równie¿ nazywane
+jego @dfn{trybem dostêpu}. Mog± byæ przedstawiane w formie symbolicznej lub
+jako liczba ósemkowa.
+
+@menu
+* Struktura trybu dostêpu::     Struktura praw pliku.
+* Tryby symboliczne::           Mnemoniczna reprezentacja praw.
+* Tryby numeryczne::            Prawa jako liczby ósemkowe.
+@end menu
+
+@node Struktura trybu dostêpu
+@section Struktura praw pliku
+
+Istniej± trzy rodzaje praw, jakie w stosunku do pliku mo¿e posiadaæ
+u¿ytkownik:
+
+@enumerate
+@item
+@cindex odczytu, prawo
+prawo do odczytu pliku. Dla katalogów oznacza ono prawo do przegl±dania
+(listowania) zawarto¶ci danego katalogu.
+@item
+@cindex zapisu, prawo
+prawo do zapisu (zmiany) pliku. Dla katalogów oznacza ono prawo do
+tworzenia i usuwania plików w danym katalogu.
+@item
+@cindex wykonywania, prawo
+prawo do wykonywania pliku (uruchomienia go jako programu). Dla katalogów
+oznacza ono prawo dostêpu do plików w danym katalogu.
+@end enumerate
+
+Istniej± trzy kategorie u¿ytkowników, którzy mog± mieæ ró¿ne prawa
+do wykonywania dowolnej z powy¿szych czynno¶ci dla pliku:
+
+@enumerate
+@item
+w³a¶ciciel pliku,
+@item
+inni u¿ytkownicy nale¿±cy do grupy pliku,
+@item
+wszyscy inni u¿ytkownicy systemu.
+@end enumerate
+
+@cindex w³a¶ciciel pliku, domy¶lny
+@cindex grupa pliku, domy¶lna
+W³a¶ciciel i grupa przypisywane s± plikom podczas ich tworzenia. Zwykle
+w³a¶cicielem jest bie¿±cy u¿ytkownik, a grup± jest grupa katalogu, w którym
+znajduje siê plik, ale mo¿e byæ ró¿nie w zale¿no¶ci od systemu operacyjnego,
+systemu plików, w którym jest tworzony plik i sposobu jego tworzenia.
+W³a¶ciciela i grupê pliku zmienia siê za pomoc± przy pomocy poleceñ
+@code{chown} i @code{chgrp}.
+
+Oprócz wymienionych powy¿ej trzech zestawów trzech uprawnieñ prawa pliku
+zawieraj± trzy specjalne sk³adniki, dzia³aj±ce jedynie w odniesieniu do plików
+wykonywalnych (programów) oraz, w niektórych systemach, katalogów:
+
+@enumerate
+@item
+@cindex setuid
+podczas wykonywania ustawia efektywny identyfikator u¿ytkownika procesu
+na identyfikator w³a¶ciciela pliku (zwany @dfn{bitem setuid},
+od "set user id"). Nie dzia³a na katalogach.
+@item
+@cindex setgid
+podczas wykonywania ustawia efektywny identyfikator grupy procesu
+na identyfikator grupy pliku (zwany @dfn{bitem setgid}, od "set group id").
+W niektórych systemach, zastosowany do katalogu ustawia dla plików w nim
+tworzonych grupê danego katalogu, bez wzglêdu na grupê u¿ytkownika, który
+je tworzy.
+@item
+@cindex sticky
+@cindex bit ochrony
+@cindex ochrony, bit
+@cindex przestrzeñ wymiany, zachowywanie obrazu tekstu
+@cindex obraz tekstu, zachowywanie w przestrzeni wymiany
+@cindex katalogi tylko-do-dodwania
+@cindex katalogi append-only
+zachowuje tekst programu w przestrzeni wymiany (swap), tak by ³adowa³
+siê szybciej przy uruchomieniu (zwany @dfn{sticky bit}, @dfn{bitem lepkim}
+lub @dfn{bitem ochrony}).
+W niektórych systemach, zastosowany do katalogu zabrania u¿ytkownikom
+usuwania w nim innych plików poza w³asnymi. Nazywane jest to ustawianiem
+katalogu "tylko-do-dodawania" (@dfn{append-only}).
+@end enumerate
+
+@node Tryby symboliczne
+@section Tryby symboliczne
+
+@cindex symboliczne, tryby dostêpu
+@cindex tryby symboliczne
+@dfn{Tryby symboliczne} pokazuj± zmiany praw do plików jako operacje
+na jednoznakowych symbolach. Pozwalaj± na zmianê wszystkich lub wybranych
+czê¶ci praw plików, opcjonalnie w oparciu o ich uprzednie warto¶ci i byæ mo¿e
+równie¿ o aktualne ustawienie @code{umask} (@pxref{Umask a ochrona})).
+
+Formatem trybów symbolicznych jest:
+
+@example
+@r{[}ugoa@dots{}@r{][[}+-=@r{][}rwxXstugo@dots{}@r{]}@dots{}@r{][},@dots{}@r{]}
+@end example
+
+Poni¿sze sekcje opisuj± operatory i inne szczegó³y dotycz±ce trybów
+symbolicznych.
+
+@menu
+* Nadawanie praw::               Podstawowe operacje na prawach dostêpu.
+* Kopiowanie praw::              Kopiowanie istniej±cych praw.
+* Zmiana praw specjalnych::      Prawa specjalne.
+* Warunkowa wykonywalno¶æ::      Warunkowa zmiana prawa wykonywalno¶ci.
+* Dokonywanie wielu zmian::      Wykonywanie wielu zmian na raz.
+* Umask a ochrona::              Efekt dzia³ania umask.
+@end menu
+
+@node Nadawanie praw
+@subsection Nadawanie praw dostêpu
+
+Podstawowymi operacjami symbolicznymi na prawach pliku s± dodawanie,
+usuwanie i nadawanie praw, jakie maj± pewni u¿ytkownicy do czytania, zapisu
+i wykonywania pliku. Operacje te maj± nastêpuj±cy format:
+
+@example
+@var{u¿ytkownicy} @var{operacja} @var{prawa}
+@end example
+
+@noindent
+Spacje pomiêdzy powy¿szymi trzema czê¶ciami pokazano wy³±cznie dla czytelno¶ci
+-- tryby symboliczne nie mog± zawieraæ spacji.
+
+Czê¶æ @var{u¿ytkownicy} mówi, jakim u¿ytkownikom zmieniany jest dostêp
+do pliku. Sk³ada siê z jednej lub wiêcej liter (mo¿e te¿ byæ pusta;
+@pxref{Umask a ochrona}, gdzie opisano, co wówczas siê dzieje).
+Kiedy podano wiêcej ni¿ jedn± z tych liter, ich kolejno¶æ nie ma znaczenia.
+
+@table @code
+@item u
+@cindex prawa dostêpu w³a¶ciciela pliku
+(user) u¿ytkownik, który jest w³a¶cicielem pliku
+@item g
+@cindex prawa dostêpu grupy
+(group) inni u¿ytkownicy nale¿±cy do grupy pliku
+@item o
+@cindex prawa dostêpu innych u¿ytkowników
+(other) inni u¿ytkownicy systemu;
+@item a
+(all) wszyscy u¿ytkownicy; to samo co @samp{ugo}.
+@end table
+
+Czê¶æ @var{operacja} mówi, jak zmieniæ zadanym u¿ytkownikom prawa dostêpu
+do pliku, i jest jednym z nastêpuj±cych symboli:
+
+@table @code
+@item +
+@cindex dodawanie praw dostêpu
+dodaje @var{prawa} do dowolnych praw pliku, jakie maj±
+ju¿ @var{u¿ytkownicy}. Nastêpuje uzupe³nienie ju¿ posiadanych praw o podane.
+@item -
+@cindex usuwanie praw dostêpu
+@cindex odejmowanie praw dostêpu
+usuwa @var{prawa} spo¶ród dowolnych praw pliku, jakie maj±
+ju¿ @var{u¿ytkownicy}.
+@item =
+@cindex ustalanie praw dostêpu
+nadaje podane @var{prawa} jako jedyne prawa pliku, jakie powinni mieæ do
+niego @var{u¿ytkownicy}. Usuwa ewentualne uprzednie prawa.
+@end table
+
+Czê¶æ @var{prawa} mówi, jaki rodzaj dostêpu do pliku powinien zostaæ zmieniony;
+jest to zero lub wiêcej poni¿szych liter. Tak jak w przypadku czê¶ci
+@var{u¿ytkownicy}, kolejno¶æ liter, je¶li jest wiêcej ni¿ jedna, nie ma
+znaczenia. Pominiêcie czê¶ci @var{prawa} przydatne jest tylko z operacj±
+@samp{=}, gdzie nie daje ona @var{u¿ytkownikom} ¿adnego dostêpu do pliku.
+
+@table @code
+@item r
+@cindex prawo odczytu, symboliczne
+prawo do odczytu (read) pliku
+@item w
+@cindex prawo zapisu, symboliczne
+prawo do zapisu (write) pliku
+@item x
+@cindex prawo wykonywania, symboliczne
+prawo do wykonywania (execution) pliku
+@end table
+
+Na przyk³ad, aby daæ ka¿demu prawo do odczytu i zapisu pliku, ale nie do
+jego wykonywania, nale¿y pos³u¿yæ siê:
+
+@example
+a=rw
+@end example
+
+Usuniêcie prawa zapisu dla wszystkich u¿ytkowników innych ni¿ w³a¶ciciel pliku
+mo¿na zrealizowaæ przez:
+
+@example
+go-w
+@end example
+
+@noindent
+Powy¿sze polecenie nie zmieni dostêpu, jaki ma do pliku jego w³a¶ciciel, nie
+nie ma te¿ wp³ywu na to, czy inni u¿ytkownicy mog± czytaæ b±d¼ wykonywaæ plik.
+
+Chc±c nie daæ nikomu poza w³a¶cicielem pliku ¿adnych praw do niego, mo¿na
+pos³u¿yæ siê podanym poni¿ej trybem. Inni u¿ytkownicy mog± nadal usun±æ plik,
+je¿eli maj± prawo zapisu w katalogu, w którym siê on znajduje.
+
+@example
+go=
+@end example
+
+@noindent
+Innym sposobem okre¶lenia tego samego jest:
+
+@example
+og-rxw
+@end example
+
+@node Kopiowanie praw
+@subsection Kopiowanie istniej±cych praw
+
+@cindex kopiowanie istniej±cych praw dostêpu
+@cindex prawa dostêpu, kopiowanie istniej±cych
+Mo¿na ustaliæ prawa pliku w oparciu o jego prawa ju¿ istniej±ce. By to zrobiæ
+wystarczy zamiast stosowania @samp{r}, @samp{w} czy @samp{x} po operatorze u¿yæ
+liter @samp{u}, @samp{g} lub @samp{o}. Na przyk³ad tryb
+@example
+o+g
+@end example
+@noindent
+dodaje prawa dla u¿ytkowników, którzy nale¿± do grupy pliku do praw, jakie
+posiadaj± inni u¿ytkownicy pliku. Zatem, je¶li plik pocz±tkowo mia³ tryb 644
+(@samp{rw-rw-r--}), to powy¿sze dopisanie zmieni mu tryb na 666
+(@samp{rw-rw-rw-}).
+Je¿eli tryb pocz±tkowo mia³ tryb 741 (@samp{rwxr----x}), to nast±pi
+zmiana na tryb 745 (@samp{rwxr--r-x}). Operacje @samp{-} i @samp{=} dzia³aj±
+analogicznie.
+
+@node Zmiana praw specjalnych
+@subsection Zmiana praw specjalnych
+
+@cindex zmiana praw specjalnych
+Oprócz zmiany praw odczytu, zapisu i wykonywania pliku, mo¿na zmieniæ tak¿e
+jego prawa specjalne.  @xref{Struktura trybu dostêpu}, gdzie znajduje siê ich
+krótki opis.
+
+W celu zmiany prawa pliku ustawiaj±cego identyfikator u¿ytkownika przy wykonaniu
+nale¿y u¿yæ litery @samp{u} w czê¶ci @var{u¿ytkownicy} trybu symbolicznego oraz
+@samp{s} w czê¶ci @var{prawa}.
+
+W celu zmiany prawa pliku ustawiaj±cego identyfikator grupy przy wykonaniu
+nale¿y u¿yæ litery @samp{g} w czê¶ci @var{u¿ytkownicy} trybu symbolicznego
+oraz @samp{s} w czê¶ci @var{prawa}.
+
+W celu zmiany prawa pliku decyduj±cego o pozostawieniu tekstu programu na
+urz±dzeniu wymiany (swap), nale¿y u¿yæ litery @samp{o} w czê¶ci @var{u¿ytkownicy}
+trybu symbolicznego oraz @samp{t} w czê¶ci @var{prawa}.
+
+Na przyk³ad, chc±c dodaæ prawo ustawiania ID u¿ytkownika dla programu, mo¿na
+skorzystaæ z trybu
+
+@example
+u+s
+@end example
+
+Usun±æ mu zarówno prawo ustawiania ID u¿ytkownika jak i grupy, mo¿na trybem:
+
+@example
+ug-s
+@end example
+
+U¿ycie trybu
+
+@example
+o+t
+@end example
+
+spowoduje z kolei zachowanie programu na urz±dzeniu wymiany.
+
+Pamiêtaj, ¿e prawa specjalne dzia³aj± tylko w odniesieniu do plików
+wykonywalnych, plus, w niektórych systemach, katalogach (w tym przypadku
+maj± inne znaczenie; @pxref{Struktura trybu dostêpu}. U¿ycie @samp{a} w czê¶ci
+@var{u¿ytkownicy} trybu symbolicznego nie powoduje zmian praw specjalnych.
+Zatem,
+
+@example
+a+s
+@end example
+
+@noindent
+@emph{nic nie robi}. Musisz u¿yæ jawnie @samp{u}, @samp{g} lub @samp{o}
+by zmieniæ prawa specjalne. Równie¿ kombinacje @samp{u+t}, @samp{g+t}
+i @samp{o+s} nic nie robi±.
+
+Operator @samp{=} niezbyt siê przydaje przy prawach specjalnych.
+Na przyk³ad, tryb:
+
+@example
+o=t
+@end example
+
+@noindent
+spowoduje zachowanie pliku na urz±dzeniu wymiany, ale równocze¶nie usunie
+wszystkie prawa odczytu, zapisu i wykonania, które mogli mieæ wcze¶niej
+u¿ytkownicy nie nale¿±cy do grupy pliku.
+
+@node Warunkowa wykonywalno¶æ
+@subsection Warunkowa wykonywalno¶æ
+
+@cindex warunkowa wykonywalno¶æ
+Istnieje jeszcze jeden specjalny typ praw symbolicznych: je¶li u¿yje siê
+@samp{X} zamiast @samp{x}, to prawo wykonywania jest zmieniane tylko wtedy,
+gdy plik ma ju¿ prawo wykonywania lub jest to katalog. Zmienia on prawa
+wykonywania dla katalogów nawet, je¶li uprzednio nie mia³y nadanego
+¿adnego prawa wykonywania.
+
+Na przyk³ad, ten tryb:
+
+@example
+a+X
+@end example
+
+@noindent
+daje wszystkim u¿ytkownikom prawo wykonywania plików (lub przeszukiwania
+katalogów) je¶li kto¶ ju¿ wcze¶niej je posiada³.
+
+@node Dokonywanie wielu zmian
+@subsection Dokonywanie wielu zmian
+
+@cindex wiele równoczesnych zmian w prawach plików
+Format trybów symbolicznych jest faktycznie bardziej z³o¿ony, ni¿ opisano
+to powy¿ej (@pxref{Nadawanie praw}). Udostêpnia on dwa sposoby
+dokonywania wielu zmian w prawach plików.
+
+Sposób pierwszy polega na wielokrotnym okre¶leniu czê¶ci @var{operacja}
+i @var{prawo} po czê¶ci @var{u¿ytkownicy} trybu symbolicznego.
+
+Na przyk³ad, tryb:
+
+@example
+og+rX-w
+@end example
+
+@noindent
+daje u¿ytkownikom innym ni¿ w³a¶ciciel pliku prawo odczytu oraz, je¶li jest
+to katalog lub kto¶ ju¿ ma prawo wykonywania tego pliku, daje im prawo
+wykonywania; równocze¶nie odbiera im prawo zapisu tego pliku. Nie ma to
+wp³ywu na prawa, jakie posiada do niego w³a¶ciciel pliku. Powy¿szy tryb
+jest równowa¿nikiem dwu trybów:
+
+@example
+og+rX
+og-w
+@end example
+
+Drugi sposób dokonywania wielu zmian polega na okre¶leniu wiêcej ni¿ jednego
+prostego trybu symbolicznego, oddzielonego od poprzedniego przecinkiem.
+Na przyk³ad, ten tryb:
+
+@example
+a+r,go-w
+@end example
+
+@noindent
+nadaje ka¿demu prawo do odczytu pliku i usuwa prawo zapisu wszystkim
+u¿ytkownikom oprócz jego w³a¶ciciela. Inny przyk³ad:
+
+@example
+u=rwx,g=rx,o=
+@end example
+
+@noindent
+nadaje wprost wszystkie nie-specjalne prawa pliku. (Nie daje u¿ytkownikom
+spoza grupy w ogóle ¿adnych praw do pliku.)
+
+Opisane dwie metody mog± byæ ze sob± ³±czone. Ten tryb
+
+@example
+a+r,g+x-w
+@end example
+
+@noindent
+daje wszystkim u¿ytkownikom prawo odczytu pliku, u¿ytkownikom nale¿±cym
+do grupy pliku równie¿ prawo jego wykonywania, ale bez prawa zapisu.
+Powy¿szy tryb mo¿na zapisaæ na kilka ró¿nych sposobów. Innym sposobem jest:
+
+@example
+u+r,g+rx,o+r,g-w
+@end example
+
+@node Umask a ochrona
+@subsection Umask a ochrona
+
+@cindex umask a prawa dostêpu
+@cindex prawa dostêpu a umask
+Je¶li w trybie symbolicznym pominiêto czê¶æ okre¶laj±c± u¿ytkowników, to
+domy¶lnie jest ona przyjmowana za @samp{a} (dotyczy wszystkich u¿ytkowników),
+z wyj±tkiem tego, ¿e prawa @emph{ustawione} w zmiennej systemowej @code{umask}
+@emph{nie s± zmieniane}. Warto¶æ @code{umask} mo¿na zmieniæ za pomoc±
+polecenia @code{umask}. Warto¶æ domy¶lna tej zmiennej jest ró¿na dla ró¿nych
+systemów.
+
+@cindex rozdawanie praw dostêpu
+Pominiêcie czê¶ci @var{u¿ytkownicy} trybu symbolicznego nie jest na ogó³
+u¿yteczne przy operacjach innych ni¿ @samp{+}. Przydaje siê przy @samp{+},
+gdy¿ pozwala na u¿ycie @code{umask} jako ³atwo dostosowywalnej ochrony
+przeciw rozdawaniu wiêkszych praw do plików ni¿ faktycznie zamierzasz.
+
+Na przyk³ad, je¶li @code{umask} ma warto¶æ 2, co usuwa prawa zapisu dla
+u¿ytkowników nie nale¿±cych do grupy pliku, to tryb:
+
+@example
++w
+@end example
+
+@noindent
+dodaje prawo zapisu do pliku jego w³a¶cicielowi i innym u¿ytkownikom nale¿±cym
+do grupy pliku, ale @emph{nie} pozosta³ym u¿ytkownikom.
+Inaczej jest w przypadku trybu:
+
+@example
+a+w
+@end example
+
+@noindent
+ignoruje on @code{umask} i @emph{daje} prawo zapisu do pliku wszystkim
+u¿ytkownikom.
+
+@node Tryby numeryczne
+@section Tryby numeryczne
+
+@cindex numeryczne tryby dostêpu
+@cindex tryby dostêpu, numeryczne
+@cindex prawa dostêpu do plików, numeryczne
+@cindex liczby ósemkowe jako tryby plików
+Prawa pliku s± wewnêtrznie zapisywane jako liczby ca³kowite.
+Zamiast podawaæ tryb symbolicznie, mo¿na podaæ liczbê ósemkow± (o podstawie
+uk³adu równej 8), odpowiadaj±c± wewnêtrznej reprezentacji nowego trybu.
+Liczba ta jest zawsze interpretowana jako ósemkowa -- nie ma potrzeby dodawania
+pocz±tkowego 0, tak jak w C. Tryb 0055 jest tym samym, co tryb 55.
+
+Tryb liczbowy jest zwykle krótszy w zapisie ni¿ odpowiadaj±cy mu tryb
+symboliczny. Jego ograniczeniem jest jednak to, ¿e nie mo¿na przy jego
+okre¶laniu korzystaæ z poprzednich praw pliku -- mo¿na jedynie nadawaæ
+je bezwzglêdnie.
+
+W wiêkszo¶ci systemów prawa nadane u¿ytkownikowi, innym u¿ytkownikom grupy
+pliku i pozosta³ym u¿ytkownikom spoza grupy s± przechowywane jako trójki bitów,
+ka¿da przedstawiana przez jedn± cyfrê ósemkow±. Trzy prawa specjalne s± tak¿e
+zapamiêtywane w pojedynczych bitach i zbiorczo reprezentowane s± osobn±
+cyfr± ósemkow±.
+Uk³ad bitów, poczynaj±c od najmniejszej warto¶ci, pokazano poni¿ej:
+
+@example
+Warto¶æ  Odpowiednie
+trybu    prawo dostêpu
+
+          Pozostali u¿ytkownicy spoza grupy pliku:
+   1      wykonanie (x)
+   2      zapis (w)
+   4      odczyt (r)
+
+          Inni u¿ytkownicy nale¿±cy do grupy pliku:
+  10      wykonanie (x)
+  20      zapis (w)
+  40      odczyt (r)
+
+          W³a¶ciciel pliku:
+ 100      wykonanie (x)
+ 200      zapis (w)
+ 400      odczyt (r)
+
+          Prawa specjalne:
+1000      zachowuje obraz na urz±dzeniu wymiany
+2000      ustawia ID grupy przy wykonaniu
+4000      ustawia ID u¿ytkownika przy wykonaniu
+@end example
+
+Na przyk³ad, tryb liczbowy 4755 odpowiada trybowi symbolicznemu
+@samp{u=rwxs,go=rx}, za¶ tryb 664 trybowi @samp{ug=rw,o=r}.
+Numeryczny tryb 0 odpowiada symbolicznemu @samp{ugo=}.

@@ -1,0 +1,479 @@
+.\" (c) 1993 by Thomas Koenig (ig25@rz.uni-karlsruhe.de)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" License.
+.\" Modified Sun Jul 25 11:05:58 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified Sat Feb 10 16:18:03 1996 by Urs Thuermann (urs@isnogud.escape.de)
+.\" Modified Mon Jun 16 20:02:00 1997 by Nicolás Lichtmaier <nick@debian.org>
+.\" Modified Mon Feb  6 16:41:00 1999 by Nicolás Lichtmaier <nick@debian.org>
+.\" Modified Tue Feb  8 16:46:45 2000 by Chris Pepper <pepper@tgg.com>
+.\" Modified Fri Sep  7 20:32:45 2001 by Tammy Fox <tfox@redhat.com>
+.\"
+.\" Translation (c) 1998 "Gwidon S. Naskrent" <naskrent@hoth.amu.edu.pl>
+.\" Last update: Robert Luberda <robert@debian.org>, Jan 2003, manpages 1.48
+.\" $Id: hier.7,v 1.6 2003/01/22 10:58:24 robert Exp $
+.\"
+.TH HIER 7  2001-09-07 "Linux" "Podrêcznik programisty linuksowego"
+.SH NAZWA
+hier \- Opis systemowej hierarchii plików
+.SH OPIS
+Typowy system linuksowy zawiera, miêdzy innymi, nastêpuj±ce katalogi:
+.TP
+.I /
+Katalog nadrzêdny. Od niego to zaczyna siê ca³e drzewo.
+.TP
+.I /bin
+Ten katalog zawiera programy wykonywalne potrzebne w trybie pojedynczego
+u¿ytkownika oraz do podniesienia i naprawienia systemu.
+.TP
+.I /boot
+Zawiera statyczne pliki dla boot loadera. Ten katalog zawiera tylko pliki
+potrzebne podczas procesu bootowania. Instalator mapowania
+.\" RL - FIXME : map installer
+i pliki
+konfiguracyjne powinny trafiæ do
+.I /sbin
+i
+.IR /etc .
+.TP
+.I /dev
+Pliki urz±dzeñ albo specjalne, odnosz±ce siê do urz±dzeñ fizycznych.
+Zobacz
+.BR mknod (1).
+.TP
+.I /dos
+Je¶li w twoim komputerze istnieje jednocze¶nie MS\-DOS i Linux, to jest
+typowe miejsce montowania systemu plików DOSa.
+.TP
+.I /etc
+Zawiera pliki konfiguracyjne lokalne dla maszyny. Niektóre wiêksze
+pakiety programów, jak X11, mog± mieæ swoje w³asne katalogi poni¿ej
+.IR etc .
+Pliki konfiguracyjne dla ca³ego systemu mo¿na umie¶ciæ tu lub w
+.IR /usr/etc .
+Niemniej jednak, programy powinny zawsze szukaæ tych plików w
+.I /etc,
+a ty mo¿esz umie¶ciæ linki do nich w
+.IR /usr/etc .
+.TP
+.I /etc/opt
+Pliki konfiguracyjne dodatkowych aplikacji instalowanych w
+.I /opt
+specyficzne dla maszyny.
+.TP
+.I /etc/sgml
+Tan katalog zawiera pliki konfiguracyjne dla SGML-a i XML-a (opcjonalny).
+.TP
+.I /etc/skel
+Gdy stworzone zostaje nowe konto u¿ytkownika, pliki z tego katalogu
+s± zwykle kopiowane do katalogu domowego u¿ytkownika.
+.TP
+.I /etc/X11
+Pliki konfiguracyjne dla systemu okienkowego X11 (opcjonalny).
+.TP
+.I /home
+Na maszynach z katalogami domowymi dla u¿ytkowników, katlogi te znajduj± siê
+zwykle poni¿ej tego katalogu, bezpo¶rednio lub nie. Struktura tego
+katalogu zale¿y od decyzji lokalnych administratorów.
+.TP
+.I /lib
+Ten katalog powinien zawieraæ te biblioteki dynamiczne, które s±
+konieczne do wystartowania systemu i uruchamiania komend z g³ównego
+systemu plików.
+.TP
+.I /mnt
+Jest punktem montowania systemów plików montowanych tymczasowo.
+.TP
+.I /opt
+Ten katalog powinien zawieraæ dodatkowe pakiety, które zawieraj± statyczne pliki.
+.TP
+.I /proc
+Jest to punkt montowania systemu plików
+.IR proc ,
+który dostarcza informacji o bie¿±cych procesach i j±drze. Ów pseudosystem
+plików opisano w szczegó³ach w
+.BR proc(5).
+.TP
+.I /root
+Tan katalog jest zwyczajowo katalogiem domowym u¿ytkownika root (opcjonalny).
+.TP
+.I /sbin
+Tak jak
+.IR /bin ,
+ten katalog zawiera komendy potrzebne do wystartowania systemu, ale
+których zwykle nie wykonuj± normalni u¿ytkownicy.
+.TP
+.I /tmp
+Ten katalog zawiera pliki tymczasowe, które mo¿e usun±æ bez ostrze¿enia
+dzia³aj±ce zadanie lub start systemu.
+.TP
+.I /usr
+Ten katalog jest zwykle montowany z oddzielnej partycji. Powinien on
+zawieraæ dzielone dane tylko do odczytu, tak ¿e mo¿na go zamontowaæ
+na ró¿nych maszynach z zainstalowanym Linuksem.
+.TP
+.I /usr/X11R6
+System X\-Window, wersja 11, wydanie 6 (opcjonalny).
+.TP
+.I /usr/X11R6/bin
+Binaria nale¿±ce do systemu X\-Windows; czêsto jest to link symboliczny
+z bardziej tradycyjnego
+.IR /usr/bin/X11 .
+.TP
+.I /usr/X11R6/lib
+Pliki danych skojarzone z systemem X\-Windows.
+.TP
+.I /usr/X11R6/lib/X11
+Zawiera ró¿ne pliki potrzebne do uruchamiania X; czêsto jest to link
+symboliczny z
+.IR /usr/lib/X11 .
+.TP
+.I /usr/X11R6/include/X11
+Zawiera pliki nag³ówkowe potrzebne do kompilacji programów z u¿yciem
+systemu okienkowego X11. Czêsto jest to link symboliczny z
+.IR /usr/include/X11 .
+.TP
+.I /usr/bin
+Jest to g³ówny katalog programów wykonywalnych. Wiêkszo¶æ programów
+wykonywanych przez zwyk³ych u¿ytkowników, które nie s± potrzebne przy
+starcie lub naprawie systemu i które nie s± instalowane lokalnie,
+powinna byæ umieszczona w tym katalogu
+.TP
+.I /usr/bin/X11
+Tradycyjne miejsce na pliki wykonywalne X11; w Linuksie zwykle jest to
+link symboliczny do
+.IR /usr/X11R6/bin .
+.TP
+.I /usr/dict
+Zast±piony przez
+.IR /usr/share/dict .
+.TP
+.I /usr/doc
+Zast±piony przez
+.IR /usr/share/doc .
+.TP
+.I /usr/etc
+Mo¿na tu umie¶ciæ ca³osystemowe pliki konfiguracyjne dzielone miêdzy
+kilkoma maszynami. Programy jednak powinny zawsze odwo³ywaæ siê do
+tych plików u¿ywaj±c katalogu
+.I /etc.
+Linki od plików w
+.I /etc
+powinny wskazywaæ na odpowiednie pliki w
+.IR /usr/etc .
+.TP
+.I /usr/games
+Binaria gier i programów edukacyjnych (opcjonalny).
+.TP
+.I /usr/include
+Pliki nag³ówkowe dla kompilatora C.
+.TP
+.I /usr/include/X11
+Pliki nag³ówkowe dla kompilatora C i systemu X\-Windows. Jest to zwykle
+link symboliczny do
+.IR /usr/X11R6/include/X11 .
+.TP
+.I /usr/include/asm
+Pliki nag³ówkowe deklaruj±ce niektóre funkcje asemblera. W przesz³o¶ci by³
+to link symboliczny do
+.IR /usr/src/linux/include/asm .
+.TP
+.I /usr/include/linux
+Zawiera informacje które mog± zmieniaæ siê jednego wydania systemu na
+drugie i kiedy¶ by³ on linkiem symbolicznym do
+.IR /usr/src/linux/include/linux ,
+¿eby otrzymywaæ informacje specyficzne dla systemu operacyjnego.
+
+(Uwaga: pliki nag³ówkowe powinny dzia³aæ poprawnie zarówno z bie¿±c± bibliotek±
+libc jak i w przestrzeni u¿ytkownika. Jednak¿e ¼ród³a j±dra Linuksa nie s± przeznaczone
+do u¿ytku z programami u¿ytkownika i nic nie wiedz± o libc, u¿ywanej przez Ciebie.
+Jest bardzo prawdopodne, ¿e pewne rzeczy przestan± dzia³aæ, je¿eli
+.I /usr/include/asm
+i
+.I /usr/include/linux
+bêd± prowadzi³y do losowego drzewa ¼róde³ j±dra. Systemy Debiana nie robi± tego i
+u¿ywaj± nag³ówków ze znanej, dobrej wersji j±dra, dostarczonych przez pakiet libc*-dev).
+.TP
+.I /usr/include/g++
+Pliki nag³ówkowe do u¿ytku z kompilatorem GNU C++.
+.TP
+.I /usr/lib
+Biblioteki obiektowe, w tym dynamiczne, plus parê plików wykonywalnych,
+zwykle niewywo³ywanych bezpo¶rednio. Bardziej skomplikowane programy
+mog± tu posiadaæ ca³e podkatalogi.
+.TP
+.I /usr/lib/X11
+Zwyk³e miejsce dla plików danych skojarzonych z programami X-owymi,
+oraz pliki konfiguracyjne dla systemu X. W Linuksie, zwykle jest to
+link symboliczny do
+.IR /usr/X11R6/lib/X11 .
+.TP
+.I /usr/lib/gcc-lib
+Zawiera pliki wykonywalne i nag³ówkowe dla kompilatora GNU C
+.BR gcc (1).
+.TP
+.I /usr/lib/groff
+Pliki dla systemu formatowania dokumentów GNU groff.
+.TP
+.I /usr/lib/uucp
+Pliki dla
+.BR uucp (1).
+.TP
+.I /usr/local
+Tutaj zwykle trafiaj± programy instalowane lokalnie na maszynie.
+.TP
+.I /usr/local/bin
+Trafiaj± tu binaria programów lokalnych.
+.TP
+.I /usr/local/doc
+Lokalna dokumentacja.
+.TP
+.I /usr/local/etc
+Pliki konfiguracyjne skojarzone z lokalnie zainstalowanymi programami.
+.TP
+.I /usr/local/games
+Binaria lokalnie zainstalowanych gier.
+.TP
+.I /usr/local/lib
+Pliki skojarzone z lokalnie zainstalowanymi programami.
+.TP
+.I /usr/local/include
+Pliki nag³ówkowe lokalnego kompilatora C.
+.TP
+.I /usr/local/info
+Strony info skojarzone z lokalnie zainstalowanymi programami.
+.TP
+.I /usr/local/man
+Strony podrêcznika ekranowego skojarzone z lokalnie zainstalowanymi programami.
+.TP
+.I /usr/local/sbin
+Lokalnie instalowane programy do administracji systemem.
+.TP
+.I /usr/local/share
+Dane lokalnych aplikacji, które mog± byæ dzielona miêdzy ró¿nymi architekturami
+tego samego systemu operacyjnego.
+.TP
+.I /usr/local/src
+Kod ¼ród³owy programów instalowanych lokalnie.
+.TP
+.I /usr/man
+Zast±piony przez
+.IR /usr/share/man .
+.TP
+.I /usr/sbin
+Ten katalog zawiera binaria programów do administracji systemem
+nie niezbêdne dla procesu bootowania, montowania
+.I /usr,
+lub naprawy systemu.
+.TP
+.I /usr/share
+Ten katalog zawiera podkatalogi ze specyficznymi danymi aplikacji, które mog±
+byæ dzielone miêdzy ró¿nymi architekturami tego samego systemu operacyjnego.
+Czêsto mo¿na tu znale¼æ rzeczy, które wcze¶niej znajdowa³y siê w
+.I /usr/doc
+lub
+.IR /usr/lib ,
+lub
+.IR /usr/man .
+.TP
+.I /usr/share/dict
+Zawiera pliki z listami s³ów dla poprawiaczy pisowni.
+.TP
+.I /usr/share/doc
+Dokumentacja zainstalowanych programów.
+.TP
+.I /usr/share/games
+Pliki ze statycznymi danymi gier z
+.IR /usr/games .
+.TP
+.I /usr/share/info
+Strony info tutaj siê znajduj±.
+.TP
+.I /usr/share/locale
+Tutaj znajduj± siê informacje zwi±zane ustawieniami regionalnymi.
+.TP
+.I /usr/share/man
+Trafiaj± tu strony podrêcznika ekranowego, do odpowiednich katalogów, wed³ug sekcji podrêcznika.
+.TP
+.I /usr/share/man/<locale>/man[1-9]
+Te katalogi zawieraj± strony podrêcznika w formacie ¼ród³owym. Systemy
+które u¿ywaj± jednego jêzyka i zestawu znaków dla wszystkich stron
+podrêcznika mog± pomin±æ <locale>.
+.TP
+.I /usr/share/misc
+Ró¿norodne dane, które mog± byæ dzielone miêdzy ró¿nymi architekturami tego
+samego systemu operacyjnego.
+.TP
+.I /usr/share/nls
+Katalogi wiadomo¶ci natywnego jêzyka.
+The message catalogs for native language support go here.
+.TP
+.I /usr/share/sgml
+Pliki dla SGML-a i XML-a.
+.TP
+.I /usr/share/terminfo
+Baza danych terminfo.
+.TP
+.I /usr/share/tmac
+Makra troffa, które nie s± dystrybuowane z groffem.
+.TP
+.I /usr/share/zoneinfo
+Pliki informacji o strefach czasowych.
+.TP
+.I /usr/src
+Pliki ¼ród³owe ró¿nych czê¶ci systemu, do³±czane do niektórych pakietów.
+.\" FIXME for reference purposes.
+Nie powiniene¶ pracowaæ tutaj nad swoimi w³asnymi projektami, poniewa¿
+pliki w /usr powinny byæ tylko do odczytu z wyj±tkiem sytuacji, gdy instalowane
+jest oprogramowanie.
+.TP
+.I /usr/src/linux
+Zawiera ¼ród³a j±dra samego systemu operacyjnego.
+Niektóre dystrybucje umieszczaj± tu ¼ród³a domy¶lnie instalowanego j±dra.
+Najprawdopodobniej powiniene¶ u¿yæ innego katalogu do budowania w³asnego j±dra.
+.TP
+.I /usr/tmp
+Przestarza³e. Powinno byæ linkiem do
+.IR /var/tmp .
+Ten link jest obecny tylko w celu zachowania kompatybilno¶ci i nie powinien byæ u¿ywany.
+.TP
+.I /var
+Ten katalog zawiera pliki które mog± zmieniaæ wielko¶æ, takie jak
+logi i spoole.
+.TP
+.I /var/adm
+Ten katalog zosta³ zast±piony przez
+.I /var/log
+i powinien byæ linkiem symbolicznym do
+.IR /var/log .
+.TP
+.I /var/backups
+Zarezerwowany z powodów historycznych.
+.TP
+.I /var/cache
+Zbuforowane dane programów.
+.TP
+.IR /var/catman/cat[1-9] " lub " /var/cache/man/cat[1-9]
+Te katalogi przechowuj± preformatowane strony podrêcznika ekranowego
+zgodnie z sekcj± tego podrêcznika. (U¿ywanie preformatowanych stron podrêcznika
+jest przestarza³e).
+.TP
+.I /var/cron
+Zarezerwowany z powodów historycznych.
+.TP
+.I /var/lib
+Zmienne informacje programów.
+.TP
+.I /var/local
+Zmienne dane dla
+.IR /usr/local .
+.TP
+.I /var/lock
+Umieszczane s± tu pliki lock. Konwencja nazw plików lock dla
+urz±dzeñ to
+.I LCK..<urz±dzenie>
+gdzie
+.IR <urz±dzenie> ,
+to nazwa urz±dzenia w systemie plików.
+U¿yty format to format plików lock HDU UUCP, tj. pliki lock zawieraj±
+PID jako dziesiêciobajtowy numer dziesiêtny w ASCII, plus znak nowej
+linii.
+.TP
+.I /var/log
+Ró¿ne logi.
+.TP
+.I /var/opt
+Zmienne dane dla
+.IR /opt .
+.TP
+.I /var/mail
+Skrzynki pocztowe u¿ytkowników. Zastêpuje
+.IR /var/spool/mail .
+.TP
+.I /var/msgs
+Zarezerwowany z powodów historycznych.
+.TP
+.I /var/preserve
+Zarezerwowany z powodów historycznych.
+.TP
+.I /var/run
+Ró¿ne pliki bie¿±ce, np. pliki zawieraj±ce identyfikatory procesów (PIDy)
+i informacjê o zalogowanych u¿ytkownikach
+.IR (utmp) .
+Pliki w tym katalogu s± zwykle czyszczone przy starcie systemu.
+.TP
+.I /var/spool
+Kolejkowane (spoolowane) pliki ró¿nych programów.
+.TP
+.I /var/spool/at
+Spoolowane zadania dla
+.BR at (1).
+.TP
+.I /var/spool/cron
+Spoolowane zadania dla
+.BR cron (1).
+.TP
+.I /var/spool/lpd
+Spoolowane pliki do drukowania.
+.TP
+.I /var/spool/mail
+Zast±pione przez
+.IR /var/mail .
+.TP
+.I /var/spool/mqueue
+Zakolejkowana poczta wychodz±ca.
+.TP
+.I /var/spool/news
+Katalog spool newsów.
+.TP
+.I /var/spool/rwho
+Spoolowane pliki dla
+.BR rwhod (8).
+.TP
+.I /var/spool/smail
+Spoolowane pliki dla programu
+.BR smail(1) .
+.\" RL - /var/spool/news jest opisany wy¿ej!
+.\" .TP
+.\" .I /var/spool/news
+.\" Katalog spoolowy dla podsystemu newsów.
+.TP
+.I /var/spool/uucp
+Spoolowane pliki dla
+.BR uucp (1).
+.TP
+.I /var/tmp
+Tak jak
+.IR /tmp ,
+ten katalog zawiera tymczasowe pliki przechowywane na czas nieokre¶lony.
+.TP
+.I /var/yp
+Pliki bazy danych systemu NIS.
+.SH "ZGODNY Z"
+The Filesystem Hierarchy Standard, wersja 2.2 <http://www.pathname.com/fhs/>
+.SH B£ÊDY
+Lista ta nie jest wyczerpuj±ca; ró¿ne systemy mog± byæ ró¿nie skonfigurowane.
+.SH "ZOBACZ TAK¯E"
+.BR find (1),
+.BR ln (1),
+.BR mount (1),
+.BR proc (5),
+The Filesystem Hierarchy Standard

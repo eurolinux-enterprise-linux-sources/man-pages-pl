@@ -1,0 +1,51 @@
+.\" {PTM/WK/1999}
+.ig \"-*- nroff -*-
+Copyright (C) 1989-1995 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be included in
+translations approved by the Free Software Foundation instead of in
+the original English.
+..
+.TH SOELIM 1 "26 czerwca 1995" "Groff Version 1.11"
+.SH NAZWA
+soelim \- interpretuje ¿±dania .so w wej¶ciu groff
+.SH SK£ADNIA
+.B soelim
+.RB [ -Cv ]
+.RI [ pliki ...]
+.SH OPIS
+.B soelim
+czyta
+.I pliki
+i zastêpuje wiersze o postaci
+.IP
+.BI .so\  plik
+.LP
+zawarto¶ci± \fIpliku\fR.
+Przydaje siê, gdy zachodzi potrzeba wstêpnego przetworzenia (preprocessing)
+plików w³±czonych przy pomocy \fBso\fR.
+Zwykle \fBsoelim\fR powinien byæ wywo³ywany z opcj±
+.B -s
+programu \fBgroff\fR.
+.SH OPCJE
+.TP
+.B -C
+Rozpoznawaj \fB.so\fR, nawet je¶li jest poprzedzone znakiem innym ni¿ spacja
+czy znak nowej linii.
+.TP
+.B -v
+Wy¶wietl numer wersji.
+.SH ZOBACZ TAK¯E
+.BR zsoelim (1),
+.BR groff (1).

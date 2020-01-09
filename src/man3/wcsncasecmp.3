@@ -1,0 +1,43 @@
+.\" 2002 PTM Przemek Borys <pborys@dione.ids.pl>
+.\" Copyright (c) Bruno Haible <haible@clisp.cons.org>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" References consulted:
+.\"   GNU glibc-2 source code and manual
+.\"   Dinkumware C library reference http://www.dinkumware.com/
+.\"   OpenGroup's Single Unix specification http://www.UNIX-systems.org/online.html
+.\"
+.TH WCSNCASECMP 3  1999-07-25 "GNU" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+wcsncasecmp \- porównuje dwa ³añcuchy szerokich znaków o ustalonej d³ugo¶ci,
+ignoruj±c wielko¶æ liter
+.SH SK£ADNIA
+.nf
+.B #include <wchar.h>
+.sp
+.BI "int wcsncasecmp(const wchar_t *" s1 ", const wchar_t *" s2 ", size_t " n );
+.fi
+.SH OPIS
+Funkcja \fBwcsncasecmp\fP jest szerokoznakowym odpowiednikiem funkcji
+\fBstrncasecmp\fP(3). Porównuje ona ³añcuch szerokich znaków, wskazywanym
+przez \fIs1\fP z ³añcuchem szerokich znaków, wskazywanym przez \fIs2\fP.
+szerokich znaków z ka¿dego ³añcucha.
+.SH "WARTO¦Æ ZWRACANA"
+Funkcja \fBwcsncasecmp\fP zwraca zero je¶li po przyciêciu do \fIn\fP znaków,
+³añcuchy \fIs1\fP i \fIs2\fP s± jednakowe (poza ró¿nicami w rozmiarach
+liter). Zwraca te¿ warto¶æ dodatni±, gdy przyciêty \fIs1\fP jest wiêkszy od
+przyciêtego \fIs2\fP (z ignorowaniem rozmiarów liter). Warto¶æ ujemna
+zwracana jest gdy przyciêty \fIs1\fP jest mniejszy od przyciêtego \fIs2\fP
+(z ignorowaniem rozmiarów liter).
+.SH "ZGODNE Z"
+Ta funkcja jest rozszerzeniem GNU.
+.SH "ZOBACZ TAK¯E"
+.BR strncasecmp (3),
+.BR wcsncmp (3)
+.SH UWAGI
+Zachowanie funkcji \fBwcsncasecmp\fP zale¿y od kategorii LC_CTYPE bie¿±cych
+ustawieñ locale.

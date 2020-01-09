@@ -1,0 +1,101 @@
+#!/bin/sh
+# makewhatis 4 PTM
+
+### HQ: 1999-10-10, dodano test, czy zwyk³y plik; zmieniono skrypt awk
+### HQ: 1999-10-21, dodano w nawiasach sekcjê, w której le¿y plik
+### HQ: 1999-10-26, drobne popr., zmiana formatowania dla opisów wielu f.
+
+
+DIRS="man1 man2 man3 man4 man5 man6 man7 man8 man9 mann"
+
+echo -n >whatis
+
+for i in $DIRS
+	do
+	echo Zwiedzamy katalog $i
+	cd $i
+	rm -f *~
+	for k in *.*
+		do
+### HQ: Nie cierpiê, gdy narzeka na CVS:
+		if [ -f $k ]; then
+
+		gawk -v sekcja=$i 'BEGIN {
+			    i=0; nazwa="";
+			    sub(/^man/,"",sekcja);
+			    whatis="../whatis";
+			    opis="";
+			    }
+                    /^\.so / {
+		        plik=FILENAME; sub(/\.[1-9n]$/,"",plik);
+			sub(/^\.so/,"",$0);
+			so=split($0,aso,"/");
+			so=aso[so]; split(so,aso,".");
+			opis=plik " - zobacz " aso[1] " (" aso[2] ")";
+			i=i+1;	wpis();
+			exit
+		    }
+                    /^\.Sh [ "]*NAZWA/ {
+	    	        while ((getline)>0) {
+		            if ($0~/^\.Nm/) {
+				sub(/^\.Nm/,"",$0);
+				nazwa=$0 " - ";
+				}
+		            if ((nazwa!="")&&($0~/^\.Nd/)) {
+				sub(/^\.Nd/,"",$0);
+			        opis=nazwa $0;
+			        i=i+1;	wpis();
+			        exit
+			    }
+		        } }
+                    /^\.SH [ "]*NAZWA/ {
+	    	        while ((getline)>0) {
+			    gsub(/\\f[BRI]/,"",$0);
+			    gsub(/\.[BRI]+ /,"",$0);
+			    if ($0~/^\.br/) {
+				 i=i+1;	opis=""; continue;
+				 }
+			    if ($0~/\.S[HhSs]/) {
+				wpis();
+			        exit;
+			    }
+			    if (($0!~/^[ \t]*$/)&&($0!~/^\./))
+				{
+			        opis=opis " " $0;
+				i=i+1;
+				}
+		    	} }
+		    END {
+		        if (i==0) {
+			    print FILENAME " - nieudany wpis do whatis"
+		        }
+		    }
+		    function wpis() {
+		    if (opis !="") {
+			gsub(/^[ ]+/,"",opis);  gsub(/[ ]+$/,"",opis);
+			gsub(/\\-/,"-",opis);   gsub(/--/,"-",opis);
+			gsub(/\\f[BRI]/,"",opis);
+			gsub(/\.[BRI]+ /,"",opis);
+
+			j=index(opis," -");
+			opis1=substr(opis,j+3);
+			hasla=substr(opis,1,j-1);
+			split(hasla,ah,",");
+			plik=FILENAME; sub(/\.[1-9n]$/,"",plik);
+			for (k in ah) {
+			    gsub(/^[ ]+/,"",ah[k]);  gsub(/[ ]+$/,"",ah[k]);
+			    if (ah[k]==plik) {plus=""}
+			    else {plus=" [" plik "] "};
+			    opis=ah[k] plus " - " opis1;
+			    opis=gensub(/([^-]+) -(.+)/, "\\1 (" sekcja ") - \\2", 1,opis);
+			    opis=gensub(/[ ]+/," ","g",opis);
+			    print opis>>whatis;
+			    opis="";
+			}
+		    }
+		    }'	$k
+		fi
+		done
+	cd ..
+	done
+# koniec skryptu

@@ -1,0 +1,1036 @@
+.\" Copyright (c) 1985, 1989, 1990 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"	from: @(#)ftp.1	6.18 (Berkeley) 7/30/91
+.\"	$Id: ftp.1,v 1.7 2003/05/29 11:06:06 robert Exp $
+.\"
+.\" Translation (c) 1998 Jarek Woloszyn <yossa@dione.ids.pl>
+.\" {PTM/JW/0.1/28-09-1998/"program do przesy³ania plików"}
+.Dd July 30, 1991
+.Dt FTP 1
+.Os BSD 4.2
+.Sh NAZWA
+.Nm ftp
+.Nd ARPANET'owy program do przesy³ania plików
+.Sh SK£ADNIA
+.Nm ftp
+.Op Fl v
+.Op Fl d
+.Op Fl i
+.Op Fl n
+.Op Fl g
+.Op Fl q
+.Op Ar host
+.Sh OPIS
+.Nm Ftp
+jest interfejsem u¿ytkownika do 
+.Tn ARPANET'owego
+standardu - Protoko³u Przesy³ania Plików (File Transfer Protocol).
+Ten program pozwala u¿ytkownikom przesy³aæ pliki na i z odleg³ego miejsca w
+sieci.
+.Pp
+Opcje mog± byæ podawane w linii poleceñ lub w interpretatorze komend.
+.Bl -tag -width flag
+.It Fl v
+Ta opcja ka¿e 
+.Nm ftp
+pokazywaæ wszystkie odpowiedzi z odleg³ego serwera, a tak¿e statystyki o
+transferze danych.
+.It Fl n
+Wstrzymuje
+.Nm ftp
+od próbowania \*(Lqauto-logina\*(Rq przy pierwszym po³±czeniu.
+Je¶li auto-login jest w³±czony,
+.Nm ftp
+sprawdzi czy w pliku
+.Pa .netrc
+(zobacz ni¿ej) w katalogu u¿ytkownika istnieje wpis opisuj±cy konto na
+odleg³ej maszynie.
+Je¶li wpis nie istnieje,
+.Nm ftp
+spyta o login na odleg³ym serwerze (standardowo jest to nazwa u¿ytkownika,
+na komputerze lokalnym) i je¶li bêdzie potrzebne o has³o i konto na które siê
+zalogowaæ. 
+.It Fl i
+Wy³±cza interaktywne pytania podczas wielokrotnego ¶ci±gania plików.
+.It Fl d
+W³±cza debuggowanie.
+.It Fl g
+Wy³±cza rozszerzanie znaków specjalnych w nazwach plików (np. *,?,[],{})
+.It Fl q
+Wychodzi, gdy wyst±pi b³±d podczas wykonywania polecenia w makrze.
+.El
+.Pp
+Host, z którym
+.Nm ftp
+ma siê komunikowaæ mo¿e byæ podany w linii poleceñ.
+Je¶li tak siê stanie,
+.Nm ftp
+od razu spróbuje siê po³±czyæ z serwerem
+.Tn FTP
+na tym ho¶cie. W przeciwnym wypadku
+.Nm ftp
+wejdzie do swojego interpretatora poleceñ i bêdzie czeka³ na polecenia od
+u¿ytkownika.
+Kiedy
+.Nm ftp
+czeka na polecenia od u¿ytkownika,
+.Ql ftp>
+jest pokazywane na ekranie.
+Nastêpuj±ce komendy s± rozpoznawane przez 
+.Nm ftp  :
+.Bl -tag -width Fl
+.It Ic \&! Op Ar komenda Op Ar arg
+Wywo³uje interaktywny shell na lokalnym komputerze.
+Je¿eli podano jakie¶ argumenty, pierwszy jest uwa¿any za polecenie do
+wykonania od razu, z reszt± argumentów jako jego argumenty.
+.It Ic \&$ Ar nazwa-makra Op Ar arg
+Wykonuje makro o nazwie 
+.Ar nazwa-makra
+zdefiniowane przy pomocy komendy
+.Ic macdef  .
+Argumenty s± przekazywane do makra bez rozszerzania nazw (unglobbed).
+.It Ic konto Op Ar has³o
+Dostarcza dodatkowe has³o potrzebne, aby mieæ dostêp do zasobów, po tym
+jak logowanie zosta³o zakoñczone pomy¶lnie.
+Je¶li nie podano ¿adnych argumentów, u¿ytkownik bêdzie zapytany o has³o do
+konta w trybie bez wy¶wietlania znaków.
+.It Ic append Ar plik-lokalny Op Ar plik-zdalny
+Dopisz plik lokalny do plik na odleg³ej maszynie.
+Je¶li
+.Ar plik-lokalny
+pozosta³ niezdefiniowany, nazwa lokalnego pliku jest u¿ywana do nazwania
+pliku odleg³ego po zmianie komendami z ustawieñ poleceñ
+.Ic ntrans
+lub
+.Ic nmap  .  
+Transfer pliku korzysta z ustawieñ
+.Ic type  ,
+.Ic format ,
+.Ic mode  ,
+i
+.Ic structure .
+.It Ic ascii
+Ustawia tryb przesy³ania plików (
+.Ic type
+) na sieciowy
+.Tn ASCII .
+Jest to standardowe ustawienie.
+.It Ic bell
+W³±cza sygna³ d¼wiêkowy po skoñczeniu ka¿dego polecenia przes³ania pliku.
+.It Ic binary
+Ustawia tryb przesy³ania plików (
+.Ic type
+) na binarny.
+.It Ic bye
+Koñczy sesjê
+.Tn FTP
+z odleg³ym serwerem i wychodzi z 
+.Nm ftp  .
+Koniec pliku tak¿e zakoñczy sesjê i skoñczy dzia³anie.
+.It Ic case
+Zmienia wra¿liwo¶æ na wielko¶æ liter w odleg³ych plikach podczas polecenia
+.Ic mget  .
+Kiedy
+.Ic case
+jest w³±czone (standardowo wy³±czone), du¿e litery w nazwach plików na
+odleg³ym komputerze zostan± zmienione na ma³e litery podczas zapisywania
+w katalogu lokalnym.
+.It Ic \&cd Ar zdalny-katalog
+Zmienia aktualny katalog na odleg³ym komputerze na
+.Ar zdalny-katalog  .
+.It Ic cdup
+Zmienia aktualny katalog na odleg³ym komputerze na katalog o jeden stopieñ
+wy¿szy.
+.It Ic chmod Ar prawa nazwa-pliku
+Zmienia prawa dostêpu do pliku
+.Ar nazwa-pliku
+na odleg³ym komputerze na
+.Ar prawa  .
+.It Ic close
+Koñczy sesjê
+.Tn FTP
+z odleg³ym serwerem i wraca do interpretatora poleceñ.
+Wszystkie zdefiniowane makra s± usuwane.
+.It Ic \&cr
+Zmienia usuwanie znaku powrotu karetki na koñcach linii w plikach przesy³anych
+w trybie ascii.
+Rekordy s± koñczone znakami cr/lf, w czasie przesy³ania w trybie ascii.
+Kiedy
+.Ic \&cr
+jest w³±czone (standardowo), powrót karetki (cr) jest usuwane zgodnie z
+ogranicznikiem pojedynczej linii systemu 
+.Ux  .
+Rekordy w systemach
+.Pf nie\- Ns Ux
+mog± zawieraæ linie. Ta struktura pozostanie tylko wtedy, kiedy
+.Ic \&cr
+jest wy³±czone.
+.It Ic delete Ar plik-zdalny
+Usuwa plik
+.Ar plik-zdalny
+na odleg³ym komputerze.
+.It Ic debug Op Ar warto¶æ-debuga
+Zmienia tryb debuggowania.
+Je¶li opcjonalny argument
+.Ar warto¶æ-debuga
+zostanie podany, jest on u¿ywany do ustawienia poziomu debugowania.
+Kiedy debugowanie jest w³±czone,
+.Nm ftp
+pokazuje ka¿d± liniê wysy³an± do serwera, poprzedzon± ci±giem
+.Ql \-\->
+.It Xo
+.Ic dir
+.Op Ar remote-directory
+.Op Ar local-file
+.Xc
+Drukuje listê zawarto¶ci katalogu
+.Ar remote-directory  ,
+opcjonalnie umieszczaj±c j± w pliku lokalnym
+.Ar local-file  .
+Je¶li pytania interaktywne s± w³±czone,
+.Nm ftp
+poprosi u¿ytkownika o weryfikacjê ostatniego argumentu, bêd±cego
+docelowym plikiem lokalny do którego zostanie zapisany wynik
+.Ic dir  .
+Je¶li ¿aden katalog nie zostanie podany, u¿ywany jest aktualny katalog
+na odleg³ym serwerze.
+Je¶li ¿aden lokalny plik nie zostanie podany lub
+.Ar local-file
+jest
+.Fl  ,
+wynik zostanie pokazany na terminalu.
+.It Ic disconnect
+Synonim dla
+.Ar close  .
+.It Ic forma Ar format
+Zmienia 
+.Ic formê 
+przesy³ania
+na
+.Ar format  .
+Standardowym formatem jest \*(Lqfile\*(Rq.
+.It Ic get Ar plik-zdalny Op Ar plik-lokalny
+¦ci±ga plik
+.Ar plik-zdalny
+i zachowuje go na lokalnym komputerze.
+Je¶li nazwa pliku lokalnego nie zostanie podana, plik nazywany jest tak jak
+na odleg³ej maszynie, zgodnie z ustawieniami
+.Ic case  ,
+.Ic ntrans ,
+i
+.Ic nmap  .
+Aktualne ustawienia
+.Ic type  ,
+.Ic form ,
+.Ic mode  ,
+i
+.Ic structure
+s± u¿ywane przy przesy³aniu pliku.
+.It Ic glob
+Zmienia rozszerzanie nazw plików dla poleceñ
+.Ic mdelete  ,
+.Ic mget
+i
+.Ic mput  .
+Je¶li rozszerzanie jest wy³±czone przy pomocy
+.Ic glob  ,
+argumenty bêd±ce nazwami plików nie s± rozszerzane.
+Rozszerzanie dla
+.Ic mput
+jest wykonywane tak jak w
+.Xr csh 1 .
+Dla
+.Ic mdelete
+i
+.Ic mget  ,
+ka¿dy odleg³y plik jest rozszerzany osobno na odleg³ym serwerze i lista
+plików nie jest ³±czona.
+Rozszerzanie nazw katalogów jest inne od rozszerzania nazw katalogów:
+dok³adny rezultat zale¿y od odleg³ego systemu operacyjnego i serwera ftp.
+Mo¿na go wcze¶niej podgl±dn±æ przy pomocy
+.Ql mls remote-files \-
+Uwaga:
+.Ic mget
+i
+.Ic mput
+nie maj± za zadanie przesy³aæ ca³e podkatalogi z plikami.
+To mo¿e byæ wykonywane przez przesy³anie archiwów
+.Xr tar 1
+tych podkatalogów (w trybie binarnym).
+.It Ic hash
+Zmienia wypisywanie hasha (``#'') dla ka¿dego przes³anego bloku danych.
+D³ugo¶æ ka¿dego bloku wynosi 1024 bajty.
+.It Ic help Op Ar komenda
+Pokazuje informacjê o znaczeniu polecenia
+.Ar komenda  .
+Je¶li nie podano ¿adnego argumentu
+.Nm ftp
+pokazuje listê wszystkich poleceñ.
+.It Ic idle Op Ar sekundy
+Ustawia licznik bezczynno¶ci na odleg³ym serwerze na
+.Ar sekundy
+sekund.
+Je¶li
+.Ar sekundy
+zosta³y pominiête, pokazywany jest aktualny licznik bezczynno¶ci.
+.It Ic lcd Op Ar katalog
+Zmienia aktualny katalog na lokalnej maszynie.
+Je¶li
+.Ar katalog
+nie zosta³ podany, u¿ywany jest katalog domowy u¿ytkownika.
+.It Xo
+.Ic \&ls
+.Op Ar remote-directory
+.Op Ar local-file
+.Xc
+Pokazuje zawarto¶æ katalogu na odleg³ej maszynie. Lista zawiera informacje
+systemowe, które zosta³y wybrane przez serwer; np. wiêkszo¶æ systemów
+.Ux
+poka¿e listê z komendy
+.Ql ls \-l .
+(Zobacz tak¿e
+.Ic nlist . )
+Je¶li nie podano
+.Ar remote-directory
+aktualny katalog roboczy jest u¿ywany.
+Je¶li interaktywne pytania s± w³±czone, 
+.Nm ftp
+ka¿e u¿ytkownikowi potwierdziæ, ¿e ostatni argument rzeczywi¶cie jest
+docelowym plikiem lokalnym do którego zostanie zapisany wynik polecenia
+.Ic \&ls  .
+Je¶li nie podano pliku lokalnego lub
+.Ar local-file
+jest
+.Sq Fl ,
+lista pokazywana jest w oknie terminala.
+.It Ic macdef Ar nazwa-makra
+Definiuje makro. Kolejne linie s± zapisywane do makra o nazwie
+.Ar nazwa-makra  ;
+pusta linia koñczy wprowadzanie poleceñ.
+Istnieje limit 16 makr i 4096 znaków we wszystkich zdefiniowanych makrach.
+Makro pozostaje zdefiniowanym dopóki nie wykona siê polecenia
+.Ic close  .
+Przy wykonywaniu makra, znaki `$' i `\e' interpterowane s± jako
+znaki specjalne.
+Liczba lub liczby poprzedzone znakiem `$' s± zamieniane na odpowiednie argumenty
+z linii wywo³uj±cej makro.
+`i' poprzedzone przez `$' sygnalizuje, ¿e makro ma zostaæ zapêtlone.
+Przy pierwszym przej¶ciu `$i' zamieniane jest przez pierwszy argument w linii
+wywo³ania makra, przy drugim przej¶ciu zamieniany jest przez drugi argument,
+itd.
+Dowolny znak poprzedzony przez `\e' zamieniany jest na ten znak.
+Mo¿esz u¿yæ `\e' aby zapobiec specjalnemu traktowaniu znaku `$'.
+.It Ic mdelete Op Ar zdalne-pliki
+Usuwa pliki
+.Ar zdalne-pliki
+z odleg³ego serwera.
+.It Ic mdir Ar zdalne-pliki plik-lokalny
+Tak jak
+.Ic dir  ,
+tylko, ¿e mo¿na podaæ wiele plików.
+Je¶li w³±czone s± interaktywne pytania,
+.Nm ftp
+ka¿e u¿ytkownikowi potwierdziæ, ¿e ostatni argument rzeczywi¶cie jest plikiem
+lokalnym do którego zostanie zapisany wynik polecenia
+.Ic mdir  .
+.It Ic mget Ar zdalne-pliki
+Rozszerza nazwy dla
+.Ar zdalnych-plików
+na odleg³ym serwerze i wykonuje
+.Ic get
+dla ka¿dego pliku otrzymanego w ten sposób.
+Zobacz tak¿e
+.Ic glob  ,
+gdzie opisane s± detale rozszerzania nazw.
+Ka¿dy z tych plików zostanie przetworzony zgodnie z ustawieniami
+.Ic case  ,
+.Ic ntrans ,
+i
+.Ic nmap  .
+Pliki s± przesy³ane do lokalnego aktualnego katalogu, który mo¿e zostaæ
+zmieniony przy pomocy
+.Ql lcd katalog ;
+nowy katalog lokalny mo¿e zostaæ utworzony przez
+.Ql "\&! mkdir katalog" .
+.It Ic mkdir Ar nazwa-katalogu
+Tworzy nowy katalog na odleg³ej maszynie.
+.It Ic mls Ar zdalne-pliki plik-lokalny
+Tak jak
+.Ic nlist  ,
+poza tym, ¿e mo¿e byæ podane wiele odleg³ych plików
+oraz katalog lokalny
+.Ar plik-lokalny
+musi zostaæ podany.
+Je¶li w³±czone s± interaktywne pytania,
+.Nm ftp
+ka¿e u¿ytkownikowi potwierdziæ, ¿e ostatni argument rzeczywi¶cie jest plikiem
+lokalnym, do którego zostanie zapisany wynik polecenia
+.Ic mls  .
+.It Ic tryb Op Ar nazwa-trybu
+Ustawia 
+.Ic tryb 
+przesy³ania na 
+.Ar nazwê-trybu  .
+Standardowo jest to tryb \*(Lqstream\*(Rq.
+.It Ic modtime Ar nazwa-pliku
+Pokazuje datê ostatniej modyfikacji pliku na odleg³ym serwerze. 
+.It Ic mput Ar pliki-lokalne
+Rozszerza znaki specjalne w nazwach plików lokalnych podanych jako argumenty
+i wykonuje
+.Ic put
+dla ka¿dego otrzymanego pliku.
+Zobacz tak¿e
+.Ic glob  ,
+gdzie opisane s± detale rozszerzania nazw.
+Ka¿dy z tych plików zostanie przetworzony zgodnie z ustawieniami
+.Ic ntrans ,
+i
+.Ic nmap  .
+.It Ic newer Ar nazwa-pliku Op Ar plik-lokalny
+Pobiera plik, gdy data modyfikacji na odleg³ym serwerze jest pó¼niejsza
+ni¿ data modyfikacji pliku lokalnego.
+Je¶li lokalny plik nie istnieje, plik odleg³y jest uwa¿any za nowszy.
+W przeciwnym wypadku ta komenda jest identyczna z get
+.Ar get  .
+.It Xo
+.Ic nlist
+.Op Ar zdalny-katalog
+.Op Ar plik-lokalny
+.Xc
+Pokazuje listê plików w katalogu na odleg³ym komputerze.
+Je¶li 
+.Ar zdalny-katalog
+nie zosta³ podany, u¿ywany jest aktualny katalog roboczy.
+Je¶li w³±czone s± interaktywne pytania,
+.Nm ftp
+ka¿e u¿ytkownikowi potwierdziæ, ¿e ostatni argument jest plikiem lokalnym,
+do którego zostanie zapisany wynik polecenia 
+.Ic nlist  .
+Je¶li lokalny plik nie zosta³ podany lub podano
+.Fl  ,
+wynik pokazywany jest na terminalu.
+.It Ic nmap Op Ar inwzorzec outwzorzec
+W³±cza lub wy³±cza mechanizm mapowania nazw plików.
+Je¶li nie podano argumentów jest on wy³±czany. Je¶li podano argumenty
+pliki odleg³e s± mapowane w czasie komend
+.Ic mput
+oraz
+.Ic put
+wydanych bez podanych plików odleg³ych.
+Je¶li podano argumenty, pliki lokalne s± mapowane podczas komend
+.Ic mget
+oraz
+.Ic get
+wydanych bez podanych plików lokalnych.
+To polecenie jest przydatne podczas po³±czeñ z systemami
+.No nie\- Ns Ux
+z inn± konwencj± nazywania plików.
+Mapowanie robione jest ze wzorców
+.Ar inwzorzec
+i
+.Ar outwzorzec  .
+.Op Ar Inwzorzec
+jest wzorem dla plików przychodz±cych (które mog³y ju¿ byæ przetworzone zgodnie
+z ustawieniami
+.Ic ntrans
+i
+.Ic case
+).
+Zmienne wzorcowe s± robione przez umieszczanie sekwencji
+`$1', `$2', ..., `$9' w
+.Ar inwzorzec  .
+U¿ycie `\\' zapobiega specjalnemu traktowaniu znaku `$'.
+Wszystkie inne znaki s± traktowane dos³ownie i u¿ywane do okre¶lenia
+warto¶ci zmiennych
+.Ic nmap
+.Op Ar inwzorzec  .
+Np. podanie jako
+.Ar inwzorzec
+$1.$2 oraz jako odleg³± nazwê pliku "mydata.data", $1 przyjmie warto¶æ
+"mydata", a $2 przyjmie warto¶æ "data".
+.Ar Outwzorzec
+okre¶la rezultat po mapowaniu.
+Sekwencje `$1', `$2', ...., `$9' s± zamieniane przez warto¶ci wynikaj±ce ze
+wzorca
+.Ar inwzorzec  .
+Ci±g `$0' jest zamieniany przez  oryginaln± nazwê pliku.
+Dodatkowo ci±g
+.Ql Op Ar seq1 , Ar seq2
+zamieniany jest przez
+.Op Ar seq1
+je¶li
+.Ar seq1
+nie jest puste; w przeciwnym wypadku zamieniane jest na
+.Ar seq2 .
+Np. polecenie
+.Pp
+.Bd -literal -offset indent -compact
+nmap $1.$2.$3 [$1,$2].[$2,file]
+.Ed
+.Pp
+da wynik "myfile.data" dla danych nazw "myfile.data" oraz
+"myfile.data.old", "myfile.file" dla plików wej¶ciowych "myfile" i 
+"myfile.myfile" dla ".myfile".
+Odstêpy mog± byæ zawarte w
+.Ar outwzorzec  ,
+tak jak w przyk³adzie: `nmap $1 sed "s/  *$//" > $1' .
+U¿ycie znaku `\e' zapobiega specjalnemu traktowaniu znaków 
+`$','[','[', oraz `,'.
+.It Ic ntrans Op Ar inznaki Op Ar outznaki
+W³±cza lub wy³±cza mechanizm t³umaczenia znaków nazw plików.
+Je¶li nie podano argumentów, mechanizm translacji znaków nazw plików jest
+wy³±czony. Je¶li podano argumenty, znaki zdalnych nazw plików podlegaj±
+podczas wywo³ywania komend
+.Ic mput
+i
+.Ic put
+t³umaczeniu. (o ile nie podano jawnie zdalnej nazwy pliku.) 
+Podobnie ma siê sprawa z dzia³aniem komend
+.Ic mget
+i
+.Ic get
+\fR.
+Komenda ta jest przydatna do pod³±czania siê do 
+.No nie\- Ns Ux
+owego komputera o innych konwencjach nazywania plików.
+Znaki nazwy pliku, odpowiadaj±ce znakom w
+.Ar inznaki
+s± podmieniane na ich odpowiedniki w
+.Ar outznaki  .
+Je¶li pozycja znaku w
+.Ar inznaki
+jest dalsza ni¿ d³ugo¶æ
+.Ar outznaki  ,
+to znak jest kasowany z nazwy pliku.
+.It Ic open Ar host Op Ar port
+Nawi±¿ po³±czenie z podanym
+.Ar hostem
+.Tn FTP
+\fR.
+Dodatkowo mo¿na podaæ numer portu; wtedy
+.Nm ftp
+spróbuje zestawiæ po³±czenie z serwerem
+.Tn FTP
+na okre¶lonym porcie.
+Je¶li w³±czona jest opcja
+.Ic auto-login
+(a jest to domy¶lne),
+.Nm ftp
+spróbuje te¿ automatycznie zalogowaæ u¿ytkownika na serwer
+.Tn FTP
+(patrz ni¿ej).
+.It Ic prompt
+W³±cz interaktywne zapytywanie.
+Pojawia siê to podczas wielokrotnych transferów plików, umo¿liwiaj±c
+u¿ytkownikowi selektywne wysy³anie lub pobieranie plików.
+Je¶li jest to wy³±czone (domy¶lnie jest w³±czone), wszelkie operacje
+.Ic mget
+i
+.Ic mput
+bêd± przenosiæ wszystkie pliki;
+.Ic mdelete
+równie¿ nie bêdzie oszczêdzaæ niczego.
+.It Ic proxy Ar komenda-ftp
+Wywo³aj komendê ftp w drugorzêdnym po³±czeniu. Komenda ta zezwala
+na równoczesne po³±czenie do dwóch zdalnych serwerów ftp i przesy³anie
+plików miêdzy nimi dwoma.
+Pierwsz± komend±
+.Ic proxy
+powinna byæ
+.Ic open  ,
+do zestawienia drugorzêdnego po³±czenia.
+Aby zobaczyæ listê komend ftp, dostêpnych w drugorzêdnym po³±czeniu, wpisz
+"proxy ?".
+Nastêpuj±ce komendy zachowuj± siê inaczej po poprzedzeniu przez
+.Ic proxy  :
+.Ic open
+nie definiuje nowych makr podczas procesu autologowania,
+.Ic close
+nie kasuje istniej±cych definicji makr,
+.Ic get
+i
+.Ic mget
+przesy³aj± pliki z hosta w po³±czeniu pierwszorzêdnym na host w po³±czeniu
+drugorzêdnym, a
+.Ic put  ,
+.Ic mput ,
+i
+.Ic append
+przesy³aj± pliki z hosta w po³±czeniu drugorzêdnym na host w po³±czeniu
+pierwszorzêdnym.
+Trzeciorzêdne transfery plików zale¿± od obs³ugiwania przez serwer
+po³±czenia drugorzêdnego komendy
+.Dv PASV
+protoko³u ftp.
+.It Ic put Ar plik-lokalny Op Ar plik-zdalny
+Zapisz plik lokalny na zdalnej maszynie.
+Je¶li
+.Ar plik-zdalny
+nie jest podany, u¿ywana jest lokalna nazwa plików (po przetworzeniu wed³ug
+ustawieñ
+.Ic ntrans
+lub
+.Ic nmap
+\fR).
+Transfer plików u¿ywa bie¿±cych ustawieñ dla
+.Ic type  ,
+.Ic format ,
+.Ic mode  ,
+i
+.Ic structure  .
+.It Ic pwd
+Drukuj nazwê bie¿±cego katalogu roboczego zdalnej maszyny.
+.It Ic quit
+Synonim
+.Ic bye  .
+.It Ic quote Ar arg1 arg2 ...
+Podane argumenty s± przesy³ane dos³ownie do zdalnego serwera
+.Tn FTP
+\fR.
+.It Ic recv Ar plik-zdalny Op Ar plik-lokalny
+Synonim get.
+.It Ic reget Ar plik-zdalny Op Ar plik-lokalny
+Reget dzia³a jak get, lecz je¶li
+.Ar plik-lokalny
+istnieje i jest mniejszy ni¿
+.Ar plik-zdalny  ", to "
+.Ar plik-lokalny
+jest uwa¿any za czê¶ciowo odebran± kopiê
+.Ar pliku-zdalnego
+\fR, a transfer bêdzie rozpoczynany w odpowiednim miejscu pliku.
+Komenda ta jest przydatna do transferowania bardzo du¿ych plików poprzez
+sieci, maj±ce tendencje do zrywania po³±czeñ.
+.It Ic remotehelp Op Ar nazwa-komendy
+Za¿±daj pomocy od zdalnego serwera
+.Tn FTP
+\fR.
+Je¶li podano
+.Ar nazwê-komendy
+to jest ona równie¿ przekazywana serwerowi.
+.It Ic remotestatus Op Ar nazwa-pliku
+Bez argumentów, poka¿ status zdalnej maszyny.
+Je¶li podano
+.Ar nazwy-pliku
+\fR, poka¿ status
+.Ar nazwy-pliku
+zdalnej maszyny.
+.It Xo
+.Ic rename
+.Op Ar z
+.Op Ar na
+.Xc
+Zmieñ nazwê pliku
+.Ar z
+na zdalnej maszynie na plik
+.Ar na  .
+.It Ic reset
+Wyczy¶æ kolejkê odpowiedzi.
+Komenda ta resynchronizuje sekwencjonowanie komendy/odpowiedzi ze zdalnym
+serwerem ftp. Resynchronizacja jest niezbêdna po pogwa³ceniu protoko³u ftp
+przez zdalny serwer.
+.It Ic restart Ar marker
+Restartuj nastêpuj±cy zaraz
+.Ic get
+lub
+.Ic put
+pod wskazanym
+.Ar markerem  .
+Na systemach
+.Ux
+marker jest zazwyczaj offsetem bajtowym w pliku.
+.It Ic rmdir Ar nazwa-katalogu
+Usuñ katalog ze zdalnej maszyny.
+.It Ic runique
+W³±cz zapisywanie plików na lokalnym systemie z unikalnymi nazwami plików.
+Je¶li plik o danej nazwie ju¿ istnieje, komendy
+.Ic get
+i
+.Ic mget
+dopisz± do nowej nazwy pliku ".1".
+Je¶li i ta nazwa jest nazw± istniej±cego pliku, do nazwy oryginalnej
+doklejane jest ".2". Proces ten trwa a¿ do ".99". Pó¼niej drukowany jest
+komunikat o b³êdzie i transfer dalej nie zachodzi.
+Generowanie unikalnej nazwy pliku bêdzie raportowane.
+Zauwa¿, ¿e
+.Ic runique
+nie wp³ywa na pliki lokalne, wygenerowane komend± pow³oki (patrz ni¿ej).
+Domy¶lnie jest to wy³±czone.
+.It Ic send Ar plik-lokalny Op Ar plik-zdalny
+Synonim put.
+.It Ic sendport
+W³±cz u¿ywanie komend
+.Dv PORT
+\&. Domy¶lnie
+.Nm ftp
+próbuje u¿ywaæ komendy
+.Dv PORT
+podczas nawi±zywania po³±czenia dla ka¿dego transferu danych.
+U¿ywanie komendy
+.Dv PORT
+mo¿e zapobiec opó¼nieniom podczas wielokrotnych transferów plików.
+Je¶li komenda
+.Dv PORT
+zawiedzie,
+.Nm ftp
+u¿yje domy¶lnego portu danych.
+Gdy u¿ywanie komendy
+.Dv PORT
+jest wy³±czone, nie s± podejmowane ¿adne próby w kierunku u¿ywania komend
+.Dv PORT
+podczas transferów plików.
+Jest to przydatne dla niektórych implementacji
+.Tn FTP
+\fR, które ignoruj± komendy
+.Dv PORT
+\fR, lecz nieprawid³owo wskazuj±, ¿e zosta³y one przyjête.
+.It Ic site Ar arg1 arg2 ...
+Argumenty s± przesy³ane dos³ownie do zdalnego serwera
+.Tn FTP
+jako komenda
+.Dv SITE
+\fR.
+.It Ic size Ar nazwa-pliku
+Zwraca rozmiar
+.Ar nazwy-pliku
+na zdalnej maszynie.
+.It Ic status
+Poka¿ obecny status
+.Nm ftp  .
+.It Ic struct Op Ar nazwa-struktury
+Ustaw
+.Ar strukturê
+transferu plików na
+.Ar nazwê-struktury .
+Domy¶lnie u¿ywana jest struktura \*(Lqstream\*(Rq.
+.It Ic sunique
+W³±cz zapisywanie plików na maszynie zdalnej wed³ug konwencji unique.
+Serwer zdalny musi obs³ugiwaæ komendê
+.Dv STOU
+protoko³u FTP.
+Zdalny serwer bêdzie zg³asza³ unikalne nazwy.
+Domy¶lnie jest to wy³±czone.
+.It Ic system
+Poka¿ typ systemu operacyjnego zdalnej maszyny.
+.It Ic tenex
+Ustaw typ transferu plików, wymaganego do rozmawiania z maszynami
+.Tn TENEX
+\fR.
+.It Ic trace
+W³±cz ¶ledzenie pakietów.
+.It Ic type Op Ar nazwa-typu
+Ustaw
+.Ic typ
+transferu plików na
+.Ar nazwê-typu  .
+Je¶li nie podano typu, drukowany jest aktualnie ustawiony.
+Domy¶lnym typem jest sieciowy
+.Tn ASCII .
+.It Ic umask Op Ar nowamaska
+Ustaw domy¶ln± umaskê na zdalnym serwerze na
+.Ar now±maskê  .
+Je¶li
+.Ar nowamaska
+jest pominiêta, drukowana jest warto¶æ bie¿±cej.
+.It Xo
+.Ic user Ar nazwa-u¿ytkownika
+.Op Ar has³o
+.Op Ar konto
+.Xc
+Zezwala na identyfikacjê przed serwerem
+.Tn FTP
+\fR.
+Je¶li
+.Ar has³o
+nie jest podane, a serwer go wymaga,
+.Nm ftp
+zapyta o nie (po wy³±czeniu lokalnego echa).
+Je¶li nie podano pola
+.Ar konta
+\fR, a serwer
+.Tn FTP
+go wymaga, u¿ytkownik zostanie o nie zapytany.
+Je¶li podano pole
+.Ar konta
+\fR, a zdalny serwer nie wymaga³ go podczas logowania, to po zakoñczeniu 
+sekwencji logowania serwerowi zostanie przekazana komenda account.
+O ile 
+.Nm ftp
+nie by³ wywo³any z wy³±czonym \*(Lqauto-login\*(Rq, proces ten jest
+dokonywany automatycznie w pocz±tkowym po³±czeniu z serwerem
+.Tn FTP
+\fR.
+.It Ic verbose
+W³±cz tryb gadatliwy.
+W trybie tym wszystkie odpowiedzi serwera
+.Tn FTP
+s± u¿ytkownikowi drukowane.
+Dodatkowo,
+tryb ten po transferach plików daje statystyki.
+Domy¶lnie tryb ten jest w³±czony.
+.It Ic ? Op Ar komenda
+Synonim help.
+.El
+.Pp
+Zawieraj±ce spacje argumenty komend mog± byæ cytowane znakami
+cudzys³owów `"'.
+.Sh PRZERYWANIE TRANSFERU PLIKÓW
+Aby przerwaæ transfer plików, u¿yj terminalowego klawisza przerwania (zwykle
+Ctrl-C).
+Transfery wysy³ane zostan± zatrzymane natychmiast. Transfery odbierane
+zostan± zatrzymane przez wys³anie komendy ftp
+.Dv ABOR
+do zdalnego serwera i przez odrzucenie wszelkich dalszych odebranych danych.
+Szybko¶æ dokonania tego zadania, zale¿y od tego, jak zdalny serwer obs³uguje
+.Dv ABOR
+\&. Je¶li serwer nie obs³uguje komendy
+.Dv ABOR
+\fR, znak zachêty
+.Ql ftp>
+nie pojawi siê a¿ serwer nie zakoñczy wysy³aæ ¿±danego pliku.
+.Pp
+Sekwencja terminalowa przerwania bêdzie ignorowana w wypadku gdy
+.Nm ftp
+zakoñczy³ przetwarzanie lokalne i oczekuje odpowiedzi od
+zdalnego serwera. D³ugie opó¼nienie w tym trybie mo¿e wynikaæ z obs³ugi
+ABOR, opisanej powy¿ej, lub z nieoczekiwanego zachowania zdalnego serwera,
+³±cznie z pogwa³ceniami protoko³u ftp.
+Je¶li opó¼nienia wynikaj± z nieoczekiwanego zachowania zdalnego serwera,
+lokalny program
+.Nm ftp
+musi byæ ubijany rêcznie.
+.Sh KONWENCJE NAZYWANIA PLIKÓW
+Pliki, przekazane komendom
+.Nm ftp
+jako argumenty s± przetwarzane wed³ug nastêpuj±cych zasad.
+.Bl -enum
+.It
+Je¶li podana jest nazwa pliku
+.Sq Fl
+to do odczytu u¿ywane bêdzie
+.Ar stdin
+a dla zapisu
+.Ar stdout
+\fR.
+.It
+Je¶li pierwszy znak nazwy pliku to
+.Sq \&| ,
+to reszta traktowana jest jako komenda pow³oki.
+.Nm Ftp
+wtedy rozwidla (fork) pow³okê przy u¿yciu
+.Xr popen 3
+i odczytuje (zapisuje) ze stdout (stdin).
+Je¶li komenda pow³oki zawiera spacje, argument musi byæ zacytowany; np.
+\*(Lq" ls -lt"\*(Rq.
+Szczególnie u¿ytecznym przyk³adem tego mechanizmu jest: \*(Lqdir more\*(Rq.
+.It
+Przy nieudanym zakoñczeniu powy¿szych sprawdzeñ, o ile w³±czone jest
+``globowanie'', nazwy lokalnych plików s± rozwijane wed³ug regu³ u¿ywanych w 
+.Xr csh  1  ;
+c.f. komenda
+.Ic glob
+\fR.
+Je¶li komenda
+.Nm ftp
+oczekuje pojedynczego pliku lokalnego (np.
+.Ic put  ) ,
+to u¿ywany jest tylko pierwszy plik wygenerowany operacj± "globowania".
+.It
+Dla komend
+.Ic mget
+i
+.Ic get
+bez podanych lokalnych nazw plików, nazwa lokalna jest identyczna ze zdaln±,
+choæ mo¿e byæ przekszta³cana przez ustawienia
+.Ic case  ,
+.Ic ntrans ,
+lub
+.Ic nmap
+\fR.
+Ostateczna nazwa pliku mo¿e byæ jeszcze ewentualnie zmieniona je¶li w³±czone
+jest
+.Ic runique
+\fR.
+.It
+Dla komend
+.Ic mput
+i
+.Ic put
+bez podanych zdalnych nazw plików, zdalne nazwy s± identyczne z lokalnymi,
+choæ mog± byæ przekszta³cone przez ustawienia
+.Ic ntrans
+lub
+.Ic nmap
+\fR.
+Ostateczna nazwa pliku mo¿e byæ jeszcze ewentualnie zmieniona je¶li w³±czone
+jest
+.Ic sunique
+\fR.
+.El
+.Sh PARAMETRY TRANSFERU PLIKÓW
+Specyfikacja FTP podaje wiele parametrów, które mog± dotyczyæ transferu
+plików.
+Parametr
+.Ic type
+mo¿e byæ jednym z \*(Lqascii\*(Rq, \*(Lqimage\*(Rq (binary),
+\*(Lqebcdic\*(Rq i \*(Lqlocal byte size\*(Rq (przewa¿nie dla
+.Tn PDP Ns -10's
+i
+.Tn PDP Ns -20's
+\fR).
+.Nm Ftp
+obs³uguje typy ascii oraz image transferu plików
+plus local byte size 8 dla transferów w stylu
+.Ic tenex
+\fR.
+.Pp
+.Nm Ftp
+obs³uguje tylko domy¶lne warto¶ci dla pozosta³ych parametrów transferu
+plików:
+.Ic mode  ,
+.Ic form ,
+i
+.Ic struct  .
+.Sh PLIK .netrc
+Plik
+.Pa .netrc
+zawiera informacje loginowe i inicjalizacji, u¿ywane przez proces
+autologowania.
+Znajduje siê w katalogu domowym u¿ytkownika. Rozpoznawane s± nastêpuj±ce
+elementy; mog± byæ one rozdzielone spacjami, tabulacjami lub nowymi liniami:
+.Bl -tag -width password
+.It Ic machine Ar nazwa
+Zidentyfikuj zdaln± maszynê
+.Ar nazwa .
+Proces autologowania przeszukuje plik
+.Pa .netrc
+w poszukiwaniu
+elementu
+.Ic machine
+\fR, który odpowiada zdalnej maszynie podanej w linii komend ftp, lub
+jako argument komendy
+.Ic open
+\fR.
+Je¶li element zostanie znaleziony, przetwarzane s± dalsze elementy
+.Pa .netrc
+\fR, z zatrzymaniem siê po osi±gniêciu nastêpnego elementu
+.Ic machine
+lub elementu
+.Ic default
+\fR.
+.It Ic default
+Jest to to samo co
+.Ic machine
+.Ar nazwa
+lecz
+.Ic default
+odpowiada dowolnej nazwie
+Zdefiniowany byæ mo¿e tylko jeden element
+.Ic default
+i musi znajdowaæ siê on za wszystkimi innymi elementami
+.Ic machine
+\fR.
+Normalnie jest u¿ywany jako:
+.Pp
+.Dl default login anonymous password user@site
+.Pp
+daj±c tak u¿ytkownikowi
+.Ar automatyczne
+logowanie anonimowego ftp na maszyny niewskazane w
+.Pa .netrc .
+Mo¿e to byæ przeci±¿one przez u¿ycie flagi
+.Fl n
+\fR, która wy³±cza autologowanie.
+.It Ic login Ar nazwa
+Okre¶l u¿ytkownika zdalnej maszyny. Je¶li ten element istnieje,
+autologowanie rozpocznie logowanie z u¿yciem podanej
+.Ar nazwy .
+.It Ic password Ar ³añcuch
+Przekazuje has³o.
+Je¶li ten element jest obecny, proces autologowania przeka¿e podany ³añcuch
+je¶li zdalny serwer wymaga has³a jako czê¶ci procesu logowania.
+Zauwa¿, ¿e je¶li element ten jest obecny w
+.Pa .netrc
+dla u¿ytkowników innych ni¿
+.Ar anonymous  ,
+.Nm ftp
+przerwie proces autologowania je¶li
+.Pa .netrc
+jest odczytywalne przez kogokolwiek poza u¿ytkownikiem.
+.It Ic konto Ar ³añcuch
+Przeka¿ dodatkowe has³o konta.
+Je¶li ten element jest obecny, proces autologowania przeka¿e podany ³añcuch
+je¶li serwer za¿±da dodatkowego has³a konta. Je¶li nie za¿±da, autologowanie
+rozpocznie komendê
+.Dv ACCT
+\fR.
+.It Ic macdef Ar name
+Definiuje makro. Ten element funkcjonuje jak komenda
+.Ic macdef
+\fR.
+Makro jest definiowane z podan± nazw±; jego zawarto¶æ rozpoczyna siê w
+nastêpnej linii
+.Pa .netrc
+i trwa a¿ do spotkania pustej linii (kolejne znaki nowej linii).
+Je¶li zdefiniowane jest makro o nazwie
+.Ic init
+\fR, to jest  ono wykonywane automatycznie jako pierwszy krok procesu
+autologowania.
+.El
+.Sh ¦RODOWISKO
+.Nm Ftp
+korzysta z nastêpuj±cych zmiennych ¶rodowiskowych.
+.Bl -tag -width Fl
+.It Ev HOME
+Dla domy¶lnego po³o¿enia pliku
+.Pa .netrc
+\fR, o ile taki istnieje.
+.It Ev SHELL
+Dla domy¶lnej pow³oki.
+.El
+.Sh ZOBACZ TAK¯E
+.Xr ftpd 8
+.Sh HISTORIA
+Komenda
+.Nm ftp
+pojawi³a siê w
+.Bx 4.2 .
+.Sh B£ÊDY
+Prawid³owe wykonywanie wielu komend zale¿y od prawid³owego zachowania siê
+zdalnego serwera.
+.Pp
+B³±d w traktowaniu powrotów karetki w kodzie transferu trybu-ascii w
+.Bx 4.2
+zosta³ poprawiony. Poprawka ta mo¿e powodowaæ nieprawid³owo¶ci w przesy³aniu
+plików binarnych do i od
+.Bx 4.2
+w trybie ascii.
+Sposobem na unikniêcie tego problemu jest u¿ywanie typu binarnego.

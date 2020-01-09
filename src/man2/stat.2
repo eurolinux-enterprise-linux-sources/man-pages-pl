@@ -1,0 +1,239 @@
+.\" 1999 PTM Przemek Borys
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright (c) 1992 Drew Eckhardt (drew@cs.colorado.edu), March 28, 1992
+.\" Parts Copyright (c) 1995 Nicolai Langfeldt (janl@ifi.uio.no), 1/1/95
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified by Michael Haardt (u31b3hs@pool.informatik.rwth-aachen.de)
+.\" Modified Sat Jul 24 10:54:27 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified Thu May 18 11:00:31 1995 by Rik Faith (faith@cs.unc.edu)
+.\"          to add comments suggested by Todd Larason (jtl@molehill.org)
+.\" 
+.TH STAT 2 "1 Stycznia 1995" "Linux 1.1.75" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+stat, fstat, lstat \- pobierz status pliku
+.SH SK£ADNIA
+.B #include <sys/stat.h>
+.br
+.B #include <unistd.h>
+.sp
+.BI "int stat(const char *" file_name ", struct stat *" buf );
+.br
+.BI "int fstat(int " filedes ", struct stat *" buf );
+.br
+.BI "int lstat(const char *" file_name ", struct stat *" buf );
+.SH OPIS
+.PP
+Funkcje te zwracaj± informacje o podanym pliku. Do uzyskania tej informacji
+nie s± wymagane prawa dostêpu do pliku, lecz konieczne s± prawa
+przeszukiwania katalogów, le¿±cych na jego ¶cie¿ce.
+.PP
+.B stat
+zwraca status pliku wskazywanego przez
+.IR file_name ,
+³aduj±c go do argumentu
+.IR buf .
+
+.B lstat
+jest identyczny jak
+.BR stat ,
+lecz nie zwraca on statusu plików, wskazywanych przez dowi±zania, a status
+samego dowi±zania.
+
+.B fstat
+jest identyczny ze stat, lecz status jest zwracany dla pliku wskazywanego
+przez
+.I filedes
+(zwrócony przez
+.IR open (2)).
+
+.PP
+Wszystkie te funkcje zwracaj± strukturê
+.IR stat ,
+która jest zadeklarowana nastêpuj±co:
+.PP
+.RS
+.nf
+struct stat
+{
+    dev_t         st_dev;      /* urz±dzenie */
+    ino_t         st_ino;      /* i-wêze³ (inode) */
+    umode_t       st_mode;     /* ochrona */
+    nlink_t       st_nlink;    /* liczba dowi±zañ sta³ych (hardlinks) */
+    uid_t         st_uid;      /* ID u¿ytkownika w³a¶ciciela */
+    gid_t         st_gid;      /* ID grupy w³a¶ciciela */
+    dev_t         st_rdev;     /* typ urz±dzenia (je¶li urz±dzenie inode) */
+    off_t         st_size;     /* ca³kowity rozmiar w bajtach */
+    unsigned long st_blksize;  /* wielko¶æ bloku dla I/O systemu plików */
+    unsigned long st_blocks;   /* ilo¶æ zaalokowanych bloków */
+    time_t        st_atime;    /* czas ostatniego dostêpu */
+    time_t        st_mtime;    /* czas ostatniej modyfikacji */
+    time_t        st_ctime;    /* czas ostatniej zmiany */
+};
+.fi
+.RE
+.PP
+Zauwa¿, ¿e
+.I st_blocks
+nie zawsze musi wyra¿aæ wielko¶æ w blokach wielko¶ci
+.IR st_blksize ,
+i ¿e
+.I st_blksize
+mo¿e zamiast tego dawaæ wielko¶æ "preferowanego" rozmiaru bloku dla
+efektywnego I/O.
+.PP
+Nie wszystkie systemy plików Linuksa implementuj± wszystkie z tych pól.
+Zazwyczaj
+.I st_atime
+jest zmieniane przez
+.BR mknod "(2), " utime "(2), " read "(2), " write "(2), and " truncate (2).
+
+Zazwyczaj
+.I st_mtime
+jest zmieniane przez
+.BR mknod "(2), " utime "(2), and " write (2).
+.I st_mtime
+.I nie
+jest zmieniane po zmianach w³a¶ciciela, grupy, liczby sta³ych (hardlinks)
+czy praw.
+
+Zazwyczaj
+.I st_ctime
+jest zmieniane przy zapisywaniu lub ustawianiu informacji i-wêz³a (np.
+w³a¶ciciela, grupy, liczby dowi±zañ, praw, itp).
+.PP
+Nastêpuj±ce makra sprawdzaj± typ pliku:
+.RS
+.TP 1.2i
+S_ISLNK(m)
+czy dowi±zanie symboliczne (symbolic link)?
+.TP
+S_ISREG(m)
+czy plik regularny?
+.TP
+S_ISDIR(m)
+katalog?
+.TP
+S_ISCHR(m)
+urz±dzenie znakowe?
+.TP
+S_ISBLK(m)
+urz±dzenie blokowe?
+.TP
+S_ISFIFO(m)
+fifo?
+.TP
+S_ISSOCK(m)
+gniazdo?
+.RE
+.PP
+Dla pola
+.I st_mode
+zdefiniowano nastêpuj±ce flagi:
+.RS
+.TP 0.9i
+S_IFMT
+00170000 maska bitowa dla pól bitowych typu pliku
+.TP
+S_IFSOCK 
+0140000 gniazdo
+.TP
+S_IFLNK
+0120000 dowi±zanie symboliczne (symbolic link)
+.TP
+S_IFREG
+0100000 plik regularny
+.TP
+S_IFBLK
+0060000 urz±dzenie blokowe
+.TP
+S_IFDIR
+0040000 katalog
+.TP
+S_IFCHR
+0020000 urz±dzenie znakowe
+.TP
+S_IFIFO
+0010000 fifo
+.TP
+S_ISUID
+0004000 bit `set UID'
+.TP
+S_ISGID
+0002000 bit `set GID'
+.TP
+S_ISVTX
+0001000 bit `sticky' 
+.TP
+S_IRWXU
+00700 u¿ytkownik (w³a¶ciciel pliku) ma prawa odczytu, zapisu i wykonania
+.TP
+S_IRUSR (S_IREAD)
+00400 u¿ytkownik ma prawa odczytu
+.TP
+S_IWUSR (S_IWRITE)
+00200 u¿ytkownik ma prawa zapisu
+.TP
+S_IXUSR (S_IEXEC)
+00100 u¿ytkownik ma prawa wykonania
+.TP
+S_IRWXG
+00070 grupa ma prawa odczytu, zapisu i wykonania
+.TP
+S_IRGRP
+00040 grupa ma prawa odczytu
+.TP
+S_IWGRP
+00020 grupa ma prawa zapisu
+.TP
+S_IXGRP
+00010 grupa ma prawa wykonania
+.TP
+S_IRWXO
+00007 inni maj± prawa odczytu, zapisu i wykonania
+.TP
+S_IROTH
+00004 inni maj± prawa odczytu
+.TP
+S_IWOTH
+00002 inni maj± prawa zapisu
+.TP
+S_IXOTH
+00001 inni maj± prawa wykonania
+.RE
+.SH "WARTO¦Æ ZWRACANA"
+Po sukcesie zwracane jest zero. Po b³êdzie \-1 i ustawiane jest
+.IR errno .
+.SH B£ÊDY
+.TP 0.8i
+.B EBADF
+.I filedes
+jest nieprawid³owy.
+.TP
+.B ENOENT
+Plik nie istnieje.
+.SH "ZGODNE Z"
+SVID (nie \fBlstat()\fP), AT&T (nie \fBlstat()\fP), POSIX (nie
+\fBlstat()\fP), X/OPEN (nie \fBlstat()\fP), BSD 4.3
+.SH "ZOBACZ TAK¯E"
+.BR chmod "(2), " chown "(2), " readlink "(2), " utime (2)

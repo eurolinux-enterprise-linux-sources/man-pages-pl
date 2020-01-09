@@ -1,0 +1,141 @@
+.\" {PTM/WK/1999-XII}
+.\" Copyright 1992, 1993, 1994 Rickard E. Faith (faith@cs.unc.edu)
+.\" May be freely distributed.
+.\" " for hilit19
+.TH FSCK 8 "2 lipca 1996" "Util-Linux 2.6" "Podrêcznik Programisty Linuksa"
+.SH NAZWA
+fsck.minix \- linuksowy kontroler spójno¶ci systemu plików
+.SH SK£ADNIA
+.B fsck.minix
+.RB [ \-larvsmf ]
+.I urz±dzenie
+.SH OPIS
+.B fsck.minix
+przeprowadza kontrolê spójno¶ci linuksowego systemu plikowego MINIX.
+Obecna wersja obs³uguje opcje 14- i 30-znakowych nazw plików.
+
+Program zak³ada, ¿e system plików jest unieruchomiony (nie pracuje).
+.B fsck.minix
+nie powinien byæ stosowany na zamontowanym urz±dzeniu, chyba ¿e jeste¶
+pewien, ¿e nikt nañ nie zapisuje (i pamiêtaj, ¿e j±dro mo¿e zapisywaæ na nim
+gdy poszukuje plików).
+
+Urz±dzenie podane jest zwykle z poni¿szej postaci:
+.nf
+.RS
+/dev/hda[1-63] (1-szy dysk IDE)
+/dev/hdb[1-63] (2-gi dysk IDE)
+/dev/sda[1-15] (1-szy dysk SCSI)
+/dev/sdb[1-15] (2-gi dysk SCSI)
+.RE
+.fi
+
+Je¿eli system plików zosta³ zmieniony (np. naprawiony), to
+.B fsck.minix
+wy¶wietli "FILE SYSTEM HAS CHANGED" (SYSTEM PLIKÓW SIÊ ZMIENI£) i wykona
+trzykrotnie
+.BR sync (2)
+przed zakoñczeniem pracy. Poniewa¿ Linux nie posiada obecnie surowych urz±dzeñ
+(raw devices)
+.I nie
+ma obecnie potrzeby prze³adowywania systemu [reboot] (w przeciwieñstwie
+do systemów, które
+.I posiadaj±
+urz±dzenia surowe).
+.SH OSTRZE¯ENIE
+.B fsck.minix
+.I nie
+powinien byæ stosowany na zamontowanych systemach plików. Pos³ugiwanie siê
+.B fsck.minix
+na zamontowanym systemie plików jest bardzo niebezpieczne. Istnieje mo¿liwo¶æ,
+¿e usuniête pliki s± wci±¿ u¿ywane, z tego powodu mo¿e powa¿nie uszkodziæ
+doskonale poprawny system plików!
+Je¿eli koniecznie musisz uruchomiæ
+.B fsck.minix
+na zamontowanym systemie plików (tj. na korzeniu (root) systemu plikowego),
+upewnij siê, ¿e na dysk nic nie jest zapisywane i nie ma ¿adnych "u¶pionych"
+("zombies") plików oczekuj±cych na usuniêcie.
+.SH OPCJE
+.TP
+.B \-l
+Pokazuje wszystkie nazwy plików
+.TP
+.B \-r
+Wykonuje naprawy interaktywnie
+.TP
+.B \-a
+Wykonuje naprawy automatycznie (opcja ta implikuje
+.BR \-r ),
+i s³u¿y do udzielania domy¶lnej odpowiedzi na wszystkie pytania. Zauwa¿, ¿e
+mo¿e to byæ niezwykle niebezpieczne w przypadku powa¿nego uszkodzenia systemu
+plików.
+.TP
+.B \-v
+Tryb gadatliwy (verbose)
+.TP
+.B \-s
+Wy¶wietla informacjê super-bloku
+.TP
+.B \-m
+Aktywuje ostrze¿enia "mode not cleared" w stylu MINIX.
+.\" Activates MINIX-like "mode not cleared" warnings
+.TP
+.B \-f
+Wymu¶ kontrolê systemu plików, nawet je¶li system plików zosta³ oznakowany
+jako poprawny (znakowanie to wykonywane jest przez j±dro gdy system plików
+jest odmontowywany).
+.SH "ZOBACZ TAK¯E"
+.BR fsck (8),
+.BR fsck.ext (8),
+.BR fsck.ext2 (8),
+.BR fsck.xiafs (8),
+.BR mkfs (8),
+.BR mkfs.minix (8),
+.BR mkfs.ext (8),
+.BR mkfs.ext2 (8),
+.BR mkfs.xiafs (8),
+.BR reboot (8).
+.SH DIAGNOSTYKA
+Wystêpuje wiele komunikatów diagnostycznych. Wymienione poni¿ej s± najczê¶ciej
+spotykanymi podczas zwyk³ego u¿ytkowania.
+
+Je¿eli urz±dzenie nie istnieje,
+.B fsck.minix
+wy¶wietli "unable to read super block" (nie mo¿na odczytaæ super-bloku).
+Je¶li urz±dzenie istnieje, ale nie jest miniksowym systemem plików,
+.B fsck.minix
+wy¶wietli "bad magic number in super-block" (b³êdna liczba magiczna
+w super-bloku).
+.SH "KODY ZAKOÑCZENIA"
+Kod zakoñczenia zwracany przez
+.B fsck.minix
+jest sum± poni¿szych:
+.IP 0
+Bez b³êdów
+.IP 3
+Poprawiono b³êdy systemu plików, je¶li system plików by³ zamontowany, to
+system powinien zostaæ ponownie uruchomiony.
+.IP 4
+B³êdy systemu plików pozosta³y niepoprawione
+.IP 8
+B³±d dzia³ania
+.IP 16
+B³±d u¿ycia (sk³adni)
+.PP
+De facto mog± zostaæ zwrócone tylko 0, 3, 4, 7, 8 i 16.
+.SH AUTOR
+Linus Torvalds (torvalds@cs.helsinki.fi)
+.br
+Warto¶ci kodów b³êdu: Rik Faith (faith@cs.unc.edu)
+.br
+Dodana obs³uga flagi poprawno¶ci systemu plików: Dr. Wettstein
+(greg%wind.uucp@plains.nodak.edu)
+.br
+Dodana kontrola dla unikniêcia fsck na zamontowanym systemie plików:
+Daniel Quinlan (quinlan@yggdrasil.com)
+.br
+Obs³uga Minix v2 fs: Andreas Schwab
+(schwab@issan.informatik.uni-dortmund.de), aktualizacja: Nicolai
+Langfeldt (janl@math.uio.no)
+.br
+£ata przeno¶no¶ci: Russell King (rmk@ecs.soton.ac.uk).

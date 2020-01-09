@@ -1,0 +1,606 @@
+.\" {PTM/WK/0.1/19-07-1999/"pliki konfiguracyjne mtools"}
+.TH mtools 5 "19 lipca 1999" MTOOLS MTOOLS
+.SH NAZWA
+mtools.conf - pliki konfiguracyjne mtools
+.SH OPIS
+Niniejsza strona podrêcznika opisuje pliki konfiguracyjne pakietu
+\fBmtools\fR. Pliki konfiguracyjne nosz± nazwy
+\fI/usr/local/etc/mtools.conf\fR oraz \fI~/.mtoolsrc\fR.
+.PP
+Je¶li okre¶lono zmienn± ¶rodowiska \fBMTOOLSRC\fR, to jej warto¶æ jest
+u¿ywana jako nazwa trzeciego pliku konfiguracyjnego. Pliki konfiguracyjne
+opisuj± nastêpuj±ce pozycje:
+.TP
+* Ogólne flagi i zmienne konfiguracji
+.TP
+* Flagi i zmienne dla napêdu
+.TP
+* Tablice translacji znaków
+.RE
+.SS Po³o¿enie plików konfiguracyjnych
+Ogólnym, systemowym plikiem konfiguracyjnym jest
+\fI/usr/local/etc/mtools.conf\fR, za¶ \fI~/.mtoolsrc\fR jest prywatnym
+plikiem konfiguracyjnym u¿ytkownika.
+.PP
+W niektórych systemach plikiem
+konfiguracyjnym o zasiêgu ogólnosystemowym jest jednak
+\fI/etc/defaults/mtools.conf\fR.
+.SS Ogólna sk³adnia pliku konfiguracyjnego
+Pliki konfiguracyjne z³o¿one s± z sekcji. Ka¿da sekcja rozpoczyna siê
+identyfikuj±cym j± s³owem kluczowym zakoñczonym dwukropkiem.
+Po identyfikacji sekcji nastêpuj± przypisania zmiennych i flag.
+Przypisania zmiennych posiadaj± poni¿sz± postaæ:
+.RS
+.BI  nazwa= warto¶æ
+.RE
+Flagi s± pojedynczymi s³owami kluczowymi bez znaku równo¶ci i przypisanej
+warto¶ci. Sekcja koñczy siê z koñcem pliku lub z rozpoczêciem kolejnej
+sekcji.
+.PP
+Linie rozpoczynaj±ce siê od znaku krzy¿yka (\fB#\fR) s± komentarzami. Znaki nowej
+linii s± równowa¿ne bia³ym znakom (z wyj±tkiem koñcz±cych komentarz).
+Wielko¶æ liter w pliku konfiguracyjnym nie ma znaczenia, z wyj±tkiem
+pozycji ujêtych w znaki cytowania (jak np. nazwy plików).
+.SS Domy¶lne warto¶ci
+Dla wiêkszo¶ci platform \fBmtools\fR posiadaj± rozs±dne wkompilowane
+parametry domy¶lne dla napêdów dyskietek. Zwykle zatem, nie ma potrzeby
+zajmowania siê plikiem konfiguracyjnym, je¶li chcemy jedynie wykorzystywaæ
+mtools do uzyskania dostêpu do dyskietek. Z drugiej strony jednak, plik
+konfiguracyjny jest niezbêdny przy u¿yciu mtools równie¿ do partycji dysku
+twardego i plików obrazu \fBdosemu\fR.
+.SS Zmienne globalne
+Prze³±czniki (flagi) globalne mog± byæ ustawione na 1 lub 0.
+.PP
+Rozpoznawane s± nastêpuj±ce flagi globalne:
+.TP
+.B MTOOLS_SKIP_CHECK
+Ustawienie na 1 powoduje, ¿e mtools pomijaj± wiêkszo¶æ testów kontrolnych.
+Potrzebne przy odczycie niektórych dyskietek Atari, zrobionych z u¿yciem
+wcze¶niejszych wersji ROM, które w inny sposób nie by³yby rozpoznawane.
+.TP
+.B MTOOLS_FAT_COMPATIBILITY
+Przy ustawieniu na 1, mtools pomijaj± sprawdzenie rozmiaru FAT. Niektóre
+dyski maj± FAT wiêkszy ni¿ faktycznie tego potrzebuj±. S± one odrzucane,
+je¶li niniejsza opcja nie jest ustawiona.
+.TP
+.B MTOOLS_LOWER_CASE
+Ustawienie na 1 powoduje, ¿e mtools wy¶wietlaj± ma³ymi literami krótkie
+nazwy plików, w których wszystkie litery s± du¿e. Stworzone dla uzyskania
+zgodno¶ci z poprzednimi wersjami mtools, które nie rozpoznawa³y bitu
+du¿ych/ma³ych liter (patrz \fBmtools\fR(1), sekcja \fBRozró¿nianie du¿ych
+i ma³ych liter w systemie VFAT\fR).
+.TP
+.B MTOOLS_NO_VFAT
+Przy ustawieniu na 1 mtools nie bêd± tworzyæ wpisów VFAT dla nazw plików
+o mieszanych, du¿ych/ma³ych literach, które poza tym s± poprawnymi nazwami
+plików DOSu. Przydatne przy pracy z wersjami DOSu nie obs³uguj±cymi d³ugich
+nazw VFAT, jak np. FreeDos.
+.TP
+.B MTOOLS_DOTTED_DIR
+Przy szerokim listowaniu katalogu, pokazuje nazwy plików z kropk± zamiast
+odstêpów oddzielaj±cych nazwê od rozszerzenia.
+.TP
+.B MTOOLS_NAME_NUMERIC_TAIL
+Domy¶lnie ustawione na jeden, decyduje o tworzeniu numerycznych przyrostków
+we wszystkich d³ugich nazwach plików (~1). Ustawienie na zero oznacza, ¿e 
+przyrostki numeryczne nie bêd± tworzone, chyba ¿e spowodowa³oby to kolizjê
+nazw.
+.TP
+.B MTOOLS_TWENTY_FOUR_HOUR_CLOCK
+Przy ustawieniu na jeden u¿ywany jest europejski sposób zapisu czasu (zegar
+24-godzinny). W przeciwnym przypadku wykorzystywana jest notacja
+anglosaska (am/pm).
+.PP
+Przyk³ad:
+Wstawienie poni¿szej linii do pliku konfiguracyjnego nakazuje mtools
+pominiêcie testów poprawno¶ci:
+.RS 
+.B MTOOLS_SKIP_CHECK=1
+.RE
+Zmienne globalne mog± byæ równie¿ ustawiane poprzez ¶rodowisko:
+.RS
+.B export MTOOLS_SKIP_CHECK=1
+.RE
+.PP
+Globalne zmienne znakowe mog± mieæ przypisan± dowoln± warto¶æ:
+.TP
+.B MTOOLS_DATE_STRING
+Format u¿ywany do wy¶wietlania dat plików. Domy¶lnie jest to dd-mm-yyyy.
+.SS Flagi i zmienne napêdów
+.PP
+.B " "
+.SS Informacje ogólne
+W sekcji napêdu mog± byæ u¿yte prze³±czniki i warto¶ci odnosz±ce siê
+do tego napêdu. Sekcja opisuj±ca napêd rozpoczyna siê od napisu:
+.RS
+.BI "drive " litera_napêdu :
+.RE
+nastêpnie wystêpuj± pary zmienna-warto¶æ oraz flagi. A oto przyk³adowy opis
+napêdu:
+.RS
+.B drive a:
+.br
+\fB  file="/dev/fd0" use_xdf=1\fR
+.RE
+.SS Konfiguracja geometrii dysku
+Informacja o geometrii opisuje fizyczn± charakterystykê dysku. Ma ona
+trojakie zastosowanie:
+.TP
+formatowanie 
+Informacja o geometrii zapisywana jest w sektorze startowym (boot-sector)
+nowo utworzonego dysku. Mo¿na jednak opisaæ geometriê dysku z linii poleceñ
+(patrz polecenie \fBmformat\fR).
+.TP
+filtrowanie
+W niektórych Unixach wêz³y urz±dzeñ (device nodes) obs³uguj± wy³±cznie jedn±
+geometriê fizyczn±. Na przyk³ad, mo¿esz potrzebowaæ innego wêz³a dla dostêpu
+do dyskietki du¿ej gêsto¶ci ni¿ do dyskietki o ma³ej gêsto¶ci. Aby zapewniæ
+mo¿liwo¶æ poprawnego odczytu dysku przez wêze³, geometria porównywana jest
+z faktyczn± geometri± zapisan± w sektorze startowym. Je¿eli nie pasuj±, to
+odpowiedni zapis charakteryzuj±cy napêd zawodzi i testowany jest kolejny
+wpis z t± sam± liter± napêdu. Sekcja \fBWielokrotne opisy\fR wyja¶nia
+bli¿ej pos³ugiwanie siê wieloma opisami dla jednej litery napêdu.
+.IP
+Gdy w pliku konfiguracyjnym nie podano ¿adnej informacji o geometrii, to
+akceptowane s± wszystkie dyski. W Linuksie (równie¿ na Sparc) istniej± wêz³y
+urz±dzeñ o konfigurowalnej geometrii (\fB/dev/fd0\fR, \fB/dev/fd1\fR itd.),
+zatem filtrowanie napêdów dyskowych jest zbêdne (i jest ignorowane). (mtools
+wykonuj± jednak filtrowanie plików zwyk³ych (obrazów dysków) w Linuksie:
+przeznaczono to g³ównie do testowania, gdy¿ nie mam dostêpu do Unixa,
+który faktycznie potrzebowa³by filtrowania).
+.IP
+Je¶li nie potrzebujesz filtrowania, a chcesz u¿ywaæ domy¶lnej geometrii przy
+formatowaniu (z u¿yciem \fBmformat\fR), mo¿esz wy³±czyæ filtrowaniu flag±
+\fBmformat_only\fR.
+.IP
+Je¶li chcesz filtrowania - powiniene¶ u¿yæ flagi \fBfilter\fR. Podaj±c
+geometriê musisz podaæ równie¿ jedn± z tych dwu flag.
+.TP
+geometria pocz±tkowa
+W urz±dzeniach obs³uguj±cych tê mo¿liwo¶æ (zwykle napêdy dyskietek),
+informacja o geometrii u¿ywana jest te¿ do ustawienia geometrii pocz±tkowej.
+Geometria pocz±tkowa stosowana jest przy odczycie sektora startowego,
+zawieraj±cego rzeczywist± geometriê.
+Pocz±tkowe konfigurowanie nie jest wykonywane, gdy w pliku konfiguracyjnym
+brak jest opisu geometrii lub gdy u¿yto flagi \fBmformat_only\fR.
+.IP
+W Linuksie geometria pocz±tkowa nie jest faktycznie potrzebna, gdy¿
+urz±dzenia konfigurowalne potrafi± samoczynnie wykryæ dostatecznie dok³adnie
+typ dysku (dla wiêkszo¶ci powszechnych formatów) by móc odczytaæ sektor
+startowy.
+.PP
+Z³y opis geometrii mo¿e prowadziæ do bardzo powa¿nych b³êdów. Dlatego te¿
+.\" .. may lead tovery bizzare errors
+usilnie zaleca siê dodanie flagi \fBmformat_only\fR do opisu napêdu, chyba
+i¿ faktycznie wystêpuje potrzeba filtrowania czy geometrii pocz±tkowej.
+.PP
+Dostêpne s± nastêpuj±ce zmienne zwi±zane z geometri± dysków:
+.TP
+.BR cylinders " [" tracks ]
+Liczba cylindrów. Forma zalecana; \fBtracks\fR (¶cie¿ki) jest form±
+przestarza³±.
+.TP
+.B heads
+Liczba g³owic (stron).
+.TP
+.B sectors
+Liczba sektorów na ¶cie¿kê.
+.PP
+Przyk³ad: poni¿sza sekcja opisuje napêd 1.44MB:
+.RS
+.B drive a:
+\fB  file="/dev/fd0H1440"\fR
+\fB  fat_bits=12\fR
+\fB  cylinders=80 heads=2 sectors=18\fR
+\fB  mformat_only\fR
+.RE
+.PP
+Dostêpne s± nastêpuj±ce skrócone opisy geometrii:
+.TP
+.B 1.44m
+dyskietka 3,5" wysokiej gêsto¶ci. Równowa¿ne:
+\fRfat_bits=12 cylinders=80 heads=2 sectors=18\fR
+.TP
+.B 1.2m
+dyskietka 5,25" wysokiej gêsto¶ci. Równowa¿ne:
+\fRfat_bits=12 cylinders=80 heads=2 sectors=15\fR
+.TP
+.B 720k
+dyskietka 3,5" podwójnej gêsto¶ci. Równowa¿ne:
+\fRfat_bits=12 cylinders=80 heads=2 sectors=9\fR
+.TP
+.B 360k
+dyskietka 5,25" podwójnej gêsto¶ci. Równowa¿ne:
+\fRfat_bits=12 cylinders=40 heads=2 sectors=9\fR
+.PP
+Skrócone opisy formatów mog± byæ zmieniane, zdefiniuj±c inny format.
+Na przyk³ad, \fB360k sectors=8\fR opisuje dyskietkê 320k i jest równowa¿ne
+zapisowi:
+\fRfat_bits=12 cylinders=40 heads=2 sectors=8\fR.
+.SS Flagi otwarcia
+Dostêpne s± ponadto nastêpuj±ce flagi:
+.TP
+.B sync
+Wszystkie operacje wej¶cia/wyj¶cia wykonywane s± synchronicznie.
+.TP
+.B nodelay
+Urz±dzenie lub plik jest otwierane z flag± O_NDELAY. Niezbêdne przy
+niektórych systemach nie-Linuksowych. 
+.TP
+.B exclusive
+Urz±dzenie lub plik jest otwierane z flag± O_EXCL. W Linuksie zapewnia to
+dostêp do napêdu dyskietek w trybie wy³±czno¶ci. W wiêkszo¶ci innych
+architektur oraz dla zwyk³ych plików nie daje ¿adnego efektu.
+.SS Ogólne zmienne napêdu
+.\" .SS General\ Purpose\ Drive\ Variables
+Dostêpne s± poni¿sze ogólne zmienne napêdu. W zale¿no¶ci od typu, zmiennym
+tym mo¿e byæ przypisany ³añcuch znakowy (\fBfile\fR, \fBprecmd\fR) lub
+liczba ca³kowita (pozosta³e).
+.TP
+.B file
+Nazwa pliku lub urz±dzenia przechowuj±cego obraz dysku/dyskietki.
+Zmienna obowi±zkowa. Nazwa pliku powinna byæ ujêta w cudzys³owy.
+.TP
+.B partition
+Sygnalizuje mtools traktowanie napêdu jak urz±dzenia spartycjonowanego i
+u¿ycie zadanej partycji. Przy zastosowaniu tej metody dostêpne s± wy³±cznie
+partycje g³ówne (primary), numerowane od 1 do 4. Dla partycji logicznych
+nale¿y pos³u¿yæ siê ogólniejsz± zmienn± \fBoffset\fR. Zmienna
+\fBpartition\fR przeznaczona jest do obs³ugi no¶ników wyjmowalnych takich
+jak napêdy Syquest, ZIP czy dyski maagneto-optyczne. Mimo, i¿ tradycyjny DOS
+postrzega dyski Syquest i dyski magneto-optyczne jako \fIogromne
+dyskietki\fR, które nie s± partycjonowane, to OS/2 oraz Windows NT traktuj±
+je jak dyski twarde, tj. urz±dzenia partycjonowane. Flaga \fBpartition\fR
+przydaje siê dla obrazów dysków twardych DOSEMU. Nie jest zalecana dla
+dysków twardych, dla których mo¿liwy jest bezpo¶redni dostêp do partycji
+poprzez montowanie (mount).
+.TP
+.B offset
+Opisuje, gdzie w pliku rozpoczyna siê system plików MS-DOS. Przydatna w
+obs³udze partycji logicznych wewn±trz obrazów dysków twardych (hdimages)
+DOSEMU oraz ram-dysków Atari. Domy¶lnie ustawiona na zero, co oznacza, ¿e
+system plików zaczyna siê na samym pocz±tku urz±dzenia lub pliku.
+.TP
+.B fat_bits
+Liczba bitów tablicy alokacji plików (FAT). Mo¿e to byæ 12 lub 16. Rzadko
+potrzebna, gdy¿ prawie zawsze mo¿e byæ uzyskana z informacji w sektorze
+startowym. I przeciwnie, podanie liczby bitów FAT mo¿e byæ przyczyn±
+k³opotów, je¶li jest ona z³a. Powinna byæ u¿ywana wy³±cznie w przypadku
+niew³a¶ciwego rozpoznawania automatycznego przez mtools liczby bitów FAT.
+Przydatna równie¿ przy formatowaniu z wykorzystaniem polecenia
+\fBmformat\fR dyskietki z nietypow± liczb± bitów FATu.
+.TP
+.B precmd
+W niektórych odmianach Solaris niezbêdne jest wywo³anie
+\fBvolcheck -v\fR przed otwarciem urz±dzenia dyskietek, co ma na celu
+wymuszenie na systemie zauwa¿enia, ¿e w napêdzie rzeczywi¶cie jest dyskietka.
+\fBprecmd="volcheck -v"\fR umieszczone w sekcji opisuj±cej napêd powoduje
+po¿±dane zachowanie.
+.TP
+.B blocksize
+Parametr ten okre¶la domy¶lny rozmiar bloku, jaki bêdzie zawsze u¿ywany
+dla danego urz±dzenia. Wszystkie operacje wej¶cia/wyj¶cia wykonywane s±
+z wielokrotno¶ci± tego rozmiaru bloku, niezale¿nie od rozmiaru sektora
+zapisanego w sektorze startowym systemu plików. Rozwi±zanie to jest przydatne
+do obs³ugi urz±dzeñ znakowych, gdzie rozmiar sektora jest inny ni¿ 512, jak
+na przyk³ad napêdy CD-ROM w systemie Solaris.
+.PP
+Obowi±zkowa jest tylko zmienna \fBfile\fR. Inne parametry mog± zostaæ
+pominiête. W takim przypadku przyjmowane s± warto¶ci domy¶lne lub automatycznie
+wykrywane.
+.PP
+.SS Ogólne flagi napêdu
+.\" .SS General\ Purpose\ Drive\ Flags
+Flaga mo¿e byæ albo ustawiona na 1 (w³±czone) albo na 0 (wy³±czone). Je¶li
+pominiêto warto¶æ, to jest ona w³±czana. Na przyk³ad, \fBscsi\fR jest
+równowa¿ne \fBscsi=1\fR.
+.TP
+.B nolock
+Poleca mtools nie u¿ywaæ blokady (locking) dla tego napêdu. Przydatne
+w systemach z nienajlepsz± semantyk± blokowania.
+.\" "buggy locking semantics".
+W³±czenie tego prze³±cznika powoduje jednak, ¿e operacje s± mniej
+bezpieczne w przypadkach, gdy kilku u¿ytkowników mo¿e korzystaæ z tego
+samego napêdu w tym samym czasie.
+.TP
+.B scsi
+Ustawiona na 1 nakazuje mtools u¿ycie przy dostêpie do urz±dzenia
+surowego wej¶cia/wyj¶cia SCSI (raw SCSI I/O) zamiast standardowych
+funkcji read/write. Obecnie jest to obs³ugiwane na HP/UX, Solaris i SunOs.
+Prze³±cznik jest tam niezbêdny, gdy¿ w niektórych architekturach, jak SunOS
+czy Solaris, nie mo¿na korzystaæ z no¶ników PC przy u¿yciu funkcji systemowych
+\fBread\fR i \fBwrite\fR, gdy¿ system operacyjny oczekuje, ¿e bêd± one zawieraæ
+specyficzn± dla Suna "etykietê dysku".
+.IP
+Poniewa¿ surowy dostêp do SCSI zawsze pos³uguje siê ca³ym
+urz±dzeniem, musisz podaæ dodatkowo flagê \fBpartition\fR.
+.IP
+Na niektórych systemach, jak Solaris, mtools potrzebuj± uprawnieñ
+superu¿ytkownika (root), by móc wykorzystaæ opcjê \fBscsi\fR. Zatem, je¶li
+chcesz korzystaæ z napêdów Zip/Jaz w systemie Solaris, powiniene¶ zainstalowaæ
+mtools z uprawnieniem SUID root. St±d te¿, je¶li podano flagê \fBscsi\fR, to
+automatycznie u¿ywana jest te¿ \fBprivileged\fR, chyba ¿e zostanie jawnie
+wy³±czona przez \fBprivileged=0\fR.
+.IP
+mtools u¿ywaj± swoich uprawnieñ superu¿ytkownika do otwarcia urz±dzenia
+oraz wywo³ania rzeczywistych funkcji wej¶cia/wyj¶cia SCSI. Co wiêcej,
+uprawnienia roota u¿ywane s± wy³±cznie dla napêdów opisanych w pliku
+konfiguracyjnym o zasiêgu ogólnosystemowym, jak \fI/usr/local/mtools.conf\fR,
+nie za¶ dla napêdów opisanych w \fI~/.mtoolsrc\fR czy te¿ \fB$MTOOLSRC\fR.
+.TP
+.B privileged
+Ustawiona na 1 nakazuje mtools u¿ycie posiadanych przez nie uprawnieñ SUID
+oraz SGID przy otwieraniu danego napêdu. Opcja ta jest poprawna tylko dla
+napêdów opisanych w ogólnosystemowym pliku konfiguracyjnym
+(jak np. \fI/usr/local/mtools.conf\fR, nie za¶ dla napêdów opisanych
+w \fI~/.mtoolsrc\fR czy te¿ \fB$MTOOLSRC\fR). Naturalnie, opcja ta nie dzia³a
+równie¿ je¶li mtools nie zosta³y zainstalowane z ustawionym SUID lub SGID.
+Jest automatycznie ustawiana przez \fBscsi=1\fR, ale równie¿ wy³±cznie
+dla napêdów zdefiniowanych w plikach konfiguracyjnych o zasiêgu
+ogólnosystemowym. Flaga ta mo¿e byæ jawnie ustawiona na zero w celu zakazania
+mtools u¿ywania uprawnieñ do danego napêdu, nawet je¶li ustawione jest
+\fBscsi=1\fR.
+.IP
+mtools potrzebuj± ustawienia dostêpu SUID tylko wtedy, gdy planuje siê
+wykorzystanie zmiennych \fBprivileged\fR lub \fBscsi\fR dla którego¶
+z napêdów. Je¿eli opcje te nie s± u¿ywane, mtools dzia³a prawid³owo nawet
+bez ustawiania SUID root.
+.TP
+.B vold
+Poleca mtools interpretacjê nazwy urz±dzenia jako identyfikatora "vold"
+[t³um.:volume daemon - demon mechanizmu zarz±dzania woluminami systemu
+Solaris],
+nie za¶ jako nazwy pliku. Identyfikator "vold" jest t³umaczony na faktyczn±
+nazwê pliku przy u¿yciu funkcji \fBmedia_findname()\fR oraz
+\fBmedia_oldaliases()\fR z biblioteki \fBvolmgt\fR. Prze³±cznik ten jest
+dostêpny tylko w przypadku skonfigurowania mtools z opcj±
+\fB--enable-new-vold\fR przed kompilacj±.
+.TP
+.B use_xdf
+Ustawienie na warto¶æ niezerow± powoduje, ¿e mtools próbuje równie¿ dostêpu
+do tej dyskietki jak do dyskietki XDF. XDF jest formatem du¿ej gêsto¶ci
+wykorzystywanym przez OS/2. Prze³±cznik ten jest domy¶lnie wy³±czony. Wiêcej
+informacji znajdziesz w sekcji \fBXDF\fR dokumentacji \fBmtools(1)\fR.
+.TP
+.B mformat_only
+mtools powinny u¿yæ geometrii tego napêdu tylko do formatowania (mformat),
+ale nie do filtrowania.
+.TP
+.B filter
+mtools u¿yj± geometrii tego napêdu zarówno do formatowania jak
+i do filtrowania.
+.TP
+.B remote
+nakazuje mtools pod³±czenie siê do floppyd (patrz \fBfloppyd\fR(1)).
+.SS Wielokrotne opisy napêdu
+.\" .SS \ \ Supplying\ multiple\ descriptions\ for\ a\ drive
+Mo¿liwe jest podanie wielu opisów dla danego napêdu. W takim przypadku, opisy
+s± wypróbowywane po kolei, a¿ do znalezienia pasuj±cego. Opisy mog± nie pasowaæ
+z kilku powodów:
+.RS
+1. nieodpowiednia geometria,
+.br
+2. brak dysku w napêdzie,
+.br
+3. inne k³opoty.
+.RE
+Wielo¶æ opisów jest przydatna przy wykorzystywaniu urz±dzeñ fizycznych
+potrafi±cych obs³ugiwaæ tylko jedn± geometriê pojedynczego dysku.
+.\" Multiple definitions are useful when using physical devices which are
+.\" only able to support one single disk geometry.
+Przyk³ad:
+.RS 
+.B drive a: file="/dev/fd0H1440" 1.44m
+.br
+.B drive a: file="/dev/fd0H720" 720k
+.RE
+Powy¿sze linie nakazuj± mtools u¿ycie /dev/fd0H1440 dla dyskietek 1.44MB
+(du¿ej gêsto¶ci) oraz /dev/fd0H720 dla dyskietek 720KB (podwójnej
+gêsto¶ci). W Linuksie cecha ta nie jest faktycznie potrzebna, gdy¿ urz±dzenie
+/dev/fd0 jest w stanie obs³ugiwaæ dowoln± geometriê.
+.PP
+Mo¿na te¿ u¿yæ wielu opisów napêdu, by korzystaæ z obu napêdów fizycznych
+za po¶rednictwem jednej litery napêdu:
+.RS 
+.B  drive z: file="/dev/fd0"
+.br
+.B  drive z: file="/dev/fd1"
+.RE
+Z takim opisem \fBmdir z:\fR wykorzystuje pierwszy napêd fizyczny, je¶li
+zawiera on dyskietkê. Je¶li w pierwszym napêdzie nie ma dyskietki, to
+mtools sprawdzaj± drugi napêd.
+.PP
+Przy u¿yciu wielu plików konfiguracyjnych opisy napêdu wystêpuj±ce jako
+ostatnie przes³aniaj± uprzednie opisy dla tego samego napêdu
+z wcze¶niejszych plików. Mo¿na tego unikn±æ pos³uguj±c siê s³owami kluczowymi
+\fBdrive+\fR lub \fB+drive\fR zamiast \fBdrive\fR. Pierwsza sk³adnia dodaje
+opis na koñcu listy (tzn.bêdzie wypróbowany jako ostatni), za¶ druga
+na pocz±tek listy.
+.\" The first adds a description to the
+.\" end of the list (i.e. it will be tried last), and the first adds it to
+.\" the start of the list.
+.SS Tablice translacji zestawów znaków
+.\" .SS Character\ set\ translation\ tables
+Je¶li mieszkasz w USA, Europie Zachodniej lub Australii, mo¿esz pomin±æ
+tê sekcjê.
+.PP
+.SS Dlaczego potrzebne s± tablice translacji znaków
+DOS u¿ywa odmiennego mapowania kodów znaków ni¿ Unix. Znaki 7-bitowe
+maj± to samo znaczenie, ró¿nice dotycz± tylko znaków z ustawionym ósmym bitem.
+Co gorsza, istnieje kilkana¶cie tablic translacji, w zale¿no¶ci od kraju.
+Wygl±d znaków definiowany jest przy u¿yciu stron kodowych (code pages).
+Strony kodowe nie s± takie same dla wszystkich krajów. Na przyk³ad,
+niektóre strony kodowe nie zawieraj± du¿ych liter akcentowanych.
+Z drugiej strony, niektóre z nich zawieraj± znaki nie istniej±ce w Uniksie,
+jak znaki ramek czy "spó³g³oski akcentowane" u¿ywane w niektórych krajach
+Europy Wschodniej. Dotyczy to dwu rzeczy zwi±zanych z nazwami plików:
+.TP
+du¿e litery 
+W nazwach krótkich dozwolone s± tylko du¿e znaki. Dotyczy to równie¿ znaków
+akcentowanych. Na przyk³ad, przy stronie kodowej, która nie zawiera
+akcentowanych du¿ych znaków, ma³e znaki akcentowane zostan± zamienione
+na ich nieakcentowane odpowiedniki.
+.TP
+d³ugie nazwy plików 
+.\" Micro$oft has finally come to their senses and ..
+Micro$oft wreszcie siê opamiêta³ i u¿ywa bardziej standardowego mapowania
+w d³ugich nazwach plików. U¿ywaj± Unicodu, który w uproszczeniu jest
+32 bitow± wersj± ASCII. Pierwszych jego 256 znaków jest identycznych
+z Uniksowym ASCII. St±d te¿, strona kodowa ma równie¿ wp³yw na powi±zania
+pomiêdzy kodami u¿ytymi w d³ugich nazwach plików a kodami u¿ytymi
+w krótkich nazwach.
+.PP
+mtools uwa¿aj±, ¿e nazwy plików wprowadzone w linii poleceñ maj±
+mapowanie unixowe i zamienia znaki dla uzyskania nazw krótkich.
+Domy¶lnie u¿ywana jest strona kodowa 850 ze szwajcarskim odwzorowaniem
+du¿e liter na ma³e.
+Wybrano tê stronê kodow± gdy¿ jej zestaw znaków jest najbli¿szy unixowemu.
+Ponadto, zawiera ona wiêkszo¶æ znaków u¿ywanych w USA, Australii i Europie
+Zachodniej. Niemniej jednak, mo¿liwy jest wybór innego odwzorowania.
+Istniej± dwie metody: zmienna \fBcountry\fR (kraj) i bezpo¶rednie tablice.
+.SS Konfiguracja przy u¿yciu zmiennej Country
+Zmienna \fBCOUNTRY\fR polecana jest dla tych, którzy maj± dostêp do plików
+systemowych MS-DOS i dokumentacji. Je¿eli siê ich nie posiada, to lepiej
+jest u¿yæ bezpo¶rednich tablic translacji.
+.PP
+Sk³adnia:
+.PP
+\fBCOUNTRY="\fIcountry\fR[,[\fIcodepage\fR],\fIcountry-file\fR]\fB"\fR
+.PP
+Zapis ten powoduje u¿ycie przez mtools tablicy translacji Unix-na-DOS pasuj±cej
+do strony kodowej \fIcodepage\fR i tablicy ma³e-na-du¿e dla kraju
+\fIcountry\fR oraz zastosowanie pliku \fIcountry-file\fR do uzyskania tablicy
+du¿e-na-ma³e. Kod kraju jest najczê¶ciej telefonicznym przedrostkiem tego
+kraju. Wiêcej szczegó³ów znale¼æ mo¿na w pomocy DOS dla "country". Parametry
+\fIcodepage\fR i \fIcountry-file\fR s± opcjonalne. Plik \fRcountry-file\fR
+dostarczany jest z DOSem, zwykle nazywa siê \fICOUNTRY.SYS\fR i znajduje siê
+w katalogu \fBC:\\DOS\fR. W wiêkszo¶ci przypadków bêdzie zbêdny, gdy¿ 
+najczê¶ciej wystêpuj±ce tablice translacji s± wkompilowane w mtools. Nie ma
+zatem problemu, je¶li w Uniksie brakuje tego pliku.
+.PP
+Je¿eli nie podano strony kodowej (\fIcodepage\fR), to u¿ywana jest domy¶lna
+strona kodowa kodowa dla danego kraju. Je¶li nie podano parametru
+\fIcountry-file\fR, to dla tablicy ma³e-na-du¿e u¿yte bêd± wkompilowane
+warto¶ci domy¶lne. Cecha ta jest przydatna w Unixach innych ni¿ Linuks, gdzie
+mo¿e nie byæ dostêpny plik \fICOUNTRY.SYS\fR.
+.PP
+Tablice Unix-na-DOS nie s± zawarte w \fICOUNTRY.SYS\fR, zatem mtools zawsze
+pos³uguj± siê wkompilowanymi warto¶ciami domy¶lnymi. St±d te¿, obs³ugiwana
+jest tylko ograniczona ilo¶æ stron kodowych. Je¶li brak jest u¿ywanej przez
+ciebie strony kodowej lub je¶li znasz nazwê pliku Windows 95 przechowuj±cego
+to odwzorowanie, to napisz do autora: \fBalain@linux.lu\fR.
+.PP
+Zmienna \fBCOUNTRY\fR mo¿e byæ tak¿e ustawiona przez zdefiniowanie jej
+w ¶rodowisku.
+.SS Konfiguracja przy u¿yciu bezpo¶rednich tablic translacji
+Tablice translacji mog± byæ opisane wprost w pliku konfiguracyjnym.
+Niezbêdne s± dwie tablice: pierwsza to tablica DOS-na-Unix, druga to
+tablica ma³e-na-du¿e. tablica DOS_na-Unix zaczyna siê od s³owa kluczowego
+\fBtounix\fR zakoñczonego dwukropkiem, o którym nastêpuje 128 liczb
+szesnastkowych.
+Tablica ma³e-na-du¿e rozpoczyna siê s³owem kluczowym \fBfucase\fR zakoñczonym
+dwukropkiem, po którym nastêpuje 128 liczb szesnastkowych.
+.PP
+Tablice okre¶laj± translacjê dla znaków o kodach wiêkszych od 128, gdy¿
+translacja dla ni¿szych kodów jest banalna.
+.PP
+Przyk³ad:
+.IP
+\fB tounix:
+   0xc7 0xfc 0xe9 0xe2 0xe4 0xe0 0xe5 0xe7 
+   0xea 0xeb 0xe8 0xef 0xee 0xec 0xc4 0xc5 
+   0xc9 0xe6 0xc6 0xf4 0xf6 0xf2 0xfb 0xf9 
+   0xff 0xd6 0xdc 0xf8 0xa3 0xd8 0xd7 0x5f 
+   0xe1 0xed 0xf3 0xfa 0xf1 0xd1 0xaa 0xba 
+   0xbf 0xae 0xac 0xbd 0xbc 0xa1 0xab 0xbb 
+   0x5f 0x5f 0x5f 0x5f 0x5f 0xc1 0xc2 0xc0 
+   0xa9 0x5f 0x5f 0x5f 0x5f 0xa2 0xa5 0xac 
+   0x5f 0x5f 0x5f 0x5f 0x5f 0x5f 0xe3 0xc3 
+   0x5f 0x5f 0x5f 0x5f 0x5f 0x5f 0x5f 0xa4 
+   0xf0 0xd0 0xc9 0xcb 0xc8 0x69 0xcd 0xce 
+   0xcf 0x5f 0x5f 0x5f 0x5f 0x7c 0x49 0x5f 
+   0xd3 0xdf 0xd4 0xd2 0xf5 0xd5 0xb5 0xfe 
+   0xde 0xda 0xd9 0xfd 0xdd 0xde 0xaf 0xb4 
+   0xad 0xb1 0x5f 0xbe 0xb6 0xa7 0xf7 0xb8 
+   0xb0 0xa8 0xb7 0xb9 0xb3 0xb2 0x5f 0x5f 
+
+ fucase:
+   0x80 0x9a 0x90 0xb6 0x8e 0xb7 0x8f 0x80 
+   0xd2 0xd3 0xd4 0xd8 0xd7 0xde 0x8e 0x8f 
+   0x90 0x92 0x92 0xe2 0x99 0xe3 0xea 0xeb 
+   0x59 0x99 0x9a 0x9d 0x9c 0x9d 0x9e 0x9f 
+   0xb5 0xd6 0xe0 0xe9 0xa5 0xa5 0xa6 0xa7 
+   0xa8 0xa9 0xaa 0xab 0xac 0xad 0xae 0xaf 
+   0xb0 0xb1 0xb2 0xb3 0xb4 0xb5 0xb6 0xb7 
+   0xb8 0xb9 0xba 0xbb 0xbc 0xbd 0xbe 0xbf 
+   0xc0 0xc1 0xc2 0xc3 0xc4 0xc5 0xc7 0xc7 
+   0xc8 0xc9 0xca 0xcb 0xcc 0xcd 0xce 0xcf 
+   0xd1 0xd1 0xd2 0xd3 0xd4 0x49 0xd6 0xd7 
+   0xd8 0xd9 0xda 0xdb 0xdc 0xdd 0xde 0xdf 
+   0xe0 0xe1 0xe2 0xe3 0xe5 0xe5 0xe6 0xe8 
+   0xe8 0xe9 0xea 0xeb 0xed 0xed 0xee 0xef 
+   0xf0 0xf1 0xf2 0xf3 0xf4 0xf5 0xf6 0xf7 
+   0xf8 0xf9 0xfa 0xfb 0xfc 0xfd 0xfe 0xff 
+\fR
+.PP
+Pierwsza tablica odwzorowuje kody znaków DOSu na kody znaków Unixa.
+Na przyk³ad, znak DOSu numer 129. Jest to litera u z kropkami nad ni±.
+Aby wykonaæ translacjê do Unixa, szukamy znaku numer 1 w pierwszej tablicy
+(1=129-128). Jest to 0xfc. (Uwaga! numeracja zaczyna siê od zera).
+Druga tablica odwzorowuje ma³e znaki DOSu na du¿e znaki DOSu. Ta sama
+ma³a litera u z kropkami przekszta³cona bêdzie na 0x9a, co jest du¿ym U
+z kropkami w DOSie.
+.PP
+.SS Znaki Unicodu wiêksze ni¿ 256
+Je¶li istniej±ca nazwa MS-DOS zawiera znaki Unicodu wiêksze ni¿ 256, to s±
+one t³umaczone na podkre¶lenia lub znaki wygl±daj±ce podobnie. Na przyk³ad,
+spó³g³oski akcentowane odwzorowywane s± na swe nieakcentowane odpowiedniki.
+T³umaczenie to u¿ywane jest przez mdir i unixowe nazwy plików generowane
+przez mcopy. Linux równie¿ obs³uguje Unicode, ale niestety zbyt ma³o aplikacji
+go jeszcze u¿ywa, by zajmowaæ siê tym w mtools. Co najistotniejsze, xterm
+nie potrafi jeszcze wy¶wietlaæ Unicodu. Je¶li bêdzie odpowiednie
+zapotrzebowanie, autor mtools do³±czy obs³ugê Unicodu równie¿ w unixowych
+nazwach plików.
+.PP
+\fBOstrze¿enie:\fR
+Przy usuwaniu plików przez mtools znak podkre¶lenia oznacza wszystkie znaki,
+które nie mog± byæ przedstawione w Unixie. 
+.B Ostro¿nie z mdel !
+.SS Po³o¿enie plików konfiguracyjnych i kolejno¶æ przetwarzania
+Pliki konfiguracyjne przetwarzane s± w nastêpuj±cej kolejno¶ci:
+.TP
+1. wkompilowane warto¶ci domy¶lne
+.TP
+2. \fI/usr/local/etc/mtools.conf\fR
+.TP
+3. \fI/etc/mtools\fR
+Do celów zgodno¶ci wstecznej i wy³±cznie wtedy, gdy nie istnieje
+\fImtools.conf\fR.
+.TP
+4. \fI~/.mtoolsrc\fR.
+.TP
+5. \fB$MTOOLSRC\fR
+(plik wskazywany przez zawarto¶æ zmiennej
+¶rodowiska \fBMTOOLSRC\fR)
+.PP
+Opcje opisywane w pó¼niejszych plikach uniewa¿niaj± opcje opisane
+w plikach wcze¶niejszych. Napêdy zdefiniowane w pó¼niejszych plikach
+pozostaj± zdefiniowane je¶li nie s± uniewa¿nione w plikach czytanych
+pó¼niej. Na przyk³ad, napêdy A i B mog± byæ zdefiniowane w pliku
+\fI/usr/local/etc/mtools.conf\fR, za¶ napêdy C i D zdefiniowane
+w \fI~/.mtoolsrc\fR. Je¿eli jednak \fI~/.mtoolsrc\fR definiuje równie¿
+napêd A, to ta nowa definicja uniewa¿nia poprzedni opis napêdu A
+w \fI/usr/local/etc/mtools.conf\fR zamiast uzupe³nienia go.
+W celu dodania nowego opisu do napêdu ju¿ opisanego we wcze¶niejszym pliku
+nale¿y pos³u¿yæ siê s³owem kluczowym \fB+drive\fR b±d¼ \fBdrive+\fR.
+.SH Wsteczna zgodno¶æ ze star± sk³adni± plików konfiguracyjnych
+Sk³adnia opisana w niniejszym dokumencie obowi±zuje w nowej wersji
+\fBmtools-3.0\fR. Stara zorientowana liniowo sk³adnia jest nadal obs³ugiwana.
+W starej sk³adni ka¿da linia rozpoczynaj±ca siê pojedyncz± liter± uwa¿ana
+jest za opis napêdu. Sekcje napêdów w starej i nowej sk³adni mog± byæ mieszane
+w tym samym pliku konfiguracyjnym, co powinno u³atwiæ upgrade. Obs³uga starej
+sk³adni bêdzie z czasem zaniechana, a w celu zniechêcenia do jej u¿ywania
+celowo pominiêto tu jej opis.
+
+.SH ZOBACZ TAK¯E
+.BR mtools (1).

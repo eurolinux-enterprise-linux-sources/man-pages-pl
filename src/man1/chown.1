@@ -1,0 +1,160 @@
+.\" {PTM/PB/0.1/28-09-1998/"zmieñ w³a¶ciciela i grupê plików"}
+.\" Translation (c) 1998 Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.\" poszerzenie i aktualizacja do GNU fileutils 4.01 PTM/WK/2000-I
+.ig
+Transl.note: based on GNU man page chown.1 and fileutils.info
+
+Copyright 1994, 95, 96, 1999 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+..
+.TH CHOWN "1" FSF "grudzieñ 1999" "Narzêdzia plikowe GNU 4.0l"
+.SH NAZWA
+chown - zmienia w³a¶ciciela i grupê plików
+.SH SK£ADNIA
+.B chown
+.RI [ opcja ]...
+.I nowy_w³a¶ciciel
+.IR plik ...
+.br
+.B chown
+.BI --reference= rplik
+.IR plik ...
+.SH OPIS
+Dokumentacja niniejsza nie jest ju¿ utrzymywana i mo¿e byæ niedok³adna
+lub niekompletna.  Autorytatywnym ¼ród³em jest obecnie dokumentacja
+Texinfo.  Dostêp do niej uzyskasz wpisuj±c w wierszu poleceñ:
+.RS
+.B pinfo chown
+.RE
+lub
+.RS
+.BR "info chown" .
+.RE
+.PP
+Ta strona podrêcznika opisuje \fBchown\fP w wersji GNU.
+.PP
+.B chown
+zmienia w³a¶ciciela i/lub grupê w³a¶cicieli ka¿dego zadanego pliku, wed³ug
+pierwszego nie bêd±cego opcj± argumentu lub wed³ug u¿ytkownika i grupy
+istniej±cego pliku odniesienia, wskazanego opcj± --reference.
+Je¿eli u¿yto sk³adni opisuj±cej wprost \fInowego w³a¶ciciela\fP, to
+okre¶la ona nowego w³a¶ciciela i grupê w formacie:
+.PP
+.RS
+.RI        [ w³a¶ciciel ][[\fB:\fP|\fB.\fP][ grupa ]]
+.RE
+.PP
+W zale¿no¶ci od postaci zapis ten jest interpretowany jak nastêpuje:
+.PP
+.I w³a¶ciciel
+.RS
+Je¶li podano tylko w³a¶ciciela (nazwê u¿ytkownika lub jego numeryczny
+identyfikator), to ten u¿ytkownik staje siê w³a¶cicielem pliku,
+a grupa pliku pozostaje niezmieniona.
+.RE
+.PP
+.IB w³a¶ciciel . grupa
+.br
+.IB w³a¶ciciel : grupa
+.RS
+Je¶li po w³a¶cicielu wystêpuje dwukropek, i, bezpo¶rednio po nim,
+grupa (nazwa lub numeryczny identyfikator grupy), to zmieniana
+jest tak¿e grupa pliku (na \fIgrupê\fP).
+.RE
+.IB w³a¶ciciel .
+.br
+.IB w³a¶ciciel :
+.RS
+Je¶li po w³a¶cicielu wpisano dwukropek, lecz nie podano nazwy grupy, to
+w³a¶cicielem plików staje siê wskazany u¿ytkownik, a grupa jest zmieniana
+na grupê g³ówn± (zg³oszeniow±) nowego w³a¶ciciela.
+.RE
+.BI . grupa
+.br
+.BI : grupa
+.RS
+Je¶li podano
+dwukropek lub kropkê i grupê, lecz pominiêto nazwê w³a¶ciciela, zmieniana
+jest tylko grupa plików.  W tym wypadku
+.B chown
+dokonuje tych samych operacji co
+.BR chgrp .
+.RE
+.SS OPCJE
+.TP
+.BR \-c ", " \-\-changes
+Jak \fB--verbose\fP, ale wypisuje tylko te pliki, których w³a¶ciciel lub
+grupa rzeczywi¶cie uleg³y zmianie.
+.TP
+.BR  \-\-dereference
+Dzia³a na plikach wskazywanych przez dowi±zania symboliczne zamiast na
+samych dowi±zaniach.
+.TP
+.BR \-h ", " \-\-no\-dereference
+Dzia³a na dowi±zaniach symbolicznych zamiast na plikach, które one wskazuj±
+(dostêpne tylko w systemach potrafi±cych zmieniæ w³a¶ciciela dowi±zania
+symbolicznego). Jest to zachowanie domy¶lne. Opiera siê na wywo³aniu funkcji
+systemowej \fIlchown\fP. Na systemach nie zapewniaj±cych tej funkcji chgrp
+zawodzi w przypadku próby zmiany grupy dowi±zania symbolicznego. Domy¶lnie
+nie s± emitowane ¿adne komunikaty diagnostyczne dla dowi±zañ symbolicznych
+napotykanych podczas rekurencyjnej pracy w katalogach, zobacz jednak opis
+opcji \fB--verbose\fP.
+.TP
+.BI \-\-reference= rplik
+U¿ywa w³a¶ciciela i grupy wskazanego \fIrpliku\fP zamiast wprost podanych
+warto¶ci
+.IB w³a¶ciciel . grupa \fR.
+.TP
+.BR \-f ", " \-\-silent ", " \-\-quiet
+Nie wypisuje komunikatów o b³êdach dla plików, których w³a¶ciciela lub grupy
+nie uda³o siê zmieniæ.
+.TP
+.BR "\-v ", " \-\-verbose
+Informuje u¿ytkownika o zmianach w³a¶ciciela. Je¿eli podczas rekurencyjnego
+przetwarzania napotkane jest dowi±zanie symboliczne, za¶ system nie
+obs³uguje funkcji systemowej \fIlchown\fP a dzia³a opcja
+\fB--no-dereference\fP, to program wysy³a komunikat diagnostyczny
+informuj±cy, ¿e nie jest zmieniane ani dowi±zanie ani wskazywany przez nie
+plik.
+.TP
+.BR \-R ", " \-\-recursive
+Operuje równie¿ na podkatalogach. Rekurencyjnie zmienia w³a¶ciciela/grupê
+katalogów i ich zawarto¶ci.
+.TP
+.B \-\-help
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach, koñczy
+dzia³anie.
+.TP
+.B \-\-version
+Wy¶wietla numer wersji programu i koñczy dzia³anie.
+.SH AUTOR
+Napisane przez Davida MacKenzie.
+.SH "ZG£ASZANIE B£ÊDÓW"
+B³êdy proszê zg³aszaæ, w jêz.ang., do <bug-fileutils@gnu.org>.
+.SH COPYRIGHT
+Copyright \(co 1999 Free Software Foundation, Inc.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH ZOBACZ TAK¯E
+.BR chgrp (1),
+.BR chmod (1),
+.BR groups (1),
+.BR passwd (1),
+.BR fileutils (1).
+.SH OD T£UMACZA
+Zaktualizowano i poszerzono wg dokumentacji Texinfo dla narzêdzi plikowych
+GNU wersji 4.01.

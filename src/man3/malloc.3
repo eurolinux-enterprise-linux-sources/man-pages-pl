@@ -1,0 +1,181 @@
+.\" T³umaczenie wersji man-pages 1.39 - wrzesieñ 2001 PTM
+.\" aktualizacja do man-pages 1.50 - czerwiec 2002
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" --------
+.\" (c) 1993 by Thomas Koenig (ig25@rz.uni-karlsruhe.de)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" License.
+.\" Modified Sat Jul 24 19:00:59 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Clarification concerning realloc, iwj10@cus.cam.ac.uk (Ian Jackson), 950701
+.\" Documented MALLOC_CHECK_, Wolfram Gloger (wmglo@dent.med.uni-muenchen.de)
+.\" --------
+.TH MALLOC 3  1993-04-04 "GNU" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+calloc, malloc, free, realloc \- przydziela i zwalnia pamiêæ dynamiczn±
+.SH SK£ADNIA
+.nf
+.B #include <stdlib.h>
+.sp
+.BI "void *calloc(size_t " "nmemb" ", size_t " "size" );
+.nl
+.BI "void *malloc(size_t " "size" );
+.nl
+.BI "void free(void " "*ptr" );
+.nl
+.BI "void *realloc(void " "*ptr" ", size_t "  "size" );
+.fi
+.SH OPIS
+.B calloc()
+przydziela pamiêæ dla tablicy zawieraj±cej
+.I nmemb
+elementów, ka¿dy o rozmiarze
+.I size
+bajtów i zwraca wska¼nik do przydzielonej pamiêci.
+Pamiêæ jest zerowana.
+.PP
+.B malloc()
+przydziela
+.I size
+bajtów i zwraca wska¼nik do przydzielonej pamiêci.
+Pamiêæ nie jest czyszczona.
+.PP
+.B free()
+zwalnia obszar pamiêci wskazywany przez
+.IR ptr ,
+który zosta³ wcze¶niej przydzielony za pomoc± wywo³ania
+.BR malloc() ,
+.B calloc()
+lub
+.BR realloc() .
+W przeciwnym przypadku, lub gdy
+.BI "free(" "ptr" )
+zosta³o ju¿ wcze¶niej wywo³ane, funkcja zachowa siê w sposób nieokre¶lony.
+Je¶li
+.I ptr
+jest równe
+.BR NULL ,
+nie zostanie wykonana ¿adna operacja.
+.PP
+.B realloc()
+zmienia rozmiar bloku pamiêci wskazywanego przez
+.I ptr
+na
+.I size
+bajtów.
+Zawarto¶æ nie zostanie zmieniona w zakresie poni¿ej minimum ze starego i
+nowego rozmiaru; nowo przydzielona pamiêæ nie zostanie zainicjalizowana.
+Je¶li
+.I ptr
+jest równe
+.BR NULL ,
+to wywo³anie jest równowa¿ne
+.BR malloc(size) ;
+je¶li size jest równe zeru, to wywo³anie jest równowa¿ne
+.BI "free(" "ptr" ) .
+O ile
+.I ptr
+nie jest równe
+.BR NULL ,
+musi ono byæ zwrócone przez wcze¶niejsze wywo³anie
+.BR malloc() ,
+.B calloc()
+lub
+.BR realloc() .
+.SH "WARTO¦Æ ZWRACANA"
+Dla
+.BR calloc() " i " malloc() ,
+zwracana warto¶æ jest wska¼nikiem do przydzielonej pamiêci, który jest
+w³a¶ciwie wyrównany dla dowolnego rodzaju zmiennej, lub
+.B NULL
+gdy ¿±danie zakoñczy³o siê niepowodzeniem.
+.PP
+.B free()
+nie zwraca ¿adnej warto¶ci.
+.PP
+.B realloc()
+zwraca wska¼nik do nowoprzydzielonej pamiêci, który jest w³a¶ciwie
+wyrównany dla dowolnego rodzaju zmiennej i mo¿e byæ ró¿ny od
+.IR ptr ,
+lub
+.B NULL
+gdy ¿±danie zakoñczy siê niepowodzeniem. Je¶li rozmiar by³ równy 0, zwracane
+jest NULL lub wska¼nik odpowiedni do przekazania go funkcji
+.IR free ().
+Gdy
+.B realloc()
+zakoñczy siê niepowodzeniem, pierwotny blok zostaje nienaruszony - nie jest on
+ani zwalniany ani przesuwany.
+.SH "ZGODNE Z"
+ANSI-C
+.SH "ZOBACZ TAK¯E"
+.BR brk (2),
+.BR posix_memalign (3)
+.SH UWAGI
+Standard Unix98 wymaga, by
+.BR malloc() ,
+.B calloc()
+i
+.B realloc()
+przy wyst±pieniu b³êdu nadawa³y
+.I errno
+warto¶æ ENOMEM. Glibc zak³ada, ¿e tak siê dzieje (a wersje tych funkcji
+zawarte w glibc rzeczywi¶cie to robi±). Je¶li wykorzystuje siê w³asn±
+implementacjê malloc, która nie ustawia
+.IR errno ,
+to pewne funkcje biblioteczne mog± zawie¶æ bez przekazania przyczyny w
+.IR errno .
+.LP
+Za³amania siê w
+.BR malloc() ,
+.BR free()
+czy
+.BR realloc()
+s± niemal zawsze zwi±zane z uszkodzeniami sterty, takimi jak przekroczenia
+rozmiaru przydzielonego fragmentu lub dwukrotne zwolnienie tego samego
+wska¼nika.
+.PP
+Nowe wersje linuksowej biblioteki libc (pó¼niejsze ni¿ 5.4.23) i GNU libc
+(2.x) zawieraj± implementacjê malloc, któr± mo¿na dostrajaæ za po¶rednictwem
+zmiennych ¶rodowiskowych. Przy ustawionej zmiennej
+.BR MALLOC_CHECK_
+stosowana jest specjalna (mniej wydajna) implementacja. Zgodnie z zamierzeniami,
+powinna byæ bardziej odporna na proste b³êdy, jak podwójne wywo³ania
+.BR free()
+z tym samym argumentem czy przekroczenia o pojedynczy bajt (b³êdy off-by-one).
+Nie chroni jednak przed wszystkimi tego rodzaju b³êdami, w wyniku których
+mog± powstaæ wycieki pamiêci.
+Je¶li
+.BR MALLOC_CHECK_
+ma warto¶æ 0, jakiekolwiek wykryte uszkodzenie sterty zostanie milcz±co
+zignorowane; je¶li ma warto¶æ 1, na stderr wypisywany bêdzie komunikat
+diagnostyczny; je¶li ma warto¶æ 2, to natychmiast zostanie wywo³ane 
+.BR abort() .
+Mo¿e siê to przydaæ, gdy¿ w przeciwnym razie za³amanie siê mog³oby wyst±piæ
+du¿o pó¼niej, a prawdziwa przyczyna k³opotów by³aby wówczas bardzo trudna
+do wy¶ledzenia.
+.PP
+Linux stosuje optymistyczn± strategiê przydzielania pamiêci. Oznacza to, ¿e
+gdy
+.B malloc()
+zwraca warto¶æ ró¿n± od NULL, nie ma gwarancji, i¿ pamiêæ faktycznie jest
+dostêpna.  Je¶li oka¿e siê, ¿e systemowi brak³o pamiêci, nies³awny zabójca
+OOM zabije jeden lub wiêcej procesów.

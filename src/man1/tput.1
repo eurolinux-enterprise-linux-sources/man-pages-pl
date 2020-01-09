@@ -1,0 +1,238 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+'\" t
+.\"***************************************************************************
+.\" Copyright (c) 1998 Free Software Foundation, Inc.                        *
+.\"                                                                          *
+.\" Permission is hereby granted, free of charge, to any person obtaining a  *
+.\" copy of this software and associated documentation files (the            *
+.\" "Software"), to deal in the Software without restriction, including      *
+.\" without limitation the rights to use, copy, modify, merge, publish,      *
+.\" distribute, distribute with modifications, sublicense, and/or sell       *
+.\" copies of the Software, and to permit persons to whom the Software is    *
+.\" furnished to do so, subject to the following conditions:                 *
+.\"                                                                          *
+.\" The above copyright notice and this permission notice shall be included  *
+.\" in all copies or substantial portions of the Software.                   *
+.\"                                                                          *
+.\" THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS  *
+.\" OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF               *
+.\" MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.   *
+.\" IN NO EVENT SHALL THE ABOVE COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,   *
+.\" DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR    *
+.\" OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR    *
+.\" THE USE OR OTHER DEALINGS IN THE SOFTWARE.                               *
+.\"                                                                          *
+.\" Except as contained in this notice, the name(s) of the above copyright   *
+.\" holders shall not be used in advertising or otherwise to promote the     *
+.\" sale, use or other dealings in this Software without prior written       *
+.\" authorization.                                                           *
+.\"***************************************************************************
+.\"
+.\" $Id: tput.1,v 1.1 2000/02/15 20:15:08 pborys Exp $
+.TH tput 1 ""
+.ds d /usr/share/terminfo
+.ds n 5
+.SH NAZWA
+\fBtput\fR - inicjalizuj terminal lub pytaj bazê terminfo
+.SH SK£ADNIA
+\fBtput\fR [\fB-T\fR\fItyp\fR] \fInazwaw³a¶ciwo¶ci\fR [\fIparm\fR ... ]
+.br
+\fBtput\fR [\fB-T\fR\fItyp\fR] \fBinit\fR
+.br
+\fBtput\fR [\fB-T\fR\fItyp\fR] \fBreset\fR
+.br
+\fBtput\fR [\fB-T\fR\fItyp\fR] \fBlongname\fR
+.br
+\fBtput -S\fR  \fB<<\fR
+.br
+.SH OPIS
+Narzêdzie \fBtput\fR robi u¿ytek z bazy \fBterminfo\fR, daj±c mo¿lwio¶æ
+doj¶cia do zale¿nych od terminala w³a¶ciwo¶ci z poziomu pow³oki (zobacz
+\fBsh\fR(1)), a tak¿e inicjalizowania lub resetowania terminala, lub
+zwracania d³ugiej nazwy ¿±danego typu terminala. 
+.PP
+Je¶li atrybut
+(\fInazwaw³a¶ciwo¶ci\fR) jest typu ³añcuchowego, \fBtput\fR wydaje warto¶æ
+³añcuchow±, a je¶li jest typu ca³kowitego, wydaje liczbê ca³kowit±.
+Je¶li atrybut jest warto¶ci± logiczn±, \fBtput\fR po prostu ustawia kod
+wyj¶cia (\fB0\fR to prawda, je¶li terminal ma dan± w³a¶ciwo¶æ, a \fB1\fR to
+fa³sz, je¶li terminal ¿±danej w³a¶ciwo¶ci nie posiada) i nie wydaje ¿adnego
+wyj¶cia tekstowego. 
+.PP
+Przed u¿yciem zwróconej warto¶ci, u¿ytkownik powinien
+przetestowaæ kod wyjscia i upewniæ siê, ¿e wynosi on \fB0\fR.
+(Zobacz sekcje \fBKODY WYJ¦CIA\fR i \fBDIAGNOSTYKA\fR.)
+Dla kompletnej listy w³a¶ciwo¶ci i \fInazww³a¶ciwo¶ci\fR zwi±zanych z ka¿d±
+z nich, zobacz \fBterminfo\fR(\*n).
+.TP
+\fB-T\fR\fItyp\fR
+okre¶la typ terminala. Normalnie opcja ta jest niepotrzebna, gdy¿ warto¶æ
+domy¶lna jest pobierana ze zmiennej ¶rodowiskowej \fBTERM\fR. Je¶li podane
+jest \fB-T\fR, zmienne pow³oki \fBLINES\fR i \fBCOLUMNS\fR bêd± ignorowane,
+a system operacyjny nie bêdzie zapytywany o rzeczywisty rozmiar ekranu.
+.TP
+\fInazwaw³a¶ciwo¶ci\fR
+okre¶la atrybut z bazy \fBterminfo\fR. Gdy wkompilowana jest obs³uga
+\fBtermcap\fR, mo¿na podawaæ równie¿ termcapowe nazwy atrybutów.
+.TP
+\fIparm\fR
+Je¶li atrybut jest ³añcuchem, który wymaga parametrów, argumenty
+\fIparam\fR zostan± przeniesione do tego ³añcucha. Wszystkie argumenty
+numeryczne zostan± atrybutowi przekazane jako liczby.
+.TP
+\fB-S\fR
+umo¿liwiwa u¿ywanie wiêcej ni¿ jednej w³a¶ciwo¶ci na jedno wywo³anie
+\fBtput\fR. W³a¶ciwo¶ci musz± byæ przekazywane do \fBtput\fR ze
+standardowego wej¶cia, a nie przez liniê poleceñ (zobacz przyk³ad). Na liniê
+dozwolona jest tylko jedna \fInazwaw³a¶ciwo¶ci\fR. Opcja \fB-S\fR zmienia
+znaczenie kodów wyj¶cia \fB0\fR i \fB1\fR (zobacz sekcjê KODY WYJ¦CIA).
+.TP
+\fBinit\fR
+Je¶li baza \fBterminfo\fR istnieje i znajduje siê w niej opis dla terminala
+u¿ytkownika (zobacz wy¿ej \fB-T\fItyp\fR), to stanie sie co nastêpuje:
+(1) je¶li istniej± ³añcuchy inicjalizacyjne, to zostan± one wys³ane
+(\fBis1\fR, \fBis2\fR, \fBis3\fR, \fBif\fR, \fBiprog\fR), (2)
+wszelkie opó¼nienia (np. nowej linii), podane w opisie zostan± ustawione w
+sterowniku tty, (3) rozszerzanie tabulacji zostanie w³±czone lub wy³±czone,
+zale¿nie od specyfikacji w opisie i (4) je¶li tabulacje nie s± rozszerzane,
+ustawione zostan± standardowe tabulacje (co 8 spacji).
+Je¶li opis nie zawiera informacji wymaganej dla którego¶ z tych czterech
+dzia³añ, to zostanie ono cicho pominiête.
+.TP
+\fBreset\fR
+Zamiast wystawiania ³añcuchów inicjalizacji, wys³ane zostan± (o ile s±
+obecne) ³añcuchy resetowania (\fBrs1\fR, \fBrs2\fR, \fBrs3\fR, \fBrf\fR).
+Je¶li ³añcuchy resetowania nie s± zdefiniowane, lecz zdefiniowane s±
+³añcuchy inicjalizacji, to wys³ane zostan± ³añcuchy inicjalizacji. W
+przeciwnym wypadku, \fBreset\fR dzia³a analogicznie do \fBinit\fR.
+.TP
+\fBlongname\fR
+Je¶li obecna jest baza terminfo i istnieje w niej opis dla terminala
+u¿ytkownika (zobacz wy¿ej \fB-T\fItyp\fR), to wy¶wietlona zostanie d³uga
+nazwa terminala. D³uga nazwa jest ostatni± nazw± w pierwszej linii opisu
+terminala w bazie terminfo [zobacz \fBterm\fR(5)].
+.SH PRZYK£ADY
+.TP 5
+\fBtput init\fR
+Inicjalizuj terminal wed³ug typu terminala ze zmiennej ¶rodowiskowej
+\fBTERM\fR. Komenda ta powinna byæ za³±czona do .profile ka¿dego u¿ytkownika
+po wyeksportowaniu zmiennej ¶rodowiskowej \fBTERM\fR, jak pokazano w
+podrêczniku \fBprofile\fR(4).
+.TP 5
+\fBtput -T5620 reset\fR
+Resetuj terminal AT&T 5620, przeci±¿aj±c rodzaj terminala ze zmiennej
+¶rodowiskowej \fBTERM\fR.
+.TP 5
+\fBtput cup 0 0\fR
+Wy¶lij sekwencjê do przesuniêcia kursora do wiersza \fB0\fR, kolumny \fB0\fR
+(lewy górny naro¿nik ekranu, znany zwykle jako "domowa" (home) pozycja
+kursora).
+.TP 5
+\fBtput clear\fR
+Wy¶lij na bie¿±cy terminal sekwencjê czyszcz±c± ekran.
+.TP 5
+\fBtput cols\fR
+Wydrukuj liczbê kolumn w bie¿±cym terminalu.
+.TP 5
+\fBtput -T450 cols\fR
+Wydrukuj liczbê kolumn terminala 450.
+.TP 5
+\fBbold=`tput smso` offbold=`tput rmso`\fR
+Ustaw zmienne pow³oki \fBbold\fR na pocz±tek sekwencji trybu standout i
+\fBoffbold\fR na koniec sekwencji trybu standout bie¿±cego terminala. Mo¿e
+to byæ u¿yte w znaku zachêty:
+\fBecho "${bold}Proszê wpisaæ imiê: ${offbold}\\c"\fR
+.TP 5
+\fBtput hc\fR
+Ustaw kod wyj¶cia, okre¶laj±cy czy terminal jest terminalem hard copy.
+.TP 5
+\fBtput cup 23 4\fR
+Wy¶lij sekwencjê przesuwaj±c± kursor do wiersza 23 w 4 kolumnie.
+.TP 5
+\fBtput longname\fR
+Wydrukuj d³ug± nazwê terminala \fBTERM\fR, okre¶lon± w bazie \fBterminfo\fR.
+.TP 0
+\fBtput -S <<!\fR
+.br
+\fB> clear\fR
+.br
+\fB> cup 10 10\fR
+.br
+\fB> bold\fR
+.br
+\fB> !\fR
+.TP 5
+\&
+Ten przyk³ad pokazuje przetwarzania przez tput kilku w³a¶ciwo¶ci w jednym
+wywo³aniu. Przyk³ad ten czy¶ci ekran, przesuwa kursor do pozycji 10, 10 i
+w³±cza tryb wyt³uszczenia. Lista jest koñczona znakiem wykrzyknika,
+znajduj±cym siê w osobnej linii.
+.SH PLIKI
+.TP
+\fB\*d\fR
+skompilowana baza opisu terminala
+.TP
+\fB/usr/include/curses.h\fR
+plik nag³ówkowy \fBcurses\fR(3X)
+.TP
+\fB/usr/include/term.h\fR
+plik nag³ówkowy \fBterminfo\fR
+.TP
+\fB/usr/share/tabset/*\fR
+ustawienia tab dla niektórych terminali w formacie odpowiednim do wysy³ania
+na terminal (sekwencje specjalne, ustawiaj±ce marginesy i tabulacje); dla
+dalszych informacji, zobacz sekcjê "Tabs and Initialization"
+\fBterminfo\fR(4).
+.SH ZOBACZ TAK¯E
+\fBclear\fR(1), \fBstty\fR(1), \fBtabs\fR(\*n).  \fBprofile\fR(\*n),
+\fBterminfo\fR(4) w podrêczniku \fISystem\fR \fIAdministrator\fR'\fIs\fR
+\fIReference\fR \fIManual\fR.  Rozdzia³ 10 podrêcznika
+\fIProgrammer\fR'\fIs\fR \fIGuide\fR.
+.SH KODY WYJ¦CIA
+Je¶li \fInazwaw³a¶ciwo¶ci\fR jest typu logicznego, dla prawdy zwracana jest
+warto¶æ \fB0\fR, a dla fa³szu \fB1\fR. Wyj±tkiem jest u¿ycie opcji \fB-S\fR.
+
+Je¶li \fInazwaw³a¶ciwo¶ci\fR jest typu ³añcuchowego, zwracane jest \fB0\fR,
+gdy w³asciwo¶æ jest zdefiniowana dla tego terminala (warto¶æ
+\fInazwyw³a¶ciwo¶ci\fR jest zwracana na standardowe wyj¶cie); zwracane jest
+\fB1\fR je¶li w³a¶ciwo¶æ \fInazwaw³a¶ciwo¶ci\fR nie jest zdefiniowana dla
+tego terminala (na stdout nie jest nic wypisywane).
+
+Je¶li \fInazwaw³a¶ciwo¶ci\fR jest typu logicznego, lub ³añcuchowego i u¿yto
+opcji \fB-S\fR, w wypadku gdy wszystkie linie by³y pomy¶lne zwracane jest
+\fB0\fR. Poniewa¿ nie mo¿na okre¶liæ, która z linii siê nie powiod³a, nie
+jest zwracana warto¶æ \fB1\fR. Kody wyj¶cia \fB2\fR, \fB3\fR i \fB4\fR maj±
+swoj± tradycyjn± interpretacjê.
+
+Je¶li \fInazwaw³a¶ciwo¶ci\fR jest typu ca³kowitego, zwracane jest zawsze
+\fB0\fR. Aby okre¶liæ czy w³asciwo¶æ jest zdefiniowana, u¿ytkownik musi
+testowaæ warto¶æ standardowego wyj¶cia. Warto¶æ \fB-1\fR oznacza, ¿e
+w³asciwo¶æ nie jest zdefiniowana dla tego terminala.
+
+Wszystkie inne kody wyj¶cia oznaczaj± b³êdy; zobacz sekcjê DIAGNOSTYKA.
+.SH DIAGNOSTYKA
+\fBtput\fR drukuje nastêpuj±ce komunikaty o b³êdach i ustawia odpowiednie
+kody b³êdów:
+
+.TS
+l l.
+kod b³êdu	komunikat b³êdu
+\fB0\fR	(\fInazwaw³a¶ciwo¶ci\fR jest zmienn± numeryczn±, która nie jest
+	podana w bazie \fBterminfo\fR(\*n) tego typu terminala, np.
+	\fBtput -T450 lines\fR i \fBtput -T2621 xmc\fR)
+\fB1\fR	nie jest drukowany ¿aden komunikat b³êdu, zobacz sekcjê \fBKODY
+	WYJ¦CIA\fR.
+\fB2\fR	b³±d u¿ycia.
+\fB3\fR	nieznany typ terminala, lub brak bazy \fBterminfo\fR.
+\fB4\fR	nieznana w³asciwo¶æ \fInazwaw³a¶ciwo¶ci\fR \fBterminfo\fR
+.TE
+.SH PRZENO¦NO¦Æ
+Opcje \fBlongname\fR i \fB-S\fR oraz w³a¶ciwo¶ci podstawiania parametrów,
+u¿ywane w przyk³adzie \fBcup\fR nie s± obs³ugiwane w BSD curses i w
+AT&T/USL curses przed SVr4.
+.\"#
+.\"# The following sets edit modes for GNU EMACS
+.\"# Local Variables:
+.\"# mode:nroff
+.\"# fill-column:79
+.\"# End:

@@ -1,0 +1,247 @@
+.\" {PTM/PR/0.1/09-08-1999/"narzêdzie dzielenia/³±czenia pakietów Debiana"}
+.\" Translation 1999 by Piotr Roszatycki
+.\" Last update: Robert Luberda <robert@debian.org>, Jun 2001, dpkg 1.9.9
+.\" Hey, Emacs!  This is an -*- nroff -*- source file.
+.\" Authors: Ian Jackson
+.TH DPKG-SPLIT 8 "23 czerwca 1996" "Projekt Debiana" "Debian Linux"
+.SH NAZWA
+dpkg\-split \- narzêdzie dzielenia/³±czenia pakietów Debiana
+.SH SK£ADNIA
+.B dpkg-split
+.BR -s | --split
+.IR pe³ne\-archiwum " [" przedrostek ]
+.br
+.B dpkg-split
+.BR -j | --join
+.IR "czê¶æ czê¶æ " ...
+.br
+.B dpkg-split
+.BR -I | --info
+.IR "czê¶æ czê¶æ " ...
+.br
+.B dpkg-split
+.BR -a | --auto
+.BI -o " pe³ne\-archiwum czê¶æ"
+.br
+.B dpkg-split
+.BR -l | --listq
+.br
+.B dpkg-split
+.BR -d | --discard
+.RI [ "pakiet pakiet " ...]
+.SH OPIS
+.B dpkg-split
+dzieli pakiety binarne Debiana na mniejsze czê¶ci oraz scala je z powrotem,
+tak ¿e mo¿liwe jest przechowanie wiêkszych pakietów na ma³ych no¶nikach,
+takich jak dyskietki.
+
+Program wywo³uje siê rêcznie, wraz z opcj±
+.BR --split ", " --join " lub " --info .
+
+Mo¿liwe jest tak¿e wywo³anie automatyczne, poprzez u¿ycie opcji
+.B --auto .
+Wtedy to tworzona jest kolejka czê¶ci pakietu, a gdy wszystkie czê¶ci
+bêd± dostêpne, ca³y pakiet zostanie odtworzony.
+Opcje
+.BR --listq " i " --discard
+pozwalaj± zarz±dzaæ kolejk±.
+
+Wszystkie dzia³ania, takie jak rozdzielanie, ³±czenie, czy kolejkowanie,
+powoduj± wy¶wietlenie informacji na standardowe wyj¶cie. Informacje te
+mo¿na zignorowaæ.
+.SH OPCJE DZIA£AÑ
+.TP
+.BR --split ", " -s
+Rozdzielenie pojedynczego pakietu binarnego na poszczególne czê¶ci.
+
+Czê¶ci maj± nazwê
+.IB przyrostek . N of M .deb
+gdzie
+.I N
+jest numerem czê¶ci, rozpoczynaj±c od 1, a
+.I M
+jest liczb± wszystkich czê¶ci (dziesiêtnie).
+
+Je¶li nie podano
+.IR przedrostka ,
+to u¿yta jest nazwa pliku
+.IR pe³nego\-archiwum ,
+wraz z katalogiem, gdy jest okre¶lony. Ponadto usuniêta jest
+koñcówka
+.BR .deb .
+.TP
+.BR --join ", " -j
+£±czenie czê¶ci pakietu i odtworzenie oryginalnego pliku sprzed
+dzielenia.
+
+Pliki podane jako argumenty musz± byæ czê¶ciami tego samego
+oryginalnego pakietu. Ka¿da czê¶æ musi pojawiæ siê raz na li¶cie
+argumentów, ale nie jest konieczne zachowanie w³a¶ciwej kolejno¶ci.
+
+Czê¶ci musz± byæ wygenerowane z u¿yciem tego samego rozmiaru, co oznacza,
+¿e musz± to byæ te same czê¶ci utworzone za pomoc± polecenia
+.BR "dpkg-split --split" .
+
+Nazwy plików czê¶ci nie maj± znaczenia dla procesu odtworzenia pakietu.
+
+Domy¶lnie, odtworzony plik ma nazwê
+.IB pakiet - wersja .deb\fR.
+
+.TP
+.BR --info ", " -I
+Wy¶wietlanie informacji, podanych w formacie czytelnym dla cz³owieka, o czê¶ciach
+pakietu. Argumenty, które nie s± czê¶ci± pakietu, powoduj± wy¶wietlenie 
+informacji o tym fakcie na standardowym wyj¶ciu.
+.TP
+.BR --auto ", " -a
+Automatyczne kolejkowanie czê¶ci i odtworzenie pakietu, gdy to jest mo¿liwe.
+
+Podana
+.I czê¶æ
+zostaje sprawdzona i porównana z innymi czê¶ciami tego samego pakietu,
+które znajduj± siê w kolejce.
+
+Je¶li wszystkie czê¶ci pakietu s± ju¿ dostêpne, pakiet jest
+odtwarzany i zapisywany do
+.IR pe³nego\-archiwum .
+
+Je¶li jeszcze nie ma wszystkich czê¶ci, podana
+.I czê¶æ
+jest kopiowana do kolejki i
+.I pe³ne\-archiwum
+nie jest odtwarzane.
+
+Je¶li plik
+.I czê¶æ
+nie jest czê¶ci± pakietu binarnego,
+.B dpkg\-split
+zakoñczy siê i zwróci kod b³êdu 1, albo kod b³êdu 2 w przypadku
+wyst±pienia innych problemów.
+
+Opcja
+.BR --output " lub " -o
+musi zostaæ podana w przypadku u¿ycia
+.BR --auto .
+(W przeciwnym razie program nie wiedzia³by, jakiego spodziewaæ
+siê pliku wyj¶ciowego.)
+.TP
+.BR --listq ", " -l
+Listowanie zawarto¶ci kolejki czê¶ci pakietu do odtworzenia.
+
+Dla ka¿dego pliku czê¶ci pakietu wy¶wietlana jest nazwa pakietu,
+czê¶æ w kolejce, ca³kowita liczba bajtów przechowywanych w kolejce.
+.TP
+.BR --discard ", " -d
+Usuwa czê¶ci pakietu z kolejki.
+
+Je¶li nie podano nazwy
+.IR pakietu ,
+czyszczona jest ca³a kolejka. Gdy nazwa jest podana, usuwane
+s± tylko czê¶ci podanego pakietu.
+.TP
+.BR --help ", " -h
+Wy¶wietlenie informacje o opcjach
+.BR dpkg\-split .
+.TP
+.BR --version
+Wy¶wietlenie informacje o wersji
+.BR dpkg\-split .
+.TP
+.BR --licence
+Wy¶wietlenie informacje o licencji
+.B dpkg\-split
+oraz braku jego gwarancji. (Obs³ugiwany jest tak¿e amerykañski
+sposób pisowni
+.BR \-\-license .)
+.SH POZOSTA£E OPCJE
+.TP
+.BI --depotdir " katalog"
+Okre¶lenie alternatywnego katalogu dla kolejki czê¶ci pakietów do
+zrekonstruowania. Domy¶lnym jest
+.BR /var/lib/dpkg .
+.TP
+.BI --partsize\fR|\fB-S " Kbajtów"
+Okre¶lenie maksymalnego rozmiaru czê¶ci pakietu w kilobajtach (1024 bajtów).
+Domy¶lnym jest 450KB.
+.TP
+.BI --output\fR|\fB-O " pe³ne\-archiwum"
+Okre¶lenie nazwy pliku pe³nego archiwum.
+
+Ta opcja nadpisuje domy¶ln± nazwê przy odtwarzaniu pakietu
+.RB ( \-\-join )
+oraz jest wymagana przy automatycznym odtwarzaniu pakietu
+.RB ( \-\-auto ).
+.TP
+.BR --npquiet ", " -Q
+Gdy wykonywane jest automatyczne ³±czenie czê¶ci pakietu,
+.B dpkg\-split
+zwykle wy¶wietla informacje o b³êdzie, gdy dany plik
+.I czê¶ci
+nie jest czê¶ci± pakietu. Ta opcja zapobiega wy¶wietlaniu
+nadmiernej ilo¶ci informacji przez programy takie jak
+.BR dpkg .
+.TP
+.BR --msdos
+Pliki generowane przez
+.B \-\-split
+s± zapisywane w formacie odczytywanym przez MSDOS.
+
+Zmieniany jest przedrostek, zarówno ten domy¶lny jak i ten podany w argumencie:
+litery s± zamieniane na ma³e, znak plusa zamieniany jest na 
+.BR x ,
+a pozosta³e znaki s± pomijane.
+
+Powsta³y przedrostek jest ucinany do niezbêdnego rozmiaru. Powsta³a nazwa
+ma postaæ
+.IB "przedrostekN" of M .deb..
+.SH KODY B£ÊDU
+Kod b³êdu 0 oznacza, ¿e ¿±dana operacja dzielenia, ³±czenia czy jakakolwiek
+inna, zakoñczy³a siê sukcesem. Polecenie
+.B \-\-info
+koñczy siê sukcesem nawet gdy podany plik nie jest czê¶ci± pakietu.
+
+Kod b³êdu 1 oznacza, ¿e opcja
+.B \-\-auto
+zosta³a wykonana na pliku, który nie jest
+.I czê¶ci±
+pakietu.
+
+Kod b³êdu 2 pojawia siê przy ró¿nego rodzaju problemach, takich jak
+b³êdy wywo³ania funkcji systemu, uszkodzenie plików czê¶ci pakietu,
+czy innych wypadkach.
+.SH B£ÊDY
+.B dpkg\-split
+u¿ywa raczej starej konwencji nazw plików pakietów.
+
+Pobranie pe³nej informacji o pakietach w kolejce jest niemo¿liwe,
+bez przeszukania katalogu kolejki.
+
+Nie ma prostego testu na sprawdzenie, czy dany plik jest na pewno
+czê¶ci± pakietu.
+
+Architektura nie jest okre¶lona w plikach czê¶ci pakietu, jedynie
+w kontrolnych plikach ca³ego pakietu, tak wiêc architektura nie
+jest czê¶ci± generowanej nazwy pliku.
+.SH PLIKI
+.TP
+.B /var/lib/dpkg/parts
+Domy¶lny katalog kolejki czê¶ci pakietów czekaj±cych na automatyczne
+odtworzenie.
+
+Nazwy plików w tym katalogu s± wewnêtrznie utworzone przez
+.B dpkg\-split
+i nie s± u¿yteczne dla innych programów.
+.SH ZOBACZ TAK¯E
+.BR deb (5),
+.BR deb\-control (5),
+.BR dpkg\-deb (1),
+.BR dpkg (8)
+.SH AUTOR
+.B dpkg\-split
+oraz ten podrêcznik napisa³ Ian Jackson
+Copyright (C) 1995-1996
+i udostêpni³ na Powszechnej Licencji Publicznej GNU; BEZ JAKIEJKOLWIEK
+GWARANCJI. Szczegó³y w
+.B /usr/share/doc/dpkg/copyright
+oraz
+.BR /usr/share/common-licences/GPL .

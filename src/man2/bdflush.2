@@ -1,0 +1,106 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright (c) 1995 Michael Chastain (mec@shell.portal.com), 15 April 1995.
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" Modified Fri Jan 31 16:14:33 1997 by Eric S. Raymond <esr@thyrsus.com>
+.\" Translation (c) 1998 Przemek Borys <pborys@dione.ids.pl>
+.\" Last Update: Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\"
+.TH BDFLUSH 2 1995-04-15 "Linux 1.2.4" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+bdflush \- uruchomienie, wypró¿nienie lub dostrojenie demona wypró¿niania
+buforów (bdflush)
+.SH SK£ADNIA
+.nf
+.BI "int bdflush(int "  func ", long *" address );
+.BI "int bdflush(int "  func ", long " data );
+.fi
+.SH OPIS
+.B bdflush
+uruchamia, wypró¿nia, lub dostraja demona bdflush.
+Tylko superu¿ytkownik mo¿e wywo³aæ
+.BR bdflush .
+.PP
+Je¶li
+.I func
+jest liczb± ujemn±, lub zerem, a demon nie by³ uruchomiony,
+.B bdflush
+wchodzi w kod daemona i nigdy nie powraca.
+.PP
+Je¶li
+.I func
+wynosi 1, niektóre bufory s± zapisywane na dysk.
+.PP
+Je¶li
+.I func
+wynosi 2 lub wiêcej i jest parzyste (najni¿szy bit jest 0), to
+.I address
+jest adresem d³ugiego s³owa, a parametr dostrajaj±cy o numerze
+.RI "(" "func" "\-2)/2"
+zostaje zwrócony pod tym adresem do wywo³uj±cego.
+.PP
+Je¶li
+.I func
+jest równe 3, lub wiêcej i jest nieparzyste (najni¿szy bit wynosi 1), to
+.I data
+jest d³ugim s³owem, a kernel nadaje tê warto¶æ parametrowi dostrajaj±cemu
+o numerze
+.RI "(" "func" "\-3)/2."
+.PP
+Zestaw parametrów, ich warto¶ci i dozwolonych zakresów jest zdefiniowany w
+kodzie ¼dród³owym kernela, w pliku
+.IR fs/buffer.c .
+.SH "WARTO¦Æ ZWRACANA"
+Je¶li
+.I func
+jest ujemne lub jest zerem, a demon uruchomi siê pomy¶lnie,
+.B bdflush
+nigdy nic nie zwraca.
+W pozosta³ych wypadkach po pomy¶lnym zakoñczeniu funkcji zwracana jest
+warto¶æ 0, a w przypadku b³êdu zwracana jest warto¶æ \-1 i ustawiane
+.I errno
+wskazuj±c rodzaj b³êdu.
+.SH B£ÊDY
+.TP
+.B EPERM
+Wywo³uj±cy nie jest superu¿ytkownikiem.
+.TP
+.B EFAULT
+.I address
+wskazuje poza dostêpn± dla u¿ytkownika przestrzeñ adresow±.
+.TP
+.B EBUSY
+Próbowano wej¶æ w kod demona po tym, jak inny proces zrobi³ to samo.
+.TP
+.B EINVAL
+Próbowano odczytaæ lub zapisaæ nieprawid³owy numer parametru, lub nadaæ
+parametrowi nieprawid³ow± warto¶æ.
+.SH "ZGODNE Z"
+\fBbdflush\fP jest specyficzne dla Linuksa i nie powinno byæ u¿ywane w
+przeno¶nych programach.
+.SH "ZOBACZ TAK¯E"
+.BR fsync (2),
+.BR sync (2),
+.BR update (8),
+.BR sync (8).

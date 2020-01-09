@@ -1,0 +1,58 @@
+.\" {PTM/WK/0.1/15-07-1999/"zmieñ atrybuty plików MSDOS"}
+.TH mattrib 1 "15 lipca 1999" mtools-3.9.6
+.SH NAZWA
+mattrib - zmieñ atrybuty plików MSDOS
+.SH SK£ADNIA
+.BR mattrib " [" -a | +a "] ["-h | +h "] [" -r | +r ]
+.RB [ -s | +s "] [" -/ "] [" -p "] [" -X ]
+.IR plikDOS " [" plikiDOS ...]
+.SH OPIS
+\fBmattrib\fR u¿ywany jest do zmiany flag atrybutów pliku MS-DOSu.
+Dodaje on flagi atrybutów do plików DOSu (z operatorem \fB+\fR) lub usuwa je
+(z operatorem \fB-\fR).
+.PP
+\fBmattrib\fR obs³uguje nastêpuj±ce bity atrybutu:
+.TP
+.B -a
+Archiwacja. U¿ywane przez niektóre programy wykonuj±ce kopie zapasowe
+(backup) do oznaczenia nowego pliku.
+.TP
+.B -r
+Read-only. U¿ywany do oznaczenia pliku tylko do odczytu. Pliki
+z ustawionym bitem `r' nie mog± zostaæ skasowane przez \fBDEL\fR ani
+zmodyfikowane.
+.TP
+.B -s
+Systemowy. U¿ywany przez MS-DOS do oznakowania pliku systemu
+operacyjnego.
+.TP
+.B -h
+Ukryty (hidden). Pliki z ustawionym bitem `hidden' s± ukryte przed poleceniem
+\fBDIR\fR.
+.SH OPCJE
+\fBmattrib\fR posiada nastêpuj±ce opcje linii poleceñ:
+.TP
+.B \-/
+Rekurencja. Rekurencyjnie listuje atrybuty plików w podkatalogach.
+.TP
+.B -X
+Zwiê¼le. Wy¶wietla atrybuty bez jakiegokolwiek wyrównywania odstêpami.
+Wygodne w skryptach. Je¶li ani nie u¿yto opcji \fB-/\fR, ani \fIplikDOS\fR
+nie zawiera znaków uogólniaj±cych i podano tylko jeden parametr okre¶laj±cy
+plik, to wy¶wietlany jest wy³±cznie atrybut, bez nazwy pliku.
+.TP
+.B -p
+Tryb replay.
+Wy¶wietla jako wynik seriê poleceñ `mattrib', które odtworz± bie¿±ce atrybuty,
+w stosunku do wyj¶ciowej sytuacji, jaka mo¿e powstaæ przez odtarowanie
+(un-tar) DOSowego systemu plików. Generowane s± tylko polecenia dla
+ustawieñ atrybutów ró¿ni±cych siê od domy¶lnych (bit archiwacji ustawiony
+dla plików, nieustawiony dla katalogów). Nie jest brany pod uwagê bit
+read-only, gdy¿ tar potrafi ustawiaæ go samodzielnie.
+.SH UWAGI
+Niniejsza, polska wersja dokumentacji, powsta³a jako t³umaczenie pliku
+Texinfo pakietu mtools wersji 3.9.6. W stosunku do automatycznie generowanej
+z Textinfo dokumentacji oryginalnej dokonano przesuniêcia sekcji opisuj±cej
+konwersjê dokumentacji do \fBmtools\fR(1). Tam te¿ znajdziesz notê prawn±
+dotycz±c± rozpowszechniania, modyfikacji i t³umaczenia dokumentacji pakietu
+mtools

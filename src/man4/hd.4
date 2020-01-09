@@ -1,0 +1,100 @@
+.\" Copyright (c) 1993 Michael Haardt (michael@moria.de), Fri Apr  2 11:32:09 MET DST 1993
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\" 
+.\" Modified Sat Jul 24 16:56:20 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified Mon Oct 21 21:38:51 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" (and some more by aeb)
+.\"
+.\" T³umaczenie na jêzyk polski: Pawe³ Olszewski <alder@amg.net.pl>
+.\" {PTM/PO/0.1/03-06-1998/"urz±dzenia twardych dysków MFM/IDE"}
+.\" Aktualno¶æ: man-pages 1.48
+.\"
+.TH HD 4 1992-12-17 "Linux" "Podrêcznik Programisty Linuksa"
+.SH NAZWA
+hd \- urz±dzenia twardych dysków MFM/IDE
+.SH OPIS
+\fBHd*\fP to urz±dzenia blokowe umo¿liwiaj±ce dostêp do twardych
+dysków MFM/IDE w trybie surowym. Dysk master na pierwszym kontrolerze
+IDE (numer g³ówny urz±dzenia - 3) to \fBhda\fR; dysk slave to
+\fBhdb\fR. Dysk master drugiego kontrolera (numer g³ówny urz±dzenia -
+22) to \fBhdc\fR, a slave \fBhdd\fR.
+.LP
+Ogólne nazwy urz±dzeñ blokowych IDE maj± postaæ
+.BI hd X\c
+, lub
+.BI hd XP\c
+, gdzie
+.I X
+jest liter± oznaczaj±c± fizyczny dysk, natomiast
+.I P
+jest liczb± okre¶laj±c± partycjê na tym fizycznym dysku.
+Pierwsza postaæ,
+.BI hd X,
+u¿ywana jest do udostêpniania ca³ego dysku. Numery partycji s±
+przypisywane w kolejno¶ci odnajdywania i tylko niepuste i nie
+rozszerzone partycje otrzymuj± numer. Jednak¿e, numery partycji 1-4 s±
+przydzielane czterem partycjom opisanym w MBR (partycje 'podstawowe'),
+nawet gdy s± one nieu¿ywane lub rozszerzone. Tym samym,
+pierwsz± partycj± logiczn± bêdzie
+.BI hd X 5\c
+\&.
+Obs³ugiwane jest zarówno partycjonowanie w trybie DOS, jak i BSD
+(etykieta dysku). Na dysku IDE mo¿na mieæ co najwy¿ej 63 partycje.
+.LP
+Dla przyk³adu,
+.B /dev/hda
+odnosi siê do ca³o¶ci pierwszego dysku IDE w systemie; 
+.B /dev/hdb3
+odnosi siê do trzeciej partycji 'podstawowej' DOS na drugim dysku.
+.LP
+Najczê¶ciej tworzy siê je poleceniami:
+.RS
+.sp
+mknod -m 660 /dev/hda b 3 0
+.br
+mknod -m 660 /dev/hda1 b 3 1
+.br
+mknod -m 660 /dev/hda2 b 3 2
+.br
+\&...
+.br
+mknod -m 660 /dev/hda8 b 3 8
+.br
+mknod -m 660 /dev/hdb b 3 64
+.br
+mknod -m 660 /dev/hdb1 b 3 65
+.br
+mknod -m 660 /dev/hdb2 b 3 66
+.br
+\&...
+.br
+mknod -m 660 /dev/hdb8 b 3 72
+.br
+chown root:disk /dev/hd*
+.RE
+.SH PLIKI
+/dev/hd*
+.SH "ZOBACZ TAK¯E"
+.BR mknod (1),
+.BR chown (1),
+.BR mount (8),
+.BR sd (4)

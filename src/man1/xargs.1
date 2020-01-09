@@ -1,0 +1,121 @@
+.\" {PTM/LK/0.1/27-09-1998/"xargs - utwórz liniê polecenia ze standardowego wejscia"}
+.\" T³umaczenie: 27-09-1998 £ukasz Kowalczyk (lukow@tempac.okwf.fuw.edu.pl)
+.TH XARGS 1L \" -*- nroff -*-
+.SH NAZWA
+xargs \- wykonaj polecenie z argumentami pobranymi ze standardowego wej¶cia
+.SH SK£ADNIA
+.B xargs
+[\-0prtx] [\-e[eof-str]] [\-i[replace-str]] [\-l[max-lines]]
+[\-n max-args] [\-s max-chars] [\-P max-procs] [\-\-null] [\-\-eof[=eof-str]]
+[\-\-replace[=replace-str]] [\-\-max-lines[=max-lines]] [\-\-interactive]
+[\-\-max-chars=max-chars] [\-\-verbose] [\-\-exit] [\-\-max-procs=max-procs]
+[\-\-max-args=max-args] [\-\-no-run-if-empty] [\-\-version] [\-\-help]
+[polecenie [argumenty-pocz±tkowe]]
+.SH OPIS
+Ta strona opisuje wersjê GNU programu
+.BR xargs .
+.B xargs
+czyta ze standardowego wej¶cia listê argumentów rozdzielonych spacjami lub
+znakami nowej linii. Argumenty zawieraj±ce spacje mog± byæ ujête w cudzys³owy.
+Nastêpnie wykonywane jest
+.I polecenie
+(domy¶lnie /bin/echo) jeden lub wiêcej razy z
+.IR argumentami-pocz±tkowymi ,
+po których nastêpuj± argumenty przeczytane ze standardowego wej¶cia. Puste
+linie ze standardowego wej¶cia s± ignorowane.
+.P
+.B xargs
+zwraca nastêpuj±ce kody wyj¶cia:
+.nf
+0 gdy polecenie zakoñczy³o siê sukcesem
+123 je¿eli którekolwiek wywo³anie polecenia zakoñczy³o siê z kodem wyj¶cia 1-125
+124 je¿eli polecenie zakoñczy³o siê z kodem wyj¶cia 255
+125 je¿eli polecenie zosta³o zakoñczone przez sygna³
+126 je¿eli polecenie nie mog³o byæ uruchomione
+127 je¿eli polecenie nie zosta³o znalezione
+1 je¿eli wyst±pi³ inny b³±d
+.fi
+.SS OPCJE
+.TP
+.I "\-\-null, \-0"
+Nazwy plików wej¶ciowych s± zakoñczone znakiem o kodzie zero zamiast spacj±,
+a cudzys³owy i odwrotne uko¶niki nie maj± specjalnego znaczenia (wszystkie znaki
+s± brane dos³ownie). £añcuch koñca pliku jest traktowany jak ka¿dy inny.
+Opcja jest u¿yteczna, gdy argumenty mog± zawieraæ bia³e znaki, cudzys³owy,
+apostrofy lub odwrotne uko¶niki. Ta opcja mo¿e byæ u¿yta do pobrania argumentów
+od programu GNU find uruchomionego z opcj± \-print0.
+.TP
+.I "\-\-eof[=eof-str], \-e[eof-str]"
+Nadaje ³añcuchowi koñca pliku warto¶æ \fIeof-str\fR. Je¿eli
+ci±g oznaczaj±cy koniec pliku pojawi siê w jednej z linii wej¶ciowych, reszta
+danych jest ignorowana. Je¿eli parametr \fIeof-str\fP nie zostanie podany,
+¿aden ci±g nie jest interpretowany jako koniec pliku. Je¿eli opcja w ogóle
+nie zostanie podana, znakiem koñca danych pliku "_".
+.TP
+.I "\-\-help"
+Podaje wszystkie opcje programu
+.B xargs
+i koñczy dzia³anie.
+.TP
+.I "\-\-replace[=replace-str], \-i[replace-str]"
+Zastêpuje wszystkie wyst±pienia \fIreplace-str\fP w 
+.I pocz±tkowych_argumentach
+argumentami przeczytanym ze standardowego wej¶cia.  Ponadto, niecytowane
+odstêpy nie separuj± argumentów.
+.\"Also, unquoted blanks do not terminate arguments.
+Je¿eli nie podano parametru \fIreplace-str\fP, jego domy¶ln± warto¶ci±
+staje siê "{}" (jak dla opcji -exec programu find). Automatycznie w³±czane
+s± opcje \fI\-x\fP oraz \fI\-l 1\fP.
+.TP
+.I "\-\-max\-lines[=max\-lines], \-l[max\-lines]"
+U¿ywa co najwy¿ej \fImax-lines\fR niepustych linii danych wej¶ciowych na
+ka¿dy wiersz poleceñ. Je¿eli nie podano parametru \fImax-lines\fR, jest on
+przyjmowany jako 1. Spacje na koñcu linii powoduj±, ¿e jest do niej
+do³±czana nastêpna linia. Automatycznie w³±czana jest opcja \fI\-x\fR.
+.TP
+.I "\-\-max-args=max-args, \-n max-args"
+U¿ywa co najwy¿ej \fImax-args\fR argumentów na ka¿dy wiersz poleceñ. Je¿eli
+przekroczona zostanie ilo¶æ znaków (patrz opcja \-s), u¿ytych zostanie mniej
+argumentów ni¿ \fImax-args\fR, chyba ¿e podana zostanie opcja \-x. W takim
+wypadku dzia³anie programu
+.I xargs
+zostanie zakoñczone.
+.TP
+.I "\-\-interactive, \-p"
+Prosi u¿ytkownika o potwierdzenie przed uruchomieniem ka¿dego wiersza poleceñ
+i przeczytaniem danych z terminala. Uruchamia wiersz poleceñ tylko wtedy, gdy
+odpowied¼ zaczyna siê od `y' lub `Y'. Automatycznie w³±cza opcjê \fI\-t\fR.
+.TP
+.I "\-\-no-run-if-empty, \-r"
+Je¿eli w danych ze standardowego wej¶cia nie znajduj± siê znaki inne ni¿
+spacje, polecenie nie jest uruchamiane. Normalnie polecenie jest uruchamiane
+jednorazowo, nawet gdy nie odczytano ¿adnych danych.
+.TP
+.I "\-\-max-chars=max-chars, \-s max-chars"
+U¿ywa co najwy¿ej \fImax-chars\fR znaków na ka¿dy wiersz poleceñ, w³±cznie z
+poleceniem, argumentami pocz±tkowymi i znakami \\0 (null) na koñcu ka¿dego
+wiersza poleceñ. Domy¶lna warto¶æ jest tak du¿a, jak to mo¿liwe, do 20k znaków.
+.TP
+.I "\-\-verbose, \-t"
+Wiersz poleceñ jest wypisywany na standardowe wyj¶cie b³êdów przed wykonaniem
+polecenia.
+.TP
+.I "\-\-version"
+Wypisuje numer wersji
+.I xargs
+i koñczy dzia³anie programu.
+.TP
+.I "\-\-exit, \-x"
+Koñczy dzia³anie programu, je¿eli przekroczona zostanie ilo¶æ znaków (patrz
+opcja \fI\-s\fR).
+.TP
+.I "\-\-max-procs=max-procs, \-P max-procs"
+Uruchamia co najwy¿ej \fImax-procs\fR procesów za jednym razem; domy¶ln±
+warto¶ci± jest 1. Je¿eli \fImax-procs\fR jest równe 0, 
+.I xargs
+uruchomi tyle procesów, ile bêdzie to mo¿liwe za jednym razem. 
+U¿ywaj opcji \fI\-n\fR razem z \fI\-P\fR; w przeciwnym razie jest mo¿liwe, 
+¿e uruchomiony zostanie tylko jeden dodatkowy proces.
+.SH "ZOBACZ TAK¯E"
+\fBfind\fP(1L), \fBlocate\fP(1L), \fBlocatedb\fP(5L), \fBupdatedb\fP(1)
+\fBZnajdowanie plików\fP (w dokumentacji Info lub wydane w druku)

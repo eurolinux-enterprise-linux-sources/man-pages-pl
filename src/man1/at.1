@@ -1,0 +1,306 @@
+.\" {PTM/WK/1999-XII}
+.Id $Id: at.1,v 1.2 2002/05/21 09:29:18 robert Exp $
+.TH AT 1 "listopad 1996" local "Podrêcznik Programisty Linuksa"
+.SH NAZWA
+at, batch, atq, atrm \- kolejkuj, sprawd¼ lub usuñ zadania do pó¼niejszego wykonania
+.SH SK£ADNIA
+.B at
+.RB [ -V ]
+.RB [ -q 
+.IR kolejka ]
+.RB [ -f
+.IR plik ]
+.RB [ -mldbv ]
+.B CZAS
+.br
+.B "at -c"
+.I zadanie
+.RI [ zadanie... ]
+.br
+.B atq
+.RB [ -V ]
+.RB [ -q
+.IR kolejka ]
+.br
+.B atrm
+.RB [ -V ]
+.I zadanie
+.RI [ zadanie... ]
+.br
+.B batch
+.RB [ -V ]
+.RB [ -q
+.IR kolejka ]
+.RB [ -f
+.IR plik ]
+.RB [ -mv ]
+.RB [ CZAS ]
+.SH OPIS
+.B at
+i
+.B batch
+czytaj± ze standardowego wej¶cia lub podanego pliku polecenia, które
+maj± zostaæ wykonane w terminie pó¼niejszym przy u¿yciu 
+.BR /bin/sh .
+.TP
+.BR at
+wykonuje polecenia o zadanym czasie.
+.TP 8
+.BR atq
+pokazuje oczekuj±ce zadania u¿ytkownika, chyba ¿e jest on superu¿ytkownikiem;
+w tym przypadku wy¶wietlane s± zadania wszystkich u¿ytkowników. Postaæ wierszy
+wynikowych (po jednym na ka¿de zadanie):
+numer zadania, data, godzina, klasa zadania.
+.TP
+.BR atrm
+usuwa zadania o zadanych identyfikatorach (numerach).
+.TP
+.BR batch
+wykonuje polecenia, gdy pozwala na to poziom obci±¿enia systemu;
+inaczej mówi±c, gdy ¶rednie obci±¿enie spada poni¿ej 0.8 lub warto¶ci
+okre¶lonej w wywo³aniu 
+.BR atrun .
+.PP
+.B At
+pozwala na do¶æ z³o¿one okre¶lanie czasu, wychodz±c poza standard POSIX.2
+Akceptuje czasy w postaci
+.B HH:MM
+nakazuj±ce wykonanie zadania o zadanej godzinie.
+(Je¶li czas ten ju¿ min±³, to przyjmowany jest nastêpny dzieñ.)
+Mo¿esz te¿ podaæ
+.B midnight
+[pó³noc],
+.B noon
+[po³udnie] lub
+.B teatime
+["czas herbatki": czwarta po po³udniu].
+Mo¿esz u¿ywaæ przyrostków
+[t³um: decyduj± one równocze¶nie o u¿yciu zegara 12-godzinnego
+zamiast 24-godzinnego]
+.BR AM
+lub
+.B PM
+do zapisu uruchomieñ porannych lub wieczornych.
+Mo¿na te¿ wskazaæ, w jakim dniu ma zostaæ uruchomione zadanie, podaj±c datê
+w postaci
+.B nazwa-miesi±ca
+.B dzieñ
+z opcjonalnym
+.BR rokiem ,
+lub te¿ w formacie
+.BR MMDDYY ,
+.B MM/DD/YY
+czy
+.BR DD.MM.YY .
+Okre¶lenie daty
+.I musi
+wystêpowaæ po okre¶leniu godziny (pory dnia).
+Mo¿esz równie¿ podawaæ czasy takie jak
+.BR now
+[teraz]
+.B \+
+.I liczba
+.IR jednostek-czasu ,
+gdzie jednostkami-czasu mog± byæ
+.B minutes
+[minuty],
+.B hours
+[godziny],
+.B days
+[dni],
+lub
+.B weeks
+[tygodnie]. Mo¿na te¿ nakazaæ
+.B at
+uruchomienie zadania w dniu dzisiejszym koñcz±c okre¶lenie czasu s³owem
+.B today
+[dzisiaj], czy jutrzejszym, u¿ywaj±c przyrostka
+.B tomorrow
+[jutro].
+.PP
+Na przyk³ad, by uruchomiæ zadanie za trzy dni, o godzinie 4 po po³udniu,
+powiniene¶ wykonaæ:
+.br
+.B at 4pm + 3 days
+.br
+uruchomienie zadania o 10:00, 31 lipca:
+.br
+.B at 10am Jul 31
+.br
+jutro o pierwszej w nocy:
+.br
+.B at 1am tomorrow
+.PP
+Dok³adn± definicjê specyfikacji czasu mo¿na znale¼æ w
+.IR /usr/doc/packages/at/timespec .
+.PP
+Zarówno
+.BR at " jak i " batch ,
+czytaj± i wykonuj± polecenia ze standardowego wej¶cia lub
+z pliku okre¶lonego opcj± 
+.BR -f .
+Z czasu wywo³ania poleceñ zachowywane s± katalog roboczy, ¶rodowisko
+systemowe (z wyj±tkiem zmiennych
+.BR TERM ,
+.BR DISPLAY
+i
+.BR _ )
+oraz domy¶lne prawa dostêpu (umask).
+Polecenie
+.BR "at " \-
+czy
+.BR "batch "\-
+wywo³ane z pow³oki
+.B su(1)
+zachowaj± bie¿±cy identyfikator u¿ytkownika.
+Wyniki kierowane przez zadane polecenia na standardowe wyj¶cie
+lub wyj¶cie raportowania b³êdów zostan± skierowane do skrzynki
+pocztowej u¿ytkownika (przekazane poczt± elektroniczn±).
+Przesy³ki te zostan± dostarczone przy pomocy polecenia
+.BR /usr/sbin/sendmail .
+Je¿eli
+.B at
+wykonywane jest z pow³oki
+.BR su(1) ,
+to korespondencjê otrzyma w³a¶ciciel pow³oki zg³oszeniowej (login shell).
+.PP
+Superu¿ytkownik mo¿e zawsze pos³ugiwaæ siê opisywanymi poleceniami.
+Dla pozosta³ych u¿ytkowników, zezwolenia na u¿ycie at okre¶lane s± przez pliki
+.I /etc/at.allow
+i
+.IR /etc/at.deny .
+.PP
+Je¿eli istnieje plik
+.IR /etc/at.allow ,
+to wy³±cznie u¿ytkownicy, których nazwy doñ wpisano, maj± prawo uruchamiania
+.BR at .
+.PP
+Je¶li nie istnieje
+.IR /etc/at.allow ,
+to sprawdzany jest plik
+.IR /etc/at.deny ,
+a ka¿demu u¿ytkownikowi, którego w nim nie wymieniono, zezwala siê
+na u¿ywanie
+.BR at .
+[t³um: tzn. u¿ytkownicy ujêci w
+.IR /etc/at.deny
+maj± zakaz uruchamiania opisywanych poleceñ.]
+.PP
+Je¶li nie istnieje ¿aden z plików kontroluj±cych dostêp do polecenia at,
+to pos³ugiwaæ siê nim mo¿e wy³±cznie superu¿ytkownik.
+.PP
+Pusty plik
+.I /etc/at.deny
+oznacza, ¿e pozwala siê na u¿ywanie opisywanych poleceñ wszystkim
+u¿ytkownikom. Jest to konfiguracja domy¶lna.
+.SH OPCJE
+.TP
+.B -V
+wy¶wietla numer wersji programu na standardowe wyj¶cie b³êdów.
+.TP
+.BI \-q " kolejka"
+u¿ywa zadanej kolejki.
+Okre¶lenie kolejki sk³ada siê z pojedynczej litery; dopuszczalne s± okre¶lenia
+kolejki w zakresie od
+.B a
+do 
+.BR z
+oraz od
+.B A
+do
+.BR Z .
+Kolejka
+.B a
+jest kolejk± domy¶ln± dla
+.BR at ,
+za¶ kolejka
+.B b
+domy¶ln± dla
+.BR batch .
+Kolejki opisywane kolejnymi literami uruchamiane s± z wzrastaj±cym
+priorytetem. Specjalna kolejka "=" zarezerwowana jest dla zadañ obecnie
+wykonywanych.
+.P
+Je¶li zadanie wysy³ane jest do kolejki okre¶lonej du¿± liter±, to traktowane
+jest jakby by³o wys³ane do wykonania o tym czasie przez polecenie batch.
+Je¶li u¿yto konkretnej kolejki w poleceniu
+.BR atq ,
+to poka¿e ono tylko zadania oczekuj±ce w tej kolejce.
+.TP
+.B \-m
+Po zakoñczeniu zadania wy¶lij poczt± powiadomienie do u¿ytkownika, nawet je¶li
+zadanie nie wys³a³o danych na wyj¶cie.
+.TP
+.BI \-f " plik"
+Czyta zadania z
+.I pliku
+a nie ze standardowego wej¶cia.
+.TP
+.B \-l
+Jest skrótem (aliasem) dla
+.B atq.
+.TP
+.B \-d
+Jest skrótem dla
+.B atrm.
+.TP
+.TP
+.B \-v
+Pokazuje czas, o jakim zostanie wykonane zadanie.
+.P
+Czasy wy¶wietlone zostan± w formacie "1997-02-20 14:50", chyba ¿e ustawiono
+zmienn± ¶rodowiska
+.BR POSIXLY_CORRECT ;
+; wówczas bêdzie to "Thu Feb 20 14:50:00 1996".
+.TP
+.B
+\-c
+wysy³a [jak polecenie
+.BR cat (1)]
+podane w wierszu poleceñ zadania na standardowe wyj¶cie.
+.SH PLIKI
+.I /var/spool/atjobs
+.br
+.I /var/spool/atspool
+.br
+.I /proc/loadavg
+.br
+.I /var/run/utmp
+.br
+.I /etc/at.allow
+.br
+.I /etc/at.deny
+.SH ZOBACZ TAK¯E
+.BR cron (1),
+.BR nice (1),
+.BR sh (1),
+.BR umask (2),
+.BR atd (8).
+.SH B£ÊDY
+Poprawne dzia³anie
+.B batch
+w Linuksie zale¿y od obecno¶ci typu katalogu
+.IR proc -
+montowanego w
+.IR /proc .
+.PP
+Je¿eli plik
+.I /var/run/utmp
+nie jest dostêpny lub jest uszkodzony, albo je¶li podczas wywo³ywania
+.B at
+u¿ytkownik nie jest zalogowany, to poczta wysy³ana jest do u¿ytkownika
+o identyfikatorze znalezionym w zmiennej ¶rodowiska
+.BR LOGNAME .
+Je¿eli nie jest ona zdefiniowana lub jest pusta, to przyjmowany jest
+bie¿±cy identyfikator u¿ytkownika.
+.PP
+.B At
+i
+.B batch
+w obecnej implementacji s± nieu¿yteczne w sytuacji, kiedy u¿ytkownicy
+rywalizuj± o zasoby.
+Je¶li jest tak w przypadku Twojego systemu, powiniene¶ rozwa¿yæ inne
+rozwi±zanie systemu wsadowego, takie jak 
+.BR nqs .
+.SH AUTOR
+At zosta³o w wiêkszo¶ci napisane przez Thomasa Koeniga, ig25@rz.uni-karlsruhe.de.

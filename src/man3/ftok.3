@@ -1,0 +1,106 @@
+.\" T³umaczenie wersji man-pages 1.45 - grudzieñ 2001 PTM
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" --------
+.\" Copyright 1993 Giorgio Ciucci (giorgio@crcc.it)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified 2001-11-28, by Michael Kerrisk, mtk16@ext.canterbury.ac.nz
+.\"	Changed data type of proj_id; minor fixes
+.\"	aeb: further fixes; added notes.
+.\" --------
+.TH FTOK 3 2001-11-28 "Linux 2.4" "Podrêcznik programisty Linuksa" 
+.SH NAZWA
+ftok \- przekszta³ca ¶cie¿kê i identyfikator projektu na klucz komunikacji
+miêdzyprocesowej (IPC) Systemu V
+.SH SK£ADNIA
+.nf
+.B
+# include <sys/types.h>
+.B
+# include <sys/ipc.h>
+.fi
+.sp
+.BI "key_t ftok(const char *" pathname ", int " proj_id );
+.SH OPIS
+Funkcja
+.B ftok
+wykorzystuje to¿samo¶æ pliku o nazwie podanej w
+.I pathname
+(która musi odnosiæ siê do istniej±cego, dostêpnego pliku)
+oraz 8 najmniej znacz±cych bitów
+.I proj_id
+(które musz± stanowiæ oktet niezerowy) do wygenerowania klucza komunikacji
+miêdzyprocesowej Systemu V, typu
+.BR key_t ,
+odpowiedniego do u¿ywania w
+.BR msgget (2),
+.BR semget (2),
+lub
+.BR shmget (2).
+.LP
+Warto¶æ wynikowa jest taka sama dla wszystkich ¶cie¿ek stanowi±cych nazwy
+tego samego pliku, o ile u¿yje siê tej samej warto¶ci
+.IR proj_id .
+Zwracane warto¶ci powinny siê ró¿niæ gdy (istniej±ce jednocze¶nie) pliki
+lub identyfikatory projektu ró¿ni± siê.
+.SH "WARTO¦Æ ZWRACANA"
+W przypadku powodzenia zwracana jest wygenerowana warto¶æ
+.BR key_t .
+W przypadku b³êdu zwracane jest \-1, a
+.I errno
+wskazuje b³±d tak samo, jak dla funkcji systemowej
+.BR stat (2).
+.SH "ZGODNE Z"
+XPG4
+.SH UWAGI
+Pod libc4 i libc5 (oraz pod SunOS 4.x) prototyp mia³ postaæ
+.RS
+.BI "key_t ftok(char *" pathname ", char " proj_id );
+.RE
+Obecnie
+.I proj_id
+jest typu
+.BR int ,
+ale nadal tylko 8 bitów jest u¿ywanych. Typowe zastosowanie polega
+na umieszczeniu znaku ASCII w
+.I proj_id
+i dlatego mówi siê, ¿e zachowanie jest nieokre¶lone gdy
+.I proj_id
+jest zerem.
+.LP
+Oczywi¶cie, nie mo¿na daæ gwarancji, ¿e otrzymany
+.B key_t
+jest unikalny. Typowo, dla uzyskania najlepszego wyniku, ³±czone s±: podany
+bajt
+.IR proj_id ,
+16 mniej znacz±cych bitów numeru i\-wêz³a oraz 8 ni¿szych bitów numeru
+urz±dzenia w 32\-bitowy wynik. kolizje mog± ³atwo wyst±piæ, na przyk³ad
+pomiêdzy plikami na
+.I /dev/hda1
+a plikami na
+.IR /dev/sda1 .
+.SH "ZOBACZ TAK¯E"
+.BR ipc (5),
+.BR msgget (2),
+.BR semget (2),
+.BR shmget (2),
+.BR stat (2)

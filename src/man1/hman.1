@@ -1,0 +1,69 @@
+.\" Copyright (c) 1998 Andries Brouwer
+.\"
+.\" You may distribute under the terms of the GNU General Public
+.\" License as specified in the README file that comes with the man 1.0
+.\" distribution.
+.\"
+.\" Translation: Robert Luberda <robert@debian.org>, Feb 2003, man-1.5k
+.\" $Id: hman.1,v 1.2 2003/03/15 16:42:40 robert Exp $
+.TH hman 1 "19 stycznia 1998"
+.LO 1
+.SH NAZWA
+hman \- przegl±danie stron podrêcznika ekranowego
+.SH SYNOPSIS
+.B hman
+[ -P \fIprzegl±darka\fP ] [ -H \fIkomputer\fP ] [ \fIsekcja\fP ] \fInazwa\fP
+.br
+.B hman
+[ -P \fIprzegl±darka\fP ] [ -H \fIkomputer\fP ] [ \fIsekcja\fP ] [ indeks ]
+.SH OPIS
+Skrypt
+.B hman
+jest interfejsem do programu man2html(1), pozwalaj±cym na wprowadzenie nazwy
+strony podrêcznika ekranowego i zobaczenia jej w swojej ulubionej przegl±darce www.
+Swoim zachowaniem przypomina polecenie
+.BR man (1),
+wiêc mo¿na utworzyæ alias z
+.B hman
+do
+.BR man .
+Je¿eli u¿ywan± przegl±dark± jest netscape i netscape jest ju¿ uruchomiony, to
+.B hman
+u¿yje w³a¶nie tej uruchomionej przegl±darki.
+
+.SH OPCJE
+.TP
+.B \-\^P " przegl±darka"
+Okre¶la, której przegl±darki (np. lynx, xmosaic, arena, chimera,
+netscape, amaya, ...) u¿yæ.
+Ta opcja uniewa¿nia zmienn± ¶rodowiskow±
+.BR MANHTMLPAGER .
+Domy¶ln± warto¶ci± jest wersja
+.BR lynx -a
+nie wymagaj±ca serwera httpd.
+.TP
+.B \-\^H " komputer"
+Okre¶la, ¿ którego komputera nale¿y wzi±æ strony podrêcznika.
+Ta opcja uniewa¿nia zmienn± ¶rodowiskow±
+.BR MANHTMLHOST .
+Domy¶ln± warto¶ci± jest
+.BR localhost .
+
+.SH ¦RODOWISKO
+.TP
+MANHTMLPAGER
+Domy¶lna przegl±darka www jest wybierana na podstawie warto¶ci tej zmiennej.
+.TP
+MANHTMLHOST
+Domy¶lna komputer jest wybierany na podstawie warto¶ci tej zmiennej.
+
+.SH "ZOBACZ TAK¯E"
+.BR man (1),
+.BR man2html (1),
+.BR arena (1),
+.BR lynx (1),
+.BR netscape (1),
+.BR xmosaic (1),
+.BR glimpse (1)
+
+http://www.mcom.com/newsref/std/x-remote.html

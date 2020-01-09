@@ -1,0 +1,305 @@
+.\" T³umaczenie wersji z modutils-2.4.10 - pa¼dziernik 2001 PTM
+.\" czê¶ciowo oparte na depmod.1 z PTM autorstwa Marcina Mazurka
+.\" Andrzej Krzysztofowicz <ankry@green.mif.pg.gda.pl>
+.\"
+.\" Copyright (c) 1994, 1995 Jacques Gelinas (jacques@solucorp.qc.ca)
+.\" Copyright (c) 1995, 1999 Bjorn Ekwall (bj0rn@blox.se)
+.\" This program is distributed according to the Gnu General Public License.
+.\" See the file COPYING in the base distribution directory
+.\" $Id: modprobe.8 1.6 Wed, 15 Aug 2001 22:44:20 +1000 kaos $
+.TH MODPROBE 8 "15 sierpnia 2001" Linux "Wsparcie dla modu³ów"
+.SH NAZWA
+modprobe \- wysokopoziomowa obs³uga modu³ów
+.SH SK£ADNIA
+.hy 0
+.B modprobe
+[ \-adnqv ] [ \-C\ konfiguracja ] modu³ [ symbol=warto¶æ ... ]
+.br
+.B modprobe
+[ \-adnqv ] [ \-C\ konfiguracja ] [ \-t\ typ ] wzorzec
+.br
+.B modprobe
+\-l [ \-C\ konfiguracja ] [ \-t\ typ ] wzorzec
+.br
+.B modprobe
+\-c [ \-C\ konfiguracja ]
+.br
+.B modprobe
+\-r [ \-dnv ] [ \-C\ konfiguracja ] [ modu³ ...]
+.br
+.B modprobe
+-V
+.SH OPCJE
+.TP
+.I "\-a, \-\-all"
+£aduje
+.B all
+wszystkie modu³y pasuj±ce do wzorca, zamiast zatrzymaæ siê po pierwszym
+pomy¶lnym za³adowaniu.
+.TP
+.I "\-c, \-\-showconfig"
+Pokazuje akrualnie u¿ywan± konfiguracjê.
+.TP
+.I "\-d, \-\-debug"
+Pokazuje informacje o wewnêrznej reprezentacji stosu modu³ów.
+.TP
+.I "\-k, \-\-autoclean"
+Ustawia 'autoczyszczenie' dla za³adowanych modu³ów. U¿ywane przez j±dro
+podczas wywo³ywania 
+.B modprobe
+aby zapewniæ brakuj±ce w³a¶ciwo¶ci (dostêpne jako modu³y).
+Opcja
+.I \-k
+w³±cza te¿
+.IR \-q .
+Opcje te s± automatycznie przekazywane do insmoda.
+.TP
+.I "\-l, \-\-list"
+Wypisuje pasuj±ce modu³y.
+.TP
+.I "\-n, \-\-show"
+Pokazuje, co by siê dzia³o, nie podejmuj±c ¿adnej akcji.
+.TP
+.I "\-q, \-\-quiet"
+Nie narzeka na niepomy¶ln± instalacjê modu³u przez insmoda. Kontymuuje jak
+zwykle, lecz po cichu, umo¿liwiaj±c modprobe testowanie innych mo¿liwo¶ci.
+Opcja ta jest automatycznie przekazywana do insmoda.
+.TP
+.I "\-r, \-\-remove"
+Usuwa modu³ (stos modu³ów) lub wykonuj autoczyszczenie, w zale¿no¶ci od tego,
+czy podano jakie¶ modu³y w linii poleceñ, czy nie.
+.TP
+.I "\-s, \-\-syslog"
+Wyprowadza wszystko do syslog zamiast na standardow± diagnostykê.
+Opcja ta jest automatycznie przekazywana do insmoda.
+.TP
+.I "\-t, \-\-type\ typmodu³u"
+Bierze pod uwagê jedynie modu³y danego typu. modprobe bêdzie szukaæ jadynie
+takich modu³ów, których katalog w ¶cie¿ce zawiera "/\fItypmodu³u\fR/".
+.I typmodu³u
+mo¿e zawieraæ wiêcej ni¿ jedn± nazwê katalogu, np.
+.I "\-t\ drivers/net"
+wypisze modu³y z xxx/drivers/net/ i jego podkatalogów.
+.TP
+.I "\-v, \-\-verbose"
+Wupisuje wszystkie uruchamiane polecenia.
+.TP
+.I "\-V, \-\-version"
+Wypisuje wersjê modprobe.
+.TP
+.I "\-C, \-\-config plikkonf"
+Korzysta z pliku
+.I plikkonf
+zamiast z (opcjonalnego)
+.B /etc/modules.conf
+dla okre¶lenia konfiguracji.
+Do wybrania (i narzucenia) innego pliku konfiguracyjnego ni¿
+domy¶lny /etc/modules.conf (lub (przestarza³y) /etc/conf.modules) mo¿na
+równie¿ u¿yæ zmiennej ¶rodowiska
+.BR MODULECONF .
+.TP
+.B Uwaga:
+Zawy modu³ów nie mog± zawieraæ ¶cie¿ek (bez '/') ani koñcz±cych nazwê '.o'.
+Na przyk³ad, slip jest dla
+.I modprobe
+poprawn± nazw±, a /lib/modules/2.2.19/net/slip i slip.o s± niepoprawne.
+Dotyczy to linii poleceñ i ca³ego pliku konfiguracyjnego.
+.SH OPIS
+Programy narzêdziowe
+.B modprobe
+i
+.B depmod
+s³u¿± do zarz±dzania zmodularyzowanym j±drem Linuksa przez
+zwyk³ych u¿ytkowników, administratorów i twórców dystrybucji.
+.PP
+.B modprobe
+w celu automatycznego ³adowania w³a¶ciwych, spo¶ród zbioru modu³ów
+dostêpnych w predefiniowanych drzewach katalogów, korzysta z pliku podobnego
+do "Makefile", tworzonego przez
+.BR depmod .
+.B modprobe
+jest u¿ywany do za³adowania: pojedynczego modu³u, zbioru powi±zanych modu³ów,
+lub wszystkich modu³ów oznaczonych podanym znacznikiem.
+.PP
+.B modprobe
+automatycznie za³aduje wszystkie modu³y podstawowe, wymagane przez zbiór
+modu³ów, zgodnie z opisem w pliku powi±zañ modules.dep.
+Je¶li ³adowanie jednego z tych modu³ów siê nie powiedzie, ca³y zbiór modu³ów
+za³adowanych w bie¿±cej sesji zostanie automatycznie roz³adowany.
+.PP
+.B modprobe
+mo¿e ³adowaæ modu³y na dwa ró¿ne sposoby. Jeden to taki, ¿e modprobe
+spróbuje za³adowaæ modu³ z podanej listy (zdefiniowany przez
+.I wzorzec
+).
+.B modprobe
+zatrzyma siê je¶li uda mu siê za³adowaæ jeden z modu³ów.
+W ten sposób mo¿na automatycznie ³adowaæ sterownik karty Ethernet jako jeden
+z listy. 
+.br
+Inny sposób u¿ycia
+.B modprobe
+to za³adowanie
+.B wszystkich
+modu³ów z listy.
+Zobzcz
+.B PRZYK£ADY
+poni¿ej.
+.PP
+Gdy poda siê opcjê
+.B \-r,
+modprobe automatycznie usunie zbiór modu³ów, podobnie jak by to zosta³o
+wykonane przez
+.BR "rmmod \-r" .
+Nale¿y zauwa¿yæ, ¿e wydanie polecenia
+.B "modprobe \-r"
+spowoduje wyczyszczenie nieu¿ywanych, automatycznie za³adowanych modu³ów
+a tak¿e wykonanie poleceñ pre- i post-remove z pliku konfiguracyjnego
+/etc/modules.conf.
+.PP
+Je¿eli opcja
+.I \-l
+zostanie po³±czona z opcj±
+.IR \-t ,
+wypisana zostanie lista wszystkich dostêpnych modu³ów okre¶lonego typu.
+.PP
+Opcja
+.I \-c
+wypisuje ca³± bie¿±c± konfiguracjê (ustawienia domy¶lne + plik
+konfiguracyjny).
+.SH KONFIGURACJA
+Zachowanie siê
+.B depmod
+i
+.B modprobe
+mo¿e byæ dostosowane przez (opcjonalny) plik konfiguracyjny
+.BR /etc/conf.modules .
+.br
+Po bardziej szczegó³owy opis mo¿liwej zawarto¶ci tego pliku, jak i
+konfiguracjê domy¶ln± u¿ywan± przez
+.B depmod
+i
+.B modprobe,
+zajrzyj do
+.I modules.conf(5).
+.PP
+Nale¿y zwróciæ uwagê, ¿e polecenia pre- i post-remove \fBnie\fR bêd±
+wykonywane je¶li modu³ jest usuwany automatycznie przez kerneld!
+Zamiast zastanawiaæ siê, jak to obej¶æ, nale¿y poczekaæ, a¿ zostanie
+wprowadzona obs³uga trwa³ego przechowywania danych dla modu³ów.
+.br
+Je¶li funkcjonalno¶æ pre- i post-install jest potrzebna, nale¿y wy³±czyæ
+automatyczne usuwanie modu³ów przez kerneld i zamiast tego wpisaæ liniê
+podobn± do poni¿szej w crontab (ma to równie¿ zastosowanie w systemach
+korzystaj±cych z kmod), aby automatyczne usuwaæ modu³y co 2 minuty:
+.br
+ */2 * * * * test \-f /proc/modules && /sbin/modprobe \-r
+.SH STRATEGIA
+Idea polega na tym, by
+.B modprobe
+najpierw sprawdzi³ katalog zawieraj±cy modu³y skompilowane dla bie¿±cej wersji
+j±dra. Je¶li w³a¶ciwy modu³ nie zostanie tam znaleziony,
+.B modprobe
+sprawdzi inne katalogi, wspólne dla g³ównego numery wersji j±dra (np. 2.0,
+2.2). Je¶li tam te¿ nie znajdzie modu³u, 
+.B modprobe
+bêdzie szukaæ w katalogu zawieraj±cym modu³y dla domy¶lnego j±dra, itd.
+.PP
+Podczas instalacji nowego Linuksa, modu³y powinny byæ przeniesione do
+katalogu nazwanego od numeru j±dra które jest instalowane.
+Wówczas nale¿y zrobiæ dowi±zanie symboliczne z tego katalogu do katalogu
+"default".
+.PP
+Podczas ka¿dej kompilacji nowego j±dra, polecenie
+.B "make modules_install"
+utworzy nowy katalog, ale nie zmieni dowi±zania do katalogu default.
+.PP
+Kiedy otrzyma siê modu³ nie zwi±zany z konkretnym j±drem nale¿y go umie¶ciæ
+w jednym z katalogów nie zale¿nych od wersji j±dra w katalogu /lib/modules.
+.PP
+Takie jest standardowe zachowanie, które mo¿e byæ zmienione poprzez
+odpowiednie wpisy do /etc/modules.conf.
+.SH PRZYK£ADY
+.TP
+modprobe -t net
+Za³aduj jeden z modu³ów, który znajduje siê w katalogu oznaczonym "net".
+Ka¿dy modu³ jest wyprubowywany a¿ do momentu kiedy który¶ z nich zostanie
+za³adowany (standardowo: /lib/modules/net).
+.TP
+modprobe \-t net
+£aduje jeden z modu³ów znajduj±cych siê w katalogu "net". Próbuje wszystkich
+modu³ów po kolei, a¿ z jednym siê uda.
+.TP
+modprobe \-a \-t boot
+Wszystkie modu³y znajduj±ce siê w katalogach oznaczonych przez
+.B "boot"
+bêd± za³adowane.
+.TP
+modprobe slip
+Polecenie to spowoduje próbê za³adowania modu³u slhc.o o ile nie zosta³
+uprzednio za³adowany, poniewa¿ modu³ slip wymaga funkcjonalno¶ci modu³u slhc.
+Ta zale¿no¶æ bêdzie opisana w pliku "modules.dep" utworzonym wcze¶niej
+automatycznie przez polecenie
+.BR depmod .
+.TP
+modprobe \-r slip
+usunie modu³ slip. Usunie równie¿ automatycznie modu³ slhc, o ile nie jest on
+równie¿ u¿ywany przez jaki¶ inny modu³ (np. ppp).
+.SH PLIKI
+.nf
+/etc/modules.conf (alternatywnie, przestarza³y /etc/conf.modules)
+/lib/modules/*/modules.dep,
+/lib/modules/*
+.fi
+.SH ZOBACZ TAK¯E
+depmod(8),
+lsmod(8),
+kerneld(8),
+ksyms(8),
+rmmod(8)
+.SH "TRYB BEZPIECZNY"
+Je¶li efektywny uid jest ró¿ny od rzeczywistego uid, modprobe analizuje
+podane parametry szczególnie podejrzliwie. Ostatni parametr jest zawsze
+traktowany jak nazwa modu³u, nawet gdy zaczyna siê od '-'. Mo¿e byæ podana
+nazwa tylko jednego modu³u a opcje postaci "zmienna=warto¶æ" s± zabronione.
+Nazwa modu³u jest zawsze traktowana jak ³añcuch znakowy, w trybie bezpiecznym
+nie s± przeprowadzane rozwiniêcia. Jednak¿e, rozwiniêcia nadal s± wykonywane
+odno¶nie danych zawartych w pliku konfiguracyjnym.
+.PP
+euid mo¿e byæ ró¿ny od uid podczas wywo³ywania modprobe przez j±dro; dzieje
+siê tak dla j±der >= 2.4.0-test11. W ¶wiecie idealnym modprobe móg³by ufaæ
+j±dru, ¿e przekazuje tylko prawid³owe parametry. Jednak¿e, pojawi³a siê co
+najmniej jedna metoda wykorzystania tego lokalnie dla uzyskania uprawnieñ
+roota, gdy¿ wysokopoziomowy kod kernela przekazywa³ bezpo¶rednio parametry
+od u¿ytkownika do modprobe, bez kontroli.
+.PP
+.ne 8
+.B modprobe
+automatycznie ustawia tryb bezpieczny, gdy ¶rodowisko sk³ada siê jedynie
+z nastêpuj±cych zmiennych:
+.nf
+ HOME=/
+ TERM=linux
+ PATH=/sbin:/usr/sbin:/bin:/usr/bin
+.fi
+Jest to wykrywanie uruchamiania modprobe przez j±dro dla j±der 2.2 do
+2.4.0-test11, nawet gdy uid == euid, jak siê dzieje dla wcze¶niejszych j±der.
+.SH "LOGOWANIE POLECEÑ"
+Je¶li istnieje katalog /var/log/ksymoops, a modprobe zostanie uruchomiany z
+opcj± powoduj±c± za³adowanie lub usuniêcie modu³u, modprobe zaloguje swoje
+polecenie i kod powrotu w /var/log/ksymoops/`date\ +%Y%m%d.log`.
+Nie ma prze³±cznika wy³±czaj±cego automatyczne logowanie. Je¶li nie ma ono
+wystêpowaæ, nie nale¿y tworzyæ katalogu /var/log/ksymoops. Je¶li ten katalog
+istnieje, powinien byæ on w³asno¶ci± roota i mieæ prawa dostêpu 644 lub
+600 oraz nale¿y uruchamiaæ codziennie, lub w podobnych odstêpach czasu,
+skrypt insmod_ksymoops_clean.
+.SH "NIEZBÊDNE NARZÊDZIA"
+depmod(8),
+insmod(8)
+.SH UWAGI
+Wzorce podane programowi modprobe czêsto wymagaj± cytowania, aby
+mieæ pewno¶æ, ¿e s± interpretowany we w³a¶ciwy sposób.
+.SH AUTOR
+Jacques Gelinas (jack@solucorp.qc.ca)
+.br
+Bjorn Ekwall (bj0rn@blox.se)

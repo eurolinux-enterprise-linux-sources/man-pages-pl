@@ -1,0 +1,700 @@
+.\" Copyright 1995 Robert K. Nichols (Robert.K.Nichols@att.com)
+.\" Copyright 1999 Kai Mäkisara (Kai.Makisara@metla.fi)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" 
+.\" Polish translation
+.\" (C) 1996 Piotr Pogorzelski <piotr.pogorzelski@ippt.gov.pl>
+.\" (C) 2002 Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\"          man-pages 1.48
+.\" 
+.TH ST 4 1999-01-18 "Linux 1.1.86" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+st \- urz±dzenie ta¶my SCSI 
+.SH SK£ADNIA
+.nf
+.B #include <sys/mtio.h>
+.sp
+.BI "int ioctl(int " fd ", int " request " [, (void *)" arg3 "]);"
+.BI "int ioctl(int " fd ", \s-1MTIOCTOP\s+1, (struct mtop *)" mt_cmd );
+.BI "int ioctl(int " fd ", \s-1MTIOCGET\s+1, (struct mtget *)" mt_status );
+.BI "int ioctl(int " fd ", \s-1MTIOCPOS\s+1, (struct mtpos *)" mt_pos );
+.fi
+.SH OPIS
+Sterownik
+.B st
+udostêpnia interfejs do ró¿nego rodzaju napêdów ta¶m magnetycznych SCSI.
+Obecnie sterownik przejmuje kontrolê nad wszystkimi wykrytymi urz±dzeniami
+typu
+\(lqsequential-access (dostêpu sekwecyjnego).\(rq
+Sterownikowi
+.B st
+przydzielony zostal numer g³ówny 9.
+.PP
+Ka¿de urz±dzenie posiada osiem numerów podrzêdnych. Na piêciu najni¿szych
+bitach numeru podrzêdnego reprezentowane s± przydzielone kolejno numery
+urz±dzeñ (kolejno¶æ detekcji). Numery podrzêdne mo¿na pogrupowaæ w dwóch
+zbiorach po cztery numery: g³ówne numery podrzêdne (urz±dzenia
+z przewijaniem),
+.IR n ,
+oraz numery urz±dzeñ \(lqbez przewijania\(rq,
+.IR "" ( n "+ 128)."
+Urz±dzenie otwarte przy wykorzystaniu g³ównego numeru podrzêdnego otrzyma
+polecenie \s-1REWIND\s+1 podczas jego zamykania. Urz±dzenia otwierane przy
+wykorzystaniu numeru urz±dzenia \(lqbez przewijania\(rq nie otrzymaj± takiego
+rozkazu. (Trzeba zauwa¿yæ, ¿e u¿ywanie urz±dzenia \(lqbez przewijania\(rq do
+pozycjonowania ta¶my, na przyk³ad za pomoc± mt, nie prowadzi do po¿adanego
+efektu: ta¶ma jest przewijana po wydaniu polecenia mt i nastêpne polecenie
+zaczyna od pocz±tku ta¶my.)
+.PP
+W ka¿dej grupie dostêpne s± cztery numery podrzêdne, definiuj±ce urz±dzenia
+o ró¿nej charakterystyce (rozmiar bloku, kompresja, gêsto¶æ itp.).
+Podczas startu systemu dostêpne jest tylko pierwsze urz±dzenie. Aktywacja
+pozosta³ych trzech nastêpuje po zdefiniowaniu ich domy¶lnych charakterystyk
+(patrz ni¿ej). (Zmieniaj±c warto¶ci sta³ych podczas kompilacji, mo¿liwa jest
+zmiana równowagi pomiêdzy maksymaln± liczb± napêdów ta¶m a liczb± numerów
+podrzêdnych dla ka¿dego napêdu. Domy¶lna alokacja powala na sterowanie 32
+napêdami ta¶m. Na przyk³ad, mo¿na sterowac nie wiêcej ni¿ 64 napêdami ta¶m,
+posiadaj±c po dwa numery podrzêdne dla ró¿nych opcji.)
+.PP
+Pliki urz±dzeñ s± zwykle tworzone za pomoc± poleceñ:
+.RS
+.nf
+mknod -m 666 /dev/st0 c 9 0
+mknod -m 666 /dev/st0l c 9 32
+mknod -m 666 /dev/st0m c 9 64
+mknod -m 666 /dev/st0a c 9 96
+mknod -m 666 /dev/nst0 c 9 128
+mknod -m 666 /dev/nst0l c 9 160
+mknod -m 666 /dev/nst0m c 9 192
+mknod -m 666 /dev/nst0a c 9 224
+.fi
+.RE
+.PP
+Brak jest odpowiadaj±cych urz±dzeñ blokowych.
+.PP
+Sterownik u¿ywa wewnêtrznego bufora o rozmiarze dostatecznie du¿ym, by
+pomie¶ci³ co najmniej jeden blok ta¶my. W kernelach wcze¶niejszych ni¿ 2.1.121
+bufor ten jest przydzielany jako jeden ci±g³y blok pamiêci. Ogranicza to
+rozmiar bloku na ta¶mie do najwiêkszego ci±g³ego bloku pamiêci, który mo¿e
+zostaæ przydzielony przez procedurê przydzielania pamiêci w j±drze.
+Obecnie ograniczenie to wynosi 128 kB dla architektur 32-bitowych i 256 kB dla
+architektur 64-bitowych. W nowszych j±drach sterownik przydziela, je¶li
+trzeba, pamiêæ dla bufora w kilku czê¶ciach. Domy¶lna maksymalna liczba
+fragmentów wynosi 16. Oznacza to, ¿e maksymalny rozmiar bloku jest bardzo du¿y
+(2 MB, je¶li uda siê przydzieliæ 16 bloków po 128 kB).
+.PP
+Rozmiar wewnêtrznego bufora sterownika jest okre¶lony przez sta³± czasu
+kompilacji, ale mo¿na go zmieniæ za pomoc± opcji startowej j±dra. Dodatkowo,
+sterownik próbuje przydzielaæ wiêkszy bufor tymczasowy, je¶li zajdzie taka
+potrzeba w trakcie pracy. Jednak¿e, przydzielanie podczas pracy du¿ych
+ci±g³ych bloków pamiêci mo¿e siê nie udaæ i zaleca siê nie polegaæ za bardzo
+na przydzielaniu buforów dynamicznych w kernelach starszych ni¿ 2.1.121
+(dotyczy to tak¿e ³adowania na ¿±danie sterownika za pomoc± kerneld lub kmod).
+.PP
+Ten sterownik nie zawiera ¿adnej specyficznej obs³ugi dla ta¶m wybranego
+producenta, czy modelu. Po starcie systemu opcje urz±dzenia ta¶mowego s±
+okre¶lane na podstawie firmware napêdu. Na przyk³ad, je¶li firmware napêdu
+wybiera tryb o sta³ej d³ugo¶ci bloku, urz±dzenie ta¶mowe równie¿ u¿ywa trybu
+o sta³ej d³ugo¶ci bloku. Opcje te mo¿na zmieniæ za pomoc± jawnych wywo³añ
+.B ioctl()
+i zmiany te pozostaj± aktywne, gdy urz±dzenie zostanie zamkniête i ponownie
+otwarte. Ustawione opcje dotycz± zarówno urz±dzeñ z przewijaniem, jak i bez
+przewijania.
+.PP
+Mo¿na podawaæ ró¿ne opcje dla ró¿nych urz±dzeñ w ramach podgrupy czterech
+urz±dzeñ. Opcje s± ustawiane dla urz±dzenia, gdy jest ono otwierane. Na
+przyk³ad, administrator systemu mo¿e zdefiniowaæ jedno urz±dzenie zapisuj±ce
+w trybie o sta³ej d³ugo¶ci bloku i jedno zapisuj±ce w trybie o zmiennej
+d³ugo¶ci bloku (je¶li napêd obs³uguje obydwa tryby).
+.PP
+Sterownik obs³uguje
+.BR "strefy ta¶m" ,
+je¶li s± one obs³ugiwane przez napêd. (Trzeba tu zwróciæ uwagê, ¿e strefy
+ta¶m nie maj± nic wspólnego z partycjami dysków [po angielsku w obu
+przypadkach "partitions" - przyp. t³um.]. Ta¶ma podzielona na strefy mo¿e byæ
+widziana jako kilka logicznych ta¶m na jednym no¶niku.) Obs³ugê stref trzeba
+w³±czyæ za pomoc± ioctl. Przy zmianach stref zachowywane jest po³o¿enie
+na ta¶mie w obrêbie ka¿dej ze stref. Strefê, której maj± dotyczyæ nastêpne
+operacje wybiera siê za pomoc± ioctl. Prze³±czanie stref odbywa siê ³±cznie
+z nastêpn± operacj± na ta¶mie, aby unikn±æ niepotrzebnego przewijania ta¶my.
+Maksymalna liczba stref na ta¶mie okre¶lona jest przez sta³± czasu kompilacji
+(pierwotnie: cztery). Sterownik zawiera ioctl pozwalaj±cy sformatowaæ ta¶mê
+z jedn± lub dwiema strefami.
+.PP
+Urz±dzenie
+.B /dev/tape
+jest zwykle dowi±zaniem zwyk³ym lub symbolicznym do domy¶lnego urz±dzenia
+reprezentuj±cego ta¶mê magnetyczn± w danym systemie.
+.SH "TRANSMISJA DANYCH"
+Sterownik mo¿e pracowaæ zarówno w trybie o sta³ej, jak i o zmiennej d³ugo¶ci
+bloku (je¶li napêd obs³uguje oba tryby). W trybie o sta³ej d³ugo¶ci bloku
+napêd zapisuje bloki okre¶lonej d³ugo¶ci i rozmiar bloku nie zale¿y od liczby
+bajtów, która zosta³a podana systemowej funkcji zapisu. W trybie o zmiennej
+d³ugo¶ci bloku zapisywany jest jeden blok przy ka¿dym wywo³aniu funkcji
+zapisu, a liczba bajtów podanych tej funkcji okre¶la rozmiar odpowiedniego
+bloku na ta¶mie. Nale¿y tu zwróciæ uwagê, ze bloki na ta¶mie nie zawieraj±
+informacji o trybie zapisu: jedyn± wa¿n± rzecz± podczas odczytu jest u¿ywanie
+poleceñ akceptuj±cych rozmiary bloków znajduj±cych siê na ta¶mie.
+.PP
+W trybie o zmiennej d³ugo¶ci bloku ilo¶æ odczytywanych bajtów nie musi
+dok³adnie odpowiadaæ d³ugo¶ci bloku na ta¶mie. Je¶li liczba bajtów jest
+wiêksza ni¿ nastêpny blok na ta¶mie, sterownik zwróci dane, a funkcja zwróci
+rozmiar bie¿±cego bloku. Je¶li d³ugo¶æ bloku jest wiêksza ni¿ liczba bajtów,
+zwrócona zostanie ¿±dana ilo¶æ danych, pocz±wszy od pocz±tku bloku, a reszta
+bloku zostanie odrzucona.
+.PP
+W trybie o sta³ej d³ugo¶ci bloku ilo¶æ odczytywanych bajtów mo¿e byæ dowolna,
+gdy w³±czone jest buforowanie. Musi natomiast byæ wielokrotno¶ci± d³ugo¶ci
+bloku, gdy buforowanie jest wy³±czone. J±dra wcze¶niejsze ni¿ 2.1.121
+pozwala³y na zapis dowolnej liczby bajtów przy w³±czonym buforowaniu.
+Natomiast w pozosta³ych przypadkach (j±dra wcze¶niejsze ni¿ 2.1.121
+z wy³±czonym byforowaniem oraz nowsze j±dra) liczba zapisywanych bajtów musi
+byæ wielokrotno¶ci± d³ugo¶ci bloku na ta¶mie.
+.PP
+Znacznik pliku jest zapisywany na ta¶mie automatycznie, je¶li ostatni±
+operacj± na tej ta¶mie przed jej zamkniêciem by³ zapis.
+.PP
+Gdy podczas odczytu napotkany zostanie znacznik pliku, dzieje siê co
+nastêpuje. Je¶li w chwili natrafienia na znacznik pliku w buforze by³y dane,
+zostan± zwrócone dane z bufora. Nastêpny odczyt zwróci zero bajtów. Kolejne
+odczyty zwróc± dane z nastêpnego pliku. Koniec zapisanych danych jest
+sygnalizowany zwróceniem zerowej liczby bajtów przez dwa kolejne wywo³ania
+funkcji odczytu. Trzeci odczyt zwróci b³±d.
+.SH IOCTL
+Sterownik obs³uguje trzy wywo³ania funkcji ioctl.
+Wywo³ania nierozpoznawane przez sterownik i
+.B st
+s± przekazywane do sterownika
+.BR SCSI .
+Poni¿sze definicje pochodz± z pliku 
+.BR /usr/include/linux/mtio.h :
+.SS "\s-1MTIOCTOP\s+1 \- wykonanie operacji na ta¶mie"
+.PP
+To wywo³anie wymaga argumentu typu
+.BR "(struct mtop *)" .
+Nie wszystkie napêdy obs³uguj± wszystkie polecenia.
+Je¶li napêd odrzuca polecenie, sterownik przekazuje warto¶æ EIO.
+.PP
+.nf
+.ta +.4i +.7i +1i
+/* Struktura \s-1MTIOCTOP\s+1 \- dla polecenia op dla ta¶my magnetycznej: */
+struct mtop {
+	short	mt_op;		/* jedno ze zdefiniowanych poni¿ej poleceñ*/
+	int	mt_count;	/* ile razy powtórzyæ*/
+};
+.fi
+.PP
+Operacje na ta¶mie magnetycznej:
+.PD 0
+.IP MTBSF 14
+Przesuniêcie do ty³u o
+.B mt_count
+znaczników pliku.
+.IP MTBSFM
+Przesuniêcie do ty³u o
+.B mt_count
+znaczników pliku.
+Ustawienie ta¶my po stronie EOT (koñca ta¶my) ostatniego znacznika pliku.
+.IP MTBSR
+Przesuniêcie do ty³u o
+.B mt_count
+rekordów (bloków ta¶my).
+.IP MTBSS
+Przesuniêcie do ty³u o
+.B mt_count
+znaczników (setmarks).
+.IP MTCOMPRESSION
+W³±czenie kompresji danych na ta¶mie dla danego napêdu gdy
+.B mt_count
+jest niezerowe, wy³±czenie kompresji gdy
+.B mt_count
+jest zerem. Polecenie to korzysta z MODE page 15 obs³ugiwanego przez wiêkszo¶æ
+urz±dzeñ DAT.
+.IP MTEOM
+Przesuniêcie do koñca zapisanej czê¶ci no¶nika (w celu dogrania plików).
+.IP MTERASE
+Wyczyszczenie ta¶my.
+.IP MTFSF
+Przesuniêcie do przodu o
+.B mt_count
+znaczników pliku.
+.IP MTFSFM
+Przesuniêcie do przodu o
+.B mt_count
+znaczników pliku.
+Ustawienie ta¶my po stronie BOT (pocz±tku ta¶my) ostatniego znacznika pliku.
+.IP MTFSR
+Przesuniêcie do przodu o
+.B mt_count
+rekordów (bloków ta¶my).
+.IP MTFSS
+Przesuniêcie do przodu o
+.B mt_count
+znaczników (setmarks).
+.IP MTLOAD
+Wykonanie polecenia SCSI "load" (za³adowanie ta¶my). Szczególny przypadek
+dotycz±cy wy³±cznie niektórych automatycznie ³aduj±cych napêdów HP: gdy
+.B mt_count
+jest równe sta³ep MT_ST_HPLOADER_OFFSET powiêkszonej o pewn± liczbê, to ta
+liczba jest przesy³ana do napêdu dla celów sterowania automatycznym
+za³adowaniem.
+.IP MTLOCK
+Zablokowanie kieszeni napêdu ta¶m.
+.IP MTMKPART
+Sformatowanie ta¶my na jedn± lub dwie strefy. Gdy
+.B mt_count
+jest niezerowe, okre¶la rozmiar pierwszej strefy, a druga strefa obejmuje
+resztê ta¶my. Gdy
+.B mt_count
+jest zerem, ta¶ma jest formatowana jako jedna strefa.
+Polecenie to nie jest dozwolone dla napêdów, dla których nie w³±czono obs³ugi
+stref (zobacz MT_ST_CAN_PARTITIONS poni¿ej).
+.IP MTNOP
+Brak operacji \- jako efekt uboczny opró¿nia bufor sterownika.
+Powinno siê tego u¿ywaæ przed odczytaniem stanu za pomoc± \s-1MTIOCGET\s+1.
+.IP MTOFFL
+Przewiniêcie ta¶my i od³±czenie napêdu.
+.IP MTRESET
+Inicjalizacja napêdu.
+.IP MTRETEN
+Wyrównanie napiêcia ta¶my.
+.IP MTREW
+Prezewiniêcie.
+.IP MTSEEK
+Wyszukanie na ta¶mie bloku o numerze podanym w
+.BR mt_count .
+Ta operacja wymaga albo sterownika SCSI-2, który obs³uguje polecenie
+\s-1LOCATE\s+1 (adres specyficzny dla urz±dzenia) albo urz±dzenia SCSI-1
+zgodnego z Tandberg (Tandberg, Archive Viper, Wangtek, ... ).
+Numer bloku powinien byæ równy zwróconemu poprzednio przez 
+\s-1MTIOCPOS\s+1, gdy u¿ywany jest adres specyficzny dla urz±dzenia.
+.IP MTSETBLK
+Ustawienie d³ugo¶ci bloku sterownika równej warto¶ci podanej w 
+.BR mt_count .
+D³ugo¶æ równa 0 wprowadza napêd w tryb bloków o zmiennej d³ugo¶ci.
+.IP MTSETDENSITY
+Ustawienie gêsto¶ci zapisu ta¶my zakodowanej w
+.BR mt_count .
+Kody okre¶laj±ce gêsto¶æ zapisu obs³ugiwane przez dany napêd mo¿na znale¼æ
+w jego dokumentacji.
+.IP MTSETPART
+Prze³±czenie aktywnej strefy na
+.B mt_count .
+Strefy sa numerowane od zera. Polecenie to nie jest dozwolone dla napêdów, dla
+których nie w³±czono obs³ugi stref (zobacz MT_ST_CAN_PARTITIONS poni¿ej).
+.IP MTUNLOAD
+Wykonanie polecenia SCSI "unload" (nie wysuwa ta¶my).
+.IP MTUNLOCK
+Odblokowanie kieszeni napêdu ta¶m.
+.IP MTWEOF
+Zapisanie
+.B mt_count
+znaczników pliku.
+.IP MTWSM
+Zapisanie
+.B mt_count
+znaczników (setmarks).
+.PD
+.PP
+Polecenia ustawiaj±ce opcje dla napêdów ta¶m magnetycznych (mog± byæ wydawane
+tylko przez superu¿ytkownika):
+.PD 0
+.IP MTSETDRVBUFFER 8
+Ustawienie ró¿nych opcji napêdu i sterownika, zgodnie z waro¶ciami pól
+bitowych przekazanych w
+.BR mt_count .
+Dotyczy to sposobu buforowania przez sterownik, 13 logicznych parametrów
+sterownika oraz progu zapisu bufora, domy¶lnej d³ugo¶ci bloku i gêsto¶ci
+oraz czasów przeterminowania (tylko w j±drach >= 2.1).
+Pojedyncze dzia³anie mo¿e zmieniæ ustawienia tylko dla jednej pozycji
+z powy¿szej listy (parametry logiczne s± traktowane jako jedna ca³o¶æ). 
+.PD
+.IP
+Warto¶æ, której 4 najwy¿sze bity s± równe 0 zostanie wykorzystana do
+ustawienia trybu buforowania napêdu. Do wyboru s± nastêpuj±ce tryby:
+.RS 12
+.IP 0 4
+Napêd nie bêdzie sygnalizowaæ stanu \s-1GOOD\s+1 po poleceniach
+zapisu zanim dane nie zostan± zapisane fizycznie na no¶niku.
+.PD 0
+.IP 1
+Napêd mo¿e sygnalizowaæ stan \s-1GOOD\s+1 po poleceniach zapisu, gdy tylko
+wszystkie dane zostan± umieszczone w wewnêtrznym buforze napêdu.
+.IP 2
+Napêd mo¿e sygnalizowaæ stan \s-1GOOD\s+1 po poleceniach zapisu, gdy tylko
+(a) wszystkie dane zostan± przes³ane do wewnêtrznego bufora napêdu i
+(b) wszystkie buforowane dane (z innych poleceñ) zostan± pomy¶lnie zapisane
+na no¶niku.
+.PD
+.RE
+.IP ""
+Aby kontrolowaæ próg zapisu, warto¶æ
+.B mt_count
+musi zawieraæ sta³±
+\s-1MT_ST_WRITE_THRESHOLD\s+1 dodan± za pomoc± bitowego OR do liczby bloków
+w 28 najni¿szych bitach. Liczba bloków odnosi siê do 1024-bajtowych bloków,
+a nie bloków o fizycznym rozmiarze bloku dla danego urz±dzenia.
+Próg zapisu nie mo¿e przekroczyæ rozmiaru wewnêtrznego bufora napêdu (patrz 
+.BR \s-1OPIS\s+1 ,
+powy¿ej).
+.IP
+Aby ustawiæ lub usun±æ opcje logiczne, warto¶æ
+.B mt_count
+musi zawieraæ jedn± ze sta³ych \s-1MT_ST_BOOLEANS\s+1,
+\s-1MT_ST_SETBOOLEANS\s+1, \s-1MT_ST_CLEARBOOLEANS\s+1 lub
+\s-1MT_ST_DEFBOOLEANS\s+1 dodan± za pomoc± bitowego OR do dowolnej kombinacji
+poni¿szych opcji. U¿ycie \s-1MT_ST_BOOLEANS\s+1 powoduje nadanie wszystkim
+opcjom warto¶ci podanych na odpowiednich polach bitowych. Przy
+\s-1MT_ST_SETBOOLEANS\s+1 ustawione zostan± tylko wybrane opcje, natomiast
+przy \s-1MT_ST_DEFBOOLEANS\s+1 tylko wybrane opcje zostan± usuniête.
+.IP ""
+Za pomoc± \s-1MT_ST_DEFBOOLEANS\s+1 ustawiane s± domy¶lne opcje dla urz±dzenia
+ta¶mowego. Nieaktywne urz±dzenia ta¶mowe (np. urz±dzenia o numerze podrzêdnym
+32 lub 160) s± aktywowane po pierwszym ustawieniu dla nich domy¶lnych opcji.
+Aktywowane urz±dzenie dziedziczy od urz±dzenia aktywowanego podczas startu
+systemu opcje, które nie zosta³y jawnie podane.
+.IP ""
+Dostêpne s± nastêpuj±ce opcje logiczne:
+.IP
+.PD 0
+.RS
+.IP "\s-1MT_ST_BUFFER_WRITES\s+1  (Domy¶lnie: w³±czona)"
+Buforowanie wszystkich operacji zapisu w trybie o sta³ej d³ugo¶ci bloku.
+Je¶li ta opcja jest wy³±czona i napêd u¿ywa sta³ej d³ugo¶ci bloku, wtedy
+wszystkie operacje zapisu musz± dotyczyæ wielokrotno¶ci d³ugo¶ci bloku. 
+Opcja ta powinna byæ wy³±czona, je¶li chcemy w sposób pewny zapisywaæ archiwa
+sk³adaj±ce siê z wielu wolumenów.
+.IP "\s-1MT_ST_ASYNC_WRITES\s+1  (Domy¶lnie: w³±czona)"
+Gdy opcja ta jest w³±czona, wtedy operacje zapisu przekazuj± sterowanie
+natychmiast, bez oczekiwania na przes³anie informacji do napêdu, je¶li tylko
+dane mieszcz± siê w buforze sterownika.
+Stopieñ wype³nienia bufora, przy którym zostanie wydane polecenie zapisu SCSI
+jest okre¶lony przez próg zapisu. Wszystkie b³êdy zg³oszone przez napêd bêd±
+wstrzymane a¿ do nastêpnej operacji.
+Opcja ta powinna byæ wy³±czona, je¶li chcemy w sposób pewny zapisywaæ archiwa
+sk³adaj±ce siê z wielu wolumenów.
+.IP "\s-1MT_ST_READ_AHEAD\s+1  (Domy¶lnie: w³±czona)"
+Opcja ta powoduje zapewnienie przez sterownik buforowania i odczytu
+wyprzedzaj±cego w trybie o sta³ej d³ugo¶ci bloku.
+Je¶li ta opcja jest wy³±czona i napêd u¿ywa bloków o sta³ej d³ugo¶ci, wtedy
+wszystkie operacje odczytu musz± dotyczyæ wielokrotno¶ci d³ugo¶ci bloku.
+.IP "\s-1MT_ST_TWO_FM\s+1  (Domy¶lnie: wy³±czona)"
+Opcja ta zmienia zachowanie sterownika w momencie zamkniêcia pliku.
+Zwykle towarzyszy temu zapisanie pojedynczego znacznika koñca pliku.
+Je¶li opcja jest w³±czona, sterownik zapisze dwa znaczniki i cofnie siê
+przed drugi.
+.PD
+.IP
+Uwaga:
+Ta opcja nie powinna byæ w³±czona w przypadku napêdów QIC, poniewa¿ nie s±
+one w stanie zapisaæ danych na znaczniku pliku.
+Napêdy te wykrywaj± koniec zapisanych danych poprzez sprawdzenie, czy ta¶ma
+jest pusta, zamiast stwierdzania dwóch kolejnych znaczników koñca pliku.
+Wiêkszo¶æ innych wspó³czesnych napêdów równie¿ wykrywa koniec zapisanych
+danych, wiêc pos³ugiwanie siê dwoma znacznikami koñca pliku jest niezbêdne
+jedynie przy wymianie ta¶m z niektórymi innymi systemami.
+.PP
+.PD 0
+.IP "\s-1MT_ST_DEBUGGING\s+1  (Domy¶lnie: wy³±czona)
+Ta opcja w³±cza wypisywanie przez sterownik komunikatów diagnostycznych
+(skuteczne tylko gdy sterownik zosta³ skompilowany ze zdefiniowan± niezerow±
+warto¶ci± \s-1DEBUG\s+1).
+.IP "\s-1MT_ST_FAST_EOM\s+1  (Domy¶lnie: wy³±czona)
+W³±czenie tej opcji powoduje, ¿e polecenia \s-1MTEOM\s+1 s± przesy³ane
+bezpo¶rednio do napêdu, potencjalnie przyspieszaj±c operacjê, lecz
+jednocze¶nie powoduj±c utratê przez sterownik informacji o aktualnym po³o¿eniu
+ta¶my - numerze pliku, zwykle przekazywanego jako wynik zapytania
+\s-1MTIOCGET\s+1.
+Je¶li opcja \s-1MT_ST_FAST_EOM\s+1 jest wy³±czona, sterownik bêdzie odpowiada³
+na polecenie \s-1MTEOM\s+1 przwijaniem ta¶my plik po pliku.
+.IP "\s-1MT_ST_AUTO_LOCK\s+1  (Domy¶lnie: wy³±czona)"
+Je¶li ta opcja jest w³±czona, to kieszeñ napêdu bêdzie blokowana po otwarciu
+urz±dzenia, a odblokowywana po jego zamkniêciu.
+.IP "\s-1MT_ST_DEF_WRITES\s+1  (Domy¶lnie: wy³±czona)"
+Opcje ta¶my (d³ugo¶æ bloku, tryb, kompresja itp.) mog± ulec zmianie przy
+prze³±czaniu z jednego urz±dzenia skojarzonego z napêdem na inne urz±dzenia
+skojarzone z tym samym napêdem, w zale¿no¶ci od definicji tych urz±dzeñ.
+Ta opcja okre¶la, kiedy sterownik powinien wymusiæ zmiany wysy³±j±c polecenia
+SCSI oraz kiedy nale¿y polegaæ na w³a¶ciwo¶ciach autodetekcyjnych urz±dzenia.
+Je¶li opcja ta jest wy³±czona, sterownik bêdzie wysy³aæ polecenia SCSI
+natychmiast po zmianie urz±dzenia. Je¶li jest ona w³±czona, polecenia SCSI
+nie zostan± wys³ane dopóki nie pojawi siê ¿±danie zapisu. W tym przypadku
+firmware napêdu mo¿e dokonywaæ podczas odczytu autodetekcji struktury ta¶my,
+a polecenia SCSI maj± na celu jedynie zapewnienie, aby zapis na ta¶mie odbywa³
+siê zgodnie z w³a¶ciw± specyfikacj±.
+.IP "\s-1MT_ST_CAN_BSR\s+1  (Domy¶lnie: wy³±czona)"
+Gdy wykorzystywany jest odczyt wyprzedzaj±cy, ta¶ma musi byæ czasami cofniêta
+do w³a¶ciwej pozycji. Dzieje siê to, gdy urz±dzenie jest zamykane
+i wykorzystywane jest w tym celu polecenie SCSI cofania o zadan± ilo¶æ
+rekordów. Niektóre starsze napêdy nie potrafi± wykonaæ tego polecenia w sposób
+pewny i opcja ta s³u¿y to zabronienia napêdowi u¿ywania tych poleceñ. Koñcowym
+efektem jest nieprawid³owe pozycjonowanie ta¶my po zamkniêciu urz±dzenia
+przy w³±czonym odczycie wyprzedzaj±cym w trybie o sta³ej d³ugo¶ci bloku.
+.IP "\s-1MT_ST_NO_BLKLIMS\s+1  (Domy¶lnie: wy³±czona)"
+Niektóre napêdy nie obs³uguj± polecenia SCSI "READ BLOCK LIMITS". Je¶li opcja
+ta jest w³±czona, steronik nie u¿ywa tego polecenia. Wad± jest niemo¿no¶æ
+sprawdzenia przez sterownik przed wys³aniem polecenia, czy zadana d³ugo¶æ
+bloku jest akceptowana przez napêd.
+.IP "\s-1MT_ST_CAN_PARTITIONS\s+1  (Domy¶lnie: wy³±czona)"
+Opcja ta w³±cza obs³ugê kilku stref na jednej ta¶mie. Dotyczy ona wszystkich
+urz±dzeñ skojarzonych z napêdem.
+.IP "\s-1MT_ST_SCSI2LOGICAL\s+1  (Domy¶lnie: wy³±czona)"
+Ta opcja poleca sterownikowi u¿ywanie logicznych adresów bloków zdefiniowanych
+w standardzie SCSI-2 podzczas wykonywania operacji wyszukiwania (seek) oraz
+"tell" (dla poleceñ MTSEEK i MTIOCPOS oraz przy zmianie strefy ta¶my).
+W przeciwnym razie u¿ywane s± adresy specyficzne dla urz±dzenia. W³±czenie tej
+opcji jest wysoce zalecane, je¶li napêd obs³uguje adresy logiczne, gdy¿
+zliczaj± one równie¿ znaczniki plików. Niektóre napêdy obs³uguj± wy³±cznie 
+logiczne adresy bloków.
+.IP "\s-1MT_ST_SYSV\s+1  (Domy¶lnie: wy³±czona)"
+Gdy ta opcja jest w³±czona, urz±dzenia ta¶mowe u¿ywaj± semantyki Systemu V.
+W przeciwnym razie u¿ywana jest semantyka BSD. Najwa¿niejsza ró¿nica pomiêdzy
+tymi semantykami polega na tym, co siê dzieje, gdy urz±dzenie u¿ywane do
+odczytu jest zamykanie: w semantyce SYSV ta¶ma jest przewijana do przodu poza
+najbli¿szy znacznik pliku, je¶li nie sta³o siê to wcze¶niej. W semantyce BSD
+pozycja ta¶my nie ulega zmianie.
+.IP \s-1PRZYK£AD\s+1
+.nf
+.ta +.4i +.7i +1i
+.BI "struct mtop " mt_cmd ;
+.IB "mt_cmd.mt_op" " = \s-1MTSETDRVBUFFER\s+1;"
+.IB "mt_cmd.mt_count" " = \s-1MT_ST_BOOLEANS\s+1 |"
+.B "		\s-1MT_ST_BUFFER_WRITES\s+1 |"
+.B "		\s-1MT_ST_ASYNC_WRITES\s+1;"
+.BI "ioctl(" fd ", \s-1MTIOCTOP\s+1, &" mt_cmd ");"
+.fi
+.RE
+.PD
+.IP ""
+Domy¶lny rozmiar bloku dla urz±dzenia mo¿na ustawiæ przy u¿yciu
+\s-1MT_ST_DEF_BLKSIZE\s+1, a domy¶lny kod gêsto¶ci mo¿na ustawiæ przy u¿yciu
+\s-1MT_ST_DEFDENSITY\s+1. Warto¶ci tych parametrów powinny byæ dodane za
+pomoc± bitowego OR do kodu operacji.
+.IP ""
+Przy kernelu 2.1.x i pó¼niejszych, warto¶ci czasu przeterminowania (timeout)
+mo¿na ustawiæ przy u¿yciu podpolecenia \s-1MT_ST_SET_TIMEOUT\s+1 dodanego za
+pomoc± bitowego OR do czasu przeterminowania w sekundach. D³ugie czasy
+przeterminowania (wykorzystywane przy poleceniach przewijania i niektórych
+innych trwaj±cych d³ugo) mo¿na ustawiæ przy u¿yciu
+\s-1MT_ST_SET_LONG_TIMEOUT\s+1. Domy¶lne warto¶ci j±dra s± bardzo d³ugie, aby
+zapewniæ nie przeterminowanie pomy¶lnie wykonywanego polecenia przez ¿aden
+napêd. Z tego powodu niniejszy sterownik mo¿e sprawiaæ wra¿enie zawieszonego,
+newet gdy jedynie czaka on na przeterminowanie operacji. Polecenia te mog±
+s³u¿yæ do ustawienia bardziej praktycznych warto¶ci dla konkretnego napêdu.
+Czasy przeterminowania ustawione dla jednego urz±dzenia dotycz± wszystkich
+urz±dzeñ skojarzonych z tym samym napêdem.
+.SS "\s-1MTIOCGET\s+1 \- Odczytanie stanu"
+.PP
+To polecenie wykorzystuje argument typu
+.BR "(struct mtget *)" .
+.PP
+.nf
+/* struktura dla \s-1MTIOCGET\s+1 - odczytanie stanu ta¶my magn. */
+struct mtget {
+	long	mt_type;
+	long	mt_resid;
+	/* Kolejne rejestry s± specyficzne dla urz±dzenia */
+	long	mt_dsreg;
+	long	mt_gstat;
+	long	mt_erreg;
+	/* Kolejne dwa pole nie zawsze s± u¿ywane */
+	daddr_t	mt_fileno;
+	daddr_t	mt_blkno;
+};
+.fi
+.IP \fBmt_type\fP 11
+Plik nag³ówkowy definiuje wiele mo¿liwych warto¶ci 
+.BR mt_type ,
+lecz aktualny sterownik raportuje jedynie typy podstawowe \s-1MT_ISSCSI1\s+1
+(Generic SCSI-1 tape) i \s-1MT_ISSCSI2\s+1 (Generic SCSI-2 tape).
+.PD 0
+.IP \fBmt_resid\fP
+zawiera numer strefy bie¿±cej ta¶my.
+.IP \fBmt_dsreg\fP
+raportuje aktualne ustawienia d³ugo¶ci bloku dla (w najni¿szych 24 bitach)
+oraz gêsto¶ci zapisu (w 8 najwy¿szych bitach).
+Te pola s± zdefiniowane przez \s-1MT_ST_BLKSIZE_SHIFT\s+1, \s-1MT_ST_BLKSIZE_MASK\s+1,
+\s-1MT_ST_DENSITY_SHIFT\s+1 i \s-1MT_ST_DENSITY_MASK\s+1.
+.IP \fBmt_gstat\fP
+raprotuje podstawowe (niezale¿ne od urz±dzenia) informacje o atanie.
+Plik nag³ówkowy zawiera definicje makrodefinicji do testowania przekazywanych
+bitów stanu:
+.RS
+.HP 4
+\s-1GMT_EOF(\s+1\fIx\fP\s-1)\s+1:
+Ta¶ma zosta³a ustawiona tu¿ za znacznikiem pliku
+(zawsze nieprawdziwe po poleceniu \s-1MTSEEK\s+1).
+.HP
+\s-1GMT_BOT(\s+1\fIx\fP\s-1)\s+1:
+Ta¶ma zosta³a ustawiona na pocz±tku pierwszego pliku (zawsze nieprawdziwe
+po poleceniu \s-1MTSEEK\s+1).
+.HP
+\s-1GMT_EOT(\s+1\fIx\fP\s-1)\s+1:
+Wykonanie polecenia spowodowa³o osi±gniêcie fizycznego koñca no¶nika.
+.HP
+\s-1GMT_SM(\s+1\fIx\fP\s-1)\s+1:
+Ta¶ma jest aktualnie ustawiona na znaczniku (setmark).
+(zawsze nieprawdziwe po poleceniu \s-1MTSEEK\s+1).
+.HP
+\s-1GMT_EOD(\s+1\fIx\fP\s-1)\s+1:
+Ta¶ma jest ustawiona na koñcu zapisanych danych.
+.HP
+\s-1GMT_WR_PROT(\s+1\fIx\fP\s-1)\s+1:
+Napêd jest chroniony przed zapisem.
+W przypadku niektórych urz±dzeñ mo¿e to równie¿ oznaczaæ, ¿e napêd
+nie obs³uguje zapisu na no¶niku tego typu, co bie¿±cy.
+.HP
+\s-1GMT_ONLINE(\s+1\fIx\fP\s-1)\s+1:
+Ostatnie wykonanie funkcji 
+.B open()
+zasta³o napêd gotowy do dzia³ania z odpowiednio umiejscowionym no¶nikiem.
+.HP
+\s-1GMT_D_6250(\s+1\fIx\fP\s-1)\s+1, \s-1GMT_D_1600(\s+1\fIx\fP\s-1)\s+1, \s-1GMT_D_800(\s+1\fIx\fP\s-1)\s+1:
+Ta \(lqpodstawowa\(rq informacja o stanie urz±dzenia zawiera równie¿ 
+ustawienia gêsto¶ci zapisu, lecz jedynie dla 9-¶cie¿kowych \(12" urz±dzeñ.
+.HP
+\s-1GMT_DR_OPEN(\s+1\fIx\fP\s-1)\s+1:
+Brak ta¶my w napêdzie.
+.HP
+\s-1GMT_IM_REP_EN(\s+1\fIx\fP\s-1)\s+1:
+Tryb natychmiastowego raportowania. To pole bitowe jest ustawiane na 1, gdy
+nie ma gwarancji, ¿e dane zosta³y fizycznie zapisane na ta¶mie do chwili
+zakoñczenia funkcji zapisu. Natomiast jest ustawiane na zero tylko wtedy, gdy
+sterownik nie buforuje danych i napêd zosta³ ustawiony na ich niebuforowanie.
+.RE
+.IP \fBmt_erreg\fP
+Jedyne pole zdefiniowane w
+.B mt_erreg
+jest to licznik naprawionych b³êdów, który znajduje sie w 16 niskich bitach
+(jak to zdefiniowano przez \s-1MT_ST_SOFTERR_SHIFT\s+1 i \s-1MT_ST_SOFTERR_MASK\s+1).
+Z powodu niezgodno¶ci w sposobie zg³aszania naprawionych b³êdów przez napêdy,
+licznik ten czêsto nie jest obs³ugiwany (wiêkszo¶æ napêdów domy¶lnie nie
+zg³asza naprawionych b³êdów, ale mo¿na to zmieniæ poleceniem SCSI
+"MODE SELECT"). 
+.IP \fBmt_fileno\fP
+raportuje aktualny numer pliku (licz±c od zera).
+W przypadku gdy nie jest znany numer pliku (np. po \s-1MTBSS\s+1 lub
+\s-1MTSEEK\s+1), przekazywana jest warto¶æ \-1.
+.IP \fBmt_blkno\fP
+raportuje numer bloku (licz±c od zera) wewn±trz aktualnego pliku.
+Gdy numer bloku nie jest znany (np po poleceniach \s-1MTBSF\s+1, \s-1MTBSS\s+1
+lub \s-1MTSEEK\s+1), przekazywana jest warto¶æ \-1.
+.PD
+.SS "\s-1MTIOCPOS\s+1 \- Odczytanie po³o¿enia ta¶my"
+.PP
+To polecenie u¿ywa argumentu typu
+.B "(struct mtpos *)"
+i raportuje aktualny numer bloku ta¶my (w sensie, w jakim go rozumie napêd),
+co nie jest równowa¿ne
+.B mt_blkno
+przekazywanemu przez \s-1MTIOCGET\s+1.
+Musi to byæ urz±dzenie SCSI-2, które obs³uguje polecenie \s-1READ POSITION\s+1
+(adres specyficzny dla urz±dzenia) lub urz±dzenie SCSI-1 zgodne z Tandberg
+(Tandberg, Archive Viper, Wangtek, ... ).
+.PP
+.nf
+/* struktura dla \s-1MTIOCPOS\s+1 - odczytanie po³o¿enia ta¶my magn. */
+struct	mtpos {
+	long 	mt_blkno;	/* aktualny numer bloku */
+};
+
+.fi
+.SH "WARTO¦Æ ZWRACANA"
+.IP EIO 14
+Wydane polecenie nie mo¿e zostaæ zrealizowane.
+.IP ENOSPC
+Operacja zapisu nie mo¿e zostaæ zakoñczona poniewa¿ ta¶ma osi±gnê³a koniec
+no¶nika.
+.IP EACCES
+Nast±pi³a próba zapisu lub skasowania ta¶my chronionej przed zapisem.
+(Ten b³±d nie jest wykrywany podczas wykonywania funkcji
+.BR open() .)
+.IP EFAULT
+Parametry poleenia wskazuj± na obszar pamiêci nie nale¿±cy do procesu
+wywo³uj±cego funkcjê.
+.IP ENXIO
+Podczas otwierania, takie urz±dzenie nie istnieje.
+.IP EBUSY
+Urz±dzenie jest aktualnie w u¿yciu lub sterownikowi nie uda³o siê przydzieliæ
+pamiêci dla bufora.
+.IP EOVERFLOW
+Nast±pi³a próba odczytania lub zapisu bloku o zmiennej d³ugo¶ci, który jest
+wiêkszy ni¿ wewnêtrzny bufor sterownika.
+.IP EINVAL
+Funkcja
+.B ioctl()
+posiada³a niedozwolony argument lub podano niedozwolony rozmiar bloku.
+.IP ENOSYS
+Nieznana funkcja
+.BR ioctl() .
+.IP EROFS
+Wyst±pi³a próba otwarcia z opcj± O_WRONLY lub O_RDWR, podczas gdy ta¶ma
+znajduje siê w napêdzie chronionym przed zapisem.
+.SH PLIKI
+/dev/st*  : automatycznie przewijaj±ce urz±dzenia ta¶m SCSI
+.br
+/dev/nst* : nieprzewijaj±ce urz±dzenia ta¶m SCSI
+.SH AUTOR
+Sterownik zosta³ napisany przez Kai'ego M\(:akisarê <Kai.Makisara@metla.fi>
+na podstawie sterownika napisanego przez Dwayne'a Forsytha. Kilka innych
+osób równie¿ wnios³o wk³ad podczas tworzenia sterownika.
+.SH "ZOBACZ TAK¯E"
+.BR mt (1)
+.PP
+Plik README.st w ¼ród³ach j±dra zawieraj±cy naj¶wie¿sze informacje dotycz±ce
+sterownika i jego mo¿liwo¶ci konfiguracyjnych.
+.SH UWAGI
+1. Podczas wymiany danych pomiêdzy systemami, oba systemy musz± uzgodniæ
+d³ugo¶æ fizycznego bloku na ta¶mie. Parametry napêdu po starcie systemu
+czêsto ró¿ni± siê od u¿ywanych dla danego urz±dzenia przez wiêkszo¶æ systemów
+operacyjnych. Wiekszo¶æ systemów u¿ywa napêdów w trybie o zmiennej d³ugo¶ci
+bloku, o ile napêd ten tryb obs³uguje. Dotyczy to wiêkszo¶ci wspó³czesnych
+napêdów, w³±czaj±c w to napêdy DAT, 8 mm napêdy wybierania spiralnego, napêdy
+DLT itp. Mo¿na doradziæ u¿ywanie tych napêdów w trybie o zmiennej d³ugo¶ci
+bloku równie¿ w Linuksie (tzn. u¿ycie MTSETBLK lub MTSETDEFBLK przy starcie
+systemu w celu ustawienia tego trybu), przynajmniej podczas wymiany danych
+z obcym systemem. Wad± tego jest konieczno¶æ u¿ycia do¶æ d³ugiego bloku na
+ta¶mie, aby otrzymaæ ackceptowalna wydajno¶æ transferu na magistrali SCSI. 
+.PP
+2. Wiele programów (np. tar) pozwala u¿ytkownikowi na okre¶lenie czynnika
+okre¶laj±cego rozmiar bloku w linii poleceñ. Nale¿y zauwa¿yæ, ¿e okre¶la
+to d³ugo¶æ fizycznego bloku na ta¶mie jedynie w trybie o zmiennej d³ugo¶ci
+bloku.
+.PP
+3. Aby mo¿na by³o u¿ywaæ napêdów ta¶m SCSI, musz± byæ wkompilowane w kernel
+lub za³adowane jako modu³y: podstawowy sterownik SCSI, sterownik kontrolera
+SCSI oraz sterownik ta¶m SCSI. Je¶li nie ma sterownika ta¶m SCSI, nepêd
+zostanie rozpoznany, ale opisana na tej stronie obs³uga ta¶m nie bêdzie
+dostêpna.
+.PP
+4. Sterownik zapisuje komunikaty o b³êdach na konsoli / do logów. Kody SENSE
+zapisane w niektórych komunikatach s± automatycznie t³umaczone na tekst, o ile
+w konfiguracji j±dra w³±czono rozwlek³e komuniakaty SCSI.
+.SH COPYRIGHT
+Copyright (C) 1995 Robert K. Nichols.
+.br
+Copyright (C) 1999 Kai M\(:akisara.
+.PP
+Udziela siê pozwolenia na dystrybucjê dos³ownych kopii tej dokumentacji,
+pod warunkiem, ¿e ka¿da kopia bêdzie zawieraæ informacjê o prawach
+autorskich oraz tê uwagê. Dodatkowe pozwolenia mo¿na znale¼æ w nag³ówku
+w pliku ¼ród³owym.

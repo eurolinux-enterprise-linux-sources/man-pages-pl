@@ -1,0 +1,39 @@
+.\" {PTM/WK/2000-II}
+.TH RUNLEVEL 8 "27 maja 1997" "" "Podrêcznik Administratora Linuksa"
+.SH NAZWA
+runlevel - odnajduje bie¿±cy i poprzedni poziom pracy systemu
+.SH SK£ADNIA
+.B runlevel 
+.RI [ utmpx ]
+.SH OPIS
+.B Runlevel
+odczytuje systemowy plik
+.I utmpx
+(typowo 
+.IR /var/run/utmpx )
+by znale¼æ zapis o poziomie pracy (runlevel), a nastêpnie drukuje poprzedni
+i bie¿±cy poziom pracy systemu na swym standardowym wyj¶ciu, rozdzielaj±c
+je pojedyncz± spacj±. Je¿eli nie by³o poprzedniego poziomu pracy, to zamiast
+niego zostanie wydrukowana litera \fBN\fP.
+.PP
+Je¿eli nie istnieje plik
+.I utmpx
+lub nie mo¿na w nim znale¼æ zapisu o poziomie pracy,
+.B runlevel
+drukuje s³owo \fBunknown\fP (nieznany) i koñczy pracê z b³êdem.
+.PP
+.B Runlevel
+mo¿e byæ wykorzystywany w skryptach \fIrc\fP jako substytut polecenia
+\fBwho -r\fP Systemu-V. 
+Jednak w nowszych wersjach \fBinit\fP(8) informacja ta jest te¿ dostêpna
+w zmiennych ¶rodowiska \fBRUNLEVEL\fP i \fBPREVLEVEL\fP.
+.SH OPCJE
+.\"{{{ utmpx
+.IP \fIutmpx\fP
+nazwa pliku \fIutmpx\fP, jaki ma zostaæ odczytany.
+.\"}}}
+.SH ZOBACZ TAK¯E
+.BR init (8),
+.BR utmpx (5)
+.SH AUTOR
+Miquel van Smoorenburg, miquels@cistron.nl

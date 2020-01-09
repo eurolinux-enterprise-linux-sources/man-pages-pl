@@ -1,0 +1,99 @@
+.\" Translation (c) 1999 Pawel Wilk <siewca@dione.ids.pl>
+.\" {PTM/PW/0.1/16-06-1999/"wydziel znamiê z ci±gu"}
+.\" Aktualizacja do man-pages 1.47 - A. Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" --------
+.\" Copyright (C) 1996 Andries Brouwer (aeb@cwi.nl)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Rewritten old page, 960210, aeb@cwi.nl
+.\" Updated, added strtok_r. 2000-02-13 Nicolás Lichtmaier <nick@debian.org>
+.\" --------
+.TH STRTOK 3 2000-02-13 "GNU" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+strtok, strtok_r \- wydzielanie s³ów z ³añcuchów
+.SH SK£ADNIA
+.nf
+.B #include <string.h>
+.sp
+.BI "char *strtok(char *" s ", const char *" delim );
+.sp
+.BI "char *strtok_r(char *" s ", const char *" delim ", char **" ptrptr );
+.fi
+.SH OPIS
+`S³owo' jest to niepusty ci±g znaków, które nie wystêpuj± w ³añcuchu
+\fIdelim\fP, poprzedzony znakiem \e0 lub znakiem wystêpuj±cym w \fIdelim\fP.
+.PP
+Funkcja \fBstrtok()\fP s³u¿y do rozk³adania ci±gu znaków \fIs\fP na s³owa.
+Pierwsze odwo³anie do \fBstrtok()\fP powinno posiadaæ \fIs\fP jako pierwszy
+argument. Nastêpne wywo³ania powinny mieæ jako pierwszy argument NULL.
+Ka¿de wywo³anie zwraca wska¼nik do nastêpnego s³owa lub NULL, gdy nie ma ju¿
+wiêcej s³ów.
+.PP
+Je¶li s³owo koñczy siê separatorem (delim), to ten koñcz±cy znak jest
+nadpisywany przez \e0 i zapamiêtywany jest wska¼nik do nastêpnego znaku
+dla nastêpnego wywo³ania \fBstrtok\fP.
+Ci±g separatorów \fIdelim\fP mo¿e byæ inny dla ka¿dego wywo³ania.
+.PP
+Funkcja
+.B strtok_r()
+dzia³a tak samo, jak
+.BR strtok() ,
+ale zamiast korzystaæ ze statycznego bufora, korzysta ze wska¼nika do
+przydzielonego przez u¿ytkownika wska¼nika char*. Wska¼nik ten, parametr
+.IR ptrptr ,
+nie mo¿e zostaæ zmieniony podczas rozk³adania jednego ³añcucha.
+.SH "USTERKI"
+Nigdy nie nale¿y u¿ywaæ tej funkcji. Je¶li jest to jednak konieczne,
+nale¿y zauwa¿yæ, ¿e:
+.PP
+.RS
+Funkcje te modyfikuj± swój pierwszy argument.
+.PP
+To¿samo¶æ znaku separatora jest tracona.
+.PP
+Funkcje ta nie mog± byæ stosowana z ci±gami sta³ymi.
+.PP
+Funkcja
+.BR strtok ()
+korzysta ze statycznego bufora, wiêc nie jest przystosowana do
+wielow±tkowo¶ci. Je¶li ma to znaczenie, nale¿y u¿ywaæ
+.BR strtok_r ().
+.RE
+.SH "WARTO¦Æ ZWRACANA"
+Funkcja \fBstrtok()\fP zwraca wska¼nik do nastêpnego s³owa lub
+NULL, je¶li nie ma ju¿ wiêcej s³ów.
+.SH "ZGODNE Z"
+.TP
+strtok()
+SVID 3, POSIX, BSD 4.3, ISO 9899
+.TP
+strtok_r()
+POSIX.1c
+.SH "ZOBACZ TAK¯E"
+.BR index (3),
+.BR memchr (3),
+.BR rindex (3),
+.BR strchr (3),
+.BR strpbrk (3),
+.BR strsep (3),
+.BR strspn (3),
+.BR strstr (3)

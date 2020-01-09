@@ -1,0 +1,215 @@
+.\" {PTM/PB/0.1/28-09-1998/"wyrzuæ tabele translacji klawiatury"}
+.\" Translation (c) 1998 Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.\" Aktualizacja do wersji kbd-1.06 - listopad 2001
+.\"              Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" @(#)loadkeys.1 1.0 93/09/1 RK
+.TH DUMPKEYS 1 "1 wrze¶nia 1993"
+.SH NAZWA
+dumpkeys \- wypisz tabele translacji klawiatury
+.SH SK£ADNIA
+.B dumpkeys
+[
+.B \-hilfn
+.BI \-c charset
+.B \-\-help \-\-short\-info \-\-long\-info \-\-numeric \-\-full\-table \-\-funcs\-only \-\-keys\-only \-\-compose\-only
+.BI \-\-charset= charset
+]
+.SH OPIS
+.IX "dumpkeys command" "" "\fLdumpkeys\fR command"  
+.LP
+.B dumpkeys
+zapisuje na standardowe wyj¶cie obecn± zawarto¶æ tablic translacji
+sterownika klawiatury. Formatem wyj¶ciowym jest ten sam format, którego
+u¿ywa
+.BR keymaps (5).
+.LP
+Przy u¿yciu ró¿nych opcji, mo¿na kontrolowaæ format wyj¶cia, a tak¿e uzyskaæ
+inne dane od j±dra i programów 
+.BR dumpkeys (1)
+oraz
+.BR loadkeys (1).
+.SH OPCJE
+.TP
+.B \-h \-\-help
+Wydrukuj wersjê programu i krótk± informacjê o jego u¿yciu. Drukuj na
+stderr i zakoñcz program.
+.TP
+.B \-i \-\-short-info
+Wydrukuj niektóre parametry sterownika klawiatury. Pokazywane elementy
+w³±czaj±:
+.LP
+.RS
+Keycode range supported by kernel
+(zakres kodów klawiszy, obs³ugiwanych przez j±dro)
+.LP
+.RS
+Mówi to, które warto¶ci mog± byæ u¿yte po s³owie kluczowym
+.B keycode
+w plikach z tablicami klawiszy (keytable). Zobacz
+.BR keymaps (5)
+aby dowiedzieæ siê wiêcej o formacie tych plików.
+.RE
+.LP
+Number of actions bindable to a key
+(ilo¶æ akcji, które mo¿na przypisaæ do klawisza)
+.LP
+.RS
+Mówi, ile ró¿nych akcji mo¿na przypisaæ do danego klawisza przy u¿yciu
+ró¿nych klawiszy modyfikuj±cych. Je¶li warto¶æ ta wynosi np. 16, mo¿esz
+zdefiniowaæ do 16 ró¿nych akcji na klawisz (w kombinacji z modyfikatorami).
+Je¶li warto¶æ wynosi 16, to j±dro prawdopodobnie zna oko³o czterech
+klawiszy modyfikuj±cych, które mo¿esz nacisn±æ w ró¿nych kombinacjach z
+danym normalnym klawiszem.
+.RE
+.LP
+Ranges of action codes supported by the kernel
+(zakresy kodów akcji obs³ugiwanych przez j±dro)
+.LP
+.RS
+To pole zawiera listê zakresów kodów akcji w notacji szesnastkowej. S± to
+warto¶ci, które mog± byæ u¿yte po prawej stronie definicji klawisza, np.
+symbole
+.I vv
+w linii
+.LP
+.RS
+.B keycode
+.I xx
+=
+.I vv vv vv vv
+.RE
+.LP
+(Zobacz
+.BR keymaps (5)
+aby poznaæ dalsze szczegó³y formatu linii definicji klawisza).
+.BR dumpkeys (1)
+i
+.BR loadkeys (1)
+obs³uguj± notacjê symboliczn±, która jest bardziej preferowana ni¿
+numeryczna, gdy¿ kody akcji mog± siê ró¿niæ w ró¿nych wersjach j±dra,
+podczas gdy nazwy symboliczne zwykle pozostaj± jednakowe. Jednak mimo
+wszystko lista zakresów kodów akcji mo¿e zostaæ u¿yta do sprawdzenia czy
+j±dro rzeczywi¶cie obs³uguje wszystkie symbole, które zna
+.BR loadkeys (1),
+czy te¿ mo¿e istniej± jakie¶ akcje j±dra, które nie s± nazwane w programie
+.BR loadkeys (1)
+Aby to sprawdziæ, porównaj listê zakresów z list± symboli akcji; zobacz
+ni¿ej opcjê
+.BR --long-info .
+.RE
+.LP
+Number of function keys supported by kernel
+(liczba klawiszy funkcyjnych, obs³ugiwanych przez j±dro)
+.LP
+.RS
+Okre¶la to liczbê kodów akcji, które mog± zostaæ u¿yte do wyprowadzania
+ci±gów znaków. Te kody akcji tradycyjnie s± przypisane do ró¿nych klawiszy
+funkcyjnych i edytuj±cych klawiatury i s± zdefiniowane tak, aby wysy³a³y
+sekwencje eskejpowe. Jednak¿e mo¿esz przedefiniowaæ je aby wysy³a³y czêsto
+u¿ywane polecenia, adresy e-mail czy jeszcze co¶ innego.
+Szczególnie je¶li liczba tych elementów jest wiêksza ni¿ liczba klawiszy
+funkcyjnych i edytuj±cych twojej klawiatury, mo¿esz wykorzystaæ niektóre
+"wolne" kody akcji, które mo¿na przypisaæ np. do kombinacji AltGr-litera
+aby wysy³a³y przydatne ci±gi znaków. Zobacz
+.BR loadkeys (1)
+je¶li interesuj± ciê szczegó³y.
+.RE
+.LP
+Function strings
+(funkcyjne ci±gi znaków)
+.LP
+.RS
+Mo¿esz obejrzeæ obecne definicje klawiszy z pomoc± polecenia
+.LP
+.RS
+.B dumpkeys --funcs-only
+.RE
+.LP
+.RE
+.RE
+.LP
+.TP
+.B \-l \-\-long-info
+Opcja ta nakazuje 
+.B dumpkeys
+wydrukowanie d³ugiego listingu informacyjnego. Wyj¶cie jest takie samo jak z
+opcj±
+.B --short-info
+z dodan± list± symboli obs³ugiwanych przez
+.BR loadkeys (1)
+i
+.BR dumpkeys (1),
+wraz z ich warto¶ciami numerycznymi.
+.LP
+.TP
+.B \-n \-\-numeric
+Opcja ta powoduje, ¿e
+.B dumpkeys
+pomija konwersjê kodów akcji na notacjê symboliczn± i drukuje je w formacie
+szesnastkowym.
+.LP
+.TP
+.B \-f \-\-full-table
+Powoduje to, ¿e
+.B dumpkeys
+pomija wszystkie heurystyki short-hand. (zobacz
+.BR keymaps (5))
+i na wyj¶ciu wypisuje powi±zania klawiszy w formie kanonicznej. Najpierw
+liniê w formacie keymaps opisuj±c± aktualnie zdefiniowane kombinacje
+modyfikatorów. Nastêpnie dla ka¿dego klawisza drukowany jest wiersz
+zawieraj±cy kolumny dla wszystkich kombinacji modyfikatorów. Na przyk³ad,
+je¶li aktualnie u¿ywana mapa klawiatury korzysta z siedmiu modyfikatorów, to
+ka¿dy wiersz bêdzie mia³ siedem kolumn akcji. Format ten mo¿e byæ przydatny
+dla programów przetwarzaj±cych wyj¶cie
+.BR dumpkeys .
+.LP
+.TP
+.B \-\-funcs-only
+Gdy podana jest ta opcja,
+.B dumpkeys
+drukuje tylko ci±gi definicyjne klawiszy funkcyjnych. Normalnie
+.B dumpkeys
+drukuje zarówno przypisania klawiszy, jak i te definicje.
+.LP
+.TP
+.B \-\-keys-only
+Gdy podana jest ta opcja,
+.B dumpkeys
+drukuje tylko powi±zania klawiszy. Normalne zachowanie jest j/w.
+.LP
+.TP
+.B \-\-compose-only
+Gdy podana jest ta opcja,
+.B dumpkeys
+drukuje tylko kombinacje klawiszy kompozycji (compose keys).
+Opcja ta jest dostêpna tylko je¶li twoje j±dro obs³uguje te klawisze.
+.LP
+.TP
+.BI \-c charset " " " " \-\-charset= charset
+Powiadamia to
+.B dumpkeys
+aby interpretowa³ warto¶ci kodów znaków wg okre¶lonego zestawu znaków
+(character set, charset). Dotyczy to tylko t³umaczenia kodowych warto¶ci
+znaków na nazwy symboliczne. Prawid³owe warto¶ci
+.I charset
+to:
+.BR iso-8859-X ,
+gdzie X jest cyfr± z zakresu 1-9.
+Je¶li nie poda siê parametru
+.IR charset ,
+Domy¶lnie zostanie u¿yty
+.BR iso-8859-1 .
+Ta opcja wypisuje tak¿e liniê `charset "iso-8859-X"', informuj±c± loadkeys,
+jak zinterpretowaæ mapê klawiszy (keymap). (Np. "division" to 0xf7 w
+iso-8859-1, lecz 0xba w iso-8859-8.)
+.LP
+.SH PLIKI
+.PD 0
+.TP 20
+.BI /usr/share/keymaps
+zalecany katalog plików tablic klawiszowych
+.PD
+.SH "ZOBACZ TAK¯E"
+.BR loadkeys (1),
+.BR kemaps (5)
+

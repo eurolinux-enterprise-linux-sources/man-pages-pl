@@ -1,0 +1,293 @@
+.\" Translation (C) 1999 Pawel Wilk <siefca@pl.qmail.org>
+.\" {PTM/PW/0.1/14-11-1999/"przetwarza i wysy³a wiadomo¶æ pocztow±"}
+.TH qmail-inject 8
+.SH NAZWA
+qmail-inject \- przetwórz i wy¶lij wiadomo¶æ pocztow±
+.SH SK£ADNIA
+.B qmail-inject
+[
+.B \-nNaAhH
+] [
+.B \-f\fIsender
+] [
+.I odbiorca ...
+]
+.SH OPIS
+.B qmail-inject
+czyta wiadomo¶æ pocztow± ze swojego standardowego wej¶cia,
+dodaje odpowiednie informacje do nag³ówka tej wiadomo¶ci,
+po czym wywo³uje
+.B qmail-queue
+by j± wys³aæ do jednego lub wielu odbiorców.
+
+Zobacz
+.B qmail-header(5)
+by uzyskaæ informacje na temat tego jak
+.B qmail-inject
+przepisuje pola nag³ówka.
+
+.B qmail-inject
+normalnie zwraca 0.
+Zwraca 100 przy wyj¶ciu, je¶li by³ wywo³any niepoprawnie
+lub je¶li w otrzymanej wiadomo¶ci jest jaki¶ ostry, sk³adniowy b³±d.
+Zwraca te¿ 111 przy b³êdach chwilowych.
+.SH "ZMIENNE ¦RODOWISKOWE"
+Dla wygody u¿ytkowników nie uruchamiaj±cych bezpo¶rednio
+.B qmail-inject
+program
+.B qmail-inject
+pobiera wiele opcji poprzez zmienne ¶rodowiskowe.
+
+Nazwa u¿ytkownika w polu
+.B From
+nag³ówka jest ustawiana przez zmienne
+.BR QMAILUSER ,
+.BR MAILUSER ,
+.BR USER ,
+lub
+.BR LOGNAME ,
+zale¿nie od tego, która z nich jest ustawiona najpierw.
+
+Nazwa hosta jest zwykle ustawiana przez globalny plik kontrolny
+.I defaulthost
+ale mo¿e byæ przes³oniêta przez zmienn±
+.B QMAILHOST
+lub
+.BR MAILHOST .
+
+Imiê i nazwisko (nazwa osobowa) to zmienne
+.BR QMAILNAME ,
+.BR MAILNAME ,
+lub
+.BR NAME .
+
+Domy¶lny, kopertowy adres nadawcy jest taki sam jak domy¶lny adres z pola
+.B From ,
+lecz mo¿e byæ przes³oniêty przy u¿yciu
+.B QMAILSUSER
+i
+.BR QMAILSHOST .
+Mo¿e byæ te¿ zmodyfikowany z u¿yciem literek
+.B r
+i
+.B m
+opisanych poni¿ej.
+Odbicia (zwroty poczty) bêd± wysy³ane w³a¶nie pod ten adres.
+
+Je¶li zmienna
+.B QMAILMFTFILE
+jest ustawiona,
+.B qmail-inject
+czyta listê adresów list dyskusyjnych,
+jeden adres na liniê 
+z podanego pliku.
+Je¶li To+Cc zawiera jeden z tych adresów (bez wzglêdu na wielko¶æ liter) to
+.B qmail-inject
+dodaje pole Mail-Followup-To ze wszystkimi adresami To+Cc.
+.B qmail-inject
+nie doda nag³ówka Mail-Followup-To do wiadomo¶ci, która ju¿ taki nag³ówek posiada.
+
+Zmienna ¶rodowiskowa
+.B QMAILINJECT
+mo¿e zawieraæ jak±kolwiek z poni¿szych liter:
+.TP
+.B c
+U¿ywa stylu komentarz-adres dla pola
+.B From .
+Normalnie
+.B qmail-inject
+u¿ywa stylu nazwa-adres.
+.TP
+.B s
+Nie zwraca uwagi na ¿adne nadchodz±ce pola
+.B Return-Path .
+Normalnie, je¶li pole
+.B Return-Path
+jest do³±czone to ustawiany jest kopertowy adres nadawcy
+przes³aniaj±cy wszystkie ustawienia zmiennych ¶rodowiskowych.
+.B Return-Path
+jest usuwane w ka¿dym przypadku.
+.TP
+.B f
+Usuwa ka¿de nadchodz±ce pole
+.B From
+przesy³ki.
+Normalnie, je¶li pole
+.B From
+jest za³±czone to jego zawarto¶æ przes³ania standardowe pole
+.B From
+wytworzone przez
+.BR qmail-inject .
+.TP
+.B i
+Usuwa ka¿de nadchodz±ce pole
+.B Message-ID
+wiadomo¶ci.
+Normalnie, je¶li pole
+.B Message-ID
+jest za³±czone to przes³ania ono pole
+.B Message-ID
+stworzone przez
+.BR qmail-inject .
+.TP
+.B r
+U¿ywa zmiennych kopertowych ¶cie¿ek powrotu (VERPs) zorientowanych odbiorczo.
+.B qmail-inject
+do³±czy ka¿dy adres odbiorcy to kopertowego nadawcy
+kopii wiadomo¶ci id±cej do tego odbiorcy.
+.TP
+.B m
+U¿ywa zmiennych kopertowych ¶cie¿ek powrotu (VERPs) zorientowanych na wiadomo¶æ.
+.B qmail-inject
+do³±czy obecn± datê i identyfikator procesu do kopertowego nadawcy.
+.SH OPCJE
+.TP
+.B \-a
+Wysy³a wiadomo¶æ to wszystkich adresów podanych jako argumenty
+.I recip ;
+nie u¿ywa adresów odbiorców okre¶lonych nag³ówkami wiadomo¶ci.
+.TP
+.B \-h
+Wysy³a wiadomo¶æ to wszystkich odbiorców okre¶lonych w nag³ówkach.
+Dla wiadomo¶ci nie-przelotowych oznacza to adresy wyszczególnione w
+.BR To ,
+.BR Cc ,
+.BR Bcc ,
+.BR Apparently-To .
+Dla wiadomo¶ci przelotowych oznacza adresy podane w
+.BR Resent-To ,
+.BR Resent-Cc ,
+.BR Resent-Bcc .
+Nie u¿ywa ¿adnych argumentów
+.I recip .
+.TP
+.B \-A
+(Domy¶lna.)
+Wysy³a wiadomo¶æ do wszystkich adresów podanych jaki argumenty
+.I recip .
+Je¶li nie do³±czono argumentów
+.I recip
+to wiadomo¶æ zostanie wys³ana do wszystkich nag³ówkowych adresatów.
+.TP
+.B \-H
+Wysy³a wiadomo¶æ do wszystkich nag³ówkowych odbiorców,
+a tak¿e do wszystkich adresów podanych jako argumenty
+.I recip .
+.TP
+.B \-f\fIsender
+Przepuszcza pole
+.I sender
+do
+.B qmail-queue
+jako kopertowego nadawcê wiadomo¶ci.
+Przes³ania to zawarto¶æ
+.B Return-Path
+i wszystkich zmiennych ¶rodowiskowych.
+.TP
+.B \-N
+(Domy¶lna.)
+Wysuwa przetworzon± wiadomo¶æ do
+.BR qmail-queue .
+.TP
+.B \-n
+Wypisuje wiadomo¶æ zamiast wysy³aæ j± do
+.BR qmail-queue .
+.SH "PLIKI KONTROLNE"
+.TP 5
+.I defaultdomain
+Domy¶lna nazwa domeny.
+Domy¶lnie:
+.IR me ,
+je¶li plik taki jest ustawiony;
+w przeciwnym razie nazwa literowa
+.BR defaultdomain ,
+która pewnie nie jest tym czego oczekujesz.
+.B qmail-inject
+dodaje tê nazwê do ka¿dej nazwy hosta bez kropek,
+w³±czaj±c 
+.I defaulthost
+je¶li
+.I defaulthost
+nie zawiera kropek.
+(Wyj±tek: obejrzyj
+.IR plusdomain .)
+
+Zmienna ¶rodowiskowa
+.B QMAILDEFAULTDOMAIN
+przes³ania ustawienia z pliku
+.IR defaultdomain .
+.TP 5
+.I defaulthost
+Domy¶lna nazwa hosta.
+Domy¶lnie:
+.IR me ,
+je¶li plik taki jest ustawiony;
+w przeciwnym razie nazwa literowa
+.BR defaulthost ,
+która pewnie nie jest tym czego oczekujesz.
+.B qmail-inject
+dodaje tê nazwê do ka¿dego adresu nie posiadaj±cego nazwy hosta.
+.I defaulthost
+musi byæ obecn± nazw± twojej maszyny.
+Na przyk³ad, mo¿esz chcieæ by poczta wychodz±ca oznakowana by³a tylko
+nazw± twojej domeny.
+
+Zmienna ¶rodowiskowa
+.B QMAILDEFAULTHOST
+przes³ania ustawienia z pliku
+.IR defaulthost .
+.TP 5
+.I idhost
+Nazwa hosta dla identyfikatorów wiadomo¶ci (nag³ówki Message-ID).
+Domy¶lnie:
+.IR me ,
+je¶li plik taki jest ustawiony;
+w przeciwnym razie nazwa literowa
+.BR idhost ,
+która oczywi¶cie nie jest tym czego oczekujesz.
+.I idhost
+powinien byæ obecn± nazw± hosta.
+Na przyk³ad mo¿esz te¿ chcieæ u¿ywaæ 
+zmy¶lonych nazw hosta w polu Message-ID.
+Jednak¿e,
+.I idhost
+musi byæ w pe³ni kwalifikowan± nazw± domenow± wewn±trz twojej domeny,
+a ka¿dy host w twojej domenie powinien u¿ywaæ odmiennego ustawienia
+.IR idhost .
+
+Zmienna ¶rodowiskowa
+.B QMAILIDHOST
+przes³ania ustawienie z pliku
+.IR idhost .
+.TP 5
+.I plusdomain
+Nazwa domeny z plusem.
+Domy¶lnie:
+.IR me ,
+je¶li taki plik istnieje;
+w przeciwnym razie literowa nazwa
+.BR plusdomain ,
+która z prawdopodobnie nie jest tym co chcesz.
+.B qmail-inject
+dodaje tê nazwê do ka¿dej nazwy hosta koñcz±cej siê znakiem plus,
+w³±czaj±c
+.I defaulthost
+je¶li
+.I defaulthost
+koñczy siê znakiem plusa.
+Je¶li nazwa hosta nie zawiera kropek, lecz koñczy siê znakiem plusa to
+.B qmail-inject
+u¿ywa pliku
+.IR plusdomain ,
+a nie
+.IR defaultdomain .
+
+Zmienna ¶rodowiskowa
+.B QMAILPLUSDOMAIN
+przes³ania ustawienie pliku kontrolnego
+.IR plusdomain .
+.SH "ZOBACZ TAK¯E"
+addresses(5),
+qmail-control(5),
+qmail-header(5),
+qmail-queue(8)

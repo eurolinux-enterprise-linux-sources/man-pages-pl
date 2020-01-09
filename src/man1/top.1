@@ -1,0 +1,450 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+.\" updated to procps-2.0.7 - Andrzej M. Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\"                           pa¼dziernik 2002
+.\" 
+.\" This file Copyright 1992 Robert J. Nation 
+.\" (nation@rocket.sanders.lockheed.com)
+.\" It may be distributed under the GNU Public License, version 2, or
+.\" any higher version.  See section COPYING of the GNU Public license
+.\" for conditions under which this file may be redistributed.
+.\"
+.\" Modified 1994/04/25 Michael Shields <mjshield@nyx.cs.du.edu>
+.\" Cleaned up, and my changes documented.  New `.It' macro.  Edited.
+.\" modified 1996/01/27 Helmut Geyer to match my changes.
+.
+.de It
+.TP 0.5i
+.B "\\$1 "
+..
+.TH TOP 1 "Feb 1 1993" "Linux" "Podrêcznik u¿ytkownika Linuksa"
+.SH NAZWA
+top \- wy¶wietl najwa¿niejsze procesy CPU
+.SH SK£ADNIA
+.B top
+.RB [ \- ]
+.RB [ d
+.IR opó¼nienie ]
+.RB [ p
+.IR pid ]
+.RB [ q ]
+.RB [ c ]
+.RB [ C ]
+.RB [ S ]
+.RB [ s ]
+.RB [ i ]
+.RB [ n ]
+.RB [ b ]
+.SH OPIS
+.B top
+daje spojrzenie w czasie rzeczywistym na dzia³alno¶æ procesora. Wy¶wietla
+listê najbardziej zasobo¿ernych zadañ systemu i udostêpnia interakcyjny
+interfejs obs³ugi procesów. Mo¿e sortowaæ zadania wg zu¿ycia CPU, pamiêci i
+czasu dzia³ania.
+.N top
+mo¿e byæ lepiej skonfigurowany ni¿ standardowy top z procps. Wiêkszo¶æ
+w³a¶ciwo¶ci mo¿na wybraæ albo przez komendê interakcyjn±, albo przez podanie
+w³a¶ciwo¶ci w pliku konfiguracyjnym. Zobacz ni¿ej szczegó³y.
+.PP
+.SH "OPCJE LINII POLECEÑ"
+.It d
+Okre¶la opó¼nienie miêdzy od¶wie¿eniami ekranu. Mo¿na to zmieniaæ
+komend± interakcyjn±
+.BR s .
+.It p
+Monitoruje jedynie procesy o danym id procesu. Opcjê tê mo¿na podawaæ do
+dwudziestu razy. Jest ona niedostêpna interakcyjnie ani nie mo¿e byæ
+ustawiona w pliku konfiguracyjnym.
+.It q
+Powoduje to, ¿e
+.B top
+od¶wie¿a siê bez opó¼nienia. Je¶li wywo³uj±cy jest superu¿ytkownikiem, top
+dzia³a z najwy¿szym mo¿liwym priorytetem.
+.It S
+Okre¶la tryb kumulacyjny, gdzie ka¿dy proces jest wypisywany z czasem CPU,
+który spo¿ytkowanym przez niego
+.IR "oraz jego martwe dzieci" .
+Jest to podobne do flagi
+.B -S
+programu
+.BR ps (1).
+Zobacz dyskusjê poni¿ej o komendzie interakcyjnej
+.BR S .
+.It s
+Nakazuje programowi
+.B top
+pracê w trybie bezpiecznym. Wy³±cza potencjalnie niebezpieczne komendy
+interakcyjne (patrz ni¿ej). Szykownie jest pozostawiæ bezpiecznego
+.BR top a
+na dodatkowym terminalu.
+.It i
+Uruchamia
+.BR top a,
+ignoruj±c wszelkie procesy duchy i procesy pró¿nuj±ce. Zobacz te¿ komendê
+interakcyjn±
+.B i
+poni¿ej.
+.It C
+wy¶wietla oprócz indywidulnych stanów CPU równie¿ ³±czne stany CPU. Opcja ta
+ma znaczenie jedynie w systemach SMP.
+.It c
+wy¶wietla liniê poleceñ zamiast samej nazwy polecenia. Domy¶lne zachowanie
+zosta³o zmienione, gdy¿ wydaje siê to bardziej przydatne.
+.It n
+Liczba iteracji. Od¶wie¿a wy¶wietlacz tyle razy i zakoñcz dzia³anie.
+.It b
+Tryb wsadowy. Przydatne do wysy³ania wyj¶cia z top do innych programów lub
+do pliku. W trybie tym
+.B top
+nie przyjmuje wej¶cia z linii poleceñ. Dzia³a dopóki nie wykona okre¶lonej
+za pomoc± opcji
+.B n
+liczby iteracji lub dopóki nie zostanie zabity. Wyj¶cie jest czystym tekstem,
+nadaj±cym siê do wy¶wietlenia na zwyk³ym terminalu.
+.
+.SH "OPISY PÓL"
+.B top
+wy¶wietla ró¿ne informacje o stanie procesora. Wy¶wietlacz domy¶lnie jest
+od¶wie¿any co 5 sekund, lecz mo¿na to zmieniæ opcj±
+.B d
+linii poleceñ, lub komend± interakcyjn±
+.BR s .
+.It "uptime"
+Ta linia wy¶wietla czas, przez jaki system pracuje oraz trzy miary obci±¿enia
+systemu. Okre¶laja one ¶redni± liczbê procesów gotowych do uruchomienia w
+ostatniej minucie, ostatnich 5 i 15 minutach. Linia ta jest podobna do wyniku
+polecenia
+.BR uptime (1).
+Wy¶wietlanie uptime mo¿e byæ prze³±czane komend± interakcyjn±
+.BR l .
+.It processes
+Ca³kowita liczba procesów, pracuj±cych podczas ostatniego od¶wie¿enia.
+Jest to rozbite na liczbê zadañ, które aktualnie siê wykonuj±, ¶pi±, s±
+zatrzymane, lub niemartwe. Wy¶wietlanie procesów i stanów mo¿e byæ
+prze³±czane komend± interakcyjn±
+.BR t .
+.It "CPU states"
+Pokazuje zajêto¶æ czasu CPU w trybie u¿ytkownika, w trybie systemowym, w
+trybie zadañ z ujemn± warto¶ci± nice i trybie bezczynno¶ci.
+Czas spêdzony na zadaniach z ujemn± warto¶ci± nice jest wliczany do czasu
+systemowego i u¿ytkownika, wiêc ca³o¶æ przekroczy 100%. Wy¶wietlanie procesów
+i stanów mo¿e byæ prze³±czane komend± interakcyjn±
+.BR t .
+.It Mem
+Statystyki u¿ycia pamiêci, obejmuj±ce ca³kowit± dostêpn± pamiêæ, woln±
+pamiêæ, pamiêæ zajêt±, pamiêæ dzielon± i pamiêæ przeznaczon± na bufory.
+Wy¶wietlanie informacji o pamiêci mo¿na prze³±czaæ komend± interakcyjn±
+.BR m .
+.It Swap
+Statystyki obszaru wymiany, opisuj±ce ca³kowity obszar wymiany, dostêpny
+obszar wymiany i u¿yty obszar wymiany. Linia ta, wraz z
+.B Mem
+s± podobne do wyj¶cia komendy
+.BR free (1).
+.It PID
+Identyfikator procesu danego zadania.
+.It PPID
+Identyfikator procesu rodzicielskiego danego zadania.
+.It UID
+Identyfikator u¿ytkownika, który jest w³a¶cicielem zadania.
+.It USER
+Nazwa u¿ytkownika, który jest w³a¶cicielem zadania.
+.It PRI
+Priorytet zadania.
+.It NI
+Warto¶æ nice zadania. Ujemne warto¶ci nice oznaczaj± wy¿szy priorytet.
+.It SIZE
+Pokazywany jest tu w kilobajtach rozmiar kodu zadania plus obszar danych
+plus rozmiar stosu.
+.It TSIZE
+Rozmiar kodu zadania. Podaje to dziwne warto¶ci dla procesów j±dra i jest
+zepsute dla procesów ELF.
+.It DSIZE
+Rozmiar danych + stosu. Jest to zepsute dla procesów ELF.
+.It TRS
+Rozmiar rezydentnet sekcji text (Text Resident Size).
+.It SWAP
+Rozmiar czê¶ci zadania, która uleg³a wymianie.
+.It D
+Rozmiar stron, zaznaczonych jako brudne.
+.It LC
+Ostatnio u¿ywany procesor. (Warto¶æ zmienia siê od czasu do czasu \- nie
+jest to b³±d; Linux celowo u¿ywa s³abego powinowactwa. Zauwa¿ równie¿, ¿e
+sam fakt uruchomienia topa mo¿e naruszyæ s³abe powinowactwo i spowodowaæ, ¿e
+wiêcej procesów czê¶ciej bêdzie zmieniaæ aktualny CPU ze wzglêdu na
+dodatkowe ¿±dania czasu CPU.) 
+.It RSS
+Ca³kowity rozmiar pamiêci fizycznej u¿ywanej przez zadanie, w kilobajtach.
+Dla procesów ELF wliczane s± u¿yte strony biblioteki, dla a.out nie.
+.It SHARE
+Rozmiar pamiêci dzielonej, u¿ywanej przez zadanie.
+.It STAT
+Stan pokazywanego zadania. Stan to albo
+.B S
+\- spanie,
+.B D
+\- nieprzerywane spanie,
+.B R
+\- dzia³anie,
+.B Z
+\- duchy albo
+.B T
+dla procesów zatrzymanych, b±d¼ ¶ledzonych. Stany te s± modyfikowane przez
+dalsze
+.B <
+dla procesów o ujemnej warto¶ci nice,
+.B N
+dla procesów o dodatniej warto¶ci nice,
+.B W
+dla procesów, które uleg³y wymianie (nie dzia³a to prawid³owo dla procesów
+j±dra).
+.It WCHAN
+zale¿nie od dostêpno¶ci
+.I /boot/psdatabase
+lub mapy konsolidacji j±dra
+.IR /boot/System.map ,
+pokazuje adres lub nazwê funkcjê j±dra, podczas wykonywania której zadanie
+aktualnie ¶pi.
+.It TIME
+Ca³kowity czas CPU, zu¿yty przez zadanie od uruchomienia. Je¶li w³±czony
+jest tryb kumulacyjny, wliczany jest te¿ czas zu¿yty przez zmar³e dzieci 
+procesu. Tryb kumulacyjny mo¿na ustawiæ opcj±
+.B S
+linii poleceñ lub prze³±czaæ komend± interakcyjn±
+.BR S . 
+Linia nag³ówka zmieni siê wtedy na 
+.BR CTIME .
+.It %CPU
+Udzia³ zadania w czasie CPU od ostatniego od¶wie¿enia ekranu, wyra¿ony jako
+procent ca³kowitego czasu CPU.
+.It %MEM
+Udzia³ zadania w pamiêci fizycznej.
+.It COMMAND
+Nazwa polecenia zadania, która jest skracana, je¶li jest zbyt d³uga, by
+zmie¶ciæ siê w jednej linii. Zadania w pamiêci maj± pe³n± liniê poleceñ,
+lecz zadania, które uleg³y wymianie (swapped-out) maj± tylko nazwê programu,
+ujêt± w nawiasy (np. "(getty)").
+.It "A , WP"
+te pola z kmem top nie s± obs³ugiwane.
+.
+.SH "KOMENDY INTERACYJNE"
+Podczas pracy,
+.B top
+rozpoznaje parê jednoklawiszowych funkcji. Czê¶æ z nich jest wy³±czona po
+przekazaniu opcji
+.B s
+z linii poleceñ.
+.It spacja
+Od¶wie¿a natychmiast ekran.
+.It ^L
+Przerysowywuje ekran.
+.It "h\fR lub \fB?"
+Wy¶wietla ekran pomocy, podaj±c krótki opis komend i status trybu
+bezpiecznego i kumulacyjnego.
+.It k
+Zabija proces. Zostaniesz zapytany o PID zadania i sygna³, który mu wys³aæ.
+Dla normalnego zabicia, wy¶lij sygna³ 15. Dla pewnego, lecz brutalnego
+zabicia, wy¶lij sygna³ 9. Domy¶lnym sygna³em, jak dla
+.BR kill (1),
+jest 15,
+.BR SIGTERM .
+Komenda ta nie jest dostêpna w trybie bezpiecznym.
+.It i
+Ignoruj procesy bezczynne i procesy duchy. Jest to prze³±cznik.
+.It I
+Prze³±cz pomiêdzy widokiem w stylu Solarisa (procentowa zajêto¶æ CPU
+rozdzielona pomiêdzy ³±czn± liczbê CPU) a widokiem w stylu Iriksa
+(procentowa zajêto¶æ CPU obliczna wy³±cznie jako ilo¶æ czasu). Jest to
+prze³±cznik, który ma znaczenie tylko w stystemach SMP.
+.It "n\fR lub \fB#"
+Zmieñ liczbê pokazywanych procesów. Zostaniesz zapytany o liczbê. Zastêpuje
+to automatyczne liczbê pokazywanych procesów okre¶lon± na podstawie rozmiaru
+okna. Je¶li podane zostanie 0, top poka¿e tyle procesów, ile
+zmie¶ci siê na ekranie. Tak jest domy¶lnie.
+.It q
+Koniec pracy.
+.It r
+Zmieñ warto¶æ nice dla procesu. Zostaniesz zapytany o PID zadania i warto¶æ
+nice, jak± mu ustawiæ. Wstawianie warto¶ci dodatniej spowoduje utratê
+priorytetu. Je¶li
+.BR top 
+jest uruchomiony przez roota, mo¿na wstawiæ warto¶æ ujemn± powoduj±c±, ¿e
+proces uzyska wiêkszy priorytet. Domy¶ln± warto¶ci± renice jest 10. Komenda
+ta nie jest dostêpna w trybie bezpiecznym.
+.It S
+Prze³±cza do/z trybu kumulacyjnego, równowa¿nego
+.BR "ps -S" ,
+tj. czasy CPU bêd± zawieraæ czasy zakoñczonych procesów potomnych. Dla
+niektórych programów, takich jak kompilatory, które pracuj± przez rozwidlanie
+wielu zadañ, tryb normalny powoduje, ¿e wydaj± siê mniej wymagaj±ce ni¿ mówi
+rzeczywisto¶æ. Dla innych jednak, takich jak pow³oki czy
+.BR init ,
+zachowanie to jest prawid³owe. W ka¿dym razie, zawsze mo¿na wypróbowaæ tryb
+kumulacyjny jako inne spojrzenie na zajêto¶æ CPU.
+.It s
+Zmienia opó¼nienie miêdzy od¶wie¿eniami. Zostaniesz zapytany o czas
+opó¼nienia w sekundach. Rozpoznawane s± warto¶ci u³amkowe, a¿ do
+mikrosekund. Wstawienie 0 powoduje sta³e od¶wie¿anie. Domy¶ln± warto¶ci±
+jest 5 sekund. Zauwa¿, ¿e niskie warto¶ci powoduj± niemal nieczytelnie
+szybkie zmiany obrazu i mocno zwiêkszaj± obci±¿enie. Komenda ta nie jest
+dostêpna w trybie bezpiecznym.
+.It "f\fR lub \fBF"
+Dodaje pola do wy¶wietlacza lub je usuwa. Zobacz ni¿ej dla dalszych
+informacji.
+.It "o\fR lub \fBO"
+Zmienia kolejno¶æ wy¶wietlanych pól. Dalsze informacje poni¿ej.
+.It l
+prze³±czaj wy¶wietlanie informacji o obci±¿eniu i uptime.
+.It m
+prze³±czaj wy¶wietlanie informacji o pamiêci.
+.It t
+prze³±czaj wy¶wietlanie informacji o procesach i stanach CPU.
+.It c
+prze³±czaj wy¶wietlanie nazwy komendy i jej pe³nej nazwy.
+.It A
+sortuj zadania wed³ug wieku (najnowsze najpierw).
+.It M
+sortuj zadania wed³ug zajêto¶ci pamiêci.
+.It N
+sortuj zadania wed³ug PIDu (\fIn\fPumerycznie).
+.It P
+sortuj zadania wed³ug zajêto¶ci CPU (domy¶lne).
+.It T
+sortuj zadania wed³ug czasu / czasu skumulowanego.
+.It W
+Zapisz konfiguracjê do
+.IR ~/.toprc .
+Jest to zalecany sposób zapisywania konfiguracji topa.
+.
+.SH Ekrany pól i kolejno¶ci
+Po naci¶niêciu
+.BR f ,
+.BR F ,
+.B o
+lub
+.B O
+poka¿e ci siê ekran, pokazuj±cy w górnej linii kolejno¶æ pól oraz krótkie
+opisy ich zawarto¶ci. £añcuch kolejno¶ci pól ma nastêpuj±c± sk³adniê:
+Je¶li odpowiadaj±ca danemu polu litera w ³añcuchu pól jest wielka, to pole
+jest wy¶wietlane. Jest to dodatkowo oznaczane gwiazdk± na pocz±tku opisu pola.
+Kolejno¶æ pól odpowiada kolejno¶ci liter w ³añcuchu.
+ Z ekranu wyboru `f' pola mo¿na ³atwo prze³±czaæ wy¶wietlanie danego pola,
+naciskaj±c odpowiedni± literê.
+ Z ekranu kolejno¶ci `o' mo¿na przesuwaæ pole w lewo, naciskaj±c odpowiadaj±c±
+mu wielk± literê, a w prawo, naciskaj±c ma³±.
+.
+.SH Pliki konfiguracyjne
+Top odczytuje domy¶ln± konfiguracjê z dwóch plików,
+.I /etc/toprc
+i
+.IR ~/.toprc .
+Globalny plik konfiguracyjny mo¿e s³u¿yæ do ograniczenia dla
+nieuprzywilejowanych u¿ytkowników mo¿liwo¶ci topa do trybu bezpiecznego.
+Je¶li to jest wymagane, plik powinien zawieraæ 's', okre¶laj±ce tryb
+bezpieczny oraz cyfrê d (2<=d<=9), okre¶laj±c± domy¶lne opó¼nienie (w
+sekundach) w jednej linii.
+.
+Prywatny plik konfiguracyjny sk³ada siê z dwóch linii. Pierwsza zawiera ma³e
+i wielkie litery okre¶laj±ce, które pola i w jakiej kolejno¶ci maj± byæ
+wy¶wietlane. Litery te odpowiadaj± literom z ekranu wyboru topa. Jako ¿e nie
+jest to zbyt pouczaj±ce, zaleca siê wybieranie pól interacyjnie i zapisanie
+kolejno¶ci za pomoc± polecenia
+.IR W .
+.
+Druga linia jest bardziej interesuj±ca (i wa¿niejsza). Zawiera informacje o
+innych opcjach. Najwa¿niejsze, je¶li zachowa³e¶ konfiguracjê w trybie
+bezpiecznym, jest to, ¿e nie uzyskasz niebezpiecznego topa bez usuniêcia
+'s' ze swojego
+.IR ~/.toprc .
+Cyfra okre¶la czas opó¼nienia miêdzy od¶wie¿eniami, wielkie 'S' \- tryb
+kumulacyjny, ma³e 'i' \- tryb bez-pró¿nowania, wielkie 'I' \- widok w stylu
+Iriksa. Podobnie jak w trybie interakcyjnym, ma³e 'm', 'l', 't' powstrzymuj±
+wy¶wietlanie informacji o pamiêci i czasie dzia³ania odp. procesów oraz o
+stanie CPU. Zmiana domy¶lnej kolejno¶ci sortowania (wg zajêto¶ci CPU) nie jest
+obecnie wspierana.
+.
+.SH UWAGI
+Ten oparty o
+.B proc
+.B top
+dzia³a przez odczyt plików z systemu plików
+.BR proc ,
+zamontowanego w
+.IR /proc .
+Je¶li
+.I /proc
+nie jest zamontowany,
+.B top
+nie bêdzie dzia³aæ.
+.PP
+.B %CPU
+Pokazuje procent czasu_cpu/czasu_rzeczywistego w okresie czasu miêdzy
+od¶wie¿eniami. Dla pierwszego od¶wie¿enia u¿ywane jest krótkie opó¼nienie i
+dominuje tam 
+.BR top .
+Pó¼niej,
+.B top
+spadnie na dalsze pozycje i widoczne stanie siê bardziej sensowne
+zestawienie zajêto¶ci CPU.
+.PP
+Pola
+.B SIZE
+i
+.B RSS 
+nie licz± tablic stron i
+.B task_struct
+procesu; jest to co najmniej 12K pamiêci, która jednak pozostaje u¿yta.
+.B SIZE
+jest rozmiarem wirtualnym procesu (kod+dane+stos).
+.PP
+Pamiêtaj, ¿e proces musi umrzeæ, aby jego czas zosta³ zanotowany przez
+rodzica w trybie kumulacyjnym. Byæ mo¿e przydatniejsze by³oby ¶ledzenie
+takich procesów i dodawanie czasu, lecz by³oby to do¶æ kosztowne. Poza tym
+wtedy zachowanie
+.BR top
+by³oby niekompatybilne z
+.BR ps .
+.
+.SH PLIKI
+.I /etc/toprc 
+Globalny plik konfiguracyjny.
+.I ~/.toprc
+Prywatny plik konfiguracyjny.
+.
+.SH "ZOBACZ TAK¯E"
+.BR ps (1),
+.BR free (1),
+.BR uptime (1),
+.BR kill (1),
+.BR renice (1)
+.
+.SH
+B£ÊDY
+Je¶li okno jest mniejsze ni¿ ok. 70x7,
+.B top
+nie bêdzie prawid³owo formatowa³ danych. 
+ Wiele pól wci±¿ ma problemy z procesami ELF.
+ Ekrany pomocy nie s± jeszcze zoptymalizowane na okna mniejsze ni¿ 25 linii.
+.
+.SH AUTOR
+.B top
+zosta³ pocz±tkowo napisany przez Rogera Binnsa, w oparciu o program ps
+Branko Lankestera <lankeste@fwi.uva.nl>.
+Robert Nation <nation@rocket.sanders.lockheed.com> 
+zmodyfikowa³ go znacz±co do u¿ywania systemu plików proc, w oparciu o
+program ps Michaela K. Johnsona <johnsonm@redhat.com>.
+Michael Shields <mjshield@nyx.cs.du.edu> 
+dokona³ wielu zmian, ³±cznie z bezpiecznym i kumulacyjnym trybem dzia³ania.
+Tim Janik <timj@gtk.org> doda³ sortowanie wed³ug wieku oraz mo¿liwo¶æ
+monitorowania poszczególnych procesów na postawie ich identyfikatorów.
+
+Helmut Geyer <Helmut.Geyer@iwr.uni-heidelberg.de>
+zmieni³ znacz±co program w celu obs³ugi konfigurowalnych pól i innych nowych
+opcji oraz dokona³ dalszych czystek kodu i skorzysta³ z nowego interfejsu
+readproc.
+
+Opcje "b" i "n" zosta³y przekazane przez George'a Bonsera <george@captech.com> 
+dla CapTech IT Services.
+
+Obecnym opiekunem jest Michael K. Johnson <johnsonm@redhat.com>.
+
+Zg³oszenia b³êdów wysy³aj do <procps-bugs@redhat.com>.

@@ -1,0 +1,296 @@
+.\" This file Copyright (C) 1994-2001 Jeff Tranter
+.\" (tranter@pobox.com)
+.\" It may be distributed under the GNU Public License, version 2, or
+.\" any higher version. See section COPYING of the GNU Public license
+.\" for conditions under which this file may be redistributed.
+.\" 
+.\" Translation: Bartosz Jakubski <B.Jakubski@supernet.com.pl>, Mar 2002,
+.\" eject 2.0.12
+.\" Based on earlier translation by Przemek Borys (1998).
+.TH "EJECT" "1" "18 maja 2001" "Linux" "Polecenia u¿ytkownika"
+.SH "NAZWA"
+eject \- wysuwanie wyjmowalnego no¶nika
+.SH "SK£ADNIA"
+eject \-h
+.br 
+eject [\-vnrsfqp] [<nazwa\-urz±dzenia>]
+.br 
+eject [\-vn] \-d
+.br 
+eject [\-vn] \-a on|off|1|0 [<nazwa\-urz±dzenia>]
+.br 
+eject [\-vn] \-c slot [<nazwa\-urz±dzenia>]
+.br 
+eject [\-vn] \-t [<nazwa\-urz±dzenia>]
+.br 
+eject [\-vn] \-x <prêdko¶æ> [<nazwa\-urz±dzenia>]
+.br 
+eject \-V
+
+.SH "OPIS"
+.B Eject
+umo¿liwia programowe wysuwanie no¶nika w napêdach, które na to pozwalaj±
+(zwykle CD\-ROM, stacje dyskietek, napêdy ta¶mowe, dyski JAZ i ZIP).
+Tym programem mo¿esz równie¿: kontrolowaæ czytniki CD\-ROM wyposa¿one
+w zmieniacz p³yt, ustawiaæ prêdko¶æ napêdu CD\-ROM, automatycznie wysuwaæ
+no¶nik (funkcja dostepna tylko w niektórych napêdach) oraz chowaæ tackê
+w napêdach CD\-ROM.
+
+Wyrzucone zostanie urz±dzenie <nazwa\-urz±dzenia>. Nazw± mo¿e byæ
+plik urz±dzenia lub punkt montowania. Mo¿e byæ podana pe³na ¶cie¿ka,
+ale mo¿na te¿ pomin±æ pocz±tkowe "/dev" lub "/mnt". Je¶li nie zostanie
+podane ¿adne urz±dzenie, to zostanie u¿yta domy¶lna nazwa "cdrom".
+
+Istniej± cztery ró¿ne metody na wyrzucanie no¶nika, przeznaczone do
+ró¿nego rodzaju urz±dzeñ (CD\-ROM, urz±dznia SCSI, stacje dyskietek i
+napêdy ta¶mowe). Domy¶lnie eject próbuje skorzystaæ po kolei z wszystkich
+metod.
+
+Urz±dzenie zostanie odmontowane je¶li w momencie uruchomienia ejecta by³o
+podmontowane.
+
+.PP 
+.SH "OPCJE"
+.TP 0.5i
+.B \-h
+Ta opcja spowoduje, ¿e
+.B eject
+wy¶wietli krótki opis swoich opcji.
+
+.TP 0.5i
+.B \-v
+Gdy wywo³asz
+.B eject
+z t± opcj± bêdzie on wy¶wietla³ wiêcej informacji na temat wykonywanych
+operacji.
+
+.TP 0.5i
+.B \-d
+Ta opcja powoduje wy¶wietlenie domy¶lnej nazwy urz±dzenia.
+
+.TP 0.5i
+.B \-a on|1|off|0
+Ta opcja kontroluje tryb automatycznego wysuwania obs³ugiwany przez
+niektóre urz±dzenia. Je¶li jest on w³±czony, to napêd automatycznie
+wysunie no¶nik, gdy urz±dzenie zostanie zamkniête.
+
+.TP 0.5i
+.B \-c <slot>
+Przy pomocy tej opcji mo¿esz wybraæ p³ytê w napêdzie CD\-ROM wyposa¿onym
+w zmieniacz p³yt. Wymagana jest wersja 2.0 (lub wy¿sza) Linuksa. Napêd
+nie mo¿e byæ w u¿yciu (nie mo¿e byæ zamontowany ani te¿ nie mo¿e byæ
+odtwarzana muzyka z p³yty audio). Zauwa¿, ¿e do pierwszej p³yty odwo³ujesz
+siê poprzez numer 0, a nie 1.
+
+.TP 0.5i
+.B \-t
+Ta opcja powoduje wys³anie do napêdu CD\-ROM polecenia wsuniêcia tacki.
+Nie wszystkie urz±dzenia maj± tak± mo¿liwo¶æ.
+
+.TP 0.5i
+.B \-x <prêdko¶æ>
+Ta opcja próbuje ustawiæ prêdko¶æ napêdu CD. Parametr "prêdko¶æ"
+okre¶la po¿±dan± prêdko¶æ (np. 8 je¶li chcesz uzyskaæ prêdko¶æ 8X).
+Jesli ma on warto¶æ 0, to zostanie wybrana maksymalna mo¿liwa.
+Nie wszystkie urz±dzenia potrafi± zmieniaæ prêdko¶æ. Mo¿esz
+podawaæ wy³±cznie prêdko¶ci, które obs³uguje dany napêd. Przy ka¿dej
+zmianie no¶nika ustawienie prêdko¶ci jest zapominane. Ta opcja mo¿e
+byæ u¿ywana samodzielnie, b±d¼ te¿ w po³±czeniu z opcjami \-t i \-c.
+
+.TP 0.5i
+.B \-n
+Ta opcja powoduje wy¶wietlenie nazwy wybranego urz±dzenia. Nie s±
+podejmowane inne akcje.
+
+.TP 0.5i
+.B \-r
+Ta opcja powoduje próbê wysuniêcia no¶nika przy pomocy komendy "eject"
+CDROM.
+
+.TP 0.5i
+.B \-s
+Ta opcja powoduje próbê wysuniêcia no¶nika przy pomocy komend SCSI.
+
+.TP 0.5i
+.B \-f
+Ta opcja powoduje próbê wysuniêcia no¶nika przy pomocy komendy "eject"
+stacji dyskietek.
+
+.TP 0.5i
+.B \-q
+Ta opcja powoduje próbê wysuniêcia no¶nika przy pomocy komend napêdu
+ta¶mowego.
+
+.TP 0.5i
+.B \-p
+Ta opcja pozwala na u¿ycie /proc/mounts zamiast /etc/mtab. Dodaje tak¿e
+opcjê \-n do wywo³ania umount(1).
+
+.TP 0.5i
+.B \-V
+Ta opcja powoduje wy¶wietlenie numeru wersji i zakoñczenie programu.
+.SH "D£UGIE NAZWY OPCJI"
+Wszystkie opcje maj± swoje d³u¿sze odpowiedniki. Mo¿na podawaæ tylko
+czê¶æ nazwy tak d³ugo, jak jest ona jednoznaczna.
+
+.br 
+\-h \-\-help
+.br 
+\-v \-\-verbose
+.br 
+\-d \-\-default
+.br 
+\-a \-\-auto
+.br 
+\-c \-\-changerslot
+.br 
+\-t \-\-trayclose
+.br 
+\-x \-\-cdspeed
+.br 
+\-n \-\-noop
+.br 
+\-r \-\-cdrom
+.br 
+\-s \-\-scsi
+.br 
+\-f \-\-floppy
+.br 
+\-q \-\-tape
+.br 
+\-V \-\-version
+.br 
+\-p \-\-proc
+.br 
+
+.SH "WARTO¦Æ ZWRACANA"
+.PP 
+
+.B Eject
+zwraca 0 jesli operacja siê powiod³a, 1 je¶li nie (lub pope³niono b³±d w
+sk³adni polecenia)
+.SH "PRZYK£ADY"
+.PP 
+Wysuñ no¶nik z domy¶lnego urz±dzenia
+.IP 
+eject
+.PP 
+Wysuñ no¶nik z urz±dzenia o nazwie (lub podmontownego jako) cdrom:
+.IP 
+eject cdrom
+.PP 
+Wysuñ nosnik podaj±c nazwê urz±dzenia:
+.IP 
+eject /dev/cdrom
+.PP 
+Wysuñ no¶nik podaj±c punkt podmontowania:
+.IP 
+eject /mnt/cdrom/
+.PP 
+Wysuñ no¶nik z czwartego urz±dzenia IDE:
+.IP 
+eject hdd
+.PP 
+ ... lub z pierwszego urz±dzenia SCSI:
+.IP 
+eject sda
+.PP 
+Wysuñ no¶nik podaj±c nazwê partycji SCSI (np. dla stacji ZIP):
+.IP 
+eject sda4
+.PP 
+Wybierz 5 p³ytê w wielodyskowym czytniku CD:
+.IP 
+eject \-v \-c5 /dev/cdrom
+.PP 
+W³±cz tryb automatycznego wyrzucania w napêdzie CD\-ROM SoundBlaster:
+.IP 
+eject \-a on /dev/sbpcd
+
+.SH "UWAGI"
+.PP 
+
+.B Eject
+dzia³a tylko z urz±dzeniami które obs³uguj± co najmniej jedn± z
+czterech metod wysuwania. W tej grupie zawiera siê wiêkszo¶æ napêdów
+CD\-ROM (IDE, SCSI i inne), niektóre napêdy ta¶mowe SCSI, napêdy JAZ i ZIP
+(pod³±czane do portu równoleg³ego, wersje SCSI i IDE) oraz stacje LS120.
+U¿ytkownicy raportowali tak¿e powodzenie ze stacjami dyskietek na
+komputerach Sun SPARC i Apple Macintosh. Je¶li 
+.B eject
+nie dzia³a, to jest to najprawdopodobniej ograniczenie sterownika w
+j±drze systemu, a nie
+.B ejecta
+jako takiego.
+
+Opcje \-r, \-s, \-f i \-q pozwalaj± na wybór metody u¿ywanej do wysuniêcia
+no¶nika. Mo¿na podaæ wiêcej ni¿ jedn± opcjê. Je¶li nie zostanie podana
+¿adna z nich, to
+.B eject
+spróbuje wszystkich czterech (co w wiêkszo¶ci przypadków daje
+zadowalaj±ce rezultaty).
+
+.B Eject
+mo¿e nie byæ w stanie wykryæ, czy urz±dzenie jest podmontowane (np. je¶li
+ma ono parê nazw). Je¶li nazwa urz±dzenia jest dowi±zaniem symbolicznym,
+to
+.B eject
+pod±¿y za nim i u¿yje urz±dzenia, na które ono wskazuje.
+
+Je¶li
+.B eject
+stwierdzi, ¿e urz±dzenie mo¿e mieæ kilka partycji, to spróbuje
+odmontowaæ wszystkie zamontowane partycje przed wysuniêciem.
+Je¶li odmontowanie siê nie powiedzie, to program nie bêdzie próbowaæ
+wysuwaæ no¶nika.
+
+Mo¿esz wysuwaæ p³yty audio. Niektóre napêdy CD\-ROM nie pozwalaj± na
+wysuniêcie tacki, gdy w napêdzie nie ma p³yty. Niektóre urz±dzenia nie
+obs³uguj± komendy wci±gniêcia tacki.
+
+Je¶li uaktywniony zosta³ tryb automatycznego wysuwania, to zawsze po
+wykonaniu tej komendy nastapi wysuniêcie no¶nika. Nie wszystkie
+sterowniki CD\-ROM w j±drze linuksa wspieraj± ten tryb. Nie ma sposobu
+na wykrycie, czy tryb automatycznego wysuwania jest aktywny, czy nie.
+
+Potrzebujesz odpowiednich uprawnieñ do uzyskania dostêpu do plików
+urz±dzeñ. Musisz uruchomiæ
+.B ejecta
+jako root (lub ustawiæ setuid root), ¿eby móc wysuwaæ niektóre urz±dzenia
+(np. SCSI).
+
+Oto opis heurystyki u¿ywanej do znalezienia urz±dzenia: je¶li podana
+nazwa koñczy siê uko¶nikiem, to zostanie on usuniêty (w ten sposób
+radzimy sobie z nazwami wygenerowanymi przez uzupe³nianie nazw plików
+w pow³oce). Je¶li pierwszym znakiem nazwy jest '.' lub '/', to nazwa
+zostanie wziêta za urz±dzenie lub punkt podmontowania. Je¶li to siê nie
+uda, to
+.B eject
+szukaj±c dzia³aj±cego urz±dzenia bêdzie próbowa³ dodaæ na pocz±tku nazwy
+nastêpuj±ce ci±gi znaków: '/dev/', '/mnt/', '/dev/cdroms', '/dev/rdsk/',
+\&'/dev/dsk/' oraz './'. Program sprawdza /etc/mtab w celu wykrycia
+podmontowanych urz±dzeñ. Je¶li to zawiedzie, to sprawdzi tak¿e /etc/fstab
+w poszukiwaniu punktów montowania aktualnie odmontowanych urz±dzeñ.
+
+Zalecane jest utworzenie symbolicznych dowi±zañ, takich jak /dev/cdrom,
+czy /dev/zip. Dziêki nim
+.B eject
+bêdzie odwo³ywaæ siê do odpowiednich urz±dzeñ poprzez ³atwe do
+zapamiêtania nazwy.
+
+Aby oszczêdziæ sobie trochê pisania mo¿esz stworzyæ w Twojej pow³oce alias
+dla ejecta wywo³uj±cy go z odpowiednimi dla twojej konfiguracji opcjami.
+.SH "AUTOR"
+.B Eject
+zosta³ napisany przez Jeffa Trantera <tranter@pobox.com> i jest
+udostêpniony na warunkach GNU General Public License. Wiêcej szczegó³ów
+znajdziesz w pliku COPYING i w uwagach w kodzie ¼ród³owym.
+
+Opcja \-x zosta³a dodana przez Nobuyuki Tsuchimurê
+<tutimura@nn.iij4u.or.jp>, z podziêkowaniami dla Rolanda Krivanka
+<krivanek@fmph.uniba.sk> i jego programu cdrom_speed.
+
+.SH "ZOBACZ TAK¯E"
+mount(2), umount(2), mount(8), umount(8)
+.br 
+/usr/src/linux/Documentation/cdrom/

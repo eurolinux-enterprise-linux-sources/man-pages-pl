@@ -1,0 +1,138 @@
+.\" T³umaczenie w oparciu o t³umaczenie apt-cdrom.8 dla systemu Debian
+.\" Roberta Luberdy <robert@debian.org> wykona³ w listopadzie 2001
+.\" A. Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\"
+.TH "apt-cdrom" "8" "25 pa¼dziernika 2000" "apt" ""
+.SH NAZWA
+apt-cdrom \- narzêdzie APT do zarz±dzania ¼ród³ami typu CDROM
+.SH SK£ADNIA
+.sp
+apt-cdrom polecenie
+.PP
+.SH OPIS
+\fBapt-cdrom\fP jest u¿ywany w celu dodania nowego CD-ROM-u do listy
+dostêpnych ¼róde³ programu APT. \fBapt-cdrom\fP okre¶la strukturê
+dysku, poprawia ewentualne b³êdy powsta³e podczas produkcji CD-ROM-u
+i weryfikuje pliki indeksów.
+Dodanie nowych CD do systemu APT nie mo¿e byæ zrobione rêcznie, tak
+wiêc u¿ywanie \fBapt-cdrom\fP jest konieczne. Co wiêcej, ka¿dy dysk
+w wielodyskowym archiwum musi byæ w³o¿ony i zeskanowany oddzielnie aby
+uwzglêdniæ ewentualne b³êdy produkcujne.
+.PP
+\fIpolecenie\fP jest jednym z:
+.IP o
+add
+.PP
+Je¿eli nie zostanie podana opcja -h lub --help, musi byæ u¿yte jedno
+z powy¿szych poleceñ.
+.PP
+.IP "\fBadd\fP"
+\fBadd\fP jest u¿ywane do dodania nowego dysku do listy ¼róde³. Odmontuje
+ono urz±dzenie CDROM, poprosi o w³o¿enie dysku, a nastêpnie zeskanuje
+go i skopiuje pliki indeksów. Je¿eli dysk nie ma w³a¶ciwego katalogu
+\fI.disk/\fP,  u¿ytkownik zostanie poproszony o podanie opisu dysku.
+.IP
+.PP
+.SH OPCJE
+.PP
+Wszystkie opcje linii poleceñ mog± byæ ustawione w pliku konfiguracyjnym.
+Poni¿sze opisy wskazuj±, któr± opcjê w pliku konfiguracyjnym nale¿y ustawiæ.
+W przypadku opcji logicznych, mo¿na uniewa¿niæ ustawienia pliku
+konfiguracyjnego, u¿ywaj±c \fB-f-\fP, \fB--no-f\fP, \fB-f=no\fP albo czego¶
+podobnego.
+.IP
+.IP "\fB-h, --help\fP"
+Pokazuje krótk± informacjê o sposobie u¿ycia.
+.IP
+.IP "\fB-v, --version\fP"
+Pokazuje wersjê programu.
+.IP
+.IP "\fB-d\fP, \fB--cdrom\fP"
+Punkt montowania. Podaje lokalizacjê katalogu, w którym bêdzie zamontowany
+cdrom. Musi istnieæ odpowiednia konfiguracja dla tego punktu montowania
+w pliku \fI/etc/fstab\fP.
+Odpowiadaj±cy element konfiguracji: \fBAcquire::cdrom::mount\fP.
+.IP
+.IP "\fB-r\fP, \fB--rename\fP"
+Przemianowanie dysk. Zmienia etykietê dysku lub uniewa¿nia etykietê wcze¶niej
+nadan± dyskowi. Podanie tej opcji spowoduje, ¿e \fBapt-cdrom\fP spyta
+o now± etykietê.
+Odpowiadaj±cy element konfiguracji: \fBAPT::CDROM::Rename\fP.
+.IP
+.IP "\fB-m\fP, \fB--no-mount\fP"
+Nie montowaæ. Opcja ta uniemo¿liwia programowi \fBapt-cdrom\fP montowanie
+i odmontowywanie CDROM-u.
+Odpowiadaj±cy element konfiguracji: \fBAPT::CDROM::NoMount\fP.
+.IP
+.IP "\fB-f\fP, \fB--fast\fP"
+Szybkie kopiowanie. Zak³ada, ¿e pliki z pakietami s± poprawne i nie sprawdza
+ka¿dego z nich. Ta opcja powinna byæ u¿ywana tylko wtedy, je¿eli
+\fBapt-cdrom\fP by³ ju¿ wcze¶niej uruchomiony dla danego dysku i nie wykry³
+na nim ¿adnych b³êdów.
+Odpowiadaj±cy element konfiguracji: \fBAPT::CDROM::Fast\fP.
+.IP
+.IP "\fB-a\fP, \fB--thorough\fP"
+Gruntowne przegl±danie pakietów. Ta opcja mo¿e byæ niezbêdna podczas
+indeksowania starych dysków z Debianem 1.1/1.2, w których pliki Package by³y
+umieszczone w dziwnych miejscach. Indeksowanie ca³ego CD zabiera znacznie
+wiêcej czasu, ale pozwoli znale¼æ wszystkie takie pliki.
+.IP
+.IP "\fB-n\fP, \fB--just-print\fP, \fB--recon\fP, \fB--no-act\fP"
+Bez zmian. Nie zmienia pliku sources.list i nie zapisuje pików indeksowych.
+Jednak¿e nadal wszystko jest sprawdzane.
+Odpowiadaj±cy element konfiguracji: \fBAPT::CDROM::NoAct\fP.
+.IP
+.IP "\fB-c\fP, \fB--config-file\fP"
+Plik konfiguracyjny. Okre¶la, jakiego pliku konfiguracyjnego nale¿y u¿yæ.
+Program najpierw przeczyta swój domy¶lny plik konfiguracyjny, a nastêpnie plik
+podany jako argument tej opcji.
+Informacje o sk³adni pliku mo¿na znale¼æ w \fBapt.conf(5)\fP.
+.IP
+.IP "\fB-o\fP, \fB--option\fP"
+Ustawia opcjê konfiguracyjn±. Mo¿na ustawiæ dowoln± opcjê konfiguracyjn±.
+Sk³adnia jest nastêpuj±ca:
+
+.nf
+
+-o Foo::Bar=bar
+.fi
+
+
+.PP
+.SH PLIKI
+.IP o
+/etc/apt/sources.list
+localizacja, z której bêd± pobierane pakiety
+.IP
+.IP o
+/var/lib/apt/lists/
+sk³adnica informacji o stanie ka¿dej lokalizacji pakietów podanej w
+sources.list
+.IP
+.IP o
+/var/lib/apt/lists/partial/
+sk³adnica informacji o stanie w trakcie pobierania
+.IP
+.IP o
+/var/lib/apt/cdroms.list
+lista identyfikatorów i nazw CD-ROM-ów.
+.PP
+.SH "ZOBACZ TAK¯E"
+apt-get(8),
+sources.list(5),
+apt.conf(5)
+.SH DIAGNOSTYKA
+.PP
+apt-cdrom zwraca zero, gdy zakoñczy³o siê pomy¶lnie, 100 dziesiêtnie -
+w przypadku b³êdu.
+.SH B£ÊDY
+.PP
+Zobacz http://bugs.debian.org/apt. Aby z³o¿yæ raport o b³êdzie w APT,
+przeczytaj \fB/usr/share/doc/debian/bug-reporting.txt\fP lub u¿yj polecenia
+\fBbug(1)\fP. Je¶li korzystasz z programu apt w systemie opartym na RPM,
+korzystaj z http://distro.conectiva.com.br/bugzilla/.
+.PP
+.SH AUTOR
+apt-get zosta³ napisany przez zespó³ APT <apt@packages.debian.org> a
+do potrzeb systemów opartych na RPM przystosowa³ go Alfredo K. Kojima
+z Conectiva S.A. <kojima@conectiva.com.br>.

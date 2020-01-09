@@ -1,0 +1,59 @@
+.\" 1999 PTM Przemek Borys
+.\" Update: Robert Luberda, Aug 2002, glibc 2.2.5
+.\" $Id: ldd.1,v 1.3 2002/08/23 14:23:45 robert Exp $
+.\"
+.\" Copyright 1995-2000 David Engel (david@ods.com)
+.\" Copyright 1995 Rickard E. Faith (faith@cs.unc.edu)
+.\" Copyright 2000 Ben Collins (bcollins@debian.org)
+.\"    Redone for GLibc 2.2
+.\" Most of this was copied from the README file.  Do not restrict distribution.
+.\" May be distributed under the GNU General Public License
+.TH LDD 1 "30 wrze¶nia 2000"
+.SH NAZWA
+ldd \- drukuj zale¿no¶ci od bibliotek dzielonych
+.SH SK£ADNIA
+.B ldd
+.RB [OPCJA]...
+PLIK...
+.SH OPIS
+.B ldd
+drukuje biblioteki dzielone, których wymaga program, podany w linii komend.
+.SH OPCJE
+.TP
+.B \-\-version
+Drukuj wersjê
+.BR ldd .
+.TP
+.B \-v\ \-\-verbose
+Wypisuje wszystkie informacje.
+.TP
+.B \-d\ \-\-data\-relocs
+Dokonaj relokacji i zg³o¶ wszelkie brakuj±ce funkcje (tylko ELF).
+.TP
+.B \-r\ \-\-function\-relocs
+Dokonaj relokacji zarówno dla obiektów danych, jak i funkcji i zg³o¶ listê obiektów
+nieobecnych (tylko ELF).
+.TP
+.B \-\-help
+Informacje o u¿yciu programu.
+.SH B£ÊDY
+.B ldd
+nie dzia³a dobrze na bibliotece libc.so.5.
+.PP
+.B ldd
+nie dzia³a na bibliotekach wspó³dzielonych a.out.
+.PP
+.B ldd
+.I nie
+zadzia³a z bardzo starymi programami a.out, które zosta³y skonsolidowane zanim
+dodano do kompilatora obs³ugê
+.BR ldd .
+Je¶li u¿ywasz
+.B ldd
+na jednym z tych programów, program bêdzie uruchomiony z argc = 0, a wyniki
+tego bêd± nieprzewidywalne.
+.SH AUTOR
+David Engel.
+.SH ZOBACZ TAK¯E
+.BR ldconfig (8),
+.BR ld.so (8).

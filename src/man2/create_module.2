@@ -1,0 +1,43 @@
+.\" Copyright (C) 1996 Free Software Foundation, Inc.
+.\" This file is distributed accroding to the GNU General Public License.
+.\" See the file COPYING in the top level source directory for details.
+.\"
+.\" Translation (c) 1998 Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.TH CREATE_MODULE 2 "26 grudnia 1996" Linux "Wsparcie dla modu³ów"
+.SH NAZWA
+create_module \- tworzy wpis ³adowalnego modu³u
+.SH SK£ADNIA
+.nf
+.B #include <linux/module.h>
+.sp
+.BI "caddr_t create_module(const char *" name ", size_t " size );
+.fi
+.SH OPIS
+.B create_module
+próbuje utworzyæ wpis ³adowalnego modu³u i zarezerwowaæ pamiêæ j±dra,
+której modu³ bêdzie wymaga³. Ta funkcja jest przeznaczona jedynie dla
+superu¿ytkownika.
+.SH "WARTO¦Æ ZWRACANA"
+W przypadku sukcesu, zwraca adres z przestrzeni j±dra, pod którym znajduje
+siê modu³. W przypadku b³êdu zwracane jest \-1 i odpowiednio ustawiane
+\fIerrno\fP .
+.SH B£ÊDY
+.TP
+.B EPERM
+U¿ytkownik nie jest superu¿ytkownikiem.
+.TP
+.B EEXIST
+Modu³ o takiej nazwie ju¿ istnieje.
+.TP
+.B EINVAL
+¯±dany rozmiar jest zbyt ma³y, nawet na informacje z nag³ówka modu³u.
+.TP
+.B ENOMEM
+Kernel nie móg³ przydzieliæ dostatecznie du¿ego, ci±g³ego bloku pamiêci by
+pomie¶ciæ modu³.
+.TP
+.B EFAULT
+.I name 
+jest poza dostêpn± przestrzeni± adresow±.
+.SH "ZOBACZ TAK¯E
+.BR init_module "(2), " delete_module "(2), " query_module "(2)."

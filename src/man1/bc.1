@@ -1,0 +1,852 @@
+.\" {PTM/WK/0.1 /11-08-1999/"jêzyk kalkulatora dowolnej precyzji"}
+.\"
+.\" bc.1 - the *roff document processor source for the bc manual
+.\"
+.\" This file is part of GNU bc.
+.\" Copyright (C) 1991-1994, 1997, 2000 Free Software Foundation, Inc.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License , or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; see the file COPYING.  If not, write to:
+.\"   The Free Software Foundation, Inc.
+.\"   59 Temple Place, Suite 330
+.\"   Boston, MA 02111 USA
+.\"
+.\" You may contact the author by:
+.\" e-mail: philnelson@acm.org
+.\" us-mail: Philip A. Nelson
+.\" Computer Science Department, 9062
+.\" Western Washington University
+.\" Bellingham, WA 98226-9062
+.\"
+.\"
+.TH bc 1  "Podrêcznik poleceñ" v1.06 "12 wrze¶nia 2000"
+.SH NAZWA
+bc - jêzyk kalkulatora dowolnej precyzji
+.SH SK£ADNIA
+\fBbc\fR [\fB-hlwsqv\fR] [\fBd³ugie_opcje\fR] [\fIplik\fR...]
+.SH WERSJA
+Niniejszy podrêcznik opisuje GNU bc w wersji 1.06.
+.SH OPIS
+\fBbc\fR jest jêzykiem obs³uguj±cym obliczenia na liczbach dowolnej
+dok³adno¶ci z interaktywnym wykonywaniem instrukcji. Istniej± pewne
+podobieñstwa sk³adni do jêzyka programowania C. Przy pomocy opcji wiersza
+poleceñ dostêpna jest standardowa biblioteka matematyczna. Na ¿±danie,
+biblioteka matematyczna jest definiowana przed rozpoczêciem przetwarzania
+plików. \fBbc\fR rozpoczyna pracê przetwarzaj±c kod z wszystkich plików
+wymienionych w wierszu poleceñ, zachowuj±c ich kolejno¶æ. Po przetworzeniu
+wszystkich plików, \fBbc\fR czyta ze standardowego wej¶cia. Ca³o¶æ kodu
+wykonywana jest w miarê czytania. (Je¶li plik zawiera polecenie zatrzymania
+procesora, to \fBbc\fR nie bêdzie prowadzi³ odczytu ze standardowego
+wej¶cia.)
+.PP
+Omawiana wersja \fBbc\fR zawiera kilka rozszerzeñ w stosunku do
+tradycyjnych realizacji \fBbc\fR i standardu POSIX.
+Opcje wiersza poleceñ mog± powodowaæ, ¿e rozszerzenia te bêd± wy¶wietlaæ
+ostrze¿enia lub bêd± odrzucane. Niniejszy dokument opisuje jêzyk akceptowany
+przez ten procesor bc. Rozszerzenia s± w nim wyra¼nie wyró¿nione.
+.SS OPCJE
+.TP
+.BR -h ", " --help
+Wypisuje informacjê o sposobie wywo³ania i koñczy dzia³anie.
+.TP
+.BR -i ", " --interactive
+Wymusza tryb interaktywny.
+.TP
+.BR -l ", " --mathlib
+Definiuje standardow± bibliotekê matematyczn±.
+.TP
+.B -w ", " --warn
+Ostrzega o rozszerzeniach w stosunku do POSIX \fBbc\fR.
+.TP
+.B -s ", " --standard
+Przetwarza wy³±cznie standardowy, POSIX-owy jêzyk \fBbc\fR.
+.TP
+.B -q ", " --quiet
+Nie wy¶wietla zwyk³ego przywitania GNU bc.
+.TP
+.B -v ", " --version
+Wypisuje numer wersji, informacjê o prawach autorskich i koñczy dzia³anie.
+.SS LICZBY
+Najbardziej podstawowym elementem w \fBbc\fR jest liczba. Liczby s± liczbami
+dowolnej dok³adno¶ci. Dok³adno¶æ ta odnosi siê zarówno do czê¶ci ca³kowitej
+jak i do u³amkowej. Wszystkie liczby s± reprezentowane wewnêtrznie w postaci
+dziesiêtnej i wszystkie obliczenia prowadzone s± w uk³adzie dziesiêtnym.
+(Opisywana wersja obcina wyniki operacji dzielenia i mno¿enia.)
+Liczby posiadaj± dwa atrybuty: d³ugo¶æ i dok³adno¶æ.
+[od t³um.: (org.scale) - w t³umaczeniu u¿ywane bêdzie s³owo `dok³adno¶æ'
+w znaczeniu zbli¿onym do znanego np. z obs³ugi kalkulatorów]
+D³ugo¶æ jest ca³kowit± liczb± cyfr znacz±cych liczby, za¶ dok³adno¶æ jest
+ca³kowit± liczb± cyfr dziesiêtnych po kropce dziesiêtnej.
+Na przyk³ad:
+.nf
+.RS
+ .000001 ma d³ugo¶æ 6 i dok³adno¶æ 6.
+ 1935.000 ma d³ugo¶æ 7 i dok³adno¶æ 3.
+.RE
+.fi
+.SS ZMIENNE
+Liczby przechowywane s± w dwu rodzajach zmiennych, zmiennych prostych
+i tablicach. Zarówno zmienne proste jak i tablice posiadaj± nazwy. Nazwy
+zaczynaj± siê od litery, po której nastêpuje dowolna liczba liter, cyfr
+i znaków podkre¶lenia. Wszystkie litery musz± byæ ma³e. (Nazwy w pe³ni
+alfanumeryczne s± rozszerzeniem. W POSIXowym \fBbc\fR wszystkie nazwy s±
+pojedynczymi ma³ymi literami.) Rodzaj zmiennej wynika z kontekstu, gdy¿
+po nazwie ka¿dej zmiennej tablicowej wyst±pi± nawiasy ([]).
+.PP
+Istniej± cztery zmienne specjalne: \fBscale\fR, \fBibase\fR, \fBobase\fR
+oraz \fBlast\fR. \fBscale\fR okre¶la, jak niektóre operacje u¿ywaj± cyfr po
+kropce dziesiêtnej. Domy¶ln± warto¶ci± \fBscale\fR jest 0. \fBibase\fR
+oraz \fBobase\fR okre¶laj± podstawê pozycyjnego systemu liczbowego przy
+konwersji wej¶cia i wyj¶cia. Domy¶ln± podstaw± zarówno dla wej¶cia jak i dla
+wyj¶cia jest 10. \fBlast\fR (rozszerzenie standardu) jest zmienn±, która
+przechowuje warto¶æ ostatnio wydrukowanej liczby. Zmienne te bêd± omówione
+szczegó³owo pó¼niej, w odpowiedniej czê¶ci. Wszystkie z nich mog± mieæ
+przypisywane warto¶ci, jak równie¿ mog± byæ u¿ywane w wyra¿eniach.
+.SS KOMENTARZE
+Komentarze w \fBbc\fR rozpoczynaj± siê od znaków \fB/*\fR za¶ koñcz± znakami
+\fB*/\fR. Komentarze mog± zaczynaæ siê w dowolnym miejscu i na wej¶ciu
+pojawiaj± siê jako pojedyncze spacje. (Powoduje to, ¿e komentarze s±
+ogranicznikami innych elementów wej¶cia. Na przyk³ad, komentarz nie mo¿e
+znajdowaæ siê w ¶rodku nazwy zmiennej.) Komentarze obejmuj± znaki nowej
+linii (koñca linii) pomiêdzy pocz±tkiem a koñcem komentarza.
+.PP
+Do zapewnienia obs³ugi skryptów dla \fBbc\fR, jako rozszerzenie dodano
+komentarz w pojedynczym wierszu. Komentarz jednowierszowy rozpoczyna siê
+znakiem \fB#\fR i rozci±ga siê do koñca wiersza. Znak koñca linii nie jest
+tu czê¶ci± komentarza i jest przetwarzany jak zwykle.
+.SS WYRA¯ENIA
+Liczbami pos³uguj± siê wyra¿enia i instrukcje. Poniewa¿ jêzyk zosta³
+zaprojektowany jako interaktywny, instrukcje i wyra¿enia wykonywane s±
+niezw³ocznie. Nie ma ¿adnego programu "g³ównego" ("main"). Zamiast tego, kod
+jest wykonywany zaraz po jego napotkaniu. (Funkcje, omówione szczegó³owo
+dalej, s± zdefiniowane po ich napotkaniu.)
+.PP
+Proste wyra¿enie jest po prostu sta³±. \fBbc\fR zamienia sta³e na wewnêtrzne
+liczby dziesiêtne przy u¿yciu bie¿±cej podstawy systemu dla wprowadzania,
+podanej w zmiennej \fBibase\fR. (Istnieje wyj±tek dla funkcji.) Dopuszczalnymi
+warto¶ciami \fBibase\fR s± 2 do 16. Przypisanie \fBibase\fR warto¶ci spoza
+tego zakresu nada jej warto¶æ 2 lub 16. Liczby wej¶ciowe mog± zawieraæ znaki
+0-9 oraz A-F. (Uwaga: musz± to byæ wielkie litery. Ma³e litery s± nazwami
+zmiennych.) Liczby jednocyfrowe maj± zawsze warto¶æ cyfry, bez wzglêdu na
+warto¶æ \fBibase\fR. (tj. A = 10.) Dla liczb wielocyfrowych \fBbc\fR
+zamienia wszystkie cyfry wej¶ciowe wiêksze b±d¼ równe \fBibase\fR na warto¶æ
+\fBibase-1\fR. Powoduje to, ¿e liczba \fBFFF\fR bêdzie zawsze najwiêksz±
+trzycyfrow± liczb± przy danej podstawie systemu dla wej¶cia.
+.PP
+Pe³ne wyra¿enia s± podobne do wystêpuj±cych w wielu jêzykach wysokiego
+poziomu. Poniewa¿ wystêpuje tylko jeden rodzaj liczb, nie ma regu³
+okre¶laj±cych u¿ycie ró¿nych typów. Zamiast tego istniej± regu³y dotycz±ce
+dok³adno¶ci wyra¿eñ. Ka¿de wyra¿enie posiada okre¶lon± dok³adno¶æ. Zale¿y
+ona od dok³adno¶ci pierwotnych liczb, wykonywanego dzia³ania i, w wielu
+przypadkach, warto¶ci zmiennej \fBscale\fR. Dopuszczalnymi warto¶ciami
+zmiennej \fBscale\fR s± liczby od 0 a¿ do maksymalnej liczby, jaka mo¿e byæ
+reprezentowana jako ca³kowita (integer) w jêzyku C.
+.PP
+W podanych poni¿ej opisach dopuszczalnych wyra¿eñ, "wyra¿enie" okre¶la
+pe³ne wyra¿enie a "zmienna" okre¶la zmienn± prost± lub tablicow±.
+Zmienn± prost± jest po prostu
+.RS
+\fInazwa\fR
+.RE
+a zmienna tablicowa jest okre¶lona jako
+.RS
+\fInazwa\fR[\fIwyra¿enie\fR]
+.RE
+Dok³adno¶æ wyniku jest maksymaln± z dok³adno¶ci u¿ytych w nim wyra¿eñ, chyba
+¿e podano inaczej.
+.IP "- wyra¿enie"
+Wynikiem jest warto¶æ przeciwna do wyra¿enia.
+.IP "++ zmienna"
+Zmienna jest powiêkszana o jeden a wynikiem wyra¿enia jest ta nowa warto¶æ.
+.IP "-- zmienna"
+Zmienna jest pomniejszana o jeden a wynikiem wyra¿enia jest ta nowa warto¶æ.
+.IP "zmienna ++"
+Wynikiem wyra¿enia jest warto¶æ zmiennej, a nastêpnie zmienna jest
+powiêkszana o jeden.
+.IP "zmienna --"
+Wynikiem wyra¿enia jest warto¶æ zmiennej, a nastêpnie zmienna jest
+pomniejszana o jeden.
+.IP "wyra¿enie + wyra¿enie"
+Wynikiem tego wyra¿enia jest suma obu wyra¿eñ.
+.IP "wyra¿enie - wyra¿enie"
+Wynikiem tego wyra¿enia jest ró¿nica obu wyra¿eñ.
+.IP "wyra¿enie * wyra¿enie"
+Wynikiem tego wyra¿enia jest iloczyn obu wyra¿eñ.
+.IP "wyra¿enie / wyra¿enie"
+Wynikiem tego wyra¿enia jest iloraz obu wyra¿eñ. Liczba cyfr po kropce
+dziesiêtnej wyniku jest równa warto¶ci zmiennej \fBscale\fR.
+.IP "wyra¿enie % wyra¿enie"
+Wynikiem tego wyra¿enia jest "reszta" z dzielenia obliczana w nastêpuj±cy
+sposób. W celu obliczenia a%b, obliczane jest najpierw a/b z dok³adno¶ci± do
+\fBscale\fR cyfr dziesiêtnych. Wynik u¿ywany jest do obliczenia
+a-(a/b)*b z dok³adno¶ci± okre¶lon± jako maksymalna z
+\fBscale\fR+scale(b) oraz scale(a).  Je¿eli \fBscale\fR ustawiona jest na
+zero, za¶ oba wyra¿enia s± ca³kowite to wyra¿enie to jest funkcj± reszty
+ca³kowitej.
+.IP "wyra¿enie ^ wyra¿enie"
+Wynikiem tego wyra¿enia jest warto¶æ pierwszego z wyra¿eñ podniesiona do
+potêgi okre¶lonej przez drugie. Drugie wyra¿enie musi byæ liczb± ca³kowit±.
+(Je¶li drugie wyra¿enie nie jest ca³kowite, to emitowane jest ostrze¿enie a
+wyra¿enie jest obcinane tak, by otrzymaæ warto¶æ ca³kowit±). Liczba cyfr
+u³amkowych wyniku wynosi \fBscale\fR, je¶li wyk³adnik jest ujemny. Je¿eli
+jest on dodatni, to dok³adno¶æ (liczba cyfr po kropce dziesiêtnej) wyniku
+stanowi minimum z dok³adno¶ci pierwszego wyra¿enia przemno¿onej przez
+warto¶æ wyk³adnika i maksimum z \fBscale\fR i dok³adno¶ci pierwszego
+wyra¿enia. To znaczy:
+.nf
+scale(a^b) = min(scale(a)*b, max( \fBscale,\fR scale(a)))
+.fi
+Nale¿y pamiêtaæ, ¿e wyra¿enie^0 zawsze zwraca warto¶æ 1.
+.IP "( wyra¿enie )"
+Nawiasy wymuszaj± zmianê standardowych priorytetów przy obliczaniu
+wyra¿enia.
+.IP "zmienna = wyra¿enie"
+Zmiennej przypisywana jest warto¶æ wyra¿enia.
+.IP "zmienna <op>= wyra¿enie"
+jest to równowa¿ne zapisowi "zmienna = zmienna <op> wyra¿enie", z wyj±tkiem
+tego, i¿ czê¶æ "zmienna" jest wyliczana tylko raz. Mo¿e to byæ istotne,
+je¶li "zmienna" jest tablic±.
+.PP
+Wyra¿enia relacyjne s± specjalnym rodzajem wyra¿eñ, zwracaj±cym zawsze
+warto¶æ 0 lub 1: zero je¶li relacja jest fa³szywa, za¶ 1 je¿eli jest prawdziwa.
+Mog± one wystêpowaæ w dowolnych dozwolonych wyra¿eniach. (POSIX bc wymaga,
+by  wyra¿enia relacyjne by³y u¿ywane wy³±cznie w instrukcjach if, while
+i for oraz aby by³o w nich u¿yte tylko jedno sprawdzenie relacji.) Operatorami
+relacji s±:
+.IP "wyra¿enie1 < wyra¿enie2"
+Wynikiem jest jeden je¶li wyra¿enie1 jest mniejsze ni¿ wyra¿enie2.
+.IP "wyra¿enie1 <= wyra¿enie2"
+Wynikiem jest 1 gdy wyra¿enie jest mniejsze b±d¼ równe wyra¿enie2.
+.IP "wyra¿enie1 > wyra¿enie2"
+Wynikiem jest 1 je¶li wyra¿enie1 jest wiêksze ni¿ wyra¿enie2.
+.IP "wyra¿enie1 >= wyra¿enie2"
+Wynikiem jest 1 gdy wyra¿enie1 jest wiêksze b±d¼ równe wyra¿enie2.
+.IP "wyra¿enie1 == wyra¿enie2"
+Wynikiem jest 1 gdy wyra¿enie1 jest równe wyra¿enie2.
+.IP "wyra¿enie != wyra¿enie2"
+Wynikiem jest 1 gdy wyra¿enie1 nie jest równe wyra¿enie2.
+.PP
+Dozwolone s± tak¿e operacje logiczne. (POSIX \fBbc\fR NIE posiada operacji
+logicznych). Wynikami wszystkich operacji logicznych s± 0 lub 1 (dla fa³szu
+i prawdy), tak jak dla wyra¿eñ relacyjnych. Operatorami logicznymi s±:
+.IP "!wyra¿enie"
+Zaprzeczenie. Wynikiem jest 1 je¶li wyra¿enie ma warto¶æ 0.
+.IP "wyra¿enie && wyra¿enie"
+Koniunkcja. Wynikiem jest 1 je¿eli oba wyra¿enia s± niezerowe.
+.IP "wyra¿enie || wyra¿enie"
+Alternatywa. Wynikiem jest 1 je¶li dowolne z wyra¿eñ jest niezerowe.
+.PP
+Wyra¿enia posiadaj± nastêpuj±cy priorytet: (od najni¿szego do najwy¿szego)
+.nf
+.RS
+operator ||, wi±zanie lewe
+operator &&, wi±zanie lewe
+operator !, niezwi±zany
+operatory relacji, wi±zanie lewe
+operator przypisania, wi±zanie prawe
+operatory + i -, wi±zanie lewe
+operatory *, / i %, wi±zanie lewe
+operator ^, wi±zanie prawe
+jednoargumentowy operator -, niezwi±zany
+operatory ++ i --, niezwi±zane
+.RE
+.fi
+.PP
+Kolejno¶æ wykonywania zosta³a dobrana tak, by programy zgodne z POSIX
+\fBbc\fR dzia³a³y poprawnie. Powoduje to, ¿e operatory relacyjne i logiczne,
+u¿yte w wyra¿eniach przypisania, bêd± wykazywaæ niecodzienne zachowywanie.
+Rozwa¿ wyra¿enie:
+.RS
+a = 3 < 5
+.RE
+.PP
+Wiêkszo¶æ programistów C uwa¿a³aby, ¿e przypisze ono wynik operacji "3 < 5"
+(warto¶æ 1) zmiennej "a". Tymczasem w \fBbc\fR nadaje ono warto¶æ 3 zmiennej
+"a", a nastêpnie porównuje 3 z 5. U¿ywaj±c operatorów relacji i operatorów
+logicznych z operatorami przypisania najlepiej jest pos³u¿yæ siê nawiasami.
+.PP
+\fBbc\fR obs³uguje jeszcze kilka innych wyra¿eñ specjalnych. Zwi±zane s± one
+z funkcjami definiowanymi przez u¿ytkownika i funkcjami standardowymi.
+Wszystkie one maj± postaæ "\fInazwa\fB(\fIparametry\fB)\fR". Funkcje
+definiowane przez u¿ytkownika opisano w sekcji \fBFunkcje\fP. Funkcjami
+standardowymi s±:
+.IP "length ( wyra¿enie )"
+Wynikiem funkcji length jest liczba cyfr znacz±cych w wyra¿eniu.
+.IP "read ( )"
+Funkcja ta, bêd±ca rozszerzeniem, odczytuje liczbê ze standardowego wej¶cia,
+niezale¿nie od miejsca u¿ycia funkcji. Strze¿ siê -- mo¿e to spowodowaæ
+k³opoty przy przeplataniu siê danych i programu ze standardowego wej¶cia.
+Najlepszym zastosowaniem tej funkcji jest u¿ycie jej w uprzednio napisanym
+programie, który wymaga wprowadzania danych przez u¿ytkownika, ale nigdy
+nie pozwala na wprowadzanie kodu programu. Wynikiem dzia³ania funkcji read
+jest liczba odczytana ze standardowego wej¶cia z konwersj± uk³adu
+liczbowego wed³ug aktualnej warto¶ci zmiennej \fBibase\fR.
+.IP "scale ( wyra¿enie )"
+Wynikiem funkcji scale jest liczba cyfr po kropce dziesiêtnej w wyra¿eniu
+bêd±cym jej parametrem.
+.IP "sqrt ( wyra¿enie )"
+Wynikiem funkcji sqrt jest pierwiastek kwadratowy z wyra¿enia. Je¿eli
+wyra¿enie ma warto¶æ ujemn±, to generowany jest b³±d wykonania.
+.SS INSTRUKCJE
+Instrukcje (jak w wiêkszo¶ci jêzyków algorytmicznych) umo¿liwiaj± sterowanie
+kolejno¶ci± wykonywania wyra¿eñ. W \fBbc\fR instrukcje wykonywane s±
+bezzw³ocznie, "tak szybko jak to jest mo¿liwe". Wykonanie odbywa siê gdy
+napotkano znak nowej linii i istnieje jedna lub wiêcej pe³na instrukcja.
+W zwi±zku z takim natychmiastowym wykonaniem, znaki nowej linii s± bardzo
+istotne w \fBbc\fR. W rzeczywisto¶ci, jako organiczniki instrukcji u¿ywane
+s± zarówno znaki nowej linii jak i ¶redniki. Nieprawid³owo umieszczony znak
+nowej linii spowoduje b³±d sk³adni. Poniewa¿ znaki nowej linii
+rozdzielaj± instrukcje, mo¿liwe jest ich ukrycie (przed
+interpretacj±) przy pomocy znaku odwrotnego uko¶nika. Sekwencja "\e<nl>",
+gdzie <nl> jest znakiem nowej linii postrzegana jest przez \fBbc\fR jako
+znak zwyk³ej spacji zamiast znaku nowej linii. Poni¿ej umieszczono listê
+instrukcji \fBbc\fR i ich znaczenia: (elementy umieszczone w nawiasach
+kwadratowych ([]) s± opcjonalnymi czê¶ciami instrukcji.)
+.IP "wyra¿enie"
+Instrukcja ta wykonuje dwie rzeczy. je¿eli wyra¿enie rozpoczyna siê od
+"<zmienna> <przypisanie> ...", to jest traktowane jak instrukcja
+przypisania. Je¶li wyra¿enie nie jest instrukcj± przypisania, to wyra¿enie
+jest wyliczane i drukowane na standardowym wyj¶ciu. Po wydrukowaniu liczby
+drukowany jest znak nowej linii. Na przyk³ad, "a=1" jest instrukcj±
+przypisania za¶ "(a=1)" jest wyra¿eniem zawieraj±cym przypisanie. Wszystkie
+liczby drukowane s± przy u¿yciu systemu pozycyjnego okre¶lonego zmienn±
+\fBobase\fR. Dopuszczalnymi warto¶ciami \fBobase\fR s± 2 do BC_BASE_MAX.
+(Patrz sekcja OGRANICZENIA.) Dla podstaw systemu od 2 do 16 u¿ywana jest
+zwyczajowa metoda zapisu liczb. Dla podstaw wiêkszych od 16 \fBbc\fR
+pos³uguje siê metod± cyfr wieloznakowych wy¶wietlania liczb, gdzie ka¿da
+z kolejnych cyfr wy¶wietlana jest jako liczba dziesiêtna. Cyfry wieloznakowe
+oddzielane s± odstêpami. Ka¿da z cyfr zawiera tyle znaków, ile jest
+niezbêdnych do przedstawienia dziesiêtnie warto¶ci "obase-1". Poniewa¿
+liczby maj± dowoln± dok³adno¶æ, niektóre z liczb mog± nie daæ wydrukowaæ siê
+w pojedynczym wierszu. Takie d³ugie liczby zostan± podzielone miêdzy wiersze
+przy zastosowaniu "\e" jako ostatniego znaku wiersza. Maksymaln± liczb±
+znaków drukowanych w wierszu jest 70. Z powodu interaktywneggo charakteru
+\fBbc\fR drukowanie liczby ma efekt uboczny w postaci przypisania
+wydrukowanej warto¶ci do specjalnej zmiennej o nazwie \fBlast\fR. Umo¿liwia
+to u¿ytkownikowi odtworzenie ostatnio wydrukowanej warto¶ci bez potrzeby
+ponownego wpisywania wyra¿enia, które j± wydrukowa³o. Nadawanie warto¶ci
+zmiennej \fBlast\fR jest dozwolone; spowoduje ono zast±pienie ostatnio
+wydrukowanej warto¶ci warto¶ci± przypisan±. Nowo przypisana warto¶æ
+pozostanie a¿ do wydrukowania kolejnej liczby lub nadania \fBlast\fR innej
+warto¶ci. (Niektóre z implementacji mog± dopuszczaæ u¿ycie pojedynczej kropki
+(.), nie bêd±cej czê¶ci± liczby, jako skróconej notacji dla \fBlast\fR.)
+.IP "³añcuch"
+Na wyj¶ciu drukowany jest ³añcuch znakowy. £añcuchy rozpoczynaj± siê znakiem
+cudzys³owu i zawieraj± wszystkie znaki do nastêpnego znaku cudzys³owu.
+Wszystkie znaki, w³±cznie ze znakami nowej linii, traktowane s± dos³ownie.
+Po wydrukowaniu ³añcucha nie jest drukowany znak nowej linii.
+.IP "\fBprint\fR lista"
+Instrukcja print (rozszerzenie) umo¿liwia u¿ycie innego sposobu wydruku
+wyników. "Lista" jest list± ³añcuchów i wyra¿eñ oddzielonych przecinkami.
+Ka¿dy ³añcuch czy wyra¿enie drukowany jest w kolejno¶ci wystêpowania na
+li¶cie. Nie jest drukowany koñcz±cy znak nowej linii (przej¶cie do
+nastêpnego wiersza). Wyliczana jest warto¶æ wyra¿eñ; jest ona drukowana i
+przypisywana zmiennej \fBlast\fR. £añcuchy u¿yte w instrukcji print s±
+drukowane na wyj¶ciu i mog± zawieraæ znaki specjalne. Znaki specjalne
+rozpoczynaj± siê znakiem odwrotnego uko¶nika (\e). \fBbc\fR rozpoznaje
+nastêpuj±ce znaki specjalne:
+"a" (dzwonek, bell), "b" (backspace), "f" (wysuw strony, form feed),
+"n" (nowa linia, newline), "r" (powrót karetki, carriage return),
+"q" (cudzys³ów, double quote), "t" (tabulacja, tab) oraz
+"\e" (odwrotny uko¶nik, backslash).
+Inne znaki wystêpuj±ce po odwrotnym uko¶niku bêd± ignorowane.
+.IP "\fB{\fR lista_instrukcji \fB}\fR"
+Jest to instrukcja grupowania. Pozwala na grupowanie wielu instrukcji do
+wykonania.
+.IP "\fBif (\fR wyra¿enie \fB)\fR instrukcja1 [\fBelse\fR instrukcja2]"
+Instrukcja if oblicza wyra¿enie i wykonuje instrukcjê1 b±d¼
+instrukcjê2 w zale¿no¶ci od warto¶ci wyra¿enia. Je¿eli wyra¿enie jest
+niezerowe, wykonywana jest instrukcja1. Je¶li wystêpuje instrukcja2 a
+warto¶ci± wyra¿enia jest 0, to wykonywana jest instrukcja2. (Klauzula
+else instrukcji if jest rozszerzeniem).
+.IP "\fBwhile (\fR wyra¿enie \fB)\fR instrukcja"
+Instrukcja while powtarza wykonywanie danej instrukcji póki wyra¿enie jest
+niezerowe. Oblicza ona warto¶æ wyra¿enia przed ka¿dym wykonaniem instrukcji.
+Przerwanie pêtli powodowane jest zerow± warto¶ci± wyra¿enia lub wykonaniem
+instrukcji break (przerwania).
+.IP "\fBfor (\fR [wyr1] ; [wyr2] ; [wyr3] \fB)\fR instrukcja"
+Instrukcja for kontroluje powtarzane wykonanie danej instrukcji. Przed pêtl±
+obliczane jest wyra¿enie1. Wyra¿enie2 jest obliczane przed ka¿dym
+wykonaniem instrukcji. Je¶li jest niezerowe, to wykonywana jest instrukcja.
+Je¶li ma ono warto¶æ zero, to pêtla jest przerywana. Po ka¿dym wykonaniu
+danej instrukcji wyliczana jest warto¶æ wyra¿enia3 przed ponownym wyliczeniem
+wyra¿enia2. Je¿eli pominiêto wyra¿enie1 lub wyra¿enie3, to nic nie jest
+obliczane w chwili, gdy powinna byæ okre¶lana ich warto¶æ. Je¿eli pominiêto
+wyra¿enie2, to jest ono zastêpowane warto¶ci± 1. (Wyra¿enie opcjonalne
+stanowi± rozszerzenie. \fBbc\fR w POSIXie wymaga wszystkich trzech wyra¿eñ.)
+Poni¿szy kod jest równowa¿ny instrukcji for:
+.\" If expression2 is missing, it is the same as substituting
+.\" the value 1 for expression2.
+.nf
+.RS
+wyra¿enie1;
+while (wyra¿enie2) {
+   instrukcja;
+   wyra¿enie3;
+}
+.RE
+.fi
+.IP "\fBbreak\fR"
+Instrukcja ta powoduje wymuszone zakoñczenie ostatniej obejmuj±cej j±
+instrukcji while lub for.
+.IP "\fBcontinue\fR"
+Instrukcja continue (rozszerzenie) powoduje rozpoczêcie kolejnej
+iteracji przez ostatni± obejmuj±c± j± instukcjê for.
+.IP "\fBhalt\fR"
+Instrukcja halt (rozszerzenie) jest instrukcj± nakazuj±c± preprocesorowi
+\fBbc\fR zakoñczenie pracy (ale tylko wtedy gdy instrukcja ta jest
+wykonywana).
+Na przyk³ad, "if (0 == 1) halt" nie spowoduje przerwania pracy \fBbc\fR,
+gdy¿ instrukcja halt nie bêdzie wykonana.
+.IP "\fBreturn\fR"
+Zwraca warto¶æ zero jako wynik funkcji. (Patrz sekcja dotycz±ca funkcji).
+.IP "\fBreturn (\fR wyra¿enie \fB)\fR"
+Zwraca warto¶æ wyra¿enia jako wynik funkcji. (Patrz sekcja dotycz±ca funkcji).
+Nawiasy nie s± wymagane, co jest rozszerzeniem GNU bc.
+.SS PSEUDO-INSTRUKCJE
+Te instrukcje nie s± instrukcjami w tradycyjnym sensie tego terminu. Nie s±
+one instrukcjami wykonywanymi. Ich funkcja jest wykonywana podczas
+"kompilacji".
+.IP "\fBlimits\fR"
+Wypisuje lokalne ograniczenia narzucone przez lokalna wersjê \fBbc\fR.
+Jest to rozszerzenie.
+.IP "\fBquit\fR"
+Po odczycie instrukcji quit procesor \fBbc\fR koñczy pracê, niezale¿nie od
+tego, gdzie wyst±pi³a ta instrukcja. Na przyk³ad, "if (0 == 1) quit"
+spowoduje zakoñczenie pracy \fBbc\fR.
+.IP "\fBwarranty\fR"
+Wypisuje d³u¿sz± notkê na temat gwarancji. Jest to rozszerzenie.
+.SS FUNKCJE
+Funkcje dostarczaj± sposobu definiowania obliczeñ, które mog± byæ wykonane
+pó¼niej. Funkcje w \fBbc\fR zawsze obliczaj± warto¶æ i zwracaj± j± do
+miejsca wywo³ania. Definicje funkcji s± "dynamiczne" w tym sensie, ¿e funkcja
+pozostaje niezdefiniowana dopóki na wej¶ciu nie zostanie odczytana jej
+definicja. Definicja ta jest nastêpnie u¿ywana dopóki nie zostanie napotkana
+inna definicja funkcji o tej samej nazwie. Wówczas nowa definicja zastêpuje
+starsz±. Funkcja definiowana jest nastêpuj±co:
+.nf
+.RS
+\fBdefine \fInazwa \fB( \fIparametry \fB) { \fInowa_linia
+\fI    lista_auto   lista_instrukcji \fB}\fR
+.RE
+.fi
+Wywo³anie funkcji jest po prostu wyra¿eniem postaci
+"\fInazwa\fB(\fIparametry\fB)\fR".
+.PP
+Parametry s± liczbami lub tablicami (rozszerzenie). W definicji funkcji
+definiuje siê równocze¶nie jest zero lub wiêcej jej parametrów przez podanie
+ich nazw rozdzielonych przecinkami. Liczby s± jedynymi parametrami wywo³ywanymi
+przez warto¶æ. Tylko tablice s± wo³ane przez wskazanie zmiennej.
+Tablice podawane
+.\" Numbers are only call by value parameters. Arrays are only call by variable
+s± w definicji parametrów przy pomocy notacji "\fInazwa\fB[ ]\fR".
+W wywo³aniu
+funkcji parametry rzeczywiste dla parametrów numerycznych s± pe³nymi
+wyra¿eniami. Do przekazywania tablic u¿ywana jest ta sama notacja, co przy
+definiowaniu parametrów typu tablicowego. Dana tablica przesy³ana jest do
+funkcji przez nazwê (wskazanie). Poniewa¿ definicje funkcji s± dynamiczne,
+w trakcie wywo³ywania funkcji sprawdzana jest liczba i typy jej parametrów.
+Niezgodno¶c liczby parametrów lub ich typów powoduje b³±d wykonania. B³±d
+wykonania pojawi siê tak¿e przy próbie wywo³ania niezdefiniowanej funkcji.
+.PP
+\fIlista_auto\fR jest opcjonaln± list± zmiennych, do u¿ytku "lokalnego".
+A oto sk³adnia tej listy (je¶li wystêpuje): "\fBauto \fInazwa\fR, ... ;".
+¦rednik jest opcjonalny. Ka¿da z \fInazw\fR jest nazw± auto-zmiennej.
+Tablice mog± byæ podane przy u¿yciu takiej samej sk³adni jak w parametrach.
+Na pocz±tku funkcji warto¶ci tych zmiennych odk³adane s± na stosie.
+Nastêpnie zmienne s± inicjowane zerami i u¿ywane w czasie wykonywania
+funkcji. Przy zakoñczeniu funkcji zmienne s± zdejmowane ze stosu,
+tak ¿e przywracana jest ich pierwotna warto¶æ (z momentu wywo³ania
+funkcji). Parametry te s± faktycznie zmiennymi auto inicjowanymi warto¶ciami
+dostarczonymi w wywo³aniu funkcji. Zmienne typu auto ró¿ni± siê od
+tradycyjnych zmiennych lokalnych, gdy¿ je¶li funkcja A wo³a funkcjê B, to
+B mo¿e pos³ugiwaæ siê zmiennymi auto funkcji A po prostu u¿ywaj±c tych
+samych nazw, chyba ¿e funkcja B traktuje je jako zmienne auto. Poniewa¿
+zmienne auto i parametry sk³adowane s± na stosie, to \fBbc\fR obs³uguje
+funkcje rekurencyjne.
+.PP
+Cia³o funkcji jest list± instrukcji \fBbc\fR. I znów, jak w czê¶ci
+zasadniczej, instrukcje
+oddzielane s± ¶rednikami lub znakami nowej linii. Instrukcje return (powrót)
+powoduj± zakoñczenie funkcji i zwrócenie warto¶ci. Istniej± dwa warianty
+instrukcji return. Pierwsza postaæ, "\fBreturn\fR", zwraca warto¶æ 0 do
+wywo³uj±cego wyra¿enia. Druga postaæ, "\fBreturn ( \fIwyra¿enie \fB)\fR",
+oblicza warto¶æ wyra¿enia i zwraca j± do wyra¿enia wo³aj±cego. Ka¿da funkcja
+domy¶lnie koñczy siê niejawn± instrukcj± "\fBreturn (0)\fR". Pozwala to na
+funkcji na zakoñczenie dzia³ania i zwrócenie zera bez jawnej instrukcji
+powrotu.
+.PP
+Funkcje inaczej korzystaj± ze zmiennej \fBibase\fR. Wszystkie sta³e
+w obrêbie cia³a funkcji bêd± konwertowane przy zastosowaniu
+warto¶ci \fBibase\fR w momencie wywo³ania funkcji. Zmiany \fBibase\fR w czasie
+wykonywania funkcji s± ignorowane, z wyj±tkiem funkcji standardowej
+\fBread\fR, która zawsze do konwersji liczb wykorzystuje bie¿±c± warto¶æ
+\fBibase\fR.
+.PP
+Rozszerzeniem GNU \fBbc\fR jest nieco lu¼niejszy format dla definicji.
+Standard wymaga, by nawias otwieraj±cy znajdowa³ siê w tym samym wierszu
+co s³owo kluczowe \fBdefine\fR, a wszystkie pozosta³e czê¶ci w kolejnych
+wierszach. Opisywana tu wersja \fBbc\fR zezwala na dowoln± ilo¶æ znaków
+nowej linii przed i po nawiasie otwieraj±cym funkcji.  Na przyk³ad,
+dozwolone s± poni¿sze definicje.
+.nf
+.RS
+\f(CW
+define d (n) { return (2*n); }
+define d (n)
+  { return (2*n); }
+\fR
+.RE
+.fi
+.SS BIBLIOTEKA MATEMATYCZNA
+.\" .SS MATH LIBRARY
+Je¿eli \fBbc\fR wywo³ywane jest z opcj± \fB-l\fR, to wstêpnie wczytywana
+jest biblioteka matematyczna (math library), a domy¶lna liczba cyfr
+dziesiêtnych (scale) ustawiana jest na 20. Funkcje matematyczne obliczaj±
+swe wyniki z dok³adno¶ci± okre¶lon± w momencie ich wywo³ania.
+Bibilioteka matematyczna definiuje nastêpuj±ce funkcje:
+.TP
+.B "s(\fIx\fP)"
+Sinus x, x podawany jest w radianach.
+.TP
+.B "c(\fIx\fP)"
+Cosinus x, x w radianach.
+.TP
+.B "a(\fIx\fP)"
+Arcus tangens x; arcus tangens zwraca radiany.
+.TP
+.B "l(\fIx\fP)"
+Logarytm naturalny z x.
+.TP
+.B "e(\fIx\fP)"
+Funkcja wyk³adnicza - e do potêgi x.
+.TP
+.B "j(\fIn\fP,\fIx\fP)"
+Funkcja Bessela rzêdu n (ca³kowitego) z argumentem x.
+.\" The bessel function of integer order n of x.
+.SS PRZYK£ADY
+W pow³oce /bin/sh, poni¿sze polecenie przypisuje warto¶æ liczby "Pi"
+zmiennej ¶rodowiska \fBpi\fR.
+.RS
+\f(CW
+pi=$(echo "scale=10; 4*a(1)" | bc -l)
+\fR
+.RE
+.PP
+Poni¿ej podano definicjê funkcji wyk³adniczej u¿ywanej w bibliotece
+matematycznej. Funkcja ta napisana jest w \fBbc\fR standardu POSIX.
+.nf
+.RS
+\f(CW
+scale = 20
+
+/* wykorzystuje fakt, ¿e e^x = (e^(x/2))^2
+   Gdy  x jest dostatecznie ma³e, u¿ywamy szeregu:
+     e^x = 1 + x + x^2/2! + x^3/3! + ...
+*/
+
+define e(x) {
+  auto  a, d, e, f, i, m, v, z
+
+  /* sprawdzenie znaku x */
+  if (x<0) {
+    m = 1
+    x = -x
+  }
+
+  /* przewidywane x */
+  z = scale;
+  scale = 4 + z + .44*x;
+  while (x > 1) {
+    f += 1;
+    x /= 2;
+  }
+
+  /* inicjowanie zmiennych */
+  v = 1+x
+  a = x
+  d = 1
+
+  for (i=2; 1; i++) {
+    e = (a *= x) / (d *= i)
+    if (e == 0) {
+      if (f>0) while (f--)  v = v*v;
+      scale = z
+      if (m) return (1/v);
+      return (v/1);
+    }
+    v += e
+  }
+}
+\fR
+.RE
+.fi
+.PP
+Poni¿szy kod pos³uguje siê rozszerzonymi cechami \fBbc\fR do uzyskania
+prostego programu licz±cego salda ksi±¿eczki czekowej. Najlepiej by³oby
+zachowaæ go w pliku, tak by móg³ byæ wykorzystany wielokrotnie bez potrzeby
+ka¿dorazowego przepisywania.
+.nf
+.RS
+\f(CW
+scale=2
+print "\enProgram ksi±¿eczki czekowej!\en"
+print "  Pamiêtaj, wp³aty s± transakcjami ujemnymi.\en"
+print "  Koniec - transakcja zerowa.\en\en"
+
+print "Saldo pocz±tkowe? "; bal = read()
+bal /= 1
+print "\en"
+while (1) {
+  "bie¿±ce saldo = "; bal
+  "transakcja? "; trans = read()
+  if (trans == 0) break;
+  bal -= trans
+  bal /= 1
+}
+quit
+\fR
+.RE
+.fi
+.PP
+Poni¿ej zamieszczono definicjê rekurencyjnej funkcji silni.
+.nf
+.RS
+\f(CW
+define f (x) {
+  if (x <= 1) return (1);
+  return (f(x-1) * x);
+}
+\fR
+.RE
+.fi
+.SS OPCJE READLINE I LIBEDIT
+GNU \fBbc\fR mo¿e zostaæ skompilowany (poprzez opcjê konfiguracji) tak, by
+pos³ugiwa³ siê bibliotek± GNU edytora wej¶cia o nazwie \fBreadline\fR
+lub te¿ bibliotek± BSD \fBlibedit\fR.
+Umo¿liwia to u¿ytkownikowi edycjê wierszy przed wys³aniem ich
+do \fBbc\fR. Pozwala te¿ na wykorzystanie historii poprzednio wprowadzonych
+wierszy. Przy wybraniu tej opcji \fBbc\fR posiada dodatkow± zmienn±
+specjaln±. Ta specjalna zmienna, \fBhistory\fR, przechowuje liczbê
+zachowywanych wierszy historii.  Dla \fBreadline\fR, warto¶æ -1 oznacza, ¿e
+przechowywana jest nieograniczona liczba wierszy historii.  Ustawienie
+warto¶ci \fBhistory\fR na liczbê dodatni± ogranicza liczbê przechowywanych
+wierszy historii do podanej liczby. Warto¶æ zero wy³±cza funkcjê historii
+wprowadzonych wierszy. Warto¶ci± domy¶ln± jest 100.  Wiêcej informacji
+mo¿na znale¼æ w podrêcznikach u¿ytkownika dla bibliotek GNU \fBreadline\fR
+i \fBhistory\fR oraz BSD \fBlibedit\fR.  Nie mo¿na równocze¶nie w³±czyæ
+zarówno \fBreadline\fR jak i \fBlibedit\fR.
+.SS RÓ¯NICE
+Niniejsza wersja \fBbc\fR zosta³a zbudowana w oparciu
+o projekt POSIX P1003.2/D11
+i zawiera kilka ró¿nic i rozszerzeñ w stosunku do tego dokumentu i
+tradycyjnych realizacji.
+Nie jest wykonana w tradycyjny sposób, wykorzystuj±cy polecenie \fBdc\fR(1).
+Wersja ta jest pojedynczym procesem, analizuj±cym i uruchamiaj±cym kod
+binarny bêd±cy t³umaczeniem programu.
+Istnieje "nieudokumentowana" opcja (-c) powoduj±ca, ¿e program wy¶wietla kod
+binarny na standardowym wyj¶ciu zamiast wykonywania go. U¿ywana by³a ona
+g³ównie do debuggowania analizatora sk³adni i przy przygotowaniu
+biblioteki matematycznej.
+.PP
+G³ównym ¼ród³em ró¿nic s± rozszerzenia, w których jaka¶ cecha, mo¿liwo¶æ
+programu jest rozbudowana w celu dodania funkcjonalno¶ci, oraz dodatki, gdzie
+dodano nowe mo¿liwo¶ci.
+Poni¿ej podano listê ró¿nic i rozszerzeñ.
+.IP "Zmienna ¶rodowiska LANG"
+Niniejsza wersja nie spe³nia standardu POSIX przetwarzania zmiennej
+¶rodowiska LANG i wszystkich zmiennych ¶rodowiska rozpoczynaj±cych siê na
+LC_.
+.IP nazwy
+Tradycyjny i POSIXowy \fBbc\fR posiadaj± jednoliterowe nazwy funkcji,
+zmiennych i tablic. Zosta³y one rozszerzone do nazw wieloznakowych,
+rozpoczynaj±cych siê liter± i mog±cych zawieraæ litery, cyfry i znaki
+podkre¶lenia.
+.IP ³añcuchy
+£añcuchy nie mog± zawieraæ znaków NUL. POSIX stwierdza, ¿e wszystkie znaki
+musz± byæ zawarte w ³añcuchach.
+.\" POSIX says all characters must be included in strings.
+.IP last
+POSIX \fBbc\fR nie posiada zmiennej \fBlast\fR. Niektóre implementacje
+\fBbc\fR u¿ywaj± kropki (.) w podobny sposób.
+.IP porównania
+POSIX \fBbc\fR dopuszcza porównania wy³±cznie w instrukcjach if, while oraz
+w drugim wyra¿eniu instrukcji for. Dodatkowo, w ka¿dej z tych instrukcji
+dopuszczalna jest tylko jedna operacja porównania (relacji).
+.IP "instrukcja if, klauzula else"
+POSIX \fBbc\fR nie posiada klauzuli else.
+.IP "instrukcja for"
+POSIX \fBbc\fR wymaga by w instrukcji for wystêpowa³y wszystkie wyra¿enia.
+.IP "&&, ||, !"
+POSIX \fBbc\fR nie posiada operatorów logicznych.
+.IP "funkcja read"
+POSIX \fBbc\fR nie posiada funkcji read.
+.IP "instrukcja print"
+POSIX \fBbc\fR nie posiada instrukcji print.
+.IP "instrukcja continue"
+POSIX \fBbc\fR nie posiada instrukcji continue.
+.IP "instrukcja return"
+POSIX \fBbc\fR wymaga nawiasów wokó³ zwracanego wyra¿enia.
+.IP "parametry tablicowe"
+POSIX \fBbc\fR nie obs³uguje (obecnie) w pe³ni parametrów tablicowych.
+Gramatyka POSIX zezwala na u¿ycie tablic w definicjach funkcji, ale nie
+zapewnia metody przekazania tablicy jako bie¿±cego parametru. (Jest to
+najprawdopodobniej przeoczenie w zdefiniowanej gramatyce.) Tradycyjne
+implementacje \fBbc\fR posiadaj± jedynie wywo³anie parametrów tablicowych
+przez warto¶æ.
+.\" have only call by value array parameters.
+.IP "format funkcji"
+POSIX \fBbc\fR wymaga, by nawias otwieraj±cy by³ w tym samym wierszu, co
+s³owo kluczowe \fBdefine\fR, za¶ instrukcja \fBauto\fR w nastêpnym wierszu.
+.IP "=+, =-, =*, =/, =%, =^"
+POSIX \fBbc\fR nie wymaga, by by³y zdefiniowane powy¿sze operatory
+przypisania "starego typu". Niniejsza wersja zezwala na takie przypisania
+w "starym stylu". Nale¿y skorzystaæ z instrukcji \fBlimits\fP, by stwierdziæ,
+czy zainstalowana wersja je rozpoznaje. Je¿eli obs³uguje ona przypisania
+w "starym stylu", to instrukcja "a =- 1" pomniejszy \fBa\fR o jeden zamiast
+przypisaæ \fBa\fR warto¶æ -1.
+.IP "spacje w liczbach"
+Inne implementacje \fBbc\fR dopuszczaj± wystêpowanie spacji w liczbach.
+Na przyk³ad, "x=1 3" przypisze warto¶æ 13 zmiennej x. Ta sama instrukcja
+spowoduje b³±d sk³adni w opisywanej tu wersji \fBbc\fR.
+.IP "b³êdy i wykonanie"
+Opisywana implementacja ró¿ni siê od innych sposobem, w jaki wykonywany jest
+kod w przypadku znalezienia w programie b³êdów sk³adniowych i innych.
+W przypadku napotkania b³êdu w definicji funkcji, obs³uga b³êdów próbuje
+odnale¿æ pocz±tek instrukcji i kontynuowaæ analizê sk³adniow±
+funkcji.
+.\" error recovery tries to find the beginning of a statement and continue to
+.\" parse the function.
+Po znalezieniu b³êdu w funkcji, nie jest ona mo¿liwa do wywo³ania i staje
+siê niezdefiniowana. B³êdy sk³adniowe w interaktywnym wykonywaniu kodu
+uniewa¿niaj± bie¿±cy blok wykonania. Blok wykonania jest zakoñczony
+koñcem linii pojawiaj±cym siê po pe³nej sekwencji instrukcji.
+Na przyk³ad,
+.RS
+.RS
+.nf
+a = 1
+b = 2
+.fi
+.RE
+.RE
+.RS
+posiada dwa bloki wykonania a
+.RS
+.nf
+{ a = 1
+  b = 2 }
+.fi
+.RE
+ma jeden blok wykonania.
+Ka¿dy z b³êdów wykonania przerywa wykonywanie bie¿±cego bloku wykonania.
+Ostrze¿enie w trakcie wykonywania nie przerywa bie¿±cego bloku.
+.RE
+.IP "Przerwania"
+Podczas sesji interaktywnej sygna³ SIGINT (zwykle generowany przez znak
+control-C z terminala) spowoduje przerwanie bie¿±cego bloku wykonywania.
+Wy¶wietli on b³±d wykonania ("runtime"), wskazuj±cy która funkcja zosta³a
+przerwana. Po wyczyszczeniu wszystkich struktur (runtime structures)
+wykonania, zostanie wy¶wietlony komunikat informuj±cy u¿ytkownika, ¿e
+\fBbc\fR jest gotów do przyjmowania kolejnych danych. Wszystkie uprzednio
+zdefiniowane funkcje pozostaj± zdefiniowane, za¶ warto¶ci wszystkich
+zmiennych innych ni¿ zmienne typu auto s± warto¶ciami sprzed przerwania.
+Podczas procesu oczyszczania struktur danych usuwane s± wszystkie zmienne
+typu auto oraz parametry funkcji.
+W czasie sesji nieinteraktywnej sygna³ SIGINT przerywa wykonanie ca³ego
+\fBbc\fR.
+.SS OGRANICZENIA
+Poni¿ej podano obecne ograniczenia opisywanego procesora \fBbc\fR.
+Niektóre z nich mog± byæ zmienione podczas instalacji.
+Faktyczne ograniczenia mo¿na sprawdziæ za pomoc± instrukcji \fBlimits\fP
+(ograniczenia).
+.IP BC_BASE_MAX
+Maksymalna podstawa pozycyjnego uk³adu, w którym wyprowadzane s± wyniki
+obecnie ustawiona jest na 999. Maksymaln± podstaw± uk³adu wej¶ciowego jest 16.
+.IP BC_DIM_MAX
+Obecnie ustawione jest arbitralne ograniczenie do 65535 (w wersji
+rozpowszechnianej). Twoja instalacja mo¿e byæ inna.
+.IP BC_SCALE_MAX
+Liczba cyfr po kropce dziesiêtnej ograniczona jest do INT_MAX cyfr. Tak¿e
+liczba cyfr przed kropk± dziesiêtn± ograniczona jest do INT_MAX cyfr.
+.IP BC_STRING_MAX
+Maksymalnie w ³añcuchu mo¿e wyst±piæ INT_MAX znaków.
+.IP wyk³adnik
+Warto¶æ wyk³adnika w operacji potêgowania (^) ograniczona jest do LONG_MAX.
+.ig
+.IP mno¿enie
+Procedura mno¿enia mo¿e dawaæ nieprawid³owe wyniki je¿eli liczba posiada
+wiêcej ni¿ LONG_MAX / 90 cyfr ogó³em. Dla 32 bitowych d³ugich liczb
+ca³kowitych (longint) jest to 23,860,929 cyfr.
+.IP "rozmiar kodu"
+Ka¿da funkcja oraz program "g³ówny" nie mog± przekroczyæ 16384 bajtów
+skompilowanego kodu binarnego. Ograniczenie to (BC_MAX_SEGS) mo¿e byæ ³atwo
+zmienione, tak by uzyskaæ wiêcej ni¿ 16 segmentów 1024-bajtowych.
+..
+.IP "nazwy zmiennych"
+Obecnie nie mo¿e byæ wiêcej ni¿ 32767 unikalnych nazw w ka¿dym z rodzajów:
+zmiennych prostych, tablic i funkcji.
+.SH ZMIENNE ¦RODOWISKA
+\fBbc\fR przetwarza nastêpuj±ce zmienne ¶rodowiska:
+.TP
+.B POSIXLY_CORRECT
+To samo, co opcja \fB-s\fR. Tryb zgodno¶ci z POSIX.
+.TP
+.B BC_ENV_ARGS
+Inny sposób przekazywania argumentów do \fBbc\fR. Format jest taki sam, jak
+argumentów wiersza poleceñ. Argumenty te przetwarzane s± na pocz±tku, wiêc
+pliki podane w argumentach ¶rodowiska przetwarzane s± przed plikami
+podanymi jako argumenty wiersza poleceñ. Umo¿liwia to u¿ytkownikowi
+ustawienie "standardowych" opcji i plików, jakie bêd± przetwarzane przy
+ka¿dym wywo³aniu \fBbc\fR. Pliki podane w zmiennych ¶rodowiska zawieraj±
+zwykle definicje funkcji, które u¿ytkownik chce mieæ zdefiniowane przy
+ka¿dym uruchomieniu \fBbc\fR.
+.TP
+.B BC_LINE_LENGTH
+Powinna to byæ liczba ca³kowita (integer) podaj±ca ilo¶æ znaków w wierszu
+wynikowym. Obejmuje ona znaki odwrotnego uko¶nika i nowej linii dla d³ugich
+liczb.
+.ig
+.SH PLIKI
+W wiêkszo¶ci instalacji \fBbc\fR jest ca³kowicie samowystarczalny
+(self-contained). Tam, gdzie ma znaczenie rozmiar pliku wykonywalnego lub
+kompilator C nie radzi sobie z bardzo d³ugimi ³añcuchami znakowymi, \fBbc\fR
+bêdzie odczytywaæ standardow± bibliotekê matematyczn± z pliku
+\fI/usr/local/lib/libmath.b\fR. (Faktyczne jego po³o¿enie mo¿e byæ ró¿ne.
+Mo¿e to byæ \fI/lib/libmath.b\fR.)
+..
+.SH DIAGNOSTYKA
+Je¿eli który¶ z plików podanych w wierszu poleceñ nie mo¿e zostaæ otwarty
+\fBbc\fR zg³osi, ¿e plik ten jest niedostêpny i przerwie pracê. Istniej± te¿
+komunikaty diagnostyczne kompilacji i wykonania, które powinny byæ
+zrozumia³e.
+.\" self-explanatory.
+.SH B£ÊDY
+Obs³uga b³êdów (error recovery) nie jest jeszcze bardzo dobra.
+.PP
+B³êdy proszê zg³aszaæ (w jêz.angielskim) na adres
+.BR bug-bc@gnu.org .
+Upewnij siê, ¿e pole tematu wiadomo¶ci zawiera gdzie¶ s³owo ``bc''.
+.SH AUTOR
+.nf
+Philip A. Nelson
+phil@cs.wwu.edu
+.fi
+.SH PODZIÊKOWANIA
+Autor chcia³by podziêkowaæ Steve'owi Sommars (Steve.Sommars@att.com) za
+jego szerok± pomoc w testowaniu tej implementacji. Podsun±³ on wiele cennych
+sugestii. Dziêki jego zaanga¿owaniu jest to o wiele lepszy produkt.
+.SH ZOBACZ TAK¯E
+.BR dc (1),
+.BR expr (1),
+.BR awk (1)

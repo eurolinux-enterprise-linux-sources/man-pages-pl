@@ -1,0 +1,278 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+.TH MAKE 1L "22 sierpnia 1989" "GNU" "LOKALNE KOMENDY U¯YTKOWNIKA"
+.SH NAZWA
+make \- narzêdzie GNU make do obs³ugi grup programów
+.SH SK£ADNIA
+.B "make "
+[
+.B \-f
+.I makefile
+] [ opcja ] ...
+cel ...
+.SH OSTRZE¯ENIE
+Ta strona podrêcznika man jest ekstraktem dokumentacji
+.I GNU make .
+Jest ona od¶wie¿ana tylko od czasu do czasu, gdy¿ projekt GNU nie u¿ywa
+nroff. Dla kompletnej i aktualnej dokumentacji przeczytaj plik Info,
+.BR make.info ,
+który zosta³ stworzony ze ¼ród³a Texinfo
+.BR make.texinfo .
+
+Od t³umacza: tak naprawdê w wypadku narzêdzi takich jak make aktualno¶æ nie
+jest istotna, gdy¿ z zasady powinny byæ one (po wzglêdem obs³ugi) jak 
+najkompatybilniejsze z ró¿nymi, nawet "przedpotopowymi" implementacjami.
+.SH OPIS
+.LP
+Celem istnienia narzêdzia
+.I make
+jest automatyczne okre¶lanie, które elementy du¿ego programu nale¿y
+rekompilowaæ oraz wydawanie fizycznych komend rekompilacji.
+Podrêcznik ten opisuje implementacjê GNU
+.IR make ,
+napisan± przez Richarda Stallmana, zwanego wujkiem Ry¶kiem i Rolanda
+McGratha.
+Nasze przyk³ady to programy w C, gdy¿ s± one najpopularniejsze.
+.I Make
+mo¿e byæ jednak u¿ywany z dowolnym jêzykiem programowania, którego
+kompilator mo¿na uruchomiæ z linii poleceñ.
+W rzeczywisto¶ci,
+.I make
+nie jest ograniczone do programów. Np. mo¿na go u¿ywaæ do opisywania
+dowolnego zadania, w którym czê¶æ plików musi byæ od¶wie¿ana automatycznie
+na podstawie innych za ka¿dym razem gdy one siê zmieni±. (Np. polskie XFAQ
+jest zrealizowane na tej zasadzie--przyp. t³um.)
+.LP
+Aby przygotowaæ siê do u¿ywania
+.IR make ,
+musisz napisaæ plik o nazwie
+.IR Makefile ,
+który opisuje zwi±zki zale¿no¶ci miêdzy plikami twojego programu (np.
+obiekt.o musi byæ rekompilowany po ka¿dej zmianie obiekt.c lub obiekt.h)
+oraz okre¶la komendy, wykonywane do od¶wie¿ania plików (np. gcc -c
+obiekt.c).
+.LP
+Gdy istnieje ju¿ potrzebny Makefile, za ka¿d± zmian± plików ¼ród³owych
+wystarczy proste polecenie pow³oki:
+.sp 1
+.RS
+.B make
+.RE
+.sp 1
+zajmie siê ono wszelkimi niezbêdnymi rekompilacjami.
+Program
+.I make
+u¿ywa danych z Makefile oraz czasów modyfikacji plików i w ten sposób
+decyduje, który z nich od¶wie¿yæ. Dla ka¿dego z wymagaj±cych od¶wie¿enia
+plików wykonywane s± komendy, zapisane w bazie Makefile.
+.LP
+W rzeczywisto¶ci (patrz±c fizycznie),
+.I make
+wykonuje komendy
+.I Makefile
+w celu od¶wie¿enia jednego lub wiêcej
+.IR celów ,
+gdzie
+.I cel
+jest zwykle programem. (¦ci¶lej, \fIcel\fR jest dowolnym ³añcuchem znaków
+pliku Makefile, który znajduje siê na pocz±tku linii i koñczy siê
+dwukropkiem [za którym znajduj± siê obiekty zale¿no¶ci], np.
+
+program:program.c program.h
+
+\fR--przyp.t³um.)
+
+Je¶li nie ma podanej ¿adnej  opcji
+.BR \-f ,
+make szuka plików Makefile pod nastêpuj±cymi nazwami:
+.IR GNUmakefile ,
+.IR makefile
+i
+.IR Makefile .
+Obowi±zuje podana kolejno¶æ. Najpopularniejsze w u¿yciu s± nazwy
+\fIMakefile\fR, gdy¿ s± przeno¶ne i pojawiaj± siê na pocz±tku posortowanego
+listingu plików.
+.LP
+Je¶li plik
+.I Makefile
+jest okreslony jako `\-', to jest nim standardowe wej¶cie.
+.LP
+.I make
+od¶wie¿a cel tylko je¶li zale¿y od plików, które zosta³y zmienione od czasu
+utworzenia ostatniego celu, lub je¶li cel jeszcze nie istnieje.
+.SH OPCJE
+.sp 1
+.TP 0.5i
+.B \-b
+.TP 0.5i
+.B \-m
+Opcje te s± ignorowane i istniej± dla zgodno¶ci z innymi wersjami 
+.IR make .
+.TP 0.5i
+.BI "\-C " katalog
+Zmienia przed odczytywaniem plików Makefile katalog bie¿±cy na
+.IR katalog .
+Je¶li podanych jest wiele opcji
+.B \-C
+to ka¿da jest interpretowana wzglêdem poprzedniej:
+.BR "\-C " /
+.BR "\-C " etc
+jest równowa¿ne
+.BR "\-C " /etc.
+Jest to zazwyczaj u¿ywane w rekursywnych wywo³aniach
+.IR make .
+.TP 0.5i
+.B \-d
+Drukuje informacje debuggowe. Informacje te mówi±, które pliki wybrano do
+od¶wie¿ania, które czasy modyfikacji by³y porównywane i z jakimi
+rezulatatami, które pliki wymagaj± od¶wie¿enia, które niejawne regu³y s±
+stosowane---wszystko co mo¿na wymy¶liæ ciekawego o sposobie dzia³ania
+.IR make .
+.TP 0.5i
+.B \-e
+Daje zmiennym ¶rodowiskowym pierwszeñstwo nad zmiennymi plików Makefile.
+.TP 0.5i
+.BI "\-f " plik
+Jako Makefile u¿yj
+.IR pliku .
+.TP 0.5i
+.B \-i
+Ignoruj wszelkie b³êdy komendy wykonywanych przy od¶wie¿aniu plików.
+.TP 0.5i
+.BI "\-I " katalog
+Podaje 
+.IR katalog ,
+w którym szukaæ za³±czanych (included) plików Makefile.
+Je¶li podanych jest kilka opcji
+.BR \-I ,
+to s± on przeszukiwane w podanej kolejno¶ci.
+W przeciwieñstwie do innych flag
+.IR make ,
+katalogi podane flagami
+.B \-I
+mog± nastêpowaæ bezpo¶rednio po fladze:
+.BI \-I dir
+jest równowa¿ne
+.BI "\-I " dir.
+Sk³adnia ta jest udostêpniona dla kompatybilno¶ci z flag±
+.B \-I
+preprocesora jêzyka C.
+.TP 0.5i
+.BI "\-j " jobs
+Podaje dozwolon± liczbê zadañ (komend), któr± mo¿na wykonywaæ naraz. Je¶li
+jest wiêcej ni¿ jedna opcja
+.BR \-j ,
+ostatnia jest znacz±ca.
+Je¶li opcja
+.B \-j
+jest podana bez argumentu,
+.IR make
+nie bêdzie ograniczaæ liczby mo¿liwych zadañ.
+.TP 0.5i
+.B \-k
+Kontynuuj ile siê da po b³êdzie. Chocia¿ cel, który siê nie powiód³ i
+zale¿no¶ci na nim siê opieraj±ce nie mog± byæ zbudowane, to mo¿na
+przetworzyæ inne zale¿no¶ci celów.
+.TP 0.5i
+.B \-l
+.TP 0.5i
+.BI "\-l " obci±¿enie
+Okre¶la, ¿e nie nale¿y uruchamiaæ nowych zadañ (komend) je¶li pracuj± ju¿
+inne, a obci±¿enie wynosi co najmniej
+.I obci±¿enie
+(liczba zmiennoprzecinkowa).
+Bez argumentów, usuwany jest poprzedni limit.
+.TP 0.5i
+.B \-n
+Drukuj komendy, które by³yby wykonywane, lecz nie wykonuj ich.
+.TP 0.5i
+.BI "\-o " plik
+Nie od¶wie¿aj pliku
+.I plik
+nawet je¶li jest starszy ni¿ jego zale¿no¶ci i nie od¶wie¿aj niczego na
+konto zmian
+.IR pliku .
+Ogólnie, plik jest traktowany jako bardzo stary, a jego regu³y s±
+ignorowane.
+.TP 0.5i
+.B \-p
+Drukuje bazê danych (regu³y i warto¶ci zmiennych), które wynikaj± z
+odczytanych plików Makefile. Nastêpnie wykonuje siê w trybie normalnym,
+chyba ¿e podano inaczej. Drukuje to te¿ informacje o wersji, podawane przez
+prze³±cznik
+.B \-v
+(patrz ni¿ej).
+Aby wydrukowaæ bazê danych bez od¶wie¿ania plików, u¿yj
+.B make
+.B \-p
+.BI \-f /dev/null.
+.TP 0.5i
+.B \-q
+``Tryb pytania''.
+Nie uruchamia ¿adnych komend i niczego nie drukuje; zwraca tylko kod
+wyj¶cia, który mo¿e byæ zerowy je¶li cele s± ¶wie¿e, lub niezereowy je¶li s±
+stêch³e.
+.TP 0.5i
+.B \-r
+Eliminuje u¿ywanie wbudowanych regu³ niejawnych. Czy¶ci te¿ domy¶ln± listê
+regu³ przyrostkowych.
+.TP 0.5i
+.B \-s
+Ciche dzia³anie; nie drukuje wykonywanych komend.
+.TP 0.5i
+.B \-S
+Anuluje efekty opcji
+.BR \-k .
+Nie jest to zwykle potrzebne, poza 
+.I make
+rekursywnym, gdzie
+.B \-k
+mo¿e byæ dziedziczone z wy¿szych poziomów
+.I make
+poprzez MAKEFLAGS, lub w wypadku gdy ustawisz
+.B \-k
+w MAKEFLAGS w swoim ¶rodowisku.
+.TP 0.5i
+.B \-t
+Dotyka plików (zaznacza je jako od¶wie¿one, bez zmieniania zawarto¶ci),
+zamiast normalnego uruchamiania komend. Jest to u¿ywane do udawania, ¿e
+komendy zosta³y wykonane w celu og³upienia przysz³ych wywo³añ
+.IR make .
+.TP 0.5i
+.B \-v
+Drukuj wersjê programu
+.I make
+oraz prawa kopiowania, listê autorów i notkê, ¿e nie ma gwarancji.
+Po wydrukowaniu tej informacji, przetwarzanie dzia³a normalnie.
+Aby uzyskaæ informacjê bez robienia innych rzeczy, u¿yj
+.B make
+.B \-v
+.BI \-f /dev/null.
+.TP 0.5i
+.B \-w
+Drukuj komunikat, zawieraj±cy katalog bie¿±cy przed i po dzia³aniu. Mo¿e to
+byæ przydatne do ¶cigania b³êdów w skomplikowanych zagnie¿d¿eniach
+rekursywnego
+.IR make .
+.TP 0.5i
+.BI "\-W " plik
+Udaj, ¿e cel
+.I plik
+zosta³ w³a¶nie zmodyfikowany.
+Po u¿yciu z flag±
+.BR \-n ,
+pokazuje ci to, co sta³oby siê, gdyby¶ rzeczywi¶cie zmodyfikowa³ ten plik.
+Bez opcji
+.BR \-n ,
+jest to prawie równowa¿ne uruchomieniu na podanym pliku komendy
+.I touch .
+Jedyn± ró¿nic± jest fakt, ¿e czas modyfikacji jest tu zmieniany tylko w
+wyobra¼ni
+.IR make .
+.SH "ZOBACZ TAK¯E"
+.I "The GNU Make Manual"
+.SH B£ÊDY
+Zobacz rozdzia³ `Problems and Bugs' w
+.IR "The GNU Make Manual" .
+.SH AUTOR
+Podrêcznik ten zosta³ stworzony przez Dennisa Morse'a z Uniwersytetu Stanforda.
+Zosta³ przerobiony przez Rolanda McGratha.

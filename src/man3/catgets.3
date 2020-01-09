@@ -1,0 +1,87 @@
+.\" {PTM/AB/0.1/13-12-1998/"catgets - pobranie komunikatu z katalogu komunikatów"}
+.\" t³umaczenie Adam Byrtek <abyrtek@priv.onet.pl>
+.\" aktualizacja do man-pages 1.45 - A. Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" ------------
+.\" Copyright 1993 Mitchum DSouza <m.dsouza@mrc-applied-psychology.cambridge.ac.uk>
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Updated, aeb, 980809
+.\" ------------
+.TH CATGETS 3 1998-08-09
+.SH NAZWA
+catgets \- pobranie komunikatu z katalogu komunikatów
+.SH SK£ADNIA
+.LP
+.nf
+.ft B
+#include <nl_types.h>
+.ft
+.fi
+.LP
+.BI "char *catgets(nl_catd " katalog ", int " numer_zestawu ,
+.BI "int " numer_komunikatu ", const char *" komunikat );
+.SH OPIS
+Funkcja
+.B catgets()
+odczytuje komunikat o numerze
+.I numer_komunikatu
+z zestawu
+.I numer_zestawu
+z katalogu komunikatów identyfikowanego przez deskryptor
+.IR katalog ,
+zwrócony wcze¶niej przez
+.BR catopen (3).
+Czwarty argument
+.I komunikat
+wskazuje na domy¶lny komunikat, który zostanie zwrócony przez
+.BR catgets() ,
+je¶li katalog komunikatów nie jest aktualnie dostêpny. Tekst komunikatu
+znajduje siê w wewnêtrznym buforze, wiêc je¶li aplikacja chce go przechowaæ
+lub zmodyfikowaæ, powinna go najpierw skopiowaæ.
+Zwracamy ³añcuch zawsze koñczy siê bajtem NUL.
+.SH "WARTO¦Æ ZWRACANA"
+.LP
+Je¶li funkcja
+.B catgets()
+zakoñczy siê pomy¶lnie, zwraca wska¼nik do obszaru bufora zawieraj±cego
+³añcuch z komunikatem zakoñczonym bajtem NUL.
+Je¶li funkcja
+.B catgets()
+zawiedzie, zwraca warto¶æ
+.IR komunikat .
+.SH UWAGI
+Funkcja ta jest dostêpna jedynie w libc.so.4.4.4c i wy¿szych. Dokument
+X/Open Portability Guide ze stycznia 1987 okre¶la bardziej wyrafinowany
+sposób zwracania warto¶ci w razie wyst±pienia b³êdu:
+.I komunikat
+jest zwracany, je¶li katalog wyznaczony przez
+.I katalog
+jest niedostêpny. Natomiast gdy katalog jest dostêpny, ale nie zawiera
+wskazanego komunikatu, zwracany jest pusty ³añcuch.
+Zasada zwracania dwóch ró¿nych warto¶ci w przypadkach b³êdów zosta³a jednak
+porzucona w XPG4.2 na rzecz zwracania zawsze warto¶ci
+.IR komunikat .
+.SH "ZGODNE Z"
+XPG4.2
+.SH "ZOBACZ TAK¯E"
+.BR catopen (3),
+.BR setlocale (3)

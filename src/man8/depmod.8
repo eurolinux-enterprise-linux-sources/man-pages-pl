@@ -1,0 +1,221 @@
+.\" T³umaczenie wersji z modutils-2.4.10 - pa¼dziernik 2001 PTM
+.\" czê¶ciowo oparte na depmod.1 z PTM autorstwa Marcina Mazurka
+.\" Andrzej Krzysztofowicz <ankry@green.mif.pg.gda.pl>
+.\"
+.\" Copyright (c) 1994, 1995 Jacques Gelinas (jacques@solucorp.qc.ca)
+.\" Copyright (c) 1995 Bjorn Ekwall (bj0rn@blox.se)
+.\" This program is distributed according to the Gnu General Public License.
+.\" See the file COPYING in the kernel source directory /linux
+.\" $Id: depmod.8 1.5 Tue, 02 Oct 2001 11:22:51 +1000 kaos $
+.\"
+.TH DEPMOD 8 "2 pa¼dziernika 2001" Linux "Wsparcie dla modu³ów"
+.SH NAZWA
+depmod \- obs³uga opisu zale¿no¶ci pomiêdzy modu³ami j±dra
+.SH SK£ADNIA
+.B depmod
+\-[aA] [\-enqsvVru]
+[\-C\ plikkofiguracyjny] [\-F\ symbolej±dra] [\-b\ katalogbazowy]
+[wymuszona_wersja]
+.br
+.B depmod
+[\-enqsvru] [\-F\ symbolej±dra] modu³1.o modu³2.o ...
+.SH OPCJE
+.TP
+.I \-a
+Poszukuje modu³ów we wszystkich katalogach wymienionych w (opcjonalnym)
+pliku kofiguracyjnym
+.I /etc/modules.conf\fR.
+.TP
+.I \-A
+Porównuje znaczniki czasowe plików i, je¶li trzeba, dzia³a jak
+.B depmod 
+\-a. Ta opcja aktualizuje zale¿no¶ci jedynie, gdy co¶ siê zmieni³o.
+.TP
+.I \-e
+Pokazuje wszystkie nierozwi±zane symbole dla poszczególnych modu³ów.
+.TP
+.I \-n
+Wypisuje plik zale¿no¶ci na standardowe wyj¶cie, zamiast do drzewa
+.BR /lib/modules .
+.TP
+.I \-s
+Wypisuje komunikaty o b³êdach za po¶rednictwem demona syslog, zamiast na
+standardow± diagnostykê.
+.TP
+.I \-v
+Wypisuje nazwy poszczególnych modu³ów podczas ich przetwarzania.
+.TP
+.I \-q
+Ka¿e depmodowi zamilkn±æ i nie narzekaæ na brakuj±ce symbole.
+.TP
+.I \-V
+Wypisuje numer wersji programu
+.B depmod
+.TP
+.I \-r
+Niektórzy u¿ytkownicy kompiluj± modu³y jako u¿ytkownik inny ni¿ root,
+a nastêpnie instaluj± je jako root. W wyniku tego w³a¶cicielem modu³ów
+nie bêdzie root, nawet je¶li jest on w³a¶cicielem katalogu modu³ów.
+Je¶li dopu¶ci siê innego u¿ytkownika ni¿ root jako w³a¶ciciela modu³ów,
+umo¿liwi siê nieproszonemu go¶ciowi nadpisanie istniej±cych modu³ów
+bêd±cych w³asno¶ci± tego u¿ytkownika i wykorzystanie za³adowania go
+do uzyskania uprawnieñ roota.
+.TP
+.I ""
+Domy¶lnie, modutils odrzuc± próbê za³adowania modu³u nie nale¿±cego do
+root-a. Podanie \-r zniesie b³±d i pozwoli root-owi za³adowaæ modu³y, które
+nie s± jego w³asno¶ci±.
+.TP
+.I ""
+.B U¿ywanie
+.I -r
+.B jest powa¿nym naruszeniem bezpieczeñstwa i nie jest zalecane.
+.TP
+.I \-u
+depmod 2.4 nie ustawia kodu powrotu, gdy wystêpuj± nierozwi±zane symbole.
+Nastêpna g³ówna wersja modutils (2.5) bêdzie to robiæ. Niektóre dystrybucje
+wymagaj± niezerowego kodu powrotu przy nierozwi±zanych symbolach, ale taka
+zmiana mog³aby spowodowaæ problemy u u¿ytkowników oczekuj±cych starego
+zachowania. Je¶li niezerowy kodu powrotu jest potrzebny w depmod 2.4,
+nale¿y podaæ
+.IR -u .
+depmod 2.5 bêdzie milcz±co ignorowaæ flagê
+.I -u
+i bêdzie zawsze zwracaæ niezerowy kodu powrotu przy nierozwi±zanych
+symbolach.
+.PP
+Nastêpuj±ce opcje s± przydatne dla osób zarz±dzaj±cych dystrybucjami:
+.TP
+.I "\-b katalogbazowy"
+Je¶li drzewo katalogów
+.B /lib/modules
+zawieraj±ce poddrzewa modu³ów zostanie przeniesione gdzie indziej, aby
+obs³ugiwaæ modu³y w innym ¶rodowisku, opcja
+.I katalogbazowy
+mówi depmodowi, gdzie szukaæ przeniesionego obrazu drzewa
+.BR /lib/modules .
+Odwo³ania do plików w pliku wynikowym depmoda,
+.I modules.dep,
+który zostanie utworzony nie bêd± zawieraæ ¶cie¿ki
+.IR katalogbazowy .
+Oznacza to, ¿e gdy drzewo plików zostanie przeniesione z powrotem z
+.B katalogbazowy/lib/modules
+do
+.B /lib/modules
+w ostatecznej dystrybucji, wszystkie odwo³ania bêd± poprawne.
+.TP
+.I "\-C plikkofiguracyjny"
+Ka¿e korzystaæ z pliku
+.I plikkofiguracyjny
+zamiast /etc/modules.conf.
+.br
+Do wybrania innego pliku konfiguracyjnego ni¿ domy¶lny /etc/modules.conf
+(lub /etc/conf.modules (przestarza³e)) mo¿na równie¿ wykorzystaæ zmienn±
+¶rodowiska
+.BR MODULECONF .
+.TP
+.I "\-F symbolej±dra"
+Podczas budowania pliku zale¿no¶ci dla innego j±dra ni¿ aktualnie
+dzia³±j±ce wa¿ne jest, aby
+.B depmod
+korzysta³ z w³a¶ciwego zbioru symboli j±draa przy rozwi±zywaniu odwo³añ do
+j±dra z poszczególnych modu³ów. Symbole te mog± byæ kopi± albo kopi± pliku
+.I System.map
+z w³a¶ciwego j±dra, albo kopi± zawarto¶ci
+.IR /proc/ksyms .
+Je¶li j±dro u¿ywa a wersjonowanych symboli, najlepiej korzystaæ z kopii
+zawarto¶ci
+.IR /proc/ksyms ,
+gdy¿ plik ten zawiera wersje symboli j±dra. Jednak¿e, nawet z
+wersjonowanymi symbolami, mo¿na u¿ywaæ
+.IR System.map .
+.SH OPIS
+Programy narzêdziowe
+.B depmod
+i
+.B modprobe
+s³u¿± do zarz±dzania zmodularyzowanym j±drem Linuksa przez
+zwyk³ych u¿ytkowników, administratorów i twórców dystrybucji.
+.PP
+.B depmod
+tworzy podobny do "Makefile" plik z zale¿no¶ciami, oparty na symbolach,
+które znajdzie w zbiorze modu³ów podanych w linii poleceñ lub w katalogach
+wymienionych w pliku konfiguracyjnym.
+Plik zale¿no¶ci mo¿e byæ potem wykorzystany przez
+.B modprobe
+w celu automatycznego ³adowania odpowiednich modu³ów lub zestawów modu³ów.
+.PP
+Typowe u¿ycie
+.B depmod
+polega na umieszczeniu linii
+.I "/sbin/depmod \-a"
+gdzie¶ w skryptach startowych w /etc/rc.d tak, aby odpowiednie powi±zania
+modu³ów by³y dostêpne zaraz po uruchomieniu siê systemu.
+Nale¿y zauwa¿yæ, ¿e parametr
+.I \-a
+jest obecnie opcjonalny.
+Dla stosowania podczas startu systemu opcja
+.I \-q
+mo¿e byæ bardziej w³a¶ciwa, gdy¿ wycisza ona depmoda w kwestii
+nierozwi±zanych symboli.
+.PP
+Istnieje tak¿e mo¿liwo¶æ utworzenia pliku zale¿no¶ci zaraz po skompilowaniu
+nowego j±dra. Wydanie polecenia "depmod -a 2.2.99" po wcze¶niejszej kompilacji
+j±dra 2.2.99 i jego modu³ów po raz pierwszy, u¿ywaj±c wci±¿ j±dra 2.2.98,
+spowoduje utworzenie pliku we w³a¶ciwym miejscu.
+Jednak¿e w tym przypadku, wygenerowane zale¿no¶ci mog± nie byæ poprawne.
+Zobacz opis opcji
+.IR \-F ,
+.I \-C
+i
+.I \-b
+powy¿ej aby uzyskaæ wiêcej informacji na temat obs³ugi tej sytuacji.
+.PP
+Podczas tworzenia zwi±zków pomiêdzy modu³ami i symbolami udostêpnionymi
+przez inne modu³y
+.B depmod
+nie bierze pod uwagê stosunku modu³u lub udostêpnionych syboli do licencji
+GPL. To znaczy, depmod nie zg³osi b³êdu je¶li modu³ na licencji niezgodnej
+z GPL bêdzie siê odwo³ywaæ to symboli zastrze¿onych dla GPL (EXPORT_SYMBOL_GPL
+w j±drze). Jednak¿e, insmod odmówi rozwi±zania symboli zastrze¿onych dla GPL
+dla modu³ów nie-GPL, wiêc modu³u nie uda siê za³adowaæ.
+.SH KONFIGURACJA
+Zachowanie siê
+.B depmod
+i
+.B modprobe
+mo¿e byæ dostosowane przez (opcjonalny) plik konfiguracyjny
+.BR /etc/modules.conf .
+.br
+Zajrzyj do
+.I modprobe(8)
+i
+.I modules.conf(5)
+po pe³ny opis.
+.PP
+.SH STRATEGIA
+Za ka¿dym razem podczas kompilacji nowego j±dra, polecenie
+.B "make modules_install"
+stworzy nowy katalog, ale nie zmieni katalogu domy¶lnego.
+.PP
+Kiedy otrzyma siê modu³ nie zwi±zany z konkretnym j±drem nale¿y go umie¶ciæ
+w jednym z katalogów nie zale¿nych od wersji j±dra w /lib/modules.
+.PP
+Takie jest standardowe zachowanie, które jednak¿e mo¿e byæ zmienione poprzez
+odpowiednie wpisy do /etc/modules.conf.
+.SH PLIKI
+.nf
+/etc/modules.conf (alternatywnie, przestarza³y /etc/conf.modules)
+/lib/modules/*/modules.dep,
+/lib/modules/*
+.fi
+.SH "ZOBACZ TAK¯E"
+modules.conf(5),
+modprobe(8),
+modinfo(8),
+lsmod(8),
+ksyms(8)
+.SH AUTOR
+Jacques Gelinas (jack@solucorp.qc.ca)
+.br
+Bjorn Ekwall (bj0rn@blox.se)

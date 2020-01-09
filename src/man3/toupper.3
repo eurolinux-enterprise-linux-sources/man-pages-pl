@@ -1,0 +1,72 @@
+.\" T³umaczenie wersji man-pages 1.39 - wrzesieñ 2001 PTM
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" --------
+.\" (c) 1993 by Thomas Koenig (ig25@rz.uni-karlsruhe.de)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" License.
+.\" Modified Sat Jul 24 17:45:39 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified 2000-02-13 by Nicolás Lichtmaier <nick@debian.org>
+.\" --------
+.TH TOUPPER 3 1993-04-04 "GNU" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+toupper, tolower \- przekszta³ca literê na wielk± lub ma³±
+.SH SK£ADNIA
+.nf
+.B #include <ctype.h>
+.sp
+.BI "int toupper(int " "c" );
+.nl
+.BI "int tolower(int " "c" );
+.fi
+.SH OPIS
+.B toupper()
+przekszta³ca literê
+.I c
+na wielk± literê, o ile to mo¿liwe.
+.PP
+.B tolower()
+przekszta³ca literê
+.I c
+na ma³± literê, o ile to mo¿liwe.
+.PP
+Je¶li
+.I c
+nie jest warto¶ci± unsigned char lub ma warto¶æ EOF, zachowanie tych funkcji
+jest nieokre¶lone.
+.SH "WARTO¦Æ ZWRACANA"
+Zwracana jest warto¶æ przekszta³conej litery, lub
+.I c
+gdy przekszta³cenie nie jest mo¿liwe.
+.SH "ZGODNE Z"
+ANSI C, BSD 4.3
+.SH B£ÊDY
+Co dok³adnie stanowi wielkie i ma³e litery zale¿y od ustawieñ bie¿±cego
+locale. Na przyk³ad domy¶lne locale
+.B """C"""
+nie zna umlautów, wiêc nie jest wykonywane ich przekszta³cenie.
+.PP
+W niektórych nieangielskich locale wystêpuj± ma³e litery bez odpowiadaj±cych im
+liter wielkich; niemieckie ostre s jest jednym z przyk³adów.
+.SH "ZOBACZ TAK¯E"
+.BR isalpha (3),
+.BR setlocale (3),
+.BR locale (7)

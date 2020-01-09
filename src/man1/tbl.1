@@ -1,0 +1,174 @@
+.\" {PTM/WK/2000-I}
+.ig \"-*- nroff -*-
+Copyright (C) 1989-1995 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be included in
+translations approved by the Free Software Foundation instead of in
+the original English.
+..
+.TH TBL 1 "21 maja 1999" "Groff wersja 1.11.1"
+.SH NAZWA
+tbl \- formatuj tabele dla troff
+.SH SK£ADNIA
+.B tbl
+.RB [ \-Cv ]
+.RI [ pliki ...]
+.SH OPIS
+Ta strona podrêcznika opisuje wersjê GNU polecenia \fBtbl\fP, bêd±cego czê¶ci±
+systemu formatowania dokumentów groff.
+.PP
+.B tbl
+kompiluje opisy tabel osadzone w plikach wej¶ciowych
+.B troff
+na komendy rozumiane przez
+.BR troff .
+Normalnie powinno byæ wywo³ywane przy pomocy opcji
+.B \-t
+programu
+.BR groff .
+Jest ono wysoce zgodne z Unixowym
+.BR tbl .
+Wyj¶cie tworzone przez GNU
+.B tbl
+nie mo¿e byæ przetwarzane Uniksowym
+.BR troff ;
+musi byæ przetwarzane przy pomocy GNU
+.BR troff .
+Je¶li nie podano plików w wierszu poleceñ, to czytane bêdzie standardowe
+wej¶cie. Nazwa pliku
+.B \-
+spowoduje, ¿e bêdzie czytane standardowe wyj¶cie.
+.SH OPCJE
+.TP
+.B \-C
+Rozpoznawaj
+.B .TS
+i
+.B .TE
+nawet je¶li wystêpuje po nich znak ró¿ny od spacji lub nowej linii.
+.TP
+.B \-v
+Poka¿ numer wersji.
+.SH U¯YTKOWANIE
+Opisano tu tylko ró¿nice pomiêdzy GNU
+.B tbl
+a Uniksowym
+.BR tbl .
+.LP
+Normalnie
+.B tbl
+usi³uje unikn±æ niepo¿±danych przerw w tabeli pos³uguj±c siê w tym celu
+"dywersje" (diversions). Mo¿e to czasem ¼le wspó³dzia³aæ z makrami pakietów,
+które same wykorzystuj± dywersje, na przyk³ad, gdy u¿ywane s± stopki.
+Opcja
+.B nokeep
+zakazuje
+.B tbl
+prób zapobiegania prze³amaniom t± metod±.
+.LP
+Opcja
+.B decimalpoint
+okre¶la jaki znak, zamiast domy¶lnej kropki, ma byæ rozpoznawany jako separator
+miejsc dziesiêtnych.
+Pobiera ona argument w nawiasach; musi on byæ pojedynczym znakiem, tak jak dla
+opcji
+.BR tab .
+.LP
+Po modyfikatorze formatu
+.B f
+mo¿e wyst±piæ dowolnej d³ugo¶ci nazwa fontu umieszczona w nawiasach.
+.LP
+Istnieje modyfikator formatu
+.BR d ,
+który oznacza, ¿e ³±czona w pionie pozycja powinna byæ wyrównana do do³u
+.\" span
+swego zakresu.
+.LP
+Nie istnieje ¿adne ograniczenie liczby kolumn w tabeli ani liczby bloków tekstu.
+Do wyznaczania szeroko¶ci kolumn uwzglêdniane s± wszystkie wiersze tabeli,
+nie za¶ tylko pierwszych 200.
+Wiersze kontynuacji tabeli
+.RB ( .T& )
+nie s± ograniczone do pierwszych 200 wierszy.
+.LP
+Pozycje numeryczne i alfabetyczne mog± pojawiæ siê w tej samej kolumnie.
+.LP
+Pozycje numeryczne i alfabetyczne mog± byæ ³±czone w poziomie.
+.LP
+.B tbl
+u¿ywa nazw rejestrów, ³añcuchów, makr i dywersji rozpoczynaj±cych siê od
+.BR 3 .
+Pos³uguj±c siê
+.B tbl
+powiniene¶ unikaæ nazw rozpoczynaj±cych siê od
+.BR 3 .
+.SH B£ÊDY
+Powiniene¶ u¿ywaæ
+.BR .TS\ H / .TH
+w po³±czeniu z pakietem makr pomocniczych dla
+.I wszystkich
+wielostronnicowych tabel z obramowaniem.
+.\" boxed tables.
+Je¶li nie ma nag³ówka, który chcia³by¶ widzieæ na górze ka¿dej strony
+tabeli, umie¶æ wiersz
+.B .TH
+bezpo¶rednio po sekcji formatu. Nie umieszczaj wielostronnicowych tabel
+wewn±trz makr keep/release ani nie zmieniaj ich kierunku
+w jakikolwiek inny sposób.
+.\" or divert it in any other way.
+.LP
+Blok tekstu wewn±trz tabeli musi daæ siê zmie¶ciæ na jednej stronie.
+.LP
+Nie mo¿na u¿ywaæ ¿±dania
+.B bp
+do wymuszenia z³amania strony w tabeli wielostronnicowej.
+Zamiast tego, zdefiniuj
+.B BP
+jak poni¿ej
+.IP
+.B .de BP
+.br
+.B .ie '\e\en(.z'' .bp \e\e$1
+.br
+.B .el \e!.BP \e\e$1
+.br
+.B ..
+.br
+.LP
+i pos³u¿ siê
+.B BP
+zamiast
+.BR bp .
+.LP
+Pos³ugiwanie siê \eA bezpo¶rednio w tabeli w celu uzyskania przedrostków
+specjalnych (zobacz \fBtroff\fP (1)) nie zadzia³a.
+.\" Using \ea directly in a table to get leaders will not work.
+Jest to zachowanie prawid³owe: \eA jest przedrostkiem
+.BR nieinterpretowanym .
+By uzyskaæ przedrostki specjalne u¿yj prawdziwego przedrostka, albo pos³uguj±c
+siê control A albo tak:
+.IP
+.nf
+.ft B
+\&.ds a \ea
+\&.TS
+tab(;);
+lw(1i) l.
+A\e*a;B
+\&.TE
+.ft
+.fi
+.SH "ZOBACZ TAK¯E"
+.BR groff (1),
+.BR troff (1).

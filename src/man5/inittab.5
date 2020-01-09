@@ -1,0 +1,213 @@
+.\" {PTM/PB/0.1/06-05-1999/"Format pliku inittab u¿ywanego przez init"}
+.\"{{{}}}
+.\"{{{  Title
+.TH INITTAB 5 "Jun 04, 1996" "" "Podrêcznik administratora systemu"
+.\"}}}
+.\"{{{  Name
+.SH NAZWA
+inittab \- format pliku inittab u¿ywanego przez proces init kompatybilny z sysv.
+.\"}}}
+.\"{{{  Description
+.SH OPIS
+Plik inittab opisuje które procesy zosta³y uruchomione podczas startu i
+podczas normalnego dzia³ania (np. /etc/rc, getty...). W inicie rozró¿nia siê
+ró¿ne poziomy pracy (\fIrunlevels\fR), z których ka¿dy mo¿e mieæ swój
+w³asny zestaw procesów uruchamianych na starcie. Dopuszczalne poziomy
+pracy to \fB0\fR-\fB6\fR i \fBA\fR, \fBB\fR dla wpisów \fBondemand\fR
+(na ¿±danie). Wpis w pliku inittab ma nastêpuj±cy format:
+.RS
+.sp
+\fIid\fP:\fBpoziomy pracy\fP:\fIakcja\fP:\fIproces\fP
+.sp
+.RE
+Linie rozpoczynaj±ce siê od `#' s± ignorowane.
+.\"{{{  id
+.IP \fIid\fP
+jest unikaln± sekwencj± 1-4 znaków, która identyfikuje wpis (dla starszych
+wersji jego d³ugo¶æ mo¿e byæ ograniczona do dwóch znaków).
+.sp
+Uwaga: Dla procesów getty, lub innych procesów loginowych, pole \fIid\fR
+powinno byæ koñcówk± odpowiadaj±cego im tty, np. \fB1\fR dla \fBtty1\fR.
+W innym wypadku login mo¿e nie dzia³aæ prawid³owo.
+.\"}}}
+.\"{{{  runlevel
+.IP "\fBpoziomy pracy\fP"
+opisuj±, w których poziomach pracy podj±æ podan± akcjê.
+.\"}}}
+.\"{{{  action
+.IP \fIakcja\fP
+opisuje jak± akcjê podj±æ.
+.\"}}}
+.\"{{{  process
+.IP \fIproces\fP
+podaje proces, który nale¿y uruchomiæ. Je¶li pole procesu rozpoczyna siê
+znakiem `+', init nie dokona dla niego wpisów wtmp i utmp. Jest to wymagane
+dla getty, które wol± robiæ to samodzielnie. Jest to te¿ b³±d historyczny.
+.\"}}}
+.PP
+Dopuszczalne akcje to:
+.\"{{{  respawn
+.IP \fBrespawn\fP
+Proces bêdzie uruchomiony od nowa po ka¿dym jego zakoñczeniu (np. getty).
+.\"}}}
+.\"{{{  wait
+.IP \fBwait\fP
+Proces bêdzie uruchomiony raz (gdy nadejdzie w³a¶ciwy poziom pracy), a init
+bêdzie czeka³ na jego zakoñczenie.
+.\"}}}
+.\"{{{  once
+.IP \fBonce\fP
+Proces bêdzie wywo³any raz po wej¶ciu we w³a¶ciwy poziom pracy.
+.\"}}}
+.\"{{{  boot
+.IP \fBboot\fP
+Proces zostanie wywo³any podczas bootowania. Pole \fIpoziomy pracy\fR jest
+ignorowane.
+.\"}}}
+.\"{{{  bootwait
+.IP \fBbootwait\fP
+Proces zostanie wywo³any podczas bootowania, podczas gdy init czeka na jego
+zakoñczenie (np. /etc/rc). Pole \fIpoziomy pracy\fR jest ignorowane.
+.\"}}}
+.\"{{{  off
+.IP \fBoff\fP
+Nie robi nic.
+.\"}}}
+.\"{{{  ondemand
+.IP \fBondemand\fP
+Proces, który jest zaznaczony poziomem pracy \fBondemand\fR bêdzie
+wywo³ywany za ka¿dym razem, gdy zostanie wywo³any wskazany poziom ¿±dania.
+Mimo to jednak, nie nast±pi zmiana poziomu pracy (poziomy pracy 
+\fBondemand\fR to 'a', 'b', 'c').
+.\"}}}
+.\"{{{  initdefault
+.IP \fBinitdefault\fP
+Pole to okre¶la poziom pracy, który powinien byæ uruchomiony po bootowaniu.
+Je¶li ¿aden taki nie istnieje, init zapyta o poziom pracy na konsoli. Pole
+\fIproces\fP jest ignorowane.
+.\"}}}
+.\"{{{  sysinit
+.IP \fBsysinit\fP
+Proces zostanie wywo³any podczas bootowania. Zostanie wywo³any przed
+wszelkimi wpisami \fBboot\fR czy \fB bootwait\fR.
+Pole \fIpoziomy pracy\fR jest ignorowane.
+.\"}}}
+.\"{{{  powerwait
+.IP \fBpowerwait\fP
+Proces zostanie wywo³any gdy init otrzyma sygna³ SIGPWR, wskazuj±cy na
+problemy z zasilaniem. \fBinit\fR bêdzie czeka³ na zakoñczenie tego procesu
+przed dalsz± kontynuacj±.
+.\"}}}
+.\"{{{  powerfail
+.IP \fBpowerfail\fP
+Podobne do \fBpowerwait\fP, 
+lecz init nie bêdzie czeka³ na zakoñczenie tego procesu.
+.\"}}}
+.\"{{{  powerokwait
+.IP \fBpowerokwait\fP
+Proces zostanie wywo³any gdy \fBinit\fR otrzyma sygna³ SIGPWR, o ile
+istnienje plik o nazwie \fB/etc/powerstatys\fR, zawieraj±cy s³owo
+\fBOK\fR. Znaczy to, ¿e zasilanie zosta³o przywrócone.
+.\"}}}
+.\"{{{  ctrlaltdel
+.IP \fBctrlaltdel\fP
+Proces zostanie wykonany gdy \fBinit\fR otrzyma sygna³ SIGINT.
+Znaczy to, ¿e kto¶ na konsoli nacisn±³ kombinacjê
+\fBCTRL\-ALT\-DEL\fR. Zazwyczaj wywo³uje siê wtedy co¶ w rodzaju
+\fBshutdown\fR, zarówno w celu przej¶cia do poziomu jednou¿ytkownikowego,
+jak i do rebootowania maszyny.
+.\"}}}
+.\"{{{  kbrequest
+.IP \fBkbrequest\fP
+Proces zostanie wywo³any gdy init otrzyma sygna³ z sterownika klawiatury,
+mówi±cy ¿e na konsoli zosta³a naci¶niêta specjalna kombinacja klawiszy.
+.br
+Dokumentacja tej funkcji nie jest jeszcze kompletna; wiêcej danych mo¿na
+znale¼æ w pakietach kbd-x.xx. Ogólnie, mo¿esz mapowaæ niektóre kombinacje
+klawiszy do akcji "Spawn_Console". Na przyk³ad aby zmapowaæ na ten cel
+kombinacjê alt plus strza³ka w górê, u¿yj nastêpuj±cego wpisu w swoim pliku
+keymap:
+.RS
+.sp
+alt keycode 103 = Spawn_Console
+.sp
+.RE
+.\"}}}
+.PP
+Pole \fIpoziom pracy\fR mo¿e zawieraæ wiele znaków dla ró¿nych poziomów
+pracy, np. \fB123\fR je¶li proces powinien byæ uruchamianay w poziomach 1,2
+i 3. Wpisy \fBondemand\fR mog± zawieraæ \fBA\fR, \fBB\fR, lub \fBC\fR.
+Poziom pracy wpisów \fBsysinit\fR, \fBboot\fR i \fBbootwait\fR jest
+ignorowany.
+.PP
+Gdy zmieniany jest poziom pracy, wszelkie dzia³aj±ce procesy, które nie
+nale¿± do noweg poziomu s± ubijane. Robione to jest najpierw komend±
+\s-2SIGTERM\s0, a potem \s-2SIGKILL\s0.
+.\"}}}
+.\"{{{  Examples
+.SH PRZYK£ADY
+Oto przyk³ad inittab, który zawiera stary inittab Linuksa:
+.RS
+.sp
+.nf
+.ne 7
+# inittab dla Linuksa
+id:1:initdefault:
+rc::bootwait:/etc/rc
+1:1:respawn:/etc/getty 9600 tty1
+2:1:respawn:/etc/getty 9600 tty2
+3:1:respawn:/etc/getty 9600 tty3
+4:1:respawn:/etc/getty 9600 tty4
+.fi
+.sp
+.RE
+Ten plik inittab wywo³uje podczas bootowania \fB/etc/rc\fR i uruchamia getty
+dla tty1\-tty4.
+.PP
+Bardziej wykwintny inittab, z ró¿nymi poziomami pracy (zobacz komentarze):
+.RS
+.sp
+.nf
+.ne 19
+# Poziom, w którym startowaæ
+id:2:initdefault:
+
+# Inicjalizacja systemu przed wszystkim innym.
+si::sysinit:/etc/rc.d/bcheckrc
+
+# Poziom pracy 0,6 to halt i reboot, 1 jest trybem opieki.
+l0:0:wait:/etc/rc.d/rc.halt
+l1:1:wait:/etc/rc.d/rc.single
+l2:2345:wait:/etc/rc.d/rc.multi
+l6:6:wait:/etc/rc.d/rc.reboot
+
+# Co zrobiæ przy ctrl+alt+del.
+ca::ctrlaltdel:/sbin/shutdown -t5 -rf now
+
+# Poziomy 2 i 3: getty na konsoli, poziom 3 to getty na porcie modemu.
+1:23:respawn:/sbin/getty tty1 VC linux
+2:23:respawn:/sbin/getty tty2 VC linux
+3:23:respawn:/sbin/getty tty3 VC linux
+4:23:respawn:/sbin/getty tty4 VC linux
+S2:3:respawn:/sbin/uugetty ttyS2 M19200
+
+.fi
+.sp
+.RE
+.\"}}}
+.\"{{{  Files
+.SH PLIKI
+/etc/inittab
+.\"}}}
+.\"{{{  Author
+.SH AUTOR
+Init zosta³ napisany przez Miquela van Smoorenburga
+(miquels@cistron.nl), strona podrêcznika zosta³a napisana przez
+Sebastiana Lederera (lederer@francium.informatik.uni-bonn.de) i
+zmodyfikowana
+przez Michaela Haardta (u31b3hs@pool.informatik.rwth-aachen.de).
+.\"}}}
+.\"{{{  See also
+.SH "ZOBACZ TAK¯E"
+init(8), telinit(8)
+.\"}}}

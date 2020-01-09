@@ -1,0 +1,47 @@
+.\" T³umaczenie na podstawie wersji man-pages 1.45
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" ------------
+.\" Copyright (c) Bruno Haible <haible@clisp.cons.org>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" References consulted:
+.\"   GNU glibc-2 source code and manual
+.\"   Dinkumware C library reference http://www.dinkumware.com/
+.\"   OpenGroup's Single Unix specification http://www.UNIX-systems.org/online.html
+.\"   ISO/IEC 9899:1999
+.\"
+.TH FPUTWS 3 1999-07-25 "GNU" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+fputws \- zapisanie ³añcucha szerokich znaków do strumienia FILE
+.SH SK£ADNIA
+.nf
+.B #include <wchar.h>
+.sp
+.BI "int fputws(const wchar_t *" ws ", FILE *" stream );
+.fi
+.SH OPIS
+Funkcja \fBfputws\fP jest szerokoznakowym odpowiednikiem funkcji \fBfputs\fP.
+Zapisuje ona do \fIstream\fP ³añcuch szerokich znaków o pocz±tku wskazywanym
+przez \fIws\fP, a¿ do, ale z wy³±czeniem, koñcz±cego znaku L'\\0'.
+.PP
+Informacje o nieblokuj±cym odpowiedniku znajduj± siê w
+.BR unlocked_stdio (3).
+.SH "WARTO¦Æ ZWRACANA"
+Funkcja \fBfputws\fP zwraca nieujemn± liczbê ca³kowit±, gdy nie wyst±pi³ b³±d,
+a \-1 aby zasygnalizowaæ wyst±pienie b³êdu.
+.SH "ZGODNE Z"
+ISO/ANSI C, UNIX98
+.SH UWAGI
+Zachowanie \fBfputws\fP zale¿y od ustawienia kategorii LC_CTYPE aktualnego
+locale.
+.PP
+W przypadku nieprzekazania dodatkowych informacji przy wywo³aniu fopen,
+ozs±dne jest oczekiwanie, ¿e \fBfputws\fP faktycznie zapisze wielobajtowy
+ci±g odpowiadaj±cy ³añcuchowi szerokich znaków \fIws\fP.
+.SH "ZOBACZ TAK¯E"
+.BR fputwc (3)
+.BR unlocked_stdio (3)

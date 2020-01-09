@@ -1,0 +1,244 @@
+.\" 1999 PTM Przemek Borys
+.\" Copyright (c) 1994,1995 Mike Battersby <mib@deakin.edu.au>
+.\" based on work by faith@cs.unc.edu
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified, aeb, 960424
+.TH SIGACTION 2 "24 Sierpnia 1995" "Linux 1.3" "Podrêcznik programisty Linuksa"
+
+.SH NAZWA
+sigaction, sigprocmask, sigpending, sigsuspend \- POSIX-owe funkcje obs³ugi sygna³ów.
+
+.SH SK£ADNIA
+.B #include <signal.h>
+.sp 2
+.BI "int sigaction(int " signum ", const struct sigaction *" act ","
+.BI "struct sigaction *" oldact );
+.sp
+.BI "int sigprocmask(int " how ", const sigset_t *" set ", "
+.BI "sigset_t *" oldset );
+.sp
+.BI "int sigpending(sigset_t *" set );
+.sp
+.BI "int sigsuspend(const sigset_t *" mask );
+
+.SH OPIS
+Wywo³anie systemowe
+.B sigaction
+jest u¿ywane do zmieniania akcji, któr± obiera proces po odebraniu
+okre¶lonego sygna³u.
+.PP
+.I signum
+okre¶la sygna³ i mo¿e byæ dowolnym prawid³owym sygna³em poza
+.B SIGKILL
+i
+.BR SIGSTOP .
+.PP
+Je¶li
+.I act
+jest niezerowe, to nowa akcja dla sygna³u
+.I signum
+jest brana z
+.IR act .
+Je¶li
+.I oldact
+te¿ jest niezerowe, to poprzednia akcja jest w nim zachowywana.
+.PP
+Struktura
+.B sigaction
+jest zdefiniowana jako
+.sp
+.RS
+.nf
+struct sigaction {
+    void (*sa_handler)(int);
+    sigset_t sa_mask;
+    int sa_flags;
+    void (*sa_restorer)(void);
+}
+.fi
+.RE
+.PP
+.I sa_handler
+podaje akcjê, zwi±zan± z sygna³em
+.I signum
+i mo¿e to byæ m.in
+.B SIG_DFL
+dla akcji domy¶lnej,
+.B SIG_IGN
+dla akcji ignorowania, lub wska¼nik do funkcji obs³uguj±cej sygna³.
+.PP
+.I sa_mask
+podaje maskê sygna³ów, które powinny byæ blokowane podczas wywo³ywania
+handlera sygna³ów. Dodatkowo, sygna³, który wywo³a³ handler bêdzie
+zablokowany, chyba ¿e u¿yto flag
+.B SA_NODEFER
+lub
+.BR SA_NOMASK .
+.PP
+.I sa_flags
+podaje zbiór flag, które modyfikuj± zachowanie procesu obs³ugi sygna³ów.
+Jest to zbiór warto¶ci po³±czonych bitowym OR:
+.RS
+.TP
+.B SA_NOCLDSTOP
+Je¶li
+.I signum
+to
+.BR SIGCHLD ", "
+nie odbieraj powiadomienia o zatrzymaniu procesu potomnego (np. gdy proces
+potomny otrzyma jeden z
+.BR SIGSTOP ", " SIGTSTP ", " SIGTTIN
+lub
+.BR SIGTTOU ")."
+.TP
+.BR SA_ONESHOT " or " SA_RESETHAND
+Odtórz akcjê sygna³ow± do stanu domy¶lnego po wywo³aniu handlera sygna³ów.
+(Jest to domy¶lne zachowanie dla wywo³ania
+.BR signal (2).)
+.TP
+.B SA_RESTART
+Daj zachowanie, kompatybilne z semantyk± sygna³ow± BSD, czyni±c pewne
+wywo³ania systemowe odtwarzalnymi przez sygna³y.
+.TP
+.BR SA_NOMASK " or " SA_NODEFER
+Nie chroñ sygna³ów od bycia odebranymi z ich w³asnego handlera.
+.RE
+.PP
+Element
+.I sa_restorer
+jest przedawniony i nie powinno siê go u¿ywaæ.
+.PP
+Wywo³anie
+.B sigprocmask
+jest u¿ywane do zmieniania listy obecnie blokowanych sygna³ów. Zachowanie
+tego wywo³ania jest zale¿ne od warto¶ci
+.IR how ,
+w sposó nastêpuj±cy
+.RS
+.TP
+.B SIG_BLOCK
+Zestaw blokowanych sygna³ów jest uni± bie¿±cego zbioru i argumentu
+.IR set .
+.TP
+.B SIG_UNBLOCK
+Sygna³y w
+.I set
+s± usuwane z bie¿±cego zestawu sygna³ów blokowanych. Legalnym jest
+próbowanie odblokiwania nieblokowanych sygna³ów.
+.TP
+.B SIG_SETMASK
+Zestaw blokowanych sygna³ów jest ustawiany na argument
+.IR set .
+.RE
+.PP
+Je¶li
+.I oldset
+jest niezerowy, to poprzednia warto¶æ maski sygna³u jest w nim zachowywana.
+.PP
+Wywo³anie
+.B sigpending
+umo¿liwia testowanie zalegaj±cych sygna³ów (tych, które zosta³y podniesione
+w momencie blokowania). Maska sygna³owa dla zalegaj±cych sygna³ów jest
+zachowana w
+.IR set .
+.PP
+Wywo³anie
+.B sigsuspend
+tymczasowo podmienia maskê sygna³ow± procesu na t±, przekazan± jako
+.I mask
+i zawiesza proces a¿ do otrzymania sygna³u.
+
+.SH "WARTO¦Æ ZWRACANA"
+.BR sigaction ,
+.BR sigprocmask ,
+.B sigpending
+i
+.B sigsuspend
+zwracaj± 0 po sukcesie i -1 po b³êdzie.
+
+.SH B£ÊDY
+.TP
+.B EINVAL
+Podano nieprawid³owy sygna³. Bêdzie to te¿ generowane dla sygna³ów
+.BR SIGKILL " lub " SIGSTOP ". "
+.TP
+.B EFAULT
+.IR act ", " oldact ", " set 
+lub
+.I oldset
+wskazuj± na pamiêc poza przestrzeni± adresow±.
+.TP
+.B EINTR
+Wywo³anie systemowe zosta³o przerwane.
+
+.SH UWAGI
+Nie mo¿na zablokowaæ sygna³ów
+.BR SIGKILL " lub " SIGSTOP " ."
+Próby takie zostan± zignorowane.
+.PP
+Zgodnie z POSIX, zachowanie procesu po po zignorowaniu SIGFPE, SIGILL i
+SIGSEGV, niegenerowanych przez \fIkill()\fR lub \fIraise()\fR jest
+niezdefiniowane. Dzielenie liczby ca³kowitej przez zero ma wynik
+niezdefiniowany. Na niektórych architekturach generuje sygna³ SIGFPE.
+Ignorowanie go mo¿e prowadziæ do nieskoñczonej pêtli.
+.PP
+Ustawienie
+.B SIGCHLD
+na
+.B SIG_IGN
+daje automatyczne zbieranie plonów procesów potomnych.
+.PP
+Specyfikacja POSIX definiuje tylko
+.BR SA_NOCLDSTOP .
+U¿ycie innych flag
+jest nieprzeno¶ne.
+.PP
+Flaga
+.B SA_RESETHAND
+jest kompatybilna z podobn± flag± z SVr4.
+.PP
+Flaga
+.B SA_NODEFER
+jest kompatybilna z podobn± flag± z SVr4 dla j±der Linuksa 1.3.9 i nowszych.
+.PP
+Nazwy
+.BR SA_RESETHAND " i " SA_NODEFER
+s± kompatybilne z SVr4 i s± dostêpne tylko w wersjach bibliotek wiêkszych
+lub równych 3.0.9.
+.PP
+.B sigaction
+mo¿e byæ wywo³ywany z drugim argumentem o warto¶ci null, powoduj±c w ten
+sposób zapytanie bie¿±cego handlera sygna³u. Mo¿e go te¿ u¿yæ do
+sprawdzenia, czy dany sygna³ jest prawid³owy na obecnej maszynie. W tym celu
+nale¿y daæ zerowy zarówno drugi, jak i trzeci argument.
+.PP
+Zobacz
+.BR sigsetops (3)
+dla szczegó³ów o operacjach na zbiorach sygna³ów.
+.SH "ZGODNE Z"
+POSIX, SVR4
+
+.SH "ZOBACZ TAK¯E"
+.BR kill "(1), " kill "(2), " killpg "(2), " pause "(2), " raise "(3), " 
+.BR siginterrupt "(3), " signal "(2), " signal "(7), " sigsetops "(3), "
+.BR sigvec (2) 

@@ -1,0 +1,39 @@
+.\" Copyright (c) 1996 Free Software Foundation, Inc.
+.\" This program is distributed according to the Gnu General Public License.
+.\" See the file COPYING in the kernel source directory
+.\" $ Id: ksyms.8 1.2 Sun, 06 May 2001 14:52:26 +1000 kaos $
+.\"
+.\" $Id: ksyms.8,v 1.2 2001/11/13 13:43:00 ankry Exp $
+.\"
+.TH KSYMS 8 "26 grudnia 1996" Linux "Wsparcie dla modu³ów"
+.SH NAZWA
+ksyms \- wypisuje symbole udostêpniane przez kernel.
+.SH SK£ADNIA
+.B ksyms
+[ \-a ] [ \-h ] [ \-m ]
+.SH OPIS
+.B ksyms
+Wypisuje informacje o udostêpnianych przez j±dro symbolach. Format jest
+postaci: adres, nazwa, i modu³, w którym go zdefiniowano.
+.SS OPCJE
+.TP
+.I \-a
+Wypisuje wszystkie symbole. Domy¶lnie, symbole z w³a¶ciwego j±dra s±
+pomijane.
+.TP
+.I \-h
+Pomija nag³ówki kolumn.
+.TP
+.I \-m
+Wypisuje informacje o modu³ach. W³±cza do listingu adres, pod którym modu³
+zosta³ za³adowany do j±dra i jego rozmiar.
+.SH "ZOBACZ TAK¯E"
+insmod(8), modprobe(8), depmod(8), rmmod(8), lsmod(8)
+.SH HISTORIA
+Polecenie
+.B ksyms
+zosta³o wymy¶lone przez Bjorna Ekwalla <bj0rn@blox.se>
+.br
+Opcja '-m' zosta³a powo³ana przez Davida Hindsa <dhinds@allegro.stanford.edu>
+.br
+Zaktualizowane dla 2.1.17 przez Richarda Hendersona <rth@tamu.edu>

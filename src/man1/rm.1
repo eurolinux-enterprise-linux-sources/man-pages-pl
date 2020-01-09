@@ -1,0 +1,120 @@
+.\" {PTM/PB/0.1/28-09-1998/"usuñ pliki"}
+.\" Translation (c) 1998 Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.\" poszerzenie i aktualizacja do GNU fileutils 4.01 PTM/WK/2000-I
+.ig
+Transl.note: based on GNU man page rm.1 and fileutils.info
+
+Copyright 1994, 95, 96, 1999 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+..
+.TH RM "1" FSF "grudzieñ 1999" "Narzêdzia plikowe GNU 4.0l"
+.SH NAZWA
+rm \- usuwa pliki
+.SH SK£ADNIA
+.B rm
+.RI [ opcja ]...
+.IR plik ...
+.SH OPIS
+Dokumentacja niniejsza nie jest ju¿ utrzymywana i mo¿e byæ niedok³adna
+lub niekompletna.  Autorytatywnym ¼ród³em jest obecnie dokumentacja
+Texinfo.  Dostêp do niej uzyskasz wpisuj±c w wierszu poleceñ:
+.RS
+.B pinfo rm
+.RE
+lub
+.RS
+.BR "info rm" .
+.RE
+.PP
+Ta strona podrêcznika man opisuje polecenie \fBrm\fR w wersji GNU.
+.PP
+.B rm
+usuwa ka¿dy podany plik. Domy¶lnie nie usuwa katalogów.
+.P
+Je¶li pliki jest niezapisywalny, standardowym wej¶ciem jest terminal,
+a nie podano opcji \fB\-f\fR ani \fB\-\-force\fR lub \fB*podano*\fR
+opcjê \fB\-i\fR lub \fB\-\-interactive\fR, to
+.B rm
+pyta u¿ytkownika czy usun±æ plik. Je¶li odpowied¼ nie zaczyna siê od `y' lub
+`Y', plik jest pomijany.
+.LP
+GNU
+.BR rm ,
+podobnie jak ka¿dy inny program, który u¿ywa funkcji getopt do rozbioru
+swoich argumentów, pozwala na u¿ywanie opcji
+.B \-\-
+do wskazania, ¿e wszystkie nastêpne argumenty nie s± opcjami.
+Aby skasowaæ plik o nazwie \fI\-f\fR w bie¿±cym katalogu, mo¿na wpisaæ albo
+.RS
+.BI "rm \-\- " \-f
+.RE
+albo
+.RS
+.BI "rm " ./\-f
+.RE
+Stosowanie przez uniksowy program \fBrm\fP pojedynczego znaku \fB-\fR do
+tego samego celu pochodzi sprzed rozwoju standardowej sk³adni getopt.
+.SS OPCJE
+.TP
+.BR \-d ", " \-\-directory
+Usuwa katalogi za pomoc± `unlink' zamiast u¿ycia `rmdir' i nie wymaga
+by katalogi by³y puste przed prób± skasowania. Dzia³a to tylko je¶li mamy
+odpowiednie uprawnienia a system obs³uguje `unlink' w odniesieniu do
+katalogów. Poniewa¿ kasowanie w ten sposób katalogów powoduje, ¿e wszystkie
+pliki w skasowanym katalogu nie posiadaj± przypisañ,
+.\" (become unreferenced),
+rozs±dnie jest u¿yæ
+.B fsck
+na systemie plików po dokonaniu takiej operacji.
+.TP
+.BR \-f ", " \-\-force
+Ignoruje nieistniej±ce pliki i nigdy nie pyta u¿ytkownika. Ignoruje
+uprzedni± opcjê \fB--interactive\fP (\fB-i\fP).
+.TP
+.BR \-i ", " \-\-interactive
+Dla ka¿dego z plików prosi o potwierdzenie usuniêcia.
+Je¶li odpowied¼ nie zaczyna siê od `y' lub `Y', plik jest pomijany.
+Ignoruje uprzedni± opcjê \fB--force\fP (\fB-f\fP).
+.TP
+.BR \-r ", " \-R ", " \-\-recursive
+Usuwanie rekurencyjne. Usuwane s± tak¿e katalogi wraz z ca³± zawarto¶ci±.
+.BR "Tej opcji nale¿y u¿ywaæ bardzo ostro¿nie" .
+.TP
+.BR \-v ", " \-\-verbose
+Wypisuje nazwê ka¿dego pliku przed usuniêciem.
+.TP
+.BR \-\-help
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach,
+koñczy dzia³anie.
+.TP
+.BR \-\-version
+Wy¶wietla numer wersji programu i koñczy dzia³anie.
+.SH AUTOR
+Napisane przez Paula Rubina, Davida MacKenzie, Richarda Stallmana
+i Jima Meyeringa.
+.SH "ZG£ASZANIE B£ÊDÓW"
+B³êdy proszê zg³aszaæ, w jêz.ang., do <bug-fileutils@gnu.org>.
+.SH COPYRIGHT
+Copyright \(co 1999 Free Software Foundation, Inc.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH ZOBACZ TAK¯E
+.BR rmdir (1),
+.BR fileutils (1).
+.SH OD T£UMACZA
+Zaktualizowano i poszerzono wg dokumentacji Texinfo dla narzêdzi plikowych
+GNU wersji 4.01.

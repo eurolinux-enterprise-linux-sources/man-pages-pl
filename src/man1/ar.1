@@ -1,0 +1,447 @@
+.\" {PTM/PB/0.1/28-09-1998/"utwórz, modyfikuj i ekstrahuj z archiwów"}
+.\" Copyright (c) 1991 Free Software Foundation
+.\" See section COPYING for conditions for redistribution
+.\" Translation (c) Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.TH ar 1 "5 November 1991" "wsparcie cygnusa" "Narzêdzia programistyczne GNU"
+.de BP
+.sp
+.ti \-.2i
+\(**
+..
+
+.SH NAZWA
+ar \- utwórz, modyfikuj i ekstrahuj z archiwów.
+
+.SH SK£ADNIA
+.hy 0
+.na
+.BR ar " [\|" "-" "\|]"\c
+.I {dmpqrtx}[abcilosuvV] \c
+[\|\c
+.I nazwacz³onka\c
+\&\|] \c
+.I archiwum\c
+\& \c
+.I pliki\c
+\&.\|.\|.
+
+.ad b
+.hy 1
+.SH OPIS
+Wersja GNU narzêdzia \c
+.B ar\c
+\& tworzy, modyfikuje i wyci±ga pliki z archiwów. \c
+.I archiwum\c
+\& jest pojedynczym plikiem, zawieraj±cym zbiór innych plików w strukturze,
+która umo¿liwia wyci±gniêcie plików oryginalnych (zwanych \c
+.I cz³onkami\c
+\& archiwum).
+
+Po ekstrakcji, mo¿na odtworzyæ oryginalne zawarto¶ci plików, prawa,
+timestampy, w³a¶cicieli i grupy.
+
+GNU \c
+.B ar\c
+\& potrafi obs³ugiwaæ archiwa, których cz³onkowie maj± nazwy dowolnej
+d³ugo¶ci; zale¿nie jednak od konfiguracji \c
+.B ar\c
+\&, mo¿na ustawiaæ limit d³ugo¶ci nazwy cz³onka (dla
+zachowania kompatybilno¶ci z innymi narzêdziami). Je¶li limit istnieje, to jest
+czêsto limitem 15 znaków (typowy dla formatów zwi±zanych z a.out) lub 16
+(typowe dla formatów zwi±zanych z coff).
+
+\c
+.B ar\c
+\& jest uwa¿any za narzêdzie binarne, poniewa¿ jego archiwa s± najczê¶ciej
+u¿ywane jako \c
+.I biblioteki\c
+\& (statyczne) zawieraj±ce naczê¶ciej u¿ywane funkcje.
+
+\c
+Je¶li podasz modyfikator
+\|'\c
+.B s\c
+\|',
+.B ar\c
+\& bêdzie tworzy³ indeks do symboli zdefiniowanych w relokowalnych modu³ach
+obiektowych archiwum.
+Raz utworzony indeks jest odnawiany w archiwum w sytuacji, gdy \c
+.B ar\c
+\&
+zmieni jego zawarto¶æ (bezpieczne dla operacji
+\|'\c
+.B q\c
+\|' odnawiania).
+Archiwum z takim indeksem przyspiesza linkowanie biblioteki i umo¿liwia
+funkcjom z biblioteki wo³anie siebie nawzajem bez wzglêdu na po³o¿enie w
+archiwum.
+
+Aby wylistowaæ ten indeks, mo¿esz u¿yæ `\|\c
+.B nm \-s\c
+\|' lub `\|\c
+.B nm \-\-print\-armap\c
+\|'. Je¶li archiwum nie ma takiego indeksu, mo¿esz go dodaæ przy u¿yciu
+innej formy \c
+.B ar\c
+\&, nazywaj±cej siê
+\c
+.B ranlib\c
+\&.
+
+\c
+.B ar\c
+\& wymaga co najmniej dwóch argumentów, aby siê uruchomiæ: jednego s³owa
+kluczowego okre¶laj±cego \c
+.I operacjê\c
+\& (opcjonalnie w towarzystwie innych liter kluczowych, okre¶laj±cych \c
+.I modyfikatory\c
+\&), i nazwy archiwum, na którym ma dzia³aæ.
+
+Wiêkszo¶æ operacji mo¿e tak¿e przyjmowaæ dalsze argumenty \c
+.I plikowe\c
+\& , podaj±ce konkretne pliki, na których operowaæ.
+
+.SH OPCJE
+GNU \c
+.B ar\c
+\& umo¿liwia ci mieszanie kodu operacji
+.I p\c
+\& i flag modyfikacji \c
+.I mod\c
+\& w dowolnej kolejno¶ci w obrêbie pierwszego argumentu linii komend.
+
+Je¶li sobie ¿yczysz, mo¿esz rozpocz±æ argument linii komend kreseczk±.
+
+Litera kluczowa \c
+.I p\c
+\& okre¶la, jak± operacjê wykonaæ; mo¿e byæ dowoln± z nastêpuj±cych, lecz
+tylko jedna naraz:
+
+.TP
+.B d
+\c
+.I Kasuj\c
+\& modu³y z archiwum. Nazwy modu³ów, które chcesz skasowaæ podaj jako \c
+.I pliki\c
+\&; Je¶li nie podasz ¿adnych plików do kasowania, archiwum pozostanie
+nietkniête.
+
+Je¶li podasz modyfikator `\|\c
+.B v\c
+\|' , to  \c
+.B ar\c
+\& wy¶wietli ka¿dy skasowany modu³.
+
+.TP
+.B m
+U¿yj tej operacji do \c
+.I przemieszczenia\c
+\& cz³onków archiwum.
+
+Kolejno¶æ cz³onków w archiwum mo¿e byæ istotna przy linkowaniu biblioteki z
+programami, kiedy symbol jest zdefiniowany wiêcej ni¿ w jednym cz³onku.
+
+Je¶li nie u¿yto ¿adnych modyfikatorów przy komendzie \c
+.B m\c
+\&, wszyscy cz³onkowie, których nazwiesz w argumencie
+\c
+.I pliki\c
+\& zostan± przeniesieni na \c
+.I koniec\c
+\& archiwum;
+Mo¿esz u¿yæ modyfikatorów `\|\c
+.B a\c
+\|', `\|\c
+.B b\c
+\|', lub `\|\c
+.B i\c
+\|' aby przenie¶æ je do okre¶lonego miejsca.
+
+.TP
+.B p
+\c
+.I Wydrukuj\c
+\& okre¶lonych cz³onków archiwum na standardowe wyj¶cie.
+Je¶li zosta³ podany modyfikator`\|\c
+.B v\c
+\|' , to przed skopiowaniem zawarto¶ci cz³onka na standardowe wyj¶cie,
+poka¿ jego nazwê.
+
+Je¶li nie podasz ¿adnych argumentów \c
+.I pliki\c
+\&, wydrukowane zostan± wszystkie pliki archiwum.
+
+.TP
+.B q
+\c
+.I Do³±cz szybko \c
+.I pliki\c
+\& do koñca \c
+.I archiwum\c
+\&,
+bez sprawdzania podmieniania.  
+
+Modyfikatory `\|\c
+.B a\c
+\|', `\|\c
+.B b\c
+\|', i `\|\c
+.B i' \c
+.I nie\c
+\& wp³ywaj± na tê operacjê; nowi cz³onkowie zawsze s± dodwani na koñcu
+archiwum.
+
+Modyfikator `\|\c
+.B v\c
+\|' powoduje, ¿e \c
+.B ar\c
+\& listuje ka¿dy plik, który doda.
+
+Poniewa¿ w tej operacji chodzi o szybko¶æ, indeks tablicy symboli archiwum
+nie jest odnawiany, nawet je¶li ju¿ istnia³; mo¿esz u¿yæ `\|\c
+.B ar s\c
+\|' lub
+\c
+.B ranlib\c
+\& aby wyj±tkowo odnowiæ indeks tablicy symboli.
+
+.TP
+.B r
+Wstaw \c
+.I pliki\c
+\& do \c
+.I archiwum\c
+\& (z \c
+.I podmienianiem\c
+\&). Ta
+operacja ró¿ni siê od `\|\c
+.B q\c
+\|' tym, ¿e wszyscy istniej±cy cz³onkowie zostaj± usuwani, je¶li ich nazwy
+odpowiadaj± nazwom dodawanym.
+
+Je¶li który¶ z plików nazwanych w argumencie \c
+.I pliki\c
+\& nie istnieje, \c
+.B ar\c
+\&
+wy¶wietla komunikat o b³êdzie i zostawia nie rusza cz³onków
+archiwum, odpowiadaj±cych tej nazwie.
+
+Domy¶lnie, nowi cz³onkowie s± dodawani na koniec pliku; mo¿esz jednak u¿yæ
+modyfikatorów `\|\c
+.B a\c
+\|', `\|\c
+.B b\c
+\|', lub `\|\c
+.B i\c
+\|' aby za¿±daæ wstawienia wzglêdem jakiego¶ istniej±ego cz³onka.
+
+W tej operacji mo¿na u¿yæ modyfikatora `\|\c
+.B v\c
+\|', który wy¶wietla po jednej linijce komentarza dla ka¿dego
+w³±czonego pliku, uzupe³niaj±c j± jedn± z liter `\|\c
+.B a\c
+\|' lu
+`\|\c
+.B r\c
+\|', wskazuj±c tak, czy plik zosta³ dopisany na koñcu (nie skasowano ¿adnego
+starego cz³onka) czy zosta³ podmieniony.
+
+.TP
+.B t
+Wy¶wietl \c
+.I tabelowy\c
+\& listing zawarto¶ci \c
+.I archiwum\c
+\&, lub te z plików, wymienionych w argumencie \c
+.I pliki\c
+\&, które s± obecne w archiwum. Normalnie wy¶wietlana jest tylko nazwa 
+cz³onka; je¶li chcesz zobczyæ prawa, timestamp, w³a¶ciciela, grupê i
+rozmiar, powiniene¶ u¿yæ modyfikatora `\|\c
+.B v\c
+\|' .
+
+Je¶li nie zostanie podany ¿aden argument \c
+.I pliki\c
+\&, to wylistowane zostan± wszystkie pliki archiwum.
+
+Je¶li pod dan± nazw± w archiwum (powiedzmy `\fBb.a\fR' istnieje wiêcej ni¿
+jeden plik (powiedzmy `\|\c
+.B fie\c
+\|'), to `\|\c
+.B ar t b.a fie\c
+\|' wylistuje tylko pierwszy z nich; aby zobaczyæ wszystkie, musisz wydaæ
+komendê kompletnego listingu \(em\&w naszym wypadku, `\|\c
+.B ar t b.a\c
+\|'.
+
+.TP
+.B x
+\c
+.I Wyci±gnij\c
+\& cz³onków (nazwanych w parametrze \c
+.I pliki\c
+\&) z archiwum.  Aby za¿±daæ, by \fBar\fR listowa³ ka¿d± nazwê podczas jej
+wyci±gania, mo¿esz u¿yæ modyfikatora `\|\c
+.B v\c
+\|'.
+
+Je¶li nie podasz ¿adnego parametru \c
+.I pliki\c
+\&, wyci±gniête zostan± wszystkie pliki archiwum.
+
+.PP
+
+Za liter± kluczow± \fIp\fR mo¿e znajdowaæ siê pewna liczba modyfikatorów (\c
+.I mod\c
+\&), która wtedy okre¶la wariacje zachowania tej operacji:
+
+.TP
+.B a
+Dodaj nowe pliki \c
+.I za\c
+\& istniej±cym cz³onkiem archiwum. Je¶li u¿ywasz tego modyfikatora, to \c
+.B musisz\c
+\& przed podaniem \fIarchiwum\fR jako argument podaæ nazwê istniej±cego
+cz³onka archiwum -- \c
+.I membername\c
+\&.
+
+.TP
+.B b
+Dodaj nowe pliki \c
+.I przed\c
+\& istniej±cym cz³onkiem archiwum. Je¶li u¿ywasz tego modyfikatora, to \c
+.B musisz \c
+\& przed podaniem \fIarchiwum\fR podaæ nazwê istniej±cego cz³onka jako argument
+.I membername\c
+\&.
+\& (tak samo jak `\|\c
+.B i\c
+\|').
+
+.TP
+.B c
+\c
+.I Utwórz\c
+\& archiwum. Podane \c
+.I archiwum\c
+\& jest zawsze tworzone je¿eli nie istnia³o, a ¿±dasz odnowienia
+(update). Wypisywane jest jednak wtedy ostrze¿enie, chyba ¿e podasz z góry, ¿e
+chcesz je utworzyæ, u¿ywaj±c tego modyfikatora.
+
+.TP
+.B f
+Skraca nazwy w archiwum.
+.B ar
+normalnie pozwala plikom mieæ dowoln± d³ugo¶æ. Powoduje to, ¿e archiwa mog±
+byæ niekompatybilne z natywnymi programami
+.B ar
+niektórych innych systemów. Je¶li jest to istotne, mo¿na wykorzystaæ 
+modyfikator
+.B f,
+który umo¿liwia skracanie nazw plików podczas wstawiania ich do archiwum.
+
+.TP
+.B i
+Wstaw nowe pliki \c
+.I przed\c
+\& istniej±cym cz³onkiem archiwum. Je¶li u¿ywasz modyfikatora \c
+.B i\c
+\&, to przed podaniem \fIarchiwum\fR musisz podaæ nazwê istniej±cego cz³onka
+archiwum w argumencie \c
+.I membername\c
+\&.
+\& (tak samo jak `\|\c
+.B b\c
+\|').
+
+.TP
+.B l
+Modyfikator ten jest przyjmowany, lecz nie jest wykorzystywany.
+
+.TP
+.B o
+Chroñ \c
+.I oryginalne\c
+\& daty cz³onków, kiedy ich wyci±gasz. Je¶li nie podasz tego modyfikatora,
+pliki wyci±gniête z archiwum bêd± naznaczone czasem wyci±gania.
+
+.TP
+.B s
+Zapisz indeks plików obiektowych do archiwum, lub odnów istniej±cy, nawet
+je¶li w archiwum nic nie zmieniono. Tej flagi modyfikuj±cej mo¿esz u¿yæ w
+po³±czeniu z
+dowoln± operacj±, lub samodzielnie. Uruchamianie `\|\c
+.B ar s\c
+\|' na archiwum jest równowa¿ne uruchomieniu na nim `\|\c
+.B ranlib\c
+\|'.
+
+.TP
+.B u
+Normalnie, \c
+.B ar r\c
+\&.\|.\|. wstawia wszystkie wylistowane pliki do archiwum. Je¶li chcesz
+wstawiaæ \c
+.I tylko\c
+\& te z wymienionych plików, które s± nowsze od istniej±cych cz³onków o tych
+samych nazwach, u¿yj tego modyfikatora. Modyfikator `\|\c
+.B u\c
+\|' jest dozwolony tylko przy operacji `\|\c
+.B r\c
+\|' (podmienienia).  W praktyce kombinacja `\|\c
+.B qu\c
+\|' nie jest dozwolona, poniewa¿ sprawdzanie timestampów spowodowa³oby
+spowolnienie wszystkich ulepszeñ operacji `\|\c
+.B q\c
+\|'.
+
+.TP
+.B v
+Ten modyfikator ¿±da wersji operacji, która \c 
+.I wypisuje komunikaty informacyjne \c
+\&. Wiele operacji wy¶wietla dodatkowe informacje. Np. informacje takie, jak
+przetwarzane pliki.
+
+.TP
+.B V
+Ten modyfikator pokazuje wersjê programu
+.BR ar .
+
+.PP
+
+.SH "ZOBACZ TAK¯E"
+Wpis
+.RB "`\|" binutils "\|'"
+w
+.B
+info\c
+\&; 
+.I
+The GNU Binary Utilities\c
+, Roland H. Pesch (October 1991).
+.BR nm ( 1 )\c
+\&,
+.BR ranlib ( 1 )\c
+\&.
+
+.SH KOPIOWANIE
+(Autor nie ¿yczy sobie t³umaczenia tej noty bez zatwierdzenia FSF)
+
+Copyright (c) 1991 Free Software Foundation, Inc.
+.PP
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+.PP
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+.PP
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be included in
+translations approved by the Free Software Foundation instead of in
+the original English.

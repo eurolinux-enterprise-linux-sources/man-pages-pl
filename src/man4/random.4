@@ -1,0 +1,150 @@
+.\" Copyright (c) 1997 John S. Kallal (kallal@voicenet.com)
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" Some changes by tytso and aeb.
+.\"
+.\" 2004-12-16, John V. Belmonte/mtk, Updated init and quit scripts
+.\"
+.\" T³umaczenie na jêzyk polski: Pawe³ Olszewski (alder@amg.net.pl)
+.\" {PTM/PO/0.2/02-06-1998/"urz±dzenia ¼ród³owe liczb losowych j±dra"}
+.\" Aktualizacja: Robert Luberda <robert@debian.org>, Mar 2003, manpages 2.01
+.\" $Id: random.4,v 1.7 2005/03/18 13:07:01 robert Exp $
+.\"
+.TH RANDOM 4 2003-10-25 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+random, urandom \- urz±dzenia ¼ród³owe liczb losowych j±dra
+.SH OPIS
+Specjalne urz±dzenia znakowe \fB/dev/random\fP i \fB/dev/urandom\fP
+(obecne w Linuksie od wersji 1.3.30) stanowi± interfejs do wbudowanego w j±dro
+generatora liczb losowych. Plik \fB/dev/random\fP ma g³ówny numer urz±dzenia
+1 i poboczny numer 8. Plik \fB/dev/urandom\fP ma g³ówny numer
+urz±dzenia 1 i poboczny numer 9.
+.LP
+Generator liczb losowych zbiera szum ¶rodowiskowy ze sterowników
+urz±dzeñ i innych ¼róde³ do puli losowej. Generator przechowuje
+równie¿ szacunkow± liczbê bitów szumu w puli losowej. Z owej puli
+tworzone s± liczby losowe.
+.LP
+W trakcie odczytu, urz±dzenie \fB/dev/random\fP bêdzie zwracaæ losowe
+bajty, spo¶ród oszacowanej liczby bitów szumu w puli.
+\fB/dev/random\fP nadaje siê najlepiej do zastosowañ, w których
+potrzebna jest losowo¶æ bardzo wysokiej jako¶ci, jak np. jednorazowa
+maska lub generowanie kluczy. Je¶li pula losowa jest pusta, odczyt z
+\fB/dev/random\fP bêdzie wstrzymany do czasu zebrania dodatkowego
+szumu ¶rodowiskowego.
+.LP
+Odczyt z urz±dzenia \fB/dev/urandom\fP zwróci tyle bajtów, ile
+za¿±dano. W efekcie, je¶li nie ma wystarczaj±cego chaosu w puli
+losowej, zwracane warto¶ci s± teoretycznie nara¿one na atak
+kryptograficzny w stosunku do algorytmów wykorzystywanych przez
+sterownik. Wiedza na ten temat nie jest dostêpna w obecnych nie
+zastrze¿onych publikacjach, ale istnieje teoretyczna mo¿liwo¶æ
+przeprowadzenia takiego ataku. Je¶li jest to problemem w przypadku
+twojego programu, u¿yj \fB/dev/random\fP.
+.SH KONFIGURACJA
+Je¶li w systemie nie ma plików \fB/dev/random\fP i \fB/dev/urandom\fP, mo¿na
+je utworzyæ przy u¿yciu nastêpuj±cych poleceñ:
+
+.nf
+        mknod -m 644 /dev/random c 1 8
+        mknod -m 644 /dev/urandom c 1 9
+        chown root:root /dev/random /dev/urandom
+.fi
+
+Gdy Linux uruchamiany jest przy niewielkim udziale operatora, pula
+losowa mo¿e byæ w do¶æ przewidywalnym stanie. Faktyczna ilo¶æ szumu w
+puli losowej jest wówczas poni¿ej ilo¶ci szacowanej. Aby
+przeciwdzia³aæ temu efektowi, pomocne jest zapamiêtywanie informacji o
+puli losowej pomiêdzy kolejnymi uruchomieniami systemu. Aby dzia³o
+siê to automatycznie, nale¿y dodaæ nastêpuj±ce wiersze do stosownych
+skryptów startowych Linuksa:
+
+.nf
+	echo "Inicjowanie generatora liczb losowych w j±drze..."
+	random_seed=/var/run/random-seed
+	# Przechowanie warto¶ci losowej od jednego startu systemu
+	# do kolejnego startu. £adujemy, a potem zachowujemy ca³±
+	# pulê losow±.
+	if [ -f $random_seed ]; then
+	    cat $random_seed >/dev/urandom
+	else
+	    touch $random_seed
+	fi
+	chmod 600 $random_seed
+	poolfile=/proc/sys/kernel/random/poolsize
+	[ -r $poolfile ] && bytes=`cat $poolfile` || bytes=512
+	dd if=/dev/urandom of=$random_seed count=1 bs=$bytes
+.fi
+
+Trzeba równie¿ dodaæ nastêpuj±ce wiersze do stosownego skryptu uruchamianego
+podczas zamykania systemu Linuksa:
+
+.nf
+ 	# Przechowanie losowych danych pomiêdzy wy³±czeniem a wy³±-
+	# czeniem komputera. Zachowywanie puli losowej generatora.
+ 	echo "Zachowywanie danych losowych..."
+	random_seed=/var/run/random-seed
+	touch $random_seed
+	chmod 600 $random_seed
+	poolfile=/proc/sys/kernel/random/poolsize
+	[ -r $poolfile ] && bytes=`cat $poolfile` || bytes=512
+	dd if=/dev/urandom of=$random_seed count=1 bs=$bytes
+.fi
+.SH "INTERFEJS PROC"
+Pliki w katalogu
+.I /proc/sys/kernel/random
+(obecnym od wersji 2.3.16) s± dodatkowym intefejsem do urz±dzenia
+.BR /dev/random .
+.LP
+Plik z prawami tylko do odczytu
+.I entropy_avail
+dostarcza dostêpn± pulê losow±. Zazwyczaj bêdzie to 4096 (bitów),
+ca³o¶æ dostêpnej puli.
+.LP
+Plik
+.I poolsize
+podaje rozmiar puli losowej. Zazwyczaj \- 512 (bajtów). Mo¿e byæ zmienione
+na dowoln± warto¶æ, dla której dostêpny jest algorytm. Obecnie mo¿liwe
+warto¶ci to: 32, 64, 128, 256, 512, 1024, 2048.
+.LP
+Plik
+.I read_wakeup_threshold
+zawiera liczbê bitów entropii potrzebnej do obudzenia procesu, który
+zasn±³, czekaj±c na entropiê z pliku
+.BR /dev/random .
+Domy¶lnie \- 64.
+Plik
+.I write_wakeup_threshold
+zawiera liczbê bitów entropii poni¿ej której zostanie u¶piony
+proces, który wykona
+.I select()
+lub
+.IR poll() ,
+aby otworzyæ do zapisu urz±dzenie
+.BR /dev/random .
+Warto¶ci te mog± byæ zmienione przez zapis do tych plików.
+.LP
+Pliki tylko do odczytu
+.I uuid
+i
+.I boot_id
+zawieraj± losowe ³añcuchy znaków, takie
+jak 6fd5a44b-35f4-4ad4-a9b9-6b9be13e1fe9.
+Pierwszy z tych plików jest generowany na nowo przy ka¿dym odczycie, a drugi
+jest generowany tylko raz.
+.SH PLIKI
+/dev/random
+.br
+/dev/urandom
+.SH AUTOR
+Generator liczb losowych w j±drze zosta³ napisany przez Theodore'a Ts'o
+(tytso@athena.mit.edu).
+.SH "ZOBACZ TAK¯E"
+mknod (1)
+.br
+RFC 1750, "Randomness Recommendations for Security" (Zalecenia dotycz±ce
+bezpieczeñstwa losowo¶ci)

@@ -1,0 +1,49 @@
+.\"             -*-Nroff-*-
+.\"  This page Copyright (C) 1993 Matt Welsh, mdw@sunsite.unc.edu.
+.\"  Freely distributable under the terms of the GPL
+.\" Translation (c) 1998 Marcin Mazurek <mazek@capella.ae.poznan.pl>
+.\" {PTM/MM/0.1/08-10-1998/"free.1 - informacja o wolnej/wykorzystanej pamiêci"}
+.TH FREE 1 "20 marca 1993 " "Cohesive Systems" "Podrêcznik programisty linuksowego"
+.SH NAZWA
+free \- wy¶wietla informacjê o pamiêci wolnej i wykorzystywanej w systemie
+.SH SK£ADNIA
+.BR "free " [ "\-b" " | " "\-k" " | " "\-m" "] [" "\-o" "] [" "\-s"
+.I opó¼nienie
+.RB "] [" "\-t" "] [" "\-V" ]
+.SH OPIS
+\fBfree\fP wy¶wietla ca³kowity rozmiar wolnej i wykorzystanej pamiêci 
+fizycznej i swap w systemie, oraz informacjê o pamiêci dzielonej i buforach
+u¿ywanych przez j±dro systemu.
+.SS Opcje
+Opcja \fB-b\fP wy¶wietla informacjê o pamiêci w bajtach; opcja 
+\fB-k\fP (ustawienie standardowe) wy¶wietla informacjê w kilobajtach; a
+\fB-m\fP - w megabajtach.
+.PP
+Opcja \fB-t\fP wy¶wietla liniê zawieraj±c± podsumowanie informacji o
+pamiêci.
+.PP
+Opcja \fB-o\fP wy³±cza wy¶wietlenie linii z informacj± o pamiêci
+przeznaczonej na bufory. Je¶li nie
+zosta³a ona podana, \fBfree\fP odejmuje/dodaje pamiêæ buforów od/do
+u¿ywanej/wolnej pamiêci w raportach.
+.PP
+Opcja \fB-s\fP w³±cza ci±g³e wy¶wietlanie informacji, w odstêpach podanych
+przez \fIopó¼nienie\fP w sekundach. W rzeczywisto¶ci mo¿esz podaæ warto¶æ 
+\fIopó¼nienia\fP jako dowoln± liczbê rzeczywist±.
+Do zinterpretowania czasu podanego w mikrosekundach u¿ywana jest funkcja
+.BR usleep (3).
+.PP
+Opcja \fB\-V\fP wy¶wietla informacjê o wersji.
+.SH PLIKI
+.ta
+.IR /proc/meminfo " \-\- informacja o pamiêci"
+.fi
+
+.SH "ZOBACZ TAK¯E"
+.BR ps (1),
+.BR top (1)
+
+.SH AUTORZY
+Napisane przez Briana Edmondsa. 
+
+Informacje o b³êdach proszê przesy³aæ na adres <procps-bugs@redhat.com>

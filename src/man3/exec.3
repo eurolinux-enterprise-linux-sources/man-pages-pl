@@ -1,0 +1,206 @@
+.\" {PTM/AB/0.1/19-12-1998/"execl, execlp, execle, execv, execvp - wykonanie pliku"}
+.\" t³umaczenie Adam Byrtek <abyrtek@priv.onet.pl>
+.\" Aktualizacja do man-pages 1.45 - A. Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" ------------
+.\" Copyright (c) 1991 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     @(#)exec.3	6.4 (Berkeley) 4/19/91
+.\"
+.\" Converted for Linux, Mon Nov 29 11:12:48 1993, faith@cs.unc.edu
+.\" Updated more for Linux, Tue Jul 15 11:54:18 1997, pacman@cqc.com
+.\" ------------
+.TH EXEC 3 "1993-11-29" "BSD" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+execl, execlp, execle, execv, execvp \- uruchomienie pliku
+.SH SK£ADNIA
+.B #include <unistd.h>
+.sp
+.B extern char **environ;
+.sp
+.BI "int execl(const char *" path ", const char *" arg ", ...);"
+.br
+.BI "int execlp(const char *" file ", const char *" arg ", ...);"
+.br
+.BI "int execle(const char *" path ", const char *" arg
+.BI ", ..., char * const " envp "[]);"
+.br
+.BI "int execv(const char *" path ", char *const " argv "[]);"
+.br
+.BI "int execvp(const char *" file ", char *const " argv "[]);"
+.SH OPIS
+Rodzina funkcji
+.B exec
+zastêpuje w pamiêci obraz aktualnego procesu obrazem nowego procesu. Funkcje
+opisane na tej stronie man s± tylko nak³adkami dla funkcji
+.BR execve (2).
+(Dodatkowych informacji na temat
+nadpisywania aktualnego procesu szukaj na stronie man tej funkcji.)
+.PP
+Pierwszym argumentem tych funkcji jest ¶cie¿ka do pliku, który ma byæ
+uruchomiony.
+.PP
+Kolejne wyra¿enia
+.I "const char *arg"
+w funkcjach
+.BR execl ,
+.BR execlp ,
+i
+.B execle
+mo¿na traktowaæ jako
+.IR arg0 ,
+.IR arg1 ,
+\&...,
+.IR argn .
+Razem opisuj± one listê jednego lub wiêcej wska¼ników do zakoñczonych znakiem
+NUL ³añcuchów, reprezentuj±cych listê argumentów udostêpnoianych wykonywanemu
+programowi. Pierwszy argument, zgodnie z konwencj±, powinien wskazywaæ na
+nazwê pliku powi±zan± z wykonywanym plikiem. Lista argumentów
+.I musi
+byæ zakoñczona wska¼nikiem
+.BR NULL .
+.PP
+Funkcje
+.B execv
+oraz
+.B execvp
+udostêpniaj± tablicê wska¼ników do zakoñczonych znakami NUL ³añcuchów,
+które reprezentuj± listê argumentów dostêpnych dla wykonywanego programu.
+Pierwszy argument, zgodnie z konwencj±, powinien wskazywaæ na nazwê pliku
+powi±zan± z wykonywanym plikiem. Tablica wska¼ników
+.I musi
+byæ zakoñczona wska¼nikiem
+.BR NULL .
+.PP
+Funkcja
+.B execle
+dodatkowo okre¶la ¶rodowisko wykonywanego procesu poprzez dodanie po wska¼niku
+.BR NULL ,
+koñcz±cym listê argumentów w li¶cie parametrów lub po tablicy argv dodatkowego
+argumentu. Tym dodatkowym argumentem jest tablica wska¼ników do zakoñczonych
+znakami NUL ³añcuchów, która to tablica
+.I musi
+byæ zakoñczona wska¼nikiem
+.BR NULL .
+Pozosta³e funkcje pobieraj± ¶rodowisko dla nowego procesu z zewnêtrznej
+zmiennej
+.I environ
+aktualnego procesu.
+.PP
+Niektóre z tych funkcji maj± specyficzn± semantykê.
+.PP
+Funkcje
+.B execlp
+oraz
+.B execvp
+wykonuj± zadania pow³oki szukaj±c pliku wykonywalnego, je¶li nazwa pliku nie
+zawiera znaku uko¶nika (/). ¦cie¿ka przeszukiwania to ¶cie¿ka podana
+w zmiennej ¶rodowiskowej
+.BR PATH .
+Je¶li zmienna ta nie istnieje, przyjmowana jest domy¶lna ¶cie¿ka
+``:/bin:/usr/bin''.
+Dodatkowo pewne b³êdy traktowane s± odmiennie.
+.PP
+Je¶li dostêp do pliku zosta³ zabroniony (wywo³anie
+.B execve
+zwróci³o
+.BR EACCES ),
+funkcje te bêd± przeszukiwaæ resztê ¶cie¿ki. Je¶li jednak nie odnajd± innego
+pliku, powróc± i zmieni± warto¶æ zmiennej globalnej
+.I errno
+na
+.BR EACCES .
+.PP
+Je¶li nag³ówek nie zostanie rozpoznany (wywo³anie
+.B execve
+zwróci
+.BR ENOEXEC ),
+funkcje te spróbuj± uruchomiæ pow³okê ze ¶cie¿k± do pliku jako pierwszym
+argumentem. (Je¶li i ta próba siê nie powiedzie, przeszukiwanie jest
+zakoñczone.)
+.SH "WARTO¦Æ ZWRACANA"
+Je¶li dowolna z funkcji
+.B exec
+powróci, oznacza to ¿e nast±pi³ b³±d. Zwracana jest warto¶æ \-1 i ustawiana
+jest zmienna globalna
+.I errno
+aby wskazaæ b³±d.
+.SH PLIKI
+.I /bin/sh
+.SH B£ÊDY
+Ka¿da z tych funkcji mo¿e zakoñczyæ siê niepowodzeniem i ustawiæ jako warto¶æ
+.I errno
+dowolny b³±d okre¶lony dla funkcji bibliotecznej
+.BR execve (2).
+.SH "ZOBACZ TAK¯E"
+.BR sh (1),
+.BR execve (2),
+.BR fork (2),
+.BR environ (5),
+.BR ptrace (2)
+.SH KOMPATYBILNO¦Æ
+W niektórych systemach domy¶lna ¶cie¿ka (u¿ywana, gdy ¶rodowisko nie zawiera
+zmiennej \fBPATH\fR) zawiera aktualny katalog na samym koñcu listy, po
+.I /bin
+oraz
+.IR /usr/bin ,
+aby zapobiec koniom trojañskim. Linux korzysta tu z tradycyjnej domy¶lnej
+¶cie¿ki z aktualnym katalogiem na pocz±tku.
+.PP
+Zachowanie
+.B execlp
+oraz
+.B execvp
+w przypadku wyst±pienia b³êdów podczas uruchamiania pliku jest przyjête
+jako tradycyjne, ale nie jest udokumentowane przez standard POSIX. BSD (a byæ
+mo¿e tak¿e inne systemy) po napotkaniu b³êdu ETXTBSY czeka przez chwilê
+i próbuje ponownie. Linux traktuje to jako b³±d i powraca natychmiast.
+.PP
+Tradycyjnie, funkcje
+.B execlp
+oraz
+.B execvp
+ignorowa³y wszystkie b³êdy oprócz podanych powy¿ej,
+.B ENOMEM
+i
+.BR E2BIG ,
+po których powraca³y. Obecnie powracaj± je¶li wyst±pi dowolny b³±d inny od
+opisanych powy¿ej.
+.SH "ZGODNE Z"
+Funkcje
+.BR execl ,
+.BR execv ,
+.BR execle ,
+.B execlp
+oraz
+.B execvp
+s± zgodne ze standardem
+IEEE Std1003.1-88 (`POSIX.1'').

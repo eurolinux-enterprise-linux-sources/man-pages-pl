@@ -1,0 +1,99 @@
+.\" Translation (C) 1999 Pawel Wilk <siefca@pl.qmail.org>
+.\" {PTM/PW/0.1/14-06-1999/"dostarcz lub przeka¿ wiadomo¶æ pocztow±"}
+.TH qmail-local 8
+.SH NAZWA
+qmail-local \- dostarcz lub przeka¿ wiadomo¶æ pocztow±
+.SH SK£ADNIA
+.B qmail-local
+[
+.B \-nN
+]
+.I u¿ytkownik
+.I katalog_domowy
+.I lokalny
+.I my¶lnik
+.I dod
+.I domena
+.I nadawca
+.I domy¶lne_dostarczenie
+.SH OPIS
+.B qmail-local
+czyta wiadomo¶æ pocztow±
+i dostarcza j± do
+.I u¿ytkownika
+zgodnie z procedur± opisan± w
+.BR dot-qmail(5) .
+
+W³a¶ciwym odbiorc± wiadomo¶ci jest
+.IR lokalny@domena .
+.B qmail-local
+zapamiêtuje
+.I lokalny@domena
+w nowym polu o nazwie
+.B Delivered-To .
+Je¶li dok³adnie to samo co w
+.B Delivered-To: \fIlokalny@domena
+ju¿ pojawi³o siê w nag³ówku to
+.B qmail-local
+odbije wiadomo¶æ
+by nie dopu¶ciæ do kr±¿±cych w pêtli przesy³ek.
+
+W³a¶ciwym nadawc± wiadomo¶ci jest
+.IR nadawca .
+.B qmail-local
+umieszcza
+.I nadawcê
+w nowym polu o nazwie
+.B Return-Path .
+
+.I katalog_domowy
+jest to domowy katalog u¿ytkownika.
+Musi byæ on podany w postaci absolutnej nazwy ¶cie¿kowej.
+
+.I my¶lnik
+i
+.I dod
+identyfikuj± plik
+.B .qmail\fImy¶lnikdod
+u¿ywany przez
+.BR qmail-local ;
+patrz te¿
+.BR dot-qmail(5) .
+Normalnie
+.I my¶lnik
+jest czêsto pust± lub samotn± kresk± ³±cz±c± wyrazy.
+Je¶li jej brakuje to 
+.B qmail-local
+potraktuje nieistniej±cy
+.B .qmail\fIdod
+tak samo jak nazewniczo pusty
+.BR .qmail\fIdod :
+postêpuj±c zgodnie z instrukcjami dostarczania okre¶lonymi w
+.IR defaultdelivery .
+
+Standardowe wej¶cie dla
+.B qmail-local
+musi byæ plikiem przeszukiwalnym (z mo¿liwo¶ci± zmiany pozycji bie¿±cej),
+albowiem
+.B qmail-local
+mo¿e go czytaæ wiêcej ni¿ raz.
+.SH "OPCJE"
+.TP
+.B \-n
+Zamiast wczytaæ i dostarczyæ wiadomo¶æ
+wypisuje opis instrukcji dostarczania.
+.TP
+.B \-N
+(Domy¶lna.) Przeczyta i dostarczy wiadomo¶æ.
+.SH "KODY POWROTU"
+0 je¶li dostarczenie ca³kowicie siê powiod³o;
+niezerowy je¶li w dostarczaniu wyst±pi³ b³±d.
+Kod wyj¶cia 111
+wskazuje na b³±d tymczasowy.
+.SH "ZOBACZ TAK¯E"
+dot-qmail(5),
+envelopes(5),
+qmail-command(8),
+qmail-queue(8),
+qmail-send(8),
+qmail-lspawn(8)

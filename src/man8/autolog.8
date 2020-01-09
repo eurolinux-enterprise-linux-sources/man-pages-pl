@@ -1,0 +1,67 @@
+.\" {PTM/WK/2000-I}
+.TH AUTOLOG 8 "Narzêdzia administracyjne" "Linux" \" -*- nroff -*-
+.SH NAZWA
+autolog \- wyloguj nieaktywnych u¿ytkowników
+.SH SK£ADNIA
+.B autolog
+.RI [ opcje ]
+.br
+.SH OPIS
+Program ten czyta plik \fIutmp\fR, pozycja po pozycji. Nazwa u¿ytkownika
+dla ka¿dego z procesów u¿ytkowników porównywana jest z zapisami w pliku
+konfiguracyjnym
+.IR autolog.conf .
+Pierwszy zapis pasuj±cy zarówno do nazwy, grupy jak i linii terminalowej
+pos³u¿y do przeprowadzenia automatycznego zakoñczenia sesji pracy u¿ytkownika
+(wylogowania).
+.SH OPCJE
+.TP
+.B -a
+(all processes - wszystkie procesy) Pokazuje informacjê o WSZYSTKICH zapisach
+utmp -- nie tylko procesach u¿ytkowników.
+.TP
+.B -d
+(debug) Pomocne przy regulowaniu pliku konfiguracyjnego. Program dzia³a w tle
+zamiast rozwidlania (fork) i podaje szczegó³owe komunikaty o tym, co robi.
+.TP
+.B -n
+(nokill) U¿yj jej do zapobie¿enia faktycznemu "ubijaniu" przez autolog
+kogokolwiek. Pos³u¿ siê ³±cznie opcjami -d i -n przy regulowaniu nowego pliku
+konfiguracyjnego.
+.TP
+.BI -f " nazwa_pliku_konfiguracyjnego"
+Uniewa¿nia domy¶lne ustawienie pliku konfiguracyjnego:
+.I /etc/autolog.conf
+.TP
+.BI -l " nazwa_pliku_logu"
+Uniewa¿nia domy¶lne ustawienie nazwy pliku logu:
+.IR /var/log/autolog.log .
+Zauwa¿, ¿e je¶li plik ten nie istnieje, to nie nast±pi rejestrowanie do logu.
+Utwórz plik (przy pomocy touch) by w³±czyæ rejestrowanie dzia³añ.
+.TP
+.BI -t " idle_time"
+Uniewa¿nia wewnêtrzny domy¶lny czas nieaktywno¶ci (w minutach).
+.TP
+.BI -g " grace_period"
+Uniewa¿nia wewnêtrzny domy¶lny okres karencji (w sekundach).
+.TP
+.BR "-m yes" / no
+Uniewa¿nia wewnêtrzny prze³±cznik wysy³ania poczty. Ustawienie "yes"
+powoduje, ¿e program bêdzie wysy³a³ pocztê do u¿ytkowników zaraz po
+ich "ubiciu".
+.TP
+.BR "-c yes" / no
+Uniewa¿nia wewnêtrzny prze³±cznik "pre-clear". Ustawienie "yes" powoduje, ¿e
+program bêdzie czy¶ci³ ekran terminala przed ostrze¿eniem u¿ytkownika.
+.TP
+.BR "-w yes" / no
+Wylicza czasy oczekiwania w oparciu o ca³kowity czas sesji pracy -- nie czas
+nieaktywno¶ci. (ciê¿kie)
+.TP
+.BR "-L yes" / no
+Je¶li ustawiona na "yes", to dzia³ania bêd± rejestrowane w pliku logu, je¶li
+takowy istnieje.
+.SH "ZOBACZ TAK¯E"
+.BR autolog.conf (5)
+.SH AUTOR
+Kyle Bateman <kyle@actarg.com>

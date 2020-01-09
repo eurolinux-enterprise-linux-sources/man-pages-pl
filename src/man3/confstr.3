@@ -1,0 +1,117 @@
+.\" {PTM/AB/0.1/14-12-1998/"confstr - pobranie zmiennych ³añcuchowych zale¿nych od konfiguracji"}
+.\" t³umaczenie Adam Byrtek (abyrtek@priv.onet.pl)
+.\" Aktualizacja do man-pages 1.44 - A. Krzysztofowicz (ankry@mif.pg.gda.pl)
+.\" ------------
+.\" (c) 1993 by Thomas Koenig (ig25@rz.uni-karlsruhe.de)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" License.
+.\" Modified Sat Jul 24 19:53:02 1993 by Rik Faith (faith@cs.unc.edu)
+.\" ------------
+.TH CONFSTR 3 1993-04-17 "GNU" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+confstr \- pobranie zmiennych ³añcuchowych zale¿nych od konfiguracji
+.SH SK£ADNIA
+.nf
+.B #define _POSIX_C_SOURCE 2
+lub
+.B #define _XOPEN_SOURCE
+.nl
+.B #include <unistd.h>
+.sp
+.BI "size_t confstr(int " "name" ", char *" buf ", size_t " len );
+.fi
+.SH OPIS
+Funkcja
+.B confstr()
+pobiera warto¶æ zale¿nych od konfiguracji zmiennych systemowych.
+.PP
+Argument
+.I name
+wyznacza pobieran± zmienn± systemow±.
+Dostêpne s± zmienne:
+.TP
+.B _CS_PATH
+Warto¶æ zmiennej
+.B PATH
+zawieraj±cej ¶cie¿kê, w której znale¼æ mo¿na wszystkie
+standardowe programy narzêdziowe POSIX.2.
+.PP
+Je¶li argument
+.I buf
+\fIbuf\fP nie jest równy
+.BR NULL ,
+a
+.I len
+nie jest zerem, to funkcja
+.B confstr()
+kopiuje warto¶æ zmiennej do ³añcucha
+.I buf
+obciêt±, je¶li to konieczne, do
+.I len \- 1
+znaków i zakoñczon± znakiem NUL.
+Mo¿e to zostaæ wykryte przez porównanie zwracanej przez
+.B confstr()
+warto¶ci z argumentem
+.IR len .
+Je¶li
+.I len
+wynosi zero a
+.I buf
+jest równe
+.BR NULL ,
+funkcja
+.B confstr()
+po prostu zwraca warto¶æ, tak jak podano poni¿ej.
+.SH "WARTO¦Æ ZWRACANA"
+Je¶li
+.I name
+nie okre¶la poprawnej zmiennej konfiguracyjnej,
+.B confstr()
+zwraca 0.
+.SH PRZYK£ADY
+Poni¿szy fragment kodu podaje ¶cie¿kê, w której znale¼æ znale¼æ mo¿na programy
+systemowe POSIX.2:
+.br
+.nf
+.in 10
+
+char *pathbuf; size_t n;
+
+n = confstr(_CS_PATH,NULL,(size_t)0);
+if ((pathbuf = malloc(n)) == NULL) abort();
+confstr(_CS_PATH, pathbuf, n);
+.SH B£ÊDY
+Je¶li warto¶æ
+.I name
+jest nieprawid³owa,
+.I errno
+jest ustawiane na
+.BR EINVAL .
+.SH "ZGODNE Z"
+Propozycja POSIX.2
+.SH USTERKI
+POSIX.2 nie zosta³ jeszcze zatwierdzony jako standard, informacja na tej
+stronie man mo¿e ulec zmianie.
+.SH "ZOBACZ TAK¯E"
+.BR sh (1),
+.BR exec (3),
+.BR system (3)

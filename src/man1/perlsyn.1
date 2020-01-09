@@ -1,0 +1,894 @@
+.\" 1999 PTM Przemek Borys
+.rn '' }`
+''' $RCSfile: perlsyn.1,v $$Revision: 1.5 $$Date: 2002/08/22 14:47:30 $
+'''
+''' $Log: perlsyn.1,v $
+''' Revision 1.5  2002/08/22 14:47:30  robert
+''' poprawione b³êdy formatowania -  na³o¿ony man-pages-pl-0.22-roffix.patch z RedHata
+'''
+''' Revision 1.4  2000/10/22 16:15:29  wojtek2
+''' wiod±ce (spacje, zera etc.)->pocz±tkowe
+''' kontrolne (znaki, sekwencje)->steruj±ce
+''' tak¿e "klawisze kontrolne" (Ctrl+klaw.)->klawisze steruj±ce
+'''
+''' Revision 1.3  1999/09/02 09:17:41  wojtek2
+''' krzy¿ówka z 5.004 (przyk³ady!) plus trochê drobnych zmian
+'''
+''' Revision 1.1  1999/08/31 14:56:09  pborys
+''' perlsyn: sk³adnia perla. alpha version
+'''
+'''
+.de Sh
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.de Ip
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.de Vb
+.ft CW
+.nf
+.ne \\$1
+..
+.de Ve
+.ft R
+
+.fi
+..
+'''
+'''
+'''     Set up \*(-- to give an unbreakable dash;
+'''     string Tr holds user defined translation string.
+'''     Bell System Logo is used as a dummy character.
+'''
+.tr \(*W-|\(bv\*(Tr
+.ie n \{\
+.ds -- \(*W-
+.ds PI pi
+.if (\n(.H=4u)&(1m=24u) .ds -- \(*W\h'-12u'\(*W\h'-12u'-\" diablo 10 pitch
+.if (\n(.H=4u)&(1m=20u) .ds -- \(*W\h'-12u'\(*W\h'-8u'-\" diablo 12 pitch
+.ds L" ""
+.ds R" ""
+'''   \*(M", \*(S", \*(N" and \*(T" are the equivalent of
+'''   \*(L" and \*(R", except that they are used on ".xx" lines,
+'''   such as .IP and .SH, which do another additional levels of
+'''   double-quote interpretation
+.ds M" """
+.ds S" """
+.ds N" """""
+.ds T" """""
+.ds L' '
+.ds R' '
+.ds M' '
+.ds S' '
+.ds N' '
+.ds T' '
+'br\}
+.el\{\
+.ds -- \(em\|
+.tr \*(Tr
+.ds L" ``
+.ds R" ''
+.ds M" ``
+.ds S" ''
+.ds N" ``
+.ds T" ''
+.ds L' `
+.ds R' '
+.ds M' `
+.ds S' '
+.ds N' `
+.ds T' '
+.ds PI \(*p
+'br\}
+.\"	If the F register is turned on, we'll generate
+.\"	index entries out stderr for the following things:
+.\"		TH	Title 
+.\"		SH	Header
+.\"		Sh	Subsection 
+.\"		Ip	Item
+.\"		X<>	Xref  (embedded
+.\"	Of course, you have to process the output yourself
+.\"	in some meaninful fashion.
+.if \nF \{
+.de IX
+.tm Index:\\$1\t\\n%\t"\\$2"
+..
+.nr % 0
+.rr F
+.\}
+.TH PERLSYN 1 "perl 5.005, patch 02" "24 lipca 1998" "Podrêcznik programisty perla"
+.IX Title "PERLSYN 1"
+.UC
+.IX Name "perlsyn - Perl syntax"
+.if n .hy 0
+.if n .na
+.ds C+ C\v'-.1v'\h'-1p'\s-2+\h'-1p'+\s0\v'.1v'\h'-1p'
+.de CQ          \" put $1 in typewriter font
+.ft CW
+'if n "\c
+'if t \\&\\$1\c
+'if n \\&\\$1\c
+'if n \&"
+\\&\\$2 \\$3 \\$4 \\$5 \\$6 \\$7
+'.ft R
+..
+.\" @(#)ms.acc 1.5 88/02/08 SMI; from UCB 4.2
+.	\" AM - accent mark definitions
+.bd B 3
+.	\" fudge factors for nroff and troff
+.if n \{\
+.	ds #H 0
+.	ds #V .8m
+.	ds #F .3m
+.	ds #[ \f1
+.	ds #] \fP
+.\}
+.if t \{\
+.	ds #H ((1u-(\\\\n(.fu%2u))*.13m)
+.	ds #V .6m
+.	ds #F 0
+.	ds #[ \&
+.	ds #] \&
+.\}
+.	\" simple accents for nroff and troff
+.if n \{\
+.	ds ' \&
+.	ds ` \&
+.	ds ^ \&
+.	ds , \&
+.	ds ~ ~
+.	ds ? ?
+.	ds ! !
+.	ds /
+.	ds q
+.\}
+.if t \{\
+.	ds ' \\k:\h'-(\\n(.wu*8/10-\*(#H)'\'\h"|\\n:u"
+.	ds ` \\k:\h'-(\\n(.wu*8/10-\*(#H)'\`\h'|\\n:u'
+.	ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'^\h'|\\n:u'
+.	ds , \\k:\h'-(\\n(.wu*8/10)',\h'|\\n:u'
+.	ds ~ \\k:\h'-(\\n(.wu-\*(#H-.1m)'~\h'|\\n:u'
+.	ds ? \s-2c\h'-\w'c'u*7/10'\u\h'\*(#H'\zi\d\s+2\h'\w'c'u*8/10'
+.	ds ! \s-2\(or\s+2\h'-\w'\(or'u'\v'-.8m'.\v'.8m'
+.	ds / \\k:\h'-(\\n(.wu*8/10-\*(#H)'\z\(sl\h'|\\n:u'
+.	ds q o\h'-\w'o'u*8/10'\s-4\v'.4m'\z\(*i\v'-.4m'\s+4\h'\w'o'u*8/10'
+.\}
+.	\" troff and (daisy-wheel) nroff accents
+.ds : \\k:\h'-(\\n(.wu*8/10-\*(#H+.1m+\*(#F)'\v'-\*(#V'\z.\h'.2m+\*(#F'.\h'|\\n:u'\v'\*(#V'
+.ds 8 \h'\*(#H'\(*b\h'-\*(#H'
+.ds v \\k:\h'-(\\n(.wu*9/10-\*(#H)'\v'-\*(#V'\*(#[\s-4v\s0\v'\*(#V'\h'|\\n:u'\*(#]
+.ds _ \\k:\h'-(\\n(.wu*9/10-\*(#H+(\*(#F*2/3))'\v'-.4m'\z\(hy\v'.4m'\h'|\\n:u'
+.ds . \\k:\h'-(\\n(.wu*8/10)'\v'\*(#V*4/10'\z.\v'-\*(#V*4/10'\h'|\\n:u'
+.ds 3 \*(#[\v'.2m'\s-2\&3\s0\v'-.2m'\*(#]
+.ds o \\k:\h'-(\\n(.wu+\w'\(de'u-\*(#H)/2u'\v'-.3n'\*(#[\z\(de\v'.3n'\h'|\\n:u'\*(#]
+.ds d- \h'\*(#H'\(pd\h'-\w'~'u'\v'-.25m'\f2\(hy\fP\v'.25m'\h'-\*(#H'
+.ds D- D\\k:\h'-\w'D'u'\v'-.11m'\z\(hy\v'.11m'\h'|\\n:u'
+.ds th \*(#[\v'.3m'\s+1I\s-1\v'-.3m'\h'-(\w'I'u*2/3)'\s-1o\s+1\*(#]
+.ds Th \*(#[\s+2I\s-2\h'-\w'I'u*3/5'\v'-.3m'o\v'.3m'\*(#]
+.ds ae a\h'-(\w'a'u*4/10)'e
+.ds Ae A\h'-(\w'A'u*4/10)'E
+.ds oe o\h'-(\w'o'u*4/10)'e
+.ds Oe O\h'-(\w'O'u*4/10)'E
+.	\" corrections for vroff
+.if v .ds ~ \\k:\h'-(\\n(.wu*9/10-\*(#H)'\s-2\u~\d\s+2\h'|\\n:u'
+.if v .ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'\v'-.4m'^\v'.4m'\h'|\\n:u'
+.	\" for low resolution devices (crt and lpr)
+.if \n(.H>23 .if \n(.V>19 \
+\{\
+.	ds : e
+.	ds 8 ss
+.	ds v \h'-1'\o'\(aa\(ga'
+.	ds _ \h'-1'^
+.	ds . \h'-1'.
+.	ds 3 3
+.	ds o a
+.	ds d- d\h'-1'\(ga
+.	ds D- D\h'-1'\(hy
+.	ds th \o'bp'
+.	ds Th \o'LP'
+.	ds ae ae
+.	ds Ae AE
+.	ds oe oe
+.	ds Oe OE
+.\}
+.rm #[ #] #H #V #F C
+.SH "NAZWA"
+.IX Header "NAME"
+perlsyn \- Sk³adnia perla
+.SH "OPIS"
+.IX Header "DESCRIPTION"
+Skrypt perla sk³ada siê z sekwencji deklaracji i instrukcji. Jedynymi
+rzeczami, które musz± byæ zadeklarowane w perlu, to formatki raportowe i
+procedury. Wiêcej informacji o tych deklaracji znajdziesz w sekcjach
+poni¿ej. Wszystkie niezainicjalizowane, stworzone przez u¿ytkownika obiekty,
+uznawane s± za posiadaj±ce pocz±tkow± warto¶æ null lub 0, dopóki nie zostan±
+zdefiniowane w jakiej¶
+jawnej operacji, jak np. przypisanie. (Choæ je¶li chcesz, mo¿esz dostawaæ 
+ostrze¿enia o u¿ywaniu warto¶ci niezdefiniowanych.) Sekwencja instrukcji
+jest wykonywana tylko jednokrotnie, w przeciwieñstwie do skryptów \fBsed\fR(1) czy
+\fBawk\fR(1), gdzie sekwencja taka jest wykonywana dla ka¿dej linii
+wej¶ciowej. Oznacza to, ¿e musisz jawnie przetwarzaæ w pêtli linie swojego
+pliku wej¶ciowego (lub plików), oznacza to te¿, ¿e masz du¿o wiêksz±
+kontrolê nad tym, którymi plikami i liniami siê zajmujesz.
+(W³a¶ciwie to k³amiê\*(--mo¿na zrobiæ niejawn± pêtlê za pomoc± prze³±cznika
+\fB\-n\fR lub \fB\-p\fR. Nie jest to po prostu domy¶lne i zarazem obowi±zkowe
+jak w \fBsed\fR(1) czy \fBawk\fR(1).)
+.Sh "Deklaracje"
+.IX Subsection "Deklaracje"
+Perl jest w ogólno¶ci jêzykiem wolnej postaci (free-form). (Jedynym
+wyj±tkiem s± deklaracjê formatek--z oczywistych przyczyn.) Komentarze s±
+rozpoczynane znakiem \*(L"#\*(R" i ci±gn± siê do koñca linii.
+Je¶li spróbujesz u¿yæ komentarzy \f(CW/* */\fR w stylu C, to zostan± one
+zinterpretowane albo jako dzielenie, albo jako porównywanie wzorca. Z kolei
+komentarz \f(CW// z \*(C+ wygl±da dok³adnie jak puste wyra¿enie regularne.
+Nie kombinuj wiêc z tymi konstrukcjami.
+.PP
+Deklaracja mo¿e byæ wstawiona gdziekolwiek, gdzie mo¿na wstawiæ instrukcjê,
+lecz nie ma wp³ywu na wykonywanie podstawowej sekwencji
+instrukcji\*(--deklaracje maj± znaczenie tylko podczas kompilacji.
+Zazwyczaj wszystkie deklaracje wstawiane s± na pocz±tku lub na koñcu
+skryptu. Je¶li jednak u¿ywasz zmiennych prywatnych zawê¿onych leksykalnie,
+utworzonych przez \fImy()\fR, bêdziesz musia³ siê upewniæ, czy twoja definicja
+formatki lub procedury, u¿ywaj±cej tych deklaracji le¿y wewn±trz tego samego
+zakresu.
+.PP
+Deklarowanie procedury zezwala na u¿ywanie jej nazwy tak, jakby
+by³a operatorem listowym, licz±c od tego miejsca, a¿ do koñca programu. Mo¿esz
+zadeklarowaæ procedurê bez jej definiowania, pisz±c \f(CWsub name\fR,
+wiêc:
+.PP
+.Vb 2
+\&    sub myname;
+\&    $me = myname $0             or die "can't get myname";
+.Ve
+Zauwa¿, ¿e dzia³a to jak operator listowy, a nie jak jednoargumentowy; uwa¿aj
+wiêc i u¿ywaj \f(CWor\fR zamiast \f(CW||\fR. Jednak je¶li zadeklarowa³by¶
+procedurê jako \f(CWsub myname ($)\fR, to
+\f(CWmyname\fR funkcjonowa³oby jak operator jednoargumentowy, wiêc
+dzia³a³yby zarówno \f(CWor\fR jak i \f(CW||\fR.
+.PP
+Deklaracje procedur mog± byæ równie¿ ³adowane instrukcj± \f(CWrequire\fR,
+lub jednocze¶nie ³adowane jak i importowane do przestrzeni nazw dziêki
+instrukcji \f(CWuse\fR. Dla szczegó³ów polecam podrêcznik \fIperlmod\fR(1).
+.PP
+Sekwencja instrukcji mo¿e zawieraæ deklaracje zmiennych zawê¿onych leksykalnie,
+lecz poza deklarowaniem nazwy zmiennej, deklaracja dzia³a jak
+zwyk³a instrukcja i jest wykonywana w sekwencji instrukcji jak zwyczajna
+instrukcja. Znaczy to, ¿e ma ona zarówno skutki podczas kompilacji, jak w
+czasie dzia³ania.
+.Sh "Instrukcje proste"
+.IX Subsection "Instrukcje proste"
+Jedynym rodzajem instrukcji prostej jest wyra¿enie, analizowane dla swoich
+efektów ubocznych. Ka¿da instrukcja prosta musi siê koñczyæ ¶rednikiem,
+chyba ¿e jest ostatni± instrukcj± bloku, wtedy ¶rednik nie jest
+obowi±zuj±cy. (Jednak wci±¿ jest zalecany je¶li blok zajmuje wiêcej ni¿
+jedn± liniê, gdy¿ mo¿liwe ¿e dodasz jeszcze kolejne linie.)
+Zauwa¿, ¿e istniej± operatory takie, jak \f(CWeval {}\fR i \f(CWdo {}\fR,
+które wygl±daj± jak instrukcje z³o¿one, lecz nimi nie s±
+i wymagaj± jawnego zakoñczenia je¶li s± u¿yte
+jako ostatni element instrukcji.
+.PP
+Za ka¿d± prost± instrukcj±, tu¿ przed ¶rednikiem (lub koñcem bloku) mo¿e 
+znajdowaæ siê \fI\s-1POJEDYNCZY\s0\fR modyfikator. Dopuszczalne modyfikatory
+to:
+.PP
+.Vb 4
+\&    if WYRA¯
+\&    unless WYRA¯
+\&    while WYRA¯
+\&    until WYRA¯
+\&    foreach WYRA¯
+.Ve
+Modyfikatory \f(CWif\fR i \f(CWunless\fR maj± semantykê zgodn± z
+oczekiwaniami (je¿eli i chyba ¿e). Modyfikator \f(CWforeach\fR jest iteratorem:
+dla ka¿dej warto¶ci w \s-1WYRA¯\s0 przypisuje jej nazwê zastêpcz± \f(CW$_\fR
+i wykonuje instrukcjê. Modyfikatory \f(CWwhile\fR i \f(CWuntil\fR
+równie¿ maj± typow± semantykê pêtli while (warunek jest analizowany
+najpierw). Wyj±tkiem jest poprzedzenie tych modyfikatorów konstrukcj±
+do-\s-1BLOK\s0 - wówczas blok jest wykonywany raz przed sprawdzeniem warunku.
+Dziêki temu mo¿esz tworzyæ pêtle w rodzaju:
+.PP
+.Vb 4
+\&    do {
+\&        $line = <STDIN>;
+\&        ...
+\&    } until $line  eq ".\en";
+.Ve
+Zobacz opis \f(CWdo\fR w podrêczniku \fIperlfunc\fR. Zauwa¿ te¿, ¿e
+opisane poni¿ej instrukcje kontroli pêtli \fI\s-1NIE\s0\fR bêd± dzia³a³y w tej
+konstrukcji, gdy¿ modyfikatory nie pobieraj± etykiet pêtli. Przykro mi.
+Mo¿esz zawsze umie¶ciæ wewn±trz inny blok (dla \fCWnextfR) lub te¿ umie¶ciæ
+swoj± instrukcjê wewn±trz bloku (dla \f(CWlast\fR), aby zrobiæ co¶ takiego.
+W przypadku \f(CWnext\fR po prostu podwój nawiasy:
+.PP
+.Vb 4
+\&   do {{
+\&      next if $x == $y;
+\&      # co¶ tu robi
+\&   }} until $x++ > $z;
+.Ve
+Dla \f(CWnext\fR musisz siê bardziej rozpisaæ:
+.PP
+.Vb 6
+\&   LOOP: {
+\&           do {
+\&              last if $x = $y**2;
+\&              # co¶ tu robi
+\&           } while $x++ <= $z;
+\&   }
+.Ve
+.Sh "Instrukcje z³o¿one"
+.IX Subsection "Instrukcje z³o¿one"
+W perlu, sekwencja instrukcji definiuj±ca zakres nazywana jest blokiem.
+Czasami ograniczeniem bloku stanowi zawieraj±cy go plik (w wypadku
+wymaganego (required) pliku lub programu jako ca³o¶ci), a czasami
+zasiêg ³añcucha znakowego (w wypadku eval).
+.PP
+Lecz ogólnie, blok jest ograniczony nawiasami klamrowymi. Tak±
+konstrukcjê syntaktyczn± nazwiemy \s-1BLOKIEM\s0.
+.PP
+Do kontroli przep³ywu mo¿na u¿ywaæ nastêpuj±cych instrukcji z³o¿onych:
+.PP
+.Vb 8
+\&    if (WYRA¯) BLOK
+\&    if (WYRA¯) BLOK else BLOK
+\&    if (WYRA¯) BLOK elsif (WYRA¯) BLOK ... else BLOK
+\&    ETYKIETA while (WYRA¿) BLOK
+\&    ETYKIETA while (WYRA¯) BLOK continue BLOK
+\&    ETYKIETA for (WYRA¯; WYRA¯; WYRA¯) BLOK
+\&    ETYKIETA foreach VAR (LISTA) BLOK
+\&    ETYKIETA BLOK continue BLOK
+.Ve
+Zauwa¿, ¿e w przeciwieñstwie do C i Pacala, s± one zdefiniowane w
+kategoriach BLOKÓW, a nie instrukcji. Znaczy to, ¿e nawiasy klamrowe s±
+niezbêdne--wisz±ce instrukcje nie s± dozwolone. Je¶li chcesz pisaæ warunki
+bez nawiasów, to s± na to inne sposoby. Nastêpuj±ce przyk³ady robi±
+wszystkie to samo:
+.PP
+.Vb 5
+\&    if (!open(FOO)) { die "Can't open $FOO: $!"; }
+\&    die "Can't open $FOO: $!" unless open(FOO);
+\&    open(FOO) or die "Can't open $FOO: $!";     # FOO lub giñ!
+\&    open(FOO) ? 'hi mom' : die "Can't open $FOO: $!";
+\&                        # to ostatnie trochê egzotyczne
+.Ve
+Instrukcja \f(CWif\fR jest nieskomplikowana. Poniewa¿ BLOKI s± zawsze
+ograniczone nawiasami klamrowymi, nigdy nie ma niejednoznaczno¶ci co do
+tego, do którego \f(CWif\fR przynale¿y dany \f(CWelse\fR.
+Je¶li zamiast \f(CWif\fR u¿ywasz \f(CWunless\fR, sens testu jest odwrócony.
+.PP
+Instrukcja \f(CWwhile\fR wykonuje swój blok tak d³ugo, jak wyra¿enie jest
+prawdziwe (jego warto¶ci± nie jest ³añcuch pusty, 0 czy \*(L"0").
+\s-1ETYKIETA\s0 jest opcjonalna, a je¶li jest obecna, sk³ada siê z
+identyfikatora, za którym nastêpuje dwukropek. \s-1ETYKIETA\s0 identyfikuje
+pêtlê dla instrukcji kontroli pêtli, czyli \f(CWnext\fR,
+\f(CWlast\fR i \f(CWredo\fR.
+Je¶li pominiêto \s-1ETYKIETÊ\s0, instrukcje kontroli pêtli odnosz± siê
+do najbardziej wewnêtrznej otaczaj±cej pêtli. Mo¿e to wymagaæ dynamicznego
+przegl±dania wstecz stosu wywo³añ w czasie wykonania, aby znale¼æ odpowiedni±
+\s-1ETYKIETÊ\s0.
+Takie desperackie zachowania daj± zwykle ostrze¿enia przy w³±czonej fladze
+\fB\-w\fR.
+.PP
+Je¶li istnieje \s-1BLOK\s0 \f(CWcontinue\fR, to jest on zawsze wykonywany tu¿
+przed kolejn± analiz± warunku, podobnie jak trzeci element pêtli \f(CWfor\fR
+w C. Mo¿na tego u¿ywaæ do zwiêkszania zmiennej steruj±cej pêtli, nawet gdy
+pêtla jest w³a¶nie kontynuowana instrukcj± \f(CWnext\fR (która jest z kolei
+podobna do instrukcji \f(CWcontinue\fR z C).
+.Sh "Kontrola pêtli"
+.IX Subsection "Kontrola pêtli"
+Polecenie \f(CWnext\fR jest podobne do instrukcji \f(CWcontinue\fR z C;
+rozpoczyna now± iteracjê pêtli:
+.PP
+.Vb 4
+\&    LINE: while (<STDIN>) {
+\&        next LINE if /^#/;      # wykasuj komentarze
+\&        ...
+\&    }
+.Ve
+Polecenie \f(CWlast\fR jest podobne do instrukcji \f(CWbreak\fR z C (u¿ywanej
+w pêtlach); natychmiastowo opuszcza pêtlê. Blok
+\f(CWcontinue\fR nie jest wykonywany:
+.PP
+.Vb 4
+\&    LINE: while (<STDIN>) {
+\&        last LINE if /^$/;      # zakoñcz po obs³u¿eniu nag³ówka
+\&        ...
+\&    }
+.Ve
+Polecenie \f(CWredo\fR restartuje pêtlê bez ponownego analizowania warunku.
+Blok \f(CWcontinue\fR nie jest wykonywany. Polecenie to jest zazwyczaj u¿ywane
+w programach, które chc± siê ok³amywaæ co do tego, co w³a¶nie pobra³y z wej¶cia.
+.PP
+Na przyk³ad, podczas przetwarzania pliku takiego, jak \fI/etc/termcap\fR.
+Je¶li twoje wiersze wej¶ciowe mog± siê koñczyæ lewymi uko¶nikami, wskazuj±cymi
+kontynuacjê, mo¿esz chcieæ z wyprzedzeniem pobraæ nastêpny rekord.
+.PP
+.Vb 8
+\&    while (<>) {
+\&        chomp;
+\&        if (s/\e\e$//) {
+\&            $_ .= <>;
+\&            redo unless eof();
+\&        }
+\&        # teraz przetwórz $_
+\&    }
+.Ve
+co w perlu jest skrótem dla wersji napisanej bardziej dos³ownie:
+.PP
+.Vb 8
+\&    LINE: while (defined($line = <ARGV>)) {
+\&        chomp($line);
+\&        if ($line =~ s/\e\e$//) {
+\&            $line .= <ARGV>;
+\&            redo LINE unless eof(); # nie eof(ARGV)!
+\&        }
+\&        # teraz przetwórz $line
+\&    }
+.Ve
+A tu mamy prosty striptizer komentarzy Pascalowych (uwaga: zak³ada brak {
+lub } w ³añcuchach).
+.PP
+.Vb 14
+\&    LINE: while (<STDIN>) {
+\&        while (s|({.*}.*){.*}|$1 |) {}
+\&        s|{.*}| |;
+\&        if (s|{.*| |) {
+\&            $front = $_;
+\&            while (<STDIN>) {
+\&                if (/}/) {      # koniec komentarza?
+\&                    s|^|$front{|;
+\&                    redo LINE;
+\&                }
+\&            }
+\&        }
+\&        print;
+\&    }
+.Ve
+Zauwa¿, ¿e je¶li w powy¿szym kodzie istnia³by blok \f(CWcontinue\fR, zosta³
+by on wywo³any nawet dla usuniêtych wierszy. Blok ten jest czêsto u¿ywany do
+resetowania liczników wierszy czy jednokrotnych dopasowañ \f(CW?wzorców?\fR.
+.PP
+.Vb 10
+\&    # zainspirowane przez :1,$g/fred/s//WILMA/
+\&    while (<>) {
+\&       ?(fred)?     && s//WILMA $1 WILMA/;
+\&       ?(barney)?   && s//BETTY $1 BETTY/;
+\&       ?(homer)?    && s//MARGE $1 MARGE/;
+\&    } continue {
+\&       print "$ARGV $.: $_";
+\&       close ARGV   if eof();    # reset $. (nr wiersza)
+\&       reset        if eof();    # reset ?wzorca?
+\&    }
+.Ve
+Je¶li s³owo \f(CWwhile\fR jest zamieniane s³owem \f(CWuntil\fR, to sens
+testu jest odwrócony, lecz warunek jest wci±¿ testowany w pierwszej
+iteracji.
+.PP
+Instrukcje steruj±ce pêtli nie wspó³pracuj± z \f(CWif\fR ani \f(CWunless\fR,
+gdy¿ nie s± one pêtlami. Mo¿esz jednak podwoiæ nawiasy by je nimi uczyniæ.
+.PP
+.Vb 5
+\&    if (/wzorzec/) {{
+\&       next if /fred/;
+\&       next if /barney/;
+\&       # co¶ tu robi
+\&    }}
+.Va
+Postaæ \f(CWwhile/if BLOCK BLOCK\fR, która by³a dostêpna w Perl 4 nie jest
+ju¿ prawid³owa. Zmieñ wszystkie wyst±pienia
+\f(CWif BLOCK\fR na \f(CWif (do BLOCK)\fR.
+.Sh "Pêtle for"
+.IX Subsection "Pêtle for"
+Perlowa pêtla \f(CWfor\fR w stylu C, dzia³a dok³adnie jak odpowiadaj±ca jej
+pêtla while, co znaczy, ¿e to:
+.PP
+.Vb 3
+\&    for ($i = 1; $i < 10; $i++) {
+\&        ...
+\&    }
+.Ve
+jest tym samym, co to:
+.PP
+.Vb 6
+\&    $i = 1;
+\&    while ($i < 10) {
+\&        ...
+\&    } continue {
+\&        $i++;
+\&    }
+.Ve
+(Jest jedna drobna ró¿nica: pierwsza postaæ wymusza zawê¿enie leksykalne dla
+zmiennych zadeklarowanych przez \f(CWmy\fR w wyra¿eniu inicjalizacji.)
+.PP
+Poza zwyk³ymi pêtlami po indeksach tablic, \f(CWfor\fR daje wiele innych
+zastosowañ. Oto przyk³ad, zapobiegaj±cy problemowi, który napotyka siê
+testuj±c jawnie EOF na interaktywnym deskryptorze pliku, co powoduje,
+¿e program wygl±da jakby siê zawiesi³.
+.PP
+.Vb 5
+\&    $on_a_tty = -t STDIN && -t STDOUT;
+\&    sub prompt { print "yes? " if $on_a_tty }
+\&    for ( prompt(); <STDIN>; prompt() ) {
+\&        # zrób co¶
+\&    }
+.Ve
+.Sh "Pêtle foreach"
+.IX Subsection "Pêtle foreach"
+Pêtla \f(CWforeach\fR iteruje poprzez normaln± warto¶æ listow± i przypisuje
+zmiennej \s-1VAR\s0 warto¶æ ka¿dego kolejnego elementu listy. Je¶li zmienna jest
+poprzedzona s³owem kluczowym \f(CWmy\fR, to jest ona leksykalnie zawê¿ona i
+widzialna tylko wewn±trz pêtli. W przeciwnym wypadku, zmienna jest niejawnie
+lokalna w pêtli i, po wyj¶ciu z niej, odzyskuje pierwotn± warto¶æ.
+Je¶li zmienna by³a poprzednio zadeklarowana przez \f(CWmy\fR, to pêtla u¿ywa tej
+zmiennej, zamiast zmiennej globalnej, lecz wci±¿ jest ona lokalna w obrêbie
+pêtli. (Zauwa¿, ¿e zmienne o zasiêgu leksykalnym mog± byæ przyczyn± k³opotów,
+je¶li wewn±trz pêtli masz odwo³uj±ce siê do nich procedury lub deklaracje
+formatów.)
+.PP
+S³owo kluczowe \f(CWforeach\fR jest w rzeczywisto¶ci synonimem s³owa
+\f(CWfor\fR, wiêc \f(CWforeach\fR mo¿esz u¿ywaæ dla czytelno¶ci, a
+\f(CWfor\fR dla skrócenia. (Albo te¿ pow³oka Bourne'a jest Ci milsza ni¿
+\fIcsh\fR, wiêc pisanie \f(CWfor\fR jest naturalniejsze.)
+Je¶li \f(CWVAR\fR jest pominiête, na kolejne warto¶ci ustawiane bêdzie
+\f(CW$_\fR.
+Je¶li dowolny element \s-1LISTY\s0 jest lwarto¶ci±, to mo¿esz ³atwo
+modyfikowaæ jego warto¶æ, modyfikuj±c \s-1VAR\s0 wewn±trz pêtli. Jest tak
+dlatego, ¿e zmienna indeksu pêtli \f(CWforeach\fR jest niejawnym synonimem
+ka¿dego iterowanego elementu.
+W szczególno¶ci mo¿liwa jest zmiana tym sposobem warto¶ci elementów tablicy
+LISTA (ale nie wyra¿enia zwracaj±cego LISTÊ).
+.PP
+Je¶li dowolna czê¶æ \s-1LISTY\s0 jest tablic±, to \f(CWforeach\fR bardzo siê
+zmiesza, je¶li wewn±trz pêtli dodasz lub usuniesz elementy, na przyk³ad przy
+pomocy \f(CWsplice\fR. Nie rób wiêc tego.
+.PP
+\f(CWforeach\fR prawdopodobnie nie zrobi tego, czego oczekujesz, je¶li
+\s-1VAR\s0 jest zmienn± specjaln±. Tego te¿ nie rób.
+.PP
+Przyk³ady:
+.PP
+.Vb 1
+\&    for (@ary) { s/foo/bar/ }
+.Ve
+.Vb 3
+\&    foreach my $elem (@elements) {
+\&        $elem *= 2;
+\&    }
+.Ve
+.Vb 3
+\&    for $count (10,9,8,7,6,5,4,3,2,1,'BOOM') {
+\&        print $count, "\en"; sleep(1);
+\&    }
+.Ve
+.Vb 1
+\&    for (1..15) { print "Merry Christmas\en"; }
+.Ve
+.Vb 3
+\&    foreach $item (split(/:[\e\e\en:]*/, $ENV{TERMCAP})) {
+\&        print "Item: $item\en";
+\&    }
+.Ve
+Oto, jak programista C móg³by zakodowaæ szczególny algorytm w perlu:
+.PP
+.Vb 9
+\&    for (my $i = 0; $i < @ary1; $i++) {
+\&        for (my $j = 0; $j < @ary2; $j++) {
+\&            if ($ary1[$i] > $ary2[$j]) {
+\&                last; # nie mogê wyj¶æ do zewnêtrznej :-(
+\&            }
+\&            $ary1[$i] += $ary2[$j];
+\&        }
+\&        # tu zabiera mnie last
+\&    }
+.Ve
+Podczas gdy programista perla móg³by zrobiæ to wygodniej:
+.PP
+.Vb 6
+\&    OUTER: foreach my $wid (@ary1) {
+\&    INNER:   foreach my $jet (@ary2) {
+\&                next OUTER if $wid > $jet;
+\&                $wid += $jet;
+\&             }
+\&          }
+.Ve
+Widzisz jakie to proste? Czystsze, bezpieczniejsze i szybsze. Jest czystsze,
+bo mniej tu zamieszania. Jest bezpieczniejsze, bo je¶li miêdzy wewnêtrzn±, a
+zewnêtrzn± pêtlê zostanie pó¼niej dodany kod, to nie bêdzie on przypadkiem
+wykonywany. \f(CWnext\fR jawnie iteruje inn± pêtlê zamiast przerywania
+wewnêtrznej. Jest to szybsze, gdy¿ perl wywo³uje instrukcje \f(CWforeach\fR
+szybciej ni¿ równowa¿nik z pêtl± \f(CWfor\fR.
+.Sh "Podstawowe instrukcje BLOKOWE i switch"
+.IX Subsection "Podstawowe instrukcje BLOKOWE i switch"
+\s-1BLOK\s0 (z etykiet± lub bez) jest równowa¿ny pêtli, która jest wykonywana
+jeden raz. Tak wiêc mo¿esz wewn±trz u¿ywaæ instrukcji kontroli pêtli by
+wyj¶æ z bloku lub ponowiæ jego wykonanie.
+(Zauwa¿, ¿e nie jest to prawd± wewn±trz \f(CWeval{}\fR, \f(CWsub{}\fR
+czy, przeciwnie do rozpowszchnionych przekonañ, bloków \f(CWdo{}\fR, które nie
+zaliczaj± siê do pêtli.) Blok \f(CWcontinue\fR jest opcjonalny.
+.PP
+Konstrukcja \s-1BLOKU\s0 jest szczególnie wygodna do tworzenia struktur
+wyboru (case).
+.PP
+.Vb 6
+\&    SWITCH: {
+\&        if (/^abc/) { $abc = 1; last SWITCH; }
+\&        if (/^def/) { $def = 1; last SWITCH; }
+\&        if (/^xyz/) { $xyz = 1; last SWITCH; }
+\&        $nothing = 1;
+\&    }
+.Ve
+W perlu nie ma oficjalnej instrukcji switch, gdy¿ istnieje ju¿ kilka
+sposobów na wykonanie jej równowa¿nika. Oprócz, móg³by¶ napisaæ
+.PP
+.Vb 6
+\&    SWITCH: {
+\&        $abc = 1, last SWITCH  if /^abc/;
+\&        $def = 1, last SWITCH  if /^def/;
+\&        $xyz = 1, last SWITCH  if /^xyz/;
+\&        $nothing = 1;
+\&    }
+.Ve
+(W rzeczywisto¶ci nie jest to tak dziwne jak wygl±da. Musisz sobie
+u¶wiadomiæ, ¿e mo¿esz  korzystaæ z \*(L"operatorów\*(R" kontroli pêtli
+wewn±trz wyra¿eñ. Jest to zwyczajny operator przecinka z C.)
+.PP
+lub
+.PP
+.Vb 6
+\&    SWITCH: {
+\&        /^abc/ && do { $abc = 1; last SWITCH; };
+\&        /^def/ && do { $def = 1; last SWITCH; };
+\&        /^xyz/ && do { $xyz = 1; last SWITCH; };
+\&        $nothing = 1;
+\&    }
+.Ve
+lub sformatowane w taki sposób, ¿e wygl±da bardziej na \*(L"poprawn±\*(R"
+instrukcjê switch:
+.PP
+.Vb 5
+\&    SWITCH: {
+\&        /^abc/      && do {
+\&                            $abc = 1;
+\&                            last SWITCH;
+\&                       };
+.Ve
+.Vb 4
+\&        /^def/      && do {
+\&                            $def = 1;
+\&                            last SWITCH;
+\&                       };
+.Ve
+.Vb 6
+\&        /^xyz/      && do {
+\&                            $xyz = 1;
+\&                            last SWITCH;
+\&                        };
+\&        $nothing = 1;
+\&    }
+.Ve
+lub
+.PP
+.Vb 6
+\&    SWITCH: {
+\&        /^abc/ and $abc = 1, last SWITCH;
+\&        /^def/ and $def = 1, last SWITCH;
+\&        /^xyz/ and $xyz = 1, last SWITCH;
+\&        $nothing = 1;
+\&    }
+.Ve
+lub nawet straszliwe
+.PP
+.Vb 8
+\&    if (/^abc/)
+\&        { $abc = 1 }
+\&    elsif (/^def/)
+\&        { $def = 1 }
+\&    elsif (/^xyz/)
+\&        { $xyz = 1 }
+\&    else
+\&        { $nothing = 1 }
+.Ve
+Popularnym idiomem instrukcji switch jest wykorzystanie tworzonego przez
+\f(CWforeach\fR synonimu. Uzyskane tymczasowe przypisanie do zmiennej
+\f(CW$_\fR umo¿liwia wygodne dopasowywanie:
+.PP
+.Vb 6
+\&    SWITCH: for ($where) {
+\&                /In Card Names/     && do { push @flags, '-e'; last; };
+\&                /Anywhere/          && do { push @flags, '-h'; last; };
+\&                /In Rulings/        && do {                    last; };
+\&                die "unknown value for form variable where: `$where'";
+\&            }
+.Ve
+Innym interesuj±cym podej¶ciem do instrukcji switch jest rozplanowanie bloku
+\f(CWdo\fR tak, by zwraca³ w³a¶ciw± warto¶æ:
+.PP
+.Vb 8
+\&    $amode = do {
+\&        if     ($flag & O_RDONLY) { "r" }
+\&        elsif  ($flag & O_WRONLY) { ($flag & O_APPEND) ? "a" : "w" }
+\&        elsif  ($flag & O_RDWR)   {
+\&            if ($flag & O_CREAT)  { "w+" }
+\&            else                  { ($flag & O_APPEND) ? "a+" : "r+" }
+\&        }
+\&    };
+.Ve
+lub te¿
+.PP
+.Vb 5
+\&        print do {
+\&            ($flags & O_WRONLY) ? "write-only"          :
+\&            ($flags & O_RDWR)   ? "read-write"          :
+\&                                  "read-only";
+\&        };
+.Ve
+albo, je¶li jeste¶ pewien, ¿e wszystkie klauzule \f(CW&&\fR s± prawdziwe,
+mo¿esz pos³u¿yæ siê czym¶ podobnym, co "prze³±cza" w zale¿no¶ci od warto¶ci
+zmiennej ¶rodowiska \f(CWHTTP_USER_AGENT\fR.
+.PP
+.Vb 13
+\&    #!/usr/bin/perl 
+\&    # dobierz plik ze stron± ¿argonu wed³ug przegl±darki
+\&    $dir = 'http://www.wins.uva.nl/~mes/jargon';
+\&    for ($ENV{HTTP_USER_AGENT}) { 
+\&        $page  =    /Mac/            && 'm/Macintrash.html'
+\&                 || /Win(dows )?NT/  && 'e/evilandrude.html'
+\&                 || /Win|MSIE|WebTV/ && 'm/MicroslothWindows.html'
+\&                 || /Linux/          && 'l/Linux.html'
+\&                 || /HP-UX/          && 'h/HP-SUX.html'
+\&                 || /SunOS/          && 's/ScumOS.html'
+\&                 ||                     'a/AppendixB.html';
+\&    }
+\&    print "Location: $dir/$page\e015\e012\e015\e012";
+.Ve
+Ten rodzaj instrukcji switch dzia³a tylko, gdy wiesz, ¿e klauzule \f(CW&&\fR
+bêd± prawdziwe. Je¶li nie, to powinien byæ u¿yty poprzedni przyk³ad
+z \f(CW?:\fR.
+.PP
+Mo¿esz tak¿e rozwa¿yæ napisanie hasza (tablicy asocjacyjnej) zamiast
+syntezowania instrukcji switch.
+.Sh "Goto"
+.IX Subsection "Goto"
+Perl obs³uguje instrukcjê \f(CWgoto\fR. \s-1ETYKIETA\s0 pêtli nie jest w
+rzeczywisto¶ci prawid³owym celem \f(CWgoto\fR; jest tylko nazw± pêtli.
+Istniej± trzy postacie: goto-\s-1ETYKIETA\s0, goto-\s-1WYRA¯\s0 i
+goto-&\s-1NAZWA\s0.
+.PP
+Postaæ goto-\s-1ETYKIETA\s0 szuka instrukcji oznaczonej \s-1ETYKIET¡\s0 i
+kontynuuje wykonywanie w tym miejscu. Nie mo¿e byæ u¿ywana do wchodzenia
+do wnêtrza konstrukcji, które wymagaj± inicjalizacji, takich jak procedury lub
+pêtle foreach. Nie mo¿e te¿ byæ u¿ywana do wchodzenia do konstrukcji, które
+s± w jaki¶ sposób optymalizowane. Mo¿e byæ u¿ywane do wchodzenia prawie we
+wszystkie inne miejsca w zakresie dynamicznym, ³±cznie z wychodzeniem z
+procedur, lecz zwykle lepiej jest u¿yæ konstrukcji takiej jak last lub
+die. Autor Perla nigdy nie czu³ potrzeby u¿ywania tej postaci goto (w
+Perlu\*(--C to inna sprawa).
+.PP
+Postaæ goto-\s-1WYRA¯\s0 oczekuje nazwy etykiety, której zakres zostanie
+rozwi±zany dynamicznie. Umo¿liwia to stosowanie wyliczanych goto jak w
+\s-1FORTRAN\s0ie, lecz nie jest zbyt zalecane je¶li optymalizujesz z uwagi
+na konserwacjê programu:
+.PP
+.Vb 1
+\&    goto ("FOO", "BAR", "GLARCH")[$i];
+.Ve
+Postaæ goto-&\s-1NAZWA\s0 jest bardzo magiczna i podstawia wywo³anie do
+nazwanej procedury za bie¿±c± procedurê. Jest to u¿ywane przez
+procedury \fI\s-1AUTOLOAD\s0()\fR, które chc± ³adowaæ inne procedury, a
+potem udawaæ, ¿e inna procedura zosta³a wywo³ana jako pierwsza (poza tym, ¿e
+wszelkie modyfikacje \f(CW@_\fR w bie¿±cej procedurrze s± przenoszone do tej
+innej procedury.) Po takim \f(CWgoto\fR, nawet \fIcaller()\fR nie bêdzie w
+stanie powiedzieæ, ¿e ta procedura zosta³a wywo³ana pierwsza.
+.PP
+W wiêkszo¶ci tego typu przypadków, zazwyczaj du¿o, du¿o lepszym pomys³em jest
+u¿ywanie strukturalnych mechanizmów kontroli przep³ywu \f(CWnext\fR,
+\f(CWlast\fR lub \f(CWredo\fR, zamiast zwracaæ siê ku \f(CWgoto\fR.
+Dla niektórych zastosowañ, para \f(CWeval{}\fR i \fIdie()\fR, s³u¿±ca do
+przetwarzania wyj±tków mo¿e byæ te¿ rozs±dnym wyj¶ciem.
+.Sh "POD: Osadzona dokumentacja"
+.IX Subsection "POD: Osadzona dokumentacja"
+Perl posiada mechanizm ³±czenia dokumentacji z kodem ¼ród³owym.
+Podczas oczekiwania pocz±tku nowej instrukcji, je¶li kompilator natrafi na
+liniê, rozpoczynaj±c± siê od znaku równo¶ci i s³owa, jak
+.PP
+.Vb 1
+\&    =head1 Here There Be Pods!
+.Ve
+To ten tekst, oraz reszta napisów, a¿ do linii, rozpoczynaj±cej siê od 
+\f(CW=cut\fR w³±cznie zostan± zignorowane. Format tekstu wtr±conego jest
+opisany w podrêczniku \fIperlpod\fR(1).
+.PP
+Umo¿liwia ci to ³±czenie kodu ¼ród³owego i dokumentacji, jak w
+.PP
+.Vb 1
+\&    =item snazzle($)
+.Ve
+.Vb 3
+\&    Funkcja snazzle() bêdzie zachowywaæ siê w najbardziej spektakularny
+\&    sposób, jaki mo¿esz sobie wyobraziæ, prze¶cigaj±c nawet cyber
+\&    pirotechnikê.
+.Ve
+.Vb 1
+\&    =cut powrót do kompilatora, fora z tego pod-fora!
+.Ve
+.Vb 4
+\&    sub snazzle($) {
+\&        my $thingie = shift;
+\&        .........
+\&    }
+.Ve
+Zauwa¿, ¿e translatory pod powinny patrzeæ tylko na akapity, rozpoczynaj±ce siê
+od dyrektywy pod (u³atwia to przetwarzanie), podczas gdy kompilator wie, ¿e
+ma szukaæ sekwencji specjalnych pod nawet w ¶rodku akapitu. Znaczy to, ¿e
+nastêpuj±cy tajny tekst bêdzie ignorowany zarówno przez kompilator, jak i
+przez translatory.
+.PP
+.Vb 5
+\&    $a=3;
+\&    =tajne rzeczy
+\&     warn "Ani POD ani KOD!?"
+\&    =cut powrot
+\&    print "got $a\en";
+.Ve
+Prawdopodobnie nie powiniene¶ opieraæ siê na \fIwarn()\fR, "wypodowanym" na
+zawsze. Nie wszystkie translatory zachowuj± siê w tym momencie dobrze i byæ
+mo¿e kompilator stanie siê wybredniejszy.
+.PP
+Dyrektyw pod mo¿na te¿ u¿ywaæ do szybkiego wykomentowania sekcji kodu.
+.Sh "Plain Old Comments (Nie!)"
+.IX Subsection "Plain Old Comments (Not!)"
+Podobnie jak preprocesor C, perl mo¿e przetwarzaæ dyrektywy liniowe. Przy
+ich u¿yciu, mo¿na kontrolowaæ perlowe pojêcie nazw plików i numerów linii w
+komunikatach o b³êdach/ostrze¿eniach (szczególnie dla ³añcuchów, które s±
+przetwarzane z \fIeval()\fR). Sk³adnia tego mechanizmu jest taka sama dla
+jak dla wiêkszo¶ci preprocesorów C: dopasowuje wyra¿enie regularne
+\f(CW/^#\es*line\es+(\ed+)\es*(?:\es"([^"]*)")?/\fR do \f(CW$1\fR, bêd±cego
+numerem linii i \f(CW$2\fR, bêd±cego opcjonaln± nazw± pliku (podan± w
+cudzys³owach).
+.PP
+Oto niektóre przyk³ady, które mo¿esz sprawdziæ w swojej pow³oce:
+.PP
+.Vb 6
+\&    % perl
+\&    # line 200 "bzzzt"
+\&    # znak `#' w poprzedniej linii musi byæ pierwszym znakiem linii
+\&    die 'foo';
+\&    __END__
+\&    foo at bzzzt line 201.
+.Ve
+.Vb 5
+\&    % perl
+\&    # line 200 "bzzzt"
+\&    eval qq[\en#line 2001 ""\endie 'foo']; print $@;
+\&    __END__
+\&    foo at - line 2001.
+.Ve
+.Vb 4
+\&    % perl
+\&    eval qq[\en#line 200 "foo bar"\endie 'foo']; print $@;
+\&    __END__
+\&    foo at foo bar line 200.
+.Ve
+.Vb 6
+\&    % perl
+\&    # line 345 "goop"
+\&    eval "\en#line " . __LINE__ . ' "' . __FILE__ ."\e"\endie 'foo'";
+\&    print $@;
+\&    __END__
+\&    foo at goop line 345.
+.Ve
+
+.rn }` ''

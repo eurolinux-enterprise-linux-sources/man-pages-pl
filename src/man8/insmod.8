@@ -1,0 +1,333 @@
+.\" T³umaczenie wersji z modutils-2.4.10 - pa¼dziernik 2001 PTM
+.\" czê¶ciowo oparte na insmod.1 z PTM autorstwa Marcina Mazurka
+.\" Andrzej Krzysztofowicz <ankry@green.mif.pg.gda.pl>
+.\"
+.\" Copyright (c) 1996 Free Software Foundation, Inc.
+.\" This program is distributed according to the Gnu General Public License.
+.\" See the file COPYING in the kernel source directory.
+.\" $ Id: insmod.8 1.2 Tue, 02 Oct 2001 11:22:51 +1000 kaos $
+.\"
+.TH INSMOD 8 "2 pa¼dxiernika 2001" Linux "Wsparcie dla modu³ów"
+.SH NAZWA
+insmod \- instaluje ³adowalny modu³ j±dra
+.hy 0
+.SH SK£ADNIA
+.B insmod
+[\-fhkLmnpqrsSvVxXyY] [\-e\ nazwa_przechowalni] [\-o\ nazwa_modu³u]
+[\-O\ nazwa_blob] [\-P\ przedrostek] modu³ [\ symbol=warto¶æ\ ...\ ]
+.SH OPIS
+.B insmod
+instaluje ³adowalny modu³ do dzia³aj±cego j±drze.
+.PP
+.B insmod
+próbuje do³±czyæ modu³ do uruchomionego j±dra systemu przez
+rozwi±zanie wszystkich symboli z tabeli udostêpnianych symboli j±dra.
+.PP
+Je¶li nazwa pliku modu³u, podana jest bez katalogu i rozszerzenia,
+.B insmod
+bêdzie szuka³ modu³u w kilku standardowych katalogach. Mo¿na u¿yæ zmiennej
+¶rodowiska MODPATH aby zmieniæ to standardowe zachowanie.
+Je¶li istnieje plik konfiguracyjny modu³ów taki, jak /etc/modules.conf (lub
+(przestarza³y) /etc/conf.modules), ¶cie¿ki w nim zdefiniowane bêd± mia³y
+priorytet nad zdefiniowanymi w MODPATH.
+.br
+Mo¿na równie¿ pos³u¿yæ siê zmienn± ¶rodowiska MODULECONF dla wybrania innego
+pliku konfiguracyjnego ni¿ standardowy /etc/modules.conf (lub (przestarza³y)
+/etc/conf.modules).
+Ta zmienna ¶rodowiska bêdzie mia³a priorytet nad wszystkimi powy¿szymi
+definicjami.
+.SS OPCJE
+.TP
+.I "-f --force"
+Usi³uje za³adowaæ modu³ nawet je¶li wersja uruchomionego j±dra i j±dra dla
+którego modu³ zosta³ skompilowany nie zgadzaj± siê. Powoduje to jedynie
+wy³±czenie kontroli zgodno¶ci wersji. Opcja ta nie ma wp³ywu na sprawdzanie
+nazw symboli. Je¶li nazwy symboli w module nie zgadzaj± siê z kernelem,
+wymuszenie nie jest mo¿liwe.
+.TP
+.I "-h --help"
+Wypisuje tekst pomocy.
+.TP
+.I "-k --autoclean"
+Ustawia dla danego modu³u atrybut automatycznego usuwania. \fBkerneld\fP(8)
+usunie ka¿dy modu³ z tym atrybutem, je¶li nie bêdzie on u¿ywany przez pewien
+okres czasu \(em zazwyczaj jedn± minutê.
+.TP
+.I "-L --lock"
+Za pomoc± \fBflock\fR(2) zapobiega jednoczesnemu ³±dowaniu tego samego
+modu³u.
+.TP
+.I "-m --map"
+Wypisuje odwzorowanie ³adowanych symboli, które mo¿e pomóc w odszukaniu
+usterki w przypadku wyst±pienia b³êdu j±dra (kernel panic).
+.TP
+.I "-n --noload"
+Symulacja pracy, wykonuje wszystko oprócz za³adowania modu³u do j±dra. Je¶li
+wywo³ane z
+.I -m
+lub
+.IR -O ,
+w wyniku uruchomienia powstanie odwzorowanie symboli lub plik z kopi± kodu
+modu³u w j±drze (blob). Ze wzglêdu na fakt, ¿e modu³ nie zostanie za³adowany,
+rzeczywisty adres j±dra, pod którym modu³ by³by za³adowany pozostanie
+nieznany, wiêc zarówno odwzorowanie symboli, jak i plik blob zostan± oparte
+na z góry ustalonym adresie 0x12340000.
+.TP
+.I "-p --probe"
+Sprawdza, czy modu³ mo¿e zostaæ za³adowany bez k³opotów. Obejmuje to
+znalezienie modu³u w ¶cie¿ce wyszukiwania dla modu³ów, sprawdzanie numerów
+wersji i rozwi±zanie symboli. nie s± sprawdzane przesuniêcia ani nie s±
+tworzone odwzorowanie symboli i plik blob.
+.TP
+.I "-q --quiet"
+Nie wypisuje listy nierozwi±zanych symboli.
+Nie narzeka na niezgodne wersje. Wyst±pienie problemu zostanie jedynie
+uwidocznione w kodzie zakoñczenia programu
+.IR insmod .
+.TP
+.I "-r --root"
+Niektórzy u¿ytkownicy kompiluj± modu³y jako u¿ytkownik inny ni¿ root,
+a nastêpnie instaluj± je jako root. W wyniku tego w³a¶cicielem modu³ów nie
+bêdzie root, nawet je¶li jest on w³a¶cicielem katalogu modu³ów. Je¶li
+dopu¶ci siê innego u¿ytkownika ni¿ root jako w³a¶ciciela modu³ów, umo¿liwi
+siê nieproszonemu go¶ciowi nadpisanie istniej±cych modu³ów bêd±cych
+w³asno¶ci± tego u¿ytkownika i wykorzystanie za³adowania go do uzyskania
+uprawnieñ roota.
+.TP
+.I ""
+Domy¶lnie, modutils odrzuc± próbê za³adowania modu³u nie nale¿±cego do
+root-a. Podanie -r zniesie b³±d i pozwoli root-owi za³adowaæ modu³y, które
+nie s± jego w³asno¶ci±.
+.B Uwaga:
+domy¶lne warto¶æ opcji sprawdzania, czy w³a¶cicielem jest root mo¿e byæ
+zmieniona podczas konfiguracji modutils.
+.TP
+.I ""
+.B U¿ywanie
+.I -r
+\fBdo wy³±czenia sprawdzania, czy w³a¶cicielem jest root lub ustawienie
+warto¶ci domy¶lnej na "nie sprawdzaj, czy w³a¶cicielem jest root" podczas
+konfiguracji stanowi powa¿ne naruszenie bezpieczeñstwa i nie jest
+zalecane.\fR
+.TP
+.I "-s --syslog"
+Wyprowadza wszystko do \fBsyslog\fP(3) zamiast na terminal.
+.TP
+.I "-S --kallsyms"
+Wymusza, aby ³adowany modu³ zawiera³ dane kallsyms, nawet gdy j±dro ich
+nie obs³uguje. Ta opcja jest przeznaczona dla ma³ych systemów, gdzie j±dro
+jest ³adowane bez danych kallsyms, ale wybrane modu³y potrzebuj± kallsyms
+dla poszukiwania usterek.
+.TP
+.I "-v --verbose"
+W³±cza wy¶wietlanie du¿ej ilo¶ci informacji.
+.TP
+.I "-X --export, -x --noexport"
+Odpowiednio, udostêpnia lub nie wszystkie symbole zewnêtrzne modu³ów.
+Standardowo, symbole s± udostêpniane. Ta opcja ma jedynie znaczenie, gdy
+modu³ sam jawnie nie udostêpnia swojej w³asnej tabeli symboli i dlatego
+jest w zaniku.
+.I "-Y --ksymoops, -y --noksymoops"
+Dodaje/nie dodaje do ksyms symboli dla ksymoops. Symbole te s± u¿ywane przez
+ksymoops aby zapewniæ wiêksze mo¿liwo¶ci poszukiwania usterek, gdy wyst±pi
+w tym module Oops (b³±d kernela). Standardowo, symbole dla ksymoops s±
+zdefiniowane. Ta opcja jest niezale¿na od opcji -X/-x.
+.TP
+.I ""
+Symbole dla ksymoops zwiêkszaj± ³adowany modu³ o oko³o 260 bajtów. O ile nie
+cierpi siê na wyra¿ny brak przestrzeni adresowej kernela i nie próbuje siê
+zminimalizowaæ ksyms, nale¿y przyj±æ warto¶æ domy¶ln± i otrzymywaæ bardziej
+precyzyjne informacje o usterkach w razie Oops. Symbole dla ksymoops s±
+niezbêdne, aby w sposób trwa³y przechowywaæ dane modu³ów.
+.TP
+.I "-o \fRnazwa_modu³u\fI --name\fR=nazwa_modu³u\fI"
+Podanie jawne nazwy modu³u, zamiast wywodzenia jej z podstawowej czê¶ci
+nazwy pliku z modu³em.
+.TP
+.I "-O \fRnazwa_blob\fI --blob\fR=nazwa_blob\fI"
+Zachowuje obiekt binarny w
+.IR nazwa_blob .
+Wynikiem jest binarny blob (bez nag³ówków ELF) pokazuj±cy, co dok³adnie
+zosta³o za³adowane do kernela po manipulacjach sekcjami i przesuniêciach.
+Zaleca siê opcjê
+.IR -m ,
+aby otrzymaæ odwzorowanie symboli obiektu.
+.TP
+.I "-P \fRprzedrostek\fI --prefix\fR=przedrostek\fI"
+Ta opcja mo¿e byæ u¿ywana z wersjonowanymi modu³ami, przy j±drze SMP lub
+j±drze z obs³ug± wysokiej pamiêci (bigmem), gdy¿ wówczas do nazw symboli
+modu³ów dodawany jest dodatkowy przedrostek.
+Je¶li j±dro zosta³o zbudowane z wersjonowanymi symbolami, to
+.I insmod
+automatycznie wyci±gnie przedrostek z definicji "get_module_symbol" lub
+"inter_module_get", z których jeden musi istnieæ w dowolnym kernelu
+obs³uguj±cym modu³y. Je¶li symbole j±dra nie s± wersjonowane, a modu³ zosta³
+zbudowany z wersjonowanymi symbolami, to u¿ytkownik musi podaæ \-P.
+.TP
+.I "-e \fRnazwa_przechowalni\fI --persist\fR=nazwa_przechowalni\fI"
+Okre¶la, sk±d powinny byæ odczytane jakiekolwiek trwa³e dane dla modu³u
+podczas jego ³adowania i gdzie powinny one zostaæ zapisane, gdy ta kopia
+modu³u bêdzie usuwana z j±dra.  Opcja ta jest milcz±co ignorowana, gdy
+modu³ nie posiada ¿adnych trwale przechowywanych danych. Trwa³e dane s±
+odczytywane przez
+.I insmod
+jedynie, gdy ta opcja zostanie podana. Domy¶lnie,
+.I insmod
+nie przetwarza ¿adnych trwa³ych danych.
+Skrócona forma:
+.I -e
+"" (pusty ³añcuch) jest interpretowana przez
+.I insmod
+jako warto¶æ
+.I persistdir
+(zobacz
+.BR modules.conf (5)),
+po której wystêpuje nazwa pliku modu³u, wzglêdem ¶cie¿ki, w której modu³
+zosta³ znaleziony, z pominiêciem koñcowych \'.gz', \'.o' i \'.mod'. Je¶li
+zostanie podane
+.IR persistdir =
+(tzn. persistdir jest pustym polem) wówczas ta forma skrócona zostanie
+milcz±co zignorowana.
+.SS "PARAMETRY MODU£ÓW"
+Niektóre z modu³ów akceptuj± podawanie im parametrów w czasie ³adowania w
+celu dostosowania ich do okre¶lonych warunków pracy.
+Tymi parametrami najczê¶ciej s± adresy portów I/O i numery przerwañ, które
+zmieniaj± siê w zale¿no¶ci od sprzêtu, a których detekcja nie jest mo¿liwa.
+.PP
+W modu³ach zbudowanych dla j±der seri 2.0, jakikolwiek symbol bêd±cy
+wska¼nikiem do typu ca³kowitego lub znakowego mo¿e byæ potraktowany jako
+parametr i zmodyfikowany. Poczynaj±c od j±der 2.1, symbole stanowi±ce
+parametry s± jawnie zaznaczone, aby tylko okre¶lone parametry mog³y byæ
+modyfikowane. Co wiêcej, podawana jest informacja o typie parametru aby przy
+³adowaniu mo¿na by³o j± skontrolowaæ.
+.PP
+W przypadku warto¶ci ca³kowitych, wszystkie warto¶ci mog± zostaæ podane
+dziesiêtnie, ósemkowo lub szenastkowo np.: 17, 021 lub 0x11.
+Tablice warto¶ci podajemy jako ci±g elementów rozdzielonych przecinkami;
+elementy mog± byæ pominiête przez ominiêcie ich warto¶ci.
+.PP
+W modu³ach serii 2.0, warto¶ci które nie zaczynaj± siê od cyfry traktowane
+s± jako ³añcuchy. Poczynaj±c od j±der 2.1, informacja o typie parametru
+wskazuje czy warto¶æ ma byæ interpretowana jako ³añcuch. Je¶li warto¶æ zaczyna
+siê od cudzys³owu (\fI"\fP), ³añcuch jest interpretowany jak w C,
+sekwencje ucieczkowe i in. Nale¿y zauwa¿yæ, ¿e przy podawaniu parametrów z
+linii poleceñ pow³oki, mo¿e istnieæ potrzeba zabezpieczenia samych cudzys³owów
+przed interpretacj± przez pow³okê.
+.SS "MODU£Y I SYMBOLE NA LICENCJI GPL"
+Pocz±wszy od j±dra 2.4.10, modu³y powinny zawieraæ ³añcuch bêd±cy nazw±
+licencji, zdefiniowany za pomoc± MODULE_LICENSE(). Niektóre ³añcuchy s±
+rozpoznawane jako zgodne z GPL, wszelkie inne ³añcuchy licencji, lub brak
+licencji oznaczaj±, ¿e modu³ jest traktowany jako zastrze¿ony. Zajrzyj do
+include/linux/module.h po listê zgodnych z GPL ³añcuchów licencji.
+.PP
+Je¶li j±dro obs³uguje znacznik
+.I /proc/sys/kernel/tainted
+to
+.I insmod
+podczas ³adowania modu³u nie na licencji GPL, wykona operacjê OR dla znacznika
+tainted (ska¿ony) i '1'. Je¶li kernel obs³uguje ska¿enia, to podczas
+³adowania modu³u bez licencji wypisane zostanie ostrze¿enie; ostrze¿enie
+bêdzie wypisywane zawsze, nawet przy starszych, nieobs³uguj±cych ska¿eñ,
+j±drach, dla modu³ów posiadaj±cych MODULE_LICENSE() niezgodne z GPL.
+Minimalizuje to liczbê ostrze¿eñ podczas u¿ywania nowych modutils
+ze starymi j±drami.
+.PP
+Tryb
+.I insmod\ -f
+(wymuszenie) przy j±drach obs³uguj±cych ska¿enia, bêdzie zawsze powodowaæ
+wykonanie OR dla znacznika tainted i '2', zawsze te¿ bêdzie wypisywane
+ostrze¿enie.
+.PP
+Niektórzy autorzy kodu j±dra wymagaj±, aby symbole udostêpniane przez ich
+kod mog³y byæ wykorzystywane wy³±cznie przez modu³y na licencji zgodnej z
+GPL. Symbole te s± udostêpniane przez EXPORT_SYMBOL_GPL zamiast zwyk³ego
+EXPORT_SYMBOL. Symbole "tylko dla GPL" udostêpniane przez kernel i inne
+modu³y s± widziane wy³±cznie przez modu³y na licencji zgodnej z GPL. Symbole
+te pojawi± siê w /proc/ksyms z przedrostkiem 'GPLONLY_'.
+Podczas ³adowania modu³u na licencji GPL
+.I insmod
+ignoruje przedrostek GPLONLY_ dla symboli, wiêc ³adowany modu³ odwo³uje siê
+po prostu do zwyk³ej nazwy symbolu, bez przedrostka. Symbole "tylko dla
+GPL" sta³y siê niedostêpne dla modu³ów o licencji niezgodnej z
+GPL, w³±czaj±c w to modu³y bez jakiejkolwiek licencji.
+.SS "POMOC KSYMOOPS"
+Aby pomóc w analizie Oopsów (b³êdów) j±dra podczas u¿ywania modu³ów, insmod
+domy¶lnie dodaje kilka symboli do ksyms, zobacz opcja \fB-Y\fP.
+Symbole te zaczynaj± siê od \fB__insmod_\fP\fInazwamodu³u\fP\fB_\fP.
+\fInazwamodu³u\fP jest niezbêdna, aby symbol by³ unikalny, dozwolone jest
+³adowanie tego samego obiektu wiêcej ni¿ raz podaj±c ró¿ne nazwy modu³u.
+Obecnie zdefiniowane s± symbole
+.PP
+__insmod_\fInazwamodu³u\fP_O\fIplikobiektu\fP_M\fIczas\fP_V\fIwersja\fP
+.PP
+\fIplikobiektu\fP jest nazw± pliku z którego modu³ zosta³ za³adowany.
+Zapewnia to, ¿e ksymoops dopasuje kod do w³a¶ciwego obiektu. \fIczas\fP jest
+podanym szesnastkowo znacznikiem czasu ostatniej modyfikacji dla tego pliku,
+zero gdy stat zakoñczy siê niepomy¶lnie. \fIwersja\fP jest wersj± j±dra, dla
+której modu³ skompilowano, -1, gdy numer wersji jest niedostpny. Symbol
+_O posiada taki sam adres pocz±tkowy, jak nag³owek modu³u.
+.PP
+__insmod_\fInazwamodu³u\fP_S\fInazwasekcji\fP_L\fId³ugo¶æ\fP
+.PP
+Symbol ten pojawia siê na pocz±tku wybranych sekcji ELF, obecnie
+.text, .rodata, .data i .bss. Pojawia sie on jedynie w sekcjach o niezerowym
+rozmiarze. \fInazwasekcji\fP jest nazw± sekcji ELF, \fId³ugo¶æ\fP jest jej
+podanym dziesiêtnie rozmiarem. Symbole te pomagaj± programowi ksymoops
+odwzorowaæ adresy w sekcjach, w których nie s± dostêpne ¿adne symbole.
+.PP
+__insmod_\fInazwamodu³u\fP_P\fInazwa_przechowalni\fP
+.PP
+Tworzone przez insmod jedynie gdy modu³ posiada jeden lub wiêcej parametrów
+oznaczonych jako trwa³e dane i jest dostêpny plik przechowuj±cy te trwa³e
+dane (patrz
+.I -e
+powy¿ej).
+.PP
+Inny problem przy analizie Oops j±dra polega na tym, ¿e zawarto¶æ /proc/ksyms
+i /proc/modules cmo¿e siê zmieniæ pomiêdzy Oopsami i podczas przetwarzania
+pliku logu. Aby pomóc pokonaæ ten problem, insmod i rmmod bêd± automatycznie
+kopiowaæ /proc/ksyms i /proc/modules do /var/log/ksymoops o ile katalog
+/var/log/ksymoops istnieje. Bêdzie stosowany przedrostek
+`date\ +%Y%m%d%H%M%S`. Administrator systemu mo¿e podaæ ksymoops, który
+zrzut plików ma byæ u¿yty podczas analizy Oopsa. Nie ma prze³±cznika
+wy³±czaj±cego to automatyczne kopiowanie, wiêc je¶li nie powinno ono
+wystêpowaæ, nie nale¿y tworzyæ katalogu /var/log/ksymoops. Je¶li ten katalog
+istnieje, powinien on byæ w³asno¶ci± roota, mieæ prawa dostêpu 644 lub 600
+i nale¿y uruchamiaæ codziennie, lub w podobnych odstêpach czasu, poni¿szy
+skrypt. Jest on zainstalowany jako insmod_ksymoops_clean.
+.PP
+.ne 8
+.nf
+  #!/bin/sh
+  # Usuwa zachowane zawarto¶ci ksyms i modules nie u¿ywane przez 2 dni
+  if [ -d /var/log/ksymoops ]
+  then
+	  set -e
+	  # Upewnia siê, ¿e zawsze zostanie co najmniej jedna wersja
+	  d=`date +%Y%m%d%H%M%S`
+	  cp -a /proc/ksyms /var/log/ksymoops/${d}.ksyms
+	  cp -a /proc/modules /var/log/ksymoops/${d}.modules
+	  find /var/log/ksymoops -type f -atime +2 -exec rm {} \\;
+  fi
+.SH "ZOBACZ TAK¯E"
+\fBrmmod\fP(8), \fBmodprobe\fP(8), \fBdepmod\fP(8), \fBlsmod\fP(8),
+\fBksyms\fP(8), \fBmodules\fP(2), \fBgenksyms\fP(8), \fBkerneld\fP(8),
+\fBksymoops\fP(kernel).
+.SH HISTORIA
+Wsparcie dla modu³ów zosta³o zapocz±tkowane przez Anonima
+.br
+Pierwsza wersja Linuksowa przygotowana przez Basa Laarhovena <bas@vimec.nl>
+.br
+Wersja 0.99.14 przygotowana przez Jona Tombsa <jon@gtex02.us.es>
+.br
+Rozbudowana przez Bjorna Ekwalla <bj0rn@blox.se>
+.br
+Pierwotna pomoc dla ELF od Erica Youngdale'a <eric@aib.com>
+.br
+Aktualizowna do 2.1.17 przez Richarda Hendersona <rth@tamu.edu>
+.br
+Rozszerzona przez Bjorna Ekwalla <bj0rn@blox.se> dla modutils-2.2.* w marcu 1999
+.br
+Pomocy przy ksymoops udzieli³ Keith Owens <kaos@ocs.com.au> w maju 1999
+.br
+Zarz±dza: Keith Owens <kaos@ocs.com.au>.

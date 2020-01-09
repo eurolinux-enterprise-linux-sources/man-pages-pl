@@ -1,0 +1,138 @@
+.\" Translation (c) 1998 Marcin Mazurek <mazek@capella.ae.poznan.pl>
+.\" {PTM/MM/0.1/08-10-1998/"frm.1 -  podaje pola from i subject wybranych wiadmo¶ci"}
+.if n \{\
+.	ds ct "
+.\}
+.if t \{\
+.	ds ct \\(co
+.\}
+.TH FRM 1L "Elm Version 2.4" "USENET Community Trust"
+.SH NAZWA
+frm, nfrm \- podaje pola from i subject wybranych wiadomo¶ci w skrzynce
+pocztowej (mailbox) lub folderze
+.SH SK£ADNIA
+.B frm
+.RB [ \-hnQqStv ]
+.RB [ \-s\ \fIstatus\fP ]
+[folder | u¿ytkownik] ...
+.br
+.B nfrm
+.RB [ \-hnQqStv ]
+.RB [ \-s\ \fIstatus\fP ]
+[folder | u¿ytkownik] ...
+.SH OPIS
+.I Frm
+podaje informacjê o wybranych wiadomo¶ciach (jedna na liniê) w formacie:
+.PP
+.I nadawca [temat]
+.PP
+gdzie \fInadawca\fP jest nazw± osoby od której jest dany wiadomo¶æ, a
+\fItemat\fP jest tematem wiadomo¶ci, o ile istnieje. Je¶li wiadomo¶æ
+jest od Ciebie, czê¶æ \fInadawca\fP zostanie zast±piona polem ``To user'',
+gdzie `user' jest zast±pione nazw± osoby do której poczta zosta³a wys³ana.
+Ten przypadek jest mo¿liwy kiedy dostajesz kopiê poczty, któr± wcze¶niej
+wys³a³e¶.
+.PP
+Je¶li jest podana nazwa foldera, program przeszukuje go zamiast standardowej
+skrzynki pocztowej. Je¶li jako argument podana jest nazwa u¿ytkownika 
+\fIfrm\fP przeszukuje jego skrzynkê pocztow±, o ile mamy prawo dostêpu do
+niej.
+.PP
+Nazwê folderu mo¿emy podaæ w podobnej notacji jak przy wywo³aniu
+programu pocztowego \fBElm\fRr (np., =folder).
+.PP
+\fIFrm\fP wywo³any jako \fInfrm\fP dzia³a identycznie jak ``frm -s new''.
+.SH OPCJE
+\fIFrm\fP mo¿e byæ wywo³any z nastêpuj±cymi opcjami:
+.TP
+.B \-h
+Wy¶wietl krótki opis opisuj±cy mo¿liwe opcje.
+.TP
+.B \-n
+Ponumeruj wiadomo¶ci u¿ywaj±c takiego schematu numerowania, który
+zrozumie na przyk³ad, \fIreadmsg\fR.
+.TP
+.B \-Q
+Tryb wy¶wietlaj±cy jedynie informacje o b³êdach. Ta opcja mo¿e byæ przydatna
+w skryptach pow³oki, gdzie wa¿ne jest jedynie czy program zakoñczy³ siê
+sukcesem czy te¿ nie, a reszta informacji jest nieistotna.
+.TP
+.B \-q
+Tryb "cichy".  Wy¶wietla jedynie jednolinijkowy komunikat dla ka¿dego
+podanego folderu lub skrzynki pocztowej.
+.TP
+.B \-S
+Podaje liczbê wiadomo¶ci o okre¶lonym statusie w ka¿dej podanej skrzynce
+pocztowej lub folderze.
+Je¶li chcesz aby zosta³a wy¶wietlona jedynie linia z liczb± wiadomo¶ci
+u¿yj dodatkowo
+\fB\-q\fR .
+.TP
+.B \-s \fIstatus
+Wy¶wietl jedynie wiadomo¶ci o podanym statusie. `status' mo¿esz zast±piæ
+s³owem "new" (nowy), "unread" (nieczytany), "old" (ta samo co "unread"), or "read"
+(przeczytany). Opcja \fB\-s\fP mo¿e byæ podana wiele razy aby wy¶wietliæ
+informacjê o np. nowych i nieprzeczytanych wiadomo¶ciach. Wystarczy aby¶ poda³
+jedynie pierwsz± literê statusu.
+.TP
+.B \-t
+Tryb "schludny". Je¶li pole \fIfrom\fP jest zbyt d³ugie aby zmie¶ciæ siê z polem
+subject które zaczyna siê w standardowo okre¶lonym miejscu, przesuwa pole 
+subject o jedn± liniê poni¿ej.
+.TP
+.B \-v
+Tryb "gadatliwy".  Wy¶wietla opis w nag³ówku przed wylistowaniem zawarto¶ci
+ka¿dej podanej skrzynki pocztowej lub folderu.
+.SH KOD WYJ¦CIA
+.I Frm
+zwraca status zero ("prawda") je¶li wiadomo¶ci pasuj±ce do `status' s± obecne.
+.I Frm
+zwraca 1 je¶li nie ma wiadomo¶ci pasuj±cych do `status', ale s± jakie¶ inne
+, zwraca 2 je¶li w ogóle nie ma wiadomo¶ci, lub 3 je¶li pojawi³ siê jaki¶
+b³±d. Je¶li podano wiele skrzynek pocztowych lub folderów, kod wyj¶cia odnosi siê
+jedynie do ostatnio sprawdzanego. Mo¿e zostaæ to wykorzystane w skryptach
+aby sprawdziæ jaki rodzaj poczty posiada u¿ytkownik.
+.SH Przyk³ady
+Kilka przyk³adów u¿ycia:
+.nf
+
+	$ \fBfrm\fR
+
+.fi
+wy¶wietli informacjê o wszystkich wiadomo¶ciach w Twojej skrzynce pocztowej
+lub ``You have no mail.'' je¶li nie ma ¿adnych wiadomo¶ci w niej.
+.nf
+
+	$ \fBfrm -s new\fR
+
+.fi
+wy¶wietli informacjê o wszystkich nowych wiadomo¶ciach w Twojej skrzynce
+pocztowej ``You have no new mail.'' Zauwa¿ drobn± ró¿nicê z poprzednim
+przyk³adem.
+.nf
+
+	$ \fBfrm -s new -s unread guest\fR
+
+.fi
+zak³adaj±c ¿e masz odpowiednie prawa dostêpu do (czytania) poczty u¿ytkownika guest
+, \fIfrm\fR wy¶wietli informacjê  o wszystkich nowych wiadomo¶ciach w
+skrzynce pocztowej u¿ytkownika guest. Je¶li nie ma poczty, \fIfrm\fR wypisze ~``guest
+has no mail.''
+.nf
+
+	$ \fBfrm -q -S\fR
+
+.fi
+wy¶wietli jedno liniow± informacjê o ilo¶ci poczty przeczytanej, nie czytanej
+i nowej w Twojej  skrzynce pocztowej. Np. ``You have 2 new messages, 3 unread messages,
+23 read messages.''
+.SH AUTOR
+Elm Development Group
+.SH ZOBACZ TAK¯E
+readmsg(1L), elm(1L), mail(1), mailx(1)
+.SH INFORMACJE O B£ÊDACH DO
+Syd Weinstein	elm@DSI.COM	(dsinc!elm)
+.SH COPYRIGHTS
+\fB\*(ct\fRCopyright 1988-1992 by The USENET Community Trust
+.br
+Derived from Elm 2.0, \fB\*(ct\fR Copyright 1986, 1987 by Dave Taylor

@@ -1,0 +1,219 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+.\" Translation update: Robert Luberda <robert@debian.org>, Mar 2005, util-linux 2.12
+.\" $Id: setterm.1,v 1.4 2005/03/18 13:07:01 robert Exp $
+.\"
+.\" Copyright 1990 Gordon Irlam (gordoni@cs.ua.oz.au)
+.\" Copyright 1992 Rickard E. Faith (faith@cs.unc.edu)
+.\" Most of this was copied from the source code.
+.\" Do not restrict distribution.
+.\" May be distributed under the GNU General Public License
+.\"
+.\" Most options documented by Colin Watson (cjw44@cam.ac.uk)
+.\" Undocumented: -snow, -softscroll, -standout; these are
+.\" commented out in the source
+.\"
+.TH SETTERM 1 "7 stycznia 2000" "Util-Linux 2.10" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+setterm \- ustawia atrybuty terminala
+.SH SK£ADNIA
+.nf
+.BR "setterm " [ opcje ]
+.fi
+.SH OPIS
+.B setterm
+wypisuje na standardowe wyj¶cie ³añcuch znaków, który wykonuje
+podane w³a¶ciwo¶ci terminala. Tam, gdzie mo¿liwe, do znalezienia ³añcucha
+u¿ywa siê
+.IR terminfo .
+Czê¶æ opcji jednak (zaznaczona poni¿ej jako "tylko konsole wirtualne")
+nie odpowiada w³a¶ciwo¶ciom
+.BR terminfo (5).
+W tym wypadku, je¶li typ terminala to "con" lub "linux", drukowany jest
+³añcuch, który wywo³uje po¿±dane w³a¶ciwo¶ci dla sterownika konsoli
+wirtualnej PC Minix. Opcje niezaimplementowane przez terminal s± ignorowane.
+.SH OPCJE
+Dla opcji logicznych (\fBon\fP lub \fBoff\fP) domy¶ln± warto¶ci± jest \fBon\fP.
+.P
+Dla zwiêz³o¶ci \fIkolor-8\fP oznacza \fBblack\fP (czarny), \fBred\fP (czerwony),
+\fBgreen\fP (zielony), \fByellow\fP (¿ó³ty), \fBblue\fP (niebieski),
+\fBmagenta\fP (purpurowy), \fBcyan\fP (niebieskozielony)
+lub \fBwhite\fP (bia³y).
+.P
+\fIkolor-16\fP to \fIkolor-8\fP, \fBgrey\fP (szary) lub \fBbright\fP (jasno-),
+po którym nastêpuje \fBred\fP (czerwony), \fBgreen\fP (zielony), \fByellow\fP
+(¿ó³ty), \fBblue\fP (niebieski), \fBmagenta\fP (purpurowy),
+\fBcyan\fP (niebieskozielony) lub \fBwhite\fP (bia³y).
+.P
+Ró¿ne opcje zwi±zane z kolorami mog± byæ ustawione niezale¿nie, przynajmniej
+na konsolach wirtualnych, chocia¿ wynik ustawienia wielu trybów (na przyk³ad
+.BR \-underline " i " \-half-bright )
+zale¿y od sprzêtu.
+.TP
+.BR \-term " nazwa_terminala"
+Nadpisuje warto¶æ zmiennej ¶rodowiskowej TERM.
+.TP
+.B \-reset
+Wy¶wietla ³añcuch resetowania terminala, który zwykle resetuje terminal do
+stanu w³±czenia.
+.TP
+.B \-initialize
+Wy¶wietla ³añcuch inicjacji terminala, który zwykle ustawia opcje
+terminala na warto¶ci domy¶lne.
+.TP
+.B \-default
+Ustawia opcje renderuj±ce terminala (rendering options) na warto¶ci
+domy¶lne.
+.TP
+.BR \-cursor " [" on | off ]
+W³±cza lub wy³±cza kursor terminala.
+.TP
+.BR \-repeat " [" on | off "] (tylko konsole wirtualne)"
+W³±cza lub wy³±cza powtarzanie klawiszy.
+.TP
+.BR \-appcursorkeys " [" on | off "] (tylko konsole wirtualne)"
+W³±cza lub wy³±cza tryb Cursor Key Application. Gdy jest on w³±czony dla
+klawiszy kursora bêd± wysy³ane ESC O A, ESC O B, itd. zamiast ESC [ A,
+ESC [ B, itd. Patrz
+sekcja "vi i klucza kursora" w Text-Terminal-HOWTO, aby przeczytaæ, jakie
+to mo¿e spowodowaæ problemy dla u¿ytkowników vi.
+.TP
+.BR \-linewrap " [" on | off "] (tylko konsole wirtualne)"
+W³±cza lub wy³±cza automatyczne zawijanie wierszy.
+.TP
+.B \-default
+Ustawia opcje renderuj±ce terminala na warto¶ci domy¶lne.
+.TP
+\fB\-foreground\fP \fIkolor-8\fP|\fBdefault\fP (tylko konsole wirtualne)
+Ustawia kolor tekstu.
+.TP
+\fB\-background\fP \fIkolor-8\fP|\fBdefault\fP (tylko konsole wirtualne)
+Ustawia kolor t³a.
+.TP
+\fB\-ulcolor\fP \fIkolor-16\fP (tylko konsole wirtualne)
+Ustawia kolor znaków podkre¶lonych.
+.TP
+\fB\-hbcolor\fP \fIkolor-16\fP (tylko konsole wirtualne)
+Ustawia kolor znaków pó³rozja¶nionych.
+.TP
+.BR \-inversescreen " [" on | off "] (tylko konsole wirtualne)"
+Zamienia ze sob± kolory ekranu. Kolor czcionki i kolor t³a s± zamienione,
+tak samo kolor podkre¶lenia i kolor znaków pó³rozja¶nionych.
+.TP
+.BR \-bold " [" on | off ]
+W³±cza lub wy³±cza tryb wyt³uszczenia (ekstrajasny).
+Poza konsolami wirtualnymi \fB\-bold off\fP
+wy³±cza wszystkie atrybuty (wyt³uszczenie,
+pó³rozja¶nienie, miganie, odwrócenie).
+.TP
+.BR \-half-bright " [" on | off ]
+W³±cza lub wy³±cza tryb pó³rozja¶nienia (patrz \fB\-hbcolor\fP).
+Poza konsolami wirtualnymi \fB\-half-bright off\fP
+wy³±cza wszystkie atrybuty (wyt³uszczenie,
+pó³rozja¶nienie, miganie, odwrócenie).
+.TP
+.BR \-blink " [" on | off ]
+W³±cza lub wy³±cza tryb migania.
+Poza konsolami wirtualnymi \fB\-blink off\fP
+wy³±cza wszystkie atrybuty (wyt³uszczenie,
+pó³rozja¶nienie, miganie, odwrócenie).
+.TP
+.BR \-reverse " [" on | off ]
+W³±cza lub wy³±cza tryb odwrócenia obrazu.
+Poza konsolami wirtualnymi \fB\-reverse off\fP
+wy³±cza wszystkie atrybuty (wyt³uszczenie,
+pó³rozja¶nienie, miganie, odwrócenie).
+.TP
+.BR \-underline " [" on | off ]
+W³±cza lub wy³±cza tryb podkre¶lania (patrz \fB\-ulcolor\fP).
+.TP
+.BR \-store " (tylko konsole wirtualne)"
+Zapisuje bie¿±ce opcje renderuj±ce terminala (kolory czcionki i t³a)
+jako warto¶ci domy¶lne.
+.TP
+.BR \-clear " [" all ]
+Czy¶ci ekran i ustawia kursor w pozycji domy¶lnej, tak jak
+.BR clear (1).
+.TP
+.B \-clear rest
+Czy¶ci ekran od bie¿±cej pozycji kursora do koñca ekranu.
+.TP
+.BR \-tabs " [tab1 tab2 tab3 ...] (tylko konsole wirtualne)"
+Ustawia poziome pozycje kursora dla tabulacji w zakresie 1-160. Bez argumentów
+pokazuje obecne ustawienia tabulacji.
+.TP
+.BR \-clrtabs " [tab1 tab2 tab3 ...] (tylko konsole wirtualne)"
+Czy¶ci ustawienia tabulacji dla podanych pozycji poziomych kursora, w zakresie
+1-160. Bez argumentów czy¶ci wszystkie tabulacje.
+.TP
+.BR \-regtabs " [1-160] (tylko konsole wirtualne)"
+Czy¶ci wszystkie tabulacje, a potem ustawia regularny wzorzec tabulacji
+z jedn± tabulacj± dla ka¿dej okre¶lonej liczby pozycji. Bez argumentów
+przyjmuje warto¶æ domy¶ln± \- 8.
+.TP
+.BR \-blank " [0-60] (tylko konsole wirtualne)"
+Ustawia czas nieaktywno¶ci, w minutach, po którym ekran zostanie automatycznie
+wygaszony (przy u¿yciu APM, je¶li jest dostêpne). Bez argumentu, ustawia
+warto¶æ domy¶ln± \- 0 (wy³±cza wygaszanie ekranu).
+.TP
+.BR \-dump " [1-NR_CONS]"
+Zapisuje stan podanych konsoli wirtualnych (z atrybutami) do pliku
+podanego w opcji \fB\-file\fP, nadpisuj±c jego zawarto¶æ; domy¶lna nazwa pliku
+to screen.dump. Je¶li nie podano argumentu, zapisuje stan obecnej konsoli
+wirtualnej.
+Nadpisuje \fB\-append\fP.
+.TP
+.BR \-append " [1-NR_CONS]"
+Jak \fB\-dump\fP, ale dopisuje stan konsoli do pliku zamiast
+nadpisywaæ jego zawarto¶æ. Dzia³a tylko wtedy, gdy nie podano
+opcji \fB\-dump\fP.
+.TP
+.BR \-file " dumpfilename"
+Ustawia nazwê pliku dla opcji \fB\-dump\fP lub \fB\-append\fP podanych
+w tej samej linii poleceñ. Je¶li nie podano tej opcji, domy¶ln±
+nazw± pliku jest screen.dump w bie¿±cym katalogu.
+.TP
+.BR \-msg " [" on | off "] (tylko konsole wirtualne)"
+W³±cza lub wy³±cza wysy³anie przez j±dro komunikatów \fBprintk()\fP
+do konsoli.
+.TP
+.BR \-msglevel " 1-8 (tylko konsole wirtualne)"
+Ustawia poziom logowania konsoli dla wiadomo¶ci j±dra \fBprintk()\fP.
+Bêd± wypisywane wszystkie wiadomo¶ci o wy¿szym poziomie, tak wiêc ustawienie
+poziomu na 0 da ten sam efekt co \fB\-msg on\fP, a logowanie z poziomem
+8 wypisze wszystkie komunikaty j±dra.
+.BR klogd (8)
+mo¿e byæ bardziej dogodnym interfejsem do ustawiania poziomu logowania
+komunikatów j±dra.
+.TP
+.BR "\-powersave on" | vsync
+Ustawia monitor w tryb VESA vsync suspend.
+.TP
+.B \-powersave hsync
+Ustawia monitor w tryb VESA hsync suspend.
+.TP
+.B \-powersave powerdown
+Ustawia monitor w tryb VESA powerdown.
+.TP
+.BR \-powersave " [" off "]"
+Wy³±cza w³a¶ciwo¶ci zachowywania energii monitorów zgodnych z VESA.
+.TP
+.BR \-powerdown " [0-60]"
+Ustawia czas wy³±czenia VESA w minutach. Je¿eli nie podano argumentu,
+ustawia na domy¶ln± warto¶æ 0 (wy³±czenie tej opcji). Je¿eli konsola jest
+wygaszona lub gdy monitor jest w trybie suspend, to monitor przejdzie
+odpowiednio w tryb vsync suspend lub wy³±czenia, gdy ten czas up³ynie.
+.TP
+.BR \-blength " [0-2000]"
+Ustawia czas trwania dzwonka w milisekundach.
+Je¿eli nie podano argumentu, to przyjmuje warto¶æ domy¶ln± \- 0.
+.TP
+.BR \-bfreq " [freqnumber]"
+Ustawia czêstotliwo¶æ dzwonka w Hz. Je¿eli nie podano argumentu,
+to domy¶ln± warto¶ci± jest 0.
+.SH "ZOBACZ TAK¯E"
+.BR tput (1),
+.BR stty (1),
+.BR terminfo (5),
+.BR tty (4)
+.SH B£ÊDY
+Nie s± udokumentowane ró¿nice miêdzy wersjami Miniksa i Linuksa.

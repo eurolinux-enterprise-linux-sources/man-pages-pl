@@ -1,0 +1,285 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright (C) Markus Kuhn, 1996, 2001
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" 1995-11-26  Markus Kuhn <mskuhn@cip.informatik.uni-erlangen.de>
+.\"      First version written
+.\" 2001-05-11  Markus Kuhn <mgk25@cl.cam.ac.uk>
+.\"      Update
+.\"
+.\" Translation (c) 1998 "Gwidon S. Naskrent" <naskrent@hoth.amu.edu.pl>
+.\" Last update Andrzej M. Krzysztofowicz <ankry@mif.pg.gda.pl>, Aug 2002,
+.\"             man-pages 1.60
+.\"
+.TH UTF-8 7 2001-05-11 "GNU" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+UTF-8 \- zgodne z ASCII wielobajtowe kodowanie Unikodowe
+.SH OPIS
+Zestaw znaków
+.B Unicode 3.0
+zajmuje szesnastobitow± przestrzeñ kodow±. Najprostsze kodowanie Unikodowe
+(znane jako
+.BR UCS-2 )
+sk³ada siê z sekwencji s³ów szesnastobitowych. Takie ³añcuchy mog±
+zawieraæ jako czê¶æ wielu znaków 16-bitowych bajty takie jak '\\0' lub '/',
+które maj± specjalne znaczenie w nazwach plików i innych parametrach
+funkcji z biblioteki C. Dodatkowo, wiêkszo¶æ narzêdzi uniksowych spodziewa
+siê plików ASCII i nie potrafi bez znacznych modyfikacji czytaæ s³ów
+16-bitowych jako znaków. Z tych powodów
+.B UCS-2
+nie jest po¿±danym zewnêtrznym kodowaniem
+.B Unicode
+w nazwach plików, plikach tekstowych, zmiennych ¶rodowiskowych itd.
+.BR "ISO 10646 Universal Character Set (UCS)" ,
+nadzbiór Unicode, zajmuje nawet przestrzeñ 31-bitow± i oczywiste dlañ
+kodowanie
+.B UCS-4
+(sekwencja s³ów 32-bitowych) stwarza te same problemy.
+
+Kodowanie
+.B UTF-8
+dla
+.B Unicode
+i
+.B UCS
+nie ma tych problemów i jest s³uszn± metod± u¿ywania zestawu znaków 
+.B Unicode
+w systemach operacyjnych wzorowanych na UNIX-ie.
+.SH W£A¦CIWO¦CI
+Kodowanie
+.B UTF-8 
+ma nastêpuj±ce przydatne w³a¶ciwo¶ci:
+.TP 0.2i
+*
+.B UCS
+znaki od 0x00000000 do 0x0000007f (klasyczne znaki
+.BR US-ASCII )
+zakodowane s± po prostu jako bajty 0x00 do 0x7f (zgodno¶æ z
+ASCII). Oznacza to, ¿e pliki i ³añcuchy które zawieraj± tylko siedmiobitowe
+znaki ASCII maj± takie samo kodowanie i w
+.B ASCII
+i w
+.BR UTF-8 .
+.TP
+*
+Wszystkie znaki
+.B UCS
+> 0x7f zakodowane s± jako wielobajtowy ci±g sk³adaj±cy siê tylko
+z bajtów w zakresie 0x80 do 0xfd, tak wiêc ¿adne bajty ASCII nie moga siê
+pojawiæ jako czê¶æ innego znaku i nie wystêpuj± tam problemy z np.
+'\\0' czy '/'.
+.TP
+*
+Zachowany jest leksykograficzny porz±dek sortowania ³añcuchów w
+.BR UCS-4 .
+.TP
+*
+Za pomoc±
+.BR UTF-8
+mo¿na zakodowaæ wszystkie z mo¿liwych 2^31 kodów UCS.
+.TP
+*
+Bajty 0xfe i 0xff nie s± nigdy u¿ywane w kodowaniu 
+.BR UTF-8 .
+.TP
+*
+Pierwszy bajt ci±gu wielobajtowego reprezentuj±cego pojedynczy znak
+.B UCS
+nie-ASCII zawsze zawiera siê w zakresie 0xc0 do 0xfd i wskazuje
+jak d³ugi jest ów ci±g. Wszystkie pozosta³e bajty takiego wielobajtowego
+ci±gu zawieraj± siê w zakresie od 0x80 do 0xbf. Pozwala to na
+³atw± resynchronizacjê i sprawia, ¿e kodowanie jest niezale¿ne od
+stanu [systemu] oraz odporne na brakuj±ce bajty.
+.TP
+*
+Znaki
+.B UCS
+zakodowane w
+.B UTF-8
+mog± mieæ d³ugo¶æ do sze¶ciu bajtów, jakkolwiek standard
+.B Unicode
+nie definiuje znaków powy¿ej 0x10ffff, wiêc znaki Unicode mog± mieæ
+maksymalnie cztery bajty w
+.BR UTF-8 .
+.SH KODOWANIE
+Do reprezentacji znaku u¿ywane s± nastêpuj±ce ci±gi bajtów. Ci±g, którego
+nale¿y u¿yæ zale¿y od numeru kodu UCS znaku:
+.TP 0.4i
+0x00000000 - 0x0000007F:
+.RI 0 xxxxxxx
+.TP
+0x00000080 - 0x000007FF:
+.RI 110 xxxxx 
+.RI 10 xxxxxx
+.TP
+0x00000800 - 0x0000FFFF:
+.RI 1110 xxxx
+.RI 10 xxxxxx
+.RI 10 xxxxxx
+.TP
+0x00010000 - 0x001FFFFF:
+.RI 11110 xxx
+.RI 10 xxxxxx
+.RI 10 xxxxxx
+.RI 10 xxxxxx
+.TP
+0x00200000 - 0x03FFFFFF:
+.RI 111110 xx
+.RI 10 xxxxxx
+.RI 10 xxxxxx
+.RI 10 xxxxxx
+.RI 10 xxxxxx
+.TP
+0x04000000 - 0x7FFFFFFF:
+.RI 1111110 x
+.RI 10 xxxxxx
+.RI 10 xxxxxx
+.RI 10 xxxxxx
+.RI 10 xxxxxx
+.RI 10 xxxxxx
+.PP
+Pozycje bitowe
+.I xxx
+zostaj± wype³nione bitami numeru kodu znaku w reprezentacji dwójkowej.
+Mo¿e zostaæ u¿yty tylko najkrótszy mo¿liwy wielobajtowy ci±g, która
+reprezentuje numer kodowy danego znaku.
+.PP
+Warto¶ci kodowe
+.B UCS
+0xd800\(en0xdfff (zastêpuj±ce UTF-16), jak te¿ 0xfffe i 0xffff (nie-znaki
+w UCS) nie powinny wyst±piæ w strumieniach zgodnych z
+.BR UTF-8 .
+.SH PRZYK£ADY
+Znak
+.B Unicode
+0xa9 = 1010 1001 (znak copyright) kodowany jest
+w UTF-8 jako
+.PP
+.RS
+11000010 10101001 = 0xc2 0xa9
+.RE
+.PP
+a znak 0x2260 = 0010 0010 0110 0000 (symbol "nie równa siê") kodowany
+jest jako:
+.PP
+.RS
+11100010 10001001 10100000 = 0xe2 0x89 0xa0
+.RE
+.SH "UWAGI O STOSOWANIU"
+Aby w³±czyæ obs³ugê
+.B UTF-8
+w aplikacjach, u¿ytkownicy musz± wybraæ locale
+.BR UTF-8 ,
+na przyk³ad poprzez
+.PP
+.RS
+export LANG=en_GB.UTF-8
+.RE
+.PP
+Oprogramowanie, które musi wiedzieæ, jakie kodowanie znaków jest u¿ywane
+powinno zawsze ustawiaæ locale, na przyk³ad za pomoc±
+.PP
+.RS
+setlocale(LC_CTYPE, "")
+.RE
+.PP
+a programi¶ci mog± wówczas sprawdzaæ warto¶æ wyra¿enia
+.PP
+.RS
+strcmp(nl_langinfo(CODESET), "UTF-8") == 0
+.RE
+.PP
+aby okre¶liæ, czy zosta³o wybrane locale
+.B UTF-8
+i czy wszystko: standardowe wprowadzanie i wyprowadzanie danych otwartym
+tekstem, komunikacja terminalowa, zawartosc plików tekstowych oraz zmienne
+¶rodowiska, jest zakodowane w
+.BR UTF-8 .
+.PP
+Programi¶ci przyzwyczajeni do jednobajtowego kodowania takiego, jak
+.B US-ASCII
+lub
+.B ISO 8859
+musz± wiedzieæ, ¿e dwa z dotychczasowych za³o¿eñ nie s± spe³nione w locale
+.BR UTF-8 .
+Po pierwsze, pojedynczy bajt niekoniecznie nadal odpowiada pojedynczemu
+znakowi. Po drugie, poniewa¿ nowoczesne emulatory terminali w trybie
+.B UTF-8
+wspieraj± równie¿ chiñskie, japoñskie i koreañskie
+.BR "znaki o podwójnej d³ugo¶ci" ,
+jak te¿ nie rozdzielone
+.BR "znaki kombinowane" ,
+wyprowadzenie pojedynczego znaku niekoniecznie przesuwa kursor o jedn±
+pozycjê, jak to mia³o miejsce w
+.BR ASCII .
+Do zliczania znaków i pozycji kursora nale¿y obecnie u¿ywaæ funkcji
+bibliotecznych takich, jak
+.BR mbsrtowcs (3)
+i
+.BR wcswidth (3).
+.PP
+Oficjaln± sekwencj± unikow± prze³±czaj±c± ze schematu kodowania
+.B ISO 2022
+(u¿ywan± na przyk³ad przez terminale VT100) do
+.B UTF-8
+jest ESC % G
+("\\x1b%G"). Odpowiadaj±c± jej sekwencj± powrotu z
+.B UTF-8
+do ISO 2022 jest ESC % @ ("\\x1b%@"). Inne sekwencje ISO 2022 (takie jak
+prze³±czaj±ce zbiory G0 i G1) nie maj± zastosowania w trybie UTF-8.
+.PP
+Mo¿na mieæ nadziejê, ¿e w przewidywalnej przysz³o¶ci
+.B UTF-8
+zast±pi na wszystkich poziomach
+.B ASCII
+i
+.B ISO 8859
+jako wspólne kodowanie znaków w systemach POSIX-owych, doprowadzaj±c
+do znacznego wzbogacenia ¶rodowiska obs³ugi czystego tekstu.
+.SH ZABEZPIECZENIA
+Standardy
+.BR Unicode " i " UCS
+wymagaj±, aby przy generowaniu
+.B UTF-8
+u¿ywaæ najkrótszej z mo¿liwych postaci, np. generowanie dwubajtowej
+sekwencji o pierwszym bajcie 0xc0 nie jest zgodne ze standardem.
+.B Unicode 3.1
+doda³ wymaganie, aby zgodne ze standardem programy nie akceptowa³y innych
+ni¿ najkrótsze postaci jako swoich danych wej¶ciowych. Jest to zwi±zane
+z bezpieczeñstwem: je¶li wprowadzane przez u¿ytkownika dane s± sprawdzane
+pod k±tem mo¿liwych naruszeñ bezpieczeñstwa, program mo¿e sprawdzaæ jedynie
+wersje
+.B ASCII
+wyst±pieñ "/../", ";" lub NUL i przeoczyæ, ¿e jest wiele niezgodnych z
+.B ASCII
+sposobów przedstawienia tych rzeczy w nie-najkrótszym kodowaniu
+.BR UTF-8 .
+.SH STANDARDY
+ISO/IEC 10646-1:2000, Unicode 3.1, RFC 2279, Plan 9.
+.SH AUTOR
+Markus Kuhn <mgk25@cl.cam.ac.uk>
+.SH "ZOBACZ TAK¯E"
+.BR nl_langinfo (3),
+.BR setlocale (3),
+.BR charsets (7),
+.B unicode(7)

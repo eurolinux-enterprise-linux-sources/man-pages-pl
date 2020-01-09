@@ -1,0 +1,1082 @@
+%& -translate-file=il2-pl
+\def\fontprefix{pl}
+\input texinfo  @c -*-texinfo-*-
+@c %**start of header
+@setfilename grep.info
+@settitle grep, wypisywanie linii pasuj±cych do wzorca
+@documentencoding ISO-8859-2
+@documentlanguage pl
+@c %**end of header
+
+@c This file has the new style title page commands.
+@c Run `makeinfo' rather than `texinfo-format-buffer'.
+
+@c WK zmieniono: @command{} -> @code{}
+
+@c smallbook
+
+@c tex
+@c \overfullrule=0pt
+@c end tex
+
+@c @include version.texi
+@set UPDATED 2 lutego 2000
+@set EDITION 2.4.2
+@set VERSION 2.4.2
+
+@c nowy skorowidz - dla opcji
+@defcodeindex op
+
+@c po³±czenie skorowidzów
+@syncodeindex op fn
+@syncodeindex vr fn
+
+@syncodeindex ky cp
+@syncodeindex pg cp
+@syncodeindex tp cp
+
+@ifinfo
+@direntry
+* grep: (grep).                   Wypisywanie linii pasuj±cych do wzorca.
+@end direntry
+Ten plik dokumentuje @code{grep}, mechanizm dopasowywania wzorców.
+
+
+Published by the Free Software Foundation,
+59 Temple Place - Suite 330
+Boston, MA 02111-1307, USA
+
+Copyright 2000 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end ifinfo
+
+@setchapternewpage off
+
+@titlepage
+@title grep, wyszukiwanie wzorca
+@subtitle wersja @value{VERSION}, @value{UPDATED}
+@author Alain Magloire et al.
+
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 2000 Free Software Foundation, Inc.
+
+@sp 2
+Published by the Free Software Foundation, @*
+59 Temple Place - Suite 330, @*
+Boston, MA 02111-1307, USA
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+
+@end titlepage
+@page
+
+
+@ifinfo
+@node Top, Od t³umacza, (dir), (dir)
+@top Grep
+
+@code{grep} wyszukuje linie pasuj±ce do zadanego wzorca.
+
+Ten dokument przygotowano do wersji @value{VERSION} @sc{gnu} @code{grep}.
+@end ifinfo
+
+@menu
+* Od t³umacza::                 Parê s³ów od t³umacza.
+* Wprowadzenie::                Wprowadzenie.
+* Wywo³anie::                   Wywo³anie @code{grep}; opis opcji.
+* Diagnostyka::                 Kod zakoñczenia zwracany przez @code{grep}.
+* Programy grep::               Programy @code{grep}.
+* Wyra¿enia regularne::         Wyra¿enia regularne.
+* Sposób u¿ycia::               Przyk³ady.
+* B³êdy::                       B³êdy i ich zg³aszanie.
+* Indeks pojêæ::                Menu wszystkich tematów podrêcznika.
+* Indeks::                      Menu wszystkich poleceñ i opcji @code{grep}.
+@end menu
+
+@node Od t³umacza
+@unnumbered Od t³umacza
+Niniejszy przek³ad powsta³ w ramach Projektu T³umaczenia Manuali
+(@uref{http://ptm.linux.pl/})
+i stanowi zaktualizowan± wersjê t³umaczenia podrêcznika systemowego
+man, które wykona³ Gwidon S. Naskrent (@email{naskrent@@hoth.amu.edu.pl)}.
+Mam nadziejê, ¿e wybaczy mi powsta³e przy okazji przeoczenia i usterki.
+
+Zg³oszenia b³êdów, komentarze i sugestie
+proszê przesy³aæ na listê dyskusyjn± Projektu: @email{ptm@@amg.net.pl}.
+
+W.Kotwica (@email{wkotwica@@post.pl})
+
+@unnumberedsec Rozpowszechnianie
+To jest nieoficjalne t³umaczenie warunków rozpowszechniania na jêzyk polski.
+Nie zosta³o ono opublikowane przez Free Software Foundation
+i pod wzglêdem prawnym nie stanowi warunków rozpowszechniania -- ustanawia
+je wy³±cznie oryginalny tekst angielski.  Jednak t³umacz ma nadziejê, ¿e
+pomo¿e ono lepiej zrozumieæ warunki rozpowszechniania osobom mówi±cym
+po polsku.
+
+This is an unofficial translation of the distribution terms into
+Polish language. It was not published by the Free Software Foundation, and
+does not legally state the distribution terms--only the original English text
+does that. However, the translator hopes that it will help Polish language
+speakers understand distribution terms better.
+
+Zezwala siê na tworzenie i rozpowszechnianie wiernych kopii
+tego podrêcznika, pod warunkiem, ¿e na wszystkich kopiach zostanie zachowana
+informacja o prawach autorskich i niniejsze zezwolenie.
+
+Zezwala siê na kopiowanie i rozpowszechnianie zmienionych wersji
+tego podrêcznika na warunkach jak dla wiernych kopii, pod warunkiem, ¿e
+ca³a praca pochodna bêdzie rozpowszechniana na warunkach zezwolenia
+identycznego jak niniejsze.
+
+Zezwala siê na kopiowanie i rozpowszechnianie t³umaczeñ tego
+podrêcznika na inny jêzyk, pod wy¿ej podanymi warunkami dla zmienionych
+wersji, z wyj±tkiem tego, ¿e niniejsze zezwolenie mo¿e byæ ustanowione
+w t³umaczeniu zaakceptowanym przez Fundacjê.
+
+
+@node Wprowadzenie
+@chapter Wprowadzenie
+
+@cindex szukanie wzorca
+
+@code{grep} szuka w plikach wej¶ciowych linii zawieraj±cych ci±g
+pasuj±cy do zadanej listy wzorców. Po znalezieniu dopasowania, kopiuje
+zawieraj±c± je liniê na standardowe wyj¶cie (domy¶lnie) lub wykonuje
+innego rodzaju akcjê wynikow± nakazan± za pomoc± opcji.
+
+Mimo ¿e @code{grep} oczekuje, ¿e bêdzie dopasowywa³ tekst, nie ma
+innych ograniczeñ d³ugo¶ci linii wej¶ciowej ni¿ dostêpna pamiêæ,
+i potrafi dopasowywaæ dowolne znaki z linii. Je¶li ostatnim bajtem
+pliku wej¶ciowego nie jest znak nowej linii, @code{grep} milcz±co
+dok³ada go.
+Poniewa¿ znak nowej linii jest tak¿e separatorem listy wzorców, nie
+ma mo¿liwo¶ci dopasowywania znaków nowej linii w tek¶cie.
+
+@node Wywo³anie
+@chapter Wywo³anie @code{grep}
+
+@code{grep} jest wyposa¿ony w bogaty zestaw opcji z rozszerzeniami
+@sc{posix.2} i @sc{gnu}.
+
+@table @samp
+
+@item -c
+@itemx --count
+@opindex -c
+@opindex -count
+@cindex zliczanie linii
+Wy³±cza normalne wyj¶cie; zamiast niego dla ka¿dego pliku wej¶ciowego
+wypisuje liczbê pasuj±cych linii. Z opcj± @samp{-v}, @samp{--invert-match}
+zlicza linie niepasuj±ce.
+
+@item -e @var{wzorzec}
+@itemx --regexp=@var{wzorzec}
+@opindex -e
+@opindex --regexp=@var{wzorzec}
+@cindex lista wzorców
+U¿ywa @var{wzorca} jako wzorca; u¿yteczne do ochronienia wzorów
+zaczynaj±cych siê od @samp{-}.
+
+@item -f @var{plik}
+@itemx --file=@var{plik}
+@opindex -f
+@opindex --file
+@cindex wzorzec z pliku
+Pobiera wzorce z @var{pliku}, po jednym z ka¿dej linii.  Plik pusty zawiera
+zero wzorców, nie pasuj±c do niczego.
+
+@item -i
+@itemx --ignore-case
+@opindex -i
+@opindex --ignore-case
+@cindex wyszukiwanie bez rozró¿niania wielko¶ci liter
+@cindex bez rozró¿niania wielko¶ci liter
+Ignoruje rozró¿nienia w wielko¶ci liter we wzorcu oraz w plikach wej¶ciowych.
+
+@item -l
+@itemx --files-with-matches
+@opindex -l
+@opindex --files-with-matches
+@cindex nazwy pasuj±cych plików
+Wy³±cza normalne wyj¶cie; zamiast niego wypisuje nazwê ka¿dego pliku,
+z którego normalnie wypisano by jakie¶ wyj¶cie.  Przeszukiwanie
+zakoñczy siê na pierwszej pasuj±cej linii.
+
+@item -n
+@itemx --line-number
+@opindex -n
+@opindex --line-number
+@cindex numerowanie linii
+@cindex linie, numerowanie
+Poprzedza ka¿d± liniê wyj¶cia numerem linii z odpowiedniego pliku
+wej¶ciowego.
+
+@item -q
+@itemx --quiet
+@itemx --silent
+@opindex -q
+@opindex --quiet
+@opindex --silent
+@cindex po cichu
+Po cichu; wy³±cza normalne wyj¶cie.  Przeszukiwanie zakoñczy siê na
+pierwszej pasuj±cej linii. Zobacz tak¿e opcja @samp{-s} lub
+@samp{--no-messages}.
+
+@item -s
+@itemx --no-messages
+@opindex -s
+@opindex --no-messages
+@cindex wy³±czenie komunikatów o b³êdach
+Wy³±cza komunikaty b³êdów o plikach nieistniej±cych lub nie do odczytania.
+Uwaga o przeno¶no¶ci: w przeciwieñstwie do @sc{gnu} @code{grep},
+tradycyjny @code{grep} nie by³ zgodny z @sc{posix.2}, gdy¿ brakowa³o
+mu opcji @samp{-q}, a opcja @samp{-s} zachowywa³a siê jak opcja @samp{-q}
+z @sc{gnu} @code{grep}. Skrypty pow³oki, które maj± byæ przeno¶ne na
+tradycyjny @code{grep} powinny unikaæ zarówno @samp{-q}, jak i @samp{-s}
+i zamiast tego przekierowywaæ wyj¶cie do @file{/dev/null}.
+
+@item -v
+@itemx --invert-match
+@opindex -v
+@opindex --invert-match
+@cindex odwrócenie dopasowania
+@cindex wypisywanie niepasuj±cych linii
+Odwraca sens dopasowania, wybiera linie niepasuj±ce.
+
+@item -x
+@itemx --line-regexp
+@opindex -x
+@opindex --line-regexp
+@cindex dopasowanie ca³ej linii
+Wybiera tylko te dopasowania, które dok³adnie pasuj± do ca³ej linii.
+
+@end table
+
+@section Rozszerzenia @sc{gnu}
+
+@table @samp
+
+@item -A @var{num}
+@itemx --after-context=@var{num}
+@opindex -A
+@opindex --after-context
+@cindex kontekst, linie po dopasowaniu
+Wypisuje po pasuj±cych liniach @var{num} linii nastêpuj±cego kontekstu.
+
+@item -B @var{num}
+@itemx --before-context=@var{num}
+@opindex -B
+@opindex --before-context
+@cindex kontekst, linie przed dopasowaniem
+Wypisuje przed pasuj±cymi liniami @var{num} linii poprzedzaj±cego je
+kontekstu.
+
+@item -C @var{num}
+@itemx --context=[@var{num}]
+@opindex -C
+@opindex --context
+@cindex kontekst
+Wypisuje @var{num} linii (domy¶lnie 2) kontekstu w wyj¶ciu.
+
+@item -@var{num}
+@opindex -NUM
+To samo, co @samp{--context=@var{num}} linii kontekstu przed i po dopasowaniu.
+Jednak @code{grep} nigdy nie wypisze ¿adnej z linii wiêcej ni¿ raz.
+
+@item -V
+@itemx --version
+@opindex -V
+@opindex --version
+@cindex wersja, wypisanie
+Wypisuje numer wersji @code{grep} na standardowe wyj¶cie b³êdów.
+Numer wersji powinno siê za³±czaæ we wszystkich zg³oszeniach b³êdów.
+
+@item --help
+@opindex --help
+@cindex sposób u¿ycia, wypisanie
+Wypisuje komunikat o sposobie u¿ycia, pokrótce wymieniaj±cy omawiane opcje
+wiersza poleceñ i wskazuj±cy adres do zg³oszeñ b³êdów, a nastêpnie koñczy
+dzia³anie.
+
+@itemx --binary-files=@var{typ}
+@opindex --binary-files
+@cindex pliki binarne
+@cindex binarne pliki
+Je¶li pierwszych kilka bajtów pliku wskazuje, ¿e zawiera on dane binarne, to
+zak³adane jest, ¿e jest to plik typu @var{typ}. Domy¶lnym @var{typem} jest
+binarny (@samp{binary}), a @code{grep} normalnie albo wypisuje
+jednolinijkowy komunikat mówi±cy o dopasowaniu pliku binarnego, albo nie
+wypisuje komunikatu, gdy nie znaleziono dopasowania.
+Je¿eli @var{typem} jest @samp{without-match} (bez dopasowania), to
+@code{grep} zak³ada, ¿e ten plik binarny nie pasuje; jest to równowa¿ne
+dzia³aniu opcji @samp{-I}. Je¶li @var{typem} jest @samp{text}, to
+@code{grep} przetwarza plik binarny tak, jakby by³ on tekstowy;
+jest to równowa¿ne opcji @samp{\-a}.
+
+@emph{Ostrze¿enie:}
+Mo¿e siê zdarzyæ, ¿e wypisane przez @samp{--binary-files=text} ¶miecie
+binarne dadz± przykre skutki uboczne je¿eli wyj¶ciem bêdzie terminal
+a jego sterownik zinterpretuje niektóre z nich jako swoje polecenia. 
+
+@item -b
+@itemx --byte-offset
+@opindex -b
+@opindex --byte-offset
+@cindex offset bajtowy
+@cindex bajt, offset
+Wypisuje przed ka¿d± lini± wyj¶cia jej offset bajtowy w pliku wej¶ciowym.
+Gdy @code{grep} uruchamiany jest w @sc{ms-dos} lub MS-Windows, wypisywane
+offsety bajtowe zale¿± od tego, czy u¿yto opcji @samp{-u}
+(@samp{--unix-byte-offsets}); zobacz ni¿ej.
+
+@item -d @var{akcja}
+@itemx --directories=@var{akcja}
+@opindex -d
+@opindex --directories
+@cindex przeszukiwanie katalogów
+Je¶li plik wej¶ciowy jest katalogiem, stosuje to jego przetworzenia
+@var{akcjê}.  Domy¶ln± @var{akcj±} jest @samp{read}, co znaczy, ¿e katalogi
+s± czytane dok³adnie tak samo, jakby by³y zwyk³ymi plikami (niektóre systemy
+operacyjne i systemy plików nie pozwalaj± na takie dzia³anie, co spowoduje,
+¿e @code{grep} dla ka¿dego katalogu bêdzie wypisywa³ komunikaty o b³êdzie).
+Je¶li warto¶ci± @var{akcji} jest @samp{skip}, to katalogi s± milcz±co
+pomijane.  Je¶li warto¶ci± @var{akcji} jest @samp{recurse}, to @code{grep}
+czyta wszystkie pliki pod ka¿dym katalogiem, rekurencyjnie; jest to
+równowa¿ne opcji @samp{-r}.
+
+@item -H
+@itemx --with-filename
+@opindex -H
+@opindex --With-filename
+@cindex z poprzedzeniem nazw± pliku
+Dla ka¿dego dopasowania wypisuje nazwê pliku.
+
+@item -h
+@itemx --no-filename
+@opindex -h
+@opindex --no-filename
+@cindex bez poprzedzania nazw± pliku
+Wy³±cza poprzedzanie wyników nazwami plików podczas przeszukiwania
+wielu plików.
+
+@item -L
+@itemx --files-without-match
+@opindex -L
+@opindex --files-without-match
+@cindex pliki, które nie pasuj±
+Wy³±cza normalne wyj¶cie; zamiast niego wypisuje nazwê ka¿dego pliku,
+z którego normalnie nie wypisano by ¿adnego wyj¶cia.  Przeszukiwanie
+zakoñczy siê na pierwszej pasuj±cej linii.
+
+@item -a
+@itemx --text
+@opindex -a
+@opindex --text
+@cindex pomijanie danych binarnych
+@cindex binarne pliki
+@cindex pliki binarne
+Przetwarza plik binarny tak, jakby by³ on tekstowy; jest to równowa¿nik
+opcji @samp{--binary-files=text}.
+
+@item -I
+Przetwarza plik binarny tak, jakby nie zawiera³ on pasuj±cych danych; jest
+to równowa¿ne opcji @samp{--binary-files=without-match}.
+
+@item -w
+@itemx --word-regexp
+@opindex -w
+@opindex --word-regexp
+@cindex dopasowywanie ca³ych wyrazów
+Wybiera tylko te linie, w których dopasowania wzorca tworz± ca³e wyrazy.
+Przeprowadzany test polega na tym, ¿e dopasowywany podci±g musi albo 
+znajdowaæ siê na pocz±tku linii, albo byæ poprzedzony znakiem nie
+tworz±cym wyrazu.  Podobnie, musi albo znajdowaæ siê na koñcu linii,
+albo musi nastêpowaæ po nim znak nie tworz±cy s³owa.  Znakami tworz±cymi
+wyrazy s± litery, cyfry i znak podkre¶lenia.
+
+@item -r
+@itemx --recursive
+@opindex -r
+@opindex --recursive
+@cindex rekurencyjne, przeszukiwanie
+@cindex przeszukiwanie drzew katalogów
+Dla ka¿dego katalogu wymienionego w wierszu poleceñ, rekurencyjnie czyta
+i przetwarza wszystkie jego pliki.
+Jest to to samo, co opcja @samp{-d recurse}.
+
+@item -y
+@opindex -y
+@cindex bez rozró¿niania wielko¶ci liter, przestarza³a opcja
+Przestarza³y synonim @samp{-i}.
+
+@item -U
+@itemx --binary
+@opindex -U
+@opindex --binary
+@cindex DOS/Windows, pliki binarne
+@cindex pliki binarne, DOS/Windows
+Traktuje pliki jako binarne.  Domy¶lnie, w @sc{ms-dos} i MS-Windows,
+@code{grep} zgaduje typ pliku spogl±daj±c na zawarto¶æ pierwszych
+32 kB przeczytanych z pliku.  Je¶li zdecyduje, ¿e plik jest tekstowy,
+usuwa znaki CR z oryginalnej zawarto¶ci pliku (po to ¿eby wyra¿enia
+regularne z @code{^} i @code{$} dzia³a³y poprawnie).  Podanie @samp{-U}
+wy³±cza to zgadywanie, powoduj±c, ¿e wszystkie pliki s± czytane
+i przekazywane mechanizmowi dopasowywuj±cemu dos³ownie; je¶li plik jest
+plikiem tekstowym z parami @code{CR/LF} na koñcu linii, spowoduje to, ¿e 
+niektóre wyra¿enia regularne nie zadzia³aj±.  Opcja ta nie dzia³a
+na platformach innych ni¿ @sc{ms-dos} i MS-Windows.
+
+@item -u
+@itemx --unix-byte-offsets
+@opindex -u
+@opindex --unix-byte-offsets
+@cindex offset bajtowy, w DOS/Windows
+@cindex bajt, offset w DOS/Windows
+Raportuje offsety bajtowe w stylu uniksowym.  Prze³±cznik ten powoduje, ¿e
+@code{grep} raportuje offsety bajtowe tak, jakby plik by³ plikiem
+tekstowym typu uniksowego, tj. z usuniêtymi znakami @code{CR}.
+Da to rezultaty identyczne jak uruchomienie @code{grep} na maszynie
+uniksowej.  Opcja ta nie wywo³uje ¿adnego efektu, chyba ¿e u¿yto tak¿e opcji
+@samp{-b}; nie dzia³a na platformach innych ni¿ @sc{ms-dos} i MS-Windows.
+
+@item --mmap
+@opindex --mmap
+@cindex memory mapped input
+@cindex wej¶cie odwzorowane w pamiêci
+Je¶li to mo¿liwe, do odczytu wej¶cia korzysta z funkcji systemowej
+@code{mmap} zamiast domy¶lnej @code{read}.
+W pewnych sytuacjach @samp{--mmap} daje lepsz± wydajno¶æ. Mo¿e jednak
+spowodowaæ niezdefiniowane zachowanie (³±cznie ze zrzutem rdzenia) je¶li
+podczas dzia³ania @code{grep} plik wej¶ciowy siê skurczy lub wyst±pi
+b³±d wej¶cia/wyj¶cia.
+
+@item -Z
+@itemx --null
+@opindex -Z
+@opindex --null
+@cindex zero-terminated, nazwy plików
+@cindex nazwy plików zakoñczone bajtem zerowym
+@cindex bajt zerowy, na koñcu nazw plików
+@cindex NUL, na koñcu nazw plików
+Wypisuje bajt zerowy (znak @sc{ascii} @code{NUL}) zamiast znaku, który
+normalnie wystêpuje po nazwie pliku.
+Na przyk³ad,  @samp{grep -lZ} wypisuje po nazwie pliku bajt zerowy, zamiast,
+jak zwykle, znaku nowej linii. Opcja ta powoduje, ¿e wyj¶cie jest
+jednoznaczne, nawet przy nazwach plików zawieraj±cych niecodzienne znaki,
+jak znak nowej linii.  Mo¿e byæ wykorzystywana z poleceniami typu:
+@samp{find -print0}, @samp{perl -0}, @samp{sort -z} czy @samp{xargs -0},
+umo¿liwiaj±c przetwarzanie plików o dowolych nazwach, nawet zawieraj±cych
+znaki nowej linii.
+
+@item -z
+@itemx --null-data
+@opindex -z
+@opindex --null-data
+@cindex zero-terminated, linie
+@cindex linie zakoñczone bajtem zerowym
+@cindex bajt zerowy, na koñcu linii
+@cindex NUL, na koñcu linii
+Traktuje wej¶cie jak zbiór linii, z których ka¿da zakoñczona jest bajtem
+zerowym (znak @sc{ascii} @code{NUL}), a nie znakiem nowej linii.
+Podobnie jak opcja @samp{-Z} czy @samp{--null}, mo¿e ona byæ wykorzystywana
+z poleceniami typu @samp{sort -z} do przetwarzania dowolnych nazw plików.
+
+@end table
+
+Kilka dodatkowych opcji odpowiada za dobór wariantu modu³u dopasowuj±cego,
+jaki zostanie u¿yty podczas dzia³ania.
+@xref{Programy grep}.
+
+@section Zmienne ¶rodowiska
+
+Na zachowanie siê @code{grep} maj± wp³yw nastêpuj±ce zmienne ¶rodowiska.
+@cindex zmienne ¶rodowiska
+@cindex ¶rodowisko, zmienne
+
+@table @code
+
+@item GREP_OPTIONS
+@vindex GREP_OPTIONS
+@cindex domy¶lne opcje, zmienna ¶rodowiska
+Ta zmienna okre¶la domy¶lne opcje, jakie zostan± umieszczone przed 
+wszystkimi opcjami podanymi wprost.  Na przyk³ad, je¶li @code{GREP_OPTIONS}
+jest równe @samp{--binary-files=without-match --directories=skip}, to
+@code{grep} zachowa siê tak, jakby podano @samp{--binary-files=without-match}
+i @samp{--directories=skip} przed ewentualnymi jawnymi opcjami.
+Okre¶lenia opcji oddziela siê bia³ymi znakami.
+Odwrotny uko¶nik cytuje nastêpny znak, zatem mo¿na go wykorzystaæ do podania
+opcji zawieraj±cej bia³y znak lub odwrotny uko¶nik.
+
+@item LC_ALL
+@itemx LC_MESSAGES
+@itemx LANG
+@vindex LC_ALL
+@vindex LC_MESSAGES
+@vindex LANG
+@cindex jêzyk komunikatów
+@cindex national language support
+@cindex NLS
+@cindex przek³ad jêzyka komunikatów
+Te zmienne podaj± ustawienie regionalne (locale) @code{LC_MESSAGES},
+okre¶laj±ce jêzyk, jakiego @code{grep} ma u¿yæ w komunikatach.
+Ustawienie locale jest okre¶lane przez pierwsz± z tych zmiennych, która
+ma nadan± warto¶æ.
+Je¶li nie istnieje ¿adna z nich, to stosowana jest amerykañska odmiana
+angielskiego. Dzieje siê tak równie¿ w przypadku, gdy nie zainstalowano
+katalogu z komunikatami lub je¶li @code{grep} nie zosta³ skompilowany
+z obs³ug± jêzyków narodowych (@sc{nls}).
+
+@item LC_ALL
+@itemx LC_CTYPE
+@itemx LANG
+@vindex LC_ALL
+@vindex LC_CTYPE
+@vindex LANG
+@cindex znaki, typ
+@cindex national language support
+@cindex NLS
+Te zmienne podaj± ustawienie regionalne (locale) @code{LC_CTYPE},
+okre¶laj±ce typ znaków, np. które z nich s± bia³ymi znakami.
+Ustawienie locale jest okre¶lane przez pierwsz± z tych zmiennych, która
+ma nadan± warto¶æ.
+Je¶li nie istnieje ¿adna z nich, to stosowane jest ustawienie @sc{posix}.
+Dzieje siê tak równie¿ w przypadku, gdy nie zainstalowano katalogu
+z komunikatami lub je¶li @code{grep} nie zosta³ skompilowany z obs³ug±
+jêzyków narodowych (@sc{nls}).
+
+@item POSIXLY_CORRECT
+@vindex POSIXLY_CORRECT
+Je¶li jest ustawiona, to @code{grep}
+zachowuje siê zgodnie z wymaganiami @sc{posix.2}; w przeciwnym razie
+zachowuje siê bardziej jak inne programy @sc{gnu}.
+@sc{posix.2} ¿±da, by opcje, które wystêpuj± po nazwach plików by³y
+traktowane jak nazwy plików. Domy¶lnie za¶, opcje takie s± przesuwane
+na pocz±tek listy argumentów i traktowane jak opcje.
+Ponadto, @sc{posix.2} wymaga, by nierozpoznane opcje by³y zg³aszane jako
+``nielegalne'' (``illegal''), ale poniewa¿ tak naprawdê nie naruszaj±
+one prawa, domy¶lnie zg³aszane s± jako ``nieprawid³owe'' (``invalid'').
+@code{POSIXLY_CORRECT} wy³±cza tak¿e @code{_@var{N}_GNU_nonoption_argv_flags_},
+opisane poni¿ej.
+
+@item _@var{N}_GNU_nonoption_argv_flags_
+@vindex _@var{N}_GNU_nonoption_argv_flags_
+(Tu @code{@var{N}} jest numerycznym identyfikatorem procesu @code{grep}a).
+Je¶li @var{i}-tym znakiem warto¶ci tej zmiennej ¶rodowiska jest @samp{1}, to 
+@var{i}-ty argument przekazany do @code{grep} nie jest uwa¿any za opcjê,
+nawet je¶li na ni± wygl±da.  Pow³oka mo¿e umie¶ciæ tê zmienn± w ¶rodowisku
+dla ka¿dego polecenia, jakie uruchamia, podaj±c, które argumenty s± wynikiem
+rozwiniêcia nazw plików i st±d nie powinny byæ traktowane jako opcje.
+Zachowanie to jest dostêpne tylko z bibliotek± @sc{gnu} C i tylko wtedy gdy
+nie ustawiono @code{POSIXLY_CORRECT}.
+
+@end table
+
+@node Diagnostyka
+@chapter Diagnostyka
+
+Normalnie kod zakoñczenia równa siê 0 je¶li znaleziono dopasowania,
+a 1 je¶li nie znaleziono ¿adnych.  Opcja @samp{-v} odwraca sens kodu
+zakoñczenia.  Kod zakoñczenia równa siê 2 je¶li wyst±pi³y b³êdy sk³adniowe
+we wzorcu, niedostêpne pliki wej¶ciowe lub inne b³êdy systemowe.
+
+
+@node Programy grep
+@chapter Programy @code{grep}
+
+@code{grep} przeszukuje wskazane pliki wej¶ciowe (lub standardowe wej¶cie
+je¶li nie podano ¿adnych lub podano nazwê pliku @file{-}, szukaj±c linii
+zawieraj±cych co¶ pasuj±cego do zadanego wzorca.
+Domy¶lnie, @code{grep} wypisuje pasuj±ce linie. 
+Istniej± trzy g³ówne warianty @code{grep}, kontrolowane za pomoc±
+nastêpuj±cych opcji:
+
+@table @samp
+
+@item -G
+@itemx --basic-regexp
+@opindex -G
+@opindex --basic-regexp
+@cindex dopasowywanie podstawowych wyra¿eñ regularnych
+Interpretuje wzorzec jako podstawowe wyra¿enie regularne.  Jest to zachowanie
+domy¶lne.
+
+@item -E
+@itemx --extended-regexp
+@opindex -E
+@opindex --extended-regexp
+@cindex dopasowywanie rozszerzonych wyra¿eñ regularnych
+Interpretuje wzorzec jako rozszerzone wyra¿enie regularne.
+
+@item -F
+@itemx --fixed-strings
+@opindex -F
+@opindex --fixed-strings
+@cindex dopasowywanie sta³ych ³añcuchów
+Interpretuje wzorzec jako listê ³añcuchów o sta³ej d³ugo¶ci, oddzielonych
+znakami nowej linii, które nale¿y dopasowaæ ka¿dy z osobna.
+
+@end table
+
+Dodatkowo, dostêpne s± dwa programy wariantowe: @sc{egrep} i @sc{fgrep}.
+@sc{egrep} jest tym samym, co @samp{grep -E}.  @sc{fgrep} jest tym samym,
+co @samp{grep -F}.
+
+@node Wyra¿enia regularne
+@chapter Wyra¿enia regularne
+@cindex regular expressions
+@cindex wyra¿enia regularne
+
+@dfn{Wyra¿enie regularne} to wzorzec opisuj±cy zbiór ³añcuchów.  Wyra¿enia
+regularne s± zbudowane analogicznie do wyra¿eñ arytmetycznych, przez
+zastosowanie do po³±czenia mniejszych wyra¿eñ rozmaitych operatorów.
+@code{grep} rozumie dwie ró¿ne wersje sk³adni wyra¿eñ regularnych:
+``podstawow±'' i ``rozszerzon±''.  W @sc{gnu} @code{grep} obie te sk³adnie
+nie ró¿ni± siê zakresem dostêpnych mo¿liwo¶ci.
+W innych implementacjach podstawowe wyra¿enia regularne s± mniej rozbudowane.
+Poni¿szy opis stosuje siê do rozszerzonych wyra¿eñ regularnych;
+ró¿nice w stosunku do wyra¿eñ podstawowych podsumowano na koñcu.
+
+Fundamentalnymi ``cegie³kami'' s± wyra¿enia regularne pasuj±ce do pojedynczego
+znaku.  Wiêkszo¶æ znaków, w tym wszystkie litery i cyfry, to wyra¿enia
+regularne pasuj±ce do samych siebie.  Ka¿dy metaznak maj±cy specjalne
+znaczenie mo¿e byæ cytowany przez poprzedzenie go odwrotnym uko¶nikiem.
+Lista znaków zawarta miêdzy @samp{[} a @samp{]} pasuje do ka¿dego
+pojedynczego znaku na tej li¶cie; je¶li pierwszym znakiem listy jest daszek
+@samp{^}, pasuje wtedy ona do ka¿dego znaku @strong{nie} znajduj±cego siê
+na li¶cie.  Na przyk³ad, wyra¿enie regularne @samp{[0123456789]} pasuje do
+ka¿dej pojedynczej cyfry.  Mo¿na okre¶liæ zakres znaków, podaj±c znak
+pierwszy i ostatni, oddzielone my¶lnikiem.
+
+I na koniec: predefiniowano pewne nazwane klasy znaków.  Ich interpretacja
+zale¿y od ustawienia regionalnego @code{LC_CTYPE}.  Poni¿ej przedstawiono
+interpretacjê dla locale @sc{posix}, co jest ustawieniem domy¶lnym, gdy
+nie podano @code{LC_CTYPE}.
+
+@cindex klasy znaków
+@cindex znaki, klasy
+@table @samp
+
+@item [:alnum:]
+@opindex alnum
+@cindex znaki alfanumeryczne
+@cindex alfanumeryczne, znaki 
+znaki alfanumeryczne:
+@samp{[:alpha:]} i @samp{[:digit:]}.
+
+@item [:alpha:]
+@opindex alpha
+@cindex znaki alfabetu
+@cindex alfabetu, znaki
+Znaki alfabetu:
+@samp{[:lower:]} i @samp{[:upper:]}.
+
+@item [:blank:]
+@opindex blank
+@cindex odstêpy
+@cindex znaki odstêpu
+@cindex blank, znaki
+Znaki odstêpu:
+Spacja i tabulacja.
+
+@item [:cntrl:]
+@opindex cntrl
+@cindex znaki steruj±ce
+@cindex steruj±ce,  znaki
+Znaki steruj±ce.  W @sc{ascii} maj± one kody ósemkowe od 000 do 037, oraz
+177 (@code{DEL}).  W innych zestawach znaków s± znakami im równowa¿nymi,
+je¶li s± takowe.
+
+@item [:digit:]
+@opindex digit
+@cindex cyfry
+@cindex znaki numeryczne
+Cyfry: @code{0 1 2 3 4 5 6 7 8 9}.
+
+@item [:graph:]
+@opindex graph
+@cindex znaki graficzne
+@cindex graficzne, znaki
+Znaki graficzne:
+@samp{[:alnum:]} i @samp{[:punct:]}.
+
+@item [:lower:]
+@opindex lower
+@cindex ma³e litery
+@cindex litery, ma³e
+Ma³e litery:
+@code{a b c d e f g h i j k l m n o p q r s t u v w x y z}.
+
+@item [:print:]
+@opindex print
+@cindex znaki drukowalne
+@cindex drukowalne, znaki
+Znaki drukowalne:
+@samp{[:alnum:]}, @samp{[:punct:]} i spacja.
+
+@item [:punct:]
+@opindex punct
+@cindex znaki interpunkcyjne
+@cindex interpunkcyjne,  znaki
+Znaki interpunkcyjne:
+@code{!@: " # $ % & ' ( ) * + , - .@: / : ; < = > ?@: @@ [ \ ] ^ _ ` @{ | @} ~}.
+
+@item [:space:]
+@opindex space
+@cindex bia³e znaki
+@cindex przerwy, znaki
+@cindex znaki przerwy
+Znaki przerwy:
+Tabulacja, znak nowej linii, tabulacja pionowa, wysuw strony, powrót karetki
+i spacja.
+
+@item [:upper:]
+@opindex upper
+@cindex du¿e litery
+@cindex litery, du¿e
+Du¿e litery:
+@code{A B C D E F G H I J K L M N O P Q R S T U V W X Y Z}.
+
+@item [:xdigit:]
+@opindex xdigit
+@cindex klasa xdigit
+@cindex heksadecymalne cyfry
+@cindex szesnastkowe cyfry
+@cindex cyfry, heksadecymalne
+Cyfry szesnastkowe:
+@code{0 1 2 3 4 5 6 7 8 9 A B C D E F a b c d e f}.
+
+@end table
+Na przyk³ad @samp{[[:alnum:]]} oznacza @samp{[0-9A-Za-z]}, z tym wyj±tkiem,
+¿e ta druga forma zale¿y od kodowania znaków @sc{ascii} i ustawieñ
+regionalnych @sc{POSIX} (locale), podczas gdy pierwsza jest przeno¶na.
+(Zauwa¿, ¿e nawiasy kwadratowe w nazwach klas s± czê¶ci± nazw symbolicznych
+i musz± byæ umieszczone dodatkowo, oprócz pary nawiasów ograniczaj±cej sam±
+listê).
+Wiêkszo¶æ metaznaków traci swoje szczególne znaczenie wewn±trz list.
+Aby uj±æ tam dos³owny @samp{]}, nale¿y umie¶ciæ go jako pierwszy na li¶cie.
+Podobnie, aby uj±æ dos³owny @samp{^}, nale¿y umie¶ciæ go gdziekolwiek poza
+pierwszym miejscem.  W koñcu, aby uj±æ na li¶cie dos³owny @samp{-}, trzeba
+umie¶ciæ go na ostatku.
+
+Kropka @samp{.} pasuje do ka¿dego pojedynczego znaku.  Symbol @samp{\w}
+to synonim @samp{[[:alnum:]]}, a @samp{\W} to synonim @samp{[^[:alnum]]}.
+
+Daszek @samp{^} oraz znak dolara @samp{$} s± metaznakami, które pasuj±
+odpowiednio do ³añcucha pustego na pocz±tku i na koñcu linii.
+Symbole @samp{\<} oraz @samp{\>} pasuj± odpowiednio do ³añcucha pustego
+na pocz±tku i na koñcu wyrazu.
+Symbol @samp{\b} pasuje do ³añcucha pustego na krawêdzi wyrazu, za¶
+@samp{\B} pasuje do pustego ³añcucha pod warunkiem, ¿e nie wystêpuje
+on na krawêdzi wyrazu.
+
+Po wyra¿eniu regularnym mo¿e nastêpowaæ jeden z kilku operatorów
+powtórzenia:
+
+
+@table @samp
+
+@item ?
+@opindex ?
+@cindex znak zapytania
+@cindex dopasowanie podwyra¿enia najwy¿ej raz
+Poprzedzaj±cy element jest opcjonalny i pasuje nie wiêcej ni¿ raz.
+
+@item *
+@opindex *
+@cindex gwiazdka
+@cindex dopasowanie podwyra¿enia zero lub wiêcej razy
+Poprzedzaj±cy element bêdzie dopasowany zero lub wiêcej razy.
+
+@item +
+@opindex +
+@cindex znak plus
+@cindex plus, znak
+@cindex dopasowanie podwyra¿enia co najmniej raz
+Poprzedzaj±cy element bêdzie dopasowany co najmniej raz.
+
+@item @{@var{n}@}
+@opindex @{n@}
+@cindex nawiasy kwadratowe, jeden argument
+@cindex dopasowanie podwyra¿enia n razy
+Poprzedzaj±cy element pasuje dok³adnie @var{n} razy.
+
+@item @{@var{n},@}
+@opindex @{n,@}
+@cindex nawiasy kwadratowe, pominiêty drugi argument
+@cindex dopasowanie podwyra¿enia co najmniej n razy
+Poprzedzaj±cy element pasuje co najmniej @var{n} razy.
+
+@item @{@var{n},@var{m}@}
+@opindex @{n,m@}
+@cindex nawiasy kwadratowe, dwa argumenty
+Poprzedzaj±cy element pasuje co najmniej @var{n}, ale nie wiêcej ni¿ @var{m}
+razy.
+
+@end table
+
+Dwa wyra¿enia regularne mo¿na ze sob± z³±czyæ (skonkatenowaæ).
+Do tak powsta³ego wyra¿enia regularnego pasuje ka¿dy ci±g utworzony
+przez z³±czenie dowolnych dwóch ci±gów, które odpowiednio pasuj±
+do z³±czonych podwyra¿eñ.
+
+Dwa wyra¿enia regularne mo¿na po³±czyæ operatorem wrostkowym (infiksowym)
+@samp{|}.
+Do tak powsta³ego wyra¿enia regularnego pasuje dowolny ci±g pasuj±cy
+do jednego b±d¼ do drugiego z podwyra¿eñ.
+
+Powtarzanie ma priorytet nad ³±czeniem, które z kolei bierze
+górê nad alternatyw±.  Ca³e wyra¿enie regularne mo¿na uj±æ
+w nawiasy, celem uniewa¿nienia tych regu³ priorytetowych.
+
+Wsteczne odniesienie @samp{\@var{n}}, gdzie @var{n} jest pojedyncz± cyfr±,
+dopasowuje podci±g poprzednio dopasowany @var{n}-tym ujêtym w nawiasy
+podwyra¿eniem wyra¿enia regularnego.
+
+@cindex podstawowe wyra¿eniaregularne
+W podstawowych wyra¿eniach regularnych metaznaki @samp{?}, @samp{+},
+@samp{@{}, @samp{|}, @samp{(} i @samp{)} trac± swoje szczególne znaczenie.
+Zamiast nich nale¿y u¿yæ wersji z odwrotnym uko¶nikiem:
+@samp{\?}, @samp{\+}, @samp{\@{}, @samp{\|}, @samp{\(} i @samp{\)}.
+
+@cindex okre¶lanie przedzia³ów
+Tradycyjny @code{egrep} nie traktuje @samp{@{} jako metaznaku.
+Niektóre implementacje udostêpniaj± zamiast niego @samp{\@{}, wiêc przeno¶ne
+skrypty powinny unikaæ @samp{@{} we wzorcach @samp{egrep}, a do dopasowywania
+dos³ownego znaku @samp{@{} stosowaæ @samp{[@{]}.
+
+@sc{gnu} @code{egrep}
+usi³uje obs³ugiwaæ tradycyjny sposób u¿ycia zak³adaj±c, ¿e @samp{@{} nie
+posiada szczególnego znaczenia je¶li by³by on pocz±tkiem nieprawid³owego
+okre¶lenia liczby powtórzeñ. Na przyk³ad, polecenie pow³oki @samp{egrep '@{1'}
+szuka dwuznakowego ³añcucha @samp{@{1}, zamiast zg³aszaæ b³±d sk³adni
+@sc{posix.2} pozwala na takie zachowanie jako rozszerzenie standardu,
+ale przeno¶ne skrypty powinny go unikaæ.
+
+@node Sposób u¿ycia
+@chapter Sposób u¿ycia
+
+@cindex sposób u¿ycia, przyk³ady
+Oto przyk³adowe polecenie pow³oki wywo³uj±ce @sc{gnu} @code{grep}:
+
+@example
+grep -i 'hello.*world' menu.h main.c
+@end example
+
+@noindent
+Pokazuje ono wszystkie linie plików @file{menu.h} i @file{main.c} zawieraj±ce
+³añcuch @samp{hello}, po którym wystêpuje ³añcuch @samp{world}; dzieje siê
+tak, gdy¿ @samp{.*} dopasowuje zero lub wiêcej znaków linii.
+@xref{Wyra¿enia regularne}.
+Opcja @samp{-i} powoduje, ¿e @code{grep} bêdzie ignorowaæ wielko¶æ liter,
+dopasowuj±c np. liniê @samp{Hello, world!}, która w przeciwnym razie nie
+zosta³aby dopasowana.  @xref{Wywo³anie}, gdzie szczegó³owo omówiono sposób
+wywo³ania @code{grep}.
+
+@cindex korzystanie z @code{grep}, pytania i odpowiedzi
+@cindex pytania i odpowiedzi nt. korzystania z @code{grep}
+@cindex FAQ o korzystaniu z @code{grep}
+Oto kilka czêstych pytañ na temat korzystania z @code{grep}
+i odpowiedzi na nie.
+
+@enumerate
+
+@item
+Jak uzyskaæ zestawienie tylko nazw pasuj±cych plików?
+
+@example
+grep -l 'main' *.c
+@end example 
+
+@noindent
+podaje nazwy wszystkich plików C z bie¿±cego katalogu, których zawarto¶æ
+wzmiankuje @samp{main}.
+
+@item
+Jak rekurencyjnie przeszukaæ katalogi?
+
+@example
+grep -r 'hello' /home/gigi
+@end example
+
+@noindent
+szuka @samp{hello} we wszystkich plikach pod katalogiem @file{/home/gigi}.
+Lepsz± kontrolê nad tym, jakie pliki maj± byæ przeszukiwane mo¿na uzyskaæ
+stosuj±c @code{find}, @code{grep} i @code{xargs}.  Na przyk³ad,
+poni¿sze polecenie przeszukuje tylko pliki C:
+
+@smallexample
+find /home/gigi -name '*.c' -print | xargs grep 'hello' /dev/null
+@end smallexample
+
+@item
+Co je¶li wzorzec zaczyna siê od @samp{-}?
+
+@example
+grep -e '--cut here--' *
+@end example 
+
+@noindent
+szuka wszystkich linii pasuj±cych do @samp{--cut here--}.
+Bez @samp{-e}, @code{grep} próbowa³by analizowaæ @samp{--cut here--}
+jako listê opcji.
+
+@item
+Za³ó¿my, ¿e szukamy ca³ego wyrazu, a nie jego czê¶ci?
+
+@example
+grep -w 'hello' *
+@end example
+
+@noindent
+szuka tylko tych wyst±pieñ @samp{hello}, które s± ca³ymi wyrazami;
+nie dopasuje @samp{Othello}.  Dok³adniejsz± kontrolê mo¿na uzyskaæ stosuj±c
+@samp{\<} i @samp{\>} do dopasowania pocz±tku i koñca wyrazów.  Na przyk³ad:
+
+@example
+grep 'hello\>' *
+@end example
+
+@noindent
+wyszukuje tylko wyrazy koñcz±ce siê na @samp{hello}, zatem dopasuje wyraz
+@samp{Othello}.
+
+@item
+Jak wypisaæ linie s±siaduj±ce z pasuj±cymi?
+
+@example
+grep -C 2 'hello' *
+@end example
+
+@noindent
+wypisuje dwie linie kontekstu wokó³ ka¿dej z dopasowanych linii.
+
+@item
+Jak wymusiæ na grep wypisanie nazwy pliku?
+
+Dodaæ na koñcu @file{/dev/null}:
+
+@example
+grep 'eli' /etc/passwd /dev/null
+@end example
+
+@item
+Czemu ludzie u¿ywaj± dziwnych wyra¿eñ regularnych z wyj¶ciem z @code{ps}?
+
+@example
+ps -ef | grep '[c]ron'
+@end example
+
+Je¶li wzorzec zosta³by zapisany bez nawiasów kwadratowych, dopasowa³by nie
+tylko liniê wyj¶ciow± z @code{ps} dotycz±c± @code{cron}, ale i liniê
+wyj¶ciow± @code{ps} dla samego @code{grep}.
+
+@item
+Dlaczego @code{grep} zg³asza ``Binary file matches''?
+
+Gdyby @code{grep} poda³ wszystkie pasuj±ce ``linie'' pliku binarnego,
+utworzony wynik nie by³by prawdopodobnie do niczego przydatny, a nawet
+móg³by naba³aganiæ na ekranie.  Zatem @sc{gnu} @code{grep} wy³±cza
+wypisywanie dla plików, które wygl±daj± na binarne.  Mo¿emy zmusiæ go
+do wypisywania dopasowanych linii równie¿ dla takich plików stosuj±c opcjê
+@samp{-a} lub @samp{--binary-files=text}.  Chc±c siê pozbyæ komunikatów
+``Binary file matches'' (``Plik binarny pasuje do wzorca'') nale¿y
+skorzystaæ z opcji @samp{-I} lub @samp{--binary-files=without-match}.
+
+@item
+Dlaczego @samp{grep -lv} nie wypisuje nazw plików niepasuj±cych?
+
+@samp{grep -lv} wypisuje nazwy wszystkich plików zawieraj±cych co najmniej
+jedn± niepasuj±c± liniê.  Do uzyskania listy nazw wszystkich plików nie
+zawieraj±cych ¿adnych pasuj±cych linii, nale¿y u¿yæ opcji @samp{-L} lub
+@samp{--files-without-match}.
+
+@item
+Logiczne @sc{or} mo¿na uzyskaæ dziêki @samp{|}, ale co z @sc{and}?
+
+@example
+grep 'paul' /etc/motd | grep 'franc,ois'
+@end example
+
+@noindent
+znajdzie wszystkie linie zawieraj±ce zarówno @samp{paul}, jak
+i @samp{franc,ois}.
+
+@item
+Jak mo¿na przeszukaæ równocze¶nie standardowe wej¶cie i pliki?
+
+Trzeba zastosowaæ specjaln± nazwê pliku @samp{-}:
+
+@example
+cat /etc/passwd | grep 'alain' - /etc/motd
+@end example
+@end enumerate
+
+@node B³êdy
+@chapter B³êdy i ich zg³aszanie
+
+@cindex b³êdy, zg³aszanie
+Zg³oszenia b³êdów wysy³aj, proszê, na adres @email{bug-gnu-utils@@gnu.org}.
+Upewnij siê, ¿e gdzie¶ w polu tematu (``Subject:'') umie¶ci³e¶ s³owo ``grep''.
+
+Du¿e liczniki powtórzeñ w konstrukcji @samp{@{m,n@}} mog± spowodowaæ, ¿e
+@code{grep} zu¿yje mnóstwo pamiêci.  Oprócz tego, pewne inne niejasne
+wyra¿enia regularne wymagaj± czasu i przestrzeni rosn±cej wyk³adniczo
+i mog± spowodowaæ, ¿e grepowi zabraknie pamiêci.
+Wsteczne odwo³ania s± bardzo powolne i mog± wymagaæ czasu rosn±cego
+wyk³adniczo.
+
+@page
+@node Indeks pojêæ
+@unnumbered Indeks pojêæ
+
+To jest ogólny indeks wszystkich zagadnieñ omówionych w tym podrêczniku,
+z wyj±tkiem poleceñ programu @code{grep} i podawanych w wierszu poleceñ
+opcji.
+
+@printindex cp
+
+@page
+@node Indeks
+@unnumbered Indeks
+
+To jest alfabetyczne zestawienie wszystkich poleceñ @code{grep},
+opcji wiersza poleceñ i zmiennych ¶rodowiska.
+
+@printindex fn
+
+@contents
+@bye

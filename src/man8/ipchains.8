@@ -1,0 +1,550 @@
+.\" Translation (C) 1999 Pawel Wilk <siewca@dione.ids.pl>
+.\" {PTM/PW/0.1/25-05-1999/"administracja zapor± ogniow± IP"}
+.\" Translation update Robert Luberda <robert@debian.org>, Jul 2004, ipchains 1.3.10
+.\" $Id: ipchains.8,v 1.24 2004/07/16 10:03:41 robert Exp $
+.\"
+.\" Heavily modified by Paul ``Rusty'' Russell March 1997
+.\"
+.\" Based on the original ipfwadm man page by Jos Vos <jos@xos.nl> (see README)
+.\"
+.\"	This program is free software; you can redistribute it and/or modify
+.\"	it under the terms of the GNU General Public License as published by
+.\"	the Free Software Foundation; either version 2 of the License, or
+.\"	(at your option) any later version.
+.\"
+.\"	This program is distributed in the hope that it will be useful,
+.\"	but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\"	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\"	GNU General Public License for more details.
+.\"
+.\"	You should have received a copy of the GNU General Public License
+.\"	along with this program; if not, write to the Free Software
+.\"	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+.\"
+.\"
+.TH IPCHAINS 8 "8 lutego 1998" "" ""
+.SH NAZWA
+ipchains \- administracja zapor± ogniow± IP (IP firewall)
+.SH SK£ADNIA
+.BR "ipchains -[ADC] " "³añcuch specyfikacja-regu³y [opcje]"
+.br
+.BR "ipchains -[RI] " "³añcuch num-reg specyfikacja-regu³y [opcje]"
+.br
+.BR "ipchains -D " "³añcuch num-reg [opcje]"
+.br
+.BR "ipchains -[LFZNX] " "[³añcuch] [opcje]"
+.br
+.BR "ipchains -P " "³añcuch cel [opcje]"
+.br
+.BR "ipchains -M " "[ -L | -S ] [opcje]"
+.SH OPIS
+.B Ipchains
+jest u¿ywany do ustawiania, podtrzymywania i przegl±dania regu³ zapory ogniowej
+w j±drze Linuksa. Te regu³y mo¿emy podzieliæ na 4 ró¿ne kategorie:
+³añcuch wej¶ciowy (IP input chain), ³añcuch wyj¶ciowy (IP output chain), ³añcuch
+przekazowy (IP forwarding chain) i ³añcuchy zdefiniowane przez u¿ytkownika.
+
+Dla ka¿dej z tych kategorii utrzymywana jest oddzielna tabela regu³, z których
+ka¿da mo¿e odnosiæ siê do jakiego¶ ³añcucha regu³ zdefiniowanego przez
+u¿ytkownika.
+
+Zobacz
+.IR ipfw (4),
+by dowiedzieæ siê wiêcej szczegó³ów.
+.SH CELE
+Regu³a ¶cianki ogniowej okre¶la kryteria dotycz±ce pakietu i celu.
+Je¶li pakiet nie pasuje do danej regu³ki, to sprawdzana jest nastêpna w danym
+³añcuchu; je¶li pakiet pasuje wtedy nastêpna regu³ka jest okre¶lana
+przez warto¶æ celu, która mo¿e byæ nazw± ³añcucha zdefiniowanego przez
+u¿ytkownika albo te¿ jedn± ze specjalnych warto¶ci
+.IR ACCEPT ,
+.IR DENY ,
+.IR REJECT ,
+.IR MASQ ,
+.IR REDIRECT
+lub
+.IR RETURN .
+.sp 0.5
+.I ACCEPT
+oznacza, ¿e nale¿y przepu¶ciæ pakiet.
+.I DENY
+oznacza, ¿e nale¿y pakiet odrzuciæ.
+.I REJECT
+dzia³a podobnie jak odrzucenie, ale jest bardziej "uprzejmy" i ³atwiejszy do
+wy¶ledzenia, poniewa¿ dodatkowo wysy³any jest do nadawcy zwrotny komunikat
+ICMP informuj±cy go, ¿e pakiet nie zosta³ przyjêty.
+(Zauwa¿, ¿e
+.I DENY
+i
+.I REJECT
+s± to¿same je¶li mamy do czynienia z pakietami ICMP).
+.sp 0.5
+.I MASQ
+jest w³a¶ciwy tylko dla ³añcuchów przekazowych (forwarding) i
+zdefiniowanych przez u¿ytkownika. Mo¿e byæ u¿yty tylko
+kiedy j±dro jest skompilowane z w³±czon± definicj±
+\fBCONFIG_IP_MASQUERADE\fP.
+Przy u¿yciu tego rodzaju celu wychodz±ce (lub przechodz±ce przez maszynê,
+np. pe³ni±c± funkcjê bramki) pakiety bêd± maskowane, tzn. w ten sposób zostan±
+podmienione ich adresy nadawcy jakby pochodzi³y one z maszyny lokalnej.
+Potem przychodz±ce, zwrotne pakiety stanowi±ce odpowiedzi na podmienione
+bêd± automatycznie rozpoznawane i "demaskowane" z pominiêciem ³añcucha
+przekazowego.
+.sp 0.5
+.I REDIRECT
+jest w³a¶ciwy tylko dla ³añcuchów wej¶ciowych i zdefiniowanych przez
+u¿ytkownika i mo¿e byæ u¿yty tylko kiedy j±dro jest skompilowane z
+w³±czon± definicj±
+\fBCONFIG_IP_TRANSPARENT_PROXY\fP.
+W zwi±zku z tym pakiety bêd± przekierowywane do lokalnego gniazda,
+nawet je¶li by³y one skierowane do odleg³ej maszyny.
+Je¶li podany jest port przekierowania 0, który jest domy¶ln± warto¶ci±
+to port docelowy pakietu bêdzie u¿yty jako port przekierowawczy.
+Kiedy ten cel jest u¿yty to podany mo¿e byæ opcjonalnie dodatkowy
+argument (numer portu w³a¶nie).
+.sp 0.5
+Je¶li osi±gniêty zostaje koniec zdefiniowanego przez u¿ytkownika ³añcucha
+albo wyst±pi regu³ka z celem o nazwie
+.I RETURN
+to sprawdzana jest nastêpna regu³a w poprzednim (wywo³uj±cym) ³añcuchu.
+Je¶li osi±gniêty zostaje koniec wbudowanego ³añcucha, albo te¿
+wyst±pi regu³a z celem o nazwie
+.I RETURN
+to dalszy los pakietu zale¿y od celu okre¶lonego przez politykê ³añcucha.
+.SH OPCJE
+Opcje, które s± rozpoznawane przez
+.BR ipchains ,
+mo¿emy podzieliæ na kilka ró¿nych grup.
+.SS KOMENDY
+Te opcje okre¶laj± specyficzne dzia³anie, które ma byæ dokonane;
+tylko jedna z tych opcji mo¿e byæ podana w linii komend, z wyj±tkiem
+opcji opisanych poni¿ej. Dla wszystkich tzw. d³ugich opcji i d³ugich
+wersji komendy musisz wprowadziæ jedynie tyle pierwszych znaków, ¿eby
+.B ipchains
+potrafi³o odró¿niæ nazwê podawanej opcji od innych.
+.TP
+.BR "-A, --append"
+Do³±cza jedn± lub wiêcej regu³ do koñca podanego ³añcucha.
+Kiedy nazwy ¼róde³ i/lub celów odnosz± siê do wiêcej ni¿ jednego adresu
+to regu³a bêdzie dodana dla ka¿dej mo¿liwej kombinacji tego adresu.
+.TP
+.BR "-D, --delete"
+Usuwa jedn± lub wiêcej regu³ z podanego ³añcucha. S± tu dwie wersje
+tej komendy: regu³a mo¿e byæ okre¶lona za pomoc± jej numeru w ³añcuchu
+(zaczynaj±c od 1 dla pierwszej regu³y) lub za pomoc± podanej regu³y,
+do której usuwana pasuje.
+.TP
+.B "-R, --replace"
+Zamienia regu³ê w wybranym ³añcuchu. Je¶li nazwy ¼ród³a i/lub przeznaczenia
+odnosz± siê do wielu ró¿nych adresów to komenda zawiedzie. Regu³y s±
+ponumerowane poczynaj±c od 1.
+.TP
+.B "-I, --insert"
+Wstawia jedn± lub wiêcej regu³ do okre¶lonego ³añcucha. Regu³ê wskazuje siê
+za pomoc± jej numeru. Je¶li wiêc numerem regu³y jest 1 to regu³a lub regu³y
+s± wstawiane na pocz±tek ³añcucha.
+.TP
+.B "-L, --list"
+Wypisuje wszystkie regu³y w podanym ³añcuchu. Je¿eli nie wyszczególniono
+¿adnego ³añcucha, to pokazywane s± wszystkie. Jest poprawne podanie opcji
+.B -Z
+(zero), by nie istnia³a konieczno¶æ/mo¿liwo¶æ podawania ³añcucha.
+Dok³adne wyj¶cie zale¿y od innych wprowadzonych argumentów.
+.TP
+.B "-F, --flush"
+Opró¿nia podany ³añcuch. Jest to odpowiednik usuniêcia wszystkich regu³ po
+kolei.
+.TP
+.B "-Z, --zero"
+Zeruje liczniki pakietów i bajtów we wszystkich regu³kach. Jest poprawne
+podanie opcji
+.B "-L, --list"
+(list), aby ujrzeæ zawarto¶ci liczników tu¿ przed ich oczyszczeniem;
+je¶li jest to wykonane, to nie mo¿e byæ podany ¿aden konkretny ³añcuch.
+(bêd± one
+.I wszystkie
+wy¶wietlone i oczyszczone).
+.TP
+.B "-N, --new-chain"
+Tworzy nowy, zdefiniowany przez u¿ytkownika ³añcuch pod podan± nazw±.
+Musi to byæ nazwa unikatowa, nie przypisana do ¿adnego istniej±cego
+³añcucha.
+.TP
+.B "-X, --delete-chain"
+Usuwa podany ³añcuch zdefiniowany przez u¿ytkownika. Nie mo¿e byæ
+¿adnych odno¶ników do ³añcucha w innych regu³kach (je¶li s± to trzeba
+je usun±æ lub zast±piæ odpowiednimi regu³kami zanim ³añcuch bêdzie
+mo¿na usun±æ). Je¶li nie podany jest ¿aden argument to potraktowane zostanie
+to jako ¿±danie usuniêcia wszystkich niewbudowanych ³añcuchów.
+.TP
+.B "-P, --policy"
+Ustawia politykê ³añcucha podanego celu. Obejrzyj sekcjê
+.BR CELE ,
+¿eby poznaæ mo¿liwe cele. Tylko ³añcuchy niedefiniowane przez u¿ytkownika
+mog± mieæ tzw. polityki, jednak¿e ani ³añcuchy wbudowane, ani ³añcuchy zdefiniowane przez
+u¿ytkownika nie mog± byæ celami polityki.
+.TP
+.B "-M, --masquerading"
+Opcja ta umo¿liwia przegl±danie po³±czeñ obecnie maskowanych
+(w po³±czeniu z opcj± \fB-L\fP) lub ustawianie parametrów maskuj±cych j±dra
+(w po³±czeniu z opcj± \fB-S\fP).
+.TP
+.BI "-S, --set tcp tcpfin udp"
+Zmienia warto¶æ czasu oczekiwania u¿ywan± przy maskowaniu.
+Polecenie to wymaga zawsze 3 parametrów, reprezentuj±cych warto¶ci
+czasów przeterminowania (w sekundach) dla sesji TCP, sesji TCP po odebraniu
+pakietu FIN i tak samo dla pakietów UDP.
+Warto¶æ czasu ustawiona na 0 oznacza, ¿e powinien zostaæ niezmieniony
+poprzednio ustawiony parametr.
+Opcja ta jest dopuszczalna tylko w kombinacji z flag±
+\fB-M\fP.
+.TP
+.B "-C, --check"
+Sprawdza jak podany pakiet by³by obs³u¿ony przez podany ³añcuch. Jest to
+niezwykle u¿yteczne, gdy chodzi o testy, poniewa¿ wykonywane s± te same
+dzia³ania, których normalnie dokonuje j±dro by sprawdziæ "prawdziwy" pakiet.
+Mo¿e byæ to u¿yteczne, gdy trzeba sprawdziæ ³añcuchy zdefiniowane przez
+u¿ytkownika jak te¿ ³añcuchy wbudowane. Przy konstruowaniu kontrolnego pakietu
+u¿ywaæ mo¿na takich samych argumentów jak przy okre¶laniu regu³ zapory ogniowej.
+W szczególno¶ci wymaganymi flagami s±
+.B -s
+(adres ¼ród³a),
+.B -d
+(adres przeznaczenia),
+.B -p
+(protokó³) i
+.B -i
+(interfejs).
+.TP
+.B "-h, --help"
+Pomoc.
+Podaje (na razie bardzo uproszczony) opis sk³adni komendy. U¿ycie ze s³owem
+.IR icmp ,
+spowoduje wypisanie listy nazw ICMP.
+.TP
+.B "-V, --version"
+Wy¶wietla numer wersji ipchains.
+.SS PARAMETRY
+Poni¿sze parametry dope³niaj± okre¶lanie regu³ (u¿ywane z poleceniami
+add, delete, replace, append i check).
+.TP
+.BI "-p, --protocol" "[!] protokó³"
+Protokó³ regu³y lub pakietu do sprawdzenia.
+Podany protokó³ mo¿e byæ jednym z
+.IR tcp ,
+.IR udp ,
+.IR icmp ,
+lub
+.IR all ,
+lub mo¿e byæ warto¶ci± liczbow±, reprezentuj±c± jeden z tych lub inny
+protokó³. Dopuszczalna jest te¿ nazwa protoko³u z pliku /etc/protocols.
+Argument "!" przez protoko³em odwraca próbê. Warto¶æ 0 odpowiada nazwie
+.IR all .
+Protokó³
+.I all
+odpowiada wszystkim protoko³om i jest ustawieniem domy¶lnym,
+gdy opcja ta jest pominiêta.
+.I All
+nie mo¿e byæ u¿yte w po³±czeniu z komend± check.
+.TP
+.BR "-s, --source, --src " "[!] \fIadres\fP[/\fImaska\fP] [!] [\fIport[:port]\fP]"
+Okre¶lenie ¼ród³a.
+.I Adres
+mo¿e byæ nazw± hosta, nazw± sieci lub te¿ samym adresem IP.
+Parametr
+.I maska
+mo¿e byæ zarówno mask± sieci jak i samym numerem, okre¶laj±cym
+pierwsz± liczbê z lewej strony maski sieci.
+Wobec tego, maska
+.I 24
+odpowiada
+.IR 255.255.255.0 .
+Argument "!" przed podanym adresem odwraca znaczenie tego adresu.
+.sp 0.5
+W sk³ad ¼ród³a mo¿e wchodziæ okre¶lenie numeru portu lub typu komunikatu ICMP.
+Mo¿e to byæ zarówno nazwa us³ugi, numeru portu, typu ICMP w postaci liczby,
+jak i jedna z nazw typów ICMP, które mo¿na uzyskaæ wydaj±c polecenie
+.br
+ ipchains -h icmp
+.br
+Zauwa¿, ¿e wiele z tych nazw ICMP odnosi siê do obydwu - typu i kodu, to znaczy,
+¿e ka¿dy kod ICMP po fladze
+.B -d
+jest niepoprawny. W dalszej czê¶ci tego paragrafu,
+.I port
+oznacza zarówno okre¶lenie numeru portu, jak i typ komunikatu ICMP.
+Mo¿e byæ równie¿ podany zakres alternatywny, zapisywany w formacie
+.IR port : port .
+Je¶li pierwszy port jest pominiêty to przypisywana jest mu warto¶æ "0";
+je¶li drugi jest ominiêty to przypisywana jest warto¶æ "65535".
+.sp 0.5
+Porty mog± byæ podane tylko w po³±czeniu z protoko³ami
+.IR tcp ,
+.IR udp ,
+lub
+.IR icmp .
+Znak "!" przed okre¶leniem portu odwraca znaczenie.
+Gdy podano komendê check, wymagaj±c± tylko jednego portu, i je¿eli
+podano flagê
+.B -f
+(fragmentuj) to nie s± dopuszczalne ¿adne porty.
+.TP
+.BR "--source-port " "[!] [\fIport[:port]\fP]"
+To pozwala na osobne podanie portu ¼ród³owego lub zakresu portów.
+Patrz opis flagi
+.B -s
+powy¿ej po wiêcej szczegó³ów. Flaga
+.B --sport
+jest zamiennikiem dla tej opcji.
+.TP
+.BR "-d, --destination, --dst " "[!] \fIadres\fP[/\fImaska\fP] [!] [\fIport[:port]\fP]"
+Okre¶lenie miejsca przeznaczenia.
+Obejrzyj opis flagi
+.B -s
+(¼ród³o), by uzyskaæ szczegó³owy opis sk³adni. W przypadku ICMP,
+w którym nie istnieje pojêcie portów, "port docelowy" odnosi siê do
+liczbowego kodu ICMP.
+.TP
+.BR "--destination-port " "[!] [\fIport[:port]\fP]"
+To pozwala na osobne podawanie portów.
+Obejrzyj opis flagi
+.B -s
+po wiêcej szczegó³ów. Flaga
+.B --dport
+jest zamiennikiem dla tej opcji.
+.TP
+.BR "--icmp-type " "[!] typename"
+Pozwala to na podanie typu ICMP (u¿yj w po³±czeniu z opcj±
+.BR "-h icmp" ,
+by ujrzeæ poprawne nazwy typów ICMP). Jest czêsto bardziej wygodne do³±czaæ
+tê opcjê przy podawaniu miejsc przeznaczenia.
+.TP
+.BR "-j, --jump " "\fIcel\fP"
+Okre¶la cel regu³y; np. co zrobiæ je¶li pakiet spe³nia podane w regule
+kryteria. Celem mo¿e byæ ³añcuch zdefiniowany przez u¿ytkownika (oczywi¶cie
+nie ten, w którym jest ta regu³a) lub jeden z celów specjalnych, które
+natychmiast decyduj± o losie pakietu. Je¶li pominiemy w regule tê opcjê, to
+spe³nienie przez pakiet podanych kryteriów nie bêdzie mia³o wp³ywu na jego los,
+ale liczniki tej regu³y bêd± zwiêkszone.
+.TP
+.BI "-i, --interface " "[!] nazwa"
+Opcjonalna nazwa interfejsu, przez który pakiet jest odbierany b±d¼ przez
+który pakiet bêdzie wys³any. Gdy tej opcji nie podamy to rozwa¿any jest ci±g
+pusty, który ma specjalne znaczenie i pasuje do ka¿dej nazwy interfejsu. Gdy
+przed nazw± interfejsu u¿yjemy argumentu "!" to odwraca to sens opcji. Je¶li
+nazwa interfejsu koñczy siê znakiem "+" to spe³nione jest to dla wszystkich
+interfejsów rozpoczynaj±cych siê podan± nazw±.
+.TP
+.B "[!] " "-f, --fragment"
+A to oznacza, ¿e regu³a odnosi siê jedynie do drugiego i kolejnych fragmentów
+sfragmentowanych pakietów. Odk±d nie ma mo¿liwo¶ci by powiedzieæ o
+¼ródle lub portach docelowych takiego pakietu (albo typu ICMP), pakiet ten
+nie bêdzie pasowa³ do ¿adnych regu³ okre¶laj±cych go. Gdy argument "!"
+poprzedza flagê "-f" sens jest odwrócony.
+.SS "INNE OPCJE"
+Poni¿sze dodatkowe opcje mog± tak¿e byæ u¿yte:
+.TP
+.BI "-b, --bidirectional"
+Tryb dwukierunkowy.
+Regu³a bêdzie pasowaæ do pakietów IP w dwie strony; da to taki sam efekt jak
+powtarzanie tej samej regu³y dla ¼ród³a i przeznaczenia zamienionych ze sob±.
+Proszê zauwa¿yæ, ¿e NIE oznacza to, ¿e je¿eli pakiety TCP SYN bêd± dopuszczone na
+wyj¶ciu, to regu³a -b pu¶ci pakiety nie-SYN na wej¶ciu: regu³a odwrotna jest
+dok³adnie taka sama jak regu³a, która zosta³a wprowadzona. Oznacza to, ¿e
+zazwyczaj lepiej jest po prostu unikaæ flagi -b i otwarcie podawaæ
+wszystkie regu³y.
+.TP
+.BI "-v, --verbose"
+Krzykliwe wyj¶cie. Opcja ta powoduje, ¿e komenda list pokazuje
+adres interfejsu, opcje regu³y (je¶li s±) i maski TOS. Pakiet i liczniki
+bajtów s± tak¿e wypisywane, z przedrostkiem 'K', 'M' lub 'G' odpowiednio dla
+1000, 1,000,000 i 1,000,000,000 multiplikatorów (ale spójrz jeszcze na flagê
+.B -x
+aby to zmieniæ). Gdy u¿yte jest to w kombinacji z
+.BR -M ,
+to podana bêdzie te¿ informacja odnosz±ca siê do numerów sekwencji delta.
+Przy do³±czaniu, wstawianiu, usuwaniu i zastêpowaniu, powoduje to
+wy¶wietlenie szczegó³owej informacji dotycz±cej regu³y lub regu³.
+.TP
+.BI "-n, --numeric"
+Wyj¶cie numeryczne.
+Adresy IP i numery portów bêd± wypisywane w formacie liczbowym.
+Domy¶lnie, program bêdzie próbowa³ wy¶wietlaæ je jako nazwy hostów,
+nazwy sieci lub us³ug (kiedy tylko daj± siê zastosowaæ).
+.TP
+.BI "-l, --log"
+W³±cza w j±drze logowanie pasuj±cych pakietów.
+Gdy ta opcja jest ustawiona dla regu³y, j±dro Linuksa wypisze
+informacjê dotycz±c± wszystkich pasuj±cych pakietów
+(czêsto np. pasuj±cych nag³ówków IP) poprzez
+.IR printk ().
+.TP
+.BI "-o, --output" " [maxsize]"
+Kupiuje pasuj±ce pakiety do urz±dzenia w przestrzeni u¿ytkownika.
+Jest to obecnie czym¶ istotnym dla twórców, którzy chc± bawiæ siê
+w efekty zapory ogniowej w przestrzeni u¿ytkownika. Opcjonalny argument
+maxsize mo¿e byæ u¿yty by limitowaæ maksymaln± liczbê bajtów z pakietu,
+z którego zostan± skopiowane. Opcja ta jest poprawna tylko wtedy, gdy j±dro
+zosta³o skompilowane z ustawieniem CONFIG_IP_FIREWALL_NETLINK.
+.TP
+.BI "-m, --mark" " markvalue"
+Zaznacza pasuj±ce pakiety. Pakiety mog± byæ oznaczone 32-bitow±
+warto¶ci± bez znaku, który mo¿e (pewnego dnia) zmieniæ metodê ich
+wewnêtrznego traktowania. Je¶li nie jeste¶ kernel hackerem nie powiniene¶
+zawracaæ sobie tym g³owy. Je¶li ci±g
+.I markvalue
+zaczyna siê znakiem + albo - to wtedy warto¶æ bêdzie dodana lub te¿
+odjêta do/od obecnej warto¶ci zaznaczenia pakietu (która zaczyna siê zerem).
+.TP
+.BI "-t, --TOS" " andmask xormask"
+Maski u¿ywane przy modyfikowaniu pola TOS w nag³ówku IP. Gdy pakiet pasuje
+do regu³y, na jego polu TOS i pierwszej masce jest najpierw obliczany iloczyn
+bitowy, a nastepnie ró¿nica symetryczna z drug± mask±. Maski powinny byæ
+podane jako szesnastkowe warto¶ci o¶miobitowe. Jako ¿e nie wolno zmieniaæ LSB
+pola (RFC 1349), warto¶ci TOS, które spowoduj± tak± zmianê s± odrzucane tak
+samo, jak dowolne regu³y ustawiaj±ce zawsze wiêcej ni¿ jeden bit TOS. Regu³y,
+które mog± ustawiaæ wiêcej ni¿ jeden bit TOS dla niektórych pakietów powoduj±
+ostrze¿enia (wysy³ane na standardow± diagnostykê), które mo¿na zignorowaæ,
+je¶li wiadomo, ¿e pakiety o takich warto¶ciach TOS nigdy nie osi±gn± danej
+regu³y. Oczywi¶cie manipulacja TOS jest nieistotna, gdy celem danej regu³y
+jest
+.I DENY
+lub
+.IR REJECT .
+.TP
+.BI "-x, --exact"
+Rozszerzone warto¶ci numeryczne.
+Wy¶wietla dok³adn± warto¶æ pakietu i liczników bajtów,
+zamiast tylko podawaæ zaokr±glon± warto¶æ w K (wielokrotno¶ci 1000),
+M (wielokrotno¶ci 1000K) czy G (wielokrotno¶ci 1000M). Opcja jest
+odpowiednia tylko dla polecenia
+.BR -L .
+.TP
+.BI "[!] -y, --syn"
+Dopasowuje tylko te pakiety TCP, które maj± ustawiony bit SYN oraz wyczyszczone
+bity ACK i FIN. Takie pakiety s± u¿ywane do inicjalizacji po³±czenia TCP,
+wiêc na przyk³ad blokowanie takich pakietów docieraj±cych do interfejsu
+spowoduje, ¿e przychodz±ce po³±czenia TCP bêd± odrzucane, ale nie bêdzie
+mia³o ¿adnego wp³ywu na po³±czenia wychodz±ce.
+Opcja ta ma znaczenia tylko je¿eli typem protoko³u jest TCP. Je¿eli "-y"
+zostanie poprzedzone przez flagê "!", to sens tej opcji zostanie odwrócony.
+.TP
+.BI "--line-numbers"
+Wy¶wietlaj±c regu³y, wy¶wietla - na pocz±tku ka¿dej regu³y - numery linii
+odpowiadaj±ce pozycji regu³y w ³añcuchu.
+.TP
+.BI "--no-warnings"
+Wy³±cza wypisywanie ostrze¿eñ.
+.SH PLIKI
+.I /proc/net/ip_fwchains
+.br
+.I /proc/net/ip_masquerade
+.SH DIAGNOSTYKA
+Ró¿ne komunikaty o b³êdach s± wypisywane na standardowe wyj¶cie b³êdów.
+Kodem wyj¶cia jest 0, je¿eli wszystko siê powiedzie.
+B³êdy, które wydaj± siê byæ spowodowane b³êdnymi lub ¼le u¿ytymi
+argumentami linii poleceñ, spowoduj± zwrócenie kodu wyj¶cia 2, a
+wszystkie inne b³êdy powoduj± zwrócenie kodu wyj¶cia 1.
+.SH USTERKI
+.PP
+Je¿eli wej¶cie programu jest terminalem, regu³a jest dok³adana b±d¼ do³±czana do
+³añcucha przekazowego, a przekazywanie IP nie wydaje siê byæ w³±czone
+i nie podano opcji --no-warnings, to na standardowe wyj¶cie jest wypisywane
+ostrze¿enie o tym, ¿e przekazywanie nie bêdzie dzia³aæ, dopóki nie zostanie
+poprawione. Jest to po to, aby pomóc u¿ytkownikom nie¶wiadomym tego wymogu
+(którego nie by³o w j±drach serii 2.0).
+.PP
+Nie mo¿na skasowaæ liczników pakietów i bajtów w jednym tylko ³añcuchu.
+Wynika to z ograniczeñ j±dra.
+.PP
+Wykrywanie zapêtleñ nie jest obs³ugiwane w ipchains; pakiety w pêtli
+s± upuszczane i notowane, lecz jest to jedyna rzecz jakiej siê o tym
+dowiesz je¶li przypadkowo wytworzysz jak±¶ pêtlê.
+.PP
+Opis efektów zaznaczenia pakietu jest ogólnikowy, dopóki nie zostanie wydana
+dokumentacja opisuj±ca nowe procedury obs³ugi pakietów j±dra 2.1.
+.PP
+Nie ma sposobu na to by wyzerowaæ liczniki polityki (np. te we wbudowanych
+³añcuchach).
+.SH UWAGI
+To
+.B ipchains
+bardzo siê ró¿ni od ipfwadm autorstwa Josa Vosa, jako ¿e u¿ywa
+nowo powsta³ych tak zwanych drzew zapory ogniowej IP. Funkcjonalnie jest
+zastêpnikiem ipfwadm i generalnie zawsze obs³uguje tamte polecenia.
+Wierzê, ¿e nowe nazwy poleceñ s± bardziej racjonalne. Jest te¿ jednak¿e
+parê zmian, których powiniene¶ byæ ¶wiadom.
+.PP
+Fragmenty s± obs³ugiwane w inny sposób. Wszystkie fragmenty po pierwszym
+s± zazwyczaj przepuszczane (co zwykle jest bezpieczne); wtedy mog± byæ
+filtrowane. Oznacza to, ¿e prawdopodobnie powiniene¶ dodaæ jawn± regu³ê
+akceptuj±c± fragmenty je¶li dokonujesz konwersji.
+Spójrz wiêc na stare regu³y zliczaj±ce, które sprawdzaj± porty ¼ród³owe
+i docelowe 0xFFFF (0xFF w przypadku pakietów ICMP) - by³ to stary sposób
+rozliczania fragmentów.
+.PP
+Regu³y zliczaj±ce s± teraz w prosty sposób zintegrowane z ³añcuchami
+wej¶ciowym i wyj¶ciowym; mo¿esz symulowaæ dawne zachowanie w taki sposób:
+.br
+ ipchains -N acctwe
+.br
+ ipchains -N acctwy
+.br
+ ipchains -N acctwewy
+.br
+ ipchains -I input -j acctwewy
+.br
+ ipchains -I input -j acctwe
+.br
+ ipchains -I output -j acctwewy
+.br
+ ipchains -I output -j acctwy
+.br
+Stworzy to trzy zdefiniowane przez u¿ytkownika ³añcuchy,
+.IR acctwe ,
+.I acctwy
+i
+.IR acctwewy ,
+które mog± zawieraæ dowolne regu³y zliczaj±ce (regu³y te powinny byæ
+podane bez flagi
+.BR -j ,
+wiêc pakiety te s± w prosty sposób przepuszczane w nienaruszonej
+postaci).
+.PP
+Cel
+.I MASQ
+lub
+.I REDIRECT
+przy starciu z brakiem miejsca na operacje j±dra (np. przy regule
+przekazuj±cej lub wej¶ciowej) sprawi, ¿e do syslog zostanie wys³ana odpowiednia
+wiadomo¶æ a pakiet bêdzie odrzucony.
+.PP
+Stary sposób rozpoznawania SYN i ACK (który by³ poprzednio ignorowany dla
+pakietów innych ni¿ TCP) uleg³ zmianie; opcja SYN nie jest ju¿ poprawna dla
+regu³ innych ni¿ dotycz±cych TCP.
+.PP
+Opcja rozpoznawania ACK (
+.BR -k )
+nie jest ju¿ wspierana; kombinacja
+.B !
+i
+.B -y
+jest jej zastêpnikiem).
+.PP
+Nie jest ju¿ mo¿liwe okre¶lenie maski TOS, która ustawi lub wyzeruje
+ostatni znacz±cy bit TOS; poprzednio maski TOS by³y po cichu zerowane
+przez j±dro je¶li próbowa³y tego dokonaæ.
+.PP
+Flaga
+.B -b
+jest teraz w prosty sposób obs³ugiwana poprzez wstawienie lub usuniêcie
+pary regu³, w tym jednej z odwróconym okre¶leniem adresu ¼ród³a i adresu
+docelowego.
+.PP
+Nie ma mo¿liwo¶ci okre¶lenia interfejsu za pomoc± jego adresu: u¿yj nazwy.
+.SH ZOBACZ TAK¯E
+ipfw_chains(4), ipchains-save(8), ipchains-restore(8)
+.SH AUTOR
+Paul ``Rusty'' Russell <ipchains@rustcorp.com>.
+Podziêkowania dla Hansa Perssona za dokonanie szczegó³owej
+korekty; chcia³bym, aby poprawia³ wszystkie moje przysz³e dokumenty!

@@ -1,0 +1,223 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright 1993 Rickard E. Faith (faith@cs.unc.edu)
+.\" Portions extracted from /usr/include/sys/socket.h, which does not have
+.\" any authorship information in it.  It is probably available under the GPL.
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\"
+.\" Other portions are from the 6.9 (Berkeley) 3/10/91 man page:
+.\"
+.\" Copyright (c) 1983 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"     This product includes software developed by the University of
+.\"     California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\" Modified Fri Jan 31 16:22:26 1997 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified 1998,1999 by Andi Kleen
+.\" $Id: connect.2,v 1.6 2002/01/09 22:03:58 ankry Exp $
+.\" Translation (c) 1998 Przemek Borys <pborys@dione.ids.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\"
+.TH CONNECT 2 1998-10-03 "Linux 2.2" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+connect \- inicjalizacja po³±czenia poprzez gniazdo
+.SH SK£ADNIA
+.B #include <sys/types.h>
+.br
+.B #include <sys/socket.h>
+.sp
+.BI "int connect(int " sockfd ", const struct sockaddr *" serv_addr ,
+.BI "socklen_t " addrlen );
+.SH OPIS
+Deskryptor
+.I sockfd
+musi odnosiæ siê do gniazda.
+Je¶li gniazdo jest typu
+.BR SOCK_DGRAM ,
+to adres
+.I serv_addr
+jest adresem, do którego domy¶lnie przesy³ane s± datagramy i jedynym
+adresem, z którego datagramy s± odbierane. Je¶li gniazdo jest typu
+.B SOCK_STREAM
+lub
+.BR SOCK_SEQPACKET ,
+to ta funkcja próbuje nawi±zaæ po³±czenie z innym gniazdem. Inne gniazdo jest
+podane jako
+.BR serv_addr ,
+co jest adresem (o d³ugo¶ci
+.IR addrlen ) 
+w przestrzeni komunikacyjnej gniazda. Ka¿da z przestrzeni komunikacyjnych
+interpretuje
+.BR serv_addr ,
+po swojemu. 
+.PP
+Ogólnie, gniazda strumieniowe (dla protoko³ów po³±czeniowych) mog± pomy¶lnie
+wykonaæ
+.B connect
+tylko raz; gniazda datagramowe (dla protoko³ów bezpo³±czeniowych) mog± u¿ywaæ
+.B connect
+wielokrotnie do zmiany swojego przypisania. Gniazda datagramowe mog±
+zniszczyæ powi±zanie przez ³±czenie siê z adresem, w którym pole
+.I sa_family
+struktury
+.B sockaddr
+ma warto¶æ
+.BR AF_UNSPEC .
+.SH "WARTO¦Æ ZWRACANA"
+Je¶li po³±czenie lub przywi±zanie uda siê, zwracane jest zero. Przy b³êdzie,
+zwracane jest \-1 i odpowiednio ustawiane
+.IR errno .
+.SH B£ÊDY
+Nastêpuj±ce b³êdy to jedynie ogólne b³êdy gniazd. Mog± wystêpowaæ równie¿
+inne, specyficzne dla domeny kody b³êdów.
+.TP
+.B EBADF
+Deskryptor nie jest prawid³owym indeksem tablicy deskryptorów.
+.TP
+.B EFAULT
+Adres struktura gniazda znajduje siê poza przestrzeni± adresow± u¿ytkownika.
+.TP
+.B ENOTSOCK
+Deskryptor nie jest zwi±zany z gniazdem.
+.TP
+.B EISCONN
+Gniazdo ju¿ jest po³±czone.
+.TP
+.B ECONNREFUSED
+¯aden serwer nie nas³uchuje na zdalnym adresie.
+.TP
+.B ETIMEDOUT
+Przeterminowanie próby po³±czenia. Serwer mo¿e byæ zbyt zajêty, aby przyjmowaæ
+nowe po³±czenia. Dla gniazd IP czas przeterminowania mo¿e byæ bardzo d³ugi,
+gdy na serwerze w³±czone s± "syncookies".
+.TP
+.B ENETUNREACH
+Sieæ jest nieosi±galna.
+.TP
+.B EADDRINUSE
+Adres lokalny ju¿ jest wykorzystywany.
+.TP
+.B EINPROGRESS
+Gniazdo jest nieblokuj±ce, a po³±czenie nie mo¿e zostaæ zrealizowane
+natychmiast. Jest mo¿liwe wykonanie
+.BR select (2)
+lub
+.BR poll (2)
+w celu dokoñczenia poprzez wybranie gniazda do zapisu.
+Po tym, jak
+.B select
+wska¿e zapisywalno¶æ, nale¿y u¿yæ
+.BR getsockopt (2),
+aby odczytaæ opcjê
+.B SO_ERROR
+z poziomu
+.B SOL_SOCKET
+w celu okre¶lenia, czy
+.B connect
+zakoñczy³o siê pomy¶lnie
+.RB ( SO_ERROR
+bêdzie zerem) lub niepomy¶lnie
+.RB ( SO_ERROR
+bêdzie jednym ze typowych, wymienionych powy¿ej kodów b³êdów, wyja¶niaj±cych
+przyczynê b³êdu).
+.TP
+.B EALREADY
+Gniazdo jest nieblokuj±ce, a poprzednia próba po³±czenia nie zosta³a
+zakoñczona.
+.B EAGAIN
+Brak wolnych portów lokalnych, lub brak wpisów w buforze marszrutowym. Dla
+.B PF_INET
+w opisie sysctl
+.B net.ipv4.ip_local_port_range
+w
+.BR ip (7)
+opisano, jak zwiêkszyæ liczbê portów lokalnych.
+.TP
+.B EAFNOSUPPORT
+Przekazany adres mia³ prawid³owej rodziny adresów w swoim polu
+.IR sa_family .
+.TP
+.B EACCES, EPERM
+U¿ytkownik próbowa³ pod³±czyæ siê do adresu rozg³oszeniowego (broadcast) bez
+w³±czonego znacznika "broadcast" dla gniazda lub te¿ po³±czenie nie uda³o siê
+z powodu lokalnej regu³y firewalla.
+.SH "ZGODNE Z"
+SVr4, 4.4BSD (funkcja
+.B connect
+pojawi³a siê pierwotnie w BSD 4.2). SVr4 dokumentuje dodatkowe b³êdy ogólne
+.BR EADDRNOTAVAIL ,
+.BR EINVAL ,
+.BR EAFNOSUPPORT ,
+.BR EALREADY ,
+.BR EINTR ,
+.B EPROTOTYPE
+i
+.BR ENOSR .
+Dokumentuje tak¿e wiele dodatkowych b³êdów tutaj nieopisanych.
+.SH UWAGA
+Trzeci argument
+.B connect
+jest w rzeczywisto¶ci typu int (i tak jest w BSD 4.*, libc4 i libc5).
+Pewne zamieszanie w POSIX doprowadzi³o jego zmiany na obecny socklen_t.
+Szkic standardu nie zosta³ jeszcze przyjêty, ale glibc2 ju¿ jest z nim
+zgodne i zawiera równie¿ socklen_t. Zobacz tak¿e
+.BR accept (2).
+.SH USTERKI
+Roz³±czanie gniazda poprzez wywo³anie
+.B connect
+z adresem
+.B AF_UNSPEC
+nie jest jeszcze wspierane.
+.SH "ZOBACZ TAK¯E"
+.BR accept (2),
+.BR bind (2),
+.BR listen (2),
+.BR socket (2),
+.BR getsockname (2)

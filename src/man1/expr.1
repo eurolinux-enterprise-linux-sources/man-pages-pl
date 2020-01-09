@@ -1,0 +1,210 @@
+.\" {PTM/PB/0.1/02-10-1998/"wykonaj wyra¿enia"}
+.\" Translation (c) 1998 Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.\" poszerzenie i aktualizacja do GNU sh-utils 2.0 PTM/WK/2000-VI
+.ig
+Transl.note: based on GNU man page expr.1 and sh-utils.info
+
+Copyright (C) 1994, 95, 96 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+..
+.TH EXPR "1" FSF "maj 2000" "Narzêdzia pow³okowe GNU 2.0"
+.SH NAZWA
+expr \- wykonaj wyra¿enia
+.SH SK£ADNIA
+.B expr
+.IR wyra¿enie ...
+.br
+.B expr
+.RB [ \-\-help ]
+.RB [ \-\-version ]
+.SH OPIS
+Ta strona podrêcznika man opisuje polecenie \fBexpr\fP w wersji GNU.
+.PP
+.B expr
+wykonuje obliczenie i zapisuje rezultat na standardowe wyj¶cie. Ka¿dy ¿eton
+wyra¿enia musi byæ oddzielnym argumentem. Operandy mog± byæ liczbami lub
+ci±gami znaków. £añcuchów znaków nie cytuje siê dla \fBexpr\fP,
+choæ mo¿esz byæ zmuszonym do tego, by ochroniæ je przed pow³ok± (znaki
+i ³añcuchy o specjalnym znaczeniu dla pow³oki, np. spacja).
+.B expr
+rzutuje wszystko znajduj±ce siê po stronie operandowej na integer lub
+³añcuch, zale¿nie od rodzaju operacji.
+.PP
+Operatory mog± byæ podawane jako symbole wrostkowe lub kluczowe s³owa
+przedrostkowe. Do grupowania mo¿na w zwyk³y sposób korzystaæ z nawiasów.
+(nawiasy musz± byæ jednak cytowane, by ochroniæ je przed rozwiniêciem przez
+pow³okê).
+.SH OPERACJE
+Operatory (w kolejno¶ci rosn±cego priorytetu) to:
+.SS Wyra¿enia ³añcuchowe
+\fBexpr\fP obs³uguje dopasowywanie wzorców i inne operatory ³añcuchowe.
+Maj± one ni¿szy priorytet ni¿ operatory numeryczne czy relacyjne
+(w nastêpnych sekcjach).
+.TP
+.IB ³añcuch " : " regex
+Dokonuje porównania wzorców. Argumenty s± rzutowane na ³añcuchy, a drugi jest
+uwa¿any za (podstawowe, a la GNU `grep') wyra¿enie regularne, poprzedzone
+niejawnym `\fB^\fP'. Nastêpnie pierwszy argument jest dopasowywany do tego
+wyra¿enia regularnego.
+Je¶li porównanie jest pomy¶lne a wyra¿enie regularne korzysta z `\fB\\(\fP'
+i `\fB\\)\fP', to wyra¿enie \fB:\fP zwraca czê¶æ ³añcucha dopasowan± tym
+podwyra¿eniem. W przeciwnym zwracana jest liczba dopasowanych znaków.
+
+Je¶li porównanie zawiedzie, operator `:' zwraca ³añcuch pusty je¶li
+w wyra¿eniu regularnym u¿yto `\\(' i `\\)' lub zero w przeciwnym
+wypadku.
+
+Tylko pierwsza para nawiasów `\\(' i `\\)' jest istotna dla zwracanej
+warto¶ci. Dodatkowe maj± znaczenie tylko przy grupowaniu operatorów
+wyra¿enie regularnego.
+
+W wyra¿eniu regularnym znaki `\fB\\+\fP',  `\fB\\?\fP' i `\fB\\|\fP' s±
+operatorami dopasowuj±cymi odpowiednio jedno lub wiêcej, zero lub jedno
+wyst±pienie lub alternatywy roz³±czne. Pochodz±ce z SunOS i inne implementacje
+\fBexpr\fP traktuj± je jak zwyk³e znaki. POSIX dopuszcza oba zachowania.
+.\" (POSIX allows either behavior.)
+.TP
+.BI match " ³añcuch regex"
+Alternatywny sposóba porównywania wzorców. Jest to identyczne z
+`\fI³añcuch\fP \fB:\fP \fIregex\fP'.
+.TP
+.BI substr " ³añcuch pozycja d³ugo¶æ"
+Zwraca ³añcuch bêd±cy czê¶ci± \fI³añcuch\fPa, zaczynaj±c± siê
+na \fIpozycji\fP i o d³ugo¶ci najwy¿ej \fId³ugo¶æ\fP. Je¶li
+\fIpozycja\fP lub \fId³ugo¶æ\fP jest niedodatnie lub nienumeryczne, zwracany
+jest ³añcuch pusty.
+.TP
+.BI index " ³añcuch klasa-znakowa"
+Zwraca pierwsz± pozycjê w \fI³añcuch\fPu gdzie znale¼æ mo¿na pierwszy znak
+z \fIklasy-znakowej\fP.  Je¶li nie znaleziono ¿adnego znaku z
+\fIklasy-znakowej\fP, zwraca 0.
+.TP
+.BI length " ³añcuch"
+Zwraca d³ugo¶æ \fI³añcuch\fPa.
+.TP
+.BI quote " token"
+Interpretuje \fItoken\fP jako ³añcuch, nawet je¶li jest on s³owem kluczowym,
+jak \fBmatch\fP lub operatorem jak `\fB/\fP'. Umo¿liwia to testowanie `\fBexpr
+length quote "$x"\fP' lub `\fBexpr quote "$x" : '.*/\\(.\\)'\fP' i otrzymanie
+prawid³owego wyniku nawet je¶li warto¶ci± $X bêdzie, na przyk³ad, `/'
+czy `index'. Ten operator jest rozszerzeniem GNU. Jest wy³±czany, je¶li ustawiona
+jest zmienna ¶rodowiska \fBPOSIXLY_CORRECT\fP.
+.PP
+Chc±c, by \fBexpr\fP interpretowa³ s³owa kluczowe jako ³añcuchy nale¿y
+u¿yæ operatora \fBquote\fP.
+.SS Wyra¿enia numeryczne
+\fBexpr\fP obs³uguje zwyczajowe operatory numeryczne, w kolejno¶ci rosn±cego
+priorytetu. Operatory ³añcuchowe (poprzednia sekcja) maj± ni¿szy priorytet,
+za¶ ³±czniki (connectives) (nastêpna sekcja) wy¿szy.
+.TP
+.BR \+ ", " \-
+Dodawanie i odejmowanie. Obydwa argumenty s± rzutowane na liczby.
+Je¶li to niemo¿liwe, pojawia siê b³±d.
+.TP
+.BR * ", " / ", " %
+Mno¿enie, dzielenie, reszta z dzielenia. Obydwa argumenty s± rzutowane
+na liczby. Je¶li to niemo¿liwe, pojawia siê b³±d.
+.SS Relacje
+\fBexpr\fP obs³uguje zwyczajowe ³±czniki i relacje logiczne. Maj± one wy¿szy
+priorytet ni¿ operatory ³añcuchowe lub numeryczne, opisane w poprzednich
+sekcjach. Oto ich lista, poczynaj±c od operatorów o najmniejszym priorytecie.
+.TP
+.B |
+Zwraca swój pierwszy argument w wypadku gdy jest niezerowy i niepusty,
+lub drugi w przeciwnym wypadku. Jest to zwyk³a operacja `or'.
+.TP
+.B &
+Zwraca swój pierwszy argument w wypadku gdy ¿aden z argumentów nie jest
+zerowy ani pusty. W przeciwnym wypadku zwraca zero.
+.TP
+.BR < ", " <= ", " = ", " == ", " != ", " >= ", " >
+Porównuje argumenty i zwraca 1 je¶li relacja jest prawdziwa lub zero w
+przeciwnym wypadku. (\fB==\fP jest synonimem \fB=\fP.)
+\fBexpr\fP próbuje rzutowaæ obydwa argumenty na liczby i dokonaæ porównania
+numerycznego; je¶li to zawiedzie, próbuje porównania leksykalnego.
+.PP
+Nawiasy s± u¿ywane zazwyczaj do grupowania. S³owa kluczowe nie mog± byæ u¿ywane
+jako napisy.
+.SS OPCJE
+Gdy uruchomi siê GNU
+.B expr
+z jednym argumentem, rozpoznawane s± nastêpuj±ce opcje:
+.TP
+.B \-\-help
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach, koñczy
+pracê.
+.TP
+.B \-\-version
+Wy¶wietla numer wersji programu i koñczy pracê.
+.SH PRZYK£ADY
+Kilka przyk³adów, ³±cznie z cytowaniem metaznaków pow³oki:
+
+Dodanie 1 do zmiennej pow³okowej, w pow³oce zgodnej z pow³ok± Bourne'a:
+.IR a :
+.IP
+ a=\`expr $a + 1\`
+.PP
+Poni¿sze polecenie mo¿e zostaæ u¿yte do wydrukowania niekatalogowej czê¶ci
+nazwy pliku, przechowywanej w zmiennej
+.IR a
+(czê¶æ ta nie powinna zawieraæ `/'):
+.IP
+ expr $a : '.*/\e(^.*\e)' '^|' $a
+.LP
+Zauwa¿ cytowane metaznaki pow³oki.
+.PP
+Przyk³ad pokazuj±cy, ¿e `\\+' jest operatorem:
+.IP
+ expr aaa : 'a\\+'
+ => 3
+.PP
+Nieco innych:
+.IP
+ expr abc : 'a\\(.\\)c'
+ => b
+ expr index abcdef cz
+ => 3
+ expr index index a
+ error--> expr: syntax error
+ expr index quote index a
+ => 0
+.LP
+.SH KOD ZAKOÑCZENIA
+.B expr
+zwraca nastêpuj±cy kod zakoñczenia:
+.TP
+.B 0
+je¶li wyra¿enie nie jest ani null, ani 0.
+.TP
+.B 1
+je¶li wyra¿enie jest null lub 0,
+.TP
+.B 2
+dla nieprawid³owych wyra¿eñ.
+.SH "ZG£ASZANIE B£ÊDÓW"
+B³êdy proszê zg³aszaæ, w jêz.ang., do <bug-sh-utils@gnu.org>.
+.SH COPYRIGHT
+Copyright \(co 1999 Free Software Foundation, Inc.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH ZOBACZ TAK¯E
+.BR dc (1),
+.BR test (1),
+.BR sh-utils (1).
+.SH OD T£UMACZA
+Zaktualizowano i poszerzono wg dokumentacji Texinfo dla narzêdzi pow³okowych
+GNU wersji 2.0.

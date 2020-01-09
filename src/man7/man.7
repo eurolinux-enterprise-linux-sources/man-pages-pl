@@ -1,0 +1,286 @@
+.\" Copyright 1992 Rickard E. Faith (faith@cs.unc.edu)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Sun Jul 25 11:06:05 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified Sat Jun  8 00:39:52 1996 by aeb.
+.\" Translation (c) 1998 Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.TH MAN 7 "25 July 1993" "Linux" "Podrêcznik linuksowego programisty"
+.SH NAZWA
+man \- makra do formatowania stron man
+.SH SK£ADNIA
+.B groff \-Tascii \-man
+.I plik
+\&...
+.LP
+.B groff \-Tps \-man
+.I plik
+\&...
+.LP
+.B man
+.RI [ sekcja ]
+.I tytu³
+.SH OPIS
+Ta strona podrêcznika opisuje pakiet makr
+.B "groff tmac.an" .
+Pakiet tych makr powinien byæ u¿ywany przez developerów kiedy pisz± lub
+przenosz± strony man dla Linuksa. Jest on w pe³ni kompatybilny z innymi
+wersjami tego pakietu, wiêc przenoszenie stron nie powinno byæ g³ównym
+problemem (wyj±tki w³±czaj± NET-2 BSD, które u¿ywa ca³kiem innego
+pakietu makr).
+
+Zauwa¿, ¿e strony NET-2 BSD mog± byæ u¿yte z 
+.B groffem
+przez proste podanie opcji
+.B \-mdoc
+zamiast zwyk³ej
+.B \-man .
+U¿ywanie opcji
+.B \-mandoc
+jest jednak bardziej zalecane, jako ¿e wybierze ona automatycznie odpowiedni
+zestaw makr.
+.SH PREAMBU£A
+Pierwsz± komend± na stronie man powinna byæ
+.RS
+.sp
+.B \&.TH
+.IR "title section date source manual" ,
+.sp
+.RE
+gdzie:
+.RS
+.TP 0.8i
+.I title
+Tytu³ strony podrêcznika (np.
+.IR MAN ).
+.TP
+.I section
+Numer sekcji, w której strona powinna siê znale¼æ (np.
+.IR 7 ).
+.TP
+.I date
+Data ostatniego poprawienia\(empamiêtaj, by zmieniaæ j± za ka¿dym razem,
+kiedy dokonasz zmiany na stronie, poniewa¿ jest to najpopularniejsza droga
+kontrolowania wersji.
+.TP
+.I source
+¬ród³o komendy.
+.sp
+Dla binariów u¿ywaj czego¶ w rodzaju:
+.IR GNU ", " NET-2 ", " "SLS Distribution" ", " "MCC Distribution" .
+.sp
+Dla wywo³añ systemowych, u¿ywaj wersji j±dra, której u¿ywasz:
+.IR "Linux 0.99.11" .
+.sp
+Dla wywo³añ bibliotecznych, u¿yj ¼ród³a funkcji:
+.IR GNU ", " "BSD 4.3" ", " "Linux DLL 4.4.1" .
+.TP
+.I manual
+Tytu³ podrêcznika (np.
+.IR "Linux Programmer's Manual" ).
+.RE
+.PP
+Sekcje podrêcznika man s± tradycyjnie definiowane nastêpuj±co:
+.RS
+.TP 0.8i
+.B 1 Komendy
+Te komendy mog± byæ wykonywane przez u¿ytkownika z pow³oki.
+.TP
+.B 2 Wywo³ania systemowe
+Te funkcje musz± byæ obs³ugiwane przez j±dro.
+.TP
+.B 3 Wywo³ania biblioteczne
+Wiêkszo¶æ funkcji
+.I libc
+takich jak
+.BR sort (3))
+.TP
+.B 4 Pliki specjalne
+Pliki, które mo¿na znale¼æ w
+.IR /dev )
+.TP
+.B 5 Formaty plików i konwencje
+Format dla pliku
+.I /etc/passwd
+i innych nadaj±cych siê do odczytu przez cz³owieka.
+.TP
+.B 6 Gry
+.TP
+.B 7 Pakiety makr i konwencje
+Opis standardowego rozk³adu systemu plików, ta strona podrêcznika i wiele
+innych rzeczy.
+.TP
+.B 8 Komendy zarz±dzania systemem.
+Komendy takie, jak
+.BR mount (8),
+które wywo³ywaæ mo¿e tylko
+.I root .
+.TP
+.B 9 Wywo³ania j±dra
+Jest to niestandardowa sekcja podrêcznika i jest w³±czona poniewa¿ ¼ród³a
+j±dra Linuksa s± swobodnie rozpowszechniane z licencj± GPL i wielu ludzi
+pracuje nad zmianami j±dra.
+.RE
+.SH FONTY
+Chocia¿ istnieje wiele konwencji dla stron man w ¶wiecie Unixowym,
+istnienie setek stron specyficznych Linuksowi definiuje nasze standardy:
+.IP
+Dla funkcji, argumenty zawsze s± podawane kursyw±,
+.IR "nawet w sekcji SK£ADNIA" ,
+gdzie reszta funkcji jest wydrukowana w pogrubieniu:
+.RS
+.BI "int myfunction(int " argc ", char **" argv );
+.RE
+.IP
+Nazwy plików s± tak¿e zawsze pisane kursyw± (np.
+.IR "/usr/include/stdio.h" ),
+poza tymi z sekcji SK£ADNIA, gdzie w³±czane pliki s± pogrubione (np.
+.BR "#include <stdio.h>" ).
+.IP
+Makra specjalne, które s± zwykle pisane du¿ymi literami, s± pogrubiane (np.
+.BR MAXINT ).
+.IP
+Podczas enumerowania listy kodów b³êdów, kody s± pogrubiane (taka lista
+zwykle u¿ywa makra
+.B "\&.TP").
+.IP
+Wszelkie odwo³ania do innych stron man (lub temat bie¿±cej strony) s±
+pogrubione. Je¶li podany jest numer sekcji podrêcznika, podany jest bez
+spacji fontem roman, (np.
+.BR man (7)).
+
+Komendy do wyboru czcionki s± podane ni¿ej:
+.TP 0.8i
+.B \&.B
+Pogrubienie
+.TP
+.B \&.BI
+Pogrubienie naprzemiennie z kursyw±
+.TP
+.B \&.BR
+Pogrubienie naprzemiennie z fontem roman
+.TP
+.B \&.I
+Kursywa
+.TP
+.B \&.IB
+Kursywa naprzemiennie z pogrubieniem
+.TP
+.B \&.IR
+Kursywa naprzemiennie z fontem roman
+.TP
+.B \&.RB
+Font roman naprzemiennie z pogrubieniem
+.TP
+.B \&.RI
+Font roman naprzemiennie z kursyw±
+.TP
+.B \&.SB
+Ma³y font naprzemiennie z pogrubieniem
+.TP
+.B \&.SM
+Ma³y font
+.LP
+Tradycyjnie, ka¿da komenda mo¿e mieæ do sze¶ciu argumentów, lecz wersja GNU
+wydaje siê znosiæ to ograniczenie. Argumenty s± oddzielane spacjami.
+Podwójne cudzys³owy mog± byæ u¿ywane do okre¶lania argumentów ze spacjami.
+Wszystkie argumenty zostan± wydrukowane obok siebie, bez wtr±conych
+spacji, tak ¿e komenda
+.B \&.BR
+mo¿e zostaæ u¿yta do podania s³owa pogrubionego, po którym nastêpuje znak
+interpunkcyjny w foncie roman.
+.SH SEKCJE
+Sekcje zaczynaj± siê od
+.BR \&.SH ,
+po którym wystêpuje nazwa. Je¶li nazwa zawiera spacje i pojawia siê w tej samej
+linii co
+.BR \&.SH ,
+to umie¶æ j± miêdzy podwójnymi cudzys³owami. Tradycyjne nag³ówki to:
+NAZWA, SK£ADNIA, OPIS, OPCJE, PLIKI, ZOBACZ TAK¯E, DIAGNOSTYKA, B£ÊDY,
+i AUTOR.  Jedynym wymaganym nag³ówkiem jest
+.IR NAZWA ,
+po którym powinna nast±piæ linijka z opisem programu:
+.RS
+.sp
+\&.SH NAZWA
+.br
+chess \\- gra w szachy
+.sp
+.RE
+Jest niesamowicie wa¿nym, aby u¿ywaæ tego formatu i ¿e wystêpuje backshlash
+przed kresk± po nazwie komendy. Ta sk³adnia (angielska, gdzie NAZWA to NAME)
+jest wykorzystywana przez program
+.BR makewhatis (8)
+do tworzenia bazy krótkich opisów komend dla programu
+.BR whatis (1)
+i
+.BR apropos (1).
+.SH "INNE MAKRA"
+Inne makra to miêdzy innymi:
+.TP
+.B \&.DT
+Domy¶lne tabulacje
+.TP
+.B \&.HP
+Pocz±tek wisz±cego wciêcia
+.TP
+.B \&.IP
+Rozpocznij akapit wisz±cym tagiem. Jest to to samo co
+.BR \&.TP ,
+poza tym, ¿e tag podany jest w tej samej linii, nie w nastêpnej.
+.TP
+.B \&.LP
+To samo co
+.B \&.PP
+.TP
+.B \&.PD
+Ustaw odstêp miêdzyakapitowy na argument
+.TP
+.B \&.PP
+Rozpocznij nowy akapit
+.TP
+.B \&.RE
+Zakoñcz relatywne wciêcie (wcinany akapit)
+.TP
+.B \&.RS
+Rozpocznij relatywne wciêcie (wcinany akapit)
+.TP
+.B \&.SS
+
+Pod-nag³ówek (jak
+.BR \&.SH ,
+lecz u¿ywane do podsekcji)
+.TP
+.B \&.TP
+Rozpocznij akapit z wisz±cym tagiem. Tag jest podawany w nastêpnej linii.
+Jest to podobne do
+.B \&.IP
+.LP
+.SH PLIKI
+.I /usr/local/lib/groff/tmac/tmac.an
+.br
+.I /usr/man/whatis
+.SH "ZOBACZ TAK¯E"
+.BR groff (1),
+.BR man (1),
+.BR whatis (1),
+.BR apropos (1),
+.BR makewhatis (8)

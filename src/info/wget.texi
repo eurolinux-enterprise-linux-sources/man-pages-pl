@@ -1,0 +1,3359 @@
+%& -translate-file=il2-pl
+\def\fontprefix{pl}
+\input texinfo   @c -*-texinfo-*-
+
+@c %**start of header
+@setfilename wget.info
+@settitle Podrêcznik GNU Wget
+@c Disable the monstrous rectangles beside overfull hbox-es.
+@finalout
+@c Use `odd' to print double-sided.
+@setchapternewpage on
+@documentencoding ISO-8859-2
+@documentlanguage pl
+@c %**end of header
+
+@iftex
+@c Remove this if you don't use A4 paper.
+@afourpaper
+@end iftex
+
+@c This should really be generated automatically, possibly by including
+@c an auto-generated file.
+@set VERSION 1.8.2
+@set UPDATED maj 2002
+
+@ifinfo
+@dircategory Net Utilities
+@dircategory World Wide Web
+@direntry
+* Wget: (wget).         Narzêdzie do nieinteraktywnego ¶ci±gania z sieci.
+@end direntry
+@c The non-interactive network downloader.
+@end ifinfo
+
+@ifinfo
+Ten plik dokumentuje narzêdzie GNU Wget s³u¿±ce do pobierania danych z sieci.
+
+@c man begin COPYRIGHT
+Copyright (C) 1996, 1997, 1998, 2000, 2001 Free Software
+Foundation, Inc.
+
+Zezwala siê na sporz±dzanie i rozpowszechnianie niezmienionych kopii tego
+podrêcznika, pod warunkiem zachowania na wszystkich kopiach informacji
+o prawach autorskich i niniejszego zezwolenia.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries a copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+@end ignore
+Zezwala siê na kopiowanie, rozpowszechnianie i/lub modyfikowanie tego
+dokumentu na warunkach Licencji Wolnej Dokumentacji GNU (GNU Free
+Documentation License) w wersji 1.1 lub jakiejkolwiek nowszej wersji
+opublikowanej przez Fundacjê Wolnego Oprogramowania, przy czym Sekcjami
+niezmiennymi s± ,,GNU General Public License'' i ,,GNU Free Documentation
+License'', bez tre¶ci przedniej lub tylnej strony ok³adki.
+Egzemplarz licencji zamieszczono w sekcji zatytu³owanej
+,,GNU Free Documentation License''.
+@c man end
+@end ifinfo
+
+@titlepage
+@title GNU Wget
+@subtitle Narzêdzie do nieinteraktywnego pobierania plików
+@subtitle Opis aktualny dla wersji @value{VERSION}, @value{UPDATED}
+@author napisa³: Hrvoje Nik@v{s}i@'{c} i twórcy programu
+
+@ignore
+@c man begin AUTHOR
+Pierwotnie napisane przez Hrvoje Niksic <hniksic@arsdigita.com>.
+@c man end
+@c man begin SEEALSO
+Plik GNU Info dla @file{wget}.
+@c man end
+@end ignore
+
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1996, 1997, 1998, 2000, 2001 Free Software
+Foundation, Inc.
+
+Zezwala siê na kopiowanie, rozpowszechnianie i/lub modyfikowanie tego
+dokumentu na warunkach Licencji Wolnej Dokumentacji GNU (GNU Free
+Documentation License) w wersji 1.1 lub jakiejkolwiek nowszej wersji
+opublikowanej przez Fundacjê Wolnego Oprogramowania, przy czym Sekcjami
+niezmiennymi s± ,,GNU General Public License'' i ,,GNU Free Documentation
+License'', bez tre¶ci przedniej lub tylnej strony ok³adki.
+Egzemplarz licencji zamieszczono w sekcji zatytu³owanej
+,,GNU Free Documentation License''.
+@end titlepage
+
+@ifinfo
+@node Top, Od t³umacza, (dir), (dir)
+@top Wget @value{VERSION}
+
+Niniejszy podrêcznik opisuje wersjê @value{VERSION} GNU Wget, swobodnie
+dostêpnego narzêdzia do pobieranie plików z sieci.
+
+Copyright @copyright{} 1996, 1997, 1998, 2000, 2001 Free Software
+Foundation, Inc.
+
+@menu
+* Od t³umacza::         Parê s³ów od t³umacza.
+* Przegl±d::            Mo¿liwo¶ci Wget.
+* Wywo³anie::           Argumenty Wget podawane w wierszu poleceñ.
+* Pobieranie rekurencyjne:: Opis pobierania rekurencyjnego.
+* Odno¶niki::           Dostêpne metody pod±¿ania za odno¶nikami.
+* Znaczniki czasu::     Kopie lustrzane zale¿ne od znaczników czasu.
+* Plik konfiguracyjny:: Plik inicjuj±cy Wget.
+* Przyk³ady::           Przyk³ady u¿ycia.
+* Rozmaito¶ci::         Rzeczy, które nie pasuj± nigdzie indziej.
+* Dodatki::             Trochê przydatnych informacji.
+* Kopiowanie::          Mo¿na rozdawaæ kopie Wget i tego podrêcznika.
+* Skorowidz pojêæ::     Tematy poruszone w tym podrêczniku.
+@end menu
+@end ifinfo
+
+@node Od t³umacza, Przegl±d, Top, Top
+@unnumbered Od t³umacza
+Niniejszy przek³ad powsta³ w ramach Projektu T³umaczenia Manuali
+(@uref{http://ptm.linux.pl/}), z wykorzystaniem t³umaczenia podrêcznika
+systemowego man, które wykona³ Leszek Krupiñski (@email{d@@z.pl)}.
+
+Zg³oszenia b³êdów, komentarze i sugestie dotycz±ce wersji polskiej
+proszê przesy³aæ na listê dyskusyjn± Projektu: @email{ptm@@amg.net.pl}.
+
+Polskie nieoficjalne t³umaczenie GNU General Public License oraz
+GNU Free Documentation License mo¿na znale¼æ na @uref{http://gnu.org.pl/}.
+Proszê pamiêtaæ, ¿e pod wzglêdem prawnym obowi±zuj±ce s± wy³±cznie
+oryginalne, angielskie wersje.  Stanowisko FSF w tej kwestii wyja¶niono
+na stronie @uref{http://www.gnu.org/copyleft/copyleft.html}.
+
+W.Kotwica (@email{wkotwica@@post.pl})
+
+@node Przegl±d, Wywo³anie, Od t³umacza, Top
+@chapter Przegl±d
+@cindex przegl±d
+@cindex cechy
+
+@c man begin DESCRIPTION
+GNU Wget jest wolnym programem narzêdziowym do pobierania plików
+z World Wide Web. Obs³uguje protoko³y @sc{http}, @sc{https} i @sc{ftp},
+a tak¿e pobieranie poprzez serwery proxy @sc{http}.
+
+@c man end
+Ten rozdzia³ stanowi przegl±d niektórych mo¿liwo¶ci programu.
+
+@itemize @bullet
+@item
+Wget jest nieinteraktywny, co znaczy, ¿e mo¿e pracowaæ w tle, kiedy
+u¿ytkownik nie jest zalogowany.  Dziêki temu mo¿na rozpocz±æ pobieranie
+i roz³±czyæ siê z systemem, pozostawiaj±c programowi ukoñczenie pracy.
+W przeciwieñstwie do tego, wiêkszo¶æ przegl±darek WWW wymaga nieustannej
+obecno¶ci u¿ytkownika, co mo¿e byæ powa¿n± przeszkod± przy przesy³aniu
+du¿ej ilo¶ci danych.
+@c man end
+
+@sp 1
+@item
+@ignore
+@c man begin DESCRIPTION
+
+@c man end
+@end ignore
+@c man begin DESCRIPTION
+Wget potrafi pod±¿aæ za odno¶nikami zawartymi w stronach @sc{hmtl}
+i tworzyæ lokalne wersje zdalnych witryn @sc{www}, w pe³ni odtwarzaj±c
+strukturê katalogów oryginalnego o¶rodka. Jest to czasami nazywane
+,,pobieraniem rekurencyjnym''. Podczas takiego dzia³ania Wget respektuje
+ustalenia Standardu Robot Exclusion (@file{/robots.txt}). Mo¿liwe
+jest poinstruowanie programu, by w pobieranych plikach @sc{html}
+przekszta³ca³ odno¶niki tak, aby wskazywa³y na lokalne kopie, do
+przegl±dania bez po³±czenia.
+@c man end
+
+@sp 1
+@item
+Przy pobieraniu plików przez @sc{ftp} dostêpne jest pos³ugiwanie siê maskami
+nazw plików i tworzenie rekurencyjnych kopii lustrzanych.  Wget umie odczytaæ
+znaczniki czasowe plików podawane przez serwery @sc{http} i @sc{ftp}
+i lokalnie je zapisaæ.  Potrafi zauwa¿yæ, ¿e zdalny plik zmieni³ siê od czasu
+ostatniego pobrania i automatycznie pobraæ now± wersjê.  Dziêki temu Wget
+nadaje siê do tworzenia kopii lustrzanych zarówno o¶rodków @sc{ftp},
+jak i stron g³ównych.
+
+@sp 1
+@item
+@ignore
+@c man begin DESCRIPTION
+
+@c man end
+@end ignore
+@c man begin DESCRIPTION
+Wget zosta³ zaprojektowany tak, by dzia³aæ solidnie równie¿ przy powolnych
+b±d¼ niestabilnych po³±czeniach. Je¿eli pobieranie nie udaje siê z powodu
+problemów z sieci±, ponawia próby a¿ do ¶ci±gniêcia ca³o¶ci pliku. Je¶li
+dany serwer obs³uguje tak± mo¿liwo¶æ, Wget naka¿e kontynuacjê pobierania
+od miejsca, w którym przerwano.
+@c man end
+
+@sp 1
+@item
+Wget potrafi korzystaæ z serwerów proxy, co mo¿e odci±¿yæ sieæ,
+przyspieszyæ pobieranie i umo¿liwiæ dostêp poza zapory ogniowe (firewalls).
+Je¶li jednak znajdujemy siê za zapor±, która wymaga stosowania bramki typu
+socks, mo¿na wzi±æ bibliotekê socks i zbudowaæ Wget z obs³ug± socks.
+Wget obs³uguje te¿, jako opcjê, bierne pobieranie @sc{ftp} (passive
+downloading).
+@c man end
+
+@sp 1
+@item
+Wbudowane funkcje oferuj± mechanizm precyzyjnego wyboru odno¶ników, po chcemy
+by program przechodzi³ do nastêpnych plików (@pxref{Odno¶niki}).
+
+@sp 1
+@item
+Pobieranie mo¿na wygodnie ¶ledziæ na ekranie dziêki wypisywanym kropkom,
+z których ka¿da reprezentuje ustalon± ilo¶æ otrzymanych danych (domy¶lnie
+1KB).  Oznakowanie to mo¿na dostosowaæ do w³asnych upodobañ.
+
+@sp 1
+@item
+Wiêkszo¶æ funkcji jest w pe³ni konfigurowalna, albo za po¶rednictwem opcji
+wiersza poleceñ, albo poprzez plik inicjuj±cy @file{.wgetrc}
+(@pxref{Plik konfiguracyjny}).  Wget umo¿liwia definiowanie
+@dfn{ogólnosystemowych}, globalnych plików startowych (domy¶lnie
+@file{/usr/local/etc/wgetrc}) zawieraj±cych ustawienia dla ca³ego o¶rodka.
+
+@ignore
+@c man begin FILES
+@table @samp
+@item /usr/local/etc/wgetrc
+Domy¶lne po³o¿enie @dfn{globalnego} pliku startowego.
+ 
+@item .wgetrc
+Prywatny plik startowy u¿ytkownika.
+@end table
+@c man end
+@end ignore
+
+@sp 1
+@item
+Na koniec, GNU Wget jest wolnym oprogramowaniem.  To znaczy, ¿e ka¿dy
+mo¿e je u¿ywaæ, rozpowszechniaæ i/lub zmieniaæ na warunkach okre¶lonych
+w Powszechnej Licencji Publicznej GNU (GNU General Public License),
+opublikowanej przez Free Software Foundation (@pxref{Kopiowanie}).
+@end itemize
+
+@node Wywo³anie, Pobieranie rekurencyjne, Przegl±d, Top
+@chapter Wywo³anie
+@cindex wywo³anie
+@cindex wiersz poleceñ
+@cindex argumenty
+@cindex nohup
+
+Domy¶lnie, wywo³anie Wget jest bardzo proste.  Podstawowa sk³adnia jest taka:
+
+@example
+@c man begin SYNOPSIS
+wget [@var{opcja}]@dots{} [@var{URL}]@dots{}
+@c man end
+@end example
+
+Wget po prostu ¶ci±gnie wszystkie @sc{url}-e podane w wierszu poleceñ.
+@var{URL} to @dfn{Uniform Resource Locator}, zdefiniowany ni¿ej.
+
+Jednak¿e, mo¿na zmieniaæ ró¿ne domy¶lne parametry Wget.
+Wykonuje siê to na dwa sposoby: na sta³e, dodaj±c odpowiednie polecenie
+do @file{.wgetrc} (@pxref{Plik konfiguracyjny}), lub podaj±c je w wierszu poleceñ.
+
+@menu
+* Format URL::
+* Sk³adnia opcji::
+* Podstawowe opcje uruchamiania::
+* Opcje dziennika i pliku wej¶ciowego::
+* Opcje ¶ci±gania::
+* Opcje katalogów::
+* Opcje HTTP::
+* Opcje FTP::
+* Opcje pobierania rekurencyjnego::
+* Opcje rekurencyjnego akceptowania/odrzucania::
+@end menu
+
+@node Format URL, Sk³adnia opcji, Wywo³anie, Wywo³anie
+@section Format URL
+@cindex URL
+@cindex sk³adnia URL
+
+@dfn{URL} jest akronimem od Uniform Resource Locator (Uniwersalny
+Identyfikator Zasobu). Uniwersalny identyfikator zasobu stanowi zwiêz³e
+znakowe przedstawienie zasobu dostêpnego poprzez Internet.  Wget rozpoznaje
+sk³adniê @sc{url} zgodnie z @sc{rfc1738}.  Jest to postaæ najszerzej
+stosowana (nawiasy kwadratowe oznaczaj± czê¶ci opcjonalne):
+
+@example
+http://host[:port]/katalog/plik
+ftp://host[:port]/katalog/plik
+@end example
+
+W @sc{url} mo¿na te¿ umie¶ciæ swoj± nazwê u¿ytkownika i has³o:
+
+@example
+ftp://u¿ytkownik:has³o@@host/¶cie¿ka
+http://u¿ytkownik:has³o@@host/¶cie¿ka
+@end example
+
+Zarówno @var{u¿ytkownika}, jak i @var{has³o}, albo oba, mo¿na pomin±æ.
+Je¶li pominiemy nazwê u¿ytkownika @sc{http} lub has³o, nie bêd± przesy³ane
+dane uwierzytelniaj±ce (authentication).  Je¶li pominiemy nazwê u¿ytkownika
+@sc{ftp}, zostanie zastosowane @samp{anonymous}.  Je¶li pominiemy has³o
+@sc{ftp}, jako domy¶lne has³o zostanie podany nasz
+adres e-mail.@footnote{Je¶li w katalogu domowym mamy plik @file{.netrc},
+to has³o bêdzie szukane równie¿ w nim.}
+
+@strong{Wa¿ne}: je¶li w wierszu poleceñ podamy @sc{url} zawieraj±cy
+has³o, to bêdzie ono, tak samo jak wpisana nazwa u¿ytkownika, widoczne
+w jawnej postaci dla ka¿dego u¿ytkownika naszego systemu, który u¿yje
+@code{ps}.
+W systemach wielodostêpnych wystawia to bezpieczeñstwo na powa¿ne
+ryzyko. Problem mo¿na obej¶æ stosuj±c @code{wget -i -} i wprowadzaj±c
+@sc{url}-e na standardowe wej¶cie Wgeta, po jednym w wierszu,
+i na zakoñczenie listy naciskaj±c @kbd{C-d}.
+
+Niebezpieczne znaki mo¿na kodowaæ w @sc{url} jako @samp{%xy}, gdzie @code{xy}
+jest szesnastkowym zapisem warto¶ci kodu @sc{ascii} znaku.  Niektóre
+z powszechnych niebezpiecznych znaków to @samp{%} (cytowany jako @samp{%25}),
+@samp{:} (cytowany jako @samp{%3A}) i @samp{@@} (cytowany jako @samp{%40}).
+Wyczerpuj±c± listê niebezpiecznych znaków mo¿na znale¼æ w @sc{rfc1738}.
+
+Wget obs³uguje te¿ funkcjê @code{type} dla @sc{url}-i @sc{ftp}.
+Domy¶lnie, dokumenty pobierane s± w trybie binarnym (typ @samp{i}),
+co znaczy, ¿e s± ¶ci±gane bez zmian.  Innym przydatnym trybem jest
+tryb @samp{a} (@dfn{ASCII}), w którym ograniczniki linii przeszta³cane s±
+miêdzy ró¿nymi systemami operacyjnymi, jest zatem u¿yteczny przy pobieraniu
+plików tekstowych.  Oto przyk³ad:
+
+@example
+ftp://host/katalog/plik;type=a
+@end example
+
+Rozpoznawane s± tak¿e dwa alternatywne warianty specyfikacji @sc{url},
+@c        widespreaded use
+z powodów historycznych (histerycznych?) i rozpowszechnionego ich
+wykorzystywania.
+
+sk³adnia-tylko-dla-@sc{ftp} (obs³ugiwana przez @code{NcFTP}):
+@example
+host:/katalog/plik
+@end example
+
+sk³adnia-tylko-dla-@sc{http} (wprowadzona przez @code{Netscape}):
+@example
+host[:port]/katalog/plik
+@end example
+
+Obie te formy s± niezalecane i ich obs³uga w przysz³o¶ci mo¿e znikn±æ.
+
+Je¶li nie rozumiesz ró¿nicy pomiêdzy tymi notacjami lub nie wiesz, której
+u¿yæ, u¿yj po prostu zwyk³ego formatu, z jakiego korzystasz w ulubionej
+przegl±darce, jak @code{Lynx} czy @code{Netscape}.
+
+@node Sk³adnia opcji, Podstawowe opcje uruchamiania, Format URL, Wywo³anie
+@section Sk³adnia opcji
+@cindex opcje, sk³adnia
+@cindex sk³adnia opcji
+
+Poniewa¿ Wget do przetwarzania przes³anych mu argumentów korzysta
+z GNU getopts, ka¿da z opcji ma postaæ krótk± i d³ug±.  D³ugie nazwy opcji
+s± wygodniejsze do zapamiêtania, ale potrzeba wiêcej czasu na ich wpisanie.
+Mo¿na swobodnie ³±czyæ oba rodzaje opcji lub podawaæ opcje po argumentach
+wiersza poleceñ.  Zatem mo¿emy napisaæ:
+
+@example
+wget -r --tries=10 http://fly.srk.fer.hr/ -o log
+@end example
+
+Spacjê pomiêdzy opcj± przyjmuj±c± argument a tym argumentem mo¿na pomin±æ.
+Zamiast @samp{-o log} mo¿na napisaæ @samp{-olog}.
+
+Kilka opcji nie wymagaj±cych argumentu mo¿na zapisaæ razem, jak tu:
+
+@example
+wget -drc @var{URL}
+@end example
+
+Jest to w pe³ni równowa¿ne wpisaniu:
+
+@example
+wget -d -r -c @var{URL}
+@end example
+
+Poniewa¿ opcje mog± byæ podawane po argumentach, mo¿na zakoñczyæ je za pomoc±
+@samp{--}.  Zatem poni¿sze spowoduje próbê ¶ci±gniêcia @sc{url}-a @samp{-x},
+zg³aszaj±c b³±d do pliku @file{log}:
+
+@example
+wget -o log -- -x
+@end example
+
+Wszystkie opcje, które pobieraj± listy rozdzielanych przecinkami elementów,
+przestrzegaj± konwencji, wedle której podanie pustej listy wymazuje jej
+warto¶æ. Przydaje siê to do kasowania ustawieñ odczytanych z @file{.wgetrc}.
+Na przyk³ad, je¶li nasz plik @file{.wgetrc} nadaje @code{exclude_directories}
+warto¶æ @file{/cgi-bin}, to poni¿szy przyk³ad najpierw przywraca tê opcjê
+do stanu pustego,
+a nastêpnie ustawia tak, by pomijane by³y @file{/~nobody} i @file{/~somebody}.
+Mo¿na tak¿e wymazywaæ listy w @file{.wgetrc} (@pxref{Sk³adnia wgetrc}).
+
+@example
+wget -X '' -X /~nobody,/~somebody
+@end example
+
+@c man begin OPTIONS
+
+@node Podstawowe opcje uruchamiania, Opcje dziennika i pliku wej¶ciowego, Sk³adnia opcji, Wywo³anie
+@section Podstawowe opcje uruchamiania
+
+@table @samp
+@item -V
+@itemx --version
+Wy¶wietla wersjê Wget.
+
+@item -h
+@itemx --help
+Wypisuje komunikat pomocy, opisuj±cy wszystkie opcje, jakie mo¿na przekazaæ
+Wget w wierszu poleceñ.
+
+@item -b
+@itemx --background
+Przechodzi w t³o natychmiast po rozpoczêciu pracy.  Je¶li nie podano pliku
+wyj¶ciowego za pomoc± @samp{-o}, wyj¶cie jest przekierowywane
+do @file{wget-log}.
+
+@cindex wykonanie polecenia wgetrc
+@item -e @var{polecenie}
+@itemx --execute @var{polecenie}
+Wykonuje @var{polecenie} tak, jakby by³o czê¶ci± @file{.wgetrc}
+(@pxref{Plik konfiguracyjny}).  Polecenie wywo³ane w ten sposób zostanie wykonane
+@emph{po} poleceniach z @file{.wgetrc}, wiêc bêdzie mieæ nad nimi priorytet.
+@end table
+
+@node Opcje dziennika i pliku wej¶ciowego, Opcje ¶ci±gania, Podstawowe opcje uruchamiania, Wywo³anie
+@section Opcje dziennika i pliku wej¶ciowego
+
+@table @samp
+@cindex plik wyj¶ciowy
+@cindex plik dziennika
+@cindex wyj¶cie, do pliku
+@cindex dziennik
+@cindex rejestr
+@cindex log, plik
+@item -o @var{dziennik}
+@itemx --output-file=@var{dziennik}
+Rejestruje wszystkie komunikaty w pliku @var{dziennika}.
+Normalnie s± zg³aszane na standardowym wyj¶ciu b³êdów.
+
+@cindex dopisywanie do logu
+@cindex dopisywanie do dziennika
+@item -a @var{dziennik}
+@itemx --append-output=@var{dziennik}
+Dodaje komunikaty na koñcu pliku @var{dziennika}.  Jest to to samo,
+co @samp{-o}, tyle ¿e dopisuje do @var{dziennika} zamiast nadpisywaæ
+stary.  Je¶li plik @var{dziennik} nie istnieje, jest tworzony.
+
+@cindex debug
+@item -d
+@itemx --debug
+W³±cza wyj¶cie diagnostyczne, czyli wypisywanie rozmaitych informacji
+wa¿nych dla twórców Wget, gdy nie dzia³a on poprawnie.  Administrator twojego
+systemu móg³ skopilowaæ Wget bez obs³ugi trybu usuwania b³êdów, wówczas
+@samp{-d} nie bêdzie dzia³aæ.  Nale¿y zauwa¿yæ, ¿e kompilacja z obs³ug±
+diagnostyki jest zawsze bezpieczna -- Wget skompilowany w ten sposób
+@emph{nie} bêdzie wypisywa³ ¿adnych informacji diagnostycznych dopóki
+nie za¿±damy tego opcj± @samp{-d}.
+@xref{Zg³aszanie b³êdów}, gdzie bli¿ej opisano zastosowanie @samp{-d}
+do wysy³ania zg³oszeñ b³êdów.
+
+@cindex quiet
+@item -q
+@itemx --quiet
+Tryb cichy. Wy³±cza wyj¶cie Wget.
+
+@cindex verbose
+@item -v
+@itemx --verbose
+Pe³ne wyj¶cie, z wszystkimi dostêpnymi danymi.  Jest to opcja domy¶lna.
+
+@item -nv
+@itemx --non-verbose
+Niepe³ne wyj¶cie -- wy³±cza pe³ne wyj¶cie, ale nie ucisza ca³kowicie
+(to robi siê opcj± @samp{-q}); komunikaty o b³êdach i podstawowe informacje
+bêd± nadal wypisywane.
+
+@cindex input-file
+@item -i @var{plik}
+@itemx --input-file=@var{plik}
+Czyta @sc{url}-e z pliku wej¶ciowego @var{plik}, w zwi±zku z czym nie trzeba
+ich podawaæ w wierszu poleceñ.  Je¶li @sc{url}-e podano zarówno w wierszu
+poleceñ, jak i w pliku wej¶ciowym, to pierwsze zostan± pobrane pliki
+wymienione w wierszu poleceñ.  @var{Plik} nie musi byæ dokumentem @sc{html}
+(ale nie przeszkadza, je¶li nim jest) -- wystarczy, ¿e @sc{url}-e bêd±
+po prostu kolejno spisane.
+
+Jednak¿e je¶li zostanie podana opcja @samp{--force-html}, to plik bêdzie
+traktowany jak dokument @samp{html}.  Mog± siê wówczas pojawiæ k³opoty
+z odno¶nikami wzglêdnymi, które mo¿na rozwi±zaæ dodaj±c
+@code{<base href="@var{url}">} do pliku lub podaj±c @samp{--base=@var{url}}
+w wierszu poleceñ.
+
+@cindex force html
+@item -F
+@itemx --force-html
+Kiedy wej¶cie jest czytane z pliku, wymusza aby by³o traktowane jako
+@sc{html}.  Pozwala to na pobieranie wzglêdnych odno¶ników z istniej±cych
+plików @sc{html} znajduj±cych siê na lokalnym dysku naszego komputera,
+przez dodanie znacznika @code{<base href="@var{url}">} do pliku @sc{html}
+lub u¿ycie opcji @samp{--base}.
+
+@cindex podstawa dla odno¶ników wzglêdnych w pliku wej¶ciowym
+@item -B @var{URL}
+@itemx --base=@var{URL}
+U¿yte w po³±czeniu z @samp{-F}, stosuje @var{URL} jako podstawê dla
+@c             prepends @var{URL} to relative
+odno¶ników wzglêdnych w pliku podanym przez @samp{-i}.
+@end table
+
+@node Opcje ¶ci±gania, Opcje katalogów, Opcje dziennika i pliku wej¶ciowego, Wywo³anie
+@section Opcje ¶ci±gania
+
+@table @samp
+@cindex bind(), adres
+@cindex adres bind()
+@cindex adres IP klienta
+@cindex IP, adres klienta
+@item --bind-address=@var{adres}
+Podczas tworzenia klienckich po³±czeñ TCP/IP, wi±¿e z lokalnym komputerem,
+przez @code{bind()}, zadany @var{adres}. @var{Adres} mo¿na podaæ jako nazwê
+hosta lub adres IP.  Mo¿e siê przydaæ je¶li nasza maszyna ma przypisane
+kilka adresów IP.
+
+@cindex ponawianie
+@cindex powtórzenia
+@cindex próby
+@cindex liczba ponowieñ
+@item -t @var{liczba}
+@itemx --tries=@var{liczba}
+Ustawia liczbê ponawiania prób na @var{liczbê}.
+Dla nieskoñczonego ponawiania podajemy 0 lub @samp{inf}.
+
+@item -O @var{plik}
+@itemx --output-document=@var{plik}
+Dokumenty nie bêd± zapisywane do odpowiednich plików, ale wszystkie
+zostan± sklejone i zapisane do @var{pliku}.  Je¶li @var{plik} istnieje,
+to zostanie nadpisany.  Je¶li jako @var{plik} podano @samp{-}, dokumenty
+bêd± zapisane na standardowe wyj¶cie.  W³±czenie tej opcji automatycznie
+ustawia liczbê prób na 1.
+
+@cindex nadpisywanie, pliku
+@cindex przebijanie, pliku
+@cindex ¶ci±ganie wielokrotne
+@cindex no-clobber
+@item -nc
+@itemx --no-clobber
+Je¶li plik jest pobierany wiêcej ni¿ raz do tego samego katalogu, zachowanie
+siê Wget zale¿y od kilku opcji, miêdzy innymi @samp{-nc}.  W pewnych
+przypadkach istniej±cy lokalny plik bêdzie nadpisany, @dfn{przebity}
+(ang. clobbered), przy powtórzeniu ¶ci±gania.
+W innych przypadkach zostanie zachowany.
+
+Przy uruchomieniu Wget bez opcji @samp{-N}, @samp{-nc} lub @samp{-r}
+pobranie tego samego pliku do tego samego katalogu spowoduje pozostawienie
+pierwotnego egzemplarza @var{pliku} i nadanie drugiemu nazwy
+@samp{@var{plik}.1}.  Gdy plik bêdzie ¶ci±gany kolejny raz, trzeci
+egzemplarz otrzyma nazwê @samp{@var{file}.2}, i tak dalej.
+Przy podanej opcji @samp{-nc}, zachowanie takie jest wstrzymywane,
+a Wget odmawia pobrania nowszych kopii @samp{@var{pliku}}.  Dlatego te¿,
+``@code{no-clobber}'' jest w rzeczywisto¶ci z³± nazw± dla tego trybu --
+nie chroni on przed nadpisywaniem (gdy¿ temu zapobiegaj± ju¿ numeryczne
+przyrostki), ale przed zachowywaniem wielu wersji pliku.
+
+Przy uruchomieniu Wget z @samp{-r}, ale bez @samp{-N} czy @samp{-nc},
+ponowne ¶ci±gniêcie pliku powoduje, ¿e nowa kopia po prostu nadpisuje
+star±.  Dodanie @samp{-nc} zapobiega takiemu zachowaniu, skutkuj±c zamiast
+tego zachowaniem pierwotnej wersji i ignorowaniem ewentualnych nowe kopii
+z serwera.
+
+Przy uruchomieniu Wget z @samp{-N}, z opcj± @samp{-r} lub bez niej,
+decyzja, czy ¶ci±gaæ now± wersjê pliku czy te¿ nie, zale¿y od znaczników
+czasu (dat modyfikacji) i rozmiarów lokalnego i zdalnego pliku
+(@pxref{Znaczniki czasu}).  @samp{-nc} nie mo¿na podawaæ równocze¶nie
+z @samp{-N}.
+
+Zauwa¿, ¿e je¶li podano @samp{-nc}, pliki z przyrostkami @samp{.html}
+lub @samp{.htm} (fuj) bêd± odczytywane z dysku i przetwarzane tak,
+jakby zosta³y pobrane z Sieci.
+
+@cindex kontynuowanie pobierania
+@cindex nieukoñczone  pobrania
+@cindex wznawianie ¶ci±gania
+@item -c
+@itemx --continue
+Kontynuuje pobieranie czê¶ciowo ¶ci±gniêtego pliku.  Przydatne, gdy chcemy
+dokoñczyæ ¶ci±ganie rozpoczête lub w poprzednim przebiegu Wget lub przez
+inny program.  Na przyk³ad:
+
+@example
+wget -c ftp://sunsite.doc.ic.ac.uk/ls-lR.Z
+@end example
+
+Je¶li w bie¿±cym katalogu istnieje plik @file{ls-lR.Z}, Wget przyjmie, ¿e
+jest to pocz±tkowy fragment zdalnego pliku i za¿±da od serwera kontynuacji
+pobierania od offsetu równego d³ugo¶ci lokalnego pliku.
+
+Zauwa¿, ¿e nie ma potrzeby podawania tej opcji je¶li chcemy tylko, by aktualnie
+wywo³any Wget ponownie próbowa³ ¶ci±gaæ plik, w po³owie którego zosta³o zerwane
+po³±czenie.  Jest to zachowanie domy¶lne.  Opcja @samp{-c} wp³ywa tylko na
+wznawianie pobrañ zaczêtych @emph{przed} bie¿±cym wywo³aniem Wget i tylko dla
+tych plików, których lokalne kopie nadal istniej±.
+
+Bez @samp{-c}, polecenie z poprzedniego przyk³adu pobra³by po prostu zdalny
+plik do @file{ls-lR.Z.1}, pozostawiaj±c w spokoju obciêty plik @file{ls-lR.Z}.
+
+Pocz±wszy od Wget 1.7, je¶li u¿yjemy @samp{-c} dla niepustego pliku, a oka¿e
+siê, ¿e serwer nie obs³uguje kontynuacji ¶ci±gania, to program odmówi
+rozpoczêcia ¶ci±gania od zera, które prowadzi³oby do zniszczenia istniej±cej
+zawarto¶ci.  Je¶li naprawdê chcemy ¶ci±gaæ od pocz±tku, powinni¶my usun±æ
+taki plik.
+
+Równie¿ od wersji 1.7, je¶li u¿yjemy @samp{-c} dla pliku, którego rozmiar
+jest taki sam, jak na serwerze, to Wget odmówi ¶ci±gniêcia pliku i wypisze
+komunikat obja¶niaj±cy.  Tak samo dzieje siê, gdy plik jest mniejszy na
+serwerze ni¿ lokalnie (prawdopodobnie dlatego, ¿e zosta³ zmieniony na serwerze
+od czasu naszej ostatniej próby ¶ci±gania) -- poniewa¿ ,,kontynuacja'' jest
+bezsensowna, pobieranie nie zachodzi.
+ 
+Z drugiej strony, przy stosowaniu @samp{-c}, ka¿dy plik, który jest wiêkszy
+na serwerze ni¿ lokalnie bêdzie uwa¿any za nie w pe³ni ¶ci±gniêty.
+Wówczas pobranych i doczepionych na koniec pliku lokalnego zostanie tylko
+@code{(length(zdalny) - length(lokalny))} bajtów.  W pewnych przypadkach
+takie zachowanie jest po¿±dane -- na przyk³ad, mo¿na skorzystaæ z @samp{wget -c}
+do ¶ci±gniêcia tylko nowej porcji danych, dopisanej na koñcu zbioru danych czy
+pliku dziennika.
+
+Jednak¿e, je¶li plik na serwerze jest wiêkszy dlatego, ¿e zosta³ @emph{zmieniony},
+a nie tylko @emph{doklejono} do niego dane, to w efekcie otrzymamy
+zniekszta³cony plik.  Wget w ¿aden sposób nie mo¿e sprawdziæ, czy lokalny plik
+jest poprawn± czê¶ci± pocz±tkow± zdalnego.  Nale¿y na to szczególnie uwa¿aæ
+stosuj±c @samp{-c} w po³±czeniu z @samp{-r}, gdy¿ ka¿dy plik bêdzie uwa¿any
+za kandydata na "nieukoñczone ¶ci±ganie".
+
+Inn± sytuacja, w której przy korzystaniu z @samp{-c} uzyskuje siê
+zniekszta³cony plik, zachodzi, gdy mamy do czynienia z u³omnym proxy @sc{http},
+wstawiaj±cym ³añcuch ,,transfer interrupted'' do lokalnego pliku.
+W przysz³o¶ci bêdzie mo¿e dodana opcja ,,rollback'', obs³uguj±ca ten
+przypadek.
+
+Zauwa¿, ¿e @samp{-c} dzia³a tylko z serwerami @sc{ftp} i @sc{http}, które
+obs³uguj± nag³ówek @code{Range}.
+
+@cindex kropki, style wizualizacji pobierania
+@cindex styl wizualizacji pobierania
+@cindex wska¼nik postêpu
+@item --progress=@var{typ}
+Umo¿liwia wskazanie typu wska¼nika postêpu. Dozwolonymi rodzajami wska¼nika
+s± ,,dot'' (kropka) i ,,bar'' (pasek).
+
+Domy¶lnie stosowany jest wska¼nik ,,bar''.  Rysowany jest wówczas pasek
+postêpu z³o¿ony ze znaków graficznych ASCII (zwany czasem wska¼nikiem
+,,termometrowym''), wskazuj±cy stan pobierania. Je¿eli wyj¶ciem programu
+nie jest TTY, to domy¶lnie zostanie u¿yty wska¼nik typu ,,dot''.
+
+W celu prze³±czenia na wy¶wietlanie kropek nale¿y u¿yæ @samp{--progress=dot}.
+Postêpy ¶ci±gania pokazuj± wtedy wypisywane na ekranie kropki, z których
+ka¿da symbolizuje ustalon± ilo¶æ pobranych danych.
+
+Przy korzystaniu z tego wska¼nika, mo¿na tak¿e ustaliæ @dfn{styl}. Wykonuje
+siê to podaj±c typ wska¼nika w postaci @samp{dot:@var{styl}}. W ró¿nych
+stylach pojedynczej kropce przypisuje siê ró¿ne znaczenie.
+W stylu @code{default} ka¿da kropka oznacza 1K, grupa liczy dziesiêæ kropek,
+a wiersz 50 kropek.  Styl @code{binary} jest bardziej ,,komputerowy'' --
+8K dla skropki, 16-kropkowe grupy i 48 kropek w wierszu (co daje 384K
+na wiersz). Przy pobieraniu bardzo du¿ych plików odpowiedni jest styl
+@code{mega} -- ka¿da kropka symbolizuje pobrane 64K, w grupie jest osiem
+kropek, a w wierszu 48 (wiêc ka¿dy wiersz zawiera 3M).
+
+Warto zauwa¿yæ, ¿e domy¶lny rodzaj wska¼nika postêpu mo¿emy ustaliæ
+umieszczaj±c w pliku @file{.wgetrc} polecenie @code{progress}. Takie
+ustawienie jest przes³aniane przez opcjê podan± w wierszu poleceñ.
+Wyj±tek stanowi sytuacja, kiedy wyj¶ciem nie jest TTY -- wówczas typ
+,,dot'' bêdzie mia³ pierwszeñstwo nad ,,bar''. Da siê jednak wymusiæ
+wska¼nik w postaci paska, stosuj±c @samp{--progress=bar:force}.
+
+@item -N
+@itemx --timestamping
+W³±cza stosowanie znaczników czasu (time-stamping).
+@xref{Znaczniki czasu}, gdzie podano szczegó³y.
+
+@cindex odpowiedzi serwera, wypisywanie
+@item -S
+@itemx --server-response
+Wypisuje nag³ówki wysy³ane przez serwery @sc{http} i odpowiedzi wysy³ane
+przez serwery @sc{ftp}.
+
+@cindex Wget jako paj±k sieciowy
+@cindex paj±k
+@cindex spider
+@item --spider
+Wywo³±ny z t± opcj±, Wget bêdzie zachowywa³ siê jak sieciowy @dfn{paj±k}
+(Web spider), to znaczy, ¿e nie bêdzie pobiera³ stron, a jedynie
+sprawdza³, czy tam s±.  Mo¿na to wykorzystaæ to sprawdzenia zak³adek
+(bookmarks), na przyk³ad tak:
+
+@example
+wget --spider --force-html -i bookmarks.html
+@end example
+
+Ta funkcja wymaga jeszcze wiele pracy, by Wget osi±gn±³ mo¿liwo¶ci
+zbli¿one do prawdziwych paj±ków @sc{www}.
+
+@cindex timeout
+@cindex limit czasu
+@item -T seconds
+@itemx --timeout=@var{sekundy}
+Ustawia limit czasu czytania na podan± liczbê @var{sekund}.  Przy ka¿dym
+odczycie sieciowym sprawdzana jest dla deskryptora pliku ewentualno¶æ
+przekroczenia limitu czasu, poniewa¿ bez tego mog³o by doj¶æ do
+nieprzerwanego czytania (zostawienia zawieszonego po³±czenia).
+Domy¶lny limit to 900 sekund (piêtna¶cie minut).  Ustawienie limitu na 0
+wy³±cza sprawdzanie.
+
+Proszê nie obni¿aæ domy¶lnej warto¶ci limitu czasu t± opcj±, chyba ¿e
+z pe³n± ¶wiadomo¶ci± skutków.
+
+@cindex pasmo, limit
+@cindex szybko¶æ, limit
+@cindex ograniczanie pasma
+@cindex ograniczanie prêdko¶ci
+@item --limit-rate=@var{wielko¶æ}
+Ogranicza prêdko¶ci pobierania do @var{wielko¶æ} bajtów na sekundê.
+Wielko¶æ tê mo¿na wyraziæ w bajtach, kilobajtach (przyrostkiem @samp{k})
+lub megabajtach (przyrostkiem @samp{m}) na sekundê. Na przyk³ad
+@samp{--limit-rate=20k} ograniczy prêdko¶æ ¶ci±gania do 20KB/s.
+Taka rzecz przydaje siê, gdy z jakiego¶ powodu nie chcemy, ¿eby Wget
+zaj±³ ca³± dostêpn± szeroko¶æ pasma.
+
+Nale¿y zauwa¿yæ, ¿e Wget realizuje to w ten sposób, ¿e po stwierdzeniu,
+i¿ odczyt z sieci zabra³ mniej czasu, ni¿ wynika to z podanej prêdko¶ci,
+przez odpowiedni czas wstrzymuje siê od dzia³ania (zasypia). Koñcowym
+efektem takiej strategii jest spowolnienie transferu TCP mniej wiêcej
+do podanej prêdko¶ci. Niemniej jednak, na osi±gniêcie tej równowagi
+potrzeba trochê czasu, wiêc nie b±d¼cie zaskoczeni, je¶li ograniczenie
+szybko¶ci nie dzia³a dla bardzo ma³ych plików. Tak samo, strategia
+"zasypiania" nie zda egzaminu, je¶li poda siê zbyt ma³e pasmo, dajmy
+na to mniejsze ni¿ 1,5KB/s.
+
+@cindex pauza
+@cindex czekanie
+@item -w @var{sekundy}
+@itemx --wait=@var{sekundy}
+Odczekuje zadan± liczbê sekund pomiêdzy kolejnymi pobraniami.
+Zaleca siê u¿ywanie tej opcji, gdy¿ zmniejsza obci±¿enie serwera dziêki
+rzadszym ¿±daniom.  Czas, zamiast w sekundach, mo¿na podaæ w minutach
+dodaj±c przyrostek @code{m}, w godzinach - dodaj±c @code{h} lub w dniach
+- dodaj±c @code{d}.
+
+Okre¶lanie du¿ej warto¶ci tej opcji przydaje siê je¶li sieæ lub maszyna
+docelowa s± wy³±czone.  Wówczas Wget mo¿e odczekaæ wystarczaj±co d³ugo, by
+@c     reasonably expect
+rozs±dnie spodziewaæ siê, ¿e przed ponown± prób± b³±d sieci zosta³ naprawiony.
+
+@cindex ponowienia, czekanie pomiêdzy
+@cindex czekanie pomiêdzy ponowieniami
+@item --waitretry=@var{sekundy}
+Opcjê tê stosujemy je¶li nie chcemy, by Wget czeka³ pomiêdzy @emph{ka¿dym}
+pobraniem, a tylko pomiêdzy ponawianymi próbami nieudanych pobrañ.
+Wget zastosuje @dfn{odczekiwanie liniowe} (@dfn{linear backoff}), czekaj±c
+1 sekundê po pierwszym niepowodzeniu z danym plikiem, nastêpnie 2 sekundy
+po drugim niepowodzeniu z tym plikiem, a¿ do maksymalnej liczby @var{sekund},
+jak± podano.  Zatem, warto¶æ 10 faktycznie spowoduje, ¿e Wget bêdzie
+odczekiwa³ ³±cznie do (1 + 2 + ... + 10) = 55 sekund na ka¿dy plik.
+
+Zauwa¿, ¿e w ogólnosystemowym pliku @file{wgetrc} ta opcja jest domy¶lnie
+w³±czona.
+
+@cindex czekanie, losowe
+@cindex losowe czekanie
+@itemx --random-wait
+W niektórych z o¶rodków wykonywana jest analiza plików dziennikowych
+(tzw. logów), która ma na celu zidentyfikowanie programów do pobierania,
+takich jak Wget. Polega ona na wyszukiwaniu statystycznie znacz±cych
+podobieñstw miêdzy ró¿nicami czasu, jaki up³yn±³ pomiêdzy kolejnymi
+¿±daniami.
+Ta opcja powoduje, ¿e dla zamaskowania przed takimi analizami obecno¶ci
+Wgeta czas pomiêdzy ¿±daniami bêdzie siê wahaæ od 0 do 2 * @var{sekundy},
+gdzie @var{sekundy} podano opcj±  @samp{--wait} (@samp{-w}).
+
+W jednym z ostatnich artyku³ów w pewnej publikacji po¶wiêconej rozwijaniu
+oprogramowania na popularnych platformach klienckich podano kod wykonuj±cy
+tak± analizê na bie¿±co. Autor sugerowa³ blokowanie na poziomie adresu
+klasy C, co ma gwarantowaæ, ¿e programy pobieraj±ce zostan± zablokowane
+niezale¿nie od zmiany adresów przedzielanych przez DHCP.
+
+Opcja @samp{--random-wait} powsta³a z powodu tej w³a¶nie nierozwa¿nej
+porady, zalecaj±cej blokowanie wielu postronnych u¿ytkowników o¶rodka
+z powodu dzia³añ jednego z nich.
+
+@cindex proxy
+@item -Y on/off
+@itemx --proxy=on/off
+W³±cza/wy³±cza u¿ywanie proxy. Domy¶lnie u¿ywanie proxy jest w³±czone
+je¶li jest zdefiniowana odpowiednia zmienna ¶rodowiskowa.
+
+@cindex quota
+@item -Q @var{wielko¶æ}
+@itemx --quota=@var{wielko¶æ}
+Okre¶la ograniczenie wielko¶ci pobieranych danych przy ¶ci±ganiu
+automatycznym. Limit podawany jest w bajtach (domy¶lnie), kilobajtach
+(z przyrostkiem @samp{k}) lub megabajtach (z przyrostkiem @samp{m}).
+
+Warto pamiêtaæ, ¿e ograniczenie to nigdy nie dotyczy pobierania
+pojedynczego pliku. Tak wiêc, je¶li podamy
+@samp{wget -Q10k ftp://wuarchive.wustl.edu/ls-lR.gz}, to zostanie ¶ci±gniêty
+ca³y plik @file{ls-lR.gz}. Tak samo dzieje siê nawet wówczas, gdy w wierszu
+poleceñ zostanie wyszczególnionych kilka @sc{url}-i. Ograniczenie wielko¶ci
+jest jednak przestrzegane podczas pobierania rekurencyjnego lub wed³ug
+pliku wej¶ciowego. Zatem, mo¿na spokojnie napisaæ @samp{wget -Q2m -i witryny}
+-- po przekroczeniu ograniczenia ¶ci±ganie zostanie przerwane.
+
+Ustawienie limitu na 0 lub na @samp{inf} znosi ograniczenie pobierania.
+@end table
+
+@node Opcje katalogów, Opcje HTTP, Opcje ¶ci±gania, Wywo³anie
+@section Opcje katalogów
+
+@table @samp
+@item -nd
+@itemx --no-directories
+Nie tworzy hierarchii katalogów przy pobieraniu rekurencyjnym.
+Po w³±czeniu tej opcji wszystkie pliki bêd± zapisywane do bie¿±cego
+katalogu bez przebijania (je¶li nazwa pojawi siê wiêcej ni¿ raz, nazwy
+plików otrzymaj± rozszerzenie @samp{.n}).
+
+@item -x
+@itemx --force-directories
+Przeciwieñstwo @samp{-nd}. Wymusza utworzenie hierarchii katalogów nawet
+je¶li nie mia³aby byæ stworzona.
+Np. @samp{wget -x http://fly.srk.fer.hr/robots.txt} zapisze ¶ci±gniêty plik
+jako @file{fly.srk.fer.hr/robots.txt}.
+
+@item -nH
+@itemx --no-host-directories
+Wy³±cza tworzenie katalogów z nazw± hosta jako przedrostkiem. Domy¶lnie,
+@samp{-r http://fly.srk.fer.hr/} spowoduje stworzenie struktury katalogów
+zaczynaj±cej siê od @file{fly.srk.fer.hr/}, gdzie trafi ca³a reszta.
+Ta opcja wy³±cza takie zachowanie.
+
+@cindex obcinanie katalogów
+@cindex katalogi, obcinanie
+@item --cut-dirs=@var{liczba}
+Ignoruje podan± @var{liczbê} sk³adowych katalogu.  Przydatne do precyzyjnego
+sterowania katalogami, w których bêd± sk³adowane pliki z pobierania
+rekurencyjnego.
+
+We¼my, na przyk³ad, katalog @samp{ftp://ftp.xemacs.org/pub/xemacs/}.
+Je¿eli pobierzemy go z @samp{-r}, to lokalnie zostanie zachowany jako
+@file{ftp.xemacs.org/pub/xemacs/}.  Mimo ¿e opcja @samp{-nH} pozwala
+na usuniêcie czê¶ci @file{ftp.xemacs.org/}, nadal utkniemy
+z @file{pub/xemacs}.  Tu w³a¶nie z pomoc± przychodzi @samp{--cut-dirs}.
+Powoduje, ¿e Wget ``nie widzi'' zadanej @var{liczby} sk³adowych zdalnego
+katalogu.
+Oto kilka przyk³adów pokazuj±cych, jak dzia³a opcja @samp{--cut-dirs}.
+
+@example
+@group
+No options        -> ftp.xemacs.org/pub/xemacs/
+-nH               -> pub/xemacs/
+-nH --cut-dirs=1  -> xemacs/
+-nH --cut-dirs=2  -> .
+
+--cut-dirs=1      -> ftp.xemacs.org/xemacs/
+...
+@end group
+@end example
+
+Je¶li chcemy po prostu pozbyæ siê struktury katalogów, to opcja ta jest
+podobna do kombinacji  @samp{-nd} i @samp{-P}. Jednak @samp{--cut-dirs},
+w przeciwieñstwie do @samp{-nd}, nie pozbywa siê podkatalogów -- na przyk³ad,
+przy @samp{-nH --cut-dirs=1}, podkatalog @file{beta/} bêdzie, zgodnie
+z oczekiwaniami, umieszczony w @file{xemacs/beta}.
+
+@cindex przedrostek katalogów
+@cindex katalogi, przedrostek
+@item -P @var{prefiks}
+@itemx --directory-prefix=@var{prefiks}
+Ustawia przedrostek, prefiks katalogów na @var{prefiks}.
+@var{Przedrostek katalogów} oznacza katalog, zostan± zapisane wszystkie inne
+pliki i katalogi, tzn. wierzcho³ek drzewa pobierania.
+Domy¶lnym przedrostkiem jest @samp{.}, katalog bie¿±cy.
+@end table
+
+@node Opcje HTTP, Opcje FTP, Opcje katalogów, Wywo³anie
+@section Opcje HTTP
+
+@table @samp
+@cindex .html rozszerzenie
+@item -E
+@itemx --html-extension
+Je¶li pobierany jest plik typu @samp{text/html} a jego @sc{url} nie koñczy
+siê wyra¿eniem regularnym @samp{\.[Hh][Tt][Mm][Ll]?}, to opcja ta spowoduje
+dodanie przyrostka @samp{.html} do lokalnej nazwy pliku.  Przydatne,
+na przyk³ad, gdy tworzymy kopiê lustrzan± witryny, która u¿ywa stron
+@samp{.asp}, ale chcemy, by pozyskane strony dawa³y siê przegl±daæ za pomoc±
+@c   to be viewable on your stock Apache server
+w³asnego serwera Apache.  Innym dobrym zastosowaniem jest pobieranie wyj¶cia
+generowanego przez skrypty CGI.  @sc{url} typu
+@samp{http://site.com/article.cgi?25} zostanie zachowany jako
+@file{article.cgi?25.html}.
+
+Zauwa¿, ¿e pliki o zmienionych w ten sposób nazwach bêd± ponownie pobierane
+za ka¿dym razem gdy bêdziemy od¶wie¿aæ kopiê lustrzan± witryny. Dzieje siê
+tak, poniewa¿ Wget nie potrafi stwierdziæ, ¿e lokalny plik @file{@var{X}.html}
+odpowiada zdalnemu @sc{url}-owi @samp{@var{X}} (gdy¿ nie wie, ¿e ten @sc{url}
+tworzy wyj¶cie typu @samp{text/html}).  Chc±c unikn±æ ponownego pobierania,
+trzeba u¿yæ @samp{-k} i @samp{-K}, tak by oryginalna wersja pliku zosta³a
+zachowana jako @file{@var{X}.orig} (@pxref{Opcje pobierania rekurencyjnego}).
+
+@cindex http, u¿ytkownik
+@cindex http, has³o
+@cindex uwierzytelnianie
+@item --http-user=@var{u¿ytkownik}
+@itemx --http-passwd=@var{has³o}
+Okre¶laj± nazwê u¿ytkownika i has³o, które Wget prze¶le serwerowi @sc{http}.
+W zale¿no¶ci od rodzaju protoko³u wezwanie-odpowied¼, Wget koduje je stosuj±c
+albo uwierzytelnianie podstawowe (@code{basic}, niechronione) albo w oparciu
+o skrót (@code{digest}).
+
+Inn± metodê podania nazwy i has³a u¿ytkownika jest wyszczególnienie ich
+w samym @sc{url}-u (@pxref{Format URL}).
+Obie te metody ujawniaj± has³o ka¿demu, kto zechce uruchomiæ @code{ps}.
+¯eby uchroniæ has³a przed podpatrzeniem, nale¿y przechowywaæ je w pliku
+@file{.wgetrc} lub @file{.netrc} i, za pomoc± @code{chmod}, zapewniæ
+tym plikom ochronê przed innymi u¿ytkownikami. Je¿eli has³a s± naprawdê
+wa¿ne, w tych plikach te¿ nie trzymajcie ich na sta³e -- usuñcie je
+z plików zaraz po rozpoczêciu przez Wgeta pobierania.
+Dok³adniejsze omówienie kwestii bezpieczeñstwa w pracy z Wget,
+@xref{Zagadnienia bezpieczeñstwa}.
+
+@cindex proxy
+@cindex cache
+@cindex bufor
+@item -C on/off
+@itemx --cache=on/off
+Je¶li ustawione na @samp{off}, wy³±cza buforowanie po stronie serwera.
+W takim przypadku Wget wysy³a zdalnemu serwerowi odpowiedni± komendê
+(@samp{Pragma: no-cache}), dziêki której plik zostanie pobrany z us³ugi
+zdalnej, a nie zwrócona wersja buforowana.  Jest to szczególnie przydatne
+do pobierania i wymiatania przeterminowanych dokumentów z serwerów proxy.
+
+Domy¶lnie, buforowanie jest dozwolone.
+
+@cindex cookies
+@cindex ciasteczka
+@item --cookies=on/off
+Ustawione na off wy³±cza u¿ywanie ciasteczek (cookies).  Ciasteczka s±
+mechanizmem do przechowywania stanu po stronie serwera.  Serwer przesy³a
+klientowi ciasteczko stosuj±c nag³ówek @code{Set-Cookie}, a klient przy
+pó¼niejszych ¿±daniach odpowiada tym samym ciasteczkiem.  Poniewa¿ ciasteczka
+umo¿liwiaj± w³a¶cicielom serwera prowadzenie rejestrów go¶ci i wymianê siê tymi
+informacjami z innymi o¶rodkami, niektórzy uwa¿aj± je za pogwa³cenie prywatno¶ci.
+Domy¶lnie cookies s± u¿ywane, jednak ich @emph{zapisywanie} nie jest domy¶lnie
+w³±czone.
+ 
+@cindex wczytywanie cookies
+@cindex wczytywanie ciasteczek
+@cindex cookies, wczytywanie
+@cindex ciasteczka, wczytywanie
+@item --load-cookies @var{plik}
+Przed pierwszym pobraniem HTTP wczytuje ciasteczka z @var{pliku}.
+@var{Pliku} jest plikiem tekstowym w formacie, jaki pierwotnie
+zastosowano dla pliku @file{cookies.txt} przegl±darki Netscape.
+
+Na ogó³ korzysta siê z tej opcji przy tworzeniu kopii lustrzanych tych
+o¶rodków, które do skorzystania z czê¶ci lub ca³o¶ci zasobów wymagaj±
+zalogowania siê. Proces logowania siê zwykle polega na tym, ¿e po otrzymaniu
+od nas informacji uwierzytelniaj±cej i jej zweryfikowaniu serwer @sc{www}
+wysy³a ciasteczko @sc{http}. Nastêpnie, gdy przegl±darka siêga do zasobów,
+odsy³a serwerowi otrzymane ciasteczko, potwierdzaj±c w ten sposób nasz±
+to¿samo¶æ.
+
+Utworzenie kopii tego rodzaju witryny wymaga wysy³ania przez Wget
+takich samych ciasteczek, jakie podczas komunikowania siê z tym o¶rodkiem
+przesy³a nasza przegl±darka. Osi±ga siê to za pomoc± @samp{--load-cookies}
+-- wystarczy wskazaæ programowi lokalizacjê pliku @file{cookies.txt}, a on
+wy¶le te same ciasteczka, które w tej samej sytuacji wys³a³aby przygl±darka.
+
+Ró¿ne przegl±darki trzymaj± tekstowe pliki ciasteczek w ró¿nych miejscach:
+
+@table @asis
+@item Netscape 4.x
+Ciasteczka s± w @file{~/.netscape/cookies.txt}.
+
+@item Mozilla i Netscape 6.x
+Plik ciasteczek Mozilli nazywa siê równie¿ @file{cookies.txt}, jest
+po³o¿ony gdzie¶ w @file{~/.mozilla}, w katalogu w³a¶ciwym dla profilu
+u¿ytkownika. Pe³na ¶cie¿ka zazwyczaj koñczy siê czym¶ w rodzaju
+@file{~/.mozilla/default/@var{co¶-dziwnego}/cookies.txt}.
+
+@item Internet Explorer
+Ciasteczko, jakiego móg³by u¿yæ Wget, mo¿na utworzyæ korzystaj±c z menu
+"Plik" i opcji "Importuj i Eksportuj", "Eksportuj pliki cookie".
+Zosta³o to przetestowane z Internet Explorerem 5 -- nie ma gwarancji,
+¿e bêdzie dzia³aæ z wcze¶niejszymi wersjami.
+
+@item inne przegl±darki
+Je¿eli do tworzenia ciasteczek korzystacie z innej przegl±darki,
+@samp{--load-cookies} bêdzie dzia³aæ tylko wtedy, gdy uda wam siê
+zlokalizowaæ lub utworzyæ plik ciasteczek w formacie Netscape,
+jakiego oczekuje Wget.
+@end table
+
+Je¶li nie mo¿ecie skorzystaæ z @samp{--load-cookies}, jest jeszcze inna
+mo¿liwo¶æ. Je¶li u¿ywana przez was przegl±darka udostêpnia ,,mened¿era
+plików cookie'', skorzystajcie z niego, ¿eby podgl±dn±æ ciasteczka,
+jakie zosta³y wykorzystane podczas uzyskiwania dostêpu do witryny,
+której kopiê chcecie utworzyæ. Zapiszcie nazwê i warto¶æ ciasteczka,
+a nastêpnie rêcznie naka¿cie Wgetowi wys³anie ciasteczka o zadanej
+postaci, obchodz±c równocze¶nie ,,oficjalny'' kodu odpowiedzialny
+za obs³ugê ciasteczek:
+
+@example
+wget --cookies=off --header "Cookie: @var{nazwa}=@var{warto¶æ}"
+@end example
+ 
+@cindex zapisywanie cookies
+@cindex zapisywanie ciasteczek
+@cindex cookies, zapisywanie
+@cindex ciasteczka, zapisywanie
+@item --save-cookies @var{plik}
+Na koniec sesji zapisuje ciasteczka do @var{pliku}.  Ciasteczka, dla których
+nie okre¶lono daty wa¿no¶ci lub które ju¿ wygas³y, nie s± zapisywane.
+
+@cindex Content-Length, ignorowanie
+@cindex ignorowanie wielko¶ci
+@item --ignore-length
+Niestety, niektóre serwery @sc{http} (dok³adniej mówi±c, programy @sc{cgi})
+wysy³aj± b³êdne nag³ówki @code{Content-Length}, co powoduje, ¿e Wget
+g³upieje, s±dz±c, ¿e nie zosta³a pobrana ca³o¶æ dokumentu.  Syndrom ten
+mo¿na uchwyciæ, gdy
+Wget próbuje w kó³ko pobieraæ ten sam dokument, za ka¿dym razem twierdz±c,
+¿e (inaczej ni¿ zwykle) po³±czenie zosta³o zamkniête na dok³adnie tym samym
+bajcie.
+
+Wywo³any z t± opcj±, Wget bêdzie ignorowa³ nag³ówek @code{Content-Length},
+tak jakby nie istnia³.
+
+@cindex nag³ówki, dodawanie
+@item --header=@var{dodatkowy-nag³ówek}
+Okre¶la @var{dodatkowy-nag³ówek} przesy³any serwerom @sc{http}.
+Nag³ówki musz± zawieraæ @samp{:} poprzedzony co najmniej jednym niepustym
+znakiem, i nie mog± zawieraæ znaków nowej linii.
+
+Mo¿liwe jest okre¶lenie wiêcej ni¿ jednego dodatkowego nag³ówka przez
+kilkakrotne podanie opcji @samp{--header}.
+
+@example
+@group
+wget --header='Accept-Charset: iso-8859-2' \
+     --header='Accept-Language: hr'        \
+       http://fly.srk.fer.hr/
+@end group
+@end example
+
+Podanie pustego ³añcucha jako nag³ówka kasuje wszystkie uprzednio
+zdefiniowane przez u¿ytkownika nag³ówki.
+
+@cindex proxy, u¿ytkownik
+@cindex proxy, has³o
+@cindex proxy, uwierzytelnianie
+@cindex uwierzytelnianie proxy
+@item --proxy-user=@var{u¿ytkownik}
+@itemx --proxy-passwd=@var{has³o}
+Okre¶laj± nazwê u¿ytkownika i has³o, które zostan± u¿yte do uwierzytelniania
+na serwerze proxy.  Wget koduje je stosuj±c podstawowy (@code{basic}) schemat
+uwierzytelniania.
+
+Odnosz± siê do tego podobne zagadnienia zwi±zane z bezpieczeñstwem,
+jak w przypadku opcji @samp{--http-passwd}.
+
+@cindex http referer
+@cindex referer, http
+@item --referer=@var{url}
+Zamieszcza nag³ówek `Referer: @var{url}' w ¿±daniu HTTP.  Przydatne
+do pobierania dokumentów z takim przetwarzaniem po stronie serwera, które
+zak³ada, ¿e s± one zawsze pobierane przez interaktywne przegl±darki Sieci
+i uznawane za poprawne tylko wtedy, gdy Refer jest ustawione na jedn±
+ze stron, które na nie wskazuj±.
+
+@cindex odpowiedzi serwera, zachowywanie
+@item -s
+@itemx --save-headers
+Zapisuje nag³ówki wysy³ane przez serwer @sc{http} do pliku, przed
+w³a¶ciw± zawarto¶ci±, z pust± lini± jako separatorem.
+
+@cindex user-agent
+@item -U @var{nazwa-agenta}
+@itemx --user-agent=@var{nazwa-agenta}
+Serwerowi @sc{http} przedstawia siê jako agent o podanej nazwie.
+
+Protokó³ @sc{http} pozwala klientom na podanie, za pomoc± pola
+@code{User-Agent} nag³ówka, swojej to¿samo¶ci.
+Umo¿liwia to rozró¿nianie oprogramowania @sc{www}, zwykle do celów
+statystycznych lub ¶ledzenia naruszeñ protoko³u. Wget normalnie przedstawia
+siê jako @samp{Wget/@var{wersja}}, gdzie @var{wersja} jest aktualnym numerem
+wersji programu.
+
+Znane s± jednak pewne witryny narzucaj±ce politykê przykrawania wyników
+stosownie do informacji dostarczonej im w polu @code{User-Agent}. Mimo i¿
+@c            conceptually                              abused
+koncepcyjnie nie jest to taki z³y pomys³, zacz±³ byæ nadu¿ywany przez serwery
+odmawiaj±ce informacji klientom innym ni¿  @code{Mozilla} lub @code{Internet
+Explorer}. Ta opcja umo¿liwia zmianê linii @code{User-Agent} wysy³anej przez
+Wget. Nie zachêcamy do u¿ywania tej opcji, chyba ¿e z pe³n± ¶wiadomo¶ci±.
+@end table
+
+@node Opcje FTP, Opcje pobierania rekurencyjnego, Opcje HTTP, Wywo³anie
+@section Opcje FTP
+
+@table @samp
+@cindex .listing, usuwanie plików
+@cindex pliki .listing, usuwanie
+@item -nr
+@itemx --dont-remove-listing
+Zakazuje usuwania tymczasowych plików @file{.listing} generowanych przez
+odczyty @sc{ftp}.  Normalnie, pliki te zawieraj± nieprzetworzone listingi
+katalogów otrzymane z serwerów @sc{ftp}.  Pozostawienie ich mo¿e siê przydaæ
+do celów diagnostycznych lub ³atwego sprawdzenia zawarto¶ci katalogów
+zdalnego serwera (np. do sprawdzenia, ¿e tworzona kopia lustrzana jest
+kompletna).
+
+Zauwa¿, ¿e, mimo i¿ Wget zapisuje w tym przypadku do pliku o znanej nazwie,
+nie jest to dziura w zabezpieczeniach w sytuacji, gdy u¿ytkownik stworzy
+@file{.listing} jako dowi±zanie symboliczne do @file{/etc/passwd} czy innego
+pliku i poprosi superu¿ytkownika (@code{root}) o uruchomienie Wget w tym
+katalogu.  W zale¿no¶ci od u¿ytych opcji, Wget albo odmówi zapisu
+do @file{.listing} (co spowoduje niepowodzenie operacji na maskach,
+rekurencyjnej czy zale¿nej od znaczników czasu), albo dowi±zanie
+symboliczne zostanie usuniête i zast±pione faktycznym plikiem @file{.listing},
+albo te¿ listing zostanie zapisany do pliku @file{.listing.@var{numer}}.
+
+Choæ ta sytuacja nie stwarza k³opotów, jednak @code{root} nie powinien nigdy
+uruchamiaæ Wget w katalogu niezaufanego u¿ytkownika.  U¿ytkownik taki móg³by
+na przyk³ad dowi±zaæ @file{index.html} do @file{/etc/passwd} i poprosiæ
+@code{root}a o uruchomienie Wget z opcjami @samp{-N} lub @samp{-r}, tak ¿e
+plik ten zosta³by nadpisany.
+
+@cindex symboliczne dowi±zania, pobieranie
+@cindex dowi±zania symboliczne, pobieranie
+@item --retr-symlinks
+Zwykle, gdy podczas rekurencyjnego pobierania katalogów @sc{ftp} napotkane
+zostanie dowi±zanie symboliczne, to wskazywany przez nie plik nie jest
+¶ci±gany. Zamiast tego w lokalnym systemie plików tworzone jest odpowiadaj±ce
+mu dowi±zanie symboliczne. Wskazywany przez dowi±zanie plik nie zostanie
+¶ci±gniêty, chyba ¿e pobieranie rekurencyjne natknie siê nañ osobno
+i tak czy owak ¶ci±gnie.
+
+Przy podanej opcji @samp{--retr-symlinks}, jednak¿e, program pod±¿a
+za dowi±zaniami symbolicznymi i pobiera wskazywane przez nie pliki.
+Obecnie opcja ta nie spowoduje, by Wget pod±¿a³ za dowi±zaniami do katalogów
+i przetwarza³ je rekurencyjnie, ale w przysz³o¶ci powinna zostaæ poszerzona
+tak, by tak siê dzia³o.
+
+Zauwa¿, ¿e przy pobieraniu pliku (nie katalogu) wynikaj±cym z podania go
+w wierszu poleceñ, a nie jako w nastêpstwie rekurencji, opcja ta nie dzia³a.
+W tym przypadku Wget zawsze pod±¿a za dowi±zaniami.
+
+@cindex maski, prze³±czanie
+@cindex wzorce nazw, prze³±czanie
+@item -g on/off
+@itemx --glob=on/off
+W³±cza/wy³±cza obs³ugê masek dla @sc{ftp}.
+Obs³uga masek oznacza, ¿e mo¿na u¿ywaæ znaków specjalnych, @dfn{uogólniaj±cych}
+(jokerów), takich jak @samp{*}, @samp{?}, @samp{[} i @samp{]}, do pobrania
+wiêkszej liczby plików z tego samego katalogu naraz, np.
+
+@example
+wget ftp://gnjilux.srk.fer.hr/*.msg
+@end example
+
+Domy¶lnie obs³uga masek bêdzie w³±czona je¶li @sc{url} zawiera znaki
+uogólniaj±ce. Tej opcji mo¿na u¿yæ do w³±czenia b±d¼ wy³±czenia obs³ugi
+masek na sta³e.
+
+Mo¿e zaj¶æ potrzeba ujêcia @sc{url}-a w znaki cudzys³owu, by uchroniæ go
+przed rozwiniêciem przez pow³okê. Obs³uga masek powoduje, ¿e Wget oczekuje
+listingu katalogu, którego postaæ jest zale¿na od systemu. Z tego powodu
+obecnie dzia³a tylko z uniksowymi serwerami @sc{ftp} (i z tymi, które
+potrafi± emulowaæ wyj¶cie uniksowego @code{ls}).
+
+@cindex pasywne ftp
+@cindex ftp, pasywne
+@item --passive-ftp
+Powoduje korzystanie z @dfn{pasywnego} schematu pobierania @sc{ftp}, w którym
+klient inicjuje po³±czenie do przesy³ania danych. Jest on czasem wymagany,
+by @sc{ftp} dzia³a³ za zaporami ogniowymi.
+@end table
+
+@node Opcje pobierania rekurencyjnego, Opcje rekurencyjnego akceptowania/odrzucania, Opcje FTP, Wywo³anie
+@section Opcje pobierania rekurencyjnego
+
+@table @samp
+@item -r
+@itemx --recursive
+W³±cza pobieranie rekurencyjne.  @xref{Pobieranie rekurencyjne}.
+
+@item -l @var{g³êboko¶æ}
+@itemx --level=@var{g³êboko¶æ}
+Podaje maksymalny poziom g³êboko¶ci rekurencji
+(@pxref{Pobieranie rekurencyjne}).  Domy¶lnie jest to 5.
+
+@cindex wype³nianie proxy
+@cindex wype³nianie bufora proxy
+@cindex usuwanie po pobraniu
+@item --delete-after
+Ta opcja nakazuje Wget usuniêcie ka¿dego z plików, jaki pobiera, @emph{po}
+wykonaniu ¶ci±gania.  Jest przydatna do pobierania wstêpnego (prefetching)
+popularnych stron poprzez proxy, np.:
+
+@example
+wget -r -nd --delete-after http://whatever.com/~popular/page/
+@end example
+
+Opcja @samp{-r} nakazuje pobieranie rekurencyjne, a @samp{-nd} nietworzenie
+katalogów.
+
+Zauwa¿, ¿e @samp{--delete-after} usuwa pliki z lokalnego komputera.
+Nie wydaje polecenia @samp{DELE}, na przyk³ad zdalnym o¶rodkom FTP.
+Zauwa¿ te¿, ¿e je¶li podano @samp{--delete-after}, to @samp{--convert-links}
+@c    are simply not created in the first place.
+jest ignorowane, wiêc przede wszystkim pliki @samp{.orig} po prostu nie
+s± tworzone.
+
+@cindex konwersja odno¶ników
+@cindex odno¶niki, konwersja
+@item -k
+@itemx --convert-links
+Po zakoñczeniu pobierania konwertuje odno¶niki w dokumencie tak, by nadawa³y
+siê do lokalnego przegl±dania. Dotyczy to nie tylko widzialnych odno¶ników
+hipertekstowych, ale ka¿dej czê¶ci dokumentu, która prowadzi do zewnêtrznych
+materia³ów, jak osadzone obrazki, odno¶niki do arkuszy stylów, odno¶niki
+hipertekstowe do zawarto¶ci innej ni¿ HTML, itp.
+
+Ka¿dy odno¶nik bêdzie zmieniony na jeden z dwu sposobów:
+
+@itemize @bullet
+@item
+Odno¶niki do plików, które zosta³y ¶ci±gniête przez Wget zostan± zmienione
+tak, by odwo³ywa³y siê do pliku, na jaki wskazuj±, jako odno¶niki wzglêdne.
+
+Przyk³ad: je¶li ¶ci±gniêty plik @file{/foo/doc.html} jest powi±zany z
+z @file{/bar/img.gif}, równie¿ ¶ci±gniêtym, to odno¶nik w @file{doc.html}
+zostanie zmieniony tak, by wskazywa³ na @samp{../bar/img.gif}.  Ten rodzaj
+przekszta³cenia dzia³a bezproblemowo dla dowolnej kombinacji katalogów.
+
+@item
+Odno¶niki do plików, które nie zosta³y ¶ci±gniête przez Wget zostan±
+zmienione tak, by zawiera³y nazwê hosta i ¶cie¿kê bezwzglêdn± miejsca,
+na które wskazuj±.
+
+Przyk³ad: je¶li ¶ci±gniêty plik @file{/foo/doc.html} jest powi±zany z
+z @file{/bar/img.gif} (lub z @file{../bar/img.gif}), to odno¶nik
+w @file{doc.html} zostanie zmieniony tak, by wskazywa³ na
+@file{http://@var{hostname}/bar/img.gif}.
+@end itemize
+
+Z tego powodu, przegl±danie lokalne dzia³a niezawodnie: je¶li powi±zany plik
+by³ ¶ci±gniêty, to odno¶nik wskazuje na jego lokaln± nazwê, je¶li nie by³ --
+to na pe³ny adres internetowy, a nie pojawia siê popsuty odno¶nik.
+Konwersja pierwotnych odno¶ników na odno¶niki wzglêdne zapewnia nam
+mo¿liwo¶æ przesuwania pobranej hierarchii katalogów do innego katalogu.
+
+Zauwa¿, ¿e dopiero na samym koñcu pobierania Wget mo¿e rozpoznaæ, które
+odno¶niki zosta³y ¶ci±gniête.  Z tego powodu, opcja @samp{-k} wykonuje swoj±
+pracê po zakoñczeniu wszystkich pobrañ.
+
+@cindex kopie bepieczeñstwa konwertowanych plików
+@cindex konwertowane pliki, kopie bepieczeñstwa
+@item -K
+@itemx --backup-converted
+Podczas konwersji pliku zachowuje kopiê zapasow± pierwotnej wersji
+z przyrostkiem @samp{.orig}.  Wp³ywa na zachowanie opcji @samp{-N}
+(@pxref{Wewnêtrzne znaczniki czasu HTTP}).
+
+@item -m
+@itemx --mirror
+W³±cza opcje odpowiednie do tworzenia kopii lustrzanych.  Ta opcja w³±cza
+rekurencjê, stosowanie znaczników czasu, ustawia nieograniczony poziom
+rekurencji i zachowuje listingi katalogów @sc{ftp}.  Obecnie jest równowa¿na
+u¿yciu @samp{-r -N -l inf -nr}.
+
+@item -nr
+@itemx --dont-remove-listing
+Zakazuje usuwania plików tymczasowych @file{.listing} tworzonych przez
+odczyty @sc{ftp}.  Normalnie, pliki te zawieraj± nieprzetworzone
+listingi katalogów otrzymane z serwerów @sc{ftp}.  Pozostawienie ich
+daje dostêp do pe³nej listy zdalnych plików przy prowadzeniu siedziby
+lustrzanej. Przydaje siê te¿ do celów diagnostycznych.
+
+@cindex elementy strony
+@cindex potrzebne grafiki, ¶ci±ganie
+@item -p
+@itemx --page-requisites
+Ta opcja powoduje, ¿e Wget ¶ci±gnie wszystkie pliki niezbêdne do poprawnego
+wy¶wietlenia danej strony HTML.  Obejmuje to takie rzeczy jak grafikê,
+d¼wiêki i powi±zane arkusze stylów.
+
+Przy zwyk³ym trybie pracy, podczas pobierania pojedynczej strony HTML,
+ewentualne powi±zane dokumenty, które mog± byæ potrzebne do poprawnego
+jej wy¶wietlenia, nie s± pobierane. Pomóc mo¿e u¿ycie opcji @samp{-r}
+z @samp{-l}, ale poniewa¿ Wget normalnie nie odró¿nia dokumentów zewnêtrznych
+od w³±czonych, na ogó³ pozostaje siê z ,,oskubanymi dokumentami'', którym
+@c           are missing their requisites
+brakuje potrzebnych elementów towarzysz±cych.
+
+Na przyk³ad, powiedzmy, ¿e dokument @file{1.html} zawiera znacznik
+@code{<IMG>} odnosz±cy siê do @file{1.gif} i znacznik @code{<A>} wskazuj±cy
+na zewnêtrzny dokument @file{2.html}.  Powiedzmy, ¿e @file{2.html} jest
+podobny, tyle, ¿e jego obrazkiem jest @file{2.gif} a odno¶nik wskazuje
+na @file{3.html}.  Za³ó¿my, ¿e kontynuujemy takie zale¿no¶ci a¿ do jakiej¶
+dowolnie du¿ej liczby.
+
+Je¶li wykona siê polecenie:
+
+@example
+wget -r -l 2 http://@var{o¶rodek}/1.html
+@end example
+
+to zostan± pobrane @file{1.html}, @file{1.gif}, @file{2.html}, @file{2.gif}
+i @file{3.html}.  Jak widaæ, @file{3.html} nie posiada towarzysz±cego mu
+elementu, gdy¿ Wget w celu okre¶lenia miejsca, gdzie powinien przerwaæ
+rekurencjê po prostu zlicza liczbê skoków (a¿ do 2) od pocz±tkowego
+@file{1.html}.  Jednak przy takim poleceniu:
+
+@example
+wget -r -l 2 -p http://@var{o¶rodek}/1.html
+@end example
+
+zostan± ¶ci±gniête wszystkie powy¿sze pliki @emph{oraz} wymagany przez
+@file{3.html} plik @file{3.gif}.  Podobnie,
+
+@example
+wget -r -l 1 -p http://@var{o¶rodek}/1.html
+@end example
+
+spowoduje pobranie @file{1.html}, @file{1.gif}, @file{2.html} i @file{2.gif}.
+Mo¿na by s±dziæ, ¿e:
+
+@example
+wget -r -l 0 -p http://@var{o¶rodek}/1.html
+@end example
+
+pobra³oby tylko @file{1.html} i @file{1.gif}, ale niestety tak nie jest, gdy¿
+@samp{-l 0} jest równowa¿nikiem @samp{-l inf} -- czyli nieskoñczonej
+rekurencji.  Do pobrania pojedynczej strony @sc{html} (lub ich grupy,
+wszystkich podanych w wierszu poleceñ lub w pliku wej¶ciowym @sc{url}-i
+@samp{-i}) i towarzysz±cych jej (lub im) elementów, wystarczy pomin±æ
+@samp{-r} i @samp{-l}:
+
+@example
+wget -p http://@var{o¶rodek}/1.html
+@end example
+
+Zauwa¿, ¿e Wget zachowa siê tak, jakby podano opcjê @samp{-r}, ale zostanie
+pobrana tylko pojedyncza strona i jej elementy.  Program nie bêdzie pod±¿a³
+za odno¶nikami z tej strony do zewnêtrznych dokumentów.  Faktycznie, do
+¶ci±gania pojedynczej strony i wszystkich towarzysz±cych jej elementów
+(nawet je¶li le¿± one na odrêbnych serwerach @sc{www}) i upewnienia siê, ¿e
+ca³o¶æ lokalnie poprawnie siê wy¶wietla, autor oprócz @samp{-p} korzysta
+z kilku dodatkowych opcji:
+
+@example
+wget -E -H -k -K -p http://@var{o¶rodek}/@var{dokument}
+@end example
+
+Koñcz±c ten temat, warto wiedzieæ, ¿e Wget uwa¿a za odno¶nik do dokumentu
+zewnêtrznego ka¿dy @sc{url} podany w znaczniku @code{<A>}, @code{<AREA>}
+lub @code{<LINK>}, oprócz @code{<LINK REL="stylesheet">}.
+@end table
+
+@node Opcje rekurencyjnego akceptowania/odrzucania,  , Opcje pobierania rekurencyjnego, Wywo³anie
+@section Opcje rekurencyjnego akceptowania/odrzucania
+
+@table @samp
+@item -A @var{lista_akc} --accept @var{lista_akc}
+@itemx -R @var{lista_odrz} --reject @var{lista_odrz}
+Podaje listê oddzielonych przecinkami przyrostków nazw plików (rozszerzeñ
+plików) lub wzorców nazw, jakie maj± byæ akceptowane lub odrzucane.
+(@pxref{Typy plików}, gdzie opisano szczegó³y).
+
+@item -D @var{lista_domen}
+@itemx --domains=@var{lista_domen}
+Ustala domeny, do których program mo¿e przechodziæ.
+@var{lista_domen} jest list± separowan± przecinkami. Zauwa¿, ¿e ta opcja
+@emph{nie} w³±cza @samp{-H}.
+
+@item --exclude-domains @var{lista_domen}
+Podaje domeny, do których program ma @emph{nie} przechodziæ.
+(@pxref{Przechodzenie miêdzy hostami}).
+
+@cindex pod±¿anie za odno¶nikami FTP
+@cindex odno¶niki FTP
+@item --follow-ftp
+Pod±¿a za odno¶nikami @sc{ftp} z dokumentów @sc{http}.  Bez tej opcji Wget
+bêdzie ignorowa³ wszelkie odno¶niki do @sc{ftp}.
+
+@cindex ograniczenie pobierania rekurencyjnego wed³ug znaczników HTML
+@cindex znaczniki HTML, ograniczenie pobierania rekurencyjnego
+@item --follow-tags=@var{lista}
+Wget ma wewnêtrzn± tablicê par: znacznik @sc{html}/atrybut, któr± pos³uguje
+siê przy poszukiwaniu powi±zanych dokumentów podczas pobierania
+rekurencyjnego.  Je¶li jednak chcieliby¶my, by brany by³ pod uwagê tylko
+pewien podzbiór tych znaczników, powinni¶my u¿yæ tej opcji, podaj±c je
+w postaci @var{listy} separowanej przecinkami.
+
+@item -G @var{lista}
+@itemx --ignore-tags=@var{lista}
+Jest to przeciwieñstwo opcji @samp{--follow-tags}.  Dziêki podaniu
+@var{listy} rozdzielonych przecinkami znaczników @sc{html} mo¿na pomin±æ
+je podczas rekurencyjnego szukania dokumentów do pobrania.
+
+Niegdy¶ opcja @samp{-G}, u¿yta w wierszu poleceñ:
+
+@example
+wget -Ga,area -H -k -K -r http://@var{o¶rodek}/@var{dokument}
+@end example
+
+by³a najlepszym wyborem do ¶ci±gania pojedynczej strony razem z jej
+elementami.
+
+Jednak autor tej opcji przeszed³ przez stronê ze znacznikami typu
+@code{<LINK REL="home" HREF="/">} i u¶wiadomi³ sobie, ¿e @samp{-G} nie
+wystarcza.  Nie mo¿na po prostu nakazaæ Wget ignorowania @code{<LINK>},
+gdy¿ wówczas nie bêd± ¶ci±gane arkusze stylów.  Obecnie najlepszym sposobem
+pobierania pojedynczej stony razem z jej elementami jest specjalnie
+przeznaczona do tego opcja @samp{--page-requisites}.
+
+@item -H
+@itemx --span-hosts
+W³±cza przechodzenie pomiêdzy hostami przy pobieraniu rekurencyjnym
+(@pxref{Przechodzenie miêdzy hostami}).
+
+@item -L
+@itemx --relative
+Pod±¿a tylko za odno¶nikami wzglêdnymi. Przydatne do pobierania konkretnej
+strony bez ¿adnych odwracaj±cych uwagê dodatków, nawet z tego samego hosta.
+(@pxref{Odno¶niki wzglêdne}).
+
+@item -I @var{lista}
+@itemx --include-directories=@var{lista}
+Okre¶la @var{listê} rozdzielonych przecinkami katalogów, do których ma
+przechodziæ program podczas pobierania (@pxref{Ograniczanie katalogów},
+gdzie podano szczegó³y.)  Elementy @var{listy} mog± zawieraæ znaki
+uogólniaj±ce.
+
+@item -X @var{lista}
+@itemx --exclude-directories=@var{lista}
+Okre¶la @var{listê} rozdzielonych przecinkami katalogów, które chcemy
+wykluczyæ z pobierania (@pxref{Ograniczanie katalogów}, gdzie podano
+szczegó³y.)  Elementy @var{listy} mog± zawieraæ znaki uogólniaj±ce.
+
+@item -np
+@item --no-parent
+Powoduje, ¿e Wget przy pobieraniu rekurencyjnym nigdy nie wchodzi do katalogu
+nadrzêdnego.  Przydatna opcja, gdy¿ gwarantuje, ¿e ¶ci±gane bêd± tylko pliki
+@emph{poni¿ej} pewnego poziomu.
+@xref{Ograniczanie katalogów}, gdzie podano szczegó³y.
+@end table
+
+@c man end
+
+@node Pobieranie rekurencyjne, Odno¶niki, Wywo³anie, Top
+@chapter Pobieranie rekurencyjne
+@cindex rekurencja
+@cindex pobieranie
+@cindex pobieranie rekurencyjne
+
+GNU Wget potrafi przegl±daæ czê¶ci Sieci (lub pojedynczy serwer @sc{http}
+czy @sc{ftp}), pod±¿aj±c za odno¶nikami i zag³êbiaj±c siê w strukturê
+katalogów.  Nazywamy to pobieraniem @dfn{rekurencyjnym} lub @dfn{rekurencj±}.
+
+Przy @sc{url}-ach typu @sc{http}, Wget pobiera i analizuje kod @sc{html}
+z danego @sc{url}-a, po czym pobiera pliki, na które, miêdzy znacznikami
+typu @code{href} czy @code{src}, wskazuje ten dokument.
+Je¶li ¶wie¿o pobrany plik jest równie¿ typu @code{text/html}, zostanie
+pó¼niej przeanalizowany i u¿yty w taki sam sposób.
+
+Rekurencyjne pobieranie @sc{http} i tre¶ci @sc{html} odbywa siê
+@dfn{najpierw wszerz}. Oznacza to, ¿e Wwget najpierw pobiera ¿±dany dokument
+HTML, nastêpnie dokumenty, do których odwo³uje siê ten dokument, nastêpnie
+dokumenty przez nie wskazywane i tak dalej. Inaczej mówi±c, Wget w pierwszej
+kolejno¶ci pobiera dokumenty z poziomu 1, potem dokumenty z poziomu 2,
+i tak dalej, a¿ do zadanej maksymalnej g³êboko¶ci.
+
+Maksymalna @dfn{g³êboko¶æ}, do jakiej mo¿e zej¶æ ¶ci±ganie podawana jest
+opcj± @samp{-l} (domy¶lna maksymalna g³êboko¶æ to piêæ poziomów).
+@xref{Pobieranie rekurencyjne}.
+
+Przy rekurencyjnym pobieraniu @sc{url}-a @sc{ftp}, Wget pobierze wszystkie
+dane z zadanego drzewa katalogowego (³±cznie z podkatalogami, a¿ do podanej
+g³êboko¶ci) na zdalnym serwerze, tworz±c lokalnie jego obraz lustrzany.
+Pobieranie @sc{ftp} jest równie¿ ograniczone parametrem g³êboko¶ci
+@code{depth}. W przeciwieñstwie do rekurencji przy @sc{http},
+rekurencyjne pobieranie @sc{ftp} wykonywane jest najpierw w g³±b.
+
+Domy¶lnie Wget tworzy lokalne drzewo katalogów odpowiadaj±ce drzewu
+znajduj±cemu siê na zdalnym serwerze.
+
+Rekurencyjne pobieranie ma wiele zastosowañ, z których najwa¿niejszym jest
+tworzenie kopii lustrzanych.  Przydatne jest te¿ w prezentacjach @sc{www}
+i we wszelkich innych okoliczno¶ciach, w których powolne po³±czenia sieciowe
+powinno siê obchodziæ przez przechowywanie plików lokalnie.
+
+Ostrzegamy, ¿e pobieranie rekurencyjne mo¿e powodowaæ przeci±¿enia
+zdalnych serwerów. Dlatego wielu administratorów krzywo patrzy na takie
+dzia³ania -- mog± zablokowaæ dostêp dla waszego z o¶rodka, je¶li wykryj±,
+¿e bardzo szybko pobieracie du¿e ilo¶ci danych. Przy pobieraniu z serwerów
+internetowych powinni¶cie rozwa¿yæ u¿ycie opcji @samp{-w}, wprowadzaj±cej
+przerwy pomiêdzy kolejnymi ¿±daniami kierowanymi do serwera. ¦ci±ganie
+potrwa nieco d³u¿ej, ale administratora tej maszyny nie zaalarmuje
+wasze grubiañskie zachowanie.
+
+Oczywi¶cie, rekurencyjne pobieranie mo¿e spowodowaæ k³opoty na waszej
+w³asnej maszynie. Je¶li pu¶ci siê je bez kontroli, bez trudu zape³ni
+ca³y dysk. Przy ¶ci±ganiu z sieci lokalnej mo¿e równie¿ zaj±æ spor± czê¶æ
+szeroko¶ci pasma systemu, spowodowaæ znaczne obci±¿enie procesora
+i zu¿ycie pamiêci.
+
+Próbujcie podawaæ takie kryteria, jakie odpowiadaj± rodzajowi pobrania, który
+usi³ujecie uzyskaæ. Je¿eli chcecie ¶ci±gn±æ tylko jedn± stronê, skorzystajcie
+z @samp{--page-requisites}, bez ¿adnej dodatkowej rekurencji. Je¶li
+potrzebujecie rzeczy z jednego katalogu, zastosujcie @samp{-np}, ¿eby unikn±æ
+pobierania rzeczy z innych katalogów. Je¶li chcecie pobraæ wszystkie pliki
+z jednego katalogu, u¿yjcie @samp{-l 1}, ¿eby mieæ pewno¶æ, ¿e rekurencja
+nie siêgnie g³êbiej ni¿ do pierwszego poziomu. @pxref{Odno¶niki}, gdzie
+opisano ten temat dok³adniej.
+  
+Z pobierania rekurencyjnego nale¿y korzystaæ ostro¿nie.
+Nie mówcie, ¿e nikt was nie ostrzega³.
+
+@node Odno¶niki, Znaczniki czasu, Pobieranie rekurencyjne, Top
+@chapter Pod±¿anie za odno¶nikami
+@cindex odno¶niki
+@cindex pod±¿anie za odno¶nikami
+
+Podczas pobieranie rekurencyjnego nie ¿yczymy sobie ¶ci±gania mnóstwa
+zbêdnych danych.  W wiêkszo¶ci przypadków u¿ytkownicy dok³adnie pamiêtaj±
+o tym, co chc± ¶ci±gn±æ i ¿ycz± sobie, by Wget u¿ywa³ tylko konkretnych
+odno¶ników.
+
+Na przyk³ad, je¶li pragniemy ¶ci±gn±æ archiwum muzyczne
+z @samp{fly.srk.fer.hr}, to nie chcemy ¶ci±gaæ wszystkich stron g³ównych,
+do których mo¿e prowadziæ nieznana czê¶æ archiwum.
+
+Wget jest wyposa¿ony w kilka mechanizmów umo¿liwiaj±cych precyzyjne
+dobranie odno¶ników, za którymi powinien pod±¿aæ.
+
+@menu
+* Przechodzenie miêdzy hostami::  (Nie)ograniczone pobieranie wg nazwy hosta.
+* Typy plików::                   Pobieranie tylko niektórych plików.
+* Ograniczanie katalogów::        Pobieranie tylko niektórych katalogów.
+* Odno¶niki wzglêdne::            Pod±¿anie tylko za odno¶nikami wzglêdnymi.
+* Odno¶niki FTP::                 Pod±¿anie za odno¶nikami FTP.
+@end menu
+
+
+@node Przechodzenie miêdzy hostami, Typy plików, Odno¶niki, Odno¶niki
+@section Przechodzenie miêdzy hostami
+@cindex przechodzenie miêdzy hostami
+@cindex hosty, przechodzenie
+
+Normalnie podczas ¶ci±gania rekurencyjnego Wget odmawia odwiedzania
+maszyn innych ni¿ podana przez nas w wierszu poleceñ. To rozs±dne
+domy¶lne zachowanie -- bez tego ka¿da sesja pobierania mog³aby
+przemieniæ naszego Wgeta w ma³± wersjê Google'a.
+ 
+Z drugiej strony, mo¿liwo¶æ odwiedzania ró¿nych hostów, @dfn{przechodzenia
+miêdzy hostami} czasem siê przydaje. Na przyk³ad wtedy, gdy obrazki
+s± dostarczane z innego serwera. Albo wówczas, gdy tworzymy kopiê lustrzan±
+witryny z³o¿onej z powi±zanych ze sob± stron z trzech serwerów. Lub wtedy,
+gdy dany serwer ma dwie równowa¿ne nazwy, a pobierane przez nas strony HTML
+pos³uguj± siê zamiennie obiema.
+
+@table @asis
+@item Przechodzenie do dowolnego hosta -- @samp{-H}
+
+Opcja @samp{-H} w³±czenia przechodzenie pomiêdzy hostami, pozwalaj±c
+Wgetowi dzia³aj±cemu w trybie rekurencyjnym na odwiedzanie ka¿dej
+maszyny wskazanej odno¶nikiem. Takie zewnêtrzne, obce hosty bêd± na ogó³
+wskazywaæ na kolejne komputery, tamte na nastêpne, i tak dalej - póki
+Wget nie skoñczy zasysaj±c o wiele wiêcej danych ni¿ zamierzali¶my,
+chyba ¿e zastosujemy odpowiednie kryteria ograniczaj±ce rekurencjê
+do poziomu, jaki nam wystarcza.
+  
+@item Przechodzenie ograniczone do okre¶lonych domen -- @samp{-D}
+ 
+Opcja @samp{-D} umo¿liwia wyszczególnienie domen, do których Wget mo¿e
+przej¶æ, przez co ograniczamy zasiêg rekurencji do tych tylko hostów,
+które nale¿± do wskazanych domen. Naturalnie, ma to sens tylko w po³±czeniu
+z opcj± @samp{-H}. Typowym przyk³adem jest pobieranie zawarto¶ci
+@samp{www.server.com} z równoczesnym dopuszczeniem zwi±zanych z tym
+pobrañ z @samp{images.server.com} itd.:
+
+@example
+wget -rH -Dserver.com http://www.server.com/
+@end example
+  
+Mo¿na podaæ wiêcej ni¿ jeden adres, rozdzielaj±c kolejne przecinkami,
+np.  @samp{-Ddomain1.com,domain2.com}.
+
+@item Zakaz pobierania z okre¶lonych domen -- @samp{--exclude-domains}
+
+Je¶li s± domeny, które chce siê specjalnie wy³±czyæ, mo¿na to zrobiæ opcj±
+@samp{--exclude-domains}, która przyjmuje taki sam rodzaj argumentów jak
+@samp{-D}, ale powoduje @emph{pomijanie} wszystkich wymienionych domen.
+Na przyk³ad, je¶li chcemy ¶ci±gaæ z wszystkich hostów z domeny @samp{foo.edu},
+z wyj±tkiem @samp{sunsite.foo.edu}, robimy to tak:
+
+@example
+wget -rH -Dfoo.edu --exclude-domains sunsite.foo.edu \
+     http://www.foo.edu/
+@end example
+
+@end table
+
+@node Typy plików, Ograniczanie katalogów, Przechodzenie miêdzy hostami, Odno¶niki
+@section Typy plików
+@cindex typy plików
+
+¦ci±gaj±c dane z Sieci czêsto chcemy ograniczyæ pobieranie tylko do pewnych
+typów plików.  Je¶li, na przyk³ad, interesuje nas ¶ci±gniêcie @sc{gif}-ów,
+nie bêdziemy zachwyceni otrzymuj±c masê dokumentów PostScriptowych,
+i odwrotnie.
+
+Wget zawiera dwie opcje pozwalaj±ce poradziæ sobie z tym problemem.
+Oba opisy wymieniaj± krótk± nazwê, d³ug± nazwê i równowa¿ne polecenie
+w pliku @file{.wgetrc}.
+
+@cindex akceptowane maski plików
+@cindex akceptowane przyrostki
+@cindex maski, akceptowane
+@cindex wzorce plików, akceptowane
+@cindex przyrostki, akceptowane
+@table @samp
+@item -A @var{lista_akc}
+@itemx --accept @var{lista_akc}
+@itemx accept = @var{lista_akc}
+Argumentem opcji @samp{--accept} jest lista przyrostków plików lub wzorców
+nazw plików, które Wget ma ¶ci±gaæ podczas pobierania rekurencyjnego.
+Przyrostek jest koñcow± czê¶ci± nazwy pliku i sk³ada siê ze ,,zwyk³ych''
+liter, np. @samp{gif} lub @samp{.jpg}.  Wzorzec dopasowania zawiera znaki
+uogólnienia podobne do stosowanych w pow³oce, np. @samp{books*}
+lub @samp{zelazny*196[0-9]*}.
+
+Zatem, podanie @samp{wget -A gif,jpg} spowoduje, ¿e Wget ¶ci±gnie wy³±cznie
+pliki koñcz±ce siê na @samp{gif} lub @samp{jpg}, tj. pliki formatów @sc{gif}
+i @sc{jpeg}.  Z kolei @samp{wget -A "zelazny*196[0-9]*"} pobierze tylko pliki
+o nazwach zaczynaj±cych siê od @samp{zelazny} i zawieraj±cych gdzie¶ w ¶rodku
+liczby od 1960 do 1969.  Opis dzia³ania dopasowywania wzorców mo¿na znale¼æ
+w podrêczniku systemowym u¿ywanej przez siebie pow³oki.
+
+Oczywi¶cie, dowoln± liczbê przyrostków i wzorców mo¿na po³±czyæ w listê
+rozdzielan± przecinkami i podaæ j± jako argument opcji @samp{-A}.
+
+@cindex odrzucane maski plików
+@cindex odrzucane przyrostki
+@cindex maski, odrzucane
+@cindex wzorce plików, odrzucane
+@cindex przyrostki, odrzucane
+@item -R @var{rejlist}
+@itemx --reject @var{rejlist}
+@itemx reject = @var{rejlist}
+Opcja @samp{--reject} dzia³a w taki sam sposób jak @samp{--accept}, tylko
+ma przeciwne znaczenie.  Wget bêdzie ¶ci±ga³ wszystkie pliki @emph{oprócz}
+pasuj±cych do przyrostków (lub wzorców) z listy.
+
+@c         cumbersome
+Zatem, je¶li chcemy pobraæ ca³± stronê prócz niewygodnych plików @sc{mpeg}
+i @sc{.au}, stosujemy @samp{wget -R mpg,mpeg,au}.  Analogicznie, do
+¶ci±gniêcia wszystkich plików oprócz zaczynaj±cych siê od @samp{bjork},
+u¿ywamy @samp{wget -R "bjork*"}.  Wystêpuj±ce tu cudzys³owy chroni± przed
+rozwiniêciem znaku @samp{*} przez pow³okê.
+@end table
+
+Opcje @samp{-A} i @samp{-R} mo¿na ze sob± ³±czyæ, osi±gaj±c znacznie lepsze
+dostrojenie, które pliki pobraæ.  Np. @samp{wget -A "*zelazny*" -R .ps}
+pobierze wszystkie pliki, które maj± w nazwie @samp{zelazny}, ale @emph{nie}
+s± plikami PostScriptu.
+
+Zauwa¿, ¿e te dwie opcje nie wp³ywaj± na ¶ci±ganie plików @sc{html}.  Wget
+musi za³adowaæ wszystkie @sc{html}-e, by w ogóle wiedzieæ, dok±d pój¶æ --
+inaczej pobieranie rekurencyjne nie mia³oby sensu.
+
+@node Ograniczanie katalogów, Odno¶niki wzglêdne, Typy plików, Odno¶niki
+@section Ograniczanie katalogów
+@cindex katalogi
+@cindex ograniczenia katalogów
+
+Niezale¿nie od innych mo¿liwo¶ci zwi±zanych z pod±¿aniem za odno¶nikami,
+czêsto przydaje siê na³o¿enie ograniczenia na pobierane pliki w zale¿no¶ci
+od katalogów, w których s± umieszczone.  Powodów mo¿e byæ wiele -- ³atwiej
+uporz±dkowaæ strony g³ówne w rozs±dn± strukturê katalogów albo te¿ niektóre
+z katalogów mog± zawieraæ niepotrzebne informacje, np. katalogi
+@file{/cgi-bin} czy @file{/dev}.
+
+Wget zawiera trzy opcje pozwalaj±ce poradziæ sobie z tym wymaganiem.
+Ka¿dy z opisów opcji wymienia krótk± nazwê, d³ug± nazwê i równowa¿ne
+polecenie pliku @file{.wgetrc}.
+
+@cindex katalogi, akceptowane
+@cindex katalogi, w³±czane
+@cindex w³±czane katalogi
+@cindex akceptowane katalogi
+@table @samp
+@item -I @var{lista}
+@itemx --include @var{lista}
+@itemx include_directories = @var{lista}
+Opcja @samp{-I} przyjmuje jako argument listê rozdzielonych przecinkami
+@c         included
+katalogów przeznaczonych do pobrania.  Wszelkie inne katalogi bêd± po prostu
+ignorowane.  Katalogi te s± w postaci ¶cie¿ek bezwzglêdnych.
+
+Zatem, je¶li chcemy ¶ci±gaæ pliki z @samp{http://host/ludzie/bozo/} pod±¿aj±c
+tylko za odno¶nikami do kolegów bozo w katalogu @file{/ludzie} oraz
+@c       bogus scripts
+do fikcyjnych skryptów w @file{/cgi-bin}, podajemy:
+
+@example
+wget -I /ludzie,/cgi-bin http://host/ludzie/bozo/
+@end example
+
+@cindex katalogi, odrzucane
+@cindex katalogi, wykluczane
+@cindex odrzucane katalogi
+@cindex wykluczane katalogi
+@item -X @var{list}
+@itemx --exclude @var{list}
+@itemx exclude_directories = @var{list}
+Opcja @samp{-X} jest dok³adn± odwrotno¶ci± @samp{-I} -- jest to lista
+katalogów @emph{wykluczonych} ze ¶ci±gania.  Je¶li, na przyk³ad, nie chcemy
+pobieraæ plików z katalogu @file{/cgi-bin}, to podajemy w wierszu poleceñ
+@samp{-X /cgi-bin}.
+
+Tak samo jak w przypadku @samp{-A}/@samp{-R}, obie te opcje mo¿na ³±czyæ
+w celu precyzyjniejszego dostrojenia pobierania podkatalogów.  Np. je¶li
+chcemy ¶ci±gn±æ wszystkie pliki z hierarchii @file{/pub} z wyj±tkiem le¿±cych
+w @file{/pub/bez-wartosci}, podajemy @samp{-I/pub -X/pub/bez-wartosci}.
+
+@cindex bez nadrzêdnych
+@cindex nadrzêdny katalog, zakaz wej¶cia
+@item -np
+@itemx --no-parent
+@itemx no_parent = on
+Najprostsz± i czêsto bardzo przydatn± metod± ograniczania katalogów jest
+zakaz pobierania odno¶ników wskazuj±cych na hierarchiê @dfn{powy¿ej}
+katalogu pocz±tkowego, tzn. zakaz wspinania siê do katalogu/katalogów
+nadrzêdnych.
+
+Do takigo przypadku przydaje siê opcja @samp{--no-parent} (w krótkiej
+postaci @samp{-np}).
+U¿ycie jej gwarantuje, ¿e program nigdy nie opu¶ci istniej±cej hierarchii
+katalogów.  Za³ó¿my, ¿e Wget wykonuje siê z:
+
+@example
+wget -r --no-parent http://jakishost/~luzer/archiwum/
+@end example
+
+Mo¿emy byæ spokojni, ¿e program nie pod±¿y za ¿adnym z odwo³añ do
+@file{/~strona-jego-dziewczyn/} czy @file{/~luzer/wszystkie-moje-mpeg/}.
+¦ci±gniête zostanie tylko interesuj±ce nas archiwum.  Zasadniczo,
+@samp{--no-parent} przypomina @samp{-I/~luzer/archiwum}, tylko
+inteligentniej obs³uguje przekierowania.
+@end table
+
+@node Odno¶niki wzglêdne, Odno¶niki FTP, Ograniczanie katalogów, Odno¶niki
+@section Odno¶niki wzglêdne
+@cindex odno¶niki wzglêdne
+
+Je¶li w³±czona jest opcja @samp{-L}, to program pod±¿a tylko za odno¶nikami
+wzglêdnymi. Tutaj odno¶niki wzglêdne oznaczaj± te, które nie odnosz± siê
+do g³ównego katalogu serwera www. Na przyk³ad, poni¿sze odno¶niki s± wzglêdne:
+
+@example
+<a href="foo.gif">
+<a href="foo/bar.gif">
+<a href="../foo/bar.gif">
+@end example
+
+Te odno¶niki nie s± wzglêdne:
+
+@example
+<a href="/foo.gif">
+<a href="/foo/bar.gif">
+<a href="http://www.server.com/foo/bar.gif">
+@end example
+
+Zastosowanie tej opcji gwarantuje, ¿e pobieranie rekurencyjne nie bêdzie
+siêgaæ do innych maszyn, nawet bez @samp{-H}.  W prostych przypadkach
+powoduje równie¿, ¿e pobrane strony ,,po prostu dzia³aj±'', bez potrzeby
+stosowania konwersji odno¶ników.
+
+Ta opcja nie jest zapewne zbyt przydatna i mo¿e zostaæ usuniêta w której¶
+z kolejnych wersji.
+
+@node Odno¶niki FTP,  , Odno¶niki wzglêdne, Odno¶niki
+@section Pod±¿anie za odno¶nikami FTP
+@cindex pod±¿anie za odno¶nikami ftp
+
+Zasady dla @sc{ftp} s± w pewnym stopniu specyficzne, poniewa¿ musz± byæ
+takie.  Czêsto odno¶niki @sc{ftp} umieszczane s± w dokumentach @sc{html}
+@c            inconvenient
+w celach referencyjnych i czêsto domy¶lne ¶ci±ganie ich jest niewygodne.
+
+Je¶li chcemy, aby pod±¿aæ za odno¶nikami @sc{ftp} z dokumentów @sc{html},
+powinni¶my podaæ opcjê @samp{--follow-ftp}.  Spowoduje ona, ¿e pod±¿aniu
+za odno¶nikami @sc{ftp} bêd± przeszukiwane tak¿e inne hosty, niezale¿nie
+od ustawienia @samp{-H}.  To logiczne, gdy¿ odno¶niki @sc{ftp} rzadko
+wskazuj± na tê sam± maszynê, na której posadowiony jest serwer @sc{http}.
+Z podobnych powodów, opcja @samp{-L} nie ma wp³ywu na takie pobieranie.
+Natomiast akceptacja domen (@samp{-D}) i zasady dotycz±ce przyrostków nazw
+(@samp{-A} i @samp{-R}) stosowane s± jak zwykle.
+
+Zauwa¿ te¿, ¿e program pod±¿aj±c za odno¶nikami do katalogów @sc{ftp}
+nie bêdzie ich nastêpnie pobiera³ rekurencyjnie.
+
+@node Znaczniki czasu, Plik konfiguracyjny, Odno¶niki, Top
+@chapter Znaczniki czasu
+@cindex time-stamping
+@cindex timestamping
+@cindex znaczniki czasu
+@cindex aktualizacja archiwów
+@cindex aktualizacja przyrostowa
+@cindex przyrostowa, aktualizacja
+
+Jednym z najwa¿niejszych aspektów tworzenia kopii lustrzanych informacji
+z Internetu jest aktualizacja w³asnych archiwów.
+
+¦ci±ganie wci±¿ od nowa ca³ego archiwum, tylko po to, by zast±piæ kilka
+zmienionych plików jest kosztowne, zarówno je¶li chodzi o marnowanie
+przepustowo¶ci i pieniêdzy, jak i czasu na wykonanie aktualizacji.
+Dlatego wszystkie narzêdzia do tworzenia kopii lustrzanych oferuj± opcjê
+aktualizacji przyrostowej.
+
+Taki mechanizm aktualizacji oznacza, ¿e przegl±da siê zdalny serwer szukaj±c
+@dfn{nowych} plików.  ¦ci±gane bêd± wy³±cznie te nowe pliki, zastêpuj±c stare.
+
+Plik jest uwa¿any za nowy, je¶li spe³niony jest jeden z poni¿szych warunków:
+
+@enumerate
+@item
+Lokalnie nie ma jeszcze pliku o takiej nazwie.
+
+@item
+Plik o tej nazwie istnieje, ale zdalny plik zosta³ zmieniony pó¼niej ni¿
+lokalny.
+@c       was modified more recently than
+@end enumerate
+
+Aby móc to zrealizowaæ, program musi znaæ czas ostatniej modyfikacji
+oby plików, zdalnego i lokalnego.  Te informacje nazywa siê @dfn{znacznikami
+czasu} (@dfn{time-stamps}).
+
+Korzystanie ze znaczników czasu w Wget w³±cza siê opcj± @samp{--timestamping}
+(@samp{-N}) lub za pomoc± dyrektywy @code{timestamping = on} umieszczonej
+w pliku @file{.wgetrc}.  Je¶li u¿yto tej opcji, dla ka¿dego pliku, który ma
+zostaæ ¶ci±gniêty, Wget sprawdzi czy istnieje lokalny plik o tej samej nazwie.
+Je¶li istnieje, a zdalny plik jest starszy, to Wget nie bêdzie go ¶ci±ga³.
+
+Je¶li nie ma lokalnego pliku lub gdy oba pliki maj± ró¿ne rozmiary, Wget
+¶ci±gnie zdalny plik, bez wzglêdu na to, co wskazuj± znaczniki czasu.
+
+@menu
+* U¿ycie znaczników czasu::
+* Wewnêtrzne znaczniki czasu HTTP::
+* Wewnêtrzne znaczniki czasu FTP::
+@end menu
+
+@node U¿ycie znaczników czasu, Wewnêtrzne znaczniki czasu HTTP, Znaczniki czasu, Znaczniki czasu
+@section U¿ycie znaczników czasu
+@cindex time-stamping, sposób u¿ycia
+@cindex znaczniki czasu, sposób u¿ycia
+@cindex sposób u¿ycia, znaczniki czasu
+@cindex sposób u¿ycia, time-stamping
+
+Korzystanie ze znaczników czasu jest proste.  Powiedzmy, ¿e chcieliby¶my
+¶ci±gn±æ plik, tak by zachowaæ jego datê modyfikacji.
+
+@example
+wget -S http://www.gnu.ai.mit.edu/
+@end example
+
+Zwyk³e @code{ls -l} pokazuje, ¿e zmacznik czasu lokalnego pliku jest równy
+stanowi nag³ówka @code{Last-Modified}, zwracanego przez serwer.  Jak widaæ,
+informacja o znaczniku czasu jest zachowywana lokalnie, nawet bez @samp{-N}
+(przynajmniej dla @sc{http}).
+
+Kilka dni pó¼niej chcieliby¶my, by Wget sprawdzi³, czy zdalny plik siê
+zmieni³, i je¶li tak, to go ¶ci±gn±³.
+
+@example
+wget -N http://www.gnu.ai.mit.edu/
+@end example
+
+Wget zapyta serwer o datê ostatniej modyfikacji.  Je¶li lokalny plik ma
+ten sam znacznik czasu, co na serwerze, lub nowszy, to zdalny nie bêdzie
+ponownie pobierany.  Je¶li jednak zdalny plik jest ¶wie¿szy, Wget przejdzie
+do pobierania go.
+
+Tak samo dzieje siê w przypadku @sc{ftp}.  Na przyk³ad:
+
+@example
+wget "ftp://ftp.ifi.uio.no/pub/emacs/gnus/*"
+@end example
+
+(Cudzys³owy wokó³ URL-a zapobiegaj± próbie interpretacji @samp{*} przez
+pow³okê.)
+
+Po ¶ci±ganiu, listing katalogu lokalnego poka¿e, ¿e znaczniki czasu nadane
+s± zgodnie ze stanem na serwerze zdalnym.  Ponowne wydanie tego polecenia
+z opcj± @samp{-N} spowoduje, ¿e Wget ponownie pobierze @emph{tylko} te pliki,
+które zosta³y zmienione.
+
+Gdyby¶my chcieli tworzyæ co tydzieñ kopiê archiwum GNU, u¿yliby¶my co tydzieñ
+polecenia:
+
+@example
+wget --timestamping -r ftp://ftp.gnu.org/pub/gnu/
+@end example
+
+Zauwa¿, ¿e aktualizacja wed³ug znaczników czasu bêdzie dzia³aæ tylko dla
+plików, dla których serwer daje znaczniki.  W przypadku @sc{http} zale¿y
+to od otrzymania nag³ówka @code{Last-Modified}. W przypadku @sc{ftp} -- od
+otrzymania listingu katalogu z datami w formacie, jaki Wget potrafi
+przetworzyæ (@pxref{Wewnêtrzne znaczniki czasu FTP}).
+
+@node Wewnêtrzne znaczniki czasu HTTP, Wewnêtrzne znaczniki czasu FTP, U¿ycie znaczników czasu, Znaczniki czasu
+@section Wewnêtrzne znaczniki czasu HTTP
+@cindex http, znaczniki czasu
+@cindex znaczniki czasu http
+
+Obs³uga znaczników czasu w @sc{http} realizowana jest przez sprawdzanie
+nag³ówka @code{Last-Modified}.  Je¶li chcemy przez @sc{http} pobraæ plik
+@file{foo.html}, Wget sprawdzi czy @file{foo.html} istnieje lokalnie.
+Je¶li nie, to @file{foo.html} zostanie bezwarunkowo pobrany.
+
+Je¶li plik ten istnieje lokalnie, Wget najpierw sprawdzi znacznik czasu
+lokalnego egzemplarza (w podobny sposób, jak czyni to @code{ls -l}),
+a nastêpnie wy¶le ¿±danie @code{HEAD} do serwera zdalnego, domagaj±c siê
+informacji o zdalnym pliku.
+
+Program bada otrzymany nag³ówek @code{Last-Modified} w celu ustalenia,
+który z plików zosta³ pó¼niej zmieniony (co czyni go ¶wie¿szym, ,,nowszym'').
+Je¶li zdalny plik jest nowszy, to zostanie ¶ci±gniêty.  Je¿eli jest starszy,
+Wget zrezygnuje.@footnote{Wget dokonuje dodatkowej kontroli, przegl±daj±c
+nag³ówek @code{Content-Length} i porównuj±c rozmiary; Je¶li nie s± takie same,
+zdalny plik zostanie ¶ci±gniêty bez wzglêdu na to, co wskazuj± znaczniki
+czasu.}
+
+Je¶li w po³±czeniu z @samp{-N} podano @samp{--backup-converted} (@samp{-K}),
+to plik @samp{@var{X}} z serwera porównywany jest z lokalnym plikiem
+@samp{@var{X}.orig}, je¶li istnieje, a nie z lokalnym @samp{@var{X}}, który
+bêdzie zawsze siê ró¿niæ  je¶li zosta³ przekonwertowany przez
+@samp{--convert-links} (@samp{-k}).
+
+Jest kwesti± sporn±, czy znaczniki czasu @sc{http} nie powinny byæ wyznaczane
+za pomoc± ¿±dania @code{If-Modified-Since}.
+
+@node Wewnêtrzne znaczniki czasu FTP,  , Wewnêtrzne znaczniki czasu HTTP, Znaczniki czasu
+@section Wewnêtrzne znaczniki czasu FTP
+@cindex ftp, znaczniki czasu
+@cindex znaczniki czasu ftp
+
+Teoretycznie, znaczniki czasu w przypadku @sc{ftp} dzia³aj± prawie tak samo,
+jak w @sc{http}, tyle ¿e w @sc{ftp} nie ma nag³ówków -- znaczniki czasu
+@c  ferret
+musz± byæ wydobyte z listingów katalogów.
+
+Je¶li ¶ci±ganie @sc{ftp} jest rekurencyjne lub wykorzystuje maski plików,
+Wget stosuje polecenie @sc{ftp} @code{LIST}, by otrzymaæ listing katalogu
+zawieraj±cego ¿±dane pliki.  Nastêpnie próbuje przeanalizowaæ listing,
+traktuj±c go jak wyj¶cie z uniksowego @code{ls -l}, i wydzieliæ zeñ
+znaczniki czasu.  Dalsza czê¶æ jest dok³adnie taka sama jak dla @sc{http}.
+Zauwa¿, ¿e przy pobieraniu z serwera @sc{ftp} pojedynczego pliku bez
+stosowania masek czy rekurencji, listingi plików nie bêd± ¶ci±gane (a wiêc
+pliki nie otrzymaj± znaczników czasu), chyba ¿e podano opcjê @samp{-N}.
+
+Za³o¿enie, ¿e ka¿dy listing katalogu jest listingiem typu uniksowego mo¿e
+wydawaæ siê niezwykle ograniczaj±ce, ale w praktyce tak nie jest.  Wiele
+nieuniksowych serwerów @sc{ftp} stosuje uniksowaty format listingu, gdy¿
+wiêkszo¶æ (wszystkie?) klienty je rozumiej±.  Nale¿y pamiêtaæ, ¿e @sc{rfc959}
+nie definiuje ¿adnej metody uzyskiwania listy plików, nie mówi±c ju¿
+o znacznikach czasu.  Mo¿emy tylko mieæ nadziejê, ¿e przysz³y standard to
+zdefiniuje.
+
+Inne niestandardowe rozwi±zanie polega na u¿yciu polecenia @code{MDTM},
+rozpoznawanego przez niektóre serwery @sc{ftp} (³±cznie z popularnym
+@code{wu-ftpd}), które zwraca dok³adny czas podanego pliku.
+Byæ mo¿e w przysz³o¶ci Wget bêdzie korzysta³ z tego polecenia.
+
+@node Plik konfiguracyjny, Przyk³ady, Znaczniki czasu, Top
+@chapter Plik konfiguracyjny
+@cindex plik konfiguracyjny
+@cindex wgetrc
+@cindex .wgetrc
+@cindex inicjowanie
+@cindex konfigurowanie
+@cindex .netrc
+
+Kiedy wiemy ju¿, jak zmieniaæ domy¶lne ustawienia programu za pomoc±
+argumentów wiersza poleceñ, chcieliby¶my zapewne niektóre z nich zachowaæ
+jako ustawienia sta³e.  Wygodnym sposobem jest utworzenie pliku startowego
+Wget -- @file{.wgetrc}.
+
+Oprócz @file{.wgetrc}, ,,g³ównego'' pliku inicjuj±cego, wygodnie jest
+mieæ specjalne miejsce do przechowywania hase³.  Z tej przyczyny Wget
+czyta i interpretuje zawarto¶æ pliku @file{$HOME/.netrc}, je¶li go znajdzie.
+Format pliku @file{.netrc} mo¿na znale¼æ w odpowiednim podrêczniku systemowym.
+
+Wget odczytuje @file{.wgetrc} podczas uruchamiania, rozpoznaj±c ograniczony
+zestaw poleceñ.
+
+@menu
+* Po³o¿enie wgetrc::    Po³o¿enie ró¿nych plików wgetrc.
+* Sk³adnia wgetrc::     Sk³adnia wgetrc.
+* Polecenia wgetrc::    Lista dostêpnych poleceñ.
+* Przyk³adowy wgetrc::  Przyk³ad wgetrc.
+@end menu
+
+@node Po³o¿enie wgetrc, Sk³adnia wgetrc, Plik konfiguracyjny, Plik konfiguracyjny
+@section Po³o¿enie wgetrc
+@cindex wgetrc, po³o¿enie
+@cindex po³o¿enie wgetrc
+
+Przy inicjowaniu Wget szuka @dfn{ogólnosystemowego}, globalnego pliku
+konfiguracyjnego, domy¶lnie @file{/usr/local/etc/wgetrc} (lub z jakim¶ innym
+ni¿ @file{/usr/local} przedrostkiem, je¶li Wget zainstalowano gdzie indziej)
+i, je¶li takowy istnieje, odczytuje z niego polecenia.
+
+Nastêpnie szuka pliku u¿ytkownika.  Je¶li nadano warto¶æ zmiennej
+¶rodowiskowej @code{WGETRC}, program bêdzie usi³owa³ za³adowaæ plik przez
+ni± okre¶lony.  Je¿eli siê to nie uda, nie bêd± podejmowane dalsze starania.
+
+Je¶li nie ustawiono @code{WGETRC}, Wget spróbuje za³adowaæ
+@file{$HOME/.wgetrc}.
+
+To, i¿ ustawienia u¿ytkownika s± wczytywane po ogólnosystemowych oznacza,
+¿e w przypadku konfliktu wgetrc nale¿±cy do u¿ytkownika @emph{przes³ania}
+ustawienia ogólnosystemowe (z @file{/usr/local/etc/wgetrc}, domy¶lnie).
+Precz z faszystowskimi adminami!
+
+@node Sk³adnia wgetrc, Polecenia wgetrc, Po³o¿enie wgetrc, Plik konfiguracyjny
+@section Sk³adnia wgetrc
+@cindex wgetrc, sk³adnia
+@cindex sk³adnia wgetrc
+
+Sk³adnia poleceñ wgetrc jest prosta:
+
+@example
+zmienna = warto¶æ
+@end example
+
+@dfn{Zmienn±} bêdziemy te¿ nazywaæ @dfn{poleceniem}.  Poprawne @dfn{warto¶ci}
+s± ró¿ne dla ró¿nych poleceñ.
+
+Polecenia s± nie s± wra¿liwe na wielko¶æ znaków i podkre¶lenia.
+Tak wiêc, @samp{DIr__PrefiX} jest tym samym, co @samp{dirprefix}.
+Puste linie, linie zaczynaj±ce siê od @samp{#} i linie zawieraj±ce tylko
+odstêpy (bia³e znaki) s± pomijane.
+
+Polecenia, które spodziewaj± siê jako argumentu listy rozdzielanej
+przecinkami, przy pustym poleceniu wymazuj± listê.  Je¶li zatem chcemy
+wyzerowaæ listê odrzuceñ okre¶lon± w ogólnosystemowym @file{wgetrc},
+robimy to za pomoc±:
+
+@example
+reject =
+@end example
+
+@node Polecenia wgetrc, Przyk³adowy wgetrc, Sk³adnia wgetrc, Plik konfiguracyjny
+@section Polecenia wgetrc
+@cindex polecenia wgetrc
+@cindex wgetrc, polecenia
+
+Pe³ny zestaw poleceñ spisano poni¿ej.  Dopuszczalne warto¶ci podano po
+znaku równo¶ci @samp{=}.  Zwyk³e warto¶ci logiczne nadaje siê zmiennym
+stosuj±c @samp{on} i @samp{off} lub @samp{1} i @samp{0}.  Bardziej wymy¶lnym
+rodzajem zmiennych boolowskich dopuszczalnych w niektórych przypadkach
+s± @dfn{zmienne logiczne blokowane}, którym mo¿na nadaæ warto¶æ @samp{on},
+@samp{off}, @samp{always} (zawsze) lub @samp{never} (nigdy).  Je¿eli opcja
+ma warto¶æ @samp{always} lub @samp{never}, to warto¶æ ta jest zablokowana
+podczas wywo³ywania Wget -- opcje wiersza poleceñ jej nie przes³oni±.
+
+Niektóre z poleceñ pobieraj± pseudo-dowolne warto¶ci.  Warto¶ciami
+@var{adresu} mog± byæ nazwy hostów lub adresy IP w postaci czwórek liczb
+rozdzielonych kropkami.  @var{n} mo¿e byæ dowoln± liczb± dodatni± lub
+napisem @samp{inf} oznaczaj±cym nieskoñczono¶æ, gdzie ma to zastosowanie.
+Warto¶ci± @dfn{³añcucha} (@var{string}) mo¿e byæ dowolny niepusty ³añcuch
+znakowy.
+
+Wiêkszo¶æ tych poleceñ posiada równowa¿niki u¿ywane w wierszu poleceñ
+(@pxref{Wywo³anie}), choæ niektóre z mniej znanych i rzadko u¿ywanych nie maj±.
+
+@table @asis
+@item accept/reject = @var{³añcuch}
+To samo, co @samp{-A}/@samp{-R} (@pxref{Typy plików}).
+
+@item add_hostdir = on/off
+W³±cza/wy³±cza nazwy hostów z przedrostkiem. @samp{-nH} wy³±cza to.
+
+@item continue = on/off
+Ustawione na @samp{on} wymusza kontynuowanie ju¿ istniej±cych czê¶ciowo
+pobranych plików.  Przed nadaniem warto¶ci zobacz opis @samp{-c}.
+
+@item background = on/off
+W³±cza/wy³±cza przej¶cie do pracy w tle.  To samo co @samp{-b} (które je
+w³±cza).
+
+@item backup_converted = on/off
+W³±cza/wy³±cza zachowywanie plików sprzed konwersji z przyrostkiem
+@samp{.orig}.  To samo co @samp{-K} (które je w³±cza).
+
+@c @item backups = @var{liczba}
+@c #### Document me!
+@c
+@item base = @var{³añcuch}
+Wymusza poprzedzanie zadanym @var{³añcuchem} odno¶ników wzglêdnych
+wystêpuj±cych w plikach wej¶ciowych @sc{url}-i.
+To samo co @samp{-B}.
+
+@item bind_address = @var{adres}
+Wi±¿e z lokalnym komputerem zadany @var{adres}, tak jak opcja
+@samp{--bind-address}.
+
+@item cache = on/off
+Je¶li ustawione na @samp{off}, wy³±cza buforowanie po stronie serwera.
+To samo co @samp{-C}.
+
+@item convert links = on/off
+Konwertuje lokalnie bezwzglêdne odno¶niki na wzglêdne.  To samo co @samp{-k}.
+
+@item cookies = on/off
+Ustawione na @samp{off} nie dopuszcza ciasteczek.
+Zobacz opcja @samp{--cookies}.
+
+@item load_cookies = @var{plik}
+Wczytuje ciasteczka z @var{pliku}.  Zobacz @samp{--load-cookies}.
+ 
+@item save_cookies = @var{plik}
+Zapisuje ciasteczka do @var{pliku}.  Zobacz @samp{--save-cookies}.
+
+@item cut_dirs = @var{n}
+Ignoruje @var{n} sk³adowych katalogu zdalnego. To samo co @samp{--cut-dirs}.
+
+@item debug = on/off
+Tryb diagnostyczny.  To samo co @samp{-d}.
+
+@item delete_after = on/off
+Usuwa pliki po ¶ci±gniêciu.  To samo co @samp{--delete-after}.
+
+@item dir_prefix = @var{³añcuch}
+Wierzcho³ek drzewa katalogów.  To samo co @samp{-P}.
+
+@item dirstruct = on/off
+W³±cza i wy³±cza tworzenie struktury katalogów.  To samo co, odpowiednio,
+@samp{-x} or @samp{-nd}.
+
+@item domains = @var{³añcuch}
+To samo co @samp{-D} (@pxref{Przechodzenie miêdzy hostami}).
+
+@item dot_bytes = @var{n}
+Liczba bajtów ,,zawartych'' w kropce widocznej podczas pobierania
+(domy¶lnie 1024).  Po warto¶ci mo¿na dopisaæ @samp{k} lub @samp{m},
+oznaczaj±ce, odpowiednio, kilobajty i megabajty.  Pokazywane podczas
+pobierania kropki mo¿na dopasowaæ do swoich potrzeb albo w ten sposób albo
+u¿ywaj±c predefiniowanych @dfn{stylów} (@pxref{Opcje ¶ci±gania}).
+
+@item dots_in_line = @var{n}
+Liczba kropek w linii, jakie bêd± wypisywane podczas pobierania
+(domy¶lnie 50).
+
+@item dot_spacing = @var{n}
+Liczba kropek w pojedynczej grupie (domy¶lnie 10).
+
+@item exclude_directories = @var{³añcuch}
+Podaje listê oddzielonych przecinkami katalogów, które chcemy wy³±czyæ
+ze ¶ci±gania.  To samo co @samp{-X} (@pxref{Ograniczanie katalogów}).
+
+@item exclude_domains = @var{³añcuch}
+Podaje listê oddzielonych przecinkami domen, które chcemy wy³±czyæ
+ze ¶ci±gania.  To samo co @samp{--exclude-domains}
+(@pxref{Przechodzenie miêdzy hostami}).
+
+@item follow_ftp = on/off
+Pod±¿a za odno¶nikami @sc{ftp} z dokumentów @sc{html}.
+To samo co @samp{--follow-ftp}.
+
+@item follow_tags = @var{³añcuch}
+Zezwala na pod±¿anie podczas pobierania rekurencyjnego tylko za niektórymi
+znacznikami @sc{html}.  To samo co @samp{--follow-tags}.
+
+@item force_html = on/off
+Je¶li jest w³±czone, wymusza traktowanie pliku wej¶ciowego jako dokumentu
+@sc{html}.  To samo co @samp{-F}.
+
+@item ftp_proxy = @var{³añcuch}
+U¿ywa @var{³añcucha} jako proxy dla @sc{ftp}, zamiast ³añcucha wskazanego
+zmienn± ¶rodowiskow±.
+
+@item glob = on/off
+W³±cza/wy³±cza obs³ugê masek dla @sc{ftp}.  To samo co @samp{-g}.
+
+@item header = @var{³añcuch}
+Okre¶la dodatkowy nag³ówek.  To samo co @samp{--header}.
+
+@item html_extension = on/off
+Dodaje rozszerzenie @samp{.html} do plików @samp{text/html}, które go nie
+posiadaj±.  To samo co @samp{-E}.
+
+@item http_passwd = @var{³añcuch}
+Ustawia has³o @sc{http}.
+
+@item http_proxy = @var{³añcuch}
+U¿ywa @var{³añcucha} jako proxy dla @sc{http}, zamiast ³añcucha podanego
+zmienn± ¶rodowiskow±.
+
+@item http_user = @var{³añcuch}
+Ustawia u¿ytkownika @sc{http}.
+
+@item ignore_length = on/off
+Ignorowanie nag³ówków @code{Content-Length}.
+To samo, co @samp{--ignore-length}.
+
+@item ignore_tags = @var{³añcuch}
+Pomija zadane znaczniki @sc{html} podczas rekurencyjnego szukania
+dokumentów do pobrania.  To samo co @samp{-G} / @samp{--ignore-tags}.
+
+@item include_directories = @var{³añcuch}
+Podaje listê oddzielonych przecinkami katalogów, do których mo¿e przechodziæ
+program podczas pobierania.  To samo co @samp{-I}.
+
+@item input = @var{³añcuch}
+Nakazuje czytanie @sc{url}-i z podanego pliku.
+To samo co @samp{-i}.
+
+@item kill_longer = on/off
+Dane d³u¿sze ni¿ okre¶lone w nag³ówku @code{Content-Length} bêd± uwa¿ane
+za niewa¿ne (i ponownie pobierane). Domy¶lnym zachowaniem jest zapisanie
+tylu danych, ile pobrano, pod warunkiem, ¿e jest ich przynajmniej tyle,
+na ile wskazywa³a warto¶æ w @code{Content-Length}.
+
+@item limit_rate = @var{prêdko¶æ}
+Ogranicza prêdko¶æ pobierania do maksymalnie @var{prêdko¶æ} bajtów
+na sekundê. To samo co @samp{--limit-rate}.
+
+@item logfile = @var{³añcuch}
+Ustawia plik dziennika.  To samo co @samp{-o}.
+
+@item login = @var{³añcuch}
+Nazwa u¿ytkownika na zdalnej maszynie, dla @sc{ftp}.
+Domy¶lnie: @samp{anonymous}.
+
+@item mirror = on/off
+W³±cza/wy³±cza tworzenie kopii lustrzanych. To samo co @samp{-m}.
+
+@item netrc = on/off
+W³±cza/wy³±cza czytanie @file{netrc}.
+
+@item noclobber = on/off
+Zakazuje tworzenia wielu wersji pliku.  To samo co @samp{-nc}.
+
+@item no_parent = on/off
+Zabrania pobierania poza hierarchi± danego katalogu.
+To samo co @samp{--no-parent} (@pxref{Ograniczanie katalogów}).
+
+@item no_proxy = @var{³añcuch}
+Zamiast kierowaæ siê zmienn± ¶rodowiska, u¿ywa @var{³añcucha} jako listy
+rozdzielonych przecinkami domen, których nie nale¿y pobieraæ przez proxy.
+
+@item output_document = @var{³añcuch}
+Ustawia nazwê pliku wyj¶ciowego.
+To samo co @samp{-O}.
+
+@item page_requisites = on/off
+¦ci±ga wszystkie pomocnicze dokumenty niezbêdne do prawid³owego wy¶wietlenia
+pojedynczej strony @sc{html}.
+To samo co @samp{-p}.
+
+@item passive_ftp = on/off/always/never
+Ustawia tryb pasywnego @sc{ftp}.  To samo co @samp{--passive-ftp}.
+Niektóre skrypty i pliki @samp{.pm} (modu³y Perla) ¶ci±gaj± pliki
+wykorzystuj±c @samp{wget --passive-ftp}.  Je¶li nasza zapora ogniowa na to
+nie pozwala, to mo¿na ustawiæ @samp{passive_ftp = never}, co spowoduje
+ignorowanie ustawienia z wiersza poleceñ.
+
+@item passwd = @var{³añcuch}
+Ustawia has³o na zdalnej maszynie dla @sc{ftp}.  Bez tej zmiennej domy¶lnie
+jest to @samp{username@@hostname.domainname}.
+
+@item progress = @var{string}
+Ustala typ wska¼nika postêpu.  Dozwolone typy to ,,dot'' (kropki) i ,,bar''
+(pasek).
+
+@item proxy_user = @var{³añcuch}
+Ustawia nazwê u¿ytkownika do uwierzytelniania przez proxy.
+To samo co @samp{--proxy-user}.
+
+@item proxy_passwd = @var{³añcuch}
+Ustawia has³o do uwierzytelniania przez proxy.
+To samo co @samp{--proxy-passwd}.
+
+@item referer = @var{³añcuch}
+Nadaje warto¶æ nag³ówkowi @samp{Referer:} zamieszczanemu w ¿±daniu @sc{http}.
+To samo co @samp{--referer}.
+(Zauwa¿, ¿e to faceci, którzy pisali specyfikacjê @sc{html}-u zrobili b³±d
+w pisowni s³owa ,,referrer''.)
+
+@item quiet = on/off
+Tryb cichy.  To samo co @samp{-q}.
+
+@item quota = @var{limit}
+Okre¶la ograniczenie wielko¶ci pobieranych danych, co warto wpisaæ
+do ogólnosystemowego @file{wgetrc}.  Przy ustawionym ograniczeniu ¶ci±gania,
+Wget przestanie pobieraæ w momencie, kiedy suma wielko¶ci plików pobranych
+dotychczas bêdzie wiêksza ni¿ quota.  Limit podawany jest w bajtach
+(domy¶lnie), kilobajtach (z przyrostkiem @samp{k}) lub megabajtach
+(z przyrostkiem @samp{m}).  Zatem, @samp{quota = 5m} ustawi quotê na 5
+megabajtów. Zauwa¿, ¿e ustawienia w pliku u¿ytkownika maj± wy¿szy
+priorytet ni¿ te w pliku systemowym.
+
+@item reclevel = @var{n}
+Poziom rekurencji.  To samo co @samp{-l}.
+
+@item recursive = on/off
+W³±cza/wy³±cza rekurencjê.  To samo co @samp{-r}.
+
+@item relative_only = on/off
+Pod±¿a tylko za odno¶nikami wzglêdnymi.
+To samo co @samp{-L}. (@pxref{Odno¶niki wzglêdne}).
+
+@item remove_listing = on/off
+Je¶li jest w³±czone, ¶ci±gniête przez Wget pliki listingów @sc{ftp}
+s± usuwane.  Wy³±czenie jest tym samym, co u¿ycie opcji @samp{-nr}.
+
+@item retr_symlinks = on/off
+Je¶li jest w³±czone, dowi±zania symboliczne s± pobierane tak, jakby by³y
+zwyk³ymi plikami.  To samo co @samp{--retr-symlinks}.
+
+@item robots = on/off
+Okre¶la, czy Wget powinien stosowaæ siê do konwencji norobots, domy¶lnie
+w³±czone (,,on''). Ten prze³±cznik odpowiada za opisane w specyfikacji
+konwencje @file{/robots.txt} i @samp{nofollow}. @xref{Wykluczanie robotów},
+gdzie podano szczegó³y.
+Nie nale¿y przestawiaæ go w stan ,,off' bez dobrej znajomo¶ci rzeczy.
+
+@item server_response = on/off
+Decyduje o wypisywaniu b±d¼ niewypisywaniu nag³ówków odpowiedzi serwerów
+@sc{http} i @sc{ftp}.  To samo co @samp{-S}.
+
+@item span_hosts = on/off
+W³±cza/wy³±cza przechodzenie pomiêdzy hostami przy pobieraniu rekurencyjnym.
+To samo co @samp{-H}.
+
+@item timeout = @var{n}
+Ustawia warto¶æ limitu czasu.
+To samo co @samp{-T}.
+
+@item timestamping = on/off
+W³±cza/wy³±cza u¿ywanie znaczników czasu.
+To samo co @samp{-N} (@pxref{Znaczniki czasu}).
+
+@item tries = @var{n}
+Ustawia liczbê ponowieñ pobrania pojedynczego @sc{url}-a.
+To samo co @samp{-t}.
+
+@item use_proxy = on/off
+W³±cza/wy³±cza obs³ugê serwerów proxy.  To samo co @samp{-Y}.
+
+@item verbose = on/off
+W³±cza/wy³±cza pe³ne wyj¶cie.  To samo co @samp{-v}/@samp{-nv}.
+
+@item wait = @var{n}
+Czeka @var{n} sekund miêdzy kolejnymi pobraniami.  To samo co @samp{-w}.
+
+@item waitretry = @var{n}
+Czeka do @var{n} sekund tylko pomiêdzy ponawianymi próbami nieudanych pobrañ.
+To samo co @samp{--waitretry}.  Zauwa¿, ¿e w ogólnosystemowym pliku
+@file{wgetrc} ta opcja jest domy¶lnie w³±czona.
+
+@item randomwait = on/off
+W³±cza/wy³±cza losowe czasy oczekiwania pomiêdzy ¿±daniami. To samo co
+@samp{--random-wait}.
+@end table
+
+@node Przyk³adowy wgetrc,  , Polecenia wgetrc, Plik konfiguracyjny
+@section Przyk³adowy wgetrc
+@cindex przyk³adowy wgetrc
+@cindex wgetrc, przyk³adowy
+
+Oto przyk³adowy plik inicjuj±cy, taki jaki przychodzi w pakiecie
+dystrybucyjnym.  Podzielony jest na dwie sekcje -- jedn± do u¿ytku
+ogólnego (nadaj±ca siê na ogólnosystemowy plik startowy), a drug± do
+lokalnego (odpowiednia na @file{$HOME/.wgetrc}).
+Uwa¿aj na to, co zmieniasz.
+
+Zauwa¿, ¿e prawie wszystkie linijki s± zakomentowane.  Musisz usun±æ
+znak @samp{#} z pocz±tku linijki, by dane polecenie zadzia³a³o.
+
+@example
+@include sample.wgetrc.munged_for_texi_inclusion
+@end example
+
+@node Przyk³ady, Rozmaito¶ci, Plik konfiguracyjny, Top
+@chapter Przyk³ady
+@cindex przyk³ady
+
+@c man begin EXAMPLES
+Przyk³ady podzielono na trzy czê¶ci, z grubsza wed³ug stopnia komplikacji.
+
+@menu
+* Proste zastosowania::               Proste, podstawowe u¿ycie programu.
+* Zaawansowane zastosowania::         Zaawansowane podpowiedzi.
+* Bardzo zaawansowane zastosowania::  Pokrêcone ró¿no¶ci.
+@end menu
+
+@node Proste zastosowania, Zaawansowane zastosowania, Przyk³ady, Przyk³ady
+@section Proste zastosowania
+
+@itemize @bullet
+@item
+Powiedzmy, ¿e chcemy ¶ci±gn±æ jaki¶ @sc{url}.  Wystarczy napisaæ:
+
+@example
+wget http://fly.srk.fer.hr/
+@end example
+
+@item
+Ale co siê stanie, je¶li ³±cze jest powolne, a plik d³ugi?
+Po³±czenie prawdopodobnie zawiedzie zanim zostanie pobrany ca³y plik.
+W takiej sytuacji Wget bêdzie usi³owa³ pobraæ plik dopóki nie ¶ci±gnie ca³ego
+albo nie przekroczy domy¶lnej liczby ponawiañ (wynosz±c± 20).  Mo¿na ³atwo
+zmieniæ liczbê prób na 45, by upewniæ siê, ¿e ca³y plik dotrze bezpiecznie:
+
+@example
+wget --tries=45 http://fly.srk.fer.hr/jpg/flyweb.jpg
+@end example
+
+@item
+A teraz pozostawmy program Wget pracuj±cy w tle i zapisuj±cy informacje
+o postêpach ¶ci±gania do pliku dziennika @file{log}.  Wpisywanie
+@samp{--tries} jest mêcz±ce, wiêc u¿yjemy @samp{-t}:
+
+@example
+wget -t 45 -o log http://fly.srk.fer.hr/jpg/flyweb.jpg &
+@end example
+
+Znak @code{&} na koñcu linijki zapewnia, ¿e Wget bêdzie dzia³aæ w tle.
+Ograniczenie liczby ponawiañ mo¿na zlikwidowaæ stosuj±c @samp{-t inf}.
+
+@item
+Sposób u¿ycia @sc{ftp} jest równie prosty.  Wget zajmie siê nazw±
+zg³oszeniow± (login) i has³em.
+
+@example
+wget ftp://gnjilux.srk.fer.hr/welcome.msg
+@end example
+
+@item
+Je¶li podamy katalog, to program pobierze jego listing, przetworzy go
+i przekszta³ci na @sc{html}.  Mo¿na spróbowaæ:
+
+@example
+wget ftp://prep.ai.mit.edu/pub/gnu/
+links index.html
+@end example
+@end itemize
+
+@node Zaawansowane zastosowania, Bardzo zaawansowane zastosowania, Proste zastosowania, Przyk³ady
+@section Zaawansowane zastosowania
+
+@itemize @bullet
+@item
+Mamy gotowy plik z list± @sc{url}-i, które chcemy pobraæ? Wystarczy
+skorzystaæ z prze³±cznika @samp{-i}:
+
+@example
+wget -i @var{plik}
+@end example
+
+Je¶li jako nazwê pliku podamy @samp{-}, to @sc{url}-e bêd± czytane ze
+standardowego wej¶cia.
+
+@item
+! Create a five levels deep mirror image of the GNU web site, with the
+! same directory structure the original has, with only one try per
+! document, saving the log of the activities to @file{gnulog}:
+
+Stworzymy siêgaj±cy piêciu poziomów obraz lustrzany witryny @sc{www}
+GNU (z t± sam± struktur± katalogów, jak± ma orygina³), stosuj±c tylko
+jedn± próbê pobierania dla ka¿dego dokumentu i zapisuj±c dziennik pracy
+do @file{gnulog}:
+
+@example
+wget -r http://www.gnu.org/ -o gnulog
+@end example
+
+@item
+To samo co powy¿ej, ale z konwersj± odno¶ników w plikach @sc{html} tak,
+¿eby wskazywa³y na lokalne pliki, by mo¿na by³o przegl±daæ dokumenty
+off-line:
+
+@example
+wget --convert-links -r http://www.gnu.org/ -o gnulog
+@end example
+
+@item
+Pobranie tylko jednej strony HTML, ale z upewnieniem siê, ¿e wszystkie
+elementy niezbêdne do jej wy¶wietlenia (np. wstawione obrazki i zewnêtrzne
+arkusze stylu) równie¿ zostan± pobrane. Zapewnia te¿, ¿e ¶ci±gniêta strona
+wskazuje na pobrane odno¶niki. Ponadto odno¶niki w pobranej stronie powinny
+wskazywaæ na pobrane kopie elementów.
+
+@example
+wget -p --convert-links http://www.server.com/dir/strona.html
+@end example
+
+Wybrana strona HTML zostanie zapisana do @file{www.server.com/dir/strona.html},
+a obrazki, arkusze stylu itd. gdzie¶ w katalogu @file{www.server.com/},
+zale¿nie od tego, gdzie znajdowa³y siê na zdalnym serwerze.
+
+@item
+Tak samo, jak wy¿ej, ale bez katalogu @file{www.server.com/}. W gruncie
+rzeczy wcale nie chcê tych wszystkich przypadkowych katalogów
+z serwera -- chcê po prostu zapisaæ @emph{wszystkie} pobrane pliki
+w podkatalogu @file{download/} bie¿±cego katalogu.
+
+@example
+wget -p --convert-links -nH -nd -Pdownload \
+     http://www.server.com/dir/strona.html
+@end example
+
+@item
+Pobranie index.html z @samp{www.lycos.com}, z pokazaniem oryginalnych,
+odebranych od serwera nag³ówków:
+
+@example
+wget -S http://www.lycos.com/
+@end example
+
+@item
+Zapisanie nag³ówków serwera w pliku, zapewne do koñcowego przetwarzenia:
+@example
+wget -s http://www.lycos.com/
+more index.html
+@end example
+
+@item
+Pobranie pierwszych dwu poziomów @samp{wuarchive.wustl.edu}, z zapisaniem
+ich do @file{/tmp}.
+
+@example
+wget -r -l2 -P/tmp ftp://wuarchive.wustl.edu/
+@end example
+
+@item
+Chcemy ¶ci±gn±æ wszystkie @sc{gif}-y z pewnego katalogu serwera @sc{http}.
+Próbowali¶my @samp{wget http://www.server.com/dir/*.gif}, ale nie zadzia³a³o,
+bo pobieranie @sc{http} nie realizuje masek plików.  W takim przypadku
+stosujemy:
+
+@example
+wget -r -l1 --no-parent -A.gif http://www.server.com/dir/
+@end example
+
+Wiêcej pisaniny, ale skutek jest taki sam.  @samp{-r -l1} oznacza pobieranie
+rekurencyjne (@pxref{Pobieranie rekurencyjne}), z maksymaln± g³êboko¶ci± 1.
+@samp{--no-parent} znaczy, ¿e odwo³ania do katalogu nadrzêdnego maj± byæ
+ignorowane (@pxref{Ograniczanie katalogów}), a @samp{-A.gif} oznacza ¶ci±ganie
+tylko plików @sc{gif}.  Dzia³a³oby te¿ @samp{-A "*.gif"}.
+
+@item
+Za³ó¿my, ¿e byli¶my w po³owie ¶ci±gania, gdy nagle przerwano pracê Wget.
+Nie chcieliby¶my teraz nadpisywaæ ju¿ obecnych plików ponownie ¶ci±ganymi.
+Napisaliby¶my:
+
+@example
+wget -nc -r http://www.gnu.org/
+@end example
+
+@item
+Do zakodowania swojej nazwy u¿ytkownika i has³a do @sc{http} lub @sc{ftp}
+u¿ywamy odpowiedniej sk³adni @sc{url}-a (@pxref{Format URL}).
+
+@example
+wget ftp://hniksic:mojehaslo@@unix.server.com/.emacs
+@end example
+
+Nale¿y jednak zauwa¿yæ, ¿e w systemach wielodostêpnych taki sposob u¿ycia
+jest niezalecany, poniewa¿ ujawnia has³o ka¿demu, kto spojrzy na wynik
+dzia³ania @code{ps}.
+
+@cindex przekierowanie wyj¶cia
+@cindex przeadresowanie wyj¶cia
+A mo¿e chcieliby¶my, ¿eby dokumenty wynikowe by³y kierowane na standardowe
+wyj¶cie, a nie zapisywane do plików?
+
+@example
+wget -O - http://jagor.srce.hr/ http://www.srce.hr/
+@end example
+
+Mo¿na te¿ ³±czyæ te dwie opcje i tworzyæ potoki do pobierania
+dokumentów ze zdalnych list przebojów:
+
+@example
+wget -O - http://cool.list.com/ | wget --force-html -i -
+@end example
+@end itemize
+
+@node Bardzo zaawansowane zastosowania,  , Zaawansowane zastosowania, Przyk³ady
+@section Bardzo zaawansowane zastosowania
+
+@cindex mirroring
+@cindex kopie lustrzane
+@cindex lustrzane, kopie
+@itemize @bullet
+@item
+Je¶li chcemy, by Wget utrzymywa³ lustrzan± kopiê strony (lub podkatalogów
+@sc{ftp}), stosujemy @samp{--mirror} (@samp{-m}), co jest skróconym zapisem
+dla @samp{-r -l inf -N}.  Umieszczamy Wget w pliku crontab, ¿±daj±c, by
+w ka¿d± niedzielê ponawia³ sprawdzanie o¶rodka:
+
+@example
+crontab
+0 0 * * 0 wget --mirror http://www.gnu.org/ -o /home/ja/weeklog
+@end example
+
+@item
+Dodatkowo mo¿na za¿yczyæ sobie konwersji odno¶ników, tak by ca³o¶æ nadawa³a
+siê do przegl±dania lokalnie. Jednak, po przeczytaniu tego podrêcznika,
+wiecie ju¿, ¿e taka konwersja nie sprawuje siê dobrze, gdy wykorzystujemy
+znaczniki czasu, wiêc chcemy równie¿, ¿eby Wget utworzy³ kopie oryginalnych
+plików HTML przed ich przekszta³ceniem. Odpowiednie Wywo³anie wygl±da³oby
+tak:
+
+@example
+wget --mirror --convert-links --backup-converted  \
+     http://www.gnu.org/ -o /home/ja/weeklog
+@end example
+
+@item
+Ale zauwa¿yli¶cie te¿, ¿e lokalne przegl±danie nie dzia³a ca³kiem
+@c      doesn't work all that well
+poprawnie, je¶li pliki HTML zapisano z innym rozszerzeniem ni¿ @samp{.html},
+na przyk³ad dlatego, ¿e dostarczono je jako @file{index.cgi}. Zatem
+chcieliby¶my, ¿eby Wget wszystkim plikom przekazanym z nag³ówkiem
+content-type równym @samp{text/html} zmieni³ nazwy
+na @file{@var{nazwa}.html}.
+  
+@example
+wget --mirror --convert-links --backup-converted \
+     --html-extension -o /home/ja/weeklog        \
+     http://www.gnu.org/
+@end example
+
+Lub te¿, pisz±c krócej:
+
+@example
+wget -m -k -K -E http://www.gnu.org/ -o /home/me/weeklog
+@end example
+@end itemize
+@c man end
+
+@node Rozmaito¶ci, Dodatki, Przyk³ady, Top
+@chapter Rozmaito¶ci
+@cindex rozmaito¶ci
+
+W tym rozdziale umieszczono wszystko, co nie pasowa³o gdzie indziej.
+
+@menu
+* Serwery proxy::      Obs³uga serwerów servers
+* Dystrybucja::        Uzyskiwanie naj¶wie¿szej wersji.
+* Lista dyskusyjna::   Lista dyskusyjna Wget: og³oszenia i dyskusje.
+* Zg³aszanie b³êdów::  Jak i gdzie zg³aszaæ b³êdy.
+* Przeno¶no¶æ::        Systemy, na który pracuje Wget.
+* Sygna³y::            Obs³uga sygna³ów wykonywana przez Wget.
+@end menu
+
+@node Serwery proxy, Dystrybucja, Rozmaito¶ci, Rozmaito¶ci
+@section Serwery proxy
+@cindex proxy
+@cindex serwery proxy
+
+Serwery @dfn{proxy} (ang. po¶rednik) to specjalizowane serwery @sc{http}
+maj±ce za zadanie przekazywanie danych od zdalnych serwerów do lokalnych
+klientów.  Jednym z typowych zastosowañ serwerów proxy jest zmniejszenie
+obci±¿enia sieci dla u¿ytkowników znajduj±cych siê za powolnym ³±czem.
+@c           achieved by channeling
+Osi±ga siê to dziêki kierowaniu wszystkich ¿±dañ @sc{http} i @sc{ftp} do
+proxy, który buforuje przesy³ane dane.  Gdy przechowywane w buforze zasoby
+s± ¿±dane ponownie, proxy zwraca dane z bufora.  Innym zastosowaniem proxy
+jest oddzielanie sieci wewnêtrznych firm (z uwagi na bezpieczeñstwo) od
+reszty Internetu.  Chc±c uzyskaæ informacje z Sieci, u¿ytkownicy w firmie
+³±cz± siê i pobieraj± zdalne dane korzystaj±c z uwierzytelnionego proxy.
+
+Wget potrafi korzystaæ z serwerów proxy zarówno przy pobraniach @sc{http},
+jak i @sc{ftp}.  Standardowy sposób okre¶lania lokalizacji, rozpoznawany
+tak¿e przez Wget, korzysta z nastêpuj±cych zmiennych ¶rodowiskowych:
+
+@table @code
+@item http_proxy
+Ta zmienna powinna zawieraæ @sc{url} serwera proxy dla po³±czeñ @sc{http}.
+
+@item ftp_proxy
+Ta zmienna powinna zawieraæ @sc{url} serwera proxy dla po³±czeñ @sc{ftp}.
+Do¶æ czêsto @sc{http_proxy} i @sc{ftp_proxy} wskazuj± ten sam @sc{url}.
+
+@item no_proxy
+Ta zmienna powinna zawieraæ listê separowanych przecinkami rozszerzeñ domen,
+dla których @emph{nie} powinno byæ u¿ywane proxy.  Na przyk³ad, je¶li
+warto¶ci± @code{no_proxy} jest @samp{.mit.edu}, to do pobierania dokumentów
+z MIT proxy nie bêdzie u¿ywane.
+@end table
+
+Oprócz wykorzystania zmiennych ¶rodowiska, mo¿na dodatkowo okre¶laæ
+lokalizacjê i ustawienia proxy dla samego Wget.
+
+@table @samp
+@item -Y on/off
+@itemx --proxy=on/off
+@itemx proxy = on/off
+Ta opcja s³u¿y do w³±czania i wy³±czania korzystania z proxy.
+Obs³uga proxy jest domy¶lnie w³±czona, pod warunkiem, ¿e ustawione s±
+odpowiednie zmienne ¶rodowiskowe.
+
+@item http_proxy = @var{URL}
+@itemx ftp_proxy = @var{URL}
+@itemx no_proxy = @var{³añcuch}
+Te zmienne pliku startowego umo¿liwiaj± przes³oniêcie ustawieñ proxy
+okre¶lonych przez ¶rodowisko.
+@end table
+
+Niektóre serwery proxy wymagaj± uwierzytelnienia, by móc z nich skorzystaæ.
+Na uwierzytelnianie sk³ada siê @dfn{nazwa u¿ytkownika} i @dfn{has³o}, które
+musz± zostaæ przes³ane przez Wget.  Tak jak w przypadku uwierzytelniania
+@sc{http}, istnieje kilka schematów uwierzytelniania.  Obecnie dla
+uwierzytelniania proxy zaimplementowano tylko schemat @code{Basic}.
+
+Mo¿na podaæ nazwê u¿ytkownika i has³o albo w @sc{url}-u proxy albo opcjami
+wiersza poleceñ.  Je¶li przyjmiemy, ¿e firmowe proxy jest po³o¿one na
+@samp{proxy.firma.com} na porcie 8001, @sc{url} podaj±cy lokalizacjê proxy
+i zawieraj±cy dane uwierzytelniaj±ce móg³by wygl±daæ tak:
+
+@example
+http://hniksic:mojehaslo@@proxy.firma.com:8001/
+@end example
+
+Do podania nazwy u¿ytkownika proxy i has³a mo¿na te¿ u¿yæ opcji
+@samp{proxy-user} i @samp{proxy-password} lub równowa¿nych im ustawieñ
+w pliku @file{.wgetrc}.
+
+@node Dystrybucja, Lista dyskusyjna, Serwery proxy, Rozmaito¶ci
+@section Dystrybucja
+@cindex naj¶wie¿sza wersja
+@cindex wersja, naj¶wie¿sza
+
+Podobnie jak wszystkie narzêdzia GNU, naj¶wie¿sz± wersjê Wget mo¿na znale¼æ
+w g³ównym o¶rodku archiwum GNU, prep.ai.mit.edu, i jego kopiach lustrzanych.
+Na przyk³ad, Wget @value{VERSION} znajduje siê w
+@url{ftp://prep.ai.mit.edu/gnu/wget/wget-@value{VERSION}.tar.gz}
+
+@node Lista dyskusyjna, Zg³aszanie b³êdów, Dystrybucja, Rozmaito¶ci
+@section Lista dyskusyjna
+@cindex lista dyskusyjna
+@cindex dyskusyjna lista
+@cindex lista
+
+Dziêki Karstenowi Thygesenowi Wget ma swoj± w³asn± listê dyskusyjn±:
+@email{wget@@sunsite.dk}.  Jest przeznaczona do dyskusji o programie
+i sieci, zg³aszania b³êdów w Wget (tych, które mog± zainteresowaæ
+subskrybentów) i wysy³ania zapowiedzi.  Zachêcamy do prenumeraty.
+Im wiêcej osób na li¶cie, tym lepiej!
+
+Listê mo¿na zasubskrybowaæ wysy³aj±c list do @email{wget-subscribe@@sunsite.dk}.
+z magicznym s³owem @samp{subscribe} w wierszu tematu.  Subskrypcjê anuluje
+siê wysy³aj±c list do @email{wget-unsubscribe@@sunsite.dk}.
+
+Archiwum listy znajduje siê na @url{http://fly.srk.fer.hr/archive/wget}.
+Inne archiwum dostêpne jest na
+@url{http://www.mail-archive.com/wget%40sunsite.auc.dk/}.
+
+@node Zg³aszanie b³êdów, Przeno¶no¶æ, Lista dyskusyjna, Rozmaito¶ci
+@section Zg³aszanie b³êdów
+@cindex bugs
+@cindex zg³aszanie b³êdów
+@cindex b³êdy, zg³aszanie
+
+@c man begin BUGS
+Zachêcamy do przesy³ania zg³oszeñ b³êdów dotycz±cych GNU Wget na adres
+@email{bug-wget@@gnu.org}.
+
+Przed faktycznym przed³o¿eniem zg³oszenia b³êdu, spróbuj, proszê,
+zastosowaæ siê do kilku prostych wskazówek.
+
+@enumerate
+@item
+Spróbuj upewniæ siê, ¿e obserwowane zachowanie jest rzeczywi¶cie b³êdem.
+Je¶li Wget siê wywala, jest to b³±d.  Je¶li nie zachowuje siê zgodnie
+z dokumentacj±, jest to b³±d.  Je¶li co¶ dzia³a dziwnie, ale nie jeste¶
+pewien, w jaki sposób powinno, mo¿e to te¿ byæ b³êdem.
+
+@item
+Spróbuj, proszê, powtórzyæ ten b³±d w mo¿liwie najprostszych warunkach.
+Np. je¶li Wget pada podczas ¶ci±gania @samp{wget -rl0 -kKE -t5 -Y0
+http://yoyodyne.com -o /tmp/log}, powiniene¶ spróbowaæ sprawdziæ, czy
+to wywalanie siê jest powtarzalne i czy pojawia siê przy prostszym
+zestawie opcji. Mo¿esz nawet spróbowaæ zacz±æ pobieranie od strony,
+przy której wyst±pi³a awaria i sprawdziæ, czy to nie ta strona w jaki¶
+sposób j± powoduje.
+
+Ponadto, choæ co prawda prawdopodobnie bêdê zainteresowany zawarto¶ci±
+twojego pliku @file{.wgetrc}, skopiowanie go po prostu do wiadomo¶ci
+o b³êdzie jest raczej z³ym pomys³em.  Zamiast tego, powiniene¶ najpierw
+sprawdziæ, czy b³±d powtarza siê przy @file{.wgetrc} przesuniêtym na ubocze.
+Prze¶lij mi odpowiednie fragmenty tego pliku tylko wtedy, gdy oka¿e siê,
+¿e b³±d zale¿y od ustawieñ @file{.wgetrc}.
+
+@item
+Uruchom, proszê, Wget z opcj± @samp{-d} i prze¶lij uzyskany protokó³
+(lub zwi±zane z b³êdem jego czê¶ci).  Je¶li Wget zosta³ skompilowany bez
+obs³ugi debugowania, skompiluj go ponownie.  @emph{Du¿o} ³atwiej jest
+¶ledziæ b³êdy z udostêpnion± diagnostyk±.
+
+@item
+je¶li Wget siê wywala, spróbuj uruchomiæ go w debugerze, np.
+@code{gdb `which wget` core} i wpisz @code{where}, by otrzymaæ stos wywo³ania
+(backtrace).
+
+@end enumerate
+@c man end
+
+@node Przeno¶no¶æ, Sygna³y, Zg³aszanie b³êdów, Rozmaito¶ci
+@section Przeno¶no¶æ
+@cindex przeno¶no¶æ
+@cindex przenoszenie
+@cindex systemy operacyjne
+
+Poniewa¿ do budowania i konfigurowania Wget wykorzystywany jest GNU Autoconf
+i unika siê stosowania ,,specjalnych'' ultra-mega-cool mo¿liwo¶ci jakiego¶
+konkretnego Uniksa, powinien siê kompilowaæ (i dzia³aæ) na wszystkich
+typowych odmianach Uniksów.
+
+Rozmaite wersje Wget skompilowano i przetestowano na wielu rodzajach systemów
+uniksowych, wliczaj±c w to: Solaris, Linux, SunOS, OSF (inaczej Digital Unix),
+Ultrix, *BSD, IRIX i inne.  Wyczerpuj±ce zestawienie znajduje siê w pliku
+@file{MACHINES} katalogu dystrybucyjnego.  Je¶li skompilowa³e¶ go na innej
+architekturze ni¿ tam wymieniona, proszê daj mi znaæ, bym móg³ zaktualizowaæ
+listê.
+
+Wget powinien siê równie¿ poprawnie kompilowaæ na innych systemach uniksowych,
+nie wymienionych w @file{MACHINES}.  Je¶li tak nie jest, powiadom mnie,
+proszê.
+
+Dziêki ¿yczliwym wspó³pracownikom, ta wersja Wget kompiluje siê i dzia³a
+na platformach Microsoft Windows 95 i Windows NT.  Zosta³a z powodzeniem
+skompilowana za pomoc± kompilatorów MS Visual C++ 4.0, Watcom, i Borland C,
+z Winsock jako oprogramowaniem sieciowym.  Naturalnie, pozbawiona jest paru
+mo¿liwo¶ci dostêpnych w Uniksie, ale powinna dzia³aæ jako substytut dla
+osób trzymaj± siê Windows.  Zwróæ uwagê, ¿e wersja przeniesiona do Windows
+@strong{nie jest ani testowana ani pielêgnowana} przeze mnie -- wszelkie
+pytania i problemy nale¿y zg³aszaæ na li¶cie dyskusyjnej 
+@email{wget@@sunsite.dk}, gdzie przyjrz± siê im opiekunowie tej wersji.
+
+@node Sygna³y,  , Przeno¶no¶æ, Rozmaito¶ci
+@section Sygna³y
+@cindex sygna³y
+@cindex obs³uga sygna³ów
+@cindex hangup
+
+Poniewa¿ Wget jest przeznaczony do pracy w tle, ³apie sygna³ roz³±czenia
+(@code{SIGHUP}) i ignoruje go.  Je¶li wyj¶ciem programu by³o standardowe
+wyj¶cie, to zostanie przekierowane do pliku o nazwie @file{wget-log}.
+W przeciwnym razie, @code{SIGHUP} jest ignorowany.  Jest to wygodne
+gdy chcemy przekierowaæ wyj¶cie programu Wget po jego uruchomieniu.
+
+@example
+$ wget http://www.ifi.uio.no/~larsi/gnus.tar.gz &
+$ kill -HUP %%     # przekierowanie wyj¶cia do wget-log
+@end example
+
+Wget nie bêdzie w ¿aden sposób usi³owa³ ingerowaæ w inne sygna³y.
+@kbd{C-c}, @code{kill -TERM} i @code{kill -KILL} powinny go jednakowo ubiæ.
+
+@node Dodatki, Kopiowanie, Rozmaito¶ci, Top
+@chapter Dodatki
+
+W tym rozdziale zamie¶ci³em kilka, moich zdaniem przydatnych, informacji.
+
+@menu
+* Wykluczanie robotów::        Przestrzeganie RES przez Wgeta.
+* Zagadnienia bezpieczeñstwa:: Bezpieczeñstwo przy stosowaniu Wget.
+* Wspó³pracownicy::            Ludzie, którzy pomogli.
+@end menu
+
+@node Wykluczanie robotów, Zagadnienia bezpieczeñstwa, Dodatki, Dodatki
+@section Wykluczanie robotów
+@cindex wykluczanie robotów
+@cindex robots.txt
+@cindex pielêgnacja serwera
+
+Nadzwyczaj ³atwo nakazaæ Wget, by w³óczy³ siê bez celu po o¶rodku @sc{www},
+zasysaj±c w trakcie wêdrówki wszystkie dostêpne dane.
+@samp{wget -r @var{o¶rodek}}, i gotowe.  Wspania³e?  Nie dla administratora
+tego serwera.
+
+Dopóki Wget ¶ci±ga tylko strony statyczne, i robi to z rozs±dn± szybko¶ci±
+(zob. opcja @samp{--wait}), nie ma problemu. K³opot w tym, ¿e Wget nie
+potrafi odró¿niæ najmniejszej strony statycznej od najbardziej
+wymagaj±cego CGI. Znany mi o¶rodek ma czê¶æ obs³ugiwan± przez, hmm...
+@c           bitchin'
+@dfn{zar±bisty} skrypt CGI, który konwertuje wszystkie pliki Info na HTML.
+Skrypt jest powolny, ale dzia³a wystarczaj±co dobrze, je¶li u¿ytkownikami
+s± ludzie, sporadycznie przegl±daj±cy pliki Info. Je¶li jednak czyj¶
+pracuj±cy rekurencyjnie Wget natknie siê na stronê skorowidza, wskazuj±c±
+poprzez skrypt na wszystkie znajduj±ce siê tam pliki Info, to powali
+system na kolana, nie dostarczaj±c ¶ci±gaj±cemu niczego u¿ytecznego.
+
+Dla unikniêcia tego rodzaju wypadków oraz po to, by zachowaæ prywatno¶æ
+dokumentów, które powinny byæ chronione przed dobrze wychowanymi robotami,
+opracowano koncepcjê wykluczania robotów (@dfn{robot exclusion}). Pomys³
+polega na tym, ¿e administratorzy serwerów i autorzy dokumentów mog±
+wskazaæ, które fragmenty o¶rodka chc± chroniæ przed robotami.
+
+Najpopularniejszym stosowanym w tym celu ¶rodkiem, i standardem de facto,
+obs³ugiwanym przez wszystkie najwa¿niejsze roboty, jest @dfn{Robots
+Exclusion Standard} (RES), napisany przez Martijna Kostera i innych
+w 1994. Okre¶lono w nim format pliku tekstowego zawieraj±cego dyrektywy
+instruuj±ce roboty, których ¶cie¿ek URL maj± unikaæ. ¯eby roboty mog³y
+je znale¼æ, regu³y wykluczeñ musz± zostaæ umieszczone w pliku
+@file{/robots.txt} w g³ównym katalogu serwera. Roboty powinny ¶ci±gaæ
+i analizowaæ plik.
+
+Chocia¿ Wget nie jest robotem sieciowym w ¶cis³ym sensie tego s³owa,
+potrafi pobieraæ du¿e czê¶ci witryny nie wymagaj±c ingerencji u¿ytkownika
+do pobrania pojedynczej strony. Z tego powodu Wget podczas pobierania
+rekurencyjnego respektuje zasady RES. Na przyk³ad, gdy wydamy polecenie:
+
+@example
+wget -r http://www.server.com/
+@end example
+
+Najpierw ¶ci±gniêty zostanie indeks @samp{www.server.com}.  Je¶li Wget
+zauwa¿y, ¿e ma pobraæ z tego serwera wiêcej dokumentów, za¿±da od niego
+pliku @samp{http://www.server.com/robots.txt} i, je¶li taki zostanie
+znaleziony, u¿yje go do kolejnych pobrañ.  @file{robots.txt} danego serwera
+jest ³adowany tylko raz.
+
+A¿ do wersji 1.8 Wget obs³ugiwa³ pierwsz± wersjê omawianego standardu
+wykluczeñ, napisan± przez Martijna Kostera w 1994 , a dostêpn± na
+@url{http://www.robotstxt.org/wc/norobots.html}.
+Od wersji 1.8 Wget rozpoznaje tak¿e dodatkowe dyrektywy wyszczególnione
+we wstêpnej propozycji @samp{<draft-koster-robots-00.txt>} zatytu³owanej
+,,A Method for Web Robots Control''.  Tekst tego szkicu, który, o ile mi
+wiadomo, nigdy nie doprowadzi³ do powstania dokumentu @sc{rfc}, mo¿na
+znale¼æ na stronie
+@url{http://www.robotstxt.org/wc/norobots-rfc.txt}.
+
+Niniejszy podrêcznik nie zawiera ju¿ tekstu Robots Exclusion Standard.
+
+Drugim, mniej znany mechanizm kontroli dostêpu, pozwala autorowi pojedynczego
+dokumentu wskazaæ, czy chce, by roboty pod±¿a³y za odno¶nikami zawartymi
+w pliku.  Osi±ga siê to za pomoc± znacznika @code{META}, w ten sposób:
+
+@example
+<meta name="robots" content="nofollow">
+@end example
+
+Szczegó³owo obja¶niono to na stronie
+@url{http://www.robotstxt.org/wc/meta-user.html}.
+Wget, oprócz zwyk³ego ograniczania dostêpu robotom przez @file{/robots.txt},
+obs³uguje dodatkowo tak¿e tê metodê.
+
+Je¶li zdajecie sobie sprawê z tego, co robicie, i naprawdê chcecie wy³±czyæ
+przestrzeganie regu³ wykluczaj±cych dla robotów, przypiszcie zmiennej
+@code{robots} w pliku @file{.wgetrc} warto¶æ @samp{off}. Ten sam
+efekt mo¿na uzyskaæ korzystaj±c z wiersza poleceñ, za pomoc± prze³±cznika
+@code{-e}, np. @samp{wget -e robots=off @var{url}...}.
+  
+@node Zagadnienia bezpieczeñstwa, Wspó³pracownicy, Wykluczanie robotów, Dodatki
+@section Zagadnienia bezpieczeñstwa
+@cindex bezpieczeñstwo
+
+Korzystaj±c z Wget nale¿y mieæ ¶wiadomo¶æ, ¿e przesy³a on przez sieæ has³a
+w postaci niekodowanej, co mo¿e rodziæ problemy z bezpieczeñstwa.
+Oto g³ówne zagadnienia i niektóre rozwi±zania.
+
+@enumerate
+@item
+Przy skorzystaniu z @code{ps} widaæ has³a podane w wierszu poleceñ.
+Najlepszym sposobem na obej¶cie tego efektu jest stosowanie @code{wget -i -}
+i wprowadzanie adresów @sc{url} na standardowe wej¶cie Wgeta, po jednym
+w wierszu, i koñczenie listy za pomoc± @kbd{C-d}. Inn± metod± ominiêcia
+jest wykorzystanie do przechowywania hase³ pliku @file{.netrc}, chocia¿
+przechowywanie niezaszyfrowanych hase³ równie¿ uwa¿a siê za zagro¿enie
+dla bezpieczeñstwa.
+
+@item
+Przy u¿yciu niechronionego @dfn{podstawowego} (@dfn{basic}) schematu
+uwierzytelniania, przez rutery i bramki sieci przesy³ane s± niekodowane has³a.
+
+@item
+Has³a @sc{ftp} równie¿ nie s± w ¿aden sposób kodowane.  W tej chwili nie ma
+dobrego rozwi±zania tego problemu.
+
+@item
+Pomimo tego, ¿e ,,zwyk³e'' wyj¶cie tworzone przez Wget usi³uje ukrywaæ
+has³a, protoko³y diagnostyczne je pokazuj±, we wszystkich postaciach.
+K³opotów z tym zwi±zanych unika siê zachowuj±c ostro¿no¶æ przy wysy³aniu
+protoko³ów diagnostycznych (tak, nawet gdy przesy³a siê je do mnie).
+@end enumerate
+
+@node Wspó³pracownicy,  , Zagadnienia bezpieczeñstwa, Dodatki
+@section Wspó³pracownicy
+@cindex wspó³pracownicy
+
+@iftex
+Autorem GNU Wget jest Hrvoje Nik@v{s}i@'{c} @email{hniksic@@arsdigita.com}.
+@end iftex
+@ifinfo
+Autorem GNU Wget jest Hrvoje Niksic @email{hniksic@@arsdigita.com}.
+@end ifinfo
+Jednak rozwój programu nigdy nie zaszed³ by tak daleko, gdyby nie pomoc wielu
+ludzi: poprzez zg³oszenia b³êdów czy propozycje nowych mo¿liwo¶ci, ³aty
+lub listy mówi±ce ,,Dziêki!''.
+
+Specjalne podziêkowania dla poni¿szych osób (kolejno¶æ przypadkowa):
+
+@itemize @bullet
+@item
+Karsten Thygesen -- ofiarowa³ zasoby systemowe, takie jak lista dyskusyjna,
+miejsce na @sc{www} i @sc{ftp}.  Po¶wiêci³ te¿ wiele czasu, by to faktycznie
+dzia³a³o.
+
+@item
+Shawn McHorse -- zg³oszenia b³êdów i ³aty.
+
+@item
+Kaveh R. Ghazi -- wykonywana w locie @code{ansi2knr}-yzacja kodu.  Mnóstwo
+poprawek zwi±zanych z przeno¶no¶ci±.
+
+@item
+Gordon Matzigkeit -- obs³uga @file{.netrc}.
+
+@item
+@iftex
+Zlatko @v{C}alu@v{s}i@'{c}, Tomislav Vujec i Dra@v{z}en Ka@v{c}ar --
+sugestie nowych funkcji i ,,filozoficzne'' dyskusje.
+@end iftex
+@ifinfo
+Zlatko Calusic, Tomislav Vujec i Drazen Kacar -- sugestie nowych funkcji
+i ,,filozoficzne'' dyskusje.
+@end ifinfo
+
+@item
+Darko Budor -- pocz±tkowe przeniesienie na Windows.
+
+@item
+Antonio Rosella -- pomoc i sugestie, plus t³umaczenie na w³oski.
+
+@item
+@iftex
+Tomislav Petrovi@'{c}, Mario Miko@v{c}evi@'{c} -- wiele zg³oszeñ b³êdów
+i sugestii.
+@end iftex
+@ifinfo
+Tomislav Petrovic, Mario Mikocevic -- wiele zg³oszeñ b³êdów i sugestii.
+@end ifinfo
+
+@item
+@iftex
+Fran@,{c}ois Pinard -- wiele dok³adnych zg³oszeñ b³êdów i dyskusji.
+@end iftex
+@ifinfo
+Francois Pinard -- wiele dok³adnych zg³oszeñ b³êdów i dyskusji.
+@end ifinfo
+
+@item
+Karl Eichwalder -- mnóstwo pomocy przy umiêdzynarodowieniu i innych rzeczach.
+
+@item
+@c  donated support for Opie and @sc{http} @code{Digest} authentication.
+Junio Hamano -- ofiarowa³ obs³ugê Opie i uwierzytelniania @code{Digest}
+w @sc{http}.
+
+@item
+Osoby, które przekaza³y darowizny na rozwój, w¶ród nich Brian Gough.
+@end itemize
+
+Poni¿si ludzie przekazali ³aty, zg³oszenia b³êdów i raporty z kompilacji,
+podsunêli przydatne sugestie, zajmowali siê beta-testowaniem, przesy³ali
+entuzjastyczne listy i robili wszystkie te inne rzeczy, dziêki którym
+pielêgnowanie programu jest tak dobr± zabaw±.
+
+Ian Abbott,
+Tim Adam,
+Adrian Aichner,
+Martin Baehr,
+Dieter Baron,
+Roger Beeman,
+Dan Berger,
+T. Bharath,
+Paul Bludov,
+Daniel Bodea,
+Mark Boyns,
+John Burden,
+Wanderlei Cavassin,
+Gilles Cedoc,
+Tim Charron,
+Noel Cragg,
+@iftex
+Kristijan @v{C}onka@v{s},
+@end iftex
+@ifinfo
+Kristijan Conkas,
+@end ifinfo
+John Daily,
+Andrew Davison,
+Andrew Deryabin,
+Ulrich Drepper,
+Marc Duponcheel,
+@iftex
+Damir D@v{z}eko,
+@end iftex
+@ifinfo
+Damir Dzeko,
+@end ifinfo
+Alan Eldridge,
+@iftex
+Aleksandar Erkalovi@'{c},
+@end iftex
+@ifinfo
+Aleksandar Erkalovic,
+@end ifinfo
+Andy Eskilsson,
+Christian Fraenkel,
+Masashi Fujita,
+Howard Gayle,
+Marcel Gerrits,
+Lemble Gregory,
+Hans Grobler,
+Mathieu Guillaume,
+Dan Harkless,
+Herold Heiko,
+Jochen Hein,
+Karl Heuer,
+HIROSE Masaaki,
+Gregor Hoffleit,
+Erik Magnus Hulthen,
+Richard Huveneers,
+Jonas Jensen,
+Simon Josefsson,
+@iftex
+Mario Juri@'{c},
+@end iftex
+@ifinfo
+Mario Juric,
+@end ifinfo
+@iftex
+Hack Kampbj@o rn,
+@end iftex
+@ifinfo
+Hack Kampbjorn,
+@end ifinfo
+Const Kaplinsky,
+@iftex
+Goran Kezunovi@'{c},
+@end iftex
+@ifinfo
+Goran Kezunovic,
+@end ifinfo
+Robert Kleine,
+KOJIMA Haime,
+Fila Kolodny,
+Alexander Kourakos,
+Martin Kraemer,
+@tex
+$\Sigma\acute{\iota}\mu o\varsigma\;
+\Xi\varepsilon\nu\iota\tau\acute{\epsilon}\lambda\lambda\eta\varsigma$
+(Simos KSenitellis),
+@end tex
+@ifinfo
+Simos KSenitellis,
+@end ifinfo
+Hrvoje Lacko,
+Daniel S. Lewart,
+@iftex
+Nicol@'{a}s Lichtmeier,
+@end iftex
+@ifinfo
+Nicolas Lichtmeier,
+@end ifinfo
+Dave Love,
+Alexander V. Lukyanov,
+Jordan Mendelson,
+Lin Zhe Min,
+Tim Mooney,
+Simon Munton,
+Charlie Negyesi,
+R. K. Owen,
+Andrew Pollock,
+Steve Pothier,
+@iftex
+Jan P@v{r}ikryl,
+@end iftex
+@ifinfo
+Jan Prikryl,
+@end ifinfo
+Marin Purgar,
+@iftex
+Csaba R@'{a}duly,
+@end iftex
+@ifinfo
+Csaba Raduly,
+@end ifinfo
+Keith Refson,
+Tyler Riddle,
+Tobias Ringstrom,
+@c Texinfo doesn't grok @'{@i}, so we have to use TeX itself.
+@tex
+Juan Jos\'{e} Rodr\'{\i}gues,
+@end tex
+@ifinfo
+Juan Jose Rodrigues,
+@end ifinfo
+Edward J. Sabol,
+Heinz Salzmann,
+Robert Schmidt,
+Andreas Schwab,
+Chris Seawood,
+Toomas Soome,
+Tage Stabell-Kulo,
+Sven Sternberger,
+Markus Strasser,
+John Summerfield,
+Szakacsits Szabolcs,
+Mike Thomas,
+Philipp Thomas,
+Dave Turner,
+Russell Vincent,
+Charles G Waldman,
+Douglas E. Wegscheid,
+Jasmin Zainul,
+@iftex
+Bojan @v{Z}drnja,
+@end iftex
+@ifinfo
+Bojan Zdrnja,
+@end ifinfo
+Kristijan Zimmer.
+
+Przepraszam tych, których przypadkowo pomin±³em i sk±³dam gor±ce
+podziêkowania wszystkim subskrybentom listy dyskusyjnej Wget.
+
+@node Kopiowanie, Skorowidz pojêæ, Dodatki, Top
+@chapter Kopiowanie
+@cindex kopiowanie
+@cindex GPL
+@cindex GFDL
+@cindex wolne oprogramowanie
+
+GNU Wget jest licencjonowany na GNU GPL, co czyni z niego @dfn{wolne
+oprogramowanie} (@dfn{free software}).
+
+Zwróæ uwagê, proszê, ¿e ,,free'' odnosi siê do wolno¶ci, nie do ceny.
+[t³um.: angielskie "free" znaczy najczê¶ciej "wolny", "swobodny", ale mo¿e
+te¿ oznaczaæ "darmowy"].
+Jak lubi± mówiæ ludzie z projektu GNU, powinni¶my my¶leæ o ,,wolno¶ci
+s³owa'', a nie ,,darmowym piwie''.
+Dok³adne i wi±¿±ce prawne warunki rozpowszechniania przytoczono poni¿ej,
+ale w skrócie, masz prawo (wolno¶æ) uruchamiania i zmieniania Wget
+i przekazywania go innym, a nawet -- je¶li chcesz -- pobierania op³at
+za któr±kolwiek z tych czynno¶ci.
+Istotnym ograniczeniem jest to, ¿e musisz przyznaæ swoim odbiorcom te same
+prawa i na³o¿yæ te same ograniczenia.
+
+Ta metoda licencjonowania oprogramowania jest te¿ znana jako
+@dfn{open-source} (otwarte ¼ród³a), gdy¿, miêdzy innymi, zapewnia, ¿e
+wszyscy odbiorcy zawsze otrzymuj± razem z programem jego kod ¼ród³owy,
+i maj± mo¿liwo¶æ go usprawniaæ.  W projekcie GNU preferuje siê termin
+``free software'' z powodów naszkicowanych w
+@url{http://www.gnu.org/philosophy/free-software-for-freedom.pl.html}.
+
+Dok³adne warunki licencyjne s± zdefiniowane przez poni¿szy akapit
+i Powszechn± Licencjê Publiczn± GNU, na któr± siê powo³uje:
+
+@quotation
+Wget jest wolnym oprogramowaniem; mo¿esz go rozprowadzaæ dalej
+i/lub modyfikowaæ na warunkach Powszechnej Licencji Publicznej GNU, opublikowanej
+przez Fundacjê Wolnego Oprogramowania - wed³ug wersji 2 tej Licencji
+lub (wedle w³asnego wyboru) której¶ z pó¼niejszych wersji. 
+
+Wget rozpowszechniany jest z nadziej±, i¿ bêdzie on u¿yteczny
+- jednak BEZ JAKIEJKOLWIEK GWARANCJI, nawet domy¶lnej gwarancji PRZYDATNO¦CI
+HANDLOWEJ albo PRZYDATNO¦CI DO OKRE¦LONYCH ZASTOSOWAÑ.  Bli¿sze informacje
+znajdziesz w Powszechnej Licencji Publicznej GNU. 
+
+Egzemplarz Powszechnej Licencji Publicznej GNU (GNU General Public License)
+do³±czono jako czê¶æ tego podrêcznika; je¶li go nie otrzyma³e¶,
+Z pewno¶ci± wraz z niniejszym programem otrzyma³e¶ te¿ egzemplarz 
+Powszechnej Licencji Publicznej GNU (GNU General Public License);
+napisz do Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139,
+USA.
+@end quotation
+
+Ponadto, niniejszy podrêcznik jest wolny w tym samym znaczeniu:
+
+@quotation
+Zezwala siê na kopiowanie, rozpowszechnianie i/lub modyfikowanie tego
+dokumentu na warunkach Licencji Wolnej Dokumentacji GNU (GNU Free
+Documentation License) w wersji 1.1 lub jakiejkolwiek nowszej wersji
+opublikowanej przez Fundacjê Wolnego Oprogramowania, przy czym Sekcjami
+niezmiennymi s± ,,GNU General Public License'' i ,,GNU Free Documentation
+License'', bez tre¶ci przedniej lub tylnej strony ok³adki.
+Egzemplarz licencji zamieszczono w sekcji zatytu³owanej
+,,GNU Free Documentation License''.
+@end quotation
+
+@c #### Maybe we should wrap these licenses in ifinfo?  Stallman says
+@c that the GFDL needs to be present in the manual, and to me it would
+@c suck to include the license for the manual and not the license for
+@c the program.
+
+Pe³ne teksty Powszechnej Licencji Publicznej GNU i Licencji Wolnej
+Dokumentacji GNU s± dostêpne poni¿ej.
+
+@menu
+* GNU General Public License::
+* GNU Free Documentation License::
+@end menu
+
+@include gpl-2.texi
+
+@include fdl-1.1.texi
+
+@node Skorowidz pojêæ,  , Kopiowanie, Top
+@unnumbered Skorowidz pojêæ
+@printindex cp
+
+@contents
+
+@bye

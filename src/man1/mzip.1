@@ -1,0 +1,59 @@
+.\" {PTM/WK/0.1/18-07-1999/"zmienia zabezpieczenie, wysuwa dysk napêdu Zip/Jaz"}
+.TH mzip 1 "18 lipca 1999" mtools-3.9.6
+.SH NAZWA
+mzip - zmienia zabezpieczenie, wysuwa dysk napêdu Zip/Jaz
+.SH SK£ADNIA
+.BR mzip " [" -epqrwx ]
+.SH OPIS
+Polecenie \fBmzip\fR umo¿liwia wydawanie poleceñ specyficznych dla napêdu
+ZIP w systemach Solaris lub HPUX.
+.SH OPCJE
+\fBmzip\fR posiada nastêpuj±ce opcje w linii poleceñ:
+.TP
+.B -e
+Wysuñ (eject) dysk.
+.TP
+.B -f
+Wymu¶ wysuniêcie dysku nawet, je¶li jest on zamontowany przez \fBmount\fR
+(musi byæ u¿yte w po³±czeniu z \fB-e\fR).
+.TP
+.B -r
+Zabezpiecz dysk przed zapisem.
+.TP
+.B -w
+Zdejmij zabezpieczenie przed zapisem.
+.TP
+.B -p
+Chronione has³em zabezpieczenie przed zapisem.
+.TP
+.B -x
+Zabezpieczenie has³em.
+.TP
+.B -u
+Tymczasowo nie chroñ dysku a¿ do jego wysuniêcia. Dysk staje siê
+zapisywalny, przy wysuniêciu przywracany jest jego uprzedni status.
+.TP
+.B -q
+Zapytanie o status.
+.PP
+Has³o mo¿na usun±æ ustawiaj±c jeden z trybów bezhas³owych \fB-r\fR lub
+\fB-w\fR: mzip zapyta wówczas o has³o odblokowuj±ce dysk. W przypadku
+zapomnienia has³a mo¿na zastosowaæ niskopoziomowe formatowanie dysku ZIP
+(przez setup BIOSu SCSI).
+.PP
+Dysk ZipTools dostarczany z napêdem jest równie¿ chroniony has³em. W DOSie
+lub na MacIntosh'u has³o to jest usuwane automatycznie po instalacji
+ZipTools. Z wielu artyku³ów wysy³anych na Usenet wynika, ¿e has³em do tego
+dysku jest \fIAPlaceForYourStuff\fR. \fBmzip\fR zna to has³o i próbuje go
+w pierwszej kolejno¶ci, przed pytaniem u¿ytkownika o has³o. Dlatego te¿
+\fBmzip -w z:\fR odblokowuje dysk ZipTools. Ten¿e dysk narzêdziowy jest
+sformatowany w specjalny sposób, co ma umo¿liwiæ jego wykorzystanie zarówno
+na PC jak i na Mac'u. Na PC system plików Mac'a widoczny jest jako ukryty
+plik \fIpartishn.mac\fR. Mo¿na go skasowaæ odzyskuj±c 50 MB dysku.
+.SH UWAGI
+Niniejsza, polska wersja dokumentacji, powsta³a jako t³umaczenie pliku
+Texinfo pakietu mtools wersji 3.9.6. W stosunku do automatycznie generowanej
+z Textinfo dokumentacji oryginalnej dokonano przesuniêcia sekcji opisuj±cej
+konwersjê dokumentacji do \fBmtools\fR(1). Tam te¿ znajdziesz notê prawn±
+dotycz±c± rozpowszechniania, modyfikacji i t³umaczenia dokumentacji pakietu
+mtools

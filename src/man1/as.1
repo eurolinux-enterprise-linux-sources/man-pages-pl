@@ -1,0 +1,292 @@
+.\" {PTM/PB/0.1/28-09-1998/"przeno¶ny asembler GNU"}
+.\" Copyright (c) 1991, 1992, 1996 Free Software Foundation
+.\" See section COPYING for conditions for redistribution
+.\" Translation (c) 1998 Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.TH as 1 "29 marca 1996" "wsparcie cygnusa" "Narzêdzie programistyczne GNU"
+
+.SH NAZWA
+GNU as \- przeno¶ny asembler GNU
+
+.SH SK£ADNIA
+.na
+.B as
+.RB "[\|" \-a "[\|" dhlns "\|]" \c
+\&[\|\=\c
+.I file\c
+\&\|]\|]
+.RB "[\|" \-D "\|]"
+.RB "[\|" \-\-defsym\ SYM=VAL "\|]"
+.RB "[\|" \-f "\|]"
+.RB "[\|" \-I
+.I path\c
+\&\|]
+.RB "[\|" \-K "\|]"
+.RB "[\|" \-L "\|]"
+.RB "[\|" \-M\ |\ \-\-mri "\|]"
+.RB "[\|" \-o 
+.I objfile\c
+\&\|]
+.RB "[\|" \-R "\|]"
+.RB "[\|" \-v "\|]"
+.RB "[\|" \-w "\|]"
+.RB "[\|" \-\^\- "\ |\ " \c
+.I files\c
+\&\|.\|.\|.\|]
+
+.I opcje i960:
+.br
+.RB "[\|" \-ACA "\||\|" \-ACA_A "\||\|" \-ACB\c
+.RB "\||\|" \-ACC "\||\|" \-AKA "\||\|" \-AKB\c
+.RB "\||\|" \-AKC "\||\|" \-AMC "\|]"
+.RB "[\|" \-b "\|]"
+.RB "[\|" \-no-relax "\|]"
+
+.I opcje m680x0:
+.br
+.RB "[\|" \-l "\|]"
+.RB "[\|" \-mc68000 "\||\|" \-mc68010 "\||\|" \-mc68020 "\|]"
+.ad b
+
+.SH OPIS
+GNU \c
+.B as\c
+\& jest tak naprawdê rodzin± asemblerów.
+Je¶li u¿ywasz (u¿ywa³e¶) asemblera GNU na danej architekturze, powiniene¶
+znale¼æ ca³kiem podobne ¶rodowisko na innej architekturze. Ka¿da wersja ma
+wiele wspólnego z innymi, w³aczaj±c w to format plików obiektowych,
+wiêkszo¶æ dyrektyw asemblera i sk³adniê asemblera.
+
+Dla informacji o dyrektywach u¿ywanych przez GNU \c
+.B as\c
+\&, zobacz wpis `\|\c
+.B as\c
+\|' w \c
+.B info \c
+(lub podrêczniku \c
+.I
+.I
+Using as: The GNU Assembler\c
+\&).
+
+\c
+.B as\c
+\& ma przede wszystkim na celu asemblowanie produktów kompilatora GNU C
+Compiler \c
+.B gcc\c
+\& dla u¿ytku linkera \c
+.B ld\c
+\&.  Mimo to,
+próbowali¶my sprawiæ, by \c
+.B as\c
+\& asemblowa³ poprawnie wszystko, co natywny asembler asemblowaæ powinien.
+Nie znaczy to, ¿e \c
+.B as\c
+\& bêdzie zawsze u¿ywa³ takiej samej sk³adni, jak inne asemblery tej samej
+architektury; na przyk³ad znamy wiele niekompatybilnych wersji sk³adni
+asemblera 680x0.
+
+Za ka¿dym razem, gdy uruchamiasz \c
+.B as\c
+\& asembluje on dok³adnie jeden program ¼ród³owy. Program ¼ród³owy z³o¿ony
+jest z jednego, lub wiêcej plików. (Standardowe wej¶cie jest tak¿e plikiem.)
+
+Je¶li \c
+.B as\c
+\& nie otrzyma ¿adnej nazwy pliku, próbuje czytaæ dane ze
+standardowego wej¶cia, które jest zwykle twoim terminalem. Bêdziesz musia³
+wcisn±æ
+.B ctl-D\c
+\& aby powiedzieæ asemblerowi \c
+.B as\c
+\& ¿e nie ma ju¿ nic do asemblowania
+U¿yj `\|\c
+.B \-\^\-\c
+\|' je¶li potrzebujesz wyj±tkowo nazwaæ standardowe wej¶cie w swojej linii
+komend.
+
+.B as\c
+\& mo¿e wypisywaæ ostrze¿enia i informacje o b³êdach do pliku standardowego
+b³êdu (zwykle twój terminal). Nie powinno siê tak dziaæ, kiedy \c
+.B as\c
+\& jest
+uruchamiany automatycznie przez kompilator. Ostrze¿enia informuj± o próbach,
+po których \c
+.B as\c
+\& potrafi jeszcze asemblowaæ program; b³êdy informuja o ciê¿kim problemie,
+który przerywa asemblacjê.
+
+.SH OPCJE
+.TP
+.BR \-a
+W³±cz listingi asemblerowe. Jest wiele podopcji.
+.B d
+opuszcza dyrektywy debugguj±ce.
+.B h
+w³±cza wysokopoziomowy kod ¼ród³owy; jest to dostêpne tylko je¶li plik
+¼ród³owy mo¿na znale¼æ, a kod by³ skompilowany z opcj±
+.B \-g.
+.B l
+w³±cza listing asemblerowy.
+.B n
+opuszcza przetwarzanie form. (? omits forms processing)
+.B s
+w³±cza listing symboli.
+.B =
+.I file
+ustawia nazwê pliku z listingiem; musi to byæ ostatnia podopcja.
+Domy¶lnymi podopcjami s±
+.B hls.
+.TP
+.B \-D
+Ta opcja jest przyjmowana tylko dla kompatybilno¶ci skryptowej z wywo³aniami
+innych asemblerów; nie ma ¿adnego wp³ywu na \c
+.B as\c
+\&.
+.TP
+.B \-\-defsym SYM=VALUE
+Definiuje symbol SYM na warto¶æ VALUE przed asemblacj± pliku wej¶ciowego.
+VALUE musi byæ sta³± liczbow±. Podobnie jak w C, przedrostek 0x wskazuje na
+warto¶æ szesnastkow±, poprzedzaj±ce 0 warto¶æ ósemkow±.
+.TP
+.B \-f
+``szybko''--pomiñ preprocesowanie (za³ó¿, ¿e ¼ród³o jest produktem
+kompilatora).
+.TP
+.BI "\-I\ " path
+Dodaj
+.I path
+do listy przeszukiwanej dla dyrektyw
+.B .include
+.TP
+.B \-K
+Wy¶wietlaj ostrze¿enia, je¶li tabele ró¿nic zmieni³y dla d³ugich
+skoków.
+(? Issue warnings when difference tables altered for long displacements.)
+.TP
+.B \-L
+
+Zachowaj (w tablicy symboli) symbole lokalne zaczynaj±ce siê od `\|\c
+.B L\c
+\|'
+.TP
+.B \-M, \-\-mri
+ASembluj w trybie kompatybilno¶ci MRI.
+.TP
+.BI "\-o\ " objfile
+Nazwij plik obiektowy, produkt \c
+.B as
+.TP
+.B \-R
+Za³ó¿ sekcjê danych na sekcjê tekstu
+(? Fold data section into text section)
+.TP
+.B \-v
+Wy¶wietl wersjê \c
+.B as\c
+.TP
+.B \-W
+Zaniechaj komunikatów ostrzegawczych
+.TP
+.IR "\-\^\-" "\ |\ " "files\|.\|.\|."
+Pliki ¼ród³owe do asemblacji, lub standardowe wej¶cie (\c
+.BR "\-\^\-" ")"
+.TP
+.BI \-A var
+.I
+(Gdy skonfigurowane dla Intela 960.)
+Podaj, który wariant architektury 960 jest celem.
+.TP
+.B \-b
+.I
+(Gdy skonfigurowane dla Intela 960.)
+Dodaj kod do zebrania statystyk o pobranych ga³êziach.
+.TP
+.B \-no-relax
+.I
+(Gdy skonfigurowane dla Intela 960.)
+Nie zmieniaj instrukcji compare-and-branch dla d³ugich skoków;
+(? Do not alter compare-and-branch instructions for long displacements)
+gdy to niezbêdne, wyrzuæ b³±d.
+.TP
+.B \-l
+.I
+(Gdy skonfigurowane dla Motoroli 68000).  
+.br
+Skróæ referencje do niezdefiniowanych symboli do jednego s³owa, zamist
+dwóch.
+.TP
+.BR "\-mc68000" "\||\|" "\-mc68010" "\||\|" "\-mc68020"
+.I
+(Gdy skonfigurowane dla Motoroli 68000).  
+.br
+Podaj, jaki procesor rodziny 68000 jest celem (domy¶lnie 68020).
+
+.PP
+Opcje mog± byæ w dowolnym porz±dku i mog± byæ przed, za, lub pomiêdzy
+nazwami plików. Kolejno¶æ nazw plików ma znaczenie.
+
+`\|\c
+.B \-\^\-\c
+\|' (dwa ³±czniki) oznaczaj± wyj±tkowo plik standardowego wej¶cia jako jeden
+z plików przeznaczonych \c
+.B as\c
+\& do asemblacji.
+
+Poza `\|\c
+.B \-\^\-\c
+\|' ka¿dy argument linii komend zaczyna siê od ³±cznika (`\|\c
+.B \-\c
+\|') jest opcj±. Ka¿da opcja zmienia zachowanie
+\c
+.B as\c
+\&.  ¯adna z opcji nie zmienia sposobu dzia³ania innej opcji.  
+Opcj± jest `\|\c
+.B \-\c
+\|' po czym nastêpuje jedna lub wiêcej liter; rozmiar liter jest istotny.
+Wszystkie opcje sa opcjonalne.
+
+Opcja `\|\c
+.B \-o\c
+\|' oczekuje dok³adnie jednej nazwy pliku za ni±. Nazwa pliku mo¿e albo
+natychmiast pod±¿aæ za liter± opcji (kompatybilne ze starymi asemblerami),
+lub mo¿e byæ nastêpnym argumentem komendowym (standard GNU).
+
+Poni¿sze dwie linie s± ekwiwalentne:
+.br
+.B
+as\ \ \-o\ \ my\-object\-file.o\ \ mumble.s
+.br
+.B
+as\ \ \-omy\-object\-file.o\ \ mumble.s
+
+.SH "ZOBACZ TAK¯E"
+.RB "`\|" as "\|'"
+opisany w
+.B
+info\c
+\&; 
+.I
+Using as: The GNU Assembler\c
+\&;
+.BR gcc "(" 1 "),"
+.BR ld "(" 1 ")."
+
+.SH KOPIOWANIE
+(Autor nie ¿yczy sobie t³umaczenia tej noty bez zatwierdzenia FSF)
+
+Copyright (c) 1991 Free Software Foundation, Inc.
+.PP
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+.PP
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+.PP
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be included in
+translations approved by the Free Software Foundation instead of in
+the original English.

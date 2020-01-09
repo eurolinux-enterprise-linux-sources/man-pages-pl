@@ -1,0 +1,396 @@
+.\" 2000 PTM Przemek Borys
+.\" $Id: MAKEDEV.8,v 1.3 2000/09/30 16:59:38 wojtek2 Exp $
+.TH MAKEDEV 8 "14 Sierpieñ 1994" Linux "Podrêcznik programisty Linuksa"
+.SH NAZWA
+MAKEDEV \- utwórz urz±dzenia
+.SH SK£ADNIA
+.B "cd dev; ./MAKEDEV -V"
+.br
+.B "cd dev; ./MAKEDEV [ -n ] [ -v ] update"
+.br
+.BI "cd dev; ./MAKEDEV [ -n ] [ -v ] [ -d ]" " urz±dzenie ..."
+.SH OPIS
+.B MAKEDEV
+jest skryptem tworz±cym urz±dzenia z katalogu \fI/dev\fR,
+u¿ywane jako interfejs do porozumiewania siê z j±drem.
+.PP
+Zauwa¿, ¿e je¶li program zwraca b³±d ``ENOENT: No such file or
+directory'' to oznacza to zwykle, ¿e brakuje pliku urz±dzenia, podczas gdy
+``ENODEV: No such device'' oznacza, ¿e j±dro nie ma skonfigurowanego (lub
+za³adowanego) sterownika.
+.PP 
+.BR Uwaga!
+Ten podrêcznik nie jest aktualny. Istnieje wiele urz±dzeñ, które
+/dev/MAKEDEV potrafi utworzyæ, a które nie s± opisane tutaj. Przeczytaj
+zawarto¶æ skryptu dla dalszych informacji.
+.SH OPCJE
+.TP
+.B \-V
+Wydrukuj wersjê (zwykle informacjê RCS o wersji) i zakoñcz.
+.TP
+.B \-n
+Nie od¶wie¿aj urz±dzeñ; wydrukuj tylko akcje, które by³yby dokonane.
+.TP
+.B \-d
+Kasuj urz±dzenia. Podstawowym zastosowaniem tej flagi jest jej u¿ywanie
+przez
+.BR MAKEDEV .
+.TP
+.B \-v
+B±d¼ gadatliwy. Drukuj akcje w kolejno¶ci ich wykonywania. Jest to to samo
+wyj¶cie, które jest produkowane opcj±
+.BR \-n .
+.SH DOSTOSOWYWANIE
+Poniewa¿ obecnie nie jest ustandaryzowane, które nazwy s± u¿ywane przez
+jakich
+u¿ytkowników i grupy systemu, byæ mo¿e bêdziesz musia³(a) zmodyfikowaæ
+.B MAKEDEV
+odpowiednio do swoich potrzeb. W okolicach pocz±tku pliku znajduje siê
+mapowanie z typu urz±dzenia na u¿ytkownika, grupê i prawa (np. wszystkie
+urz±dzenia CD-ROM s± ustawiane ze zmiennej \fI$cdrom\fR). Je¶li chcesz
+zmieniæ warto¶ci domy¶lne, to jest to sekcja, która ciê interesuje.
+.SH URZ¡DZENIA
+.TP
+.B Opcje ogólne
+.TP
+.B update
+Dzia³a to tylko na j±drach, które maj± \fI/proc/interrupts\fR (wprowadzone w
+\fR1.1.x). Plik ten jest przeszukiwany w poszukiwaniu obecnie
+skonfigurowanych urz±dzeñ, a nastêpnie porównywany z poprzednimi
+ustawieniami, zapisanymi w pliku \fIDEVICES\fR.
+Nastêpnie tworzone s± nowe (od tego czasu) urz±dzenia, a przestarza³e s±
+kasowane.
+.TP
+.B generic
+Utwórz podstawowy podzbiór urz±dzeñ. S± to standardowe urz±dzenia plus
+sterowniki stacji dysków, dysków twardych, pseudoterminali, urz±dzeñ
+konsoli, urz±dzeñ szeregowych, myszy szynowej (busmice) i portów drukarek.
+.TP
+.B
+std
+Standardowe urz±dzenia.
+S± to:
+.B mem
+\- dostêp do pamiêci fizycznej;
+.B kmem
+\- dostêp do wirtualnej pamiêci j±dra;
+.B null
+\- urz±dzenie zerowe (nieskoñczone utopienie);
+.B port
+\- dostêp do portów I/O;
+.B zero
+\- ¼ród³o bajtów zerowych (nieskoñczone);
+.B core
+\- dowi±zanie symboliczne do /proc/kcore (dla debuggowania j±dra);
+.B full
+\- zawsze zwraca ENOSPACE podczas zapisu;
+.B ram
+\- ramdysk;
+.B tty
+\- dostêp do kontroluj±cego tty procesu.
+.TP 
+.B local
+Uruchamia to po prostu
+.BR MAKEDEV.local .
+Jest to skrypt, który mo¿e tworzyæ dowolne urz±dzenia lokalne.
+.TP
+.B Terminale Wirtualne
+.TP
+.I console
+Tworzy to urz±dzenia zwi±zane z konsol±. S± to wirtualne terminale
+.BI tty x \fR,
+gdzie
+.I x
+mo¿e byæ od 0 do 63. Urz±dzenie tty0 jest aktualnie u¿ywanym vt (wirtualnym
+terminalem) i znane jest te¿ jako \fIconsole\fR. Dla ka¿dego vt istniej± dwa
+urz±dzenia
+.RI vcs x
+i
+.RI vcsa x ,
+które s± wykorzystywane do generowania zrzutów ekranu vt (
+.BI vcs x
+jest czysto tekstowe,
+a
+.BI vcsa x
+zawiera atrybuty).
+.TP
+.B Urz±dzenia Szeregowe
+.TP
+.I ttyS{0..63}
+Porty szeregowe i odpowiadaj±ce im urz±dzenia wydzwaniaj±ce. Dla urz±dzenia
+.BI ttyS x
+istnieje równie¿ urz±dzenie
+.BR cua \fIx\fR,
+które jest wykorzystywane do wydzwaniania. Mo¿e to zapobiec potrzebie
+kooperatywnych blokad w prostych sytuacjach.
+.TP
+.I cyclades
+Urz±dzenia wdzwaniaj±ce i wydzwaniaj±ce dla inteligentnej karty cyclades
+szeregowego I/O. Urz±dzenie wdzwaniaj±ce to
+.BI ttyC x
+a odpowiadaj±ce urz±dzenie wydzwaniaj±ce to
+.BI cub x \fR.
+Domy¶lnie tworzone s± urz±dzenia dla 7 linii. Mo¿na to zmieniæ do 15,
+usuwaj±c komentarz.
+.TP
+.B Pseudo Terminale
+.TP
+.I pty[p-s]
+Ka¿dy mo¿liwy argument utworzy bank 16 par mistrza i niewolnika (master &
+slave ;-)). Obecne j±dro (1.2) jest ograniczone do 64 takich par. Nadrzêdne
+(master) pseudoterminale to
+.BR pty[p-s][0-9a-f] ,
+a podrzêdne (slave) to
+.BR tty[p-s][0-9a-f] .
+.TP
+.B Porty równoleg³e
+.TP
+.I lp
+Standardowe porty równoleg³e. Tworzone urz±dzenia to
+.BR lp0 , 
+.BR lp1
+i
+.BR lp2 .
+odpowiadaj± one portom 0x3bc, 0x378 i 0x278.
+Tak wiêc na niektórych maszynach pierwszy port drukarki mo¿e w
+rzeczywisto¶ci byæ
+.BR lp1 .
+.TP
+.I par
+Alternatywne do
+.IR lp .
+Porty s± nazywane
+.BI par x
+zamiast
+.BI lp x \fR.
+.TP
+.B Mysz szynowa (busmice)
+.TP
+.I busmice
+Ró¿ne sterowniki myszy szynowej. Tworzy to nastêpuj±ce urz±dzenia:
+.B logimouse
+(mysz Logitech),
+.B psmouse
+(mysz w stylu PS/2),
+.B msmouse
+(mysz Microsoft Inport) i
+.B atimouse
+(mysz ATI XL) oraz
+.B jmouse
+(mysz-J).
+.TP
+.B Urz±dzenia dr±¿ka do zabawy ;)
+.TP
+.I js
+Joystick.  Tworzy
+.B js0
+i
+.BR js1 .
+.TP
+.B Urz±dzenia dyskowe
+.TP
+.I fd[0-7]
+Urz±dzenia stacji dysków. Urz±dzenie
+.BI fd x
+jest urz±dzeniem, które automatycznie wykrywa format, a dodatkowe urz±dzenia
+maj± ustalony format (którego rozmiar jest wskazywany nazw±).
+Inne urz±dzenia s± nazywane
+.BR fd \fIxLn\fR.
+Litera
+.I L
+okre¶la rodzaj stacji dysków (d = 5.25" DD, h = 5.25" HD, D = 3.5" DD,
+H = 3.5" HD, E = 3.5" ED). Liczba
+.I n
+okre¶la pojemno¶æ tego formatu w K. W wyniku tego standardowe formaty to
+.BI fd x d360 \fR,
+.BI fd x h1200 \fR,
+.BI fd x D720 \fR,
+.BI fd x H1440
+i
+.BI fd x E2880 \fR.
+.IP
+Dla dalszych informacji, zobacz pakiet fdutils Alaina Knaffa.
+.IP
+Urz±dzenia
+.BI fd0 *
+do
+.BI fd3 *
+s± stacjami dysków pierwszego kontrolera, a urz±dzenia
+.BI fd4 *
+do
+.BI fd7 *
+s± stacjami dysków drugiego kontrolera.
+.TP
+.I hd[a-d]
+Twarde dyski AT. Urz±dzenie
+.BI hd x
+daje dostêp do ca³ego dysku, gdzie partycje to
+.BI hd x [0-20] \fR.
+Cztery podstawowe partycje to
+.BI hd x 1
+do
+.BI hd x 4 \fR,
+a logiczne to
+.BI hd x 5
+do
+.BI hd x 20 \fR.
+(Partycja podstawowa mo¿e byæ przekszta³cona w partycjê rozszerzon±, która
+mo¿e mieæ 4 partycje logiczne).
+Domy¶lnie robione s± urz±dzenia dla 4 partycji logicznych. Kolejne mo¿na
+dodaæ odkomentowuj±c je.
+.IP
+Napêdy hda i hdb s± dwoma z pierwszego kontrolera. Je¶li u¿ywasz nowego
+sterownika IDE, to hdc i hdd s± dwoma napêdami drugiego (secondary)
+kontrolera. Urz±dzenia te mog± byæ te¿ u¿ywane do dostêpu CDROM-ów IDE.
+.TP
+.I xd[a-d] 
+Twarde dyski XT. Partycje s± takie same jak dla dysków IDE.
+.TP
+.I sd[a-h]
+Twarde dyski SCSI. Partycje s± podobne do dysków IDE, lecz jest ograniczenie
+do 11 partycji logicznych 
+.RB ( sd \fIx\fR 5
+do
+.BR sd \fIx\fR 15 ).
+Umo¿liwia to istnienie 8 dysków SCSI.
+.TP
+.I loop
+Urz±dzenia dyskowe loopback. Umo¿liwiaj± one u¿ywanie zwyk³ego pliku jako
+urz±dzenia blokowego. Znaczy to, ¿e obrazy systemów plików mog± byæ
+montowane i u¿ywane jak zwykle. Tworzy to 8 urz±dzeñ loop0 do loop7.
+.TP
+.B Urz±dzenia ta¶mowe
+.TP
+.I st[0-7]
+Kasety SCSI. Tworzy to przewijaj±ce urz±dzenie ta¶mowe
+.BI st x
+i nieprzewijaj±ce urz±dzenie ta¶mowe
+.BI nst x \fR.
+.TP
+.I qic
+Ta¶my QIC-80. Tworzone urz±dzenia to
+.BR rmt8 ,
+.BR rmt16 ,
+.BR tape-d
+i
+.BR tape-reset .
+.TP
+.I ftape
+Ta¶my napêdu (QIC-117). Istniej± 4 metody dostêpu, zale¿ne od
+napêdu ta¶mowego. Dla ka¿dej z metod dostêpu 0, 1, 2 i 3 tworzone s±
+urz±dzenia
+.BI rft x
+(przewijaj±ce) i
+.BI nrft x
+(nieprzewijaj±ce).  Dla kompatybilno¶ci, urz±dzenia
+.B ftape
+i
+.B nftape
+s± dowi±zaniami symbolicznymi do
+.B rft0
+i
+.BR nrft0 .
+.TP
+.B Urz±dzenia CDROM
+.TP
+.I scd[0-7]
+Odtwarzacze CD SCSI.
+.TP
+.I sonycd
+Sony CDU-31A CD.
+.TP
+.I mcd
+Mitsumi CD.
+.TP
+.I cdu535
+Sony CDU-535 CD.
+.TP
+.I lmscd
+LMS/Philips CD.
+.TP
+.I sbpcd{0,1,2,3}
+Sound Blaster CD.  J±dro jest w stanie obs³u¿yæ 16 CDROMów, z których ka¿dy
+jest osi±galny jako
+.BR sbpcd[0-9a-f] .
+S± one przyznawane w grupach po 4 dla ka¿dego kontrolera.
+.B sbpcd
+jest dowi±zaniem symbolicznym do
+.BR sbpcd0 .
+.\" .TP
+.\" .I idecd
+.\" NEC CDR-260 (note: this will probably be obsoleted by the new IDE driver).
+.TP
+.B Skaner
+.TP
+.I logiscan
+Logitech ScanMan32 i ScanMan 256.
+.TP
+.I m105scan
+Skaner rêczny Mustek M105.
+.TP
+.I ac4096
+Skaner rêczny SkanerA4Tek Color.
+.TP
+.B Audio
+.TP
+.I audio
+Tworzy to urz±dzenia audio, u¿ywane przez sterownik d¼wiêku. Zalicza siê do
+nich
+.BR mixer ,
+.BR sequencer ,
+.BR dsp
+i
+.BR audio .
+.TP
+.I pcaudio
+Urz±dzenia dla sterownika d¼wiêku na PC Speaker. S± to
+.BR pcmixer ,
+.BR pxsp
+i
+.BR pcaudio .
+.TP
+.B Ró¿ne
+.TP
+.I sg
+Podstawowe urz±dzenia SCSI. Tworzone urz±dzenia to
+.BR sg0
+do
+.BR sg7 .
+Umo¿liwiaj± one wysy³anie arbitralnych komend do dowolnych urz±dzeñ SCSI.
+Umo¿liwia to zapytywanie urz±dzenia o autoinformacje lub kontrolowanie
+urz±dzeñ SCSI, które nie s± dyskami, ta¶mami lub CDROMami (np. skaner,
+nagrywarka CD).
+.TP
+.I fd
+Aby umo¿liwiæ programowi odczytanie wej¶cia z deskryptora pliku
+.IR x ,
+u¿yj
+.BI /dev/fd/ x
+jako nazwy pliku. Tworzy to te¿
+.BR /dev/stdin ,
+.BR /dev/stdout
+oraz
+.BR /dev/stderr .
+(Zauwa¿, ¿e s± to po prostu dowi±zania symboliczne do /proc/self/fd).
+.TP
+.I ibcs2
+Urz±dzenia (i dowi±zania symboliczne) wymagane przez emulacjê IBCS2.
+.TP
+.I apm
+Urz±dzenia dla zarz±dzania zasilaniem.
+.TP
+.I dcf
+Sterownik do zegara radiowego DCF-77.
+.TP
+.I helloworld
+Urz±dzenie demonstracyjne pisania modu³ów. Zobacz ¼ród³a modu³ów.
+.TP
+.B "Urz±dzenia sieciowe"
+Linux mia³ w /dev urz±dzenia do kontroli urz±dzeñ sieciowych, lecz ju¿ ich
+tam nie ma. Aby zobaczyæ znane j±dru urz±dzenia sieciowe, zobacz
+/proc/net/dev.
+.SH "ZOBACZ TAK¯E"
+Linux Allocated Devices, pielêgnowane przez H.\ Petera Anvina,
+<Peter.Anvin@linux.org>.
+.SH AUTOR
+Nick Holloway

@@ -1,0 +1,459 @@
+.\" PTM/WK/2001-VI
+.\" ID orygina³u: wdiff.1,v 0.4 1992/12/21 22:34:46 cmb
+.\" ------------------------------------------------------------
+.\" Manual page for the wdiff program, based on the texinfo manual. 
+.\" 
+.\" Colin Brough, December 1992.
+.\" ------------------------------------------------------------
+.de Id
+.ds Rv \\$3
+.ds Dt \\$4
+..
+.Id $Id: wdiff.1,v 1.1 2001/06/13 13:47:02 wojtek2 Exp $
+.ds r \s-1RCS\s0
+.if n .ds - \%--
+.if t .ds - \(em
+.TH WDIFF 1 \*(Dt GNU
+.SH NAZWA
+wdiff \- wy¶wietla ró¿nice w wyrazach miêdzy plikami tekstowymi
+
+.SH SK£ADNIA
+.B wdiff
+.RB [ opcja \&.\|.\|.]
+.I stary_plik nowy_plik
+
+.SH PRAWA AUTORSKIE
+Copyright (C) 1992 Free Software Foundation, Inc.
+
+.\" --------------------------------------------------
+.\" Now the body of the text...
+.\" --------------------------------------------------
+.SH OPIS
+Dokumentacja niniejsza nie jest ju¿ utrzymywana i mo¿e byæ niedok³adna
+lub niekompletna.  Autorytatywnym ¼ród³em jest obecnie dokumentacja
+Texinfo.  Dostêp do niej uzyskasz wpisuj±c w wierszu poleceñ:
+.RS
+.B pinfo wdiff
+.RE
+lub
+.RS
+.BR "info wdiff" .
+.RE
+.PP
+
+.B wdiff
+porównuje dwa pliki, stwierdzaj±c, które wyrazy usuniêto lub dodano do
+.IR starego_pliku ,
+by uzyskaæ
+.IR nowy_plik .
+Wyrazem jest cokolwiek ograniczone bia³ymi znakami. Wyniki s± zbierane
+i u¿ywane do utworzenia skomentowanej kopii
+.I nowego pliku
+na standardowym wyj¶ciu. Odpowiednie adnotacje daj± ³adny obraz ró¿nic
+w wyrazach miêdzy pierwotnymi plikami.
+
+.B wdiff
+koñczy pracê z kodem 0 je¶li nie odnaleziono ró¿nic, 1 je¿eli znaleziono
+ró¿nice, a 2 w przypadku b³êdu.
+
+Zwykle do oznaczenia usuniêtego tekstu stosowane jest podkre¶lenie, za¶
+do oznaczenia tekstu wstawionego pogrubienie lub negatyw.  Ten sposób
+domy¶lny mo¿na przes³oniæ opcjami wiersza poleceñ.
+.I Usuniêty tekst
+oznacza tekst w
+.IR starym_pliku ,
+którego nie ma w
+.I nowym_pliku ,
+podczas gdy
+.I wstawiony tekst
+oznacza tekst w
+.IR nowym_pliku ,
+którego brak w
+.IR starym_pliku .
+
+.\" --------------------------------------------------
+.\" Now the command line options.
+.\" --------------------------------------------------
+.SH OPCJE
+.\" ------------------------------
+.TP
+.PD 0
+.B \-\-help
+.TP
+.B \-h
+.PD
+Wypisuje komunikat pomocy opisuj±cy opcje.
+.\" ------------------------------------------------------------
+.TP
+.PD 0
+.B \-\-version
+.TP
+.B \-v
+.PD
+Wypisuje numer wersji
+.B wdiff
+na standardowym wyj¶ciu diagnostycznym.
+.\" ------------------------------------------------------------
+.TP
+.B \-\-no\-deleted
+.PD 0
+.TP
+.B \-1
+.PD
+Zabrania tworzenia w wyj¶ciu usuniêtych wyrazów. Je¶li nie wybrano ani opcji
+.B \-1
+ani
+.BR \-2 ,
+to w niektórych wierszach mo¿e zostaæ przekroczony pierwotny prawy margines.
+.\" ------------------------------------------------------------
+.TP
+.PD 0
+.B \-\-no\-inserted
+.TP
+.B \-2
+.PD
+Zabrania tworzenia w wyj¶ciu wstawionych wyrazów. Je¶li nie wybrano ani opcji
+.B \-1
+ani
+.BR \-2 ,
+to w niektórych wierszach mo¿e zostaæ przekroczony pierwotny prawy margines.
+.\" ------------------------------------------------------------
+.TP
+.PD 0
+.B \-\-no\-common
+.TP
+.B \-3
+.PD
+Zabrania tworzenia w wyj¶ciu wspólnych wyrazów. Je¶li nie u¿yto tej opcji,
+wspólne wyrazy i bia³e znaki s± pobierane z
+.IR nowego_pliku .
+Gdy jej u¿yto, to ró¿nice zostan± od siebie oddzielone wierszami kresek.
+Ponadto, je¶li opcji tej u¿yto równocze¶nie z
+.B \-1
+lub
+.BR \-2 ,
+to w utworzonym wyj¶ciu nie bêdzie wyró¿nieñ \- tzn. pogrubieñ ani podkre¶leñ.
+Na koniec, je¶li nie u¿yto tej opcji, ale u¿yto obu opcji
+.B \-1
+i
+.BR \-2 ,
+to sekcje wspólnych wyrazów pomiêdzy ró¿nicami bêd± oddzielane wierszami kresek.
+
+.\" ------------------------------------------------------------
+.TP
+.PD 0
+.B \-\-statistics
+.TP
+.B \-s
+.PD
+Na zakoñczenie wypisywana jest, dla ka¿dego pliku, ca³kowita liczba wyrazów,
+wyrazów wspólnych dla obu plików, usuniêtych b±d¼ wstawionych i liczba
+zmienionych. (Wyraz zmieniony to taki, który zosta³ zast±piony lub jest
+czê¶ci± zast±pienia.)  Z wyj±tkiem ca³kowitej liczby wyrazów, po wszystkich
+pozosta³ych liczbach wystêpuje procent wzglêdem ca³kowitej liczby wyrazów
+w pliku.
+
+.\" ------------------------------------------------------------
+.TP
+.PD 0
+.B \-\-auto-pager
+.TP
+.B \-a
+.PD
+Je¶li wyj¶cie
+.B wdiff
+jest kierowane na terminal, to pomiêdzy nie wstawiany jest program
+stronicowania (pager).
+Bez tej opcji nie bêdzie wywo³ywany ¿aden program stronicuj±cy.
+Wówczas, je¶li to potrzebne, u¿ytkownik sam odpowiada za jawne skierowanie
+potokiem wyj¶cia z
+.B wdiff
+to pagera.
+
+Program stronicuj±cy okre¶la siê warto¶ci± zmiennej ¶rodowiskowej
+.BR PAGER .
+Je¶li podczas wykonywania
+.B wdiff
+zmienna
+.B PAGER
+nie jest zdefiniowana, to zostanie u¿yty domy¶lny program stronicuj±cy,
+wybrany podczas instalacji. Zdefiniowana, lecz pusta warto¶æ
+.B PAGER
+oznacza brak jakiegokolwiek programu stronicowania.
+
+Gdy przez u¿ycie tej opcji stosowany jest program stronicuj±cy, w³±czana
+jest tak¿e jedna z opcji \-l lub \-t, w zale¿no¶ci od tego, czy w nazwie
+pagera pojawia siê ³añcuch "less" czy nie.
+
+Czêsto warto zdefiniowaæ
+.I wdiff
+jako alias dla
+.IR "wdiff -a" .
+Jednak "ukrywa" to zwyk³e zachowanie siê programu. Mo¿na je przywróciæ
+po prostu przepuszczaj±c potokiem wyj¶cie
+.B wdiff
+przez
+.BR cat .
+Taki sposób od³±cza wyj¶cie od terminala.
+
+.\" ------------------------------------------------------------
+.TP
+.PD 0
+.B \-\-printer
+.TP
+.B \-p
+.PD
+Stosuje nadruk do wyró¿nienia czê¶ci wyj¶cia. Ka¿dy ze znaków usuniêtego
+tekstu jest podkre¶lany przez wypisanie najpierw znaku podkre¶lenia \_,
+a nastêpnie znaku cofniêcia (backspace) i litery, jaka ma zostaæ podkre¶lona.
+Ka¿dy ze znaków wstawionego tekstu jest pogrubiany przez wypisanie go
+dwukrotnie, z cofniêciem pomiêdzy przebiegami. Domy¶lnie ta opcja nie jest
+w³±czona.
+
+.\" ------------------------------------------------------------
+.TP
+.PD 0
+.B \-\-less-mode
+.TP
+.B \-l
+.PD
+Stosuje nadruk do wyró¿nienia czê¶ci wyj¶cia.  Dzia³a jak opcja \-p, ale
+dodatkowo nadpisuje bia³e znaki zwi±zane z wstawianym tekstem.
+.B less
+pokazuje takie bia³e znaki stosuj±c negatyw obrazu. Domy¶lnie ta opcja
+nie jest w³±czona. Jest jednak w³±czana automatycznie ka¿dorazowo gdy
+.B wdiff
+uruchamia
+.BR less .
+(Zobacz opcjê \-a.)
+
+Jest czêsto stosowana w po³±czeniu z 
+.B less:
+
+.B wdiff -l
+.I stary_plik
+.I nowy_plik
+.B | less
+
+.\" ------------------------------------------------------------
+.TP
+.PD 0
+.B \-\-terminal
+.TP
+.B \-t
+.PD
+Wymusza tworzenie ³añcuchów
+.I termcap
+do wyró¿niania czê¶ci wyj¶cia, nawet je¶li standardowe wyj¶cie nie jest
+zwi±zane z terminalem.
+Zmienna ¶rodowiskowa
+.B TERM
+musi zawieraæ nazwê poprawnego wpisu z
+.IR termcap .
+Je¶li pozwala na to opis danego terminala, do oznaczania usuniêtego tekstu
+stosowane jest podkre¶lenie, a do wstawionego tekstu pogrubienie lub negatyw.
+Domy¶lnie ta opcja nie jest w³±czona. Jest jednak w³±czana automatycznie
+ka¿dorazowo gdy
+.B wdiff
+uruchamia program stronicuj±cy i wiadomo, ¿e
+.I nie
+jest to
+.BR less .
+(Zobacz opcjê \-a.)
+
+Tê opcjê stosuje siê powszechnie gdy wyj¶cie 
+.B wdiff
+nie jest przekierowane, ale wysy³ane wprost na terminal, jak w:
+
+.B wdiff -t
+.I stary_plik
+.I nowy_plik
+
+Czêste rozwi±zanie to korzystanie z
+.B wdiff
+razem z programem stronicuj±cym
+.BR more :
+
+.B wdiff -t
+.I stary_plik
+.I nowy_plik
+.B | more
+
+
+Jednak niektóre wersje
+.B more
+wykorzystuj± wyró¿nienia
+.B termcap
+do w³asnych celów, wiêc mog± wyst±piæ dziwne wzajemne oddzia³ywania.
+
+.\" ------------------------------------------------------------
+.TP
+.PD 0
+.B \-\-start\-delete argument
+.TP
+.B \-w argument
+.PD
+Stosuje
+.I argument 
+jako ³añcuch "pocz±tku usuwania". Zostanie on wypisany przed ka¿d± sekwencj±
+usuniêtego tekstu, zaznaczaj±c jej pocz±tek. Domy¶lnie nie jest u¿ywany
+¿aden ³añcuch pocz±tku usuwania, chyba ¿e nie ma innych ¶rodków, dziêki
+którym mo¿na by rozpoznaæ, gdzie siê zaczyna taki tekst. Wówczas domy¶lnym
+³añcuchem pocz±tku usuwania jest
+.BR [\- .
+
+.\" ------------------------------------------------------------
+.TP
+.B \-\-end\-delete argument
+.PD 0
+.TP
+.B \-x argument
+.PD
+Stosuje
+.I argument
+jako ³añcuch "koñca usuwania". Zostanie on wypisany po ka¿dej sekwencji
+usuniêtego tekstu, zaznaczaj±c jej koniec. Domy¶lnie nie jest u¿ywany
+¿aden ³añcuch koñca usuwania, chyba ¿e nie ma innych ¶rodków, dziêki
+którym mo¿na by rozpoznaæ, gdzie siê koñczy taki tekst. Wówczas domy¶lnym
+³añcuchem koñca usuwania jest
+.B \-] .
+
+.\" ------------------------------------------------------------
+.TP
+.PD 0
+.B \-\-start\-insert argument
+.TP
+.B \-y argument
+.PD
+Stosuje
+.I argument 
+jako ³añcuch "pocz±tku wstawiania". Zostanie on wypisany przed ka¿d± sekwencj±
+wstawionego tekstu, zaznaczaj±c jej pocz±tek. Domy¶lnie nie jest u¿ywany
+¿aden ³añcuch pocz±tku wstawiania, chyba ¿e nie ma innych ¶rodków, dziêki
+którym mo¿na by rozpoznaæ, gdzie siê zaczyna taki tekst. Wówczas domy¶lnym
+³añcuchem pocz±tku wstawiania jest
+.BR {+ .
+
+.\" ------------------------------------------------------------
+.TP
+.PD 0
+.B \-\-end\-insert argument
+.TP
+.B \-z argument
+.PD
+Stosuje
+.I argument
+jako ³añcuch "koñca wstawiania". Zostanie on wypisany po ka¿dej sekwencji
+wstawionego tekstu, zaznaczaj±c jej koniec. Domy¶lnie nie jest u¿ywany
+¿aden ³añcuch koñca wstawiania, chyba ¿e nie ma innych ¶rodków, dziêki
+którym mo¿na by rozpoznaæ, gdzie siê koñczy taki tekst. Wówczas domy¶lnym
+³añcuchem koñca wstawiania jest
+.BR +} .
+
+.\" ------------------------------------------------------------
+.TP
+.PD 0
+.B \-\-avoid\-wraps
+.TP
+.B \-n
+.PD
+Zabrania ³±czenia koñców wiersza podczas pokazywania usuniêtego lub
+wstawionego tekstu. Ka¿dy pojedynczy fragment usuniêtego lub wstawionego
+tekstu rozci±gaj±cy siê na wiele wierszy bêdzie uwa¿any za z³o¿ony z wielu
+mniejszych kawa³ków nie zawieraj±cych znaku nowej linii.  Zatem na przyk³ad,
+usuniêty tekst bêdzie mia³ ³añcuch koñca usuwania na koñcu ka¿dego wiersza,
+zaraz przed znakiem nowej linii, i ³añcuch pocz±tku usuwania na pocz±tku
+nastêpnego wiersza. Ka¿dy wiersz w d³ugim akapicie wstawionego tekstu bêdzie
+ujêty pomiêdzy ³añcuchy pocz±tku wstawiania i koñca wstawiania.
+To zachowanie domy¶lnie nie jest w³±czone.
+
+.\" ------------------------------------------------------------
+.LP
+.\" --------------------------------------------------
+.\" Some text to round things off, after the command line options. 
+.\" --------------------------------------------------
+
+Zauwa¿, ¿e opcje
+.BR \-p ,
+.B \-t
+i 
+.BR \- [ wxyz ]
+nie wykluczaj± siê wzajemnie. U¿ywaj±c dowolnej ich kombinacji sumuje siê
+po prostu efekty ka¿dej z nich. Opcja
+.B \-l
+jest wariantem opcji
+.B \-p.
+
+.\" --------------------------------------------------
+.\" Some useful example of the use of the options above
+.\" --------------------------------------------------
+.SH PRZYK£ADY
+
+Poni¿sze polecenie tworzy kopiê
+.I nowego_pliku ,
+przesuniêt± o jedno miejsce w prawo w celu pomieszczenia pionowych kresek zmian
+od ostatniej wersji, ignoruj±c zmiany wynikaj±ce wy³±cznie z wype³nienia
+akapitów.
+Ka¿da linia z nowym lub zmienionym tekstem otrzyma
+.B |
+w pierwszej kolumnie. Jednak tekst usuniêty nie bêdzie ani pokazywany,
+ani oznaczany.
+
+.B wdiff -1n
+.I stary_plik nowy_plik
+.B | sed -e 's/^/  /;/{+/s/^ /|/;s/{+//g;s/+}//g'
+
+
+.\" --------------------------------------------------
+.\" Now the bugs section.
+.\" --------------------------------------------------
+.SH B£ÊDY
+Je¶li znajdziesz b³±d w
+.B wdiff,
+wy¶lij proszê list na adres
+.IR pinard@iro.umontreal.ca .
+Za³±cz numer wersji, który mo¿esz uzyskaæ uruchamiaj±c
+.B wdiff \-\-version.
+W li¶cie za³±cz dane wej¶ciowe wystarczaj±ce do powielenia problemu
+a tak¿e wyj¶cie, jakiego siê spodziewa³e¶.
+
+Obecnie
+.B wdiff
+wywo³uje
+.BR diff .
+By³by szybszy i czystszy w implementacji, gdyby by³ czê¶ci± pakietu
+programów
+.BR diff .
+
+Oto parê (nie przerobionych) sugestii:
+.TP
+\-
+Zrobiæ przeniesienie na MS-DOS.
+.TP
+\-
+Wybór opcjami co dok³adnie jest bia³ym znakiem.
+.TP
+\- 
+Mieæ program
+.BR wpatch .
+Nie bardzo widaæ dobry sposób, jak to zrobiæ.
+.LP
+
+.\" --------------------------------------------------
+.\" Some final sections
+.\" --------------------------------------------------
+.SH IDENTIFIKACJA
+Autor: Francois Pinard,
+.I pinard@iro.umontreal.ca
+.br
+Strona podrêcznikowa man: Colin M. Brough,
+.I cmb@epcc.ed.ac.uk
+.br
+Numer wersji: 0.4; Data wydania: 1992/12/21.
+
+.SH ZOBACZ TAK¯E
+.BR diff (1),
+.BR less (1),
+.BR cat (1),
+.BR more (1),
+.BR termcap (3).

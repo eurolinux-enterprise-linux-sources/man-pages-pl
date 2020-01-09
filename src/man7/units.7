@@ -1,0 +1,126 @@
+'\" t
+.\" Copyright (C) 2001 Andries Brouwer <aeb@cwi.nl>
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Translation (c) 2003 "Andrzej M. Krzysztofowicz" <ankry@mif.pg.gda.pl>
+.\"             man-pages 1.60
+.\"
+.TH UNITS 7 2001-12-22 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+jednostki, kilo, kibi, mega, mebi, giga, gibi \- przedrostki dziesiêtne i
+binarne
+.SH OPIS
+.SS Przedrostki dziesiêtne
+W systemie jednostek SI do okre¶lania potêg dziesiêciu u¿ywane s± przedrostki.
+Kilometr tos 1000 metrów, a megawat to 1000000 watów.
+Poni¿ej wypisane s± standardowe przedrostki.
+
+.RS
+.TS
+l l l.
+przedrostek	nazwa	warto¶æ
+y		jokto	10^-24 = 0.000000000000000000000001
+z		cepto	10^-21 = 0.000000000000000000001
+a		atto	10^-18 = 0.000000000000000001
+f		femto	10^-15 = 0.000000000000001
+p		piko	10^-12 = 0.000000000001
+n		nano	10^-9  = 0.000000001
+u		mikro	10^-6  = 0.000001
+m		mili	10^-3  = 0.001
+c		centy	10^-2  = 0.01
+d		decy	10^-1  = 0.1
+da		deka	10^ 1  = 10
+h		hekto	10^ 2  = 100
+k		kilo	10^ 3  = 1000
+M		mega	10^ 6  = 1000000
+G		giga	10^ 9  = 1000000000
+T		tera	10^12  = 1000000000000
+P		peta	10^15  = 1000000000000000
+E		eksa	10^18  = 1000000000000000000
+Z		cetta	10^21  = 1000000000000000000000
+Y		jotta	10^24  = 1000000000000000000000000
+.TE
+.RE
+
+Symbolem mikro jest grecka litera mi, czêsto pisana jako u w kontek¶cie
+ASCII, gdy w³a¶ciwa litera grecka jest niedostêpna.
+Zobacz tak¿e
+.sp
+.RS
+http://physics.nist.gov/cuu/Units/prefixes.html
+.RE
+.SS Przedrostki binarne
+Przedrostki binarne s± podobne do dziesiêtnych, ale maj± dodane 'i' (oraz
+"Ki" zaczyn± siê wielk± liter± 'K'). Ich nazwy zosta³y utworzone przez wziêcie
+pierwszej sylaby z nazwy przedrostka dziesiêtnego o zbli¿onej wielko¶ci, po
+której dodano "bi", jak "binarny".
+
+.RS
+.TS
+l l l.
+przedrostek	nazwa	warto¶æ
+Ki		kibi	2^10 = 1024
+Mi		mebi	2^20 = 1048576
+Gi		gibi	2^30 = 1073741824
+Ti		tebi	2^40 = 1099511627776
+Pi		pebi	2^50 = 1125899906842624
+Ei		exbi	2^60 = 1152921504606846976
+.TE
+.RE
+
+Zobacz tak¿e
+.sp
+.RS
+http://physics.nist.gov/cuu/Units/binary.html
+.RE
+.SS Dyskusja
+Przed wprowadzeniem przedrostków binarnych, do¶æ powszechnie u¿ywano k=1000 i
+K=1024 podobnie do b=bit, B=bajt. Niestety, M ju¿ jest wielk± liter± i nie
+mo¿na jej uczyniæ wielk±, aby oznaczyæ binarno¶æ.
+
+Na pocz±tku nie mia³o to wiêkszego znaczenia, gdy¿ modu³y pamiêci i dyski
+by³y produkowane w rozmiarach bêd±cych potêgami dwójki. Zatem ka¿dy wiedzia³,
+¿e w danym kontek¶cie "kilobajt" i "megabajt" oznaczaj±, odpowiednio, 1024 i
+1048576 bajtów. To, co pierwotnie by³o rozmytym stosowaniem przedrostków
+"kilo" i "mega" zaczê³o byæ traktowane jako "rzeczywiste i prawdziwe
+znaczenie" w odniesieniu do komputerów. Wówczas zmieni³a siê technologia i
+rozmiary dysków sta³y siê dowolne. Po okresie niepewno¶ci wszyscy producenci
+dysków zaczêli stosowaæ standard, czyli k=1000, M=1000k, G=1000M.
+
+Sytuacja sta³a siê brzydka: w przypadku modemów 14k4, k=1000; w przypadku
+.\" also common: 14.4k modem
+dyskietek 1.44MB, M=1024000 itd. W 1998 Miêdzynarodowa Komisja
+Elektrotechniczna przyjê³a standard definiuj±cy powy¿sze przedrostki binarne,
+umo¿liwiaj±c stosowanie precyzyjnych i jednoznacznych jednostek.
+
+Zatem obecnie, MB = 1000000B a MiB = 1048576B.
+
+W ¶wiecie darmowego oprogramowania, programy powoli staj± siê zgodne z
+tym standardem. Podczas startu j±dro Linuksa mówi
+
+.RS
+.nf
+hda: 120064896 sectors (61473 MB) w/2048KiB Cache
+.fi
+.RE
+
+MB to megabajty a KiB to kibibajty.

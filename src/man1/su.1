@@ -1,0 +1,172 @@
+.\" {PTM/PB/0.1/09-05-1999/"uruchom pow³okê z podmienieniem id u¿ytkownika/grupy"}
+.\" poszerzenie i aktualizacja do GNU sh-utils 2.0 PTM/WK/2000-VI
+.ig
+Transl.note: based on GNU man page su.1 and sh-utils.info
+
+Copyright (C) 1994, 95, 96 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+..
+.TH SU "1" FSF "maj 2000" "Narzêdzia pow³okowe GNU 2.0"
+.SH NAZWA
+su \- uruchom pow³okê z podmienieniem ID u¿ytkownika/grupy.
+.SH SK£ADNIA
+.TP 4
+.B su
+.RB [ \-flmp ]
+.RB [ \-c
+.IR polecenie ]
+.RB [ \-s
+.IR pow³oka ]
+.RB [ \- ]
+.RB [ \-\-login ]
+.br
+.RB [ \-\-fast ]
+.RB [ \-\-preserve-environment ]
+.RB [ \-\-shell=\fIpow³oka ]
+.br
+.RB [ \-\-command=\fIpolecenie ]
+.RB [ \-\-help ]
+.RB [ \-\-version ]
+.br
+.RI [ u¿ytkownik
+.RI [ arg ...]]
+.SH OPIS
+Ta strona podrêcznika opisuje polecenie \fBsu\fP w wersji GNU.
+.PP
+.B su
+pozwala danemu u¿ytkownikowi na tymczasowe bycie innym u¿ytkownikiem.
+Uruchamia polecenie (czêsto pow³okê interaktywn±) z rzeczywistym i efektywnym
+id u¿ytkownika oraz id grupy i grupami dodatkowymi, nale¿±cymi do
+\fIu¿ytkownika\fP. Je¶li nie podano u¿ytkownika, domy¶lnym jest root, czyli
+superu¿ytkownik. Nazwa pow³oki jest pobierana ze wpisu w \fI/etc/passwd\fP,
+a je¶li tam nic nie bêdzie, u¿ywany jest /bin/sh. Je¶li \fIu¿ytkownik\fP ma
+has³o, to
+.B su
+zapyta o has³o, chyba ¿e wywo³uj±cy je u¿ytkownik mia³ efektywny
+identyfikator u¿ytkownika ustawiony na 0 (superu¿ytkownik).
+.PP
+Domy¶lnie
+.B su
+nie zmienia bie¿±cego katalogu. Ustawia zmienne ¶rodowiskowe \fBHOME\fP i
+\fBSHELL\fP wed³ug zapisów w pliku hase³ dla \fIu¿ytkownika\fP, a je¶li
+nie jest on superu¿ytkownikiem, ustawia te¿ \fBUSER\fP i \fBLOGNAME\fP
+na \fIu¿ytkownik\fP.
+Domy¶lnie pow³oka nie jest pow³ok± zg³oszeniow± (zalogowania).
+.PP
+Je¶li podano wiêcej \fIarg\fPumentów, to s± one przekazywane jako dodatkowe
+argumenty dla pow³oki.
+.PP
+.B su
+nie obs³uguje specjalnie /bin/sh czy innych pow³ok
+(ustawianie argv[0] na "-su", przekazywanie -c do niektórych pow³ok, itp.).
+.PP
+Na systemach, które maj± sysloga,
+.B su
+mo¿e zostaæ tak skompilowane, by raportowa³o nieudane, lub opcjonalnie
+równie¿ udane próby zmiany id przy u¿yciu
+.BR su .
+Jednak \fBsu\fP w wersji GNU nie sprawdza czy u¿ytkownik jest cz³onkiem grupy
+`wheel' -- patrz poni¿ej.
+.SH OPCJE
+.TP
+.BR \-c " \fIpolecenie\fP, " \-\-command= \fIpolecenie
+Przekazuje \fIpolecenie\fP, pojedynczy wiersz poleceñ do wykonania,
+do pow³oki z u¿yciem parametru
+.BR \-c ,
+zamiast uruchamiaæ pow³okê interaktywn±.
+.TP
+.BR \-f ", " \-\-fast
+Przekazuje pow³oce opcjê
+.BR \-f .
+Prawdopodobnie ma to zastosowanie tylko dla
+.B csh
+i
+.BR tcsh ,
+dla których opcja
+.B \-f
+powoduje nieczytanie pliku startowego (\fI.cshrc\fP). W pow³okach typu
+bourne, opcja
+.B \-f
+wy³±cza rozszerzanie wzorców nazw plików, co raczej nie jest przydatne.
+.TP
+.BR \- ", " \-l ", " \-\-login
+Sprawia, ¿e pow³oka bêdzie pow³ok± zg³oszeniow±. Znaczy to, co nastêpuje.
+Uniewa¿nia
+wszelkie zmienne ¶rodowiskowe poza \fBTERM\fP, \fBHOME\fP i \fBSHELL\fP
+(które s± ustawiane, jak opisano wy¿ej), i \fBUSER\fP oraz \fBLOGNAME\fP
+(ustawiane, nawet dla superu¿ytkownika, w sposób wy¿ej opisany ).
+Ustawia zmienn± \fBPATH\fP na wkompilowan± warto¶æ domy¶ln±. Zmienia katalog
+na katalog domowy u¿ytkownika. Dodaje do nazwy pow³oki "\-", aby przeczyta³
+pliki startowe logowania.
+.TP
+.BR \-m ", " \-p ", " \-\-preserve\-environment
+Nie zmienia zmiennych ¶rodowiskowych \fBHOME\fP, \fBUSER\fP, \fBLOGNAME\fP
+czy \fBSHELL\fP.
+Zamiast pow³oki \fIu¿ytkownika\fP okre¶lonej w pliku passwd, uruchamia pow³okê
+podan± w zmiennej \fBSHELL\fP, chyba ¿e u¿ytkownik wywo³uj±cy
+.B su
+nie jest superu¿ytkownikiem, a pow³oka \fIu¿ytkownika\fP jest okrojona.
+Pow³oka okrojona, to taka, która nie jest wymieniona w pliku \fI/etc/shells\fP,
+lub we wkompilowanej li¶cie pow³ok. Czê¶ciowo opcja ta mo¿e byæ przes³oniêta
+opcjami
+.B \-\-login
+i
+.BR \-\-shell .
+.TP
+.B \-s " \fIpow³oka\fP, " \-\-shell= pow³oka
+Zamiast pow³oki \fIu¿ytkownika\fP okre¶lonej w passwd, uruchamia zadan±
+\fIpow³okê\fP, chyba ¿e uruchamiaj±cy
+.B su
+u¿ytkownik nie jest superu¿ytkownikiem, a pow³oka \fIu¿ytkownika\fP jest
+ograniczona.
+.TP
+.B \-\-help
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach, koñczy
+pracê.
+.TP
+.B \-\-version
+Wy¶wietla numer wersji programu i koñczy pracê.
+.SH Dlaczego GNU `su' nie obs³uguje grupy `wheel'
+
+(Sekcjê tê napisa³ Richard Stallman)
+
+Czasami kilku u¿ytkowników usi³uje sprawowaæ nieograniczon± w³adzê nad
+pozosta³ymi. Na przyk³ad, w 1984, kilku u¿ytkowników w laboratorium AI MIT
+zdecydowa³o siê `przej±æ w³adzê' zmieniaj±c has³o operatora systemu Twenex
+i trzymaj±c je w tajemnicy przed wszystkimi innymi. (Uda³o mi siê
+udaremniæ ten zamach i przywróciæ w³adzê u¿ytkownikom ³ataj±c j±dro, lecz
+nie wiedzia³bym jak zrobiæ to w Uniksie.)
+
+Jednak, od czasu do czasu panuj±cy wyjawiaj± komu¶. Przy zwyk³ym
+mechanizmie `su', kto¶, kto pozna³ has³o root'a i sympatyzuje ze zwyk³ymi
+u¿ytkownikami, mo¿e przekazaæ je pozosta³ym. Funkcja "grupy wheel"
+uniemo¿liwia³aby to, i w ten sposób umacnia³a w³adzê rz±dz±cych.
+
+Jestem po stronie mas, nie po stronie rz±dz±cych. Je¿eli zwyk³e¶ popieraæ
+szefów i administratorów systemów we wszystkim, co robi±, podej¶cie to mo¿e
+pocz±tkowo wydaæ Ci siê dziwne.
+.SH "ZG£ASZANIE B£ÊDÓW"
+B³êdy proszê zg³aszaæ, w jêz.ang., do <bug-sh-utils@gnu.org>.
+.SH COPYRIGHT
+Copyright \(co 1999 Free Software Foundation, Inc.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH ZOBACZ TAK¯E
+.BR sh-utils (1).
+.SH OD T£UMACZA
+Zaktualizowano i poszerzono wg dokumentacji Texinfo dla narzêdzi pow³okowych
+GNU wersji 2.0.

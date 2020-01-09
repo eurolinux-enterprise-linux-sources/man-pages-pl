@@ -1,0 +1,291 @@
+.\"{{{}}}
+.\" Translation (c) 1998 Pawe³ Wilk <siewca@dione.ids.pl>
+.\" Translation update: Robert Luberda <robert@debian.org>, Mar 2005, sysvinit 2.86
+.\" $Id: init.8,v 1.5 2005/03/20 19:20:59 robert Exp $
+.\" {PTM/PW/0.2/09-05-1999/"steruj procesem inicjuj±cym"}
+.\"{{{  Title
+.TH INIT 8 "19 lipca 2004" "" "Podrêcznik administratora systemu Linux"
+.\"}}}
+.\"{{{  Name
+.SH NAZWA
+init, telinit \- sterowanie procesu inicjuj±cego
+.\"}}}
+.\"{{{  Synopsis
+.SH SK£ADNIA
+.B /sbin/init
+.RB [ " \-a " ]
+.RB [ " \-s " ]
+.RB [ " \-b " ]
+.RB [ " \-z xxx " ]
+.RB [ " 0123456Ss " ]
+.br
+.B /sbin/telinit
+.RB [ " \-t sekundy " ]
+.RB [ " 0123456sSQqabcUu " ]
+.\"}}}
+.\"}}}
+.\"{{{  Description
+.SH OPIS
+.\"{{{  init
+.SS Init
+.B Init
+jest przodkiem wszystkich procesów. Jego g³ównym zadaniem jest stworzenie procesów
+w oparciu o skrypt zapisany w pliku \fB/etc/inittab\fP (patrz te¿
+\fIinittab\fP(5)). Ten plik zawiera zwykle pozycje, które ka¿± procesowi \fBinit\fP
+pomna¿aæ \fBgetty\fP na ka¿dej linii, na które u¿ytkownicy mog± siê zalogowaæ. Kontroluje
+te¿ samodzielne procesy, których istnienie jest konieczne w danym systemie.
+.PP
+.\"{{{ Runlevels
+.SH POZIOMY PRACY
+\fIRunlevel\fP (poziom pracy) jest to konfiguracja oprogramowania systemu,
+która pozwala
+zaistnieæ tylko wytypowanym grupom procesów. Procesy tworzone przez
+\fBinit\fP dla ka¿dego z tych poziomów s± zdefiniowane w pliku
+\fB/etc/inittab\fP. \fBInit\fP mo¿e byæ w jednym z o¶miu poziomów pracy:
+\fB0\(en6\fP i \fBS\fP lub \fBs\fP. Poziom pracy jest
+zmieniany przez uruchomienie \fBtelinit\fP przez uprzywilejowanego u¿ytkownika.
+\fBtelinit\fP wysy³a odpowiednie sygna³y do \fBinit\fP, mówi±ce, w jaki tryb ma
+przej¶æ.
+.PP
+Tryby pracy \fB0\fP, \fB1\fP, oraz \fB6\fP s± zarezerwowane. Tryb 0 jest u¿ywany, by
+zatrzymaæ system, tryb 6, by prze³adowaæ system (reboot), a tryb
+1, by wprowadziæ system w tryb pracy jednego u¿ytkownika (single\-user mode). Tryb \fBS\fP
+nie jest pomy¶lany dok³adnie tak, by go u¿ywaæ bezpo¶rednio, lecz raczej dla skryptów
+wykonywanych przy wchodzeniu w tryb 1. Aby uzyskaæ wiêcej informacji na ten temat,
+zobacz strony podrêcznika dla \fBshutdown\fP(8) i \fBinittab\fP(5).
+.PP
+Tryby pracy 7\-9 te¿ s± poprawne, choæ niezbyt udokumentowane. To z powodu
+"tradycyjnych" wariantów Uniksa nie u¿ywaj±cych ich.
+Je¶li jeste¶ ciekaw, to wiedz, ¿e poziomy \fIS\fP i \fIs\fP s± w rzeczywisto¶ci takie same.
+Wewnêtrznie s± to tylko zastêpcze nazwy dla takich samych trybów pracy.
+.\"}}}
+.PP
+.SH BOOTOWANIE
+Po tym jak \fBinit\fP jest wywo³any w ostatnim kroku sekwencji bootuj±cej j±dra,
+szuka pliku \fB/etc/inittab\fP w celu znalezienia w nim pola typu
+\fBinitdefault\fP (patrz te¿ \fIinittab\fP(5)). Pole \fBinitdefault\fP
+okre¶la pocz±tkowy poziom pracy systemu. Je¶li nie ma tam takiego
+pola (lub wcale nie istnieje \fB/etc/inittab\fP), poziom pracy musi byæ
+podany z konsoli systemowej.
+.PP
+Poziom \fBS\fP lub \fBs\fP wprowadza system w tryb jednego u¿ytkownika
+i nie wymaga pliku \fB/etc/initttab\fP. W trybie jednego u¿ytkownika,
+wywo³ywany jest \fB/sbin/sulogin\fP na urz±dzeniu \fB/dev/console\fP.
+.PP
+Podczas wchodzenia w tryb jednego u¿ytkownika, proces \fBinit\fP
+inicjuje ustawienia \fBstty\fR konsoli na bezpieczne warto¶ci. Ustawiany
+jest tryb clocal. Prêdko¶æ sprzêtu i handshaking nie s± zmieniane.
+.PP
+Podczas wchodzenia w tryb wielu u¿ytkowników po raz pierwszy, \fBinit\fP wykonuje
+pozycje \fBboot\fP i \fBbootwait\fP, by pozwoliæ systemom plików zamontowaæ siê
+zanim u¿ytkownicy bêd± mogli siê zalogowaæ. Potem wykonywane s± wszystkie pozycje
+przypisane danemu poziomowi pracy.
+.PP
+Kiedy nowy proces startuje, \fBinit\fP sprawdza najpierw, czy istnieje plik
+\fI/etc/initscript\fP. Je¶li tak, u¿ywa tego skryptu by
+ten proces zacz±æ.
+.PP
+Za ka¿dym razem, gdy proces potomny siê zakoñczy, \fBinit\fP zapamiêtuje ten fakt i powód
+¶mierci procesu jest zapisany w \fB/var/run/utmp\fP i \fB/var/log/wtmp\fP,
+pod warunkiem, ¿e te pliki istniej±.
+.SH ZMIENIANIE TRYBÓW PRACY
+Po tym jak "namno¿one" zostan± wszystkie wyszczególnione procesy, \fBinit\fP czeka
+na ¶mieræ ka¿dego swojego procesu potomnego, sygna³ braku energii lub
+zasygnalizowanie przez \fBtelinit\fP zmiany poziomu dzia³ania systemu.
+Gdy wyst±pi jeden spo¶ród tych trzech warunków, ponownie sprawdzany jest
+plik \fB/etc/inittab\fP, poniewa¿ nowe pola mog± byæ do niego dodane
+w ka¿dej chwili. Jednakowo¿, \fBinit\fP wci±¿ oczekuje na wyst±pienie jednego
+z tych trzech warunków. By przygotowaæ siê na natychmiastow± odpowied¼,
+\fBtelinit Q\fP albo u¿yta komenda \fBq\fP mo¿e obudziæ proces \fBinit\fP,
+by jeszcze raz przeczyta³ plik \fB/etc/inittab\fP.
+.PP
+Je¶li \fBinit\fP nie jest w trybie jednego u¿ytkownika i odbiera sygna³ zaniku
+energii (SIGPWR), czyta plik \fB/etc/powerstatus\fR. Nastêpnie uruchamia polecenie
+zale¿ne od zawarto¶ci tego pliku:
+.IP F(AIL)
+Zawodzi zasilanie, UPS dostarcza mocy. Wykonuje wpisy \fBpowerwait\fP
+i \fBpowerfail\fP.
+.IP O(K)
+Zasilanie powróci³o, uruchamia wpisy \fBpowerokwait\fP.
+.IP L(OW)
+Zasilanie zawodzi, a UPS\-owi wyczerpuje siê bateria. Wykonuje
+wpisy \fBpowerfailnow\fP.
+.PP
+Je¿eli plik /etc/powerstatus nie istnieje lub zawiera cokolwiek innego ni¿ jedn± z
+liter \fBF\fP, \fBO\fP lub \fBL\fP, init zachowa siê tak, jakby przeczyta³ \fBF\fR.
+.PP
+U¿ywanie \fBSIGPWR\fP i \fB/etc/powerstatus\fP nie jest zalecane. Je¿eli
+kto¶ chce  wspó³dzia³aæ z \fBinit\fP\-em, powinien u¿yæ kana³u kontroli
+\fB/dev/initctl\fP \- proszê przeczytaæ kod ¼ród³owy pakietu \fBsysvinit\fP
+po wiêcej dokumentacji dotycz±cej tego kana³u.
+.PP
+Gdy \fBinit\fP jest proszony o zmianê poziomu dzia³ania, wysy³a sygna³
+ostrzegawczy \s-1\fBSIGTERM\fP\s0 do wszystkich procesów, które nie s± zdefiniowane
+w nowym poziomie pracy. Potem czeka 5 sekund zanim "na si³ê"
+zakoñczy te procesy poprzez sygna³ \s-1\fBSIGKILL\fP\s0.
+Zauwa¿, ¿e \fBinit\fP zak³ada, ¿e wszystkie te procesy (i ich potomki)
+pozostaj± w tej samej grupie procesów, któr± \fBinit\fP
+oryginalnie im utworzy³. Je¿eli jakikolwiek proces zmieni³ sw± przynale¿no¶æ do
+grupy procesów to nie odbierze tych sygna³ów. Tego typu procesy musz±
+byæ koñczone osobno (np. demony wszelakie \- przyp. t³um.).
+.\"}}}
+.\"{{{  telinit
+.SH TELINIT
+\fB/sbin/telinit\fP jest symbolicznym dowi±zaniem do \fB/sbin/init\fP. Pobiera on
+jednoznakowy argument i sygna³y \fBinit\fP, by podj±³ stosowne dzia³anie.
+Poni¿sze argumenty mo¿na stosowaæ jako rozkazy dla
+\fBtelinit\fP:
+.IP "\fB0\fP,\fB1\fP,\fB2\fP,\fB3\fP,\fB4\fP,\fB5\fP lub \fB6\fP"
+mówi± procesowi \fBinit\fP by prze³±czy³ w odpowiedni poziom dzia³ania.
+.IP \fBa\fP,\fBb\fP,\fBc\fP
+ka¿± procesowi \fBinit\fP by przetwarza³ tylko te pola pliku \fB/etc/inittab\fP,
+które odnosz± siê do poziomu pracy \fBa\fP,\fBb\fP lub \fBc\fP.
+.IP "\fBQ\fP lub \fBq\fP"
+ka¿± procesowi \fBinit\fP jeszcze raz przeczytaæ plik \fB/etc/inittab\fP.
+.IP "\fBS\fP lub \fBs\fP"
+mówi± ¿eby \fBinit\fP prze³±czy³ w tryb jednego u¿ytkownika.
+.IP "\fBU\fP lub \fBu\fP"
+ka¿± procesowi \fBinit\fP prze³adowaæ siê (zachowuj±c obecny stan). Nie wystêpuje
+ponowne odczytywanie pliku \fB/etc/inittab\fP. Poziom pracy powinien byæ ustawiony
+na \fBSs12345\fP, w przeciwnym wypadku ¿±danie mo¿e byæ "delikatnie" zignorowane.
+.PP
+\fBtelinit\fP mo¿e tak¿e powiedzieæ procesowi \fBinit\fP, jak d³ugo powinien on czekaæ
+miêdzy wysy³aniem sygna³ów SIGTERM i SIGKILL. Domy¶ln± warto¶ci± jest
+5 sekund, ale mo¿e byæ ona zmieniona za pomoc± opcji \fB\-t sekundy\fP.
+.PP
+\fBtelinit\fP mo¿e byæ wywo³ywany tylko przez u¿ytkowników uprzywilejowanych.
+.PP
+Wywo³any \fBinit\fP sprawdza czy jest procesem inicjuj±cym \fBinit\fP czy te¿
+jest wywo³any jako \fBtelinit\fP poprzez wgl±d w swój \fIidentyfikator procesu\fP;
+prawdziwy identyfikator procesu \fBinit\fP ma zawsze warto¶æ \fB1\fP.
+Teraz ju¿ wiadomo, ¿e zamiast wywo³ywaæ \fBtelinit\fP mo¿esz te¿ po prostu
+u¿yæ \fBinit\fP, a nie skrótu.
+.\"}}}
+.\"}}}
+.SH ¦RODOWISKO
+\fBInit\fP ustawia nastêpuj±ce zmienne ¶rodowiskowe dla wszystkich swoich dzieci:
+.IP \fBPATH\fP
+\fI/usr/local/sbin:/sbin:/bin:/usr/sbin:/usr/bin\fP
+.IP \fBINIT_VERSION\fP
+Jak mówi nazwa \- wersja programu. U¿yteczne dla okre¶lenia, je¶li skrypt uruchamia siê bezpo¶rednio z \fBinit\fP.
+.IP \fBRUNLEVEL\fP
+Obecny poziom pracy systemu.
+.IP \fBPREVLEVEL\fP
+Poprzedni poziom pracy systemu (u¿yteczne po zmianie poziomów).
+.IP \fBCONSOLE\fP
+Konsola systemu. Tak naprawdê ta warto¶æ jest przyjmowana od j±dra; jednak
+je¶li nie jest ustawiona \fBinit\fP ustawi j± domy¶lnie na \fB/dev/console\fP.
+.SH FLAGI STARTOWE
+Jest mo¿liwe by przekazaæ pewne flagi do procesu \fBinit\fP z monitora
+startowego (np. LILO). \fBInit\fP dopuszcza stosowanie nastêpuj±cych flag:
+.TP 0.5i
+.B S, single
+Bootowanie w trybie jednego u¿ytkownika. W tym trybie \fI/etc/inittab\fP jest
+sprawdzany (wczytywany) i skrypty startowe rc s± zwykle uruchamiane zanim
+wystartuje pow³oka dla trybu jednego u¿ytkownika.
+.PP
+.TP 0.5i
+.B 1\-5
+Poziom dzia³ania w jakim system ma wystartowaæ.
+.PP
+.TP 0.5i
+.B \-b, emergency
+Wej¶cie bezpo¶rednio w tryb jednego u¿ytkownika bez uruchamiania
+¿adnych innych skryptów startowych.
+.PP
+.TP 0.5i
+.B \-a, auto
+Program ³aduj±cy LILO dodaje s³owo "auto" do linii poleceñ, je¿eli
+uruchomi³ j±dro z domy¶ln± lini± poleceñ (u¿ytkownik jej nie zmienia³).
+Je¿eli \fBinit\fP znajdzie to s³owo, ustawi zmienn± ¶rodowiskow±
+"AUTOBOOT" na "yes". Proszê zauwa¿yæ, ¿e nie mo¿na tego u¿yæ jako
+¶rodka bezpieczeñstwa \- oczywi¶ci u¿ytkownik móg³ rêcznie w linii
+poleceñ wpisaæ "auto" u¿yæ opcji \-a.
+.PP
+.TP 0.5i
+.B \-z xxx
+Argument opcji \-z jest ignorowany. Mo¿e byæ u¿yta do wyd³u¿enia linii poleceñ,
+tak ¿eby zajmowa³a wiêcej miejsca na stosie. \fBInit\fP mo¿e wtedy manipulowaæ lini±
+poleceñ, tak ¿eby \fBps\fP(1) pokazywa³o bie¿±cy tryb uruchomienia.
+.PP
+.SH INTERFEJS
+Init nas³uchuje wiadomo¶ci na ³±czu \fIfifo\fP w /dev, \fI/dev/initctl\fP.
+\fBTelinit\fP u¿ywa tego do komunikacji z procesem init. Ten interfejs nie jest
+zbyt dobrze udokumentowany czy skoñczony. Zainteresowani powinni przestudiowaæ
+plik \fIinitreq.h\fP w podkatalogu \fIsrc/\fP archiwum tarowego z kodem ¼ród³owym
+\fBinit\fP.
+.SH SYGNA£Y
+Init reaguje na nastêpuj±ce sygna³y:
+.TP 0.5i
+.B SIGHUP
+Ma ten sam efekt co \fBtelinit q\fP.
+.PP
+.TP 0.5i
+.B SIGUSR1
+Po odebraniu tego sygna³u, init zamyka i ponownie otwiera swoj± kontrolkê fifo,
+\fB/dev/initctl\fP. U¿yteczne w przypadku skryptów startowych, gdy przemontowywany jest
+katalog /dev.
+.TP 0.5i
+.B SIGINT
+Zwykle ten sygna³ jest wysy³any z j±dra by powiedzieæ, ¿e wci¶niêta zosta³a
+kombinacja klawiszy CTRL\-ALT\-DEL. Powoduje to rozpoczêcie akcji \fIctrlaltdel\fP.
+.TP 0.5i
+.B SIGWINCH
+J±dro wysy³a ten sygna³ je¶li wci¶niêty zosta³ klawisz \fIKeyboardSignal\fP.
+Aktywuje to akcjê \fIkbrequest\fP.
+\"{{{  Conforming to
+.SH ZGODNE Z
+\fBInit\fP jest kompatybilny z init obecnym System V. Dzia³a
+razem ze skryptami w katalogach
+\fI/etc/init.d\fP i \fI/etc/rc{poziom_dzia³ania}.d\fP.
+Je¶li twój system u¿ywa tej konwencji, to powinien byæ obecny plik \fIREADME\fP
+w katalogu \fI/etc/init.d\fP wyja¶niaj±cy, jak te skrypty dzia³aj±.
+.\"}}}
+.\"{{{  Files
+.SH PLIKI
+.nf
+/etc/inittab
+/etc/initscript
+/dev/console
+/var/run/utmp
+/var/log/wtmp
+/dev/initctl
+.fi
+.\"}}}
+.\"{{{  Warnings
+.SH UWAGI
+\fBInit\fP zak³ada, ¿e procesy i ich procesy potomne
+pozostaj± w tej samej grupie procesów, która by³a dla nich
+oryginalnie stworzona. Je¿eli jakikolwiek proces zmieni³ sw± przynale¿no¶æ do
+grupy procesów, \fBinit\fP nie mo¿e ich zabiæ i mo¿e skoñczyæ siê na tym,
+¿e zostan± dwa procesy czytaj±ce z jednej linii terminala.
+
+.\"}}}
+.\"{{{  Diagnostics
+.SH DIAGNOSTYKA
+Je¶li \fBinit\fP zorientuje siê, ¿e wci±¿ powtarza namna¿anie zadanego
+procesu czê¶ciej ni¿ 10 razy w ci±gu 2 minut, wtedy za³o¿y, ¿e gdzie¶
+w wywo³aniu komendy jest b³±d, wy¶le wiadomo¶æ o b³êdzie na konsolê
+systemu, i przerwie pomna¿anie danego pola do up³yniêcia 5 minut lub
+do odebrania sygna³u. Zapobiega to "zjadaniu" zasobów systemu gdy kto¶
+pope³ni b³±d typograficzny (bardziej po naszemu: "literówkê" \- przyp. t³um.) w pliku
+\fB/etc/inittab\fP lub gdy program normalnie uruchamiany dla danego
+wpisu jest usuniêty.
+.\"}}}
+.\"{{{  Author
+.SH AUTOR
+Miquel van Smoorenburg (miquels@cistron.nl), pierwsz± wersjê strony
+podrêcznika napisa³ Michael Haardt (u31b3hs@pool.informatik.rwth\-aachen.de).
+.\"}}}
+.\"{{{  See also
+.SH "PATRZ TAK¯E"
+.BR getty (1),
+.BR login (1),
+.BR sh (1),
+.BR runlevel (8),
+.BR shutdown(8),
+.BR kill (1),
+.BR inittab (5),
+.BR initscript (5),
+.BR utmp (5)
+.\"}}}

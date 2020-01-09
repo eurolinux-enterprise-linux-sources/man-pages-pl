@@ -1,0 +1,499 @@
+.\" {PTM/PB/0.1/02-05-1999/"Zmienia dostrajalne parametru ext2fs"}
+.\" Last update: Robert Luberda <robert@debian.org>, Mar 2005, e2fsprogs 1.36
+.\" $Id: tune2fs.8,v 1.3 2005/03/20 19:20:41 robert Exp $
+.\"
+.\" Revision 1.0 93/06/3 23:00  chk
+.\" Initial revision
+.\"
+.\"
+.TH TUNE2FS 8 "luty 2005" "e2fsprogs wersja 1.36"
+.SH NAZWA
+tune2fs \- modyfikacja dostrajalnych parametrów systemu plików ext2/ext3
+.SH SK£ADNIA
+.B tune2fs
+[
+.B \-l
+]
+[
+.B \-c
+.I max\-liczba\-montowañ
+]
+[
+.B \-e
+.I zachowanie\-w\-razie\-b³êdu
+]
+[
+.B \-f
+]
+[
+.B \-i
+.I przerwa\-miêdzy\-sprawdzeniami
+]
+[
+.B \-j
+]
+[
+.B \-J
+.I opcje\-dziennika
+]
+[
+.B \-m
+.I procent\-zarezerwowanych\-bloków
+]
+[
+.B \-o
+.RI [^] opcje\-montowania [,...]
+]
+[
+[
+.B \-r
+.I liczba\-zarezerwowanych\-bloków
+]
+[
+.B \-s
+.I flaga\-sparse\-super
+]
+[
+.B \-u
+.I u¿ytkownik
+]
+[
+.B \-g
+.I grupa
+]
+[
+.B \-C
+.I liczba\-montowañ
+]
+[
+.B \-L
+.I etykieta
+]
+[
+.B \-M
+.I ostatnio\-montowany\-katalog
+]
+[
+.B \-O
+.RI [^] cecha [,...]
+]
+[
+.B \-T
+.I czas\-ostatniego\-sprawdzenia
+]
+[
+.B \-U
+.I UUID
+]
+urz±dzenie
+.SH OPIS
+.BI tune2fs
+modyfikuje dostrajalne parametry linuksowego systemu plików ext2/ext3.
+.SH OPCJE
+.TP
+.BI \-c " max\-liczba\-montowañ"
+Zmiana maksymalnej liczby montowañ miêdzy dwoma sprawdzeniami systemu
+plików. Je¿eli
+.I max\-liczba\-montowañ
+jest równa 0 lub \-1, wtedy liczba montowañ bêdzie ignorowana przez
+.BR e2fsck (8)
+i j±dro.
+.sp
+Ustawienie liczby montowañ, po których system plików bêdzie bezwzglêdnie
+sprawdzany, przemiennie spowoduje, ¿e systemy plików z ksiêgowaniem nie
+bêd± sprawdzane w tym samym czasie.
+.sp
+Nale¿y uwa¿nie rozwa¿yæ konsekwencje ca³kowitego wy³±czenia tej opcji.
+Uszkodzone dyski, kable czy b³êdy w j±drze mog± uszkodziæ system plików
+bez zaznaczania systemu plików jako b³êdny. Je¿eli u¿ywa siê systemu plików
+z ksiêgowaniem, to system plików
+.B nigdy
+nie zostanie zaznaczony jako b³êdny, dlatego bêdzie sprawdzany normalnie.
+B³±d systemu plików wykryty przez j±dro wymusi u¿ycie fsck przy nastêpnym
+restarcie, lecz wtedy mo¿e byæ ju¿ za pó¼no, aby zapobiec utracie danych.
+.sp
+Informacje o sprawdzaniu w zale¿no¶ci od czasu mo¿na znale¼æ w opisie opcji
+.BR \-i .
+.TP
+.BI \-C " liczba\-montowañ"
+Ustawia licznik montowañ systemu plików. Opcja ta wraz z opcj± \-c mo¿e
+s³u¿yæ do wymuszenia sprawdzenia systemu plików po nastêpnym restarcie.
+.TP
+.BI \-e " zachowanie\-w\-razie\-b³êdu"
+Zmienia zachowanie j±dra, gdy wykryty zostanie b³±d. We wszystkich
+przypadkach b³±d systemu plików powoduje uruchomienie
+.BR e2fsck (8)
+podczas nastêpnego restartu w celu sprawdzenia systemu plików.
+.I zachowanie\-w\-razie\-b³êdu
+mo¿e przyjmowaæ nastêpuj±ce warto¶ci:
+.RS 1.2i
+.TP 1.2i
+.B continue
+Kontynuje normaln± pracê.
+.TP
+.B remount\-ro
+Powoduje przej¶cie systemu plików w tryb tylko do odczytu.
+.TP
+.B panic
+Wywo³uje panikê j±dra.
+.RE
+.TP
+.B \-f
+Wymusza koñczenie operacji tune2fs nawet w przypadku wyst±pienia b³êdów.
+Ta opcja jest przydatna podczas wy³±czania cechy
+.B has_journal
+w systemie plików posiadaj±cym zewnêtrzny dziennik (lub tak uszkodzonym, ¿e
+sprawia wra¿enie posiadaj±cego zewnêtrzny dziennik), który nie jest dostêpny.
+.sp
+.B OSTRZE¯ENIE:
+Usuwanie zewnêtrznego dziennika z systemu plików, który nie zosta³
+prawid³owo odmontowany, bez wcze¶niejszego zabezpieczenia tego dziennika,
+mo¿e prowadziæ do utraty danych i powa¿nych uszkodzeñ systemu plików.
+.TP
+.BI \-g " grupa"
+Ustawia grupê u¿ytkownika, który mo¿e u¿ywaæ zarezerwowanych bloków.
+Parametr
+.I grupa
+mo¿e byæ numerycznym gid\-em lub nazw± grupy. Je¿eli podana jest nazwa
+grupy, jest ona zamieniana na numeryczny gid przed zachowaniem danych w
+superbloku.
+.TP
+.B \-i " przerwa\-miêdzy\-sprawdzeniami\fR[\fBd\fR|\fBm\fR|\fBw\fR]"
+Dostraja maksymalny okres czasu miêdzy dwoma sprawdzeniami systemu plików.
+Brak przedrostka lub
+.B d
+oznacza dni,
+.B m
+miesi±ce, a
+.B w
+tygodnie. Zero wy³±czy sprawdzanie w zale¿no¶ci od up³ywu czasu.
+.sp
+Zalecane jest w³±czenie sprawdzania
+.B \-c
+(w zale¿no¶ci od liczby montowañ) albo
+.B \-i
+(w zale¿no¶ci od up³ywu czasu) w celu wymuszenia okresowego, pe³nego
+sprawdzania systemu plików przez
+.BR e2fsck (8).
+Pominiêcie tego mo¿e prowadziæ do uszkodzenia systemu plików gdy uszkodzone
+s± dyski, kable, pamiêæ lub wyst±pi± niezauwa¿one b³êdy j±dra prowadz±ce do
+utraty danych lub awarii.
+.TP
+.B \-j
+Dodaje dziennik ext3 do systemu plików. Je¿eli opcja
+.B \-J
+nie zosta³a podana, do utworzenia dziennika o odpowiedniej wielko¶ci
+(dla podanego systemu plików), przechowywanego w systemie plików, zostan±
+u¿yte domy¶lne
+parametry. Nale¿y zauwa¿yæ, ¿e aby móc u¿ywaæ ksiêgowania, j±dro musi
+obs³ugiwaæ ext3.
+.IP
+Je¿eli ta opcja jest u¿yta do utworzenia dziennika na ju¿ zamontowanym
+systemie plików, to w g³ównym katalogu tego systemu plików zostanie utworzony
+niemodyfikowalny plik
+.BR .journal ,
+poniewa¿ jest to jedyna bezpieczna metoda utworzenia i-wêz³a dla dziennika
+w zamontowanym systemie plików. W czasie gdy plik dziennika ext3 jest widoczny,
+nie jest bezpieczne usuwanie lub modyfikowanie go; z tego powodu plik ten
+jest zaznaczony jako niemodyfikowalny (immutable).
+Podczas sprawdzania odmontowanych systemów plików
+.BR e2fsck (8)
+automatycznie przeniesie pliki
+.B .journal
+do niewidocznego, zarezerwowanego wêz³a dziennika. Dla wszystkich systemów
+plików, poza g³ównym (root),  powinno siê to staæ automatycznie podczas
+nastêpnego restartu systemu. Poniewa¿ g³ówny system plików jest zamontowany
+w trybie tylko do odczytu, w celu dokonania tej przemiany
+.BR e2fsck (8)
+musi zostaæ uruchomiony z dyskietki ratunkowej.
+.IP
+Aby unikn±æ u¿ywania dyskietki ratunkowej do dodania dziennika ext3 do
+g³ównego systemu plików,
+skrypty initrd niektórych dystrybucji, np. Debiana, automatycznie  skonwertuj±
+g³ówny system plików ext2 do ext3, je¿eli u¿ywany jest pocz±tkowy ramdisk
+oraz gdy plik
+.BR /etc/fstab
+okre¶la typ ext3 dla g³ównego systemu plików.
+.TP
+.BR \-J " opcje\-dziennika"
+Zmienia domy¶lne parametry dziennika ext3. Opcje dziennika s± oddzielone
+przecinkami i mog± zawieraæ argument podany po znaku równo¶ci ('=').
+Obs³ugiwane s± nastêpuj±ce opcje dziennika:
+.RS 1.2i
+.TP
+.BI size= rozmiar\-dziennika
+Tworzy przechowywany w systemie plików dziennik, o wielko¶ci
+.I rozmiar\-dziennika
+megabajtów. Rozmiar dziennika musi wynosiæ co najmniej 1024 bloki
+(np. 1MB je¿eli u¿ywane s± bloki o rozmiarze 1k, 4MB je¿eli 4k, itd.),
+ale nie mo¿e przekraczaæ 102 400 bloków. System plików musi zawieraæ
+ilo¶æ wolnego miejsca wystarczaj±c± do utworzenia dziennika.
+.TP
+.BI device= zewnêtrzny\-dziennik
+Przy³±cza system plików do urz±dzenia z dziennikiem (journal block device)
+umieszczonego na
+.IR zewnêtrzny\-dziennik .
+Zewnêtrzny dziennik musi byæ utworzony przez wywo³anie
+.IP
+.B mke2fs \-O journal_dev
+.I zewnêtrzny\-dziennik
+.IP
+Nale¿y zauwa¿yæ, ¿e
+.I zewnêtrzny\-dziennik
+musi mieæ bloki o takim samym rozmiarze jak system plików, który ma z nim
+wspó³pracowaæ.
+.IP
+Zamiast podawaæ nazwê urz±dzenia bezpo¶rednio,
+.I zewnêtrzny\-dziennik
+mo¿e byæ okre¶lony przez
+.BI LABEL= etykieta
+lub
+.BI UUID= UUID\fR,
+aby znale¼æ zewnêtrzny dziennik na podstawie etykiety woluminu lub UUID
+przechowywanego w superbloku ext2 na pocz±tku dziennika. Do wypisania
+etykiety i UUID urz±dzenia z dziennikiem mo¿na pos³u¿yæ siê
+.BR dumpe2fs (8).
+Zobacz tak¿e opis opcji
+.B \-L
+programu
+.BR tune2fs (8).
+.RE
+.IP
+Dla danego systemu plików mo¿na podaæ tylko jedn± z opcji
+.BR size " lub " device .
+.TP
+.B \-l
+Wypisuje zawarto¶æ superbloku systemu plików.
+.TP
+.BI \-L " etykieta\-woluminu"
+Ustawia etykietê systemu plików. Etykiety systemu plików ext2 mog±
+zawieraæ co najwy¿ej 16 znaków; je¿eli
+.I etykieta
+jest d³u¿sza ni¿ 16 znaków,
+.B tune2fs
+skróci j± i wypisze ostrze¿enie. Etykieta mo¿e byæ u¿ywana przez
+.BR mount (8),
+.BR fsck (8)
+i w
+.BR /etc/fstab (5)
+(i pewnie te¿ w innych sytuacjach) poprzez podanie
+.BI LABEL= etykieta
+zamiast nazwy urz±dzenia blokowego, jak np.
+.BR /dev/hda5 .
+.TP
+.BI \-m " procent\-zarezerwowanych\-bloków"
+Okre¶la dla danego urz±dzenia procent ogólnej liczby bloków, jaki bêd±
+stanowiæ bloki zarezerwowane.
+.TP
+.BI \-M " ostatnio\-montowany\-katalog"
+Ustawia katalog, w którym system plików by³ ostatnio zamontowany.
+.TP
+.BR \-o " [^]\fIopcja\-monotwania\fR[,...]"
+Ustawia lub usuwa wskazane opcje montowania w systemie plików.
+Domy¶lne opcje montowania mog± zostaæ nadpisane przez opcje
+okre¶lone albo w
+.BR /etc/fstab (5),
+albo przez argumenty linii poleceñ przekazane do
+.BR mount (8).
+Starsze j±dra mog± nie obs³ugiwaæ tej cechu; w szczególno¶ci
+j±dra starsze od 2.4.20 najprawdopodobniej zignoruj± pole domy¶lnych
+opcji w superbloku.
+.IP
+Mo¿na podaæ wiêcej ni¿ jedn± opcjê montowania do usuniêcia lub ustawienia
+rozdzielaj±c je przecinkami. Opcje montowania poprzedzone znakiem karety
+('^') bêd± usuwane w superbloku systemu plików; opcje bez podanego
+przedrostka lub poprzedzone znakiem plusa ('+') bêd± dodane do systemu plików.
+.IP
+Nastêpuj±ce opcje montowania mog± byæ ustawione lub wyczyszczone
+za pomoc±
+.BR tune2fs :
+.RS 1.2i
+.TP
+.B debug
+W³±cza tryb debugowania na tym systemie plików.
+.TP
+.B bsdgroups
+Emuluje zachowanie BSD przy tworzeniu nowych plików: bêd± one bra³y
+identyfikator grupy katalogu, w którym zosta³y utworzone. Domy¶lne jest
+standardowe zachowanie systemu V, polegaj±ce na tym, ¿e nowo tworzone pliki
+bior± fsgid bie¿±cego procesu, chyba ¿e katalog ma ustawiony bit setgid,
+w którym to przypadku bierze gid z katalogu nadrzêdnego i tak¿e ustawia
+bit setgid, je¿eli nowo utworzonym plikiem jest katalog.
+.TP
+.B user_xattr
+W³±cza rozszerzone atrybuty podane przez u¿ytkownika.
+.TP
+.B acl
+W³±cza listy kontroli dostêpu POSIX (Posix Access Control Lists).
+.TP
+.B uid16
+Wy³±cza 32-bitowe UID\-y i GID\-y. Umo¿liwia to wspó³dzia³anie ze
+starszymi j±drami, które zachowuj± warto¶ci 16-bitowych i ich oczekuj±.
+.TP
+.B journal_data
+Kiedy system plików jest zamontowany z w³±czonym dziennikiem, wszystkie
+dane (nie tylko metadane) s± zapisywane do dziennika przed zapisaniem
+ich go systemu plików.
+.TP
+.B journal_data_ordered
+Kiedy system plików jest zamontowany z w³±czonym dziennikiem, wymuszane
+jest zapisywanie danych bezpo¶rednio do systemu plików przed zapisaniem
+ich metadanych do dziennika.
+.TP
+.B journal_data_writeback
+Kiedy system plików jest zamontowany z w³±czonym dziennikiem, dane mog±
+byæ zapisane do systemu plików, po tym jak ich metadane zosta³y zapisane
+do dziennika. Mo¿e to zwiêkszyæ przepustowo¶æ, jednak¿e, mo¿e to
+spowodowaæ, ¿e w plikach pojawi± siê stare dane po za³amaniu systemu i
+odtworzeniu dziennika.
+.RE
+.TP
+.TP
+.BR \-O " [^]\fIcecha\fR[,...]"
+W³±cza lub wy³±cza wskazane cechy (opcje) systemu plików. Mo¿na w³±czyæ b±d¼
+wy³±czyæ wiele cech jednocze¶nie. Musz± one wtedy byæ oddzielone przecinkami.
+Cechy poprzedzone przedrostkiem '^' bêd± wy³±czone w superbloku; cechy bez
+przedrostka lub z przedrostkiem '+' zostan± dodane do systemu plików.
+.IP
+Nastêpuj±ce cechy mog± byæ zmienione przez
+.BR tune2fs :
+.RS 1.2i
+.TP
+.B dir_index
+U¿ywa haszowanych B\-drzew, aby przyspieszyæ przeszukiwanie du¿ych katalogów.
+.TP
+.B filetype
+Przechowywanie informacji na temat typu pliku we wpisach do katalogów.
+.TP
+.B has_journal
+Tworzenie dziennika ext3 (tak jak przy pomocy opcji
+.BR \-j ).
+.TP
+.B sparse_super
+Ograniczenie liczbê kopii bezpieczeñstwa superbloków dla zaoszczêdzenia
+miejsca na du¿ych systemach plików.
+.RE
+.IP
+Po zmianie cech
+.B sparse_super
+i
+.BR filetype ,
+trzeba uruchomiæ na danym systemie plików
+.BR e2fsck (8),
+aby przywróciæ go do porz±dku. Je¶li bêdzie to potrzebne,
+.B tune2fs
+wypisze pro¶bê, aby administrator uruchomi³
+.BR e2fsck (8).
+Po ustawieniu cechy
+.B dir_index
+mo¿e zostaæ uruchomiony
+.BR "e2fsck \-D " ,
+aby skonwertowaæ istniej±ce katalogo do formatu zhaszowanych B\-drzew.
+.IP
+.B Ostrze¿enie:
+J±dra Linuksa starsze od 2.0.39 i wiele z serii 2.1 nie obs³uguj±
+systemów plików u¿ywaj±cych powy¿szych cech. U¿ywanie pewnych,
+nieobs³ugiwanych przez j±dro cech systemu plików mo¿e spowodowaæ, ¿e
+system plików nie zostanie zamontowany.
+.TP
+.BI \-r " liczba\-zarezerwowanych\-bloków"
+Zmienia liczbê zarezerwowanych bloków na podanym urz±dzeniu.
+.TP
+.BR \-s " [" 0 | 1 ]
+W³±cza lub wy³±cza cechê sparse_super. W³±czenie tej cechy powoduje
+zaoszczêdzenie wolnego miejsca na naprawdê du¿ych systemach plików. Ma to
+taki sam skutek jak u¿ycie opcji
+.B "\-O sparse_super" .
+.IP
+.B Ostrze¿enie:
+J±dra Linuksa starsze od 2.0.39 oraz j±dra z serii 2.1 nie obs³uguj± tej cechy.
+Nie u¿ywaj tej opcji, chyba ¿e wiesz co robisz! Po zmianie tej cechy
+konieczne jest uruchomienie
+.BR e2fsck (8)
+na danym systemie plików.
+.TP
+.BI \-T " czas\-ostatniego\-sprawdzenia"
+Ustawia czas kiedy system plików by³ ostatnio sprawdzany przez
+.BR e2fsck .
+Mo¿e to byæ przydatne w skryptach u¿ywaj±cych Zarz±dcy Woluminów Logicznych
+(Logical Volume Manager) do tworzenia zrzutu (snapshot) systemu plików
+i pó¼niejszego jego sprawdzenia. Je¶li system plików
+nie by³ uszkodzony, ta opcja mo¿e s³u¿yæ do ustawienia czasu ostatniego
+sprawdzenia oryginalnego systemu pików. Format
+.I czas\-ostatniego\-sprawdzania
+jest zgodny z miêdzynarodowym formatem daty, z opcjonalnie podan±
+godzin±, np. YYYYMMDD[[HHMM]SS]. S³owo kluczowe
+.B now
+jest tak¿e akceptowane. Wtedy czas ostatniego sprawdzenia bêdzie
+ustawiony na aktualny.
+.TP
+.BI \-u " u¿ytkownik"
+Ustawia u¿ytkownika, który mo¿e korzystaæ z zarezerwowanych bloków.
+.I u¿ytkownik
+mo¿e byæ warto¶ci± numeryczn± lub nazw± u¿ytkownika. Je¿eli podana jest
+nazwa u¿ytkownika, jest ona zamieniana na numeryczny uid przed zapisem do
+superbloku.
+.TP
+.BI \-U " UUID"
+Ustawia uniwersalny, unikatowy identyfikator (universally unique identifier
+\- UUID) systemu plików na
+.IR UUID .
+UUID sk³ada siê z serii cyfr w systemie szesnastkowym oddzielonych
+my¶lnikami, jak np.:
+"c1b9d5a2\-f162\-11cf\-9ece\-0020afc76f16".
+Parametr
+.I UUID
+mo¿e przyjmowaæ te¿ nastêpuj±ce warto¶ci:
+.RS 1.2i
+.TP
+.I clear
+usuwa UUID systemu plików
+.TP
+.I random
+generuje nowy, przypadkowy UUID
+.TP
+.I time
+generuje nowy UUID, oparty na czasie
+.RE
+.IP
+UUID mo¿e byæ u¿ywany przez
+.BR mount (8),
+.BR fsck (8)
+i w
+.BR /etc/fstab (5)
+(i pewnie te¿ w innych sytuacjach) poprzez podanie
+.BI UUID= uuid
+zamiast nazwy urz±dzenia blokowego, jak np.
+.BR /dev/hda1 .
+.IP
+Wiêcej informacji mo¿na znale¼æ w
+.BR uuidgen (8).
+Je¿eli system nie posiada dobrego generatora liczb losowych, takiego jak
+.I /dev/random
+lub
+.IR /dev/urandom ,
+.B tune2fs
+automatycznie pos³u¿y siê generatorem opartym na czasie.
+.SH B£ÊDY
+Nie znale¼li¶my jeszcze ¿adnych b³êdów, co nie oznacza, ¿e ich tu nie
+ma...
+.SH AUTOR
+.B tune2fs
+zosta³ napisany przez Remy'ego Carda <card@masi.ibp.fr>. Obecnie
+opiekuje siê nim Theodore Ts'o <tytso@alum.mit.edu>.
+.br
+.B tune2fs
+korzysta z biblioteki ext2fs, napisanej przez Theodore'a Ts'o
+<tytso@mit.edu>.
+Ta strona podrêcznika zosta³a napisana przez Christiana Kuhtza
+<chk@data\-hh.Hanse.DE>.
+Sprawdzanie zale¿ne od up³ywu czasu zosta³o dodane przez Uwe Ohse
+<uwe@tirka.gun.de>.
+.SH DOSTÊPNO¦Æ
+.B tune2fs
+jest czê¶ci± pakietu e2fsprogs i jest dostêpny na stronie
+http://e2fsprogs.sourceforge.net.
+.SH "ZOBACZ TAK¯E"
+.BR dumpe2fs (8),
+.BR e2fsck (8),
+.BR mke2fs (8)

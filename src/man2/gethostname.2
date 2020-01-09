@@ -1,0 +1,95 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright 1993 Rickard E. Faith (faith@cs.unc.edu)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified 22 July 1995 by Michael Chastain <mec@duracef.shout.net>:
+.\"   'gethostname' is real system call on Linux/Alpha.
+.\" Modified Fri Jan 31 16:30:53 1997 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified 2000-06-04, 2001-12-15 by aeb
+.\" Translation (c) 1998 Przemek Borys <pborys@dione.ids.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\"
+.TH GETHOSTNAME 2 2001-12-15 "Linux 2.5.0" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+gethostname, sethostname \- pobranie/ustawienie nazwy hosta
+.SH SK£ADNIA
+.B #include <unistd.h>
+.sp
+.BI "int gethostname(char *" name ", size_t " len );
+.br
+.BI "int sethostname(const char *" name ", size_t " len );
+.SH OPIS
+Funkcje te s³u¿± do zmiany nazwy hosta obecnego procesora.
+Funkcja
+.B gethostname()
+zwraca w tablicy \fIname\fP o d³ugo¶ci \fIlen\fP bajtów zakoñczon± znakiem NUL
+nazwê hosta (ustawion± uprzednio przez
+.BR sethostname() ).
+W przypadku, gdy zakoñczona znakiem NUL nazwa hosta siê nie mie¶ci, nie jest
+zwracany b³±d ale nazwa hosta jest obcinana. Nie jest okre¶lone, czy obciêta
+nazwa hosta bêdzie zakoñczona znakiem NUL.
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu zwracane jest zero. Po b³êdzie zwracane jest \-1
+i odpowiednio ustawiane jest
+.I errno .
+.SH B£ÊDY
+.TP
+.B EINVAL
+.I len
+jest ujemne, lub dla
+.BR sethostname ,
+.I len
+jest wiêksze od maksymalnej dozwolonej warto¶ci, lub dla
+.B gethostname
+na Linuksie/i386
+.I len
+jest mniejsze ni¿ w³a¶ciwy rozmiar.
+(W tym ostatnim przypadku glibc 2.1 zwraca ENAMETOOLONG.)
+.TP
+.B EPERM
+Dla
+.BR sethostname ,
+wywo³uj±cy nie by³ superu¿ytkownikiem.
+.TP
+.B EFAULT
+.I name
+jest nieprawid³owym adresem.
+.SH "ZGODNE Z"
+SVr4, 4.4BSD (funkcja pierwotnie pojawi³a siê w 4.2BSD).
+POSIX 1003.1-2001 definiuje
+.B gethostname
+ale nie
+.BR sethostname .
+.SH USTERKI
+Dla wielu kombinacji j±der Linuksa / libc
+.B gethostname
+zwraca b³±d zamiast zwróciæ obciêt± nazwê hosta.
+.SH UWAGI
+SUSv2 gwarantuje, ¿e `nazwy hostów s± ograniczone do 255 bajtów'.
+POSIX 1003.1-2001 gwarantuje, ¿e `nazwy hostów (bez koñcz±cego NUL)
+s± ograniczone do HOST_NAME_MAX bajtów'.
+.SH "ZOBACZ TAK¯E"
+.BR getdomainname (2),
+.BR setdomainname (2),
+.BR uname (2)

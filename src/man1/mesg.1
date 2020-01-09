@@ -1,0 +1,38 @@
+.\" {PTM/PB/0.1/28-06-1999/"."}
+.\"{{{}}}
+.\"{{{  Title
+.TH MESG 1 "May 13, 1993" "" "Podrêcznik u¿ytkownika Linuksa"
+.\"}}}
+.\"{{{  Name
+.SH NAZWA
+mesg \- kontroluj dostêp zapisu do terminala
+.\"}}}
+.\"{{{  Synopsis
+.SH SK£ADNIA
+.B mesg
+.RB [ y | n ]
+.\"}}}
+.\"{{{  Description
+.SH OPIS
+.B Mesg
+kontroluje dostêp do twojego terminala przez innych. Zazwyczaj jest u¿ywany
+do zezwalania/zabraniania innym osobom pisania (przy u¿yciu write(1)) na
+twój terminal.
+.\"}}}
+.\"{{{  Options
+.SH OPCJE
+.IP \fBy\fP
+Zezwól na dostêp do twojego terminala.
+.IP \fBn\fP
+Zabroñ dostêpu do twojego terminala.
+.PP
+Bez opcji, mesg drukuje bie¿±cy stan terminala.
+.\"}}}
+.\"{{{  Author
+.SH AUTOR
+Miquel van Smoorenburg (miquels@cistron.nl)
+.\"}}}
+.\"{{{  See also
+.SH "ZOBACZ TAK¯E"
+talk(1), write(1), wall(1)
+.\"}}}

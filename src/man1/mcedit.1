@@ -1,0 +1,462 @@
+.\" {PTM/WK/0.1/30-07-1999/"terminalowy edytor tekstowy"}
+.\" 2000-V: aktualizacja do man.en z 2000-05-25
+.TH mcedit 1 "30 stycznia 1997"
+.SH NAZWA
+mcedit - terminalowy edytor tekstowy dla systemów Unixowych
+.\" Full featured terminal text editor for Unix-like systems."
+.SH SK£ADNIA
+.B mcedit
+.RB [[ \+ \fIliczba\fP]
+.RI plik
+.RB [ \-bcCdfhstVx? ]]
+.SH OPIS
+.LP
+mcedit jest dowi±zaniem (link) do \fBmc\fR, Midnight Commandera, wymuszaj±c
+na nim natychmiastowe uruchomienie wewnêtrznego edytora. Edytor ten jest
+terminalow± wersj± \fBcooledit\fR, odrêbnego edytora X-window.
+.SH OPCJE
+.TP
+.BI \+ liczba
+Przechodzi do wiersza o zadanym numerze (nie nale¿y umieszczaæ odstêpu
+pomiêdzy znakiem "+" a liczb±).
+.TP
+.B -b
+Wymusza wy¶wietlanie czarno-bia³e.
+.TP
+.B -c
+Wymusza tryb kolorowy na terminalach, dla których \fBmcedit\fR domy¶lnie
+u¿ywa trybu czarno-bia³ego.
+.TP
+.nf
+.B \-C
+.RI < s³owo_kluczowe >\fB=\fR< kolor_znaku >\fB,\fR< kolor_t³a >\fB:\fR< s³owo_kluczowe >\fB=\fR...
+.fi
+U¿ywane do definiowania innego zestawu kolorów, gdzie \fIs³owo_kluczowe\fR
+jest jednym z:
+.RS
+.RS
+normal, selected, marked, markselect, errors,
+reverse menu, menusel, menuhot, menuhotsel i gauge.
+.RE
+Kolory s± opcjonalne i mog± przyjmowaæ warto¶ci:
+.RS
+black, gray, red, brightred, green,
+brightgreen, brown, yellow, blue, brightblue, magenta,
+brightmagenta, cyan, brightcyan, lightgray oraz white.
+.RE
+Wiêcej informacji znajdziesz w sekcji \fBKolory\fR w \fBmc.1\fR
+.RE
+.TP
+.B -d
+Wy³±cza obs³ugê myszy.
+.TP
+.B -f
+Wy¶wietla wkompilowane ¶cie¿ki poszukiwania plików Midnight Commandera.
+.TP
+.B -t
+U¿ywane tylko, gdy kod zosta³ skompilowany ze Sland i terminfo; powoduje, ¿e
+Midnight Commander u¿yje warto¶ci zmiennej \fBTERMCAP\fR do uzyskania
+informacji o terminalu zamiast informacji o systemowej bazie danych terminali.
+.TP
+.B -V
+Wy¶wietla wersjê programu.
+.TP
+.B -x
+Wymusza tryb xterm. U¿ywane przy uruchamianiu na terminalach potrafi±cych
+obs³u¿yæ xterm (dwa tryby ekranu i zdolne wysy³aæ sekwencje specjalne myszy).
+.SH FUNKCJE
+Wewnêtrzny edytor plików posiada wiêkszo¶æ funkcji powszechnie u¿ywanych
+edytorów pe³noekranowych. Ma rozszerzalny limit wielko¶ci pliku
+(do szesnastu megabajtów) i bezproblemowo edytuje pliki binarne. Obecnie
+obs³uguje funkcje: kopiowania, przesuwania, usuwania, wycinania i wstawiania
+bloków tekstu; klawisz dla klawisza cofania zmian (\fIkey for key undo\fR);
+rozwijalne menu; wstawianie pliku; definiowanie makr; wyszukiwanie
+i zastêpowanie z obs³ug± wyra¿eñ regularnych (oraz w³asne wyszukiwanie
+i zastêpowanie scanf-printf); prze³±cznik wstawianie-nadpisywanie; przenoszenie
+wyrazów (word-wrap); ró¿norodne funkcje tabulacji; pod¶wietlanie sk³adni
+dla ró¿nych typów plików; oraz mo¿liwo¶æ potokowania bloków tekstu poprzez
+polecenia pow³oki jak indent czy ispell.
+.PP
+.SH KLAWISZE
+Edytor jest bardzo prosty w u¿ytkowaniu i nie wymaga szkolenia.
+¯eby zobaczyæ, co robi który klawisz, po prostu zajrzyj do odpowiedniego menu
+rozwijalnego. A oto opis pozosta³ych klawiszy:
+.PP
+Ruch kursora przy wci¶niêtym \fBShift\fR pod¶wietla tekst
+(tylko na konsoli Linuksa).
+.br
+.B Ctrl-Ins
+kopiuje do pliku \fI~/.cedit/cooledit.clip\fR, za¶
+.br
+.B Shift-Ins
+wkleja z pliku \fI~/.cedit/cooledit.clip\fR.
+.br
+.B Shift-Del
+wycina do \fI~/.cedit/cooledit.clip\fR,
+.br
+a
+.B Ctrl-Del
+usuwa pod¶wietlony tekst - wszystkie tylko na konsoli Linuksa.
+.PP
+Klawisz uzupe³nienia (completion key) (patrz \fBmc.1\fR) wykonuje równie¿
+twardy Return bez automatycznego wciêcia. Dzia³a tak¿e pod¶wietlanie myszk±
+i mo¿esz uniewa¿niæ je jak zwykle przytrzymuj±c klawisz Shift podczas
+ci±gniêcia myszk±, by w³±czyæ normalne pod¶wietlanie mysz± terminala.
+.PP
+W celu zdefiniowania makra naci¶nij \fBCtrl-R\fR i u¿yj sekwencji klawiszy,
+jak± chcia³by¶ zarejestrowaæ. Na koniec naci¶nij powtórnie \fBCtrl-R\fR.
+Mo¿esz teraz przypisaæ makro do dowolnego klawisza naciskaj±c go. Makro
+zostanie wykonane, gdy naci¶niesz \fBCtrl-A\fR a nastêpnie przypisany klawisz.
+Makro wykonywane jest równie¿ po naci¶niêciu Meta, Ctrl lub Esc i przypisanego
+klawisza, pod warunkiem, ¿e sekwencja ta nie jest u¿ywana do obs³ugi innej
+funkcji. Po zdefiniowaniu makra zapisywane s± w pliku
+\fI~/.cedit/cooledit.macros\fR. Nie modyfikuj go, chyba ¿e nie zamierzasz
+ponownie u¿ywaæ makr w tej samej sesji edycji, gdy¿ \fBmcedit\fR buforuje
+definicje makr w pamiêci.
+\fBmcedit\fR nadpisuje makro je¿eli makro przypisane do tego samego klawisza
+ju¿ istnieje, wiêc nie bêdziesz musia³ zmieniaæ tego pliku. Musisz ponownie
+uruchomiæ inne dzia³aj±ce procesy edytora, by zadzia³a³y zmienione makra.
+.PP
+\fBF19\fR sformatuje pod¶wietlony kod C. W celu w³±czenia tej cechy stwórz
+plik wykonywalny \fI.cedit/edit.indent.rc\fR w swoim katalogu
+domowym zawieraj±cy:
+.IP
+.nf
+#!/bin/sh
+# U¿yj $HOME zamiast ~ je¶li nie dzia³a.
+# Byæ mo¿e bêdziesz te¿ musia³ u¿yæ innej sk³adni
+# przekierowania wyj¶cia
+usr/bin/ident -kr -pcs ~/.cedit/cooledit.block >& /dev/null
+cat /dev/null > ~/.cedit/cooledit.error
+.fi
+.PP
+\fBC-p\fR w podobny sposób uruchomi \fBispell\fR na bloku tekstu. Odpowiednim
+plikiem jest \fI.cedit/edit.spell.rc\fR.
+.IP
+.nf
+#!/bin/sh
+# U¿yj $HOME zamiast ~ je¶li nie dzia³a.
+# Byæ mo¿e bêdziesz te¿ musia³ u¿yæ innej sk³adni
+# przekierowania wyj¶cia
+/usr/local/bin/ispell ~/.cedit/cooledit.block >& /dev/null
+cat /dev/null > ~/.cedit/cooledit.error
+.fi
+.PP
+.SH PRZEDEFINIOWYWANIE KLAWISZY
+Klawisze mog± byæ redefiniowane w menu opcji Midnight Commandera.
+.SH POD¦WIETLANIE SK£ADNI
+Od wersji 3.6.0 \fBcooledit\fR posiada pod¶wietlanie sk³adni. Oznacza to, ¿e
+s³owa kluczowe i elementy jêzyka (jak komentarze C, sta³e ³añcuchowe itd.)
+pod¶wietlane s± ró¿nymi kolorami. Poni¿szy fragment wyja¶nia format pliku
+\fI~/.cedit/syntax\fP.
+.PP
+Plik \fI~/.cedit/syntax\fP jest ponownie przegl±dany przy otwieraniu w edytorze
+ka¿dego nowego pliku. Zawiera on regu³y pod¶wietlania, ka¿d± w osobnej linii,
+i definiuje, jakie s³owa kluczowe bêd± pod¶wietlane jakim kolorem.
+Plik jest podzielony na sekcje, z których ka¿da rozpoczyna siê lini±
+z poleceniem \fBfile\fR zakoñczonym wyra¿eniem regularnym. Wyra¿enie regularne
+okre¶la nazwê pliku, do jakiego odnosi siê dany zestaw regu³.
+.PP
+Po nim nastêpuje opis wy¶wietlany po lewej stronie okna edytora, obja¶niaj±cy
+u¿ytkownikowi typ pliku. Trzecim, opcjonalnym argumentem jest wyra¿enie
+regularne dopasowuj±ce pierwsz± liniê tekstu pliku. Dane regu³y zostan±
+wczytane je¶li dopasowano nazwê pliku b±d¼ pierwsz± liniê tekstu.
+.P
+Sekcja koñczy siê z pocz±tkiem kolejnej sekcji. Ka¿da sekcja podzielona jest
+na konteksty, a ka¿dy kontekst zawiera regu³y. Kontekst jest zakresem wewn±trz
+tekstu, do którego odnosi siê konkretny zestaw regu³. Na przyk³ad, obszar
+w obrêbie komentarza w stylu C (tj.pomiêdzy \fB/*\fR a \fB*/\fR) ma swój
+w³asny kolor. To jest kontekst, mimo i¿ nie bêdzie mia³ w ¶rodku innych regu³,
+gdy¿ raczej nie ma niczego, co chceliby¶my pod¶wietliæ wewn±trz komentarza C.
+.PP
+Prosta sekcja programu w C mo¿e wygl±daæ tak:
+.PP
+.nf
+file .\\*\\\\.c C\\sProgram\\sFile (#include|/\\\\\\*)
+
+wholechars abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_
+
+# kolory domy¶lne
+context default
+  keyword  whole  if       24
+  keyword  whole  else     24
+  keyword  whole  for      24
+  keyword  whole  while    24
+  keyword  whole  do       24
+  keyword  whole  switch   24
+  keyword  whole  case     24
+  keyword  whole  static   24
+  keyword  whole  extern   24
+  keyword         {        14
+  keyword         }        14
+  keyword         '*'      6
+
+# komentarze C
+context /\\* \\*/ 22
+
+# dyrektywy preprocesora C
+context linestart # \\n 18
+  keyword  \\\\\\n  24
+
+# sta³e ³añcuchowe C
+context " " 6
+  keyword  %d    24
+  keyword  %s    24
+  keyword  %c    24
+  keyword  \\\\"   24
+.fi
+.PP
+Ka¿dy kontekst rozpoczyna siê lini± postaci:
+.RS
+\fBcontext\fP [\fBexclusive\fP] [\fBwhole\fP|\fBwholeright\fP|\fBwholeleft\fP]
+[\fBlinestart\fP] \fIogranicznik\fP [\fBlinestart\fP] \fIogranicznik\fP
+[\fIkolor_znaków\fP] [\fIkolor_t³a\fP]
+.RE
+Jedynym wyj±tkiem jest pierwszy kontekst. Musi on rozpoczynaæ siê poleceniem
+.RS
+\fBcontext\fP \fBdefault\fP [\fIkolor_znaków\fP] [\fIkolor_t³a\fP]
+.RE
+albo \fBcooledit\fP zwróci b³±d.
+.PP
+Opcja \fBlinestart\fP nakazuje, by \fIogranicznik\fP zaczyna³ siê
+od pocz±tku linii.
+.PP
+Opcja \fBwhole\fP okre¶la, ¿e ogranicznik musi byæ ca³ym wyrazem. Ca³e wyrazy
+s± tworzone z zestawu znaków, który mo¿e zostaæ zmieniony w dowolnym miejscu
+pliku przy pomocy polecenia \fBwholechars\fP. Polecenie \fBwholechars\fP
+umieszczone na samym pocz±tku ustawia zestaw znaków dok³adnie na jego warto¶æ
+domy¶ln± i w zwi±zku z tym mog³oby byæ pominiête. Mo¿esz u¿yæ opcji
+\fBwholeleft\fP dla wskazania, ¿e s³owo musi byæ pe³ne tylko z lewej strony,
+i podobnie dla prawej. Lewy i prawy zestaw znaków mo¿e byæ ustawiony
+odrêbnie przy pomocy
+\fBwholechars\fP [\fBleft\fP|\fBright\fP] \fIcharacters\fP
+.PP
+Opcja \fBexclusive\fP powoduje, ¿e pod¶wietlony zostanie tekst pomiêdzy
+ogranicznikami, ale nie one same.
+.PP
+Ka¿da regu³a jest lini± postaci:
+.RS
+\fBkeyword\fP [\fBwhole\fP|\fBwholeright\fP|\fBwholeleft\fP] [\fBlinestart\fP]
+\fI³añcuch znakowy\fP \fIkolor_znaków\fP [\fIkolor_t³a\fP]
+.RE
+£añcuchy znakowe kontekstu i s³ów kluczowych s± interpretowane, tak ¿e
+mo¿esz u¿yæ tabulatorów i spacji przy pomocy sekwencji \\t i \\s.
+Znaki nowej linii i \\ s± wyszczególniane przy pomocy odpowiednio \\n i \\\\.
+Wynika to z tego, ¿e separatorem jest bia³y znak, zatem nie mo¿e on zostaæ
+u¿yty wprost.
+Równie¿ znak * musi byæ podany jako \\*. Samo * jest znakiem uogólniaj±cym,
+który dopasowuje dowoln± liczbê znaków. Na przyk³ad
+.RS
+keyword         '*'      6
+.RE
+koloruje wszystkie jednoznakowe sta³e C na zielono. Móg³by¶ równie¿ u¿yæ
+.RS
+keyword         "*"      6
+.RE
+do pokolorowania sta³ych ³añcuchowych, z wyj±tkiem tego, ¿e dopasowany ³añcuch
+nie mo¿e koñczyæ siê w innej linii. \fIZnaki uogólniaj±ce mog± byæ te¿ u¿yte
+wewn±trz ograniczników kontekstu, ale \fBnie mo¿esz u¿yæ znaku uogólniaj±cego
+jako pierwszego lub ostatniego\fR.
+.PP
+Godna uwagi jest linia
+.RS
+keyword  \\\\\\n  24
+.RE
+Linia ta definiuje s³owo kluczowe zawieraj±ce znak \\ oraz znak nowej linii.
+Poniewa¿ s³owa kluczowe maj± wy¿szy priorytet ni¿ ograniczniki kontekstu, to
+s³owo kluczowe zapobiega temu, by kontekst koñczy³ siê na koñcu linii, je¶li
+linia koñczy siê na \\. Umo¿liwia zatem prawid³owe pod¶wietlenie
+dyrektywy preprocesora C nakazuj±cej kontynuacjê w kolejnej linii.
+.PP
+Kolory s± numerowane od 0 do 26.
+.\" jak obja¶niono w sekcji \fBFURTHER BEHAVIOURAL OPTIONS\fP.[brak takowej!!]
+Mo¿esz te¿ pos³u¿yæ siê \fBdowoln±\fR z nazw kolorów wyszczególnionych w pliku
+\fI/usr/lib/X11/rgb.txt\fP, ale tylko w wersji jednowyrazowej.
+Lepiej jest pozostaæ przy kolorach wyra¿onych liczbowo, by ograniczyæ u¿ycie
+palety kolorów.
+.PP
+Komentarza mog± byæ umieszczane w odrêbnych liniach; zaczynaj± siê one
+od znaku #.
+.PP
+Z powodu prostoty rozwi±zania, jest w nim trochê zawik³añ, które nie
+zostan± poprawnie obs³u¿one, ale nie s± one zbyt irytuj±ce. Na ogó³ przy
+pomocy powy¿szych prostych regu³ obs³ugiwany jest szeroki wachlarz ca³kiem
+skomplikowanych sytuacji. Dobrze jest przyjrzeæ siê plikowi sk³adni, by
+.\" nifty tricks
+zaczerpn±æ pomys³y prostych trików, jakie mo¿na wykorzystaæ przy odrobinie
+wyobra¼ni. Je¿eli nie mo¿esz uporaæ siê z regu³ami, jakie zakodowa³em,
+a s±dzisz, ¿e masz regu³ê, która mo¿e byæ przydatna, wy¶lij mi, proszê,
+e-mail ze swoim ¿yczeniem. Nie pro¶ jednak o obs³ugê wyra¿eñ regularnych,
+gdy¿ jest to stanowczo niemo¿liwe.
+.PP
+U¿yteczn± wskazówk± mo¿e byæ praca przy maksymalnym wykorzystywaniu
+\fBmo¿liwo¶ci\fR zamiast prób robienia rzeczy, z którymi ta implementacja
+sobie nie radzi.  Pamiêtaj równie¿, ¿e celem pod¶wietlania sk³adni jest
+zmniejszenie b³êdów przy programowaniu, a \fBnie\fR pokazanie ³adnego kodu.
+.PP
+.SH KOLORY
+Domy¶lne kolory mog± byæ zmienione przez dodanie do zmiennej ¶rodowiska
+\fBMC_COLOR_TABLE\fP. Pary kolorów znaków i t³a mog± byæ okre¶lone na przyk³ad
+przy pomocy
+.RS
+MC_COLOR_TABLE="$MC_COLOR_TABLE:\
+editnormal=lightgray,black:\
+editbold=yellow,black:\
+editmarked=black,cyan"
+.RE
+.SH OPCJE
+Obecnie wiêkszo¶æ opcji mo¿e zostaæ ustawiona w oknie dialogowym opcji edytora.
+Patrz menu \fBOptions\fP (Opcje). Obja¶nione poni¿ej opcje zdefiniowane s±
+w \fI.mc.ini\fP i maj± oczywiste odpowiedniki w oknie dialogowym.
+Mo¿esz je zmieniaæ, by zmieniæ zachowanie edytora, zmieniaj±c plik.
+Je¿eli nie podano inaczej, to tradycyjnie 1 ustawia w³±cza opcjê, 0 j± wy³±cza.
+.TP
+.B use_internal_edit
+Ignorowana przy wywo³ywaniu \fBmcedit\fR.
+.TP
+.B editor_key_emulation
+1 dla klawiszy \fBEmacs\fRa, 0 dla zwyk³ych klawiszy \fBCooledit\fR.
+.TP
+.B editor_tab_spacing
+D³ugo¶æ znaku tabulacji. Domy¶lnie 8. Powiniene¶ unikaæ u¿ywania innych
+warto¶ci, gdy¿ wiêkszo¶æ innych edytorów i przegl±darek tekstu zak³ada
+tabulatory d³ugo¶ci 8. Pos³u¿ siê opcj± \fBeditor_fake_half_tabs\fR chc±c
+symulowaæ mniejsze odstêpy tabulacji.
+.TP
+.B editor_fill_tabs_with_spaces
+Nigdy nie wstawiaj znaków tabulacji. Wstaw zamiast nich odstêpy (ASCII 20h)
+wype³niaj±ce zadany rozmiar tabulacji.
+.TP
+.B editor_return_does_auto_indent
+Automatyczne wciêcia.
+Naci¶niêcie Return przesuwa kolejnymi pozycjami tabulacji a¿ do osi±gniêcia
+takiego samego wciêcia, jak w pierwszej poprzedzaj±cej linii zawieraj±cej
+tekst.
+.TP
+.B editor_backspace_through_tabs
+Pojedyncze naci¶niêcie Backspace usuwa wszystkie odstêpy a¿ do lewego
+marginesu (je¶li nie ma tekstu pomiêdzy kursorem a lewym marginesem).
+.TP
+.B editor_fake_half_tabs
+Emuluje po³ówki tabulacji. Dla potrzebuj±cych tabulacji z krokiem 4, ale
+bez zmiany rozmiaru tabulacji z domy¶lnego 8 (kod bêdzie tak samo sformatowany
+przy wy¶wietlaniu przez inne programy). W trakcie edycji pomiêdzy tekstem
+a lewym marginesem przesuwanie i wstawianie tabulacji bêdzie zachowywaæ siê
+tak, jakby krokiem tabulacji by³o 4. W rzeczywisto¶ci do optymalnego
+wype³niania bêd± u¿ywane odstêpy i zwyk³e tabulatory. Przy edycji w innych
+miejscach wstawiany jest zwyk³y tabulator.
+.TP
+.B editor_option_save_mode
+(0, 1 lub 2.)
+Tryb zachowywania (patrz równie¿ menu opcji) pozwala na zmianê metody
+zapisywania pliku. Zachowywanie szybkie (0) zapisuje plik natychmiast,
+obcinaj±c (trunctate) plik dyskowy do d³ugo¶ci zerowej (tj.wymazuj±c go)
+i zapisuj±c do niego zawarto¶æ edytora. Metoda ta jest szybka, ale
+niebezpieczna, gdy¿ b³±d systemowy podczas zapisu pliku pozostawi
+czê¶ciowo zapisany plik, prawdopodobnie uniemo¿liwiaj±c odzyskanie danych.
+U¿ycie opcji zachowywania bezpiecznego (1) w³±cza tworzenie pliku
+tymczasowego, do którego wstêpnie zapisywana jest zawarto¶æ zmienionego pliku.
+W przypadku k³opotów pierwotny plik jest nienaruszony. Po pomy¶lnym zapisaniu
+pliku tymczasowego zmieniana jest jego nazwa na nazwê pliku pierwotnego,
+powoduj±c jego zast±pienie. Najbezpieczniejsz± metod± jest tworzenie kopii
+zapasowych (2). Kopia zapasowa tworzona jest przed dokonaniem jakichkolwiek
+zmian. W oknie dialogowym mo¿esz podaæ w³asne rozszerzenie plików kopii.
+Zauwa¿, ¿e podwójne zachowanie pliku zast±pi zarówno kopiê zapasow± jak
+i pierwotny plik.
+.SH RÓ¯NE
+(Wyszukiwanie i zastêpowanie scanf poprzednio nie dzia³a³o poprawnie. W obecnej
+edycji problemy z wyszukiwaniem i zastêpowaniem zosta³y usuniête.)
+.PP
+Mo¿esz u¿yæ wyszukiwania i zastêpowania typu scanf do wyszukania i zast±pienia
+³añcucha znakowego w formacie C. Przejrzyj najpierw strony podrêcznika
+systemowego omawiaj±ce \fBsscanf\fR i \fBsprintf\fR, by zapoznaæ siê z opisem
+budowy formatu ³añcuchowego i jego dzia³aniem. A oto przyk³ad: za³ó¿my,
+¿e chcesz zamieniæ wszystkie wyst±pienia, powiedzmy, otwieraj±cego
+nawiasu, trzech oddzielonych przecinkami liczb i nawiasu zamykaj±cego,
+na s³owo \fBczerwone\fR, trzeci± z liczb, s³owo \fBczarne\fR i drug± z liczb.
+Powiniene¶ wówczas wype³niæ okno dialogowe Replace (zast±p) jak ni¿ej:
+.RS
+.B Enter search string
+.br
+(%d,%d,%d)
+.br
+.B Enter replace string
+.br
+czerwone %d czarne %d
+.br
+.B Enter replacement argument order
+.br
+3,2
+.RE
+Ostatnia linia nakazuje, by w miejsce pierwszej i drugiej liczby zosta³y u¿yte
+trzecia a nastêpnie druga z liczb.
+.PP
+Zaleca siê u¿ycie tej funkcji z w³±czonym potwierdzaniem zastêpowania
+(Prompt On Replace), gdy¿ dopasowanie jest znalezione, gdy liczba
+znalezionych argumentów odpowiada liczbie podanych, co nie zawsze jest
+rzeczywistym dopasowaniem. Ponadto scanf traktuje bia³e znaki
+jako "rozci±gliwe". Zauwa¿, i¿ format scanf %[ jest bardzo przydatny
+do wyszukiwania ³añcuchów znakowych i bia³ych znaków.
+.PP
+Edytor wy¶wietla tak¿e znaki spoza USA (non-US) (o kodach od 160).
+Przy modyfikacji plików binarnych powiniene¶ w menu opcji Midnight Commandera
+ustawiæ liczbê bitów wy¶wietlania (\fBdisplay bits\fR) na 7, co zapewni
+porz±dne wy¶wietlanie odstêpów.
+.SH PLIKI
+.I /opt/gnome/mc.hlp
+.IP
+Plik pomocy programu.
+.PP
+.I /opt/gnome/lib/mc/mc.ini
+.IP
+Ogólnosystemowy plik konfiguracyjny Midnight Commandera, u¿ywany wy³±cznie,
+gdy u¿ytkownik nie posiada w³asnego pliku \fI~/.mc.ini\fR.
+.PP
+.I /opt/gnome/lib/mc/mc.lib
+.IP
+Globalne ustawienia Midnight Commandera. Ustawienia w tym pliku s± globalne
+dla ka¿dej sesji Midnight Commandera. Przydatny do zdefiniowania ustawieñ
+terminala obowi±zuj±cych dla ca³ego systemu (site-global).
+.PP
+.I $HOME/.mc.ini
+.IP
+Prywatna konfiguracja u¿ytkownika. Je¶li istnieje, to konfiguracja odczytywana
+jest z tego w³a¶nie pliku, zamiast z ogólnosystemowego pliku startowego.
+.PP
+.I $HOME/.cedit/
+.IP
+Tymczasowy katalog u¿ytkownika. Przetwarzane i zapisywane s± w nim polecenia
+operuj±ce na blokach tekstu.
+.SH LICENCJA
+Niniejszy program jest rozpowszechniany na warunkach licencji
+GNU General Public Licence opublikowanych przez Free Software Foundation.
+Wbudowana pomoc Midnight Commandera zawiera Licencjê, w szczególno¶ci
+zastrze¿enie dotycz±ce braku gwarancji.
+.SH DOSTÊPNO¦Æ
+Naj¶wie¿sz± wersjê programu odnajdziesz na
+..br
+   ftp.nuclecu.unam.mx w katalogu /linux/local
+.br
+oraz w Europie:
+.br
+   na sunsite.mff.cuni.cz w katalogu /GNU/mc
+.br
+   i na ftp.teuto.de w katalogu /lmb/mc.
+.PP
+Wersjê dla X Window mo¿na znale¼æ na
+.br
+   sunsite.unc.edu w katalogu /pub/Linux/apps/editors/X
+.br
+   lub te¿ na argeas.argos.hol.gr w /pub/unix/cooledit.
+.SH PATRZ TAK¯E
+.BR cooledit (1),
+.BR mc (1),
+.BR gpm (1),
+.BR terminfo (1),
+.BR scanf (3).
+.SH AUTORZY
+Twórc± edytora wbudowanego w program Midnight Commander jest
+Paul Sheer (psheer@obsidian.co.za).
+.SH B£ÊDY
+Wiêcej szczegó³ów znajdziesz w pliku \fBREADME.edit\fR dostarczanym w pakiecie
+dystrybucyjnym.

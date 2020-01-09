@@ -1,0 +1,118 @@
+###
+### Przyk³adowy plik inicjuj±cy .wgetrc programu Wget
+###
+
+## Z tego pliku mo¿na skorzystaæ do zmiany domy¶lnego zachowania siê wget
+## lub w celu unikniêcia wpisywania zbyt wielu opcji wiersza poleceñ.
+## Nie zawiera pe³nej listy poleceñ -- co jeszcze mo¿na w nim umie¶ciæ,
+## zosta³o opisane w podrêczniku.
+## 
+## Plik inicjuj±cy Wget mo¿e byæ zapisany jako /usr/local/etc/wgetrc
+## (ogólnosystemowy, dla wszystkich u¿ytkowników) lub $HOME/.wgetrc
+## (dla pojedynczego u¿ytkownika).
+##
+## Chc±c u¿yæ ustawieñ tu umieszczonych, nale¿y je odkomentowaæ (usun±æ
+## poprzedzaj±cy liniê znak '#') i, w wiêkszo¶ci przypadków, zmieniæ,
+## gdy¿ warto¶ci w zakomentowanych liniach s± warto¶ciami domy¶lnymi
+## (np. "off").
+
+
+##
+## Ustawienia ogólne (warte ustawiania w /usr/local/etc/wgetrc).
+## Ich zmianê nale¿y dobrze przemy¶leæ, poniewa¿ mog± zmniejszyæ
+## mo¿liwo¶ci programu i spowodowaæ zachowanie niezgodne z dokumentacj±:
+##
+
+# Dla pocz±tkuj±cych mo¿na ustaliæ limit pobieranych danych, podaj±c
+# warto¶æ opcjonalnie zakoñczon± liter± 'K' (kilobajty) lub 'M'
+# (megabajty).  Domy¶lnie quota jest nieograniczona.
+#quota = inf
+
+# Mo¿na zmniejszyæ (lub powiêkszyæ) domy¶ln± liczbê ponowieñ podczas
+# ¶ci±gania pliku (domy¶lnie 20).
+#tries = 20
+
+# Zmniejszenie maksymalnej g³êboko¶ci pobierania rekurencyjnego
+# w porêczny sposób chroni nowicjuszy przed wchodzeniem zbyt "g³êboko",
+# gdy niechc±cy rozpoczn± pobieranie rekurencyjne. Warto¶ci± domy¶ln±
+# jest 5.
+#reclevel = 5
+
+# Wiele o¶rodków po³o¿onych jest za zaporami ogniowymi, które
+# nie zezwalaj± na po³±czenia z zewn±trz.  W takim przypadku trzeba
+# u¿yæ 'pasywnej' funkcji FTP.  Je¶li znajdujemy siê za zapor±,
+# mo¿emy w³±czyæ tê funkcjê, ¿eby Wget domy¶lnie u¿ywa³ pasywnego FTP.
+#passive_ftp = off
+
+# Polecenie "wait", wymienione dalej, wymusza na Wget odczekiwanie
+# pomiêdzy ka¿dym po³±czeniem.  Je¶li zamiast tego chcieliby¶my,
+# ¿eby program czeka³ tylko pomiêdzy kolejnymi próbami nieudanych
+# ¶ci±gniêæ, nale¿y ustawiæ waitretry na maksymaln± liczbê sekund
+# oczekiwania (Wget zastosuje "odczekiwanie liniowe", czekaj±c
+# 1 sekundê po pierwszym niepowodzeniu z danym plikiem, 2 sekundy
+# po drugim niepowodzeniu, a¿ do tego maksimum).
+waitretry = 10
+
+
+##
+## Ustawienia lokalne (dla u¿ytkownika, ustawiane w jego $HOME/.wgetrc).
+## Umieszczanie tych ustawieñ w pliku ogólnosystemowym jest *wysoce*
+## niepo¿±dane, gdy¿ s± potencjalnie dla "zwyk³ych" u¿ytkowników.
+##
+## Nawet konfiguruj±c w³asny ~/.wgetrc, przed wpisaniem danej opcji
+## powinno siê wiedzieæ, o co chodzi.
+##
+
+# Ustawiæ na "on", je¶li znaczniki czasu domy¶lnie maj± byæ w³±czone:
+#timestamping = off
+
+# Dobrym pomys³em jest zmuszenie Wget do wysy³ania naszego adresu
+# pocztowego w nag³ówku `From:' ¿±dania (dziêki czemu w przypadku
+# b³êdu administratorzy serwerów bêd± mogli siê z nami skontaktowaæ).
+# Wget domy¶lnie *nie* wysy³a `From:'.
+#header = From: Imie Nazwisko <uzytkownik@@maszyna.domena>
+
+# Mo¿na te¿ nadaæ inne nag³ówki, jak np. Accept-Language.
+# Accept-Language *nie* jest domy¶lnie wysy³any.
+#header = Accept-Language: en
+
+# Mo¿na zdefiniowaæ domy¶lne serwery proxy, z których Wget ma korzystaæ
+# pos³uguj±c siê http i ftp. Przes³oni± one warto¶æ ze ¶rodowiska.
+#http_proxy = http://proxy.yoyodyne.com:18023/
+#ftp_proxy = http://proxy.yoyodyne.com:18023/
+
+# Je¶li w ogóle nie chcemy u¿ywaæ proxy, poni¿sze nale¿y ustawiæ
+# na "off".
+#use_proxy = on
+
+# Dostosowanie wizualizacji pobierania do w³asnych upodobañ.
+# Poprawne opcje to: default, binary, mega i micro.
+#dot_style = default
+
+# Przestawienie poni¿szego na "off" spowoduje, ¿e Wget nie bêdzie ¶ci±ga³
+# pliku /robots.txt.  Przed zmian± warto¶ci domy¶lnej upewnij siê,
+# ¿e *dok³adnie* wiesz, co to za plik i w jaki sposób jest u¿ywany!
+#robots = on
+
+# Mo¿e siê przydaæ zmuszenie Wget do odczekiwania pomiêdzy kolejnymi
+# po³±czeniami.  Poni¿szej opcji przypisuje siê liczbê sekund pauzy.
+#wait = 0
+
+# Nadaj±c poni¿szej opcji warto¶æ "on" mo¿na wymusiæ tworzenie
+# struktury katalogów, nawet je¶li pobierany jest pojedynczy plik.
+#dirstruct = off
+
+# Pobieranie rekurencyjne mo¿na ustawiæ jako domy¶lnie w³±czone
+# (nie rób tego, je¶li nie wiesz, co to znaczy) ustawiaj±c to na "on".
+#recursive = off
+
+# Je¶li chcemy, ¿eby przed wykonaniem konwersji odno¶ników
+# (za przyczyn± opcji -k / --convert-links / convert_links = on)
+# zawsze by³a zachowywana kopia zapasowa pliku (np. dla pliku
+# o nazwie X kopia bêdzie mieæ nazwê X.orig), nale¿y nadaæ tej
+# zmiennej warto¶æ "on":
+#backup_converted = off
+
+# Ustawienie tego na "on" spowoduje, ¿e Wget bêdzie domy¶lnie pod±¿a³
+# za odno¶nikami FTP z plików HTML:
+#follow_ftp = off

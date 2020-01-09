@@ -1,0 +1,243 @@
+.\" T³umaczenie wersji man-pages 1.44 - grudzieñ 2001 PTM
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\"
+.\" Copyright (c) 1990, 1993
+.\"	The Regents of the University of California.  All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"	@(#)btree.3	8.4 (Berkeley) 8/18/94
+.\"
+.TH BTREE 3 1994-08-18 
+.\".UC 7
+.SH NAZWA
+btree \- metoda dostêpu do bazy btree
+.SH SK£ADNIA
+.nf
+.ft B
+#include <sys/types.h>
+#include <db.h>
+.ft R
+.fi
+.SH OPIS
+Funkcja
+.IR dbopen
+stanowi interfejs biblioteczny do plików baz danych.
+Jednym z obs³ugiwanych formatów s± pliki btree. Ogólny opis metod dostêpu
+do baz danych znajduje siê w
+.IR dbopen (3),
+a ta strona podrêcznika opisuje jedynie informacje specyficzne dla btree.
+.PP
+Struktura danych btree stanowi uporz±dkowan±, zrównowa¿on± strukturê
+drzewiast±, przechowuj±c± powi±zane pary klucz/dane.
+.PP
+Specyficzna dla metody dostêpu btree struktura danych u¿ywana przez
+.I dbopen
+jest zdefiniowana w pliku nag³ówkowym <db.h> nastêpuj±co:
+.PP
+typedef struct {
+.RS
+u_long flags;
+.br
+u_int cachesize;
+.br
+int maxkeypage;
+.br
+int minkeypage;
+.br
+u_int psize;
+.br
+int (*compare)(const DBT *key1, const DBT *key2);
+.br
+size_t (*prefix)(const DBT *key1, const DBT *key2);
+.br
+int lorder;
+.RE
+} BTREEINFO;
+.PP
+Struktura ta zawiera nastêpuj±ce elementy:
+.TP
+flags
+Wart¶æ znacznika jest okre¶lona
+.IR lub okre¶la
+dowoln± z nastêpuj±cych warto¶ci:
+.RS
+.TP
+R_DUP
+Zezwala na powtarzaj±ce siê w drzewie klucze, tzn. pozwala dodawaæ klucze,
+które ju¿ w drzewie istniej±.
+Domy¶lnym zachowaniem, jak opisano w
+.IR dbopen (3),
+jest nadpisywanie istniej±cego pasuj±cego klucza podczas wprowadzania nowego
+klucza, lub niepomy¶lne zakoñczenie, gdy podany jest znacznik R_NOOVERWRITE.
+Znacznik R_DUP jest nadpisywany przez znacznik R_NOOVERWRITE; gdy znacznik
+R_NOOVERWRITE jest podany, próba dodania do drzewa klucza, który ju¿
+istnieje, zakoñczy siê niepowodzeniem.
+.IP
+Je¶li baza danych zawiera powtarzaj±ce siê klucze, kolejno¶æ pobierania
+kluczy/danych za pomoc± funkcji
+.I get
+jest niezdefiniowana, jednak¿e, wywo³ania funkcji
+.I seq
+z ustawionym znacznikiem R_CURSOR zawsze zwróc± logicznie ``pierwszy''
+z dowolnej drupy powtarzaj±cych siê kluczy.
+.RE
+.TP
+cachesize
+Sugerowany maksymalny rozmiar (w bajtach) bufora w pamiêci.
+Warto¶æ ta stanowi
+.B jedynie
+zalecenie, wiêc metoda dostêpu raczej przydzieli wiêcej pamiêci ni¿ zawiedzie.
+Ze wzglêdu na to, ¿e ka¿de poszukiwanie bada stronê korzenia drzewa,
+buforowanie najczê¶ciej u¿ywanych stron istotnie skróci czas dostêpu.
+Dodatkowo, fizyczne zapisy bêd± opó¼nione na tyle, na ile bêdzie to mo¿liwe,
+wiêc umiarkowany bufor mo¿e istotnie zmniejszyæ liczbê operacji
+wej¶cia/wyj¶cia. Oczywi¶cie, korzystanie z bufora zwiêksza (ale jedynie
+zwiêksza) prawdopodobieñstwo uszkodzenia lub utraty danych, je¶li system
+ulegnie awarii podczas gdy drzewo jest modyfikowane.
+Je¶li
+.I cachesize
+wynosi 0 (nie podano rozmiaru) u¿ywany jest bufor domy¶lny.
+.TP
+maxkeypage
+Maksymalna liczba kluczy, które bêd± przechowywane w ramach pojedynczej
+strony. Aktualnie nie zaimplementowane.
+.\" The maximum number of keys which will be stored on any single page.
+.\" Because of the way the btree data structure works,
+.\" .I maxkeypage
+.\" must always be greater than or equal to 2.
+.\" If
+.\" .I maxkeypage
+.\" is 0 (no maximum number of keys is specified) the page fill factor is
+.\" made as large as possible (which is almost invariably what is wanted).
+.TP
+minkeypage
+minimalna liczba kluczy przechowywanych w ramach pojedynczej strony.
+Warto¶æ ta s³u¿y do okre¶lania, które klucze bêd± przechowywane w stronach
+nadmiarowych, tzn. je¶li klucz lub element danych jest wiêkszy ni¿ rozmiar
+strony podzielony przez warto¶æ minkeypage, bêdzie on przechowywany w stronie
+nadmiarowej, zamiast w stronie w³a¶ciwej.
+Je¶li
+.I minkeypage
+wynosi 0 (nie podano minimalnej liczby kluczy), u¿yta zostanie warto¶æ 2.
+.TP
+psize
+Rozmiar strony jest rozmiarem (w bajtach) stron u¿ywanych przez wêz³y drzewa.
+Minimalny rozmiar strony wynosi 512 bajtów, a maksymalnym rozmiarem jest 64K.
+Je¶li
+.I psize
+wynosi 0 (mie podano rozmiaru strony), rozmiar strony jest wybierany w oparciu
+o rozmiar bloku u¿ywanego systemu plików.
+.TP
+compare
+Compare jest funkcj± porównywania kluczy.
+Musi ona zwracaæ liczbê ca³kowit± mniejsz±, równ± lub wiêksz± od zera, gdy
+klucz bêd±cy pierwszym argumentem jest, odpowiednio, mniejszy, równy,
+wiêkszy ni¿ klucz bêd±cy drugim argumentem.
+Dla danego drzewa przy ka¿dym jego otwarciu musi byæ u¿ywana ta sama funcja
+porównawcza.
+Je¶li
+.I compare
+ma warto¶æ NULL (nie podano funkcji porównawczej), klucze bêd± porównywane
+leksykalnie, przy czym krótsze klucze bêd± uwa¿ane za mniejsze ni¿ klucze
+d³u¿sze.
+.TP
+prefix
+Prefix jest funkcj± porównywania przedrostków.
+Je¶li zostanie podana, musi ona zwracaæ liczbê bajtów argumentu bêd±cego
+drugim kluczem, które s± niezbêdne dla okre¶lenia czy jest on wiêkszy ni¿
+klucz bêd±cy pierwszym argumentem.
+Gdy klucze bêd± równe, powinna zostaæ zwrócona d³ugo¶æ klucza.
+Uwaga, przydatno¶c tej funkcji silnie zale¿y od danych, jednak dla pewnych
+zbiorów danych jej u¿ywanie mo¿e prowadziæ do istotnie zmniejszonych
+rozmiarów drzewa i krótszych czasów poszukiwania.
+Je¶li
+.I prefix
+ma warto¶æ NULL (nie podano funkcji prefix),
+.B i
+nie podano funkcji porównawczej, u¿yta zostanie domy¶lna funkcja porównywania
+leksykalnego.
+Je¶li
+.I prefix
+ma warto¶æ NULL, i podano funkcjê porównawcz±, nie bêdzie wykonywane
+porównywanie przedrostków.
+.TP
+lorder
+Kolejno¶æ bajtów dla liczb ca³kowitych w przechowywanych metadanych bazy.
+Liczba powinna reprezentowaæ kolejno¶æ jao liczba ca³kowita; na przyk³ad, 
+porz±dek grubokoñcy by³by liczb± 4,321.
+Je¶li
+.I lorder
+wynosi 0 (nie podano kolejno¶ci) u¿yta zostanie aktualna, systemowa kolejno¶æ.
+.PP
+Je¶li plik ju¿ istnieje (i nie podanoznacznika O_TRUNC), warto¶ci podane
+dla parametrów flags, lorder i psize zostan± zignorowane, na rzecz warto¶ci
+u¿ywanych w czasie tworzenia drzewa.
+.PP
+Liniowe przegl±danie drzewa "do przodu" odbywa siê od najmniejszego klucza
+do najwiêkszego.
+.PP
+Przestrzeñ zwolniona przez usuniêcie par klucz/dane z drzewa nie
+jest nigdy odzyskiwana, jednak¿e, jest ona normalnie dostêpna dla ponownego
+u¿ycia. Oznacza to, ¿e struktura przechowuj±ca drzewo btree mo¿e jedynie
+rosn±æ. Jedynym rozwi±zaniem jest unikanie nadmiernego usuwania lub
+okresowe tworzenie ¶wie¿ego drzewa na podstawie przegl±dania istniejcego
+drzewa.
+.PP
+Przeszukiwania, wstawiania i usuniêcia w btree odbywaj± siê w czasie
+O lg base N, gdzie base jest czynnikiem ¶redniego wype³nienia.
+Czêsto, wprowadzanie do drzew btree danych uporz±dkowanych prowadzi do
+niskiego czynnika wype³nienia.
+Ta implementacja zosta³a zmodyfikowana, aby uczyniæ uporz±dkowane wprowadzanie
+najkorzystniejszym przypadkiem, uzyskuj±c w wyniku tego du¿o lepszy ni¿
+normalnie czynnik wype³nienia stron.
+.SH B£ÊDY
+Funkcje metod dostêpu
+.I btree
+mog± zawie¶æ i ustawiæ
+.I errno
+dla dowolnego z b³êdów podanych w funkcji bibliotecznej
+.IR dbopen (3).
+.SH "ZOBACZ TAK¯E"
+.IR dbopen (3),
+.IR hash (3),
+.IR mpool (3),
+.IR recno (3)
+.sp
+.IR "The Ubiquitous B-tree" ,
+Douglas Comer, ACM Comput. Surv. 11, 2 (czerwiec 1979), 121-138.
+.sp
+.IR "Prefix B-trees" ,
+Bayer and Unterauer, ACM Transactions on Database Systems, t. 2, 1
+(marzec 1977), 11-26.
+.sp
+.IR "The Art of Computer Programming Vol. 3: Sorting and Searching" , 
+D.E. Knuth, 1968, str. 471-480.
+.SH USTERKI
+Obs³uguje jedynie ostrokoñcy i grubokoñcy porz±dek bajtów.

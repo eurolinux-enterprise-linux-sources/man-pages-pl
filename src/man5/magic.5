@@ -1,0 +1,221 @@
+.\" 1999 PTM Przemek Borys
+.\" Last update: Andrzej M. Krzysztofowicz <ankry@pld.org.pl>, Apr 2002
+.\"
+.TH MAGIC 5 "Ogólnie dostêpne"
+.\" install as magic.4 on USG, magic.5 on V7 or Berkeley systems.
+.SH NAZWA
+magic \- plik liczb magicznych polecenia file
+.SH OPIS
+Ta strona podrêcznika systemowego opisuje format pliku magicznego, u¿ywanego
+przez polecenie
+.BR file (1)
+w wersji 3.37. Polecenie
+.B file
+rozpoznaje typ pliku, korzystaj±c (poza innymi metodami) z testu,
+polegaj±cego na sprawdzeniu, czy plik nie rozpoczyna siê od pewnej
+.IR "liczby magicznej" .
+Plik
+.I /usr/share/misc/magic
+okre¶la jakie liczby sprawdzaæ i jakie komunikaty drukowaæ w wypadku 
+znalezienia okre¶lonej liczby magicznej oraz dodatkowe dane, które
+maj± zostaæ pobrane z pliku.
+.PP
+Ka¿dy wiersz pliku okre¶la test, które ma byæ wykonany. Test porównuje dane,
+rozpoczynaj±ce siê przy okre¶lonym przesuniêciu wzglêdem pocz±tku pliku z 1,
+2 lub 4-bajtow± warto¶ci± numeryczn± lub ³añcuchem. Je¶li test zakoñczy siê
+pomy¶lnie, wypisywany jest komunikat. Wiersz sk³ada siê z nastêpuj±cych pól:
+.IP offset \w'message'u+2n
+Liczba, okre¶laj±ca w bajtach przesuniêcie wzglêdem pocz±tku pliku, przy
+którym nale¿y szukaæ testowanych danych.
+.IP typ
+Typ testowanych danych. Dopuszczalne warto¶ci to:
+.RS
+.IP byte \w'message'u+2n
+Warto¶æ jednobajtowa.
+.IP short
+Warto¶æ dwubajtowa (w wiêkszo¶ci systemów) w natywnej kolejno¶ci bajtów
+maszyny.
+.IP long
+Warto¶æ czterobajtowa (w wiêkszo¶ci systemów) w natywnej kolejno¶ci bajtów
+maszyny.
+.IP string
+£añcuch bajtów. Po specyfikacji typu ³añcucha mo¿e opcjonalnie wyst±piæ
+/[Bbc]*. Znacznik ,,B'' kondensuje bia³e znaki w testowanym tek¶cie, który
+musi zawieraæ co najmniej jeden bia³y znak. Je¶li liczba magiczna zawiera
+"n" kolejnych bia³ych znaków, to aby nast±pi³o dopasowanie, testowany tekst
+musi zawieraæ co najmniej "n" kolejnych bia³ych znaków. Znacznik ,,b''
+powoduje traktowanie wszystkich bia³ych znaków w testowanym tek¶cie jako
+opcjonalne. Wreszcie, znacznik ,,c'' okre¶la dopasowanie ignoruj±ce wielko¶æ
+liter: ma³e litery w liczbie magicznej pasuj± zarówno do ma³ych, jak i do
+wielkich liter w testowanym tek¶cie, podczas gdy wielkie litery w liczbie
+magicznej pasuj± tylko do wielkich liter.
+.IP date
+Czterobajtowa warto¶æ, interpretowana jako data uniksowa.
+.IP ldate
+Czterobajtowa warto¶æ, interpretowana jako data w stylu uniksowym, ale
+interpretowana jako czas lokalny, a nie UTC.
+.IP beshort
+Warto¶æ dwubajtowa (w wiêkszo¶ci systemów) w grubokoñcej (big-endian)
+kolejno¶ci bajtów.
+.IP belong
+Warto¶æ czterobajtowa (w wiêkszo¶ci systemów) w grubokoñcej kolejno¶ci bajtów.
+.IP bedate
+Warto¶æ czterobajtowa (w wiêkszo¶ci systemów) w grubokoñcej kolejno¶ci bajtów,
+interpretowana jako data uniksowa.
+.IP leshort
+Warto¶æ dwubajtowa (w wiêkszo¶ci systemów) w ostrokoñcej (little-endian)
+kolejno¶ci bajtów.
+.IP lelong
+Warto¶æ czterobajtowa (w wiêkszo¶ci systemów) w ostrokoñcej kolejno¶ci bajtów.
+.IP ledate
+Warto¶æ czterobajtowa (w wiêkszo¶ci systemów) w ostrokoñcej kolejno¶ci bajtów,
+interpretowana jako data uniksowa.
+.IP leldate
+Warto¶æ czterobajtowa (w wiêkszo¶ci systemów) w ostrokoñcej kolejno¶ci bajtów,
+interpretowana jako data w stylu uniksowym, ale interpretowana jako czas
+lokalny, a nie UTC.
+.RE
+.PP
+Typy numeryczne mog± wystêpowaæ w parze z (nastêpuj±cym po nich) znakiem
+.B &
+i warto¶ci± numeryczn± wskazuj±c±, ¿e dana warto¶æ ma byæ poddana operacji
+AND z zadan± warto¶ci± numeryczn± przed dokonaniem porównania. Poprzedzenie
+typu przez
+.B u
+wskazuje, ¿e porównane warto¶ci powinny byæ bez znaku.
+.IP test
+Warto¶æ, które ma byæ porównywana z warto¶ci± z pliku. Je¶li typ jest
+numeryczny, to warto¶æ jest podawana w postaci zgodnej z jêzykiem C. Je¶li
+typ jest ³añcuchowy, to warto¶æ jest podawana jako ³añcuch jêzyka C
+z dozwolonymi znakami specjalnymi (np. \en dla nowej linii).
+.IP
+Warto¶ci numeryczne mog± byæ poprzedzone znakami okre¶laj±cymi operacjê,
+jaka ma zostaæ wykonana. Znakiem operacji mo¿e byæ
+.BR = ,
+okre¶laj±cy, ¿e warto¶æ z pliku musi siê równaæ warto¶ci podanej,
+.BR < ,
+okre¶laj±cy, ¿e warto¶æ z pliku musi byæ mniejsza od podanej,
+.BR > ,
+okre¶laj±cy, ¿e warto¶æ z pliku musi byæ wiêksza od podanej,
+.BR & ,
+okre¶laj±cy, ¿e warto¶æ z pliku musi mieæ wszystkie bity, które s± ustawione
+w podanej warto¶ci,
+.BR ^ ,
+okre¶laj±cy, ¿e warto¶æ z pliku musi mieæ wyzerowane wszystkie bity, które
+s± ustawione w podanej warto¶ci, lub
+.BR x ,
+okre¶laj±cy, ¿e pasowaæ mo¿e dowolna warto¶æ. Je¶li znak operacji jest
+pominiêty, u¿ywany jest
+.BR = .
+.IP
+Warto¶ci numeryczne s± podawane w postaci zgodnej z jêzykiem C, np.
+.B 13
+to liczba dziesiêtna,
+.B 013
+to liczba ósemkowa,
+.B 0x13
+to liczba szesnastkowa.
+.IP
+Dla warto¶ci ³añcuchowych ³añcuch bajtów z pliku musi odpowiadaæ podanemu
+³añcuchowi bajtów. Do ³añcuchów mog± byæ stosowane operatory
+.BR = ,
+.B <
+i
+.B >
+(lecz nie
+.BR & ).
+D³ugo¶æ, u¿ywana do porównywania jest d³ugo¶ci± argumentu ³añcuchowego z
+pliku magicznego. Znaczy to, ¿e wiersz mo¿na dopasowaæ do dowolnego ³añcucha
+i wypisaæ go, stosuj±c
+.B >\e0
+(poniewa¿ wszystkie ³añcuchy s± wiêksze od ³añcucha zerowego).
+.IP komunikat
+Komunikat, wypisywany po pomy¶lnym dopasowaniu. Je¶li ³añcuch zawiera
+specyfikacjê formatu
+.BR printf (3)
+to warto¶æ z pliku jest wypisywana (po odpowiednim maskowaniu) przy u¿yciu
+komunikatu jako ³añcucha formatuj±cego.
+.PP
+Niektóre formaty plików zawieraj± dodatkowe dane, które maj± byæ wypisane
+razem z danym typem pliku. Wiersz, rozpoczynaj±cy siê od znaku
+.B >
+oznacza dodatkowe testy i komunikaty. Liczba
+.B >
+w linii okre¶la poziom testu; wiersz bez
+.B >
+jest na poziomie 0. Ka¿dy wiersz w poziomie
+.IB n \(pl1
+jest pod kontrol± wiersza w poziomie
+.IR n ,
+poprzedzaj±cego go najbli¿ej w pliku magicznym.
+Je¶li test wiersza na poziomie 
+.I n
+siê powiedzie, dokonywane bêd± dalsze testy na poziomach
+.IB n \(pl1\fR.
+Proces ten koñczy nastêpny wiersz na poziomie
+.IR n .
+Je¶li pierwszy znak za ostatnim
+.B >
+to
+.BR ( ,
+to ³añcuch za nawiasem jest interpretowany jako po¶rednie przesuniêcie. Znaczy
+to, ¿e liczba po nawiasie s³u¿y jako przesuniêcie w pliku. Przy tym
+przesuniêciu odczytywana jest warto¶æ u¿ywana nastêpnie jako przesuniêcie
+w pliku. Przesuniêcia po¶rednie s± postaci:
+.BI ( x [.[bslBSL]][+-][ y ])\fR.
+Warto¶æ
+.I x
+jest u¿ywana jako przesuniêcie w pliku. Nastêpnie przy tym przesuniêciu
+odczytywany jest z niego bajt, s³owo lub podwójne s³owo, zale¿nie od
+specyfikatora typu
+.BR [bslBSL] .
+Wielkie litery oznaczaj± liczby jako warto¶ci grubokoñce (big-endian), podczas
+gdy ma³e litery oznaczaja warto¶ci (ostrokoñce) little-endian. Do liczby tej
+dodawana jest warto¶æ
+.IR y ,
+a wynik s³u¿y jako przesuniêcie w pliku. Domy¶lnym typem przesuniêcia jest
+long.
+.PP
+Czasami dok³adne przesuniêcie nie jest znane, gdy¿ mo¿e ono zale¿eæ od
+d³ugo¶ci poprzednich pól. Mo¿na podaæ przesuniêcie wzglêdem koñca ostatniego
+pola wy¿szego poziomu (oczywi¶cie mo¿na to wykonaæ tylko przy testach na
+podpoziomach, tj. testach rozpoczynaj±cych siê od
+.BR > ).
+Takie wzglêdne przesuniêcie podawane jest za pomoc± przedrostka
+.B &
+w przesuniêcia.
+.SH B£ÊDY
+Formaty
+.IR long ,
+.IR belong ,
+.IR lelong ,
+.IR short ,
+.IR beshort ,
+.IR leshort ,
+.IR date ,
+.I bedate
+i
+.I ledate
+zale¿± od systemu; mo¿e powinny byæ podawane jako liczba bajtów (2B, 4B,
+itd), gdy¿ rozpoznawane pliki zwykle pochodz± z systemu, gdzie d³ugo¶ci s±
+niezmienne.
+.PP
+Nie ma (obecnie) obs³ugi dla korzystania z danych o okre¶lonej koñcowo¶ci
+(endianness) przy przesuniêciach po¶rednich.
+.SH "ZOBACZ TAK¯E"
+.BR file (1)
+\- polecenie, która czyta ten plik.
+.\"
+.\" From: guy@sun.uucp (Guy Harris)
+.\" Newsgroups: net.bugs.usg
+.\" Subject: /etc/magic's format isn't well documented
+.\" Message-ID: <2752@sun.uucp>
+.\" Date: 3 Sep 85 08:19:07 GMT
+.\" Organization: Sun Microsystems, Inc.
+.\" Lines: 136
+.\" 
+.\" Here's a manual page for the format accepted by the "file" made by adding
+.\" the changes I posted to the S5R2 version.
+.\"
+.\" Modified for Ian Darwin's version of the file command.
+.\" @(#)$Id: magic.5,v 1.2 2002/04/09 22:30:22 ankry Exp $

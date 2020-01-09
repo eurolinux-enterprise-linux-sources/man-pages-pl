@@ -1,0 +1,188 @@
+.\" 2000 PTM Przemek Borys
+.\" Last update: Robert Luberda <robert@debian.org>, Nov 2004,
+.\"              manpages 1.70
+.\" $Id: resolver.5,v 1.5 2004/11/21 11:48:39 robert Exp $
+.\"
+.\" Copyright (c) 1986 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms are permitted
+.\" provided that the above copyright notice and this paragraph are
+.\" duplicated in all such forms and that any documentation,
+.\" advertising materials, and other materials related to such
+.\" distribution and use acknowledge that the software was developed
+.\" by the University of California, Berkeley.  The name of the
+.\" University may not be used to endorse or promote products derived
+.\" from this software without specific prior written permission.
+.\" THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+.\"
+.\"	@(#)resolver.5	5.9 (Berkeley) 12/14/89
+.\"	$Id resolver.5,v 8.6 1999/05/21 00:01:02 vixie Exp $
+.\"
+.\" Added ndots remark by Bernhard R. Link - debian bug #182886
+.\"
+.TH RESOLVER 5 2004-10-31
+.UC 4
+.SH NAZWA
+resolv.conf \- plik konfiguracyjny obs³ugi nazw (resolver)
+.SH SK£ADNIA
+/etc/resolv.conf
+.SH OPIS
+.LP
+Obs³uga nazw
+.RI ( resolver )
+jest zbiorem funkcji biblioteki C,
+które umo¿liwiaj± dostêp do internetowego systemu serwerów nazw (DNS). Plik
+konfiguracyjny zawiera informacje, odczytywane przez procedury obs³ugi nazw
+podczas ich pierwszego wywo³ania przez proces. Plik ten jest czytelny
+zarówno dla maszyny, jak i dla cz³owieka. Zawiera on listê s³ów kluczowych z
+warto¶ciami, które udostêpniaj± ró¿ne rodzaje informacji dotycz±cej obs³ugi
+nazw.
+.LP
+W normalnie skonfigurowanym systemie plik ten nie powinien byæ konieczny.
+Jedynym odpytywanym serwerem nazw jest wtedy ten z maszyny lokalnej, nazwa
+domeny jest okre¶lana z nazwy hosta, a ¶cie¿ka poszukiwania domen jest
+konstruowana z nazwy domeny.
+.LP
+Ró¿nymi opcjami konfiguracji s±:
+.TP
+\fBnameserver\fP IP serwera nazw.
+Adres internetowy (w notacji kropkowej) serwera nazw, który powinien byæ
+odpytywany przez funkcje obs³ugi nazw.
+W pliku mo¿na podaæ maksymalnie MAXNS (obecnie 3) serwery nazw, po jednym
+przy s³owie kluczowym.
+Je¶li jest kilka serwerów, biblioteka obs³ugi nazw odpytuje je w kolejno¶ci,
+w jakiej zosta³y wymienione. Je¶li nie ma ¿adnego wpisu \fBnameserver\fP,
+domy¶lnym zachowaniem jest korzystanie z serwera nazw na maszynie lokalnej.
+(Stosowany algorytm polega na próbie odpytania serwera nazw, a je¶li
+przekroczy ona czas oczekiwania, nastêpuje próba odpytania nastêpnego, a¿
+zabraknie serwerów nazw. Nastêpnie nastêpuje ¶ci¶le okre¶lona liczba
+ponownych odpytañ wszystkich serwerów nazw.)
+.TP
+\fBdomain\fP Nazwa lokalnej domeny.
+Wiêkszo¶æ zapytañ o nazwy wewn±trz tej domeny mo¿e odbywaæ siê z zastosowaniem
+krótkich nazw; podanych wzglêdem lokalnej domeny. 
+Je¶li pozycja \fBdomain\fP nie jest obecna, jest ona okre¶lana na podstawie
+nazwy, zwróconej przez lokalny host dla funkcji
+\fIgethostname\fP();
+za domenê uwa¿a siê wszystko po pierwszej `.'.
+Ostatecznie, je¶li nazwa hosta nie zawiera czê¶ci domenowej, przyjmowana jest
+domena g³ówna.
+.TP
+\fBsearch\fP Lista poszukiwania dla nazw hostów.
+Lista ta jest zwykle okre¶lana na podstawie lokalnej nazwy domeny;
+domy¶lnie te¿ zawiera tylko tê nazwê. Mo¿na to zmieniæ,
+przez podanie ¿±danej ¶cie¿ki poszukiwania domeny po s³owie kluczowym
+\fIsearch\fP, u¿ywaj±c spacji lub tabulacji do oddzielenia nazw.
+Funkcje obs³ugi nazw dla zapytañ zawieraj±cych w sobie mniej ni¿
+.I ndots
+kropek (domy¶lnie \- 1) bêd± próbowa³y 
+kolejnych sk³adników ¶cie¿ki poszukiwania, a¿ do znalezienia.
+Dla ¶rodowisk z wieloma poddomenami, proszê przeczytaæ poni¿ej
+.BI "options ndots:" n\fR,
+aby unikn±æ ataków typu man-in-the-middle oraz niepotrzebnego odpytywania
+g³ównych serwerów nazw.
+Nale¿y zauwa¿yæ, ¿e proces ten mo¿e byæ powolny i powodowaæ du¿e obci±¿enie
+sieciowy je¶li serwery dla podanych domen nie s± lokalne, a czas oczekiwania
+na odpowied¼ po zapytaniu przekracza czas oczekiwania, gdy dla której¶ z domen
+wszystkie serwery s± niedostêpne.
+.IP
+Lista poszukiwania jest obecnie ograniczona do sze¶ciu domen z maksymaln±
+ilo¶ci± 256 znaków.
+.TP
+\fBsortlist\fP
+Pole to umo¿liwia sortowanie adresów zwracanych przez gethostbyname.
+Lista sortowania jest podawana przez pary adresów IP i masek sieci.
+Maska sieci jest opcjonalna i domy¶lnie ma warto¶æ naturalnej maski dla danej
+sieci. Adres IP jest oddzielany od maski sieci uko¶nikiem. W polu tym mo¿na
+podawaæ do 10 par. Np.
+.br
+.in +2
+sortlist 130.155.160.0/255.255.240.0 130.155.0.0
+.in -2
+.br
+.TP
+\fBoptions\fP
+Pole to umo¿liwia modyfikacjê pewnych wewnêtrznych zmiennych funkcji obs³ugi
+nazw. Jego sk³adnia to
+.RS
+.IP
+\fBoptions\fP \fIopcja\fP \fI...\fP
+.LP
+gdzie \fIopcja\fP jest jedn± z nastêpuj±cych:
+.TP
+\fBdebug\fP
+ustawia RES_DEBUG w
+.IR _res.options .
+.TP
+.BI ndots: n
+ustawia próg liczby kropek, które musz± pojawiæ siê
+w nazwie podanej do \fBres_query\fP (zobacz 
+.BR resolver (3))
+przed wykonaniem \fIpocz±tkowego absolutnego zapytania\fP. Domy¶ln±
+warto¶ci± jest ,,1'', co oznacza, ¿e je¶li w nazwie znajduj± siê jakie¶
+kropki, to powinna byæ ona najpierw sprawdzona jako nazwa absolutna, bez
+dokonywania ¿adnych podstawieñ listy poszukiwania.
+.TP
+.BI timeout: n
+ustawia czas, przez który funkcja obs³ugi nazw bêdzie czekaæ na odpowied¼
+ze zdalnego serwera nazw przed wys³aniem zapytania do innego serwera nazw.
+Wyra¿ony w sekundach, domy¶lnie \- RES_TIMEOUT (obecnie 5, patrz <resolv.h>).
+.TP
+.BI attempts: n
+ustawia liczbê prób wysy³ania przez funkcjê obs³ugi nazw zapytañ
+do serwerów nazw przed poddaniem siê i zwróceniem b³êdu. 
+Domy¶lnie \-  RES_DFLRETRY (obecnie 2, patrz <resolv.h>).
+.TP
+.B rotate
+ustawia RES_ROTATE w
+.IR _res.options ,
+powoduj±c wybór serwera nazw spo¶ród wymienionych serwerów za pomoc± algorytmu
+round robin. Efektem tej opcji jest roz³o¿enie obci±¿enia zapytaniami wszystkich
+wymienionych serwerów nazw, zamiast odpytywania za ka¿dym razem pierwszego 
+wymienionego serwera.
+.TP
+.B no-check-names
+ustawia RES_NOCHECKNAME w
+.IR _res.options ,
+co wy³±cza sprawdzanie przez nowoczesne serwery BIND przychodz±cych 
+nazw komputerów i nazw pocztowych niepoprawnych znaków takich jak
+podkre¶lenie (_), znaki nie-ASCII lub znaki steruj±ce.
+.TP
+.B inet6
+ustawia RES_USE_INET6 w
+.IR _res.options .
+Efektem tego jest próbowanie zapytañ AAAA przed zapytaniami A wewn±trz funkcji
+.IR gethostbyname ()
+i mapowanie odpowiedzi IPv4 na tunelnowan± formê IPv6, je¿eli znaleziono
+tylko rekordy A, bez rekordów AAAA.
+.RE
+.LP
+S³owa kluczowe \fIdomain\fP i \fIsearch\fP wzajemnie siê wykluczaj±.
+Je¶li istnieje wiêcej ni¿ jedna ich instancja, u¿ywana jest ostatnia z nich.
+.LP
+S³owo kluczowe \fIsearch\fP systemowego \fIresolv.conf\fP mo¿na przeci±¿yæ
+dla danego procesu nadaj±c zmiennej ¶rodowiskowej ,,\s-1LOCALDOMAIN\s+1''
+warto¶æ bêd±c± rozdzielon± spacjami list± domen poszukiwania.
+.LP
+S³owo kluczowe \fIoptions\fP systemowego \fIresolv.conf\fP mo¿na poprawiæ
+dla danego procesu nadaj±c zmiennej ¶rodowiskowej ,,\s-1RES_OPTIONS\s+1''
+warto¶æ bêd±c± rozdzielon± spacjami list± opcji obs³ugi nazw
+(opcje opisano powy¿ej, pod has³em \fBoptions\fP).
+.LP
+S³owo kluczowe i warto¶æ musz± pojawiaæ siê w tej samej linii oraz s³owo
+kluczowe (np. \fBnameserver\fP) musi rozpoczynaæ liniê. Warto¶æ jest
+elementem nastêpuj±cym po s³owie kluczowym, od którego jest on oddzielony
+bia³ym znakiem.
+.SH PLIKI
+.I /etc/resolv.conf,
+.I <resolv.h>
+.SH "ZOBACZ TAK¯E"
+.BR gethostbyname (3),
+.BR resolver (3),
+.BR hostname (7),
+.BR named (8)
+.br
+Name Server Operations Guide for BIND

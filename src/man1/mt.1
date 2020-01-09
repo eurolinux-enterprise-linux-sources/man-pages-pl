@@ -1,0 +1,204 @@
+.\" {PTM/WK/1999-XII}
+.TH MT 1L \" -*- nroff -*-
+.SH NAZWA
+mt \- sterowanie dzia³aniem napêdu ta¶m magnetycznych
+.SH SK£ADNIA
+.TP 4
+.B mt
+.RB [ \-V ]
+.RB [ \-f
+.IR urz±dzenie ]
+.RB [ \-\-file= \fIurz±dzenie\fP]
+.RB [ \-\-version ]
+.I dzia³anie
+.RI [ licznik ]
+.SH OPIS
+Ta strona podrêcznika man opisuje polecenie \fBmt\fP w wersji GNU.
+.PP
+.B mt
+wykonuje zadane
+.IR dzia³anie ,
+dla napêdu ta¶my. Dzia³anie musi byæ jednym z podanych poni¿ej.
+.PP
+Domy¶lne urz±dzenie ta¶mowe, którego dotycz± dzia³ania pobierane jest z pliku
+.I /usr/include/sys/mtio.h
+podczas kompilacji
+.BR mt .
+Mo¿e byæ uniewa¿nione przez podanie nazwy pliku urz±dzenia w zmiennej
+¶rodowiskowej
+.B TAPE
+lub w wierszu poleceñ (patrz ni¿ej), który z kolei uniewa¿nia równie¿ zmienn±
+¶rodowiska.
+.PP
+Urz±dzenie musi byæ albo specjalnym plikiem znakowym albo zdalnym napêdem
+ta¶mowym. Chc±c pos³u¿yæ siê jako archiwum napêdem ta¶mowym umiejscowionym
+na innej maszynie, powiniene¶ u¿yæ nazwy pliku rozpoczynaj±cej siê od
+`NAZWAHOSTA:'. Nazwa hosta mo¿e byæ poprzedzona nazw± u¿ytkownika i znakiem
+`@'. Zapewnia to dostêp do zdalnego napêdu ta¶mowego w imieniu danego
+u¿ytkownika, je¿eli tylko posiadasz odpowiednie uprawnienia (zwykle wpis
+w pliku `~/.rhosts' tego u¿ytkownika).
+.PP
+Poni¿ej podano dostêpne dzia³ania. Akceptowane s± jednoznaczne skróty.
+Nie wszystkie dzia³ania s± dostêpne na wszystkich systemach, nie wszystkie
+te¿ dzia³aj± ze wszystkimi typami napêdów ta¶mowych.
+Niektóre z dzia³añ opcjonalnie przyjmuj± licznik powtórzeñ, który mo¿na podaæ
+po nazwie dzia³ania. Domy¶ln± warto¶ci± licznika jest 1.
+.TP
+.BR eof ", " weof
+Zapisz
+.I licznik
+znaczników EOF na bie¿±cej pozycji.
+.TP
+.B fsf
+Przesuñ w przód o
+.I licznik
+plików.
+Ta¶ma ustawiana jest na pierwszym bloku nastêpnego pliku.
+.TP
+.B bsf
+Przesuñ wstecz o
+.I licznik
+plików.
+Ta¶ma ustawiana jest na pierwszym bloku nastêpnego pliku.
+.TP
+.B fsr
+Przesuñ w przód o
+.I licznik
+rekordów (zapisów).
+.TP
+.B bsr
+Przesuñ wstecz o
+.I licznik
+rekordów.
+.TP
+.B bsfm
+Przesuñ wstecz o
+.I licznik
+znaczników plików.
+Ta¶ma ustawiana jest na znaczniku pliku, od strony pocz±tku ta¶my.
+.TP
+.B fsfm
+Przesuñ w przód o
+.I licznik
+znaczników plików.
+Ta¶ma ustawiana jest na znaczniku pliku, od strony pocz±tku ta¶my.
+.TP
+.B asf
+Przesuniêcie bezwzglêdne do pliku numer
+.IR licznik .
+Równowa¿nik przewiniêcia wstecz ca³o¶ci ta¶my, a nastêpnie wykonania `fsf
+licznik'.
+.TP
+.B eom
+Przesuñ na koniec zapisanego no¶nika ta¶my (w celu dopisywania plików do ta¶my).
+.TP
+.B rewind
+Przewiñ ta¶mê (na pocz±tek).
+.TP
+.BR offline ", " rewoffl
+Przewiñ ta¶mê i, je¶li to mo¿liwe, wysuñ ta¶mê.
+.TP
+.B status
+Wy¶wietl informacjê o stanie jednostki ta¶mowej.
+.TP
+.B retension
+Przewiñ ta¶mê, nastêpnie przewiñ j± w przód do koñca szpuli, i powtórnie wstecz.
+.TP
+.B erase
+Wyma¿ ta¶mê.
+.TP
+.B fss
+(ta¶my SCSI) W przód o
+.I licznik
+znaczników (setmarks).
+.TP
+.B bss
+(ta¶my SCSI) Wstecz o
+.I licznik
+znaczników.
+.TP
+.B wset
+(ta¶my SCSI) Zapisz
+.I licznik
+znaczników (setmarks) od bie¿±cej pozycji (tylko ta¶my SCSI).
+.TP
+.BR eod ", " seod
+Na koniec poprawnych danych. U¿ywany dla napêdów ta¶mowych streamerów w celu
+dopisywania danych do logicznego koñca ta¶my.
+.TP
+.B setblk
+(ta¶my SCSI) Ustaw rozmiar bloku dla napêdu na
+.I licznik
+bajtów na rekord.
+.TP
+.B setdensity
+(ta¶my SCSI) Ustaw kod gêsto¶ci (density) ta¶my na
+.IR licznik .
+Poprawnych warto¶ci kodów dla konkretnego napêdu nale¿y szukaæ w jego
+dokumentacji.
+.TP
+.B drvbuffer
+(ta¶my SCSI) Ustaw kod bufora napêdu ta¶mowego na
+.IR licznik .
+Poprawn± warto¶ci± dla operacji niebuforowanych jest zero a "zwyczajnie"
+buforowanych jeden. Znaczenie innych warto¶ci mo¿na znale¼æ w dokumentacji
+napêdu lub, w przypadku napêdu SCSI-2, w opisie standardu SCSI-2.
+.TP
+.B stoptions
+(ta¶my SCSI) Ustaw bity opcji sterownika urz±dzenia na
+.IR licznik .
+Bity mo¿na ustawiaæ jako alternatywê logiczn± nastêpuj±cych warto¶ci:
+1 w³±czenie buforowania zapisu, 2 w³±czenie zapisu asynchronicznego,
+4 w³±czenie odczytu z wyprzedzeniem (read ahead), 8 w³±czenie wyj¶cia
+diagnostycznego (je¶li zosta³o wkompilowane w sterownik).
+.TP
+.B stwrthreshold
+(ta¶my SCSI) Próg zapisu dla urz±dzenia ta¶mowego ustawiany jest na
+.I licznik
+kilobajtów. Warto¶æ ta musi byæ mniejsza lub równa rozmiarowi bufora
+sterownika.
+.TP
+.B seek
+(ta¶my SCSI) Wyszukaj do
+.I licznik
+bloku ta¶my. Dzia³anie to jest dostêpne na niektórych streamerach
+Tandberg i Wangtek oraz niektórych napêdach ta¶mowych SCSI-2.
+.TP
+.B tell
+(ta¶my SCSI) Podaj bie¿±cy blok ta¶my. Dzia³anie to jest dostêpne
+na niektórych streamerach Tandberg i Wangtek oraz niektórych napêdach
+ta¶mowych SCSI-2.
+.TP
+.B densities
+(ta¶my SCSI) Wy¶wietl na standardowym wyj¶ciu obja¶nienie niektórych
+powszechnych kodów gêsto¶ci.
+.TP
+.B datcompression
+(niektóre ta¶my SCSI-2 DAT) Zapytaj lub ustaw stan kompresji (on/off). Je¿eli
+.I licznik
+wynosi jeden, to wy¶wietlany jest stan kompresji. Je¶li
+.I licznik
+jest równy zero, to kompresja jest wy³±czana. W innych przypadkach kompresja
+jest w³±czana. Polecenie to wykorzystuje ioctl SCSI do odczytu i zapisu
+Data Compression Characteristics mode page (15). TYLKO U¯YTKOWNIK ROOT
+MO¯E KORZYSTAÆ Z TEGO POLECENIA.
+.PP
+.B mt
+koñczy pracê z kodem 0, je¶li dzia³anie siê powiod³o; 1 je¿eli podano
+niepoprawn± nazwê dzia³ania lub urz±dzenia, za¶ 2 je¶li dzia³anie nie
+siê uda³o.
+.SS OPCJE
+.TP
+.BR \-f ", " \-\-file=\fIurz±dzenie\fP
+U¿yj
+.I urz±dzenia
+jako nazwy pliku napêdu ta¶mowego, którego maj± dotyczyæ dzia³ania.
+Mo¿esz pos³u¿yæ siê napêdem ta¶mowym innej maszyny u¿ywaj±c nazwy pliku
+rozpoczynaj±cej siê od `NAZWAHOSTA:'. Nazwa hosta mo¿e byæ poprzedzona
+nazw± u¿ytkownika i znakiem `@'. Zapewnia to dostêp do zdalnego napêdu
+ta¶mowego w imieniu danego u¿ytkownika, je¿eli tylko posiadasz odpowiednie
+uprawnienia (zwykle wpis w pliku `~/.rhosts' tego u¿ytkownika).
+.TP
+.BR \-V ", " \-\-version
+Wy¶wietl numer wersji
+.BR mt .

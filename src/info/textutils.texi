@@ -1,0 +1,4461 @@
+%& -translate-file=il2-pl
+\def\fontprefix{pl}
+\input texinfo
+@c %**start of header
+@setfilename textutils.info
+@settitle Marzêdzia tekstowe GNU
+@documentencoding ISO-8859-2
+@documentlanguage pl
+@c %**end of header
+
+@c WK: zrezygnowa³em z
+@c   @include version.texi
+@c bo gryz³o siê z innymi *utils w jednym katalogu
+@set UPDATED 31 czerwca 1999
+@set UPDATED-MONTH czerwiec 1999
+@set EDITION 2.0
+@set VERSION 2.0
+
+@c Define new indices.
+@defcodeindex op
+
+@c Put everything in one index (arbitrarily chosen to be the concept index).
+@syncodeindex fn cp
+@syncodeindex ky cp
+@syncodeindex op cp
+@syncodeindex pg cp
+@syncodeindex vr cp
+
+@ifinfo
+@format
+START-INFO-DIR-ENTRY
+* Narzêdzia tekstowe: (textutils).         Narzêdzia tekstowe GNU.
+* cat: (textutils)Wywo³anie cat.           £±czenie i wypisywanie plików.
+* cksum: (textutils)Wywo³anie cksum.       Wypisywanie sumy kontrolnej CRC.
+* comm: (textutils)Wywo³anie comm.         Porównywanie posortowanych plików liniami.
+* csplit: (textutils)Wywo³anie csplit.     Podzia³ pliku wg kontekstu.
+* cut: (textutils)Wywo³anie cut.           Wypisywanie wybranych czê¶ci linii.
+* expand: (textutils)Wywo³anie expand.     Zamiana tabulacji na spacje.
+* fmt: (textutils)Wywo³anie fmt.           Reformatowanie akapitów tekstu.
+* fold: (textutils)Wywo³anie fold.         Zawijanie d³ugich linii wej¶ciowych.
+* head: (textutils)Wywo³anie head.         Wypisywanie pocz±tku plików.
+* join: (textutils)Wywo³anie join.         £±czenie linii wg wspólnego pola.
+* md5sum: (textutils)Wywo³anie md5sum.     Wypisywanie lub sprawdzanie skrótu.
+* nl: (textutils)Wywo³anie nl.             Numerowanie linii i wypisywanie plików.
+* od: (textutils)Wywo³anie od.             Wypisywanie plików w formacie ósemkowym i innych
+* paste: (textutils)Wywo³anie paste.       Zlepianie linii plików.
+* pr: (textutils)Wywo³anie pr.             Stronicowanie i kolumnowanie plików.
+* ptx: (textutils)Wywo³anie ptx.           Tworzenie indeksów permutacyjnych.
+* sort: (textutils)Wywo³anie sort.         Sortowanie plików tekstowych.
+* split: (textutils)Wywo³anie split.       Podzia³ pliku na czê¶ci o sta³ej wielko¶ci.
+* sum: (textutils)Wywo³anie sum.           Wypisywanie tradycujnej sumy kontrolnej.
+* tac: (textutils)Wywo³anie tac.           Odwracanie plików.
+* tail: (textutils)Wywo³anie tail.         Wypisywanie koñcówki plików.
+* tsort: (textutils)Wywo³anie tsort.       Sortowanie topologiczne.
+* tr: (textutils)Wywo³anie tr.             Zamiana, ¶ciskanie, usuwanie znaków.
+* unexpand: (textutils)Wywo³anie unexpand. Zamiana spacji na tabulacje.
+* uniq: (textutils)Wywo³anie uniq.         Pozostawianie unikalnych linii w pliku.
+* wc: (textutils)Wywo³anie wc.             Zliczanie bajtów, s³ów i linii.
+END-INFO-DIR-ENTRY
+@end format
+@end ifinfo
+
+@ifinfo
+Niniejszy podrêcznik opisuje zestaw narzêdzi GNU do przetwarzania tekstów.
+
+Copyright (C) 1994, 95, 96 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end ifinfo
+
+@titlepage
+@title Narzêdzia tekstowe GNU
+@subtitle Zestaw narzêdzi tekstowych
+@subtitle w wersji @value{VERSION}, @value{UPDATED}
+@author David MacKenzie et al.
+
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1994, 95, 96 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end titlepage
+
+
+@c If your makeinfo doesn't grok this @ifnottex directive, then either
+@c get a newer version of makeinfo or do s/ifnottex/ifinfo/ here and on
+@c the matching @end directive below.
+@ifnottex
+@node Top
+@top Narzêdzia tekstowe GNU
+
+@cindex narzêdzia tekstowe
+@cindex narzêdzia do przetwarzania tekstów
+
+Niniejszy podrêcznik opisuje zestaw narzêdzi tekstowych GNU
+w wersji @value{VERSION}.
+
+@menu
+* Wstêp::                              Przestrogi, przegl±d i autorzy.
+* Wspólne opcje::                      Wspólne opcje.
+* Wypisywanie ca³o¶ci plików::         cat tac nl od
+* Formatowanie zawarto¶ci plików::     fmt pr fold
+* Wypisywanie czê¶ci plików::          head tail split csplit
+* Podsumowywanie plików::              wc sum cksum md5sum
+* Dzia³ania na posortowanych plikach:: sort uniq comm ptx tsort
+* Dzia³ania na polach wewn±trz linii:: cut paste join
+* Dzia³ania na znakach::               tr expand unexpand
+* Skrzynka z programami::              Filozofia narzêdzi programowych.
+* Skorowidz::                          Skorowidz ogólny.
+
+@detailmenu
+ --- Szczegó³owe zestawienie wêz³ów ---
+
+Wypisywanie ca³o¶ci plików
+
+* Wywo³anie cat::         ³±czenie i wypisywanie plików
+* Wywo³anie tac::         ³±czenie i wypisywanie odwróconych plików
+* Wywo³anie nl::          numerowanie linii i wypisywanie plików
+* Wywo³anie od::          wypisywanie plików w formacie ósemkowym i innych
+
+Formatowanie zawarto¶ci plików
+
+* Wywo³anie fmt::         reformatowanie akapitów tekstu
+* Wywo³anie pr::          stronicowanie i kolumnowanie plików do wydruku
+* Wywo³anie fold::        zawijanie linii wej¶ciowych do zadanej szeroko¶ci 
+
+Wypisywanie czê¶ci plików
+
+* Wywo³anie head::        wypisywanie pocz±tku plików
+* Wywo³anie tail::        wypisywanie koñcówki plików
+* Wywo³anie split::       podzia³ pliku na czê¶ci sta³ej wielko¶ci
+* Wywo³anie csplit::      podzia³ pliku na czê¶ci zale¿ne od kontekstu
+
+Podsumowywanie plików
+
+* Wywo³anie wc::          wypisywanie liczby bajtów, s³ów i linii
+* Wywo³anie sum::         wypisywanie sumy kontrolnej i liczby bloków
+* Wywo³anie cksum::       wypisywanie sumy CRC liczby bloków
+* Wywo³anie md5sum::      wypisywanie lub sprawdzanie skrótu danych
+
+Sortowanie i dzia³ania na plikach posortowanych
+
+* Wywo³anie sort::        sortowanie plików tekstowych
+* Wywo³anie uniq::        pozostawianie unikalnych linii w pliku
+* Wywo³anie comm::        porównywanie dwu posortowanych plików liniami
+* Wywo³anie ptx::         tworzenie indeksu permutacyjnego pliku
+* Wywo³anie tsort::       sortowanie topologiczne
+
+@code{ptx}: tworzenie indeksu permutacyjnego zawarto¶ci pliku
+
+* Ogólne opcje ptx::           Opcje wp³ywaj±ce na ogólne dzia³anie.
+* Wybór zestawu znaków ptx::   Kwestie stosowanego zestawu znaków.
+* Przetwarzanie wej¶cia ptx::  Wybór pól, kontekstów, s³ów kluczowych.
+* Formatowanie wyników ptx::   Typy formatów wyj¶ciowych, rozmiary pól.
+* Zgodno¶æ w ptx::             Rozszerzenia GNU w @code{ptx}
+
+Dzia³ania na polach wewn±trz linii
+
+* Wywo³anie cut::         wypisywanie wybranych czê¶ci linii
+* Wywo³anie paste::       zlepianie linii plików
+* Wywo³anie join::        ³±czenie linii wed³ug wspólnego pola
+
+Dzia³ania na znakach
+
+* Wywo³anie tr::          zamiana, ¶ciskanie, usuwanie znaków
+* Wywo³anie expand::      zamiana tabulacji na spacje
+* Wywo³anie unexpand::    zamiana spacji na tabulacje
+
+@code{tr}: zamiana, ¶ciskanie, usuwanie znaków
+
+* Zestawy znaków::             Okre¶lanie zestawów znaków.
+* Konwersja::                  Wymiana jednych znaków na inne.
+* ¦ciskanie::                  ¦ciskanie powtórzeñ i usuwanie.
+* Ostrze¿enia w tr::           Komunikaty ostrzegawcze w tr.
+
+Skrzynka z programami
+
+* Wprowadzenie do narzêdzi::   Wprowadzenie do narzêdzi
+* Przekierowanie I/O::         Przekierowanie wej¶cia/wyj¶cia
+* Polecenie who::              Polecenie @code{who}
+* Polecenie cut::              Polecenie @code{cut}
+* Polecenie sort::             Polecenie @code{sort}
+* Polecenie uniq::             Polecenie @code{uniq}
+* £±czenie narzêdzi::          £±czenie narzêdzi
+
+@end detailmenu
+@end menu
+
+@end ifnottex
+
+
+@node Wstêp
+@chapter Wstêp
+
+@cindex Wstêp
+
+Ten podrêcznik nie jest wyczerpuj±cy: nie usi³owano wyja¶niæ podstawowych
+pojêæ w sposób odpowiedni dla nowicjuszy.  Zatem, je¶li jeste¶ zainteresowany,
+w³±cz siê, proszê, w udoskonalanie go.  Skorzysta na tym ca³a wspólnota GNU.
+
+@cindex POSIX.2
+Narzêdzia tekstowe GNU s± w wiêkszo¶ci zgodne ze standardem @sc{posix.2}.
+
+@c This paragraph appears in all of fileutils.texi, textutils.texi, and
+@c sh-utils.texi too -- so be sure to keep them consistent.
+@cindex b³êdy, zg³aszanie
+B³êdy proszê zg³aszaæ, w jêz.angielskim, do @email{bug-textutils@@gnu.org}.
+Pamiêtaj, by zamie¶ciæ numer wersji, architekturê maszyny, pliki wej¶ciowe
+i inne informacje potrzebne do powielenia b³êdu: wprowadzane znaki, czego
+siê spodziewa³e¶, co otrzyma³e¶ i dlaczego jest to ¼le.  Pliki diff s± mile
+widziane, ale proszê do³±czyæ równie¿ opis problemu, gdy¿ czasem ciê¿ko
+jest wyci±gn±æ wnioski.  @xref{Bugs, , , gcc, GNU CC}.
+
+Podrêcznik ten powsta³ pierwotnie na bazie uniksowych stron man napisanych
+przez Davida MacKenzie i aktualizowanych przez Jima Meyeringa.  Autorytatywn±
+dokumentacj± jest obecnie dokumentacja w formacie info; strony man nie s±
+ju¿ rozwijane i aktualizowane.
+Pierwotn± strona dokumentacji man do @code{fmt} napisa³ Ross Paterson.
+Fran@,{c}ois Pinard wykona³ wstêpn± konwersjê do formatu Texinfo.  Karl
+Berry wykona³ indeksy, trochê reorganizacji i edycji wyników.
+Richard Stallman wniós³ swój zwyk³y nieoceniony wgl±d w ca³o¶æ procesu.
+
+@unnumberedsec Od t³umacza
+Niniejszy przek³ad powsta³
+w ramach @uref{http://ptm.linux.pl/, Projektu T³umaczenia Manuali}
+z wykorzystaniem istniej±cych t³umaczeñ stron podrêcznika systemowego man,
+które wykonali:
+
+@itemize @w
+@item Gwidon S. Naskrent (@email{naskrent@@hoth.amu.edu.pl})
+@item Wojtek Kotwica (@email{wkotwica@@post.pl})
+@end itemize
+
+Zg³oszenia b³êdów, komentarze i sugestie
+proszê przesy³aæ na listê dyskusyjn± Projektu: @email{ptm@@amg.net.pl}
+lub ewentualnie do redaktora ca³o¶ci.
+Fragmenty nie wystêpuj±ce w oryginale, zaczerpniête z wcze¶niejszych stron man
+lub powsta³e na podstawie kodu ¼ród³owego, umieszczono w nawiasach kwadratowych.
+
+W.Kotwica (@email{wkotwica@@post.pl})
+
+@unnumberedsubsec Rozpowszechnianie
+To jest nieoficjalne t³umaczenie warunków rozpowszechniania na jêzyk polski.
+Nie zosta³o ono opublikowane przez Free Software Foundation
+i pod wzglêdem prawnym nie stanowi warunków rozpowszechniania -- ustanawia
+je wy³±cznie oryginalny tekst angielski.  Jednak t³umacz ma nadziejê, ¿e
+pomo¿e ono lepiej zrozumieæ warunki rozpowszechniania osobom mówi±cym
+po polsku.
+
+This is an unofficial translation of the distribution terms into
+Polish language. It was not published by the Free Software Foundation, and
+does not legally state the distribution terms--only the original English text
+does that. However, the translator hopes that it will help Polish language
+speakers understand distribution terms better.
+
+Zezwala siê na tworzenie i rozpowszechnianie wiernych kopii
+tego podrêcznika, pod warunkiem, ¿e na wszystkich kopiach zostanie zachowana
+informacja o prawach autorskich i niniejsze zezwolenie.
+
+Zezwala siê na kopiowanie i rozpowszechnianie zmienionych wersji
+tego podrêcznika na warunkach jak dla wiernych kopii, pod warunkiem, ¿e
+ca³a praca pochodna bêdzie rozpowszechniana na warunkach zezwolenia
+identycznego jak niniejsze.
+
+Zezwala siê na kopiowanie i rozpowszechnianie t³umaczeñ tego
+podrêcznika na inny jêzyk, pod wy¿ej podanymi warunkami dla zmienionych
+wersji, z wyj±tkiem tego, ¿e niniejsze zezwolenie mo¿e byæ ustanowione
+w t³umaczeniu zaakceptowanym przez Fundacjê.
+
+
+@node Wspólne opcje
+@chapter Wspólne opcje
+
+@cindex wspólne opcje
+
+Pewne opcje dostêpne s± we wszystkich tych programach (w rzeczywisto¶ci
+powinien je akceptowaæ ka¿dy program GNU).  Zamiast tworzenia identycznych
+opisów dla ka¿dego z programów, omówiono je tutaj.
+
+Kilka z programów jako argumenty pobiera dowolne ³añcuchy znakowe.
+W tych przypadkach @samp{--help} i @samp{--version} s± uznawane za opcje
+wy³±cznie wtedy, gdy s± jedynym argumentem w wierszu poleceñ.
+
+@table @samp
+@item --help
+@opindex --help
+@cindex help, online
+@cindex pomoc, online
+Wypisuje komunikat o sposobie u¿ywania podaj±cy wszystkie dostêpne opcje,
+a nastêpnie pomy¶lnie koñczy dzia³anie.
+
+@item --version
+@opindex --version
+@cindex numer wersji, znajdowanie
+@cindex wersja, znajdowanie numeru
+Wypisuje numer wersji, a nastêpnie pomy¶lnie koñczy dzia³anie.
+@end table
+
+
+@node Wypisywanie ca³o¶ci plików
+@chapter Wypisywanie ca³o¶ci plików
+
+@cindex wypisywanie ca³o¶ci plików
+@cindex ca³o¶æ plików, wypisywanie
+
+Te polecenia czytaj± i zapisuj± ca³e pliki, czasem przekszta³caj±c je
+w jaki¶ sposób.
+
+@menu
+* Wywo³anie cat::         ³±czenie i wypisywanie plików
+* Wywo³anie tac::         ³±czenie i wypisywanie odwróconych plików
+* Wywo³anie nl::          numerowanie linii i wypisywanie plików
+* Wywo³anie od::          wypisywanie plików w formacie ósemkowym i innych
+@end menu
+
+@node Wywo³anie cat
+@section @code{cat}: ³±czenie i wypisywanie plików
+
+@pindex cat
+@cindex konkatenacja i zapisanie plików
+@cindex ³±czenie i zapisanie plików
+@cindex kopiowanie plików
+
+@code{cat} kopiuje na standardowe wyj¶cie zawarto¶æ ka¿dego z podanych
+@var{plików} (@samp{-} oznacza standardowe wej¶cie), lub standardowego
+wej¶cia, je¶li nie podano ¿adnego pliku.  Sk³adnia:
+
+@example
+cat [@var{opcja}] [@var{plik}]@dots{}
+@end example
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -A
+@itemx --show-all
+@opindex -A
+@opindex --show-all
+Równowa¿na @samp{-vET}.
+
+@item -B
+@itemx --binary
+@opindex -B
+@opindex --binary
+@cindex binarne i tekstowe wej¶cie/wyj¶cie, w cat
+@cindex wej¶cie/wyj¶cie binarne i tekstowe, w cat
+Tylko w systemach MS-DOS i MS-Windows -- czyta i zapisuje pliki w trybie
+binarnym. Domy¶lnie @code{cat} w tych systemach pos³uguje siê trybem binarnym
+tylko przy przekierowaniu standardowego wyj¶cia do pliku lub potoku;
+ta opcja przes³ania takie ustawienie. U¿ywane jest binarne wej¶cie/wyj¶cie
+plików, zatem pliki zachowuj± swój format (tekstowy Uniksowy
+w przeciwieñstwie do DOS-owego tekstowego i binarnego), gdy¿ @code{cat}
+czêsto wykorzystywany jest jako program do kopiowania plików. Pewne opcje
+(zobacz ni¿ej) powoduj±, ¿e @code{cat} czyta i zapisuje pliki w trybie
+tekstowym, gdy¿ nie jest istotna pierwotna zawarto¶æ pliku (np. gdy
+@code{cat} numeruje linie lub ma zaznaczyæ ich koñce). Dlatego opcje te
+dzia³aj± zgodnie z oczekiwaniem u¿ytkowników DOS/Windows; na przyk³ad,
+tekstowe pliki DOS-owe maj± linie zakoñczone par± znaków CR-LF, co nie
+bêdzie przetwarzane przez @samp{-b} jako pusta linia, chyba ¿e plik jest
+czytany w trybie tekstowym.
+
+@item -b
+@itemx --number-nonblank
+@opindex -b
+@opindex --number-nonblank
+Numeruje wszystkie niepuste linie wyj¶cia, poczynaj±c od 1.
+W MS-DOS i MS-Windows opcja ta powoduje, ¿e @code{cat} czyta i zapisuje pliki
+w trybie tekstowym.
+
+@item -e
+@opindex -e
+Równowa¿na @samp{-vE}.
+
+@item -E
+@itemx --show-ends
+@opindex -E
+@opindex --show-ends
+Wy¶wietla @samp{$} po koñcu ka¿dej linii.
+W MS-DOS i MS-Windows opcja ta powoduje, ¿e @code{cat} czyta i zapisuje pliki
+w trybie tekstowym.
+
+@item -n
+@itemx --number
+@opindex -n
+@opindex --number
+Numeruje wszystkie linie wyj¶cia, poczynaj±c od 1.
+W MS-DOS i MS-Windows opcja ta powoduje, ¿e @code{cat} czyta i zapisuje pliki
+w trybie tekstowym.
+
+@item -s
+@itemx --squeeze-blank
+@opindex -s
+@opindex --squeeze-blank
+@cindex ¶ciskanie pustych linii
+Zastêpuje powielone s±siaduj±ce linie puste pojedyncz± lini± pust±.
+W MS-DOS i MS-Windows opcja ta powoduje, ¿e @code{cat} czyta i zapisuje pliki
+w trybie tekstowym.
+
+@item -t
+@opindex -t
+Równowa¿na @samp{-vT}.
+
+@item -T
+@itemx --show-tabs
+@opindex -T
+@opindex --show-tabs
+Wy¶wietla znaki tabulacji (TAB) jako @samp{^I}.
+
+@item -u
+@opindex -u
+Ignorowana; dla zgodno¶ci z Uniksem.
+
+@item -v
+@itemx --show-nonprinting
+@opindex -v
+@opindex --show-nonprinting
+Wy¶wietla znaki kontrolne, z wyj±tkiem nowej strony (LFD) i tabulacji (TAB),
+u¿ywaj±c notacji z @samp{^} i poprzedzaj±c znaki z ustawionym ósmym bitem
+przez @samp{M-}.  W MS-DOS i MS-Windows opcja ta powoduje, ¿e @code{cat}
+czyta pliki i standardowe wej¶cie w DOS-owym trybie binarnym, zatem widoczne
+s± tak¿e znaki CR na koñcu ka¿dej z linii.
+
+@end table
+
+
+@node Wywo³anie tac
+@section @code{tac}: ³±czenie i wypisywanie odwróconych plików
+
+@pindex tac
+@cindex odwracanie plików
+
+@code{tac} kopiuje na standardowe wyj¶cie ka¿dy podany @var{plik} (@samp{-}
+oznacza standardowe wej¶cie), lub standardowego wej¶cia, je¶li nie podano
+¿adnego pliku, odwracaj±c w ka¿dym z nich porz±dek rekordów (domy¶lnie -
+linii).  Sk³adnia:
+
+@example
+tac [@var{opcja}]@dots{} [@var{plik}]@dots{}
+@end example
+
+@dfn{Rekordy} oddzielone s± wyst±pieniami pewnego ³añcucha, lub znakiem nowej
+linii je¶li nie podano ¿adnego.  Domy¶lnie w pliku ³añcuch separuj±cy
+wystêpuje za rekordem, który rozgranicza.
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -b
+@itemx --before
+@opindex -b
+@opindex --before
+Separator wystêpuje przed rekordem (jest do³±czony do pocz±tku rekordu).
+
+@item -r
+@itemx --regex
+@opindex -r
+@opindex --regex
+Separator jest wyra¿eniem regularnym. U¿ytkownicy @code{tac} w systemach
+MS-DOS/MS-Windows powinni zwróciæ uwagê na fakt, ¿e z powodu czytania przez
+@code{tac} plików w trybie binarnym, ka¿da linia pliku tekstowego mo¿e koñczyæ siê
+par± CR/LF zamiast uniksowego LF.
+
+@item -s @var{³añcuch}
+@itemx --separator=@var{³añcuch}
+@opindex -s
+@opindex --separator
+U¿ywa @var{³añcucha}, zamiast znaku nowej linii, jako separatora rekordów.
+
+@end table
+
+
+@node Wywo³anie nl
+@section @code{nl}: numerowanie linii i wypisywanie plików
+
+@pindex nl
+@cindex numerowanie linii
+@cindex linie, numerowanie
+
+@code{nl} kopiuje na standardowe wyj¶cie ka¿dy podany @var{plik} (@samp{-}
+oznacza standardowe wej¶cie), lub standardowego wej¶cia, je¶li nie podano
+¿adnego pliku, dodaj±c do wszystkich lub niektórych linii ich numery.
+Sk³adnia:
+
+@example
+nl [@var{opcja}]@dots{} [@var{plik}]@dots{}
+@end example
+
+@cindex logiczne strony, numerowanie
+@cindex strony logiczne, numerowanie
+@cindex numerowanie stron logicznych
+@code{nl} dzieli swoje wej¶cie na strony logiczne; domy¶lnie,
+numer linii jest zmieniany na 1 na pocz±tku ka¿dej strony logicznej.
+@code{nl} traktuje wszystkie pliki wej¶ciowe jako pojedynczy dokument;
+nie zmienia on numerów linii ani stron logicznych miêdzy plikami.
+
+@cindex nag³ówki, numerowanie
+@cindex tre¶æ, numerowanie
+@cindex stopki, numerowanie
+@cindex numerowanie nag³ówków
+@cindex numerowanie tre¶ci
+@cindex numerowanie stopek
+Strona logiczna sk³ada siê trzech sekcji: nag³ówka, tre¶ci i stopki.
+Ka¿da z tych czê¶ci mo¿e byæ pusta.  Ka¿d± mo¿na ponumerowaæ w stylu
+innym od pozosta³ych.
+
+Pocz±tki sekcji stron logicznych s± zaznaczone w pliku wej¶ciowym
+przez liniê zawieraj±c± niczego poza jednym z ³añcuchów ograniczaj±cych
+pokazanych poni¿ej:
+
+@table @samp
+@item \:\:\:
+pocz±tek nag³ówka;
+@item \:\:
+pocz±tek tre¶ci;
+@item \:
+pocz±tek stopki.
+@end table
+
+Znaki @samp{\} i @samp{:}, z których sk³adaj± siê te ³añcuchy mo¿na zmieniæ
+opcjami (patrz ni¿ej), ale wzoru i d³ugo¶ci ka¿dego z nich zmieniæ nie mo¿na.
+
+£añcuchy ograniczaj±ce sekcjê s± zastêpowane w wyj¶ciu pust± lini±.
+Wszelki tekst wystêpuj±cy przed pierwszym ³añcuchem ograniczaj±cym
+sekcjê w pliku wej¶ciowym jest uwa¿any za czê¶æ sekcji tre¶ci, tak wiêc
+plik, który nie zawiera ¿adnych ³añcuchów ograniczaj±cych sekcje jest
+uwa¿any za sk³adaj±cy siê z pojedynczej sekcji tre¶ci.
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -b @var{styl}
+@itemx --body-numbering=@var{styl}
+@opindex -b
+@opindex --body-numbering
+Wybiera styl numerowania linii w sekcji tre¶ci ka¿dej strony logicznej.
+Kiedy linia nie jest numerowana, bie¿±cy jej numer nie jest zwiêkszany,
+ale znak oddzielaj±cy numery jest nadal przed ni± wstawiany.  Style to:
+
+@table @samp
+@item a
+numeruje wszystkie linie,
+@item t
+numeruje tylko linie niepuste (domy¶lnie w tre¶ci),
+@item n
+nie numeruje ¿adnych linii (domy¶lnie w nag³ówku i stopce),
+@item p@var{regexp}
+numeruje tylko linie zawieraj±ce co¶ pasuj±cego do @var{regexp}.
+@end table
+
+@item -d @var{cd}
+@itemx --section-delimiter=@var{cd}
+@opindex -d
+@opindex --section-delimiter
+@cindex ograniczniki sekcji stron
+@cindex sekcje stron, ograniczniki
+Ustawia dwa znaki ogranicznika, które oznaczaj± pocz±tki sekcji strony
+logicznej -- domy¶lnie @samp{\:}.  Je¶li podano tylko jeden (@var{c}),
+drugim pozostaje @samp{:}.
+(Nale¿y pamiêtaæ o ochronie @samp{\} oraz innych znaków specjalnych
+przed interpretacj± przez pow³okê.  Korzysta siê wówczas z cytowania lub
+dodatkowych odwrotnych uko¶ników.  Aby wprowadziæ @samp{\}, nale¿y u¿yæ
+@samp{\\}).
+
+@item -f @var{styl}
+@itemx --footer-numbering=@var{styl}
+@opindex -f
+@opindex --footer-numbering
+Analogicznie jak @samp{--body-numbering}.
+
+@item -h @var{styl}
+@itemx --header-numbering=@var{styl}
+@opindex -h
+@opindex --header-numbering
+Analogicznie jak @samp{--body-numbering}.
+
+@item -i @var{liczba}
+@itemx --page-increment=@var{liczba}
+@opindex -i
+@opindex --page-increment
+Zwiêksza numery linii o @var{liczba} (domy¶lnie 1).
+
+@item -l @var{liczba}
+@itemx --join-blank-lines=@var{liczba}
+@opindex -l
+@opindex --join-blank-lines
+@cindex puste linie, numerowanie
+@cindex numerowanie pustych linii
+Przy numerowaniu uwa¿a @var{liczba} (domy¶lnie 1) kolejnych linii pustych
+za jedn± liniê logiczn±, i numeruje tylko ostatni± z nich. Tam gdzie
+wystêpuje mniej ni¿ @var{liczba} kolejnych linii pustych, nie numeruje ich.
+Pusta linia to taka, która nie zawiera ¿adnych znaków, nawet spacji czy
+tabulacji.
+
+@item -n @var{format}
+@itemx --number-format=@var{format}
+@opindex -n
+@opindex --number-format
+Wybiera format numerowania linii (domy¶lnym jest @code{rn}):
+
+@table @samp
+@item ln
+@opindex ln @r{format for @code{nl}}
+wyrównane do lewej, bez pocz±tkowych zer;
+@item rn
+@opindex rn @r{format for @code{nl}}
+wyrównane do prawej, bez pocz±tkowych zer (domy¶lnie);
+@item rz
+@opindex rz @r{format for @code{nl}}
+wyrównane do prawej, pocz±tkowe zera.
+@end table
+
+@item -p
+@itemx --no-renumber
+@opindex -p
+@opindex --no-renumber
+Nie zaczyna numerów linii od nowa na pocz±tku strony logicznej.
+
+@item -s @var{³añcuch}
+@itemx --number-separator=@var{³añcuch}
+@opindex -s
+@opindex --number-separator
+Oddziela w wyj¶ciu numer linii od tekstu linii u¿ywaj±c
+@var{³añcucha} (domy¶lnie znak tabulacji).
+
+@item -v @var{numer}
+@itemx --starting-line-number=@var{numer}
+@opindex -v
+@opindex --starting-line-number
+Ustawia pocz±tkowy numer linii na ka¿dej stronie logicznej na @var{numer}
+(domy¶lnie 1).
+
+@item -w @var{liczba}
+@itemx --number-width=@var{liczba}
+@opindex -w
+@opindex --number-width
+U¿ywa @var{liczba} znaków dla numerów linii (domy¶lnie 6).
+
+@end table
+
+
+@node Wywo³anie od
+@section @code{od}: wypisywanie plików w formacie ósemkowym i innych
+
+@pindex od
+@cindex ósemkowy zrzut zawarto¶ci pliku
+@cindex szesnastkowy zrzut zawarto¶ci pliku
+@cindex ASCII zrzut zawarto¶ci pliku
+@cindex plik, jednoznaczny zrzut zawarto¶ci
+@cindex plik, jednoznaczne pokazywanie zawarto¶ci
+
+@code{od} wypisuje jednoznaczn± reprezentacjê ka¿dego podanego @var{pliku}
+(@samp{-} oznacza standardowe wej¶cie), lub standardowego wej¶cia, je¶li
+nie podano ¿adnego pliku.  Sk³adnia:
+
+@example
+od [@var{opcja}]@dots{} [@var{plik}]@dots{}
+od -C [@var{plik}] [[+]@var{offset} [[+]@var{etykieta}]]
+@end example
+
+Ka¿da linia wynikowa sk³ada siê z pozycji (offsetu) w pliku wej¶ciowym oraz
+grup danych z pliku.  Domy¶lnie, @code{od} wypisuje offsety pliku ósemkowo,
+za¶ ka¿da grupa danych jest dwoma bajtami wej¶cia wypisanymi jako jedna
+liczba ósemkowa.
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -A @var{podstawa}
+@itemx --address-radix=@var{podstawa}
+@opindex -A
+@opindex --address-radix
+@cindex podstawa systemu liczbowego dla offsetów pliku
+@cindex plik, podstawa systemu do wypisywania offsetu
+Wybiera system liczbowy, w którym wypisywane bêd± offsety w pliku.
+@var{podstawa} mo¿e byæ jedn± z poni¿szych:
+
+@table @samp
+@item d
+dziesiêtna;
+@item o
+ósemkowa;
+@item x
+szesnastkowa;
+@item n
+¿adna (nie wypisuje offsetów).
+@end table
+
+Warto¶æ domy¶lna to podstawa ósemkowa.
+
+@item -j @var{bajty}
+@itemx --skip-bytes=@var{bajty}
+@opindex -j
+@opindex --skip-bytes
+Pomija @var{bajty} bajtów wej¶cia zanim rozpocznie formatowanie i pisanie.
+Je¶li @var{bajty} zaczyna siê od @samp{0x} lub @samp{0X}, interpretowane jest
+szesnastkowo; w przeciwnym razie, je¶li zaczyna siê od @samp{0}, ósemkowo;
+w przeciwnym razie, dziesiêtnie.  Dopisanie po liczbie litery @samp{b} mno¿y
+podan± liczbê przez 512, @samp{k} przez 1024, a @samp{m} przez 1048576.
+
+@item -N @var{bajty}
+@itemx --read-bytes=@var{bajty}
+@opindex -N
+@opindex --read-bytes
+Wypisuje co najwy¿ej @var{bajty} bajtów ka¿dego pliku wej¶ciowego.
+Wszystkie przedrostki i przyrostki do @var{bajty} interpretowane s± jak przy
+opcji @samp{-j}.
+
+@item -s [@var{n}]
+@itemx --strings[=@var{n}]
+@opindex -s
+@opindex --strings
+@cindex sta³e ³añcuchowe, wypisywanie
+@cindex ³añcuchy sta³e, wypisywanie
+Zamiast normalnego wyniku, wypisuje tylko @dfn{sta³e ³añcuchowe} z wej¶cia.
+Powinny byæ one ci±giem co najmniej @var{n} (domy¶lnie 3) kolejnych znaków
+graficznych @sc{ascii}, zakoñczonych bajtem null (zerowym).
+
+@item -t @var{typ}
+@itemx --format=@var{typ}
+@opindex -t
+@opindex --format
+Wybiera format, w jakim bêdzie nastêpowaæ wypisywanie danych z pliku.
+@var{typ} to ³añcuch z³o¿ony z co najmniej jednego z poni¿szych znaków
+wskazuj±cych typ.
+Je¶li w pojedynczym ³añcuchu @var{typu} poda siê wiêcej ni¿ jeden znak
+lub u¿yje siê tej opcji wiêcej ni¿ raz, to @code{od} zapisze po jednej
+kopii ka¿dej linii wyj¶ciowej u¿ywaj±c ka¿dego z podanych typów danych,
+w podanej kolejno¶ci.
+
+Dodanie koñcz±cego @samp{z} do dowolnego okre¶lnika typu powoduje do³±czenie
+znakowej reprezentacji @sc{ascii} znaków drukowalnych do linii wynikowej
+tworzonej przez ten typ.
+
+@table @samp
+@item a
+znaki nazwane,
+@item c
+znaki @sc{ascii} lub sekwencje specjalne (z odwrotnym uko¶nikiem),
+@item d
+liczba dziesiêtna ze znakiem,
+@item f
+liczba zmiennoprzecinkowa,
+@item o
+ósemkowo,
+@item u
+liczba dziesiêtna bez znaku,
+@item x
+szesnastkowo.
+@end table
+
+Typ @code{a} daje w wyniku np. @samp{sp} dla spacji, @samp{nl} dla znaku
+nowej linii, a @samp{nul} dla bajtu zerowego (null).  Typ @code{c} daje
+odpowiednio @samp{ }, @samp{\n} i @samp{\0}.
+
+@cindex rozmiar typu wypisywanych offsetów
+Za wyj±tkiem typów @samp{a} i @samp{c}, mo¿na okre¶liæ ilo¶æ bajtów, które
+bêd± u¿yte przy interpretacji ka¿dej liczby w podanym typie danych, dopisuj±c
+po znaku okre¶lnika typu dziesiêtn± liczbê ca³kowit±.  Zamiast tego,
+mo¿na te¿ podaæ rozmiar jednego z wbudowanych typów danych kompilatora
+C dopisuj±c po znaku okre¶lnika typu jeden z nastêpuj±cych znaków.
+Dla liczb ca³kowitych (@samp{d}, @samp{o}, @samp{u}, @samp{x}):
+
+@table @samp
+@item C
+char,
+@item S
+short,
+@item I
+int,
+@item L
+long.
+@end table
+
+Dla liczb zmiennoprzecinkowych (@code{f}):
+
+@table @asis
+@item F
+float,
+@item D
+double,
+@item L
+long double.
+@end table
+
+@item -v
+@itemx --output-duplicates
+@opindex -v
+@opindex --output-duplicates
+Wypisuje kolejne linie, które s± identyczne.  Domy¶lnie, gdy dwie lub wiêcej
+kolejnych linii jest takich samych, @code{od} wypisuje tylko pierwsz± z nich,
+a w linii nastêpnej stawia gwiazdkê, zaznaczaj±c, ¿e identyczne linie zosta³y
+opuszczone.
+
+@item -w[@var{n}]
+@itemx --width[=@var{n}]
+@opindex -w
+@opindex --width
+Liczba bajtów wej¶cia do sformatowania w jednej linii wynikowej.
+Musi byæ to wielokrotno¶æ najmniejszej wspólnej wielokrotno¶ci rozmiarów
+skojarzonych z podanymi typami wyj¶cia.  Je¶li @var{n} pominiêto, warto¶ci±
+domy¶ln± jest 32.  Je¶li w ogóle nie podano tej opcji, warto¶ci± domy¶ln±
+jest 16.
+
+@end table
+
+Nastêpne kilka opcji odwzorowuje stare, przed-@sc{posix}-owe opcje
+okre¶laj±ce format na odpowiednie @sc{posix}-owe specyfikacje formatu.
+GNU @code{od} akceptuje ka¿d± kombinacjê opcji w starym i nowym stylu.
+Opcje okre¶laj±ce format sumuj± siê.
+
+@table @samp
+
+@item -a
+@opindex -a
+Wypisuje jako znaki nazwane.  Równowa¿ne @samp{-ta}.
+
+@item -b
+@opindex -b
+Wypisuje jako bajty ósemkowe.  Równowa¿ne @samp{-toC}.
+
+@item -c
+@opindex -c
+Wypisuje jako znaki @sc{ascii} albo sekwencje specjalne z odwrotnym
+uko¶nikiem.  Równowa¿ne @samp{-tc}.
+
+@item -d
+@opindex -d
+Wypisuje jako liczby ca³kowite typu short bez znaku.  Równowa¿ne @samp{-tu2}.
+
+@item -f
+@opindex -f
+Wypisuje jako liczby dziesiêtne zmiennoprzecinkowe.  Równowa¿ne @samp{-tfF}.
+
+@item -h
+@opindex -h
+Wypisuje jako liczby szesnastkowe typu short.  Równowa¿ne @samp{-tx2}.
+
+@item -i
+@opindex -i
+Wypisuje jako liczby ca³kowite typu short.  Równowa¿ne @samp{-td2}.
+
+@item -l
+@opindex -l
+Wypisuje jako liczby ca³kowite typu long.  Równowa¿ne @samp{-td4}.
+
+@item -o
+@opindex -o
+Wypisuje jako liczby ósemkowe typu short.  Równowa¿ne @samp{-to2}.
+
+@item -x
+@opindex -x
+Wypisuje jako liczby szesnastkowe typu short.  Równowa¿ne @samp{-tx2}.
+
+@item -C
+@itemx --traditional
+@opindex --traditional
+Rozpoznaje przed-@sc{posix}-owe argumenty nie bêd±ce opcjami, akceptowane
+przez tradycyjne wersje @code{od}.  Poni¿szej sk³adni:
+
+@example
+od --traditional [@var{plik}] [[+]@var{offset}[.][b] [[+]@var{etykieta}[.][b]]]
+@end example
+
+@noindent
+mo¿na u¿yæ do okre¶lenia co najwy¿ej jednego pliku i opcjonalnych
+argumentów okre¶laj±cych offset i adres pseudo-startowy @var{etykieta}.
+Domy¶lnie @var{offset} interpretowany jest jako liczba ósemkowa okre¶laj±ca
+ile bajtów wej¶cia nale¿y przeskoczyæ przed formatowaniem i wypisywaniem.
+Opcjonalna koñcowa kropka dziesiêtna wymusza interpretacjê @var{offset}
+jako liczby dziesiêtnej.  Je¶li nie podano kropki, a offset zaczyna siê
+od @samp{0x} lub @samp{0X}, interpretowany jest on jako liczba szesnastkowa.
+Je¶li jest tam koñcowe @samp{b}, liczba pomijanych bajtów bêdzie równa
+@var{offset} pomno¿ony przez 512.  Argument @var{etykieta} interpretowany
+jest tak samo jak @var{offset}, ale okre¶la on pocz±tkowy pseudo-adres.
+Pseudo-adresy wypisywane s± w nawiasach po ka¿dym normalnym adresie.
+
+@end table
+
+
+@node Formatowanie zawarto¶ci plików
+@chapter Formatowanie zawarto¶ci plików
+
+@cindex formatowanie zawarto¶ci pliku
+
+Te polecenia zmieniaj± formatowanie zawarto¶ci plików.
+
+@menu
+* Wywo³anie fmt::         reformatowanie akapitów tekstu
+* Wywo³anie pr::          stronicowanie i kolumnowanie plików do wydruku
+* Wywo³anie fold::        zawijanie linii wej¶ciowych do zadanej szeroko¶ci 
+@end menu
+
+
+@node Wywo³anie fmt
+@section @code{fmt}: reformatowanie akapitów tekstu
+
+@pindex fmt
+@cindex formatowanie tekstu akapitu
+@cindex akapity, zmiana formatowania
+@cindex tekst, zmiana formatowania
+
+@code{fmt} wype³nia i ³±czy linie daj±c linie wynikowe o (co najwy¿ej)
+zadanej liczbie znaków (domy¶lnie 75).  Sk³adnia:
+
+@example
+fmt [@var{opcje}]@dots{} [@var{plik}]@dots{}
+@end example
+
+@code{fmt} czyta z @var{plików} podanych jako argumenty (lub standardowego
+wej¶cia je¶li nie podano ¿adnego) i zapisuje na standardowe wyj¶cie.
+
+Domy¶lnie, w utworzonym wyj¶ciu zachowywane s± puste linie, odstêpy miêdzy
+wyrazami i wciêcia.  Linie z ró¿nymi wciêciami nie s± ³±czone.  Znaki
+tabulacji s± rozszerzane na wej¶ciu i wprowadzane ponownie na wyj¶ciu.
+
+@cindex linie, ³amanie
+@cindex ³amanie linii
+@cindex zdania a ³amanie linii
+@cindex Knuth, Donald E.
+@cindex Plass, Michael F.
+@code{fmt} preferuje ³amanie linii na koñcu zdania, i próbuje unikn±æ
+³amania linii po pierwszym s³owie zdania, albo przed ostatnim s³owem zdania.
+@dfn{Koniec zdania} zdefiniowany jest jako albo koniec akapitu albo s³owo
+zakoñczone jednym ze znaków @samp{.?!}, po którym wystêpuj± dwie spacje
+lub koniec linii, bez wzglêdu na jakiekolwiek wtr±cone nawiasy czy
+cudzys³owy. Podobnie jak @TeX{}, @code{fmt} czyta ca³e ,,akapity'' przed
+wyborem ³amania linii.  U¿yty algorytm jest wariantem opisanego
+w ,,Breaking Paragraphs into Lines'', (Donald E. Knuth and Michael F. Plass,
+@cite{Software---Practice and Experience}, 11 (1981), 1119--1184).
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -c
+@itemx --crown-margin
+@opindex -c
+@opindex --crown-margin
+@cindex crown margin
+@cindex marginesy zwieñczone
+Tryb @dfn{zwieñczonych marginesów} (@dfn{crown margin}).
+Zachowuje wciêcia pierwszych dwóch linii akapitu oraz wyrównuje lewy margines
+ka¿dej nastêpnej linii do marginesu drugiej linii.
+
+@item -t
+@itemx --tagged-paragraph
+@opindex -t
+@opindex --tagged-paragraph
+@cindex akapity wciête
+@cindex wciête akapity
+@cindex wyró¿nione akapity
+Tryb @dfn{wyró¿nionych akapitów} (wciêtych akapitów):
+tak jak tryb zwieñczony, z wyj±tkiem tego, ¿e wciêcie pierwszej linii akapitu
+musi siê ró¿niæ od wciêcia drugiej linii.  W przeciwnym razie linia
+pierwsza jest traktowana jako akapit jednolinijkowy.
+
+@item -s
+@itemx --split-only
+@opindex -s
+@opindex --split-only
+Tylko dzieli linie.  Nie ³±czy krótkich linii, by utworzyæ d³u¿sze.
+Ta opcja chroni przed nies³usznym ³±czeniem przyk³adowych linii kodu
+lub innego w podobny sposób ,,sformatowanego'' tekstu.
+
+@item -u
+@itemx --uniform-spacing
+@opindex -u
+@opindex --uniform-spacing
+Jednorodne odstêpy.
+Redukuje odstêpy miêdzy wyrazami do jednej spacji, za¶ miêdzy
+zdaniami do dwu spacji.
+
+@item -@var{szeroko¶æ}
+@itemx -w @var{szeroko¶æ}
+@itemx --width=@var{szeroko¶æ}
+@opindex -@var{szeroko¶æ}
+@opindex -w
+@opindex --width
+Wype³nia linie wynikowe a¿ do @var{szeroko¶æ} znaków (domy¶lnie 75).
+@code{fmt} pocz±tkowo próbuje tworzyæ linie o oko³o 7% krótsze, aby zapewniæ
+sobie miejsce na wyrównanie ró¿nych d³ugo¶ci linii.
+
+@item -p @var{przedrostek}
+@itemx --prefix=@var{przedrostek}
+Tylko linie zaczynaj±ce siê od @var{przedrostka} (mo¿e byæ poprzedzony bia³ymi
+znakami) podlegaj± przetworzeniu.  Przedrostek ze wszystkimi poprzedzaj±cymi
+go bia³ymi znakami jest odcinany na czas formatowania i dostawiany ponownie
+do ka¿dej sformatowanej linii wyj¶ciowej.
+Jednym z zastosowañ jest formatowanie pewnych rodzajów komentarzy
+w programie, bez zmiany kodu.
+
+@end table
+
+
+@node Wywo³anie pr
+@section @code{pr}: stronicowanie i kolumnowanie plików do wydruku
+
+@pindex pr
+@cindex wydruk, przygotowanie plików
+@cindex wyj¶cie wielokolumnowe, tworzenie
+@cindex wielokolumnowe wyj¶cie, tworzenie
+@cindex scalanie plików równolegle
+
+@code{pr} wypisuje na standardowe wyj¶cie zawarto¶æ @var{plików}
+podanych w linii poleceñ (@samp{-} oznacza standardowe wej¶cie), lub
+standardowego wej¶cia, je¶li nie podano ¿adnego pliku, dziel±c wynik
+na strony i opcjonalnie w formacie wielokolumnowym.
+Pliki mog± byæ scalane, wypisywane wszystkie równocze¶nie, po jednym
+w kolumnie.  Sk³adnia:
+
+@example
+pr [@var{opcja}]@dots{} [@var{plik}]@dots{}
+@end example
+
+Domy¶lnie, na ka¿dej stronie wypisywany jest 5-linijkowy nag³ówek: dwie puste
+linie, linia z dat±, nazw± pliku i numerem strony i dwie kolejne puste linie.
+Tworzona jest te¿ z³o¿ona z 5 linii stopka. Przy opcji @samp{-F} tworzony
+jest nag³ówek 3-linijkowy: pocz±tkowe dwie puste linie s± pomijane, nie jest
+u¿ywana stopka.  Domy¶lna @var{d³ugo¶æ strony} w obu przypadkach
+wynosi 66 linii.  Linia tekstu z nag³ówkiem zajmuje ca³± szeroko¶æ strony
+i ma postaæ @samp{yyyy-mm-dd HH:MM ³añcuch Page nnnn}. £añcuch nag³ówka jest
+centrowany.
+
+Znaki wysuwu strony (FF) w wej¶ciu powoduj± ³amanie strony w wyniku.
+Powtórzone znaki zmiany strony daj± puste strony.
+
+Kolumny tekstu maj± jednakow± szeroko¶æ, rozdzielone s± opcjonalnym ³añcuchem
+(domy¶lnie @samp{spacj±}). Przy tworzeniu wyj¶cia wielokolumnowego, linie
+bêd± zawsze obcinane do zadanej szeroko¶ci strony (@var{page_width}),
+domy¶lnie 72, chyba ¿e zostanie u¿yta opcja @samp{-J}. Przy wyniku
+jednokolumnowym domy¶lnie nie zachodzi obcinanie linii. W tym przypadku
+do uciêcia linii nale¿y u¿yæ opcji @samp{-W}.
+
+   Od wersji 1.22i:
+
+Niektóre opcje podawane @var{ma³ymi literami} (@samp{-s}, @samp{-w})
+zosta³y przedefiniowane w celu uzyskania lepszej zgodno¶ci z @sc{posix}.
+Wyj¶cie uzyskiwane z niektórych dodatkowych opcji zosta³o przystosowane
+do innych @sc{unix}-ów. Nale¿y siê pogodziæ z naruszeniem zgodno¶ci
+wstecznej.
+
+Wprowadzono kilka nowych opcji podawanych du¿ymi literami (@samp{-J},
+@samp{-S}, @samp{-W}), s³u¿±cych do wy³±czania nieoczekiwanych kolizji
+opcji podawanych ma³ymi literami.  Opcja @samp{-N} i drugi argument 
+@var{ostatnia} opcji @samp{+@var{pierwsza}} oferuj± wiêksz± elastyczno¶æ.
+Precyzyjna obs³uga ustawieñ zmiany strony w plikach wej¶ciowych wymaga
+opcji @samp{-T}.
+
+Opcje o du¿ych literach maj± przewagê nad opcjami wyra¿anymi ma³ymi literami.
+
+Niektóre z argumentów opcji (porównaj @samp{-s}, @samp{-S}, @samp{-e},
+@samp{-i}, @samp{-n}) nie mog± byæ podawane odsuniête od poprzedzaj±cej
+je litery opcji (ju¿ ustanowiono w specyfikacji @sc{posix}).
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item +@var{pierwsza}[:@var{ostatnia}]
+@itemx --pages=@var{pierwsza}[:@var{ostatnia}]
+@opindex +@var{pierwsza}[:@var{ostatnia}]
+@opindex --pages
+Zaczyna wypisywanie od @var{pierwszej} i koñczy na @var{ostatniej} stronie.
+Pominiêcie wskazania @samp{:@var{ostatniej}} strony oznacza do koñca pliku.
+Przy szacowaniu liczby pomijanych stron ka¿dy znak wysuwu strony w pliku
+wej¶ciowym daje now± stronê.  Numeracja stron z opcj± @samp{+@var{pierwsza}}
+i bez niej jest identyczna.  Domy¶lnie, numerowanie rozpoczyna siê od
+pierwszej strony pliku wej¶ciowego (a nie pierwszej strony wynikowej).
+Numerowanie linii mo¿na zmieniæ opcj± @samp{-N}.
+
+@item -@var{kolumn}
+@itemx --columns=@var{kolumn}
+@opindex -@var{kolumn}
+@opindex --columns
+@cindex kolumny tekstu, zmniejszanie
+Dla ka¿dego @var{pliku} tworzy zadan± ilo¶æ @var{kolumn} wyj¶cia (domy¶lnie 1)
+i wype³nia je pionowo, chyba ¿e u¿yto opcji @samp{-a}.  Szeroko¶æ kolumny jest
+automatycznie zmniejszana wraz ze wzrostem liczby kolumn, chyba ¿e u¿yto
+równocze¶nie opcji @samp{-W/-w} do zmiany szeroko¶ci strony.   Opcja ta mo¿e
+spowodowaæ obciêcie niektórych linii. Na ka¿dej stronie wyrównywana jest
+liczba linii w kolumnach.  Dla wyj¶cia wielokolumnowego w³±czone s± opcje
+@samp{-e} i @samp{-i}.  Przy po³±czeniu z opcj± @samp{-J} wyrównywanie
+kolumn i ucinanie linii s± wy³±czane.  Linie pe³nej d³ugo¶ci s± ³±czone
+w formacie pól swobodnych a opcj± @samp{-S} mo¿na wyznaczyæ separatory pól.
+Opcja @samp{-@var{kolumn}} nie mo¿e byæ stosowana z opcj± @samp{-m}.
+
+@item -a
+@itemx --across
+@opindex -a
+@opindex --across
+@cindex kolumny tekstu, poprzecznie
+Dla ka¿dego @var{pliku}, wypisuje kolumny w poprzek, nie w dó³. Musi byæ
+podana opcja @samp{-@var{kolumn}} z liczb± @var{kolumn} wiêksz± ni¿ jeden.
+Je¿eli linia jest zbyt d³uga, by zmie¶ciæ siê w kolumnie, to jest obcinana.
+
+@item -c
+@itemx --show-control-chars
+@opindex -c
+@opindex --show-control-chars
+Wypusje znaki kontrolne u¿ywaj±c notacji z daszkiem (np. @samp{^G}), za¶
+inne niedrukowalne znaki w notacji ósemkowej z odwrotnym uko¶nikiem.
+Domy¶lnie znaki niedrukowalne nie s± zmieniane.
+
+@item -d
+@itemx --double-space
+@opindex -d
+@opindex --double-space
+@cindex podwójne odstêpy miêdzyliniowe
+@cindex odstêpy miêdzyliniowe, podwójne
+U¿ywa podwójnych odstêpów [miêdzy liniami] w wyniku.
+
+@item -e[@var{znak-tab-wej}[@var{szer-tab-wej}]]
+@itemx --expand-tabs[=@var{znak-tab-wej}[@var{szer-tab-wej}]]
+@opindex -e
+@opindex --expand-tabs
+@cindex tabulacje wej¶ciowe
+@cindex wej¶ciowe tabulacje
+Rozwija tabulacje na spacje w wej¶ciu.  Opcjonalny argument @var{znak-tab-wej}
+to wej¶ciowy znak tabulacji, domy¶lnie TAB.  Drugi opcjonalny argument
+@var{szer-tab-wej} to szeroko¶æ znaków tabulacji w wej¶ciu, domy¶lnie 8.
+
+@item -f
+@itemx -F
+@itemx --form-feed
+@opindex -F
+@opindex -f
+@opindex --form-feed
+U¿ywa znaku koñca strony, a nie znaków nowej linii, do rozdzielania stron
+wynikowych. Domy¶lna d³ugo¶æ strony (66 linii) nie jest zmieniana, ale liczba
+linii tekstu na stronie zmienia siê z domy¶lnych 56 na 63.
+
+@item -h @var{nag³ówek}
+@itemx --header=@var{nag³ówek}
+@opindex -h
+@opindex --header
+Zastêpuje nazwê pliku w nag³ówku wypo¶rodkowanym ³añcuchem @var{nag³ówek}.
+Mo¿e wyst±piæ uciêcie lewej strony (zaznaczone przez @samp{*}), je¶li ca³a
+linia nag³ówka @samp{yyyy-mm-dd HH:MM nag³ówek Page nnnn} bêdzie wiêksza ni¿
+szeroko¶æ strony.  @samp{-h ""} daje w wyniku pust± liniê nag³ówka. Proszê
+nie u¿ywaæ @samp{-h""}.  Odstêp pomiêdzy @samp{-h} a argumentem jest zawsze
+konieczny.
+
+@item -i[@var{znak-tab-wyj}[@var{szer-tab-wyj}]]
+@itemx --output-tabs[=@var{znak-tab-wyj}[@var{szer-tab-wyj}]]
+@opindex -i
+@opindex --output-tabs
+@cindex wyj¶ciowe tabulacje
+@cindex tabulacje wyj¶ciowe
+Zastêpuje spacje tabulacjami w wyj¶ciu.  Opcjonalny argument @var{znak-tab-wyj}
+to wyj¶ciowy znak tabulacji, domy¶lnie TAB.  Drugi opcjonalny argument
+@var{szer-tab-wyj} to szeroko¶æ znaków tabulacji w wyj¶ciu, domy¶lnie 8.
+
+@item -J
+@itemx --join-lines
+@opindex -J
+@opindex --join-lines
+£±czy linie pe³nej d³ugo¶ci. U¿ywane razem z opcjami dotycz±cymi kolumn
+@samp{-@var{kolumn}}, @samp{-a -@var{kolumn}} lub @samp{-m}.  Wy³±cza
+ucinanie linii przez @samp{-W/-w}.  Nie jest wykonywane wyrównywanie kolumn.
+Mo¿na u¿ywaæ w po³±czeniu z @samp{-S[@var{³añcuch}]}.  Opcjê @samp{-J}
+wprowadzono (razem z @samp{-W} i @samp{-S}) w celu rozpl±tania
+starych (zgodnych z @sc{posix}) opcji @samp{-w} i @samp{-s} z powy¿szymi
+trzema opcjami kolumnowymi.
+
+
+@item -l @var{d³ug-strony}
+@itemx --length=@var{d³ug-strony}
+@opindex -l
+@opindex --length
+Ustawia d³ugo¶æ strony na @var{d³ug-strony} linii, ³±cznie z liniami nag³ówka
+i stopki.  Warto¶æ domy¶lna to 66.  Je¶li @var{d³ug-strony} jest mniejsza
+lub równa 10 (za¶ <=3 z @samp{-F}), pomijane s± nag³ówki i stopki oraz
+usuwane s± wszystkie ustawienia zmiany strony z plików wej¶ciowych,
+tak jak gdyby zosta³a podana opcja @samp{-T}.
+
+@item -m
+@itemx --merge
+@opindex -m
+@opindex --merge
+Scala i wypisuje wszystkie @var{pliki} równolegle, jeden w ka¿dej kolumnie.
+Je¶li linia nie mie¶ci siê w kolumnie, to jest ucinana, chyba ¿e
+podano opcjê @samp{-J}.  Mo¿na wykorzystaæ @samp{-S[@var{³añcuch}]}.
+Puste strony niektórych plików (ustawione zmiany strony) daj± w wyniku puste
+kolumny, nadal oznakowane @var{³añcuchem}.  W rezultacie otrzymuje siê ci±g³±
+numeracjê linii i oznakowanie kolumn w ca³ym scalonym pliku.  Ca³kiem puste
+po³±czone strony nie maj± ani separatorów ani numerów linii.  Domy¶lny
+nag³ówek zmieniany jest na @samp{yyyy-mm-dd HH:MM <odstêpy> Page nnnn}.
+Do wype³nienia ¶rodkowej, pustej jego czê¶ci mo¿na u¿yæ opcji
+@samp{-h @var{nag³ówek}}.
+
+@item -n[@var{sep-liczb}[@var{cyfry}]]
+@itemx --number-lines[=@var{sep-liczb}[@var{cyfry}]]
+@opindex -n
+@opindex --number-lines
+Powoduje poprzedzanie wyniku numerami linii.
+Opcjonalny argument @var{cyfry} to liczba cyfr na numer linii, domy¶lnie 5.
+Przy wyj¶ciu wielokolumnowym numer zajmuje pierwsze @var{cyfr} pozycji
+ka¿dej kolumny tekstu.  W wyj¶ciu jednokolumnowym numer poprzedza ka¿d± liniê,
+tak samo jak przy @samp{-m}.  Domy¶lnie numeracja linii rozpoczyna siê od
+pierwszej linii pliku wej¶ciowego (nie od pierwszej linii wynikowej, porównaj
+opcje @samp{--page} i @samp{-N}).
+Opcjonalny argument @var{sep-liczb} to znak, który nale¿y wypisaæ po ka¿dym
+numerze, dla oddzielenia go od nastêpuj±cego po nim tekstu, domy¶lnie
+tabulacja.  ¦ci¶le mówi±c, znak tabulacji jest zawsze wpisywany tylko
+w wyj¶ciu jednokolumnowym.  Szeroko¶æ tabulacji zmienia siê w zale¿no¶ci
+od jej pozycji, np. zale¿nie od lewego @var{marginesu} okre¶lonego
+przez opcjê @samp{-o}.  Przy wyj¶ciu wielokolumnowym priorytetem jest
+@samp{równa szeroko¶æ kolumn wynikowych} (specyfikacja @sc{posix}).
+Szeroko¶æ tabulacji ustalana jest na warto¶æ z pierwszej kolumny i nie
+zmienia siê z ró¿nymi warto¶ciami lewego marginesu. Znaczy to, ¿e zamiast
+@var{sep-liczb}=TAB wypisywana jest zawsze sta³a liczba spacji.
+Tabularyzacja zale¿y od pozycji w wyj¶ciu.
+
+@item -N @var{nr-linii}
+@itemx --first-line-number=@var{nr-linii}
+@opindex -N
+@opindex --first-line-number
+Rozpoczyna numeracjê linii od @var{nr-linii} dla pierwszej linii na
+pierwszej stronie wynikowej (przewa¿nie nie jest to pierwsza linia pliku
+wej¶ciowego).
+
+@item -o @var{margines}
+@itemx --indent=@var{margines}
+@opindex -o
+@opindex --indent
+@cindex wciêcia linii
+@cindex lewy margines
+@cindex margines, lewy
+Wysuwa ka¿d± liniê o margines szeroki na @var{margines} spacji (domy¶lnie
+zero).  Ca³kowita szeroko¶æ strony to owo wciêcie plus szeroko¶æ strony
+ustawiona opcj± @samp{-W/-w}.
+Przy numerowanym wyj¶ciu jednokolumnowym (por.opcja @samp{-n}) mo¿e pojawiæ
+siê ograniczony nadmiar.
+
+@item -r
+@itemx --no-file-warnings
+@opindex -r
+@opindex --no-file-warnings
+Nie wypisuje komunikatu ostrzegawczego kiedy nie mo¿na otworzyæ @var{pliku}
+bêd±cego argumentem.  Nieudane otwarcie pliku ci±gle jednak ustawia
+kod zakoñczenia na niezerowy.
+
+@item -s[@var{sep}]
+@itemx --separator[=@var{sep}]
+@opindex -s
+@opindex --separator
+Oddziela kolumny pojedynczym znakiem @var{sep}. Domy¶lnie, bez opcji
+@samp{-w} jest to tabulacja, z opcj± @samp{-w} @samp{brak znaku}.
+Bez @samp{-s} domy¶lnym separatorem jest @samp{spacja}.
+Opcja ta wy³±cza obcinanie linii we wszystkich trzech opcjach dotycz±cych
+kolumn (@samp{-kolumn}, @samp{-a -kolumn}, @samp{-m}), chyba ¿e jawnie
+w³±czone jest @samp{-w}.  Jest to zgodne z regulacjami @sc{posix}.
+
+
+@item -S[@var{³añcuch}]
+@itemx --sep-string[=@var{³añcuch}]
+@opindex -S
+@opindex --sep-string
+Oddziela kolumny ³añcuchem @var{³añcuch}.  Opcja ta, w odró¿nieniu od
+@samp{-s}, nie ma wp³ywu na dzia³anie @samp{-W/-w}.  Nie wp³ywa na obcinanie
+linii czy wyrównywanie kolumn.  Je¶li @samp{-S} nie jest ustawiona a
+pos³u¿ono siê @samp{-J}, to u¿yty zostanie domy¶lny separator wyj¶ciowy,
+tabulacja.  Je¶li ¿adna z nich nie jest ustawiona to separatorem jest spacja
+(tak samo jak przy @samp{-S" "}).  Podanie @samp{-S} bez @var{³añcucha} jest
+równowa¿ne @samp{-S""}.  Zauwa¿, ¿e w niektórych z jednoliterowych opcji
+polecenia @code{pr} odpowiedni argument musi wyst±piæ bezpo¶rednio po nazwie
+opcji. Nie mo¿na u¿ywaæ rozdzielaj±cych spacji.  @samp{-S/-s} to jeden
+z takich przypadków. Proszê nie u¿ywaæ @samp{-S" ³añcuch"}.
+Tego wymaga @sc{posix}.
+
+@item -t
+@itemx --omit-header
+@opindex -t
+@opindex --omit-header
+Nie wypisuje nag³ówka i stopki znajduj±cych siê zwykle na ka¿dej stronie,
+i nie wype³nia do³ów strony (linami pustymi lub znakami nowej strony).
+Nie jest tworzona struktura strony, ale ustawienia zmian strony z plików
+wej¶ciowych s± zachowywane. Nie jest zmieniane predefiniowane stronicowanie.
+@samp{-t} lub @samp{-T} mog± byæ przydatne z innymi opcjami, np.
+@samp{-t -e4} rozwija znaki tabulacji pliku wej¶ciowego do 4 spacji, ale
+nie wykonuje innych zmian. U¿ycie @samp{-t} przes³ania opcjê @samp{-h}.
+
+@item -T
+@itemx --omit-pagination
+@opindex -T
+@opindex --omit-pagination
+Nie wypisuje nag³ówka i stopki. Oprócz tego ignoruje wszystkie zmiany
+strony ustawiane w plikach wej¶ciowych.
+
+@item -v
+@itemx --show-nonprinting
+@opindex -v
+@opindex --show-nonprinting
+Wypisuje znaki niedrukowalne w notacji ósemkowej z odwrotnym uko¶nikiem.
+
+@item -w @var{szer-strony}
+@itemx --width=@var{szer-strony}
+@opindex -w
+@opindex --width
+Ustawia szeroko¶æ strony na @var{szer-strony} znaków -- tylko dla wyj¶cia
+wielokolumnowego.  Warto¶æ domy¶lna to 72.
+@samp{-s[@var{sep}]} wy³±cza domy¶ln± szeroko¶æ strony, obcinanie
+linii i wyrównywanie kolumn.  Linie pe³nej d³ugo¶ci s± scalane, bez wzglêdu
+na ustawienia opcji kolumn.  Mo¿liwe jest nieustawienie szeroko¶ci strony
+przy wyj¶ciu jednokolumnowym.  Zgodne z regulacjami @sc{posix}.
+
+@item -W @var{szer-strony}
+@itemx --page_width=@var{szer-strony}
+@opindex -W
+@opindex --page_width
+Ustawia szeroko¶æ strony na @var{szer-strony} znaków (domy¶lnie 72).
+Obowi±zuje zarówno z opcjami kolumnowymi jak i bez nich.  Linie tekstu s±
+obcinane, chyba ¿e podano @samp{-J}.  £±cznie z jedn± z trzech opcji
+dotycz±cych kolumn (@samp{-@var{kolumn}}, @samp{-a -@var{kolumn}} lub
+@samp{-m}) zawsze stosowane jest wyrównywanie kolumn. Opcje separatora
+@samp{-S} czy @samp{-s} nie maj± wp³ywu na @samp{-W}.
+Je¿eli nie u¿yto ani tej opcji ani ¿adnej z opcji kolumnowych, to nie jest
+stosowane @emph{¿adne} obcinanie linii (zdefiniowane w celu utrzymania
+zgodno¶ci wstecznej i spe³niania najczêstszych zadañ).  Jest to równowa¿ne
+ustawieniu @samp{-W 72 -J}.  Zarówno z opcj± @samp{-W @var{szer-strony}},
+jak i bez niej, nag³ówek jest zawsze obcinany dla unikniêcia nadmiaru.
+
+@end table
+
+
+@node Wywo³anie fold
+@section @code{fold}: zawijanie linii wej¶ciowych do zadanej szeroko¶ci 
+
+@pindex fold
+@cindex zawijanie d³ugich linii wej¶ciowych
+@cindex ³amanie d³ugich linii wej¶ciowych
+@cindex d³ugie linii wej¶ciowe, ³amanie
+
+@code{fold} zapisuje na standardowe wyj¶cie zawarto¶æ ka¿dego z podanych
+@var{plików} (@samp{-} oznacza standardowe wej¶cie), lub standardowego
+wej¶cia, je¶li nie podano ¿adnego pliku, ³ami±c d³ugie linie.  Sk³adnia:
+
+@example
+fold [@var{opcja}]@dots{} [@var{plik}]@dots{}
+@end example
+
+Domy¶lnie, @code{fold} ³amie linie d³u¿sze ni¿ 80 kolumn.  Wyj¶cie jest
+dzielone na tyle linii, ile to konieczne.
+
+@cindex kolumny ekranowe
+@code{fold} domy¶lnie liczy kolumny ekranowe, zatem znaki tabulacji
+przewa¿nie zajmuj± wiêcej ni¿ jedn± kolumnê, znaki backspace zmniejszaj±
+licznik kolumn, a znaki powrotu karetki ustawiaj± licznik kolumn z powrotem
+na zero.
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -b
+@itemx --bytes
+@opindex -b
+@opindex --bytes
+Liczy bajty, a nie kolumny, tak i¿ znaki tabulacji, backspace
+i powrót karetki s± liczone za jedn± kolumnê ka¿dy, tak jak inne
+znaki.
+
+@item -s
+@itemx --spaces
+@opindex -s
+@opindex --spaces
+£amie na granicy s³ów.  Linia jest ³amana po ostatnim znaku pustym
+wypadaj±cym przed maksymalna d³ugo¶ci± linii.  Je¶li nie ma takich znaków
+pustych, linia jest ³amana na maksymalnej d³ugo¶ci linii, jak zwykle.
+
+@item -w @var{szeroko¶æ}
+@itemx --width=@var{szeroko¶æ}
+@opindex -w
+@opindex --width
+U¿ywa maksymalnej d³ugo¶ci linii wynosz±cej @var{szeroko¶æ} kolumn zamiast 80.
+
+@end table
+
+
+@node Wypisywanie czê¶ci plików
+@chapter Wypisywanie czê¶ci plików
+
+@cindex wypisywanie czê¶ci plików
+@cindex czê¶ci plików, wypisywanie
+
+Te polecenia wypisuj± czê¶ci plików wej¶ciowych.
+
+@menu
+* Wywo³anie head::        wypisywanie pocz±tku plików
+* Wywo³anie tail::        wypisywanie koñcówki plików
+* Wywo³anie split::       podzia³ pliku na czê¶ci sta³ej wielko¶ci
+* Wywo³anie csplit::      podzia³ pliku na czê¶ci zale¿ne od kontekstu
+@end menu
+
+@node Wywo³anie head
+@section @code{head}: wypisywanie pocz±tku plików
+
+@pindex head
+@cindex pocz±tkowa czê¶æ plików, wypisywanie
+
+@code{head} wypisuje pocz±tkow± czê¶æ (domy¶lnie 10 linii) ka¿dego podanego
+@var{pliku}. Czyta ze standardowego wej¶cia je¶li nie podano plików, albo
+je¶li jako nazwê pliku podano @samp{-}.  Sk³adnie:
+
+@example
+head [@var{opcja}]@dots{} [@var{plik}]@dots{}
+head -@var{liczba} [@var{opcja}]@dots{} [@var{plik}]@dots{}
+@end example
+
+Je¶li podano wiêcej ni¿ jeden @var{plik}, @code{head} wypisuje tak¿e
+jednolinijkowy nag³ówek postaci:
+@example
+==> @var{nazwa pliku} <==
+@end example
+@noindent
+przed wypisaniem pocz±tku ka¿dego z plików.
+
+@code{head} akceptuje dwa formaty opcji: nowy, w którym liczby s± argumentami
+opcji literowych (@samp{-q -n 1}), i stary, w którym liczby poprzedzaj±
+jakiekolwiek opcje literowe (@samp{-1q}).
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -@var{ile}@var{opcje}
+@opindex -@var{ile}
+Opcja taka jest rozpoznawana tylko je¶li jest podana jako pierwsza.
+@var{ile} jest liczb± dziesiêtn±, po której opcjonalnie wystêpuje litera
+rozmiaru (@samp{b}, @samp{k}, @samp{m}) jak w opcji @samp{-c}, lub litera
+@samp{l} oznaczaj±ca zliczanie linii, albo inne litery opcji (@samp{cqv}).
+
+@item -c @var{n}
+@itemx --bytes=@var{n}
+@opindex -c
+@opindex --bytes
+Wypisuje pierwsze @var{n} bajtów, zamiast pocz±tkowych linii.  Dodanie po
+liczbie przyrostka @samp{b} oznacza wypisywanie @var{n} bloków 512-bajtowych,
+przyrostka @samp{k} - bloków kilobajtowych, a @samp{m} - bloków megabajtowych.
+
+@itemx -n @var{n}
+@itemx --lines=@var{n}
+@opindex -n
+@opindex --lines
+Wypisuje pierwsze @var{n} linii.
+[Opcja @samp{-l} jest rozpoznawana tylko z u¿yciem starego formatu opcji.]
+
+@item -q
+@itemx --quiet
+@itemx --silent
+@opindex -q
+@opindex --quiet
+@opindex --silent
+Nigdy nie wypisuje nag³ówków z nazwami plików.
+
+@item -v
+@itemx --verbose
+@opindex -v
+@opindex --verbose
+Zawsze wypisuje nag³ówki z nazwami plików.
+
+@end table
+
+
+@node Wywo³anie tail
+@section @code{tail}: wypisywanie koñcówki plików
+
+@pindex tail
+@cindex koñcowa czê¶æ plików, wypisywanie
+
+@code{tail} wypisuje koñcow± czê¶æ (domy¶lnie 10 linii) ka¿dego podanego
+@var{pliku}. Czyta ze standardowego wej¶cia je¶li nie podano plików, albo
+je¶li jako nazwê pliku podano @samp{-}.  Sk³adnie:
+
+@example
+tail [@var{opcja}]@dots{} [@var{plik}]@dots{}
+tail -@var{liczba} [@var{opcja}]@dots{} [@var{plik}]@dots{}
+tail +@var{liczba} [@var{opcja}]@dots{} [@var{plik}]@dots{}
+@end example
+
+Je¶li podano wiêcej ni¿ jeden @var{plik}, @code{tail} wypisuje tak¿e
+jednolinijkowy nag³ówek postaci:
+@example
+==> @var{nazwa pliku} <==
+@end example
+@noindent
+przed wypisaniem koñcówki ka¿dego z plików.
+
+@cindex BSD @code{tail}
+@cindex @code{tail} z BSD
+GNU @code{tail} mo¿e wypisaæ dowoln± ilo¶æ danych, czego nie potrafi±
+niektóre inne wersje @code{tail}.  Nie ma on opcji @samp{-r} (wypisywanie
+odwrotnie), gdy¿ odwracanie pliku to faktycznie zupe³nie inne zadanie ni¿
+wypisywanie koñca pliku; 
+@code{tail} z BSD (posiadaj±cy opcjê @samp{-r}) potrafi odwróciæ tylko pliki,
+które s± nie wiêksze ni¿ jego bufor, przewa¿nie 32k.  Bardziej niezawodnym
+i wszechstronnym sposobem odwracania plików jest polecenie GNU @code{tac}.
+
+@code{tail} akceptuje dwa formaty opcji: nowy, w którymi liczby s±
+argumentami opcji literowych (@samp{-n 1}), i stary, w którym liczby
+poprzedzaj± jakiekolwiek opcje literowe (@samp{-1} lub @samp{+1}).
+
+Je¶li bêd±ca argumentem nieopcyjnym liczba @var{n} zaczyna siê od znaku
+@samp{+}, @code{tail} zaczyna wypisywanie od @var{n}-tego elementu od
+pocz±tku ka¿dego pliku, a nie od koñca.
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -@var{ile}
+@itemx +@var{ile}
+@opindex -@var{ile}
+@opindex +@var{ile}
+Opcja taka jest rozpoznawana tylko je¶li jest podana jako pierwsza.
+@var{ile} jest liczb± dziesiêtn±, po której opcjonalnie wystêpuje litera
+rozmiaru (@samp{b}, @samp{k}, @samp{m}) jak w opcji @code{-c}, lub litera
+@samp{l} oznaczaj±ca zliczanie linii, albo inne litery opcji (@samp{cfqv}).
+
+@item -c @var{n}
+@itemx --bytes=@var{n}
+@opindex -c
+@opindex --bytes
+Wypisuje ostatnich @var{n} bajtów, zamiast koñcowych linii.  Dodanie po
+liczbie przyrostka @samp{b} oznacza wypisywanie @var{n} bloków 512-bajtowych,
+przyrostka @samp{k} - bloków kilobajtowych, a @samp{m} - bloków megabajtowych.
+
+@item -f
+@itemx --follow[=@var{jak}]
+@opindex -f
+@opindex --follow
+@cindex rosn±ce pliki
+@vindex name @r{opcja follow}
+@vindex descriptor @r{opcja follow}
+Pracuje w nieskoñczonej pêtli próbuj±c przeczytaæ wiêcej znaków z koñca
+pliku, zak³adaj±c, ¿e plik ro¶nie.  Ignorowana je¶li czytanie odbywa siê
+z potoku.  Je¶li podano wiêcej ni¿ jeden plik, @code{tail} wypisuje nag³ówek
+za ka¿dym razem gdy dostaje wynik od innego pliku, aby zaznaczyæ, z którego
+pliku on pochodzi.
+
+Istniej± dwa sposoby okre¶lania, jak maj± byæ ¶ledzone pliki przy u¿yciu
+tej opcji, ale ró¿nica ta jest zauwa¿alna tylko wtedy, gdy ¶ledzony plik
+zostanie usuniêty lub zmieni nazwê.
+Chc±c ¶ledziæ koniec powiêkszaj±cego siê pliku nawet po jego usuniêciu
+(unlink), nale¿y u¿yæ @samp{--follow=descriptor}.  Jest to zachowanie
+domy¶lne, ale nie jest przydatne je¿eli ¶ledzi siê plik dziennika, który
+mo¿e podlegaæ cyklicznej wymianie (usuniêcie lub zmiana nazwy, nastêpnie
+ponowne otwarcie).  W takim przypadku, nale¿y u¿yæ @samp{--follow=name},
+by ¶ledziæ plik o danej nazwie przez okresowe ponowne otwieranie go
+i sprawdzanie czy zosta³ usuniêty i ponownie utworzony przez jaki¶ inny
+program.
+
+Bez wzglêdu na wykorzystan± metodê, je¿eli zostanie stwierdzone skurczenie
+siê pliku, @code{tail} wypisuje komunikat mówi±cy o tym, ¿e plik zosta³
+obciêty i wznawia ¶ledzenie koñca pliku od ponownie wyznaczonego punktu
+koñcowego.
+
+Gdy plik jest usuniêty, zachowanie siê @code{tail} zale¿y od tego czy ¶ledzi
+on nazwê czy deskryptor. Pod±¿aj±c za nazw± potrafi rozpoznaæ, ¿e plik zosta³
+usuniêty i daje odpowiedni komunikat, a je¶li u¿yto opcji @samp{--retry}
+bêdzie wykonywa³ cykliczne sprawdzanie czy plik nie pojawi siê znowu.
+Pod±¿aj±c za deskryptorem, @code{tail} nie wykrywa, ¿e plik zosta³ usuniêty
+czy zmieni³ nazwê i nie wysy³a komunikatów; mimo, i¿ plik mo¿e nie byæ ju¿
+dostêpny pod pierwotn± nazw±, mo¿e on wci±¿ powiêkszaæ siê.
+
+Warto¶ci opcji @samp{descriptor} i @samp{name} mo¿na podaæ tylko przy d³ugiej
+postaci opcji, nie z @samp{-f}.
+
+@itemx --retry
+@opindex --retry
+Ma znaczenie tylko przy pod±¿aniu za nazw±.  
+[Z opcj± @samp{--retry} program ponawia próby otwarcia pliku nawet, je¶li
+jest niedostêpny w momencie rozpoczêcia pracy przez @code{tail}lub staje
+siê niedostêpny pó¼niej.]
+Bez tej opcji @code{tail} napotykaj±c plik, który nie istnieje lub jest
+niedostêpny w inny sposób, zg³asza ten fakt i nie sprawdza ju¿ powtórnie.
+
+@itemx --sleep-interval=@var{n}
+@opindex --sleep-interval
+Zmienia liczbê sekund odczekiwania pomiêdzy iteracjami (domy¶lnie jest to 1).
+Podczas pojedynczej iteracji, dla ka¿dego z podanych plików wykonywane jest
+sprawdzenie jest czy nie zmieni³ on rozmiaru.
+
+@itemx --pid=@var{pid}
+@opindex --pid
+Pod±¿aj±c za deskryptorem lub nazw±, mo¿na podaæ identyfikator procesu,
+@var{pid}, jedynego pisz±cego do wszystkich @var{plików} wymienionych jako
+argumenty.  Nastêpnie, wkrótce po zakoñczeniu tego procesu, @code{tail}
+równie¿ zakoñczy pracê.  Dzia³a to poprawnie tylko wtedy, gdy pisz±cy
+i proces tail uruchomione s± na tej samej maszynie. Na przyk³ad, by
+zachowaæ wyniki kompilacji w pliku i obserwowaæ jego wzrost, mo¿na wywo³aæ
+@code{make} i @code{tail} a proces tail zatrzyma siê po ukoñczeniu kompilacji.
+Bez tej opcji, trzeba by³o by samodzielnie unicestwiæ proces @code{tail -f}.
+@example
+$ make >& makerr & tail --pid=$! -f makerr
+@end example
+Je¶li zostanie podany nie u¿ywany @var{pid} lub nie odpowiadaj±cy procesowi
+pisz±cemu do przegl±danych plików, to @code{tail} mo¿e zakoñczyæ pracê du¿o
+wcze¶niej ni¿ @var{plik}(i) przestan± siê powiêkszaæ lub mo¿e nie ukoñczyæ
+pracy d³ugo po tym, jak faktyczny pisz±cy skoñczy³.
+
+@itemx --max-consecutive-size-changes=@var{n}
+@opindex --max-consecutive-size-changes
+Opcja znacz±ca tylko, je¶li wystêpuje pod±¿anie za nazw±.
+S³u¿y do okre¶lania, jak d³ugo @code{tail} ma pod±¿aæ za deskryptorem
+gwa³townie rosn±cego pliku, nawet je¶li zostanie on usuniêty lub zmieni siê
+jego nazwa.  Po wykryciu @var{n} kolejnych zmian rozmiaru pliku @code{tail}
+wykonuje @code{open}/@code{fstat} pliku, by stwierdziæ czy dana nazwa pliku
+jest wci±¿ skojarzona z tym sam± par± urz±dzenie/numer-iwêz³a, co uprzednio.
+Zobacz wynik @code{tail --help} by zapoznaæ siê z warto¶ci± domy¶ln±
+[t³um.: 5].
+
+@itemx --max-unchanged-stats=@var{n}
+@opindex --max-unchanged-stats
+Przy przegl±daniu koñca pliku wed³ug nazwy, je¶li wyst±pi³o @var{n} kolejnych
+iteracji, podczas których rozmiar pozosta³ ten sam, to @code{tail} wykonuje
+@code{open}/@code{fstat} pliku. Stwierdza w ten sposób czy dana nazwa pliku
+jest wci±¿ skojarzona z tym sam± par± urz±dzenie/numer-iwêz³a, co uprzednio.
+Przy pod±¿aniu za plikiem dziennika podlegaj±cym cyklicznej wymianie jest to
+w przybli¿eniu liczba sekund pomiêdzy momentem, kiedy tail wypisze ostatnie
+linie sprzed rotacji a czasem, kiedy wypisze linie, jakie nagromadzi³y siê
+w nowym pliku dziennika. Zobacz wynik @code{tail --help} by zapoznaæ siê
+z warto¶ci± domy¶ln± [t³um.: 200]. Opcja ta jest znacz±ca tylko przy
+pod±¿aniu za nazw±.
+
+@itemx -n @var{n}
+@itemx --lines=@var{n}
+@opindex -n
+@opindex --lines
+Wypisuje ostatnie @var{n} linii.
+[@samp{-l} jest rozpoznawana tylko z u¿yciem starego formatu opcji.]
+
+@item -q
+@itemx -quiet
+@itemx --silent
+@opindex -q
+@opindex --quiet
+@opindex --silent
+Nigdy nie wypisuje nag³ówków z nazwami plików.
+
+@item -v
+@itemx --verbose
+@opindex -v
+@opindex --verbose
+Zawsze wypisuje nag³ówki z nazwami plików.
+
+@end table
+
+
+@node Wywo³anie split
+@section @code{split}: podzia³ pliku na czê¶ci sta³ej wielko¶ci
+
+@pindex split
+@cindex podzia³ pliku na czê¶ci
+@cindex dzielenie pliku na czê¶ci
+@cindex czê¶ci, dzielenie pliku
+
+@code{split} tworzy pliki wyj¶ciowe zawieraj±ce kolejne czê¶ci
+@var{wej¶cia} (standardowego wej¶cia je¶li nie podano ¿adnego pliku
+wej¶ciowego lub podanym @var{wej¶ciem} jest @samp{-}).  Sk³adnia:
+
+@example
+split [@var{opcja}] [@var{wej¶cie} [@var{przedrostek}]]
+@end example
+
+Domy¶lnie, @code{split} do ka¿dego pliku wyj¶ciowego wstawia 1000 linii
+@var{wej¶cia}, albo to co pozosta³o, w przypadku ostatniej czê¶ci.
+
+@cindex przedrostek nazwy pliku wyj¶ciowego
+Nazwy plików wyj¶ciowych sk³adaj± siê z @var{przedrostka} (domy¶lnie @samp{x}),
+po którym nastêpuje grupa liter @samp{aa}, @samp{ab} i tak dalej, wybrana
+tak, i¿ po³±czenie plików wyj¶ciowych posortowanych wedle nazwy daje
+oryginalny plik wej¶ciowy.  (Je¶li potrzeba wiêcej ni¿ 676 plików wyj¶ciowych,
+to @code{split} stosuje @samp{zaa}, @samp{zab}, etc.)
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -@var{linie}
+@itemx -l @var{linie}
+@itemx --lines=@var{linie}
+@opindex -l
+@opindex --lines
+Wstawia @var{linie} linii pliku @var{wej¶ciowego} do ka¿dego pliku wyj¶ciowego.
+
+@item -b @var{n}
+@itemx --bytes=@var{n}
+@opindex -b
+@opindex --bytes
+Wstawia @var{n} bajtów @var{wej¶cia} do ka¿dego pliku wyj¶ciowego.
+Dodanie po liczbie przyrostka @samp{b} oznacza wypisywanie @var{n} bloków
+512-bajtowych, przyrostka @samp{k} - bloków kilobajtowych,
+a @samp{m} - bloków megabajtowych.
+
+@item -C @var{n}
+@itemx --line-bytes=@var{n}
+@opindex -C
+@opindex --line-bytes
+Wstawia do ka¿dego pliku wynikowego tyle kompletnych linii @var{wej¶cia}, ile
+jest mo¿liwe bez przekraczania @var{n} bajtów.  Dla linii d³u¿szych ni¿ limit
+wstawia @var{n} bajtów do ka¿dego pliku wynikowego a¿ pozostanie mniej ni¿
+@var{n} bajtów dzielonej linii, potem kontynuuje normalnie.
+@var{n} ma taki sam format jak w opcji @samp{--bytes}.
+
+@itemx --verbose
+@opindex --verbose
+Wy¶wietla komunikat na standardowym wyj¶ciu diagnostycznym przed otwarciem
+ka¿dego z plików wynikowych.
+
+@end table
+
+
+@node Wywo³anie csplit
+@section @code{csplit}: podzia³ pliku na czê¶ci zale¿ne od kontekstu
+
+@pindex csplit
+@cindex podzia³ kontekstowy pliku na czê¶ci
+@cindex dzielenie kontekstowe pliku na czê¶ci
+@cindex czê¶ci, dzielenie kontekstowe pliku
+
+@code{csplit} tworzy zero lub wiêcej plików wyj¶ciowych zawieraj±cych czê¶ci
+@var{wej¶cia} (standardowego wej¶cia podanym @var{wej¶ciem} jest @samp{-}).
+Sk³adnia:
+
+@example
+csplit [@var{opcja}]@dots{} @var{wej¶cie} @var{wzorzec}@dots{}
+@end example
+
+Zawarto¶æ plików wyj¶ciowych ustalana jest wedle argumentów @var{wzorzec},
+Je¶li argument wzorca odnosi siê do nieistniej±cej w pliku wej¶ciowym linii,
+np. gdy ¿adna z pozosta³ych linii nie pokrywa siê z podanym wyra¿eniem
+regularnym, nastêpuje b³±d.  Po dopasowaniu wszystkich podanych @var{wzorców}
+pozosta³a czê¶æ wej¶cia kopiowana jest do jeszcze jednego, ostatniego pliku
+wyj¶ciowego.
+
+Domy¶lnie, @code{csplit} wypisuje liczbê bajtów zapisanych do ka¿dego pliku
+wyj¶ciowego po jego utworzeniu.
+
+Typy argumentów wzorca to:
+
+@table @samp
+
+@item @var{n}
+Tworzy plik wyj¶ciowy zawieraj±cy bie¿±c± liniê a¿ do (ale nie w³±cznie
+z) linii o numerze @var{n} (dodatnia liczba ca³kowita) pliku wej¶ciowego.
+Je¶li nastêpuje po nim ilo¶æ powtórzeñ, tworzy tak¿e pliki wyj¶ciowe
+zawieraj±ce nastêpne @var{n} linii pliku wej¶ciowego, po jednym dla ka¿dego
+powtórzenia.
+
+@item /@var{regexp}/[@var{offset}]
+Tworzy plik wyj¶ciowy zawieraj±cy bie¿±c± liniê a¿ do (ale nie w³±cznie z)
+nastêpnej linii, która zawiera co¶ pasuj±cego do wyra¿enia regularnego
+@var{regexp}.  Opcjonalny @var{offset} to @samp{+} albo @samp{-},
+po którym nastêpuje liczba naturalna.  Je¶li zosta³ podany, do pliku
+wyj¶ciowego wstawiane jest wej¶cie a¿ do pasuj±cej linii plus lub minus
+@var{offset}, a kolejna linia zaczyna nastêpn± czê¶æ wej¶cia.
+
+@item %@var{regexp}%[@var{offset}]
+Jak w poprzednim typie, z wyj±tkiem tego, ¿e nie tworzy pliku wyj¶ciowego,
+wskutek czego owa czê¶æ pliku wej¶ciowego jest faktycznie ignorowana.
+
+@item @{@var{ile-powtórzeñ}@}
+Powtarza poprzedni wzorzec zadan± liczbê razy (dodatnia liczba ca³kowita).
+W miejsce ilo¶ci powtórzeñ mo¿na podaæ gwiazdkê -- w tym przypadku
+poprzedzaj±cy wzór jest powtarzany tyle razy, ile to potrzebne, a¿ do
+wyczerpania wej¶cia.
+
+@end table
+
+Nazwy plików wyj¶ciowych sk³adaj± siê z przedrostka (domy¶lnie @samp{xx}),
+po którym nastêpuje przyrostek.  Domy¶lnie przyrostek jest liniowo rosn±cym
+ci±giem dziesiêtnych liczb dwucyfrowych, pocz±wszy od @samp{00} a¿ do
+@samp{99}.  W ka¿dym przypadku, po³±czenie plików wyj¶ciowych posortowanych
+wed³ug nazwy pliku daje oryginalny plik wej¶ciowy.
+
+Domy¶lnie, je¶li @code{csplit} napotka b³±d lub otrzyma sygna³ zawieszania,
+przerwania, wyj¶cia lub zakoñczenia, to przed zakoñczeniem pracy usuwa
+wszystkie pliki wyj¶ciowe, które jak dot±d stworzy³.
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -f @var{przedrostek}
+@itemx --prefix=@var{przedrostek}
+@opindex -f
+@opindex --prefix
+@cindex przedrostek nazwy pliku wyj¶ciowego
+U¿ywa @var{przedrostka} jako ³añcucha bêd±cego przedrostkiem nazwy
+pliku wyj¶ciowego.
+
+@item -b @var{przedrostka}
+@itemx --suffix=@var{przedrostka}
+@opindex -b
+@opindex --suffix
+@cindex przyrostek nazwy pliku wyj¶ciowego
+U¿ywa @var{przyrostka} jako ³añcucha bêd±cego przyrostkiem nazwy pliku
+wyj¶ciowego.  Gdy podaje siê tê opcjê, ³añcuch przyrostka musi obejmowaæ
+dok³adnie jedn± specyfikacjê stylu konwersji @code{printf(3)}, mog±c±
+zawieraæ flagi okre¶laj±ce format, szeroko¶æ pola, specyfikatory precyzji
+lub wszystkie te rodzaje modyfikatorów.  Specyfikacja konwersji musi byæ
+odpowiednia dla zamiany argumentu bêd±cego binarn± liczb± ca³kowit± na
+formê czyteln±.  Wobec tego dozwolone s± tylko specyfikatory formatu
+@samp{d}, @samp{i}, @samp{u}, @samp{o}, @samp{x} oraz @samp{X}.  Ca³y ³añcuch
+@var{przyrostka} podawany jest (razem z bie¿±cym numerem pliku wyj¶ciowego)
+do @code{sprintf(3)}, by stworzyæ przyrostki nazwy pliku dla ka¿dego
+kolejnego pliku wyj¶ciowego.  Zauwa¿, ¿e gdy u¿ywa siê tej opcji, opcja
+@samp{--digits} jest ignorowana.
+
+@item -n @var{cyfry}
+@itemx --digits=@var{cyfry}
+@opindex -n
+@opindex --digits
+U¿ywa nazw plików wyj¶ciowych zawieraj±cych numery o d³ugo¶ci @var{cyfry}
+cyfr zamiast domy¶lnie dwucyfrowe.
+
+@item -k
+@itemx --keep-files
+@opindex -k
+@opindex --keep-files
+Nie usuwa plików wyj¶ciowych przy napotkaniu b³êdów.
+
+@item -z
+@itemx --elide-empty-files
+@opindex -z
+@opindex --elide-empty-files
+Wy³±cza tworzenie plików o d³ugo¶ci zerowej. (W przypadkach gdy ograniczniki
+czê¶ci pliku wej¶ciowego maj± zaznaczaæ pierwsze linie ka¿dej z czê¶ci,
+pierwszy plik wyj¶ciowy bêdzie mia³ przewa¿nie d³ugo¶æ zero, chyba ¿e
+u¿yjesz tej opcji.)  Zauwa¿, ¿e numery plików wyj¶ciowych zawsze biegn±
+po kolei, poczynaj±c od 0, nawet w przypadkach kiedy wy³±czono czê¶ci wyj¶cia
+o d³ugo¶ci zerowej z powodu u¿ycia tej opcji.
+
+@item -s
+@itemx -q
+@itemx --silent
+@itemx --quiet
+@opindex -s
+@opindex -q
+@opindex --silent
+@opindex --quiet
+Nie wypisuje obliczanych wielko¶ci plików wyj¶ciowych.
+
+@end table
+
+
+@node Podsumowywanie plików
+@chapter Podsumowywanie plików
+
+@cindex podsumowywanie plików
+
+Te polecenia tworz± jedynie kilka liczb reprezentuj±cych ca³± zawarto¶æ
+plików.
+
+@menu
+* Wywo³anie wc::          wypisywanie liczby bajtów, s³ów i linii
+* Wywo³anie sum::         wypisywanie sumy kontrolnej i liczby bloków
+* Wywo³anie cksum::       wypisywanie sumy CRC liczby bloków
+* Wywo³anie md5sum::      wypisywanie lub sprawdzanie skrótu danych
+@end menu
+
+
+@node Wywo³anie wc
+@section @code{wc}: wypisywanie liczby bajtów, s³ów i linii
+
+@pindex wc
+@cindex bajty, zliczanie
+@cindex s³owa, zliczanie
+@cindex wyrazy, zliczanie
+@cindex linie, zliczanie
+
+@code{wc} zlicza liczbê bajtów, s³ów oddzielonych bia³ymi znakami, oraz
+znaków koñca linii w ka¿dym podanym @var{pliku} lub w standardowym wej¶ciu
+(je¶li nie podano ¿adnego pliku albo podano plik zwany @samp{-}).  Sk³adnia:
+
+@example
+wc [@var{opcja}]@dots{} [@var{plik}]@dots{}
+@end example
+
+@cindex sumy ca³kowite
+@cindex liczby sumaryczne
+@code{wc} wypisuje jedn± liniê danych o liczbach dla ka¿dego pliku, a je¶li
+plik ów zosta³ podany jako argument, po liczbie(ach) wypisuje nazwê pliku.
+Je¶li podano wiêcej ni¿ jedn± nazwê @var{pliku}, @code{wc} wypisuje liniê
+koñcow± zawieraj±c± ³±czne liczby, z nazw± pliku @file{total}.
+Liczby s± wypisywane w kolejno¶ci: linie, s³owa, bajty.
+
+Domy¶lnie ka¿da z liczb wypisywana jest w wyrównanym do prawej 7-bajtowym
+polu, z jedn± spacj± miêdzy polami.  Wówczas liczby i nazwy plików ³adnie
+wyrównuj± siê w kolumnach.  Jednak @sc{posix} wymaga, by kolumny by³y
+rozdzielone dok³adnie jedn± spacj±.  Mo¿na wymusiæ przestrzeganie
+formatu wyj¶cia zgodnego z @sc{posix} ustawiaj±c zmienn± ¶rodowiskow±
+@env{POSIXLY_CORRECT}.
+
+Domy¶lnie @code{wc} wypisuje wszystkie trzy liczby.  Opcjami mo¿na okre¶liæ
+wypisywanie tylko niektórych liczb.  Kolejne opcje nie uniewa¿niaj± innych,
+poprzednich, tak wiêc
+
+@example
+wc --bytes --words
+@end example
+
+@noindent
+wypisze liczbê bajtów oraz liczbê s³ów.
+
+Z opcj± @samp{--max-line-length} program wypisuje d³ugo¶æ najd³u¿szej linii
+w ka¿dym z plików, a je¿eli podano wiêcej ni¿ jeden plik, to równie¿
+najwiêksz± (nie sumê) z tych d³ugo¶ci.
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -c
+@itemx --bytes
+@itemx --chars
+@opindex -c
+@opindex --bytes
+@opindex --chars
+Wypisuje tylko liczbê bajtów.
+
+@item -w
+@itemx --words
+@opindex -w
+@opindex --words
+Wypisuje tylko liczbê s³ów.
+
+@item -l
+@itemx --lines
+@opindex -l
+@opindex --lines
+Wypisuje tylko liczbê znaków nowej linii.
+
+@item -L
+@itemx --max-line-length
+@opindex -L
+@opindex --max-line-length
+Wypisuje tylko d³ugo¶æ najd³u¿szej linii.
+
+@end table
+
+
+@node Wywo³anie sum
+@section @code{sum}: wypisywanie sumy kontrolnej i liczby bloków
+
+@pindex sum
+@cindex 16-bitowa suma kontrolna
+@cindex suma kontrolna, 16-bitowa
+@cindex checksum
+
+@code{sum} oblicza 16-bitow± sumê kontroln± dla ka¿dego podanego pliku, albo
+standardowego wej¶cia je¶li nie podano ¿adnego lub podano plik zwany @samp{-}.
+Sk³adnia:
+
+@example
+sum [@var{opcja}]@dots{} [@var{plik}]@dots{}
+@end example
+
+@code{sum} wypisuje sumê kontroln± dla ka¿dego @var{pliku}, razem z liczb±
+bloków w pliku (zaokr±glon± w górê).  Domy¶lnie wypisywana jest tak¿e ka¿da
+odpowiednia nazwa pliku, je¶li podano co najmniej dwa @var{pliki}.
+(Z opcj± @samp{--sysv} odpowiednie nazwy plików s± wypisywane gdy podano
+przynajmniej jeden argument bêd±cy plikiem.)
+
+Domy¶lnie, GNU @code{sum} oblicza sumy kontrolne u¿ywaj±c algorytmu
+zgodnego z BSD @code{sum} i wypisuje rozmiary plików u¿ywaj±c jako jednostek
+1024-bajtowych bloków.
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -r
+@opindex -r
+@cindex BSD @code{sum}
+@cindex @code{sum} z BSD
+U¿ywa domy¶lnego algorytmu (zgodnego z BSD).  Ta opcja jest za³±czona dla
+zgodno¶ci z @code{sum} z System V.  Nie wywo³uje ¿adnego efektu, chyba ¿e
+podano tak¿e opcjê @samp{-s}.
+
+@item -s
+@itemx --sysv
+@opindex -s
+@opindex --sysv
+@cindex System V @code{sum}
+@cindex @code{sum} z System V
+Oblicza sumy kontrolne u¿ywaj±c algorytmu zgodnego z domy¶lnie u¿ywanym przez
+@code{sum} z System V i wypisuje rozmiary plików w jednostkach 512-bajtowych
+bloków [a nie kilobajtowych].
+
+@end table
+
+@code{sum} jest zapewniany dla utrzymania zgodno¶ci.  W nowych zastosowaniach
+preferowany jest program @code{cksum} (zob. nastêpna sekcja).
+
+
+@node Wywo³anie cksum
+@section @code{cksum}: wypisywanie sumy CRC liczby bloków
+
+@pindex cksum
+@cindex cyclic redundancy check
+@cindex CRC suma kontrolna
+@cindex suma kontrolna CRC
+@cindex checksum
+
+@code{cksum} oblicza sumê kontroln± CRC (cyclic redundancy check) dla 
+ka¿dego podanego pliku, b±d¼ dla standardowego wej¶cia je¶li nie podano
+¿adnego lub gdy podano plik zwany @samp{-}.  Sk³adnia:
+
+@example
+cksum [@var{opcja}]@dots{} [@var{plik}]@dots{}
+@end example
+
+@code{cksum} wypisuje CRC dla ka¿dego pliku razem z liczb± bajtów w pliku,
+oraz nazw± pliku, chyba ¿e nie zosta³y podane ¿adne argumenty.
+
+@code{cksum} u¿ywany jest przewa¿nie do upewnienia siê, ¿e pliki przeniesione
+za pomoc± niepewnych ¶rodków (takich jak newsy), nie zosta³y zepsute,
+a to porównuj±c wynik @code{cksum} dla otrzymanych plików z wynikiem
+@code{cksum} dla plików oryginalnych (zwykle podanym w pakiecie dystrybucyjnym).
+
+Algorytm CRC okre¶lony jest przez standard @sc{posix.2}.  Nie jest on zgodny
+z programami @code{sum} z BSD i System V (zob.poprzednia sekcja); jest
+bardziej niezawodny.
+
+Jedynymi opcjami s± @samp{--help} i @samp{--version}.  @xref{Wspólne opcje}.
+
+
+@node Wywo³anie md5sum
+@section @code{md5sum}: wypisywanie lub sprawdzanie skrótu danych
+
+@pindex md5sum
+@cindex 128-bitowa suma kontrolna
+@cindex suma kontrolna, 128-bitowa
+@cindex skrót danych, 128-bitowy
+@cindex odcisk, 128-bitowy
+@cindex fingerprint
+@cindex message-digest
+@cindex checksum
+
+@code{md5sum} tworzy dla ka¿dego podanego @var{pliku} wej¶ciowego 128-bitow±
+sumê kontroln± (@dfn{odcisk}, @dfn{skrót danych}).  Je¶li jako nazwê pliku
+podano @samp{-} lub nie podano ¿adnego pliku, to suma kontrolna obliczana
+jest dla standardowego wej¶cia.
+@code{md5sum} potrafi te¿ sprawdziæ, u¿ywaj±c wyniku wcze¶niejszego
+uruchomienia, czy skróty ci±gle s± takie same (tj. czy pliki siê zmieni³y).
+Sk³adnia:
+
+@example
+md5sum [@var{opcja}]@dots{} [@var{plik}]@dots{}
+md5sum [@var{opcja}]@dots{} --check [@var{plik}]
+@end example
+
+Dla ka¿dego z @var{plików} wypisywana jest linia ze skrótem, znakiem
+wskazuj±cym na typ pliku wej¶ciowego, i jego nazw±.
+Je¶li pominiêto @var{plik} lub jako nazwê pliku podano @samp{-}, to czytane
+jest standardowe wej¶cie.
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -b
+@itemx --binary
+@opindex -b
+@opindex --binary
+@cindex binarne pliki wej¶ciowe
+Traktuje wszystkie pliki wej¶ciowe jako binarne.  Ta opcja nie ma znaczenia
+w systemach uniksowych, gdy¿ nie rozró¿nia siê w nich plików binarnych
+i tekstowych.  Przydaje siê natomiast w systemach, które maj± odmienn±
+wewnêtrzn± i zewnêtrzn± reprezentacjê tekstu (zw³aszcza znaków koñca
+linii).  Tryb ten jest domy¶lny w MS-DOS/MS-Windows.
+
+@item -c
+@itemx --check
+Czyta nazwy plików i informacjê o skrótach z zadanego pojedynczego @var{pliku}
+(lub ze standardowego wej¶cia, je¶li nie podano pliku) i zg³asza, czy ka¿dy
+z danych plików ma skrót zgodny z zapisanym. Plikiem wej¶ciowym dla tego
+trybu pracy jest na ogó³ wynik wcze¶niejszego, tworz±cego skróty,
+uruchomienia @code{md5sum}.
+Plik wej¶ciowy zawiera w ka¿dej linii sumê MD5, znacznik binarium/tekstu,
+oraz nazwê pliku.
+Pliki binarne oznaczone s± przez @samp{*}, tekstowe przez @samp{ }.
+Dla ka¿dej z linii czytany jest wymieniony w niej plik i wyliczany jego
+skrót.  Nastêpnie, je¶li skrót nie jest taki sam, jak podany w tej linii,
+test pliku oznaczony zostanie jako nieudany.  W przeciwnym razie plik zdaje
+test. Domy¶lnie, dla ka¿dej poprawnej linii na standardowe wyj¶cie
+wypisywana jest jedna linia wskazuj±ca, czy dany plik przeszed³ test.
+Po przeprowadzeniu wszystkich kontroli, je¿eli wyst±pi³y jakie¶ niepowodzenia,
+na standardowe wyj¶cie b³êdów wysy³ane jest ostrze¿enie. Opcja @samp{--status}
+wy³±cza ten komunikat. Je¿eli nie mo¿na otworzyæ lub przeczytaæ którego¶
+ze wskazanych plików, która¶ z poprawnych linii zawiera niezgodny z aktualnym
+skrót odpowiedniego pliku albo nie znaleziono ¿adnej poprawnej linii, to
+@code{md5sum} koñczy pracê z niezerowym kodem.  W przeciwnym razie koñczy
+pracê pomy¶lnie.
+
+@itemx --status
+@opindex --status
+@cindex weryfikacja sum kontrolnych MD5
+Opcja przydatna tylko przy weryfikacji skrótów.  Zakazuje wówczas domy¶lnego
+tworzenia raportu (po jednej linii na plik) i wysy³ania ostrze¿enia
+z podsumowaniem niepowodzeñ.  Nieudane otwarcia lub odczyty plików nadal
+powoduj± odrêbne komunikaty na standardowym wyj¶ciu b³êdów.
+Je¿eli wszystkie wskazane pliki daj± siê czytaæ i maj± skróty zgodne
+z zapisanymi, to @code{fBmd5sum} pomy¶lnie koñczy pracê.  W przeciwnym
+przypadku koñczy dzia³anie z kodem wskazuj±cym na niepowodzenie.
+
+@item -t
+@itemx --text
+@opindex -t
+@opindex --text
+@cindex tekstowe pliki wej¶ciowe
+Traktuje wszystkie pliki wej¶ciowe jako tekst.  Jest to opcja odwrotna do
+@samp{--binary}.
+
+@item -w
+@itemx --warn
+@opindex -w
+@opindex --warn
+@cindex weryfikacja sum kontrolnych MD5
+Przy weryfikacji skrótów ostrzega o niepoprawnie sformatowanych liniach
+z sumami kontrolnymi MD5. Opcja przydatna tylko wtedy, gdy poprawne s±
+wszystkie oprócz kilku linii sprawdzanego wej¶cia.
+
+@end table
+
+
+@node Dzia³ania na posortowanych plikach
+@chapter Dzia³ania na posortowanych plikach
+
+@cindex dzia³ania na posortowanych plikach
+@cindex posortowane pliki, dzia³ania
+@cindex sortowane pliki, dzia³ania
+
+Te polecenia dzia³aj± na plikach posortowanych (lub je tworz±).
+
+@menu
+* Wywo³anie sort::        sortowanie plików tekstowych
+* Wywo³anie uniq::        pozostawianie unikalnych linii w pliku
+* Wywo³anie comm::        porównywanie dwu posortowanych plików liniami
+* Wywo³anie ptx::         tworzenie indeksu permutacyjnego zawarto¶ci pliku
+* Wywo³anie tsort::       sortowanie topologiczne
+@end menu
+
+
+@node Wywo³anie sort
+@section @code{sort}: sortowanie plików tekstowych
+
+@pindex sort
+@cindex sortowanie plików
+
+@code{sort} sortuje, zlepia lub porównuje wszystkie linie z podanych
+plików, lub standardowego wej¶cia je¶li nie podano ¿adnych @var{plików}
+lub podano plik o nazwie @samp{-}.  Domy¶lnie,  @samp{sort} wypisuje
+rezultaty na standardowe wyj¶cie.  Sk³adnia:
+
+@example
+sort [@var{opcja}]@dots{} [@var{plik}]@dots{}
+@end example
+
+@code{sort} ma trzy tryby dzia³ania: sortowanie (domy¶lnie), zlepianie
+i sprawdzanie posortowania.  Nastêpuj±ce opcje zmieniaj± tryb dzia³ania:
+
+@table @samp
+
+@item -c
+@opindex -c
+@cindex sprawdzanie posortowania
+Sprawdza czy podane pliki s± ju¿ posortowane.  Je¶li nie wszystkie s±,
+wypisuje komunikat o b³êdzie i koñczy pracê z kodem równym 1.
+W przeciwnym razie, pomy¶lnie koñczy pracê.
+
+@item -m
+@opindex -m
+@cindex scalanie posortowanych plików
+@cindex zlepianie posortowanych plików
+Zlepia podane pliki sortuj±c je jako grupê.  Ka¿dy plik wej¶ciowy powinien
+byæ ju¿ posortowany indywidualnie.  @code{sort} dzia³a zawsze sortuj±c,
+a nie lepi±c; zlepianie udostêpniono poniewa¿ jest ono szybsze w tych
+przypadkach, w których dzia³a.
+
+@end table
+
+@vindex LC_COLLATE
+Para linii porównywana jest jak nastêpuje:
+je¶li podano jakie¶ pola kluczowe, @code{sort} porównuje ka¿d± parê pól,
+w porz±dku podanym w linii komend, wed³ug skojarzonych opcji porz±dkowania,
+a¿ znaleziona zostanie ró¿nica albo przeszukane zostan± wszystkie pola.
+Wszystkie porównania wykorzystuj± porz±dek znaków okre¶lony przez ustawienie
+narodowe @env{LC_COLLATE}, chyba ¿e podano inaczej.
+
+Je¶li u¿yto której z globalnych opcji @samp{Mbdfinr}, ale nie podano pól
+kluczowych, @code{sort} porównuje ca³e linie wed³ug opcji globalnych.
+
+W koñcu, w ostatniej próbie, kiedy wszystkie porównywane klucze s± równe
+(lub nie podano ¿adnych opcji porz±dkuj±cych), @code{sort} porównuje ca³e
+linie.  Ostatnia próba porównania bierze pod uwagê opcjê @samp{-r}.
+Opcja @samp{-s} (stable) wy³±cza ostatni± próbê porównania, tak ¿e linie,
+w których wszystkie pola s± równie w porównaniu zostaj± pozostawione
+w pierwotnej kolejno¶ci wzglêdnej.  Je¶li nie podano ¿adnych pól ani opcji
+globalnych, @samp{-s} nie wywo³uje efektów.
+
+GNU @code{sort} (jak to okre¶lono dla wszystkich narzêdzi GNU) nie ma limitów
+co do d³ugo¶ci linii ani ograniczeñ co do bajtów dozwolonych w linii.
+Dodatkowo, je¶li ostatni bajt pliku wej¶ciowego nie jest now± lini±, GNU
+@code{sort} po cichu takow± dostawia. Koñcz±cy liniê znak nowej linii
+w porównywaniu jest jej czê¶ci±. Na przyk³ad, bez opcji, przy sortowaniu
+@sc{ascii}, linia rozpoczynaj±ca siê tabulacj± zostanie umieszczona przed
+pust± lini±, gdy¿ w porz±dku leksykograficznym @sc{ascii} znak tabulacji
+poprzedza znak nowej linii.
+
+Przy b³êdzie @code{sort} koñczy pracê z kodem @samp{2}.
+
+@vindex TMPDIR
+Je¶li ustawiono zmienn± ¶rodowiskow± @env{TMPDIR}, @code{sort} u¿ywa jej jako
+katalogu w którym nale¿y umie¶ciæ pliki tymczasowe, zamiast domy¶lnego
+@file{/tmp}.  Opcja @samp{-T @var{kat-tymcz}} jest jeszcze jednym sposobem
+wybrania katalogu dla plików tymczasowych; zastêpuje ona ow± zmienn±
+¶rodowiskow±.
+
+@vindex LC_CTYPE
+Poni¿sze opcje wp³ywaj± na porz±dkowanie linii wyj¶cia.  Mog± byæ one
+okre¶lone globalnie lub jako czê¶æ konkretnego pola kluczowego.
+Je¶li nie podano ¿adnego pola kluczowego, opcje globalne stosuj± siê
+do porównañ ca³ych linii; w przeciwnym razie opcje globalne s± dziedziczone
+przez pola kluczowe, dla których nie okre¶lono ¿adnych specjalnych opcji.
+Opcje @samp{-b}, @samp{-d}, @samp{-f} i @samp{-i} klasyfikuj± znaki zgodnie
+z ustawieniami narodowymi @env{LC_CTYPE}.
+
+@table @samp
+
+@item -b
+@opindex -b
+@cindex odstêpy, ignorowane pocz±tkowych
+@cindex puste znaki, ignorowane pocz±tkowych
+Ignoruje pocz±tkowe znaki puste podczas szukania kluczy sortowania w ka¿dej
+linii.
+
+@item -d
+@opindex -d
+@cindex telefoniczna kolejno¶æ
+Sortuje w porz±dku @dfn{ksi±¿ki telefonicznej}: podczas sortowania ignoruje
+wszystkie znaki oprócz liter, cyfr i znaków pustych.
+
+@item -f
+@opindex -f
+@cindex zamiana wielko¶ci znaków
+@cindex wielko¶æ znaków, zamiana
+Podstawia znaki ma³ych liter za odpowiednie znaki du¿ych liter podczas
+sortowania tak aby, na przyk³ad, @samp{b} sortowa³o siê tak samo
+jak @samp{B'}.
+
+@item -g
+@opindex -g
+@cindex sortowanie numeryczne, ogólne
+@cindex numeryczne sortowanie, ogólne
+Sortuje numerycznie, pos³uguj±c siê standardow± funkcj± C @code{strtod},
+przekszta³caj±c przedrostek ka¿dej linii na liczbê zmiennoprzecinkow±
+podwójnej precyzji.  Umo¿liwia to podawanie liczb zmiennoprzecinkowych
+w notacji naukowej, jak @code{1.0e-34} czy @code{10e100}.  Nie zg³asza
+nadmiaru, niedomiaru czy b³êdów konwersji.  Wykorzystuje nastêpuj±cy porz±dek
+leksykograficzny:
+
+@itemize @bullet
+@item
+Linie nie rozpoczynaj±ce siê liczbami (wszystkie uwa¿ane za równe).
+@item
+Warto¶ci NaN (,,Not a Number'') w arytmetyce zmiennoprzecinkowej IEEE
+w spójnej, ale zale¿nej od architektury komputera kolejno¶ci.
+@item
+Minus nieskoñczono¶æ.
+@item
+Liczby skoñczone w kolejno¶ci rosn±cej (z równymi @math{-0} i @math{+0}).
+@item
+Plus nieskoñczono¶æ.
+@end itemize
+
+Opcji tej nale¿y u¿ywaæ tylko wtedy, gdy nie ma innej alternatywy.  Jest
+znacznie wolniejsza ni¿ @samp{-n} i przy konwersji na zmiennoprzecinkowe
+mo¿na utraciæ informacjê.
+
+@item -i
+@opindex -i
+@cindex niedrukowalne znaki, ignorowanie
+Ignoruje znaki niedrukowalne.
+
+@item -M
+@opindex -M
+@cindex miesi±ce, sortowanie wg
+@cindex sortowanie wg miesiêcy
+@vindex LC_TIME
+Ka¿dy pocz±tkowy ³añcuch sk³adaj±cy siê z dowolnej ilo¶ci bia³ych znaków
+plus trzy litery bêd±ce skrótem nazwy miesi±ca jest zamieniany na
+DU¯E litery i porównywany w porz±dku @samp{JAN} < @samp{FEB} < @dots{}
+< @samp{DEC}.
+Przy porównywaniu nieprawid³owe nazwy s± mniejsze od poprawnych.
+Ustawienie narodowe @env{LC_TIME} wyznacza pisowniê nazw miesiêcy.
+
+@item -n
+@opindex -n
+@cindex numeryczne sortowanie
+@cindex sortowanie numeryczne
+@vindex LC_NUMERIC
+Sortowanie numeryczne: ka¿d± liniê rozpoczyna liczba. Sk³adaj± siê na ni±
+opcjonalne bia³e znaki, opcjonalny znak @samp{-}, oraz zero lub wiêcej cyfr,
+które mog± byæ oddzielone separatorami tysiêcy, plus opcjonalnie wystêpuj±cy
+separator dziesiêtny i zero lub wiêcej cyfr dziesiêtnych.  Ustawienie narodowe
+@var{LC_NUMERIC} okre¶la znak separatora dziesiêtnego i separatora tysiêcy.
+
+@code{sort -n} wykorzystuje co¶, co mo¿e byæ uwa¿ane za niekonwencjonaln±
+metodê porównywania ³añcuchów reprezentuj±cych liczby zmiennoprzecinkowe.
+Zamiast najpierw zamieniaæ ka¿dy ³añcuch na typ @code{double} jêzyka C
+a nastêpnie porównywaæ ich warto¶ci, sort wyrównuje znaki separatora
+dziesiêtnego w dwu ³añcuchach i porównuje je znak po znaku.  Jedn± z korzy¶ci
+z takiego podej¶cia jest jego szybko¶æ.  W praktyce jest to o wiele
+wydajniejsze ni¿ wykonywanie dwu odpowiednich konwersji string-double
+(lub nawet string-integer) i nastêpnie porównywanie liczb podwójnej precyzji.
+Dodatkowo, nie wystêpuje tu towarzysz±ca utrata dok³adno¶ci. Konwersja przed
+porównaniem ka¿dego ³añcucha na typ @code{double} ogranicza³aby dok³adno¶æ
+do oko³o 16 cyfr w wiêkszo¶ci systemów.
+
+Nie jest rozpoznawany ani pocz±tkowy znak @samp{+}, ani notacja wyk³adnicza.
+Do porównywania numerycznego takich ³añcuchów nale¿y u¿yæ opcji @samp{-g}.
+
+@item -r
+@opindex -r
+@cindex odwrotne sortowanie
+@cindex sortowanie odwrotne
+Odwraca rezultat porównania, tak i¿ linie z wiêkszymi warto¶ciami
+klucza pojawiaj± siê w wyniku wcze¶niej, a nie pó¼niej.
+
+@end table
+
+Inne opcje to:
+
+@table @samp
+
+@item -o @var{plik-wyj}
+@opindex -o
+@cindex nadpisywanie pliku wej¶ciowego, dozwolone
+Wypisuje wynik do @var{plik-wyj}, a nie na standardowe wyj¶cie.  Je¶li
+@var{plik-wyj} jest jednym z plików wej¶ciowych, @code{sort} kopiuje go
+do pliku tymczasowego przed sortowaniem i wypisaniem wyniku do @var{plik-wyj}.
+
+@item -t @var{separator}
+@opindex -t
+@cindex znak separatora pól
+@cindex pola, znak separatora
+U¿ywa znaku @var{separator} jako separatora pól podczas szukania kluczy
+sortowania w ka¿dej linii.  Domy¶lnie pola oddzielone s± ³añcuchem pustym
+pomiêdzy znakami nie bêd±cymi bia³ym znakiem i bia³ymi znakami.  To znaczy,
+liniê wej¶cia @w{@samp{ foo bar}}, @code{sort} rozk³ada na pola
+@w{@samp{ foo}} i @w{@samp{ bar}}.  Separator pól nie jest uwa¿any za czê¶æ
+ani pola, które go poprzedza ani tego, które po nim nastêpuje.
+
+@item -u
+@opindex -u
+@cindex bez duplikatów w wyj¶ciu
+@cindex unikalne linie w wyj¶ciu
+W przypadku domy¶lnym lub opcji @samp{-m}, wypisuje tylko pierwsz±
+z sekwencji linii porównanych jako równe.  Dla opcji @samp{-c} sprawdza czy
+¿adna para kolejnych linii w wyniku porównania nie jest równa.
+
+@item -k @var{poz1}[,@var{poz2}]
+@opindex -k
+@cindex pola sortowania
+@cindex sortowanie, pola
+Zalecana, @sc{posix}-owa sk³adnia okre¶lania pól sortowania.
+Pole jest czê¶ci± linii pomiêdzy @var{poz1} i @var{poz2} (lub koñcem linii,
+je¶li pominiêto @var{poz2}) @emph{w³±cznie}.  Pola i pozycje znaków
+numerowane s± pocz±wszy od 1.  Zatem sortowanie wed³ug drugiego pola
+wymaga³oby @samp{-k 2,2}.
+Poni¿ej znajdziesz wiêcej przyk³adów.
+
+@item -z
+@opindex -z
+@cindex sortowanie linii zakoñczonych znakiem zero
+Traktuje wej¶cie jako zestaw linii zakoñczonych bajtem zerowym (znak @sc{ascii}
+@sc{nul} (null)) a nie @sc{ascii} @sc{lf} (koniec linii).  Opcja ta mo¿e byæ
+przydatna w po³±czeniu z @samp{perl -0} lub @samp{find -print0}
+i @samp{xargs -0}, które robi± to samo w celu niezawodnego zachowania
+dowolnych nazw ¶cie¿ek (nawet zawieraj±cych znaki koñca linii).
+
+@item +@var{poz1}[-@var{poz2}]
+Przestarza³a, tradycyjna opcja okre¶lania pól sortowania.
+Okre¶la pole w ka¿dej linii, którego nale¿y u¿yæ jako klucza sortowanie.
+Pole to sk³ada siê z czê¶ci linii zaczynaj±cej siê na @var{poz1} a¿ do
+(ale @emph{nie w³±cznie z}) @var{poz2} (albo do koñca linii je¶li nie podano
+@var{poz2}).  Pola i pozycje znaków numerowane s± pocz±wszy od 0.
+Zob. poni¿ej.
+
+@end table
+
+Dodatkowo, kiedy GNU @code{sort} wywo³any zosta³ z dok³adnie jednym
+argumentem, rozpoznawane s± opcje @samp{--help} i @samp{--version}.
+@xref{Wspólne opcje}.
+
+Historyczne (z BSD i System V) implementacje @code{sort} ró¿ni³y siê
+w interpretacji niektórych opcji, szczególnie @samp{-b}, @samp{-f}
+i @samp{-n}.  GNU sort na¶laduje zachowanie POSIXowe, które jest zwykle
+(ale nie zawsze!) podobne do zachowania z System V.
+Wed³ug @sc{posix} @samp{-n} nie zak³ada ju¿ @samp{-b}.  Dla spójno¶ci, w ten
+sam sposób zmieniono @samp{-M}.  Mo¿e to wp³yn±æ na znaczenie pozycji znaków
+w okre¶leniach pól w pewnych zagmatwanych przypadkach.
+Jedynym rozwi±zaniem jest dodanie wprost opcji @samp{-b}.
+
+Pozycja w polu sortowania w opcjach @samp{-k} i @samp{+} ma postaæ
+@samp{@var{f}.@var{c}}, gdzie @var{f} to numer pola, które ma zostaæ u¿yte
+a @var{c} to numer pierwszego znaku od pocz±tku pola (dla @samp{+@var{poz}})
+albo od koñca poprzedniego pola (dla @samp{-@var{poz}}).  Czê¶æ @samp{.@var{c}}
+pozycji mo¿e zostaæ pominiêta; w tym przypadku uwa¿a siê j± za oznaczaj±c±
+pierwszy znak pola.  Je¶li podano opcjê @samp{-b}, czê¶æ @samp{.@var{c}}
+okre¶lenia pola liczona jest od pierwszego niepustego znaku pola (dla
+@samp{+@var{poz}}) lub ostatniego niepustego znaku stoj±cego
+po poprzednim polu (dla @samp{+@var{poz}}).
+
+Opcja wyznaczaj±ca klucz sortowania mo¿e tak¿e zawieraæ do³±czon± dowoln±
+z liter opcji @samp{Mbdfinr}, wówczas dla tego konkretnego pola nie s±
+u¿ywane globalne opcje porz±dkowania.  Opcja @samp{-b} mo¿e byæ do³±czona
+niezale¿nie do jednej z lub obu czê¶ci @samp{+@var{poz}} i @samp{-@var{poz}}
+okre¶lenia pola, a je¶li zosta³a odziedziczona z opcji globalnych, zostanie
+do³±czona do obydwu.  Klucze mog± siê rozci±gaæ na kilka pól.
+
+A oto nieco przyk³adów ilustruj±cych rozmaite kombinacje opcji.
+Do okre¶lania kluczy sortowania u¿ywana jest w nich @sc{posix}-owa opcja
+@samp{-k}, zamiast przestarza³ej sk³adni @samp{+@var{poz1}-@var{poz2}}.
+
+@itemize @bullet
+
+@item
+Sortowanie w malej±cej (odwrotnej) kolejno¶ci numerycznej:
+
+@example
+sort -nr
+@end example
+
+Sortowanie alfabetyczne, przy pominiêciu pierwszych i drugich pól. Pos³uguje
+siê pojedynczym kluczem z³o¿onym ze znaków od pocz±tku trzeciego pola
+do koñca ka¿dej linii:
+
+@example
+sort -k3
+@end example
+
+@item
+Sortowanie numeryczne wed³ug drugiego pola i rozstrzyganie przeszkód przez
+@c   resolve ties by sorting
+sortowanie alfabetyczne wg trzeciego i czwartego znaku pi±tego pola.
+Znakiem ograniczaj±cym pola jest dwukropek @samp{:}
+
+@example
+sort -t : -k 2,2n -k 5.3,5.4
+@end example
+
+Zauwa¿, ¿e w przypadku napisania @samp{-k 2} zamiast @samp{-k 2,2},
+@code{sort} wykorzysta³by wszystkie znaki pocz±wszy od drugiego pola,
+a skoñczywszy na koñcu linii jako pierwszy klucz @emph{numeryczny}.
+W wiêkszo¶ci zastosowañ, traktowanie jako numeryczne kluczy z³o¿onych
+z wiêcej ni¿ jednego pola nie daje oczekiwanego wyniku.
+
+Zauwa¿ te¿, ¿e do okre¶lnika koñca pola dla pierwszego klucza zosta³
+zastosowany modyfikator @samp{-n}. By³by równowa¿ny podaniu @samp{-k 2n,2}
+lub @samp{-k 2n,2n}. Wszystkie modyfikatory z wyj±tkiem @samp{b} odnosz± siê
+do odno¶nego @emph{pola}, niezale¿nie od tego czy s± do³±czone do okre¶lenia
+pocz±tku pola, koñca czy obu.
+
+@item
+Sortowanie pliku hase³ wed³ug pi±tego pola, ignorowane s± pocz±tkowe
+bia³e znaki. Sortowanie linii z równymi warto¶ciami pi±tego pola wed³ug
+numerycznego identyfikatora u¿ytkownika z pola trzeciego:
+
+@example
+sort -t : -k 5b,5 -k 3,3n /etc/passwd
+@end example
+
+Alternatyw± jest zastosowanie globalnego modyfikatora numerycznego @samp{-n}:
+
+@example
+sort -t : -n -k 5b,5 -k 3,3 /etc/passwd
+@end example
+
+@item
+Utworzenie pliku znaczników (tags) w kolejno¶ci sortowania niewra¿liwej
+na wielko¶æ liter:
+@example
+find src -type f -print0 | sort -t / -z -f | xargs -0 etags --append
+@end example
+
+U¿ycie w tym przypadku @samp{-print0}, @samp{-z} i @samp{-0} oznacza, ¿e
+¶cie¿ki zawieraj±ce znaki nowej linii nie bêd± rozbijane przez operacjê
+sortowania.
+
+Na koniec: do zignorowania zarówno pocz±tkowych jak i koñcowych bia³ych
+znaków mo¿na zastosowaæ modyfikator @samp{b} do koñcowego okre¶lnika
+pierwszego klucza
+
+@example
+sort -t : -n -k 5b,5b -k 3,3 /etc/passwd
+@end example
+
+lub u¿yæ globalnego modyfikatora @samp{-b} zamiast @samp{-n} i bezpo¶redniego
+@samp{n} przy okre¶leniu drugiego klucza:
+
+@example
+sort -t : -b -k 5,5 -k 3,3n /etc/passwd
+@end example
+
+@c This example is a bit contrived and needs more explanation.
+@c @item
+@c Sort records separated by an arbitrary string by using a pipe to convert
+@c each record delimiter string to @samp{\0}, then using sort's -z option,
+@c and converting each @samp{\0} back to the original record delimiter.
+@c
+@c @example
+@c printf 'c\n\nb\n\na\n'|perl -0pe 's/\n\n/\n\0/g'|sort -z|perl -0pe 's/\0/\n/g'
+@c @end example
+
+@end itemize
+
+
+@node Wywo³anie uniq
+@section @code{uniq}: pozostawianie unikalnych linii w pliku
+
+@pindex uniq
+@cindex bez duplikatów w wyj¶ciu
+@cindex unikalne linie w wyj¶ciu
+
+@code{uniq} wypisuje unikatowe linie z @var{wej¶cia} (standardowego
+wej¶cia je¶li nie podano ¿adnego pliku wej¶ciowego lub podanym
+@var{wej¶ciem} jest @samp{-}).  Sk³adnia:
+
+@example
+uniq [@var{opcja}]@dots{} [@var{wej¶cie} [@var{wyj¶cie}]]
+@end example
+
+Domy¶lnie, @code{uniq} wypisuje z posortowanego pliku niepowtarzaj±ce
+siê linie, tj. odrzuca z kolejnych identycznych linii wszystkie poza
+jedn±.  Mo¿e te¿, opcjonalnie, pokazywaæ tylko linie, które pojawiaj±
+siê tylko raz, b±d¼ linie które pojawiaj± siê wiêcej ni¿ raz.
+
+Wej¶cie programu musi byæ posortowane. Je¶li nie jest posortowane,
+mo¿na zamiast @code{uniq} u¿yæ @code{sort -u}.
+
+Je¶li nie podano pliku @var{wyj¶ciowego}, @code{uniq} pisze na standardowe
+wyj¶cie.
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -@var{n}
+@itemx -f @var{n}
+@itemx --skip-fields=@var{n}
+@opindex -@var{n}
+@opindex -f
+@opindex --skip-fields
+Przed sprawdzeniem unikalno¶ci ka¿dej linii pomija w niej @var{n} pól.
+Pola definiowane s± jako ³añcuchy znaków nie bêd±cych spacjami ani
+tabulacjami, rozdzielone od siebie spacjami lub tabulacjami.
+
+@item +@var{n}
+@itemx -s @var{n}
+@itemx --skip-chars=@var{n}
+@opindex +@var{n}
+@opindex -s
+@opindex --skip-chars
+Pomija @var{n} znaków przed sprawdzeniem unikalno¶ci.  
+Je¶li u¿yto zarówno pomijania pól jak i znaków, pola s± pomijane w pierwszej
+kolejno¶ci.
+
+@item -c
+@itemx --count
+@opindex -c
+@opindex --count
+Wypisuje razem z lini± ile razy siê ona powtórzy³a.
+
+@item -i
+@itemx --ignore-case
+@opindex -i
+@opindex --ignore-case
+Podczas porównywania linii ignoruje ró¿nice pomiêdzy ma³ymi a du¿ymi literami.
+
+@item -d
+@itemx --repeated
+@opindex -d
+@opindex --repeated
+@cindex zdublowane linie, wypisywanie
+@cindex powtarzaj±ce siê linie, wypisywanie
+Wypisuje tylko linie powtarzaj±ce siê.
+
+@item -D
+@itemx --all-repeated
+@opindex -D
+@opindex --all-repeated
+@cindex powtarzaj±ce siê linie, wypisywanie tylko takich
+Wypisuje wszystkie linie powtarzaj±ce siê i tylko linie powtarzaj±ce siê.
+Opcja ta przydatna jest g³ównie w po³±czeniu z innymi np. do ignorowania
+wielko¶ci liter lub porównywania tylko wybranych pól.
+Jest to rozszerzenie GNU.
+@c FIXME: give an example showing *how* it's useful
+
+@item -u
+@itemx --unique
+@opindex -u
+@opindex --unique
+@cindex unikatowe linie, wypisywanie
+Wypisuje tylko linie unikatowe.
+
+@item -w @var{n}
+@itemx --check-chars=@var{n}
+@opindex -w
+@opindex --check-chars
+Okre¶la ilo¶æ znaków, które nale¿y porównywaæ w liniach, po pominiêciu
+wszystkich wskazanych pól i znaków.  Normalnie porównywana jest ca³a
+reszta linii.
+
+@end table
+
+
+@node Wywo³anie comm
+@section @code{comm}: porównywanie dwu posortowanych plików liniami
+
+@pindex comm
+@cindex linia-po-linii, porównywanie
+@cindex porównywanie posortowanych plików
+
+@code{comm} wypisuje z dwóch plików wej¶ciowych linie, które s± wspólne
+oraz linie, które s± unikatowe.  Nazwa pliku @samp{-} oznacza standardowe
+wej¶cie.  Sk³adnia:
+
+@example
+comm [@var{opcja}]@dots{} @var{plik1} @var{plik2}
+@end example
+
+@vindex LC_COLLATE
+Oba pliki musz± byæ posortowane zanim bêdzie mo¿na u¿yæ @code{comm}, przy
+czym koñcz±ce znaki nowej linii s± znacz±ce.  Przy sortowaniu powinien byæ
+zastosowany porz±dek znaków okre¶lony ustawieniem narodowym @env{LC_COLLATE}.
+Je¿eli plik wej¶ciowy koñczy siê innym znakiem, to znak nowej linii jest
+po cichu dok³adany.  Polecenie @code{sort} bez opcji zawsze daje plik
+bêd±cy odpowiednim wej¶ciem dla @code{comm}.
+
+@cindex odró¿niaj±ce linie
+@cindex wspólne linie
+Bez opcji @code{comm} wypisuje wynik w trzech kolumnach.  Kolumna pierwsza
+zawiera linie unikatowe dla @var{plik1}, kolumna druga zawiera linie
+unikatowe dla @var{plik2}, a kolumna trzecia zawiera linie wspólne obu
+plikom.  Kolumny oddzielone s± pojedynczym znakiem tabulacji.
+@c FIXME: when there's an option to supply an alternative separator
+@c string, append `by default' to the above sentence.
+
+@opindex -1
+@opindex -2
+@opindex -3
+Opcje @samp{-1}, @samp{-2} i @samp{-3} wy³±czaj± wypisywanie odpowiednich
+kolumn.  Zobacz te¿ @ref{Wspólne opcje}.
+
+W odró¿nieniu od niektórych innych narzêdzi porównywania, @code{comm} podaje
+kod zakoñczenia niezale¿ny od wyniku porównania.  Przy normalnym zakoñczeniu
+pracy daje kod zero.  Przy b³êdzie koñczy pracê z kodem niezerowym.
+
+
+@node Wywo³anie tsort
+@section @code{tsort}: sortowanie topologiczne
+
+@pindex tsort
+@cindex sortowanie topologiczne
+@cindex topologiczne, sortowanie
+
+@code{tsort} wykonuje sortowanie topologiczne zadanego @var{pliku} lub
+standardowego wej¶cia je¶li nie podano pliku lub podano plik o nazwie
+@samp{-}.  Sk³adnia:
+
+@example
+tsort [@var{opcja}] [@var{plik}]
+@end example
+
+@code{tsort} czyta wej¶cie jako pary ³añcuchów, oddzielanych odstêpami,
+opisuj±ce czê¶ciowe uporz±dkowanie.  Wyj¶ciem jest ca³kowite uporz±dkowanie
+odpowiadaj±ce zadanemu uporz±dkowaniu czê¶ciowemu.
+
+[t³um.:
+Pary ³añcuchów s± nazwami wêz³ów wyznaczaj±cych pocz±tek i koniec krawêdzi
+grafu skierowanego.
+Je¿eli wêze³ nie jest po³±czony z innymi, mo¿na do sortowania topologicznego
+zapisaæ go jako po³±czony z samym sob±.]
+
+Na przyk³ad:
+
+@example
+tsort <<EOF
+a b c
+d
+e f
+b c d e
+EOF
+@end example
+
+@noindent
+da jako wynik:
+
+@example
+a
+b
+c
+d
+e
+f
+@end example
+
+@code{tsort} rozpoznaje pêtle (cykle grafu) w wej¶ciu i wypisuje pierwsz±
+napotkan± na standardowe wyj¶cie b³êdów.
+
+Zauwa¿, ¿e dla danego uporz±dkowania czê¶ciowego zazwyczaj nie istnieje
+unikatowe uporz±dkowanie ca³kowite.
+
+Jedynymi opcjami s± @samp{--help} i @samp{--version}.  @xref{Wspólne opcje}.
+
+
+@node Wywo³anie ptx
+@section @code{ptx}: tworzenie indeksu permutacyjnego
+
+@pindex ptx
+
+@code{ptx} czyta plik tekstowy i zasadniczo tworzy indeks permutacyjny,
+z ka¿dym s³owem kluczowym umieszczonym we w³asnym kontek¶cie.
+Schemat wywo³ania jest jednym z:
+
+@example
+ptx [@var{opcja} @dots{}] [@var{plik} @dots{}]
+ptx -G [@var{opcja} @dots{}] [@var{wej¶cie} [@var{wyj¶cie}]]
+@end example
+
+Opcja @samp{-G} (lub równowa¿na jej @samp{--traditional}) wy³±cza wszystkie
+rozszerzenia GNU i przywraca tryb tradycyjny, wprowadzaj±c w ten sposób pewne
+ograniczenia i zmieniaj±c niektóre warto¶ci domy¶lne opcji programu.
+Je¿eli nie podano @samp{-G}, to rozszerzenia GNU s± zawsze aktywne. S± one
+opisane w odpowiednich miejscach tej dokumentacji.
+Pe³na lista znajduje siê w czê¶ci @xref{Zgodno¶æ w ptx}.
+
+Poszczególne opcje wyja¶niono w dalszych sekcjach.
+
+Przy w³±czonych rozszerzeniach GNU, po opcjach mo¿e wyst±piæ zero, jeden
+lub kilka @var{plików}.  Je¿eli nie podano plików, to program czyta
+standardowe wej¶cie.  Je¿eli podano jakie¶ pliki wej¶ciowe, to s± one czytane
+naraz tak, jakby by³y sklejone.  S± jednak zupe³nie rozdzielone kontekstowo,
+i, przy ¿±daniu automatycznego tworzenia odno¶ników, nazwy plików i numery
+linii odnosz± siê do poszczególnych tekstowych plików wej¶ciowych.
+We wszystkich przypadkach program tworzy indeks permutacyjny na standardowym
+wyj¶ciu.
+
+Przy @emph{wy³±czonych} rozszerzeniach GNU, to znaczy, gdy program dzia³a
+w tradycyjnym trybie pracy, oprócz opcji mo¿e istnieæ zero, jeden lub dwa
+parametry.  Je¶li nie ma parametrów, to program czyta standardowe wej¶cie
+i tworzy indeks permutacyjny na standardowym wyj¶ciu.  Je¿eli jest tylko
+jeden parametr, to okre¶la on nazwê pliku wej¶ciowego, z którego, zamiast
+ze standardowego wej¶cia, bêdzie prowadzony odczyt.  Je¿eli podano dwa
+parametry, to okre¶laj± one odpowiednio plik wej¶ciowy i tworzony plik
+wyj¶ciowy.  @emph{B±d¼ bardzo ostro¿ny}, gdy¿ w tym przypadku
+zawarto¶æ pliku podanego jako przez drugi parametr jest niszczona.
+Zachowanie takie podyktowane jest wy³±cznie zgodno¶ci± z @code{ptx}
+Systemu V, gdy¿ Standardy GNU stanowczo odradzaj± parametry wyj¶ciowe
+nie poprzedzane opcj±.
+
+Zauwa¿, ¿e jako @emph{dowoln±} z nazw plików wej¶ciowych lub warto¶æ opcji
+okre¶laj±cej plik mo¿na podaæ pojedynczy my¶lnik @kbd{-}.  W takim przypadku
+przyjmowane jest standardowe wej¶cie.  Jednak nie ma sensu u¿ywanie tej
+konwencji wiêcej ni¿ raz w danym wywo³aniu programu.
+
+@menu
+* Ogólne opcje ptx::            Opcje wp³ywaj±ce na ogólne dzia³anie.
+* Wybór zestawu znaków ptx::    Kwestie stosowanego zestawu znaków.
+* Przetwarzanie wej¶cia ptx::   Wybór pól, kontekstów, s³ów kluczowych.
+* Formatowanie wyników ptx::    Typy formatów wyj¶ciowych, rozmiary pól.
+* Zgodno¶æ w ptx::              Rozszerzenia GNU w @code{ptx}
+@end menu
+
+
+@node Ogólne opcje ptx
+@subsection Ogólne opcje
+
+@table @samp
+
+@item -C
+@itemx --copyright
+Wypisuje krótk± notê o prawach autorskich i warunkach kopiowania, nastêpnie
+koñczy pracê bez dalszego przetwarzania.
+
+@item -G
+@itemx --traditional
+Jak ju¿ wyja¶niono, wy³±cza wszystkie rozszerzenia GNU @code{ptx} i prze³±cza
+siê na tradycyjny tryb dzia³ania.
+
+@item --help
+Wy¶wietla krótk± informacjê pomocy na standardowym wyj¶ciu, nastêpnie koñczy
+pracê bez dalszego przetwarzania.
+
+@item --version
+Wypisuje numer wersji programu na standardowym wyj¶ciu, nastêpnie koñczy
+pracê bez dalszego przetwarzania.
+
+@end table
+
+
+@node Wybór zestawu znaków ptx
+@subsection Wybór zestawu znaków
+
+Przy obecnej konfiguracji, program zak³ada, ¿e plik jest zakodowany
+przy zastosowaniu 8-bitowego ISO 8859-1, zwanego te¿ zestawem znaków
+Latin-1, @emph{chyba ¿e} zostanie skompilowany dla MS-DOS, wówczas u¿ywa
+zestawu IBM-PC.  (Nic nie wiadomo o tym, by GNU @code{ptx} nadal dzia³a³
+na mniejszych maszynach MS-DOS.)  W porównaniu z 7-bitowym @sc{ascii}, zestaw
+znaków bêd±cych literami jest wiêc inny.  Fakt ten zmienia zachowanie
+dopasowywania wyra¿eñ regularnych.  St±d te¿, domy¶lne wyra¿enie regularne
+dla s³owa kluczowego dopuszcza akcentowane litery i litery spoza alfabetu
+angielskiego.  Sortowanie s³ów kluczowych jest jednak nadal niewykoñczone:
+przestrzega ¶lepo odno¶nego uporz±dkowania zestawu znaków.
+
+@table @samp
+
+@item -f
+@itemx --ignore-case
+Do celów sortowania zamienia ma³e litery na du¿e.
+
+@end table
+
+
+@node Przetwarzanie wej¶cia ptx
+@subsection Wybór s³ów i przetwarzanie wej¶cia
+
+@table @samp
+
+@item -b @var{plik}
+@item --break-file=@var{plik}
+
+Zapewnia alternatywny (dla @samp{-W}) sposób opisywania, jakie znaki tworz±
+s³owa.  Podany w tej opcji @var{plik} zawiera listê znaków, które
+@emph{nie mog±} byæ czê¶ci± jednego s³owa.  Plik ten zwany jest @dfn{plikiem
+podzia³u} (@dfn{Break file}).  Ka¿dy ze znaków nie bêd±cy czê¶ci± pliku
+podzia³u jest sk³adow± s³ów.  Je¿eli podano obie opcje: @samp{-b} i @samp{-W},
+to @samp{-W} ma pierwszeñstwo a @samp{-b} jest ignorowana.
+
+Przy w³±czonych rozszerzeniach GNU jedynym sposobem unikniêcia interpretacji
+znaku nowej linii jako znaku podzia³u jest zapisanie wszystkich znaków
+podzia³u w pliku nie zawieraj±cym w ogóle znaku nowej linii, nawet na koñcu.
+Przy wy³±czonych rozszerzeniach GNU spacje, tabulacje i znaki nowej linii
+zawsze uwa¿ane s± za znaki podzia³u, nawet je¶li nie ma ich w pliku podzia³u.
+
+@item -i @var{plik}
+@itemx --ignore-file=@var{plik}
+
+Plik zwi±zany z t± opcj± zawiera listê s³ów, które nigdy nie powinny byæ
+brane jako s³owa kluczowe w skorowidzu wyj¶ciowym.  Zwany jest @dfn{plikiem
+pomijania} (@dfn{Ignore file}).  Zawiera w ka¿dej linii dok³adnie jedno s³owo.
+Koniec linii rozdzielaj±cej s³owa nie podlega opcji @samp{-S}.
+
+Istnieje domy¶lny plik pomijania u¿ywany przez @code{ptx}, gdy nie podano
+niniejszej opcji, zwykle w @file{/usr/local/lib/eign}, je¶li nie zmieniono
+tego podczas instalacji.  Chc±c deaktywowaæ domy¶lny plik pomijania nale¿y
+podaæ plik @code{/dev/null}.
+
+@item -o @var{plik}
+@itemx --only-file=@var{plik}
+
+Plik zwi±zany z t± opcj± zawiera listê s³ów, które pozostan± w skorowidzu
+wyj¶ciowym. Ka¿de s³owo nie ujête w tym pliku jest pomijane. Plik zwany
+jest @dfn{plikiem wy³±czno¶ci} (@dfn{Only file}).  Zawiera po jednym s³owie
+w ka¿dej linii.  Koniec linii rozdzielaj±cej s³owa nie podlega opcji @samp{-S}.
+
+Dla pliku wy³±czno¶ci nie ma ustawienia domy¶lnego. W przypadku wyst±pienia
+zarówno pliku pomijania jak i pliku wy³±czno¶ci s³owo uwa¿ane jest
+za kluczowe tylko wtedy, gdy podano je w pliku wy³±czno¶ci a nie podano
+w pliku pomijania.
+
+@item -r
+@itemx --references
+
+W ka¿dej linii wej¶ciowej pocz±tkowa sekwencja nie-bia³ych znaków zostanie
+przyjêta za odno¶nik, którego celem jest identyfikacja tej linii
+w utworzonym indeksie permutacyjnym.  Wiêcej na temat tworzenia odno¶ników
+zob. @xref{Formatowanie wyników ptx}.  U¿ycie tej opcji zmienia domy¶ln±
+warto¶æ opcji @samp{-S}.
+
+Przy wykorzystaniu opcji @samp{-r} program nie próbuje zbyt usilnie
+usuwaæ odno¶ników z kontekstów wyj¶cia, ale udaje mu siê to poprawnie
+@emph{je¶li} kontekst koñczy siê dok³adnie na znaku nowej linii.
+Je¿eli opcji tej u¿yto z domy¶ln± warto¶ci± opcji @samp{-S}, lub je¶li
+wy³±czone s± rozszerzenia GNU, warunek ten jest zawsze spe³niony.
+Odno¶niki s± wówczas ca³kowicie wykluczone z kontekstów wynikowych.
+
+@item -S @var{regexp}
+@itemx --sentence-regexp=@var{regexp}
+
+Okre¶la, jakie wyra¿enie regularne bêdzie opisywaæ koniec linii lub koniec
+zdania.  W rzeczywisto¶ci istnieje inne rozró¿nienie pomiêdzy koñcami linii
+czy koñcami zdañ ni¿ wynik tego wyra¿enia regularnego, a granice linii
+wej¶ciowych nie maj± ¿adnego specjalnego znaczenia poza t± opcj±.  Domy¶lnie,
+gdy w³±czone s± rozszerzenia GNU, a nie jest u¿ywana opcja @samp{-r},
+u¿ywane s± koñce zdañ.  W tym przypadku u¿ywane jest dok³adne @var{regexp}
+zapo¿yczone z GNU emacsa:
+
+@example
+[.?!][]\"')@}]*\\($\\|\t\\|  \\)[ \t\n]*
+@end example
+
+Gdy wy³±czone s± rozszerzenia GNU lub u¿yta opcja @samp{-r}, u¿ywane s±
+koñce linii.  W tym przypadku, domy¶lnym wyra¿eniem regularnym jest po prostu:
+
+@example
+\n
+@end example
+
+Zastosowanie pustego @var{regexp} jest równowa¿ne ca³kowitemu wy³±czeniu
+rozpoznawania koñca linii lub koñca zdania.  Ca³y plik jest wówczas traktowany
+jak jedna d³uga linia lub zdanie.  U¿ytkownik mo¿e równie¿ zakazaæ
+generowania wszystkich flag obcinania, korzystaj±c z opcji @samp{-F ""}.
+@xref{Regexps, , Syntax of Regular Expressions, emacs, The GNU Emacs Manual}.
+
+Gdy s³owa kluczowe trafiaj± siê blisko pocz±tku zdania lub linii wej¶ciowej,
+czêsto tworzy to niewykorzystany obszar na pocz±tku wynikowej linii
+kontekstu.  Gdy s³owa kluczowe s± blisko koñca zdania lub linii wej¶ciowej,
+czêsto tworzy to niewykorzystany obszar na koñcu wynikowej linii.
+Program usi³uje wype³niæ te obszary zawijaj±c kontekst w ich wnêtrzu.
+Koñcówka zdania (linii wej¶ciowej) u¿ywana jest do wype³nienia
+niewykorzystanego obszaru po lewej stronie linii wynikowej,
+pocz±tek u¿ywany jest do wype³nienia obszaru po prawej.
+
+Dla wygody u¿ytkownika rozpoznawanych jest wiele zwyczajowych sekwencji
+specjalnych (poprzedzanych odwrotnym uko¶nikiem), jakie wystêpuj± w C.
+S± one przekszta³cane na odpowiadaj±ce im znaki przez sam @code{ptx}.
+
+@item -W @var{regexp}
+@itemx --word-regexp=@var{regexp}
+
+Okre¶la, jakie wyra¿enie regularne bêdzie opisywaæ ka¿de ze s³ów kluczowych.
+Domy¶lnie, je¶li w³±czone s± rozszerzenia GNU, s³owo jest sekwencj± liter:
+u¿ywanym @var{regexp} jest @samp{\w+}.  Gdy rozszerzenia GNU s± wy³±czone,
+s³owem jest domy¶lnie wszystko koñcz±ce siê spacj±, tabulacj± lub znakiem
+nowej linii: u¿ywanym @var{regexp} jest @samp{[^ \t\n]+}.
+
+Puste wyra¿enie regularne jest równowa¿ne nie podaniu tej opcji, pozwalaj±c
+zadzia³aæ domy¶lnemu.
+@xref{Regexps, , Syntax of Regular Expressions, emacs, The GNU Emacs Manual}.
+
+Dla wygody u¿ytkownika rozpoznawanych jest wiele zwyczajowych sekwencji
+specjalnych (poprzedzanych odwrotnym uko¶nikiem), jakie wystêpuj± w C.
+S± one przekszta³cane na odpowiadaj±ce im znaki przez sam @code{ptx}.
+
+@end table
+
+
+@node Formatowanie wyników ptx
+@subsection Formatowanie wyj¶cia ptx
+
+Format wynikowy jest sterowany g³ównie opcjami @samp{-O} i @samp{-T},
+opisanych poni¿ej.  Je¿eli nie wybrano ani opcji @samp{-O} ani @samp{-T},
+a w³±czone s± rozszerzenia GNU, to program wybiera format wyj¶ciowy
+odpowiedni dla terminala uproszczonego.  Ka¿de wyst±pienie s³owa kluczowego
+wypisywane jest na ¶rodku jednej linii, otoczone przez swój lewy i prawy
+kontekst.  Pola s± poprawnie wyrównywane, wiêc skorowidz wynikowy mo¿na
+z ³atwo¶ci± studiowaæ.
+Je¿eli wybrano automatyczne odno¶niki opcj± @samp{-A} i s± one wypisane przed
+lewym kontekstem, to jest, je¿eli @emph{nie} wybrano opcji @samp{-R}, to po
+odno¶niku dodawany jest dwukropek.  £adnie wspó³pracuje to z przetwarzaniem
+przez GNU Emacsa @code{next-error}.  W tym domy¶lnym formacie wyj¶ciowym,
+ka¿dy bia³y znak, jak znak nowej linii czy tabulacja, jest po prostu
+zamieniany na dok³adnie jedn± spacjê, bez specjalnych prób kompresowania
+ci±gu kolejnych spacji.  W przysz³o¶ci mo¿e siê to zmieniæ. Za wyj±tkiem
+bia³ych znaków, ka¿dy inny znak odno¶nego zestawu 256 znaków przekazywany
+jest dos³ownie.
+
+Format wyj¶ciowy sterowany jest dodatkowo poni¿szymi opcjami.
+
+@table @samp
+
+@item -g @var{liczba}
+@itemx --gap-size=@var{liczba}
+
+Okre¶la rozmiar minimalnej przerwy pomiêdzy polami w linii wyj¶ciowej.
+
+@item -w @var{liczba}
+@itemx --width=@var{liczba}
+
+Okre¶la maksymaln± szeroko¶æ ka¿dej ostatecznej linii wyj¶cia.  Je¿eli
+stosowane s± odno¶niki, to s± one ujête lub nie ujête w tej szeroko¶ci
+w zale¿no¶ci od warto¶ci opcji @samp{-R}.  Je¿eli nie u¿yto tej opcji,
+to znaczy, gdy odno¶niki wypisywane s± przed lewym kontekstem, maksymalna
+szeroko¶æ wyj¶cia bierze pod uwagê maksymaln± d³ugo¶æ wszystkich odno¶ników.
+Je¿eli u¿yto opcji @samp{-R}, to znaczy, gdy odno¶niki wypisywane s± po
+prawym kontek¶cie, maksymalna szeroko¶æ nie uwzglêdnia miejsca zajêtego
+przez odno¶niki ani przerw, które je poprzedzaj±.
+
+@item -A
+@itemx --auto-reference
+
+Tworzy automatyczne odno¶niki. Ka¿da linia wej¶ciowa bêdzie posiadaæ
+automatyczny odno¶nik utworzony z nazwy pliku i liczby porz±dkowej linii,
+z pojedynczym dwukropkiem miêdzy nimi.  Jednak nazwa pliku bêdzie pusta, je¶li
+odczytywane jest standardowe wej¶cie.  Je¿eli podano zarówno opcjê @samp{-A}
+jak i @samp{-r}, to wej¶ciowy odno¶nik jest nadal czytany i przeskakiwany,
+ale podczas wypisywania wyników u¿ywany jest automatyczny odno¶nik,
+przes³aniaj±c wej¶ciowy odno¶nik.
+
+@item -R
+@itemx --right-side-refs
+
+W domy¶lnym formacie wyj¶ciowym, gdy nie jest u¿ywana opcja @samp{-R},
+ka¿dy odno¶nik utworzony w wyniku opcji @samp{-r} lub @samp{-A} podawany
+jest w skrajnej prawej czê¶ci linii wyj¶ciowej, po prawym kontek¶cie.
+W domy¶lnym formacie wyj¶ciowym, przy podanej opcji @samp{-R}, odno¶niki
+s± natomiast podawane na pocz±tku linii wyj¶ciowej, przed lewym kontekstem.
+W ka¿dym innym formacie wyj¶ciowym opcja @samp{-R} jest niemal ignorowana,
+z wyj±tkiem tego, ¿e szeroko¶æ odno¶ników @emph{nie jest} wówczas jest
+wliczana do ca³kowitej szeroko¶ci wyj¶cia podanej przez @samp{-w}.
+
+Opcja ta jest wybierana automatycznie przy wy³±czeniu rozszerzeñ GNU.
+
+@item -F @var{³añcuch}
+@itemx --flac-truncation=@var{³añcuch}
+
+¯±da, by ka¿de obciêcie w wyj¶ciu by³o zg³oszone za pomoc± @var{³añcucha}.
+Wiêkszo¶æ pól wynikowych teoretycznie rozci±ga siê w stronê pocz±tku lub koñca
+bie¿±cej linii, lub bie¿±cego zdania, jak ustalono opcj± @samp{-S}.
+Istnieje jednak maksymalna dozwolona szeroko¶æ linii wyj¶ciowej, zmieniana
+opcj± @samp{-w}, która jest nastêpnie dzielona na czê¶ci dla ró¿nych pól
+wyj¶ciowych.  Je¿eli pole nie mo¿e siê rozci±gaæ a¿ do pocz±tku lub koñca
+bie¿±cej linii i mie¶ciæ w zadanej szeroko¶ci, wówczas nastêpuje obciêcie.
+Domy¶lnie ³añcuchem oznaczaj±cy obciêcie jest pojedynczy uko¶nik,
+jak w @samp{-F /}.
+
+@var{³añcuch} mo¿e mieæ wiêcej ni¿ jeden znak, jak w @samp{-F ...}.
+W szczególnym przypadku, gdy @var{³añcuch} jest pusty (@samp{-F ""}),
+oznaczanie obciêcia jest wy³±czane.  Nie s± wówczas do³±czane ¿adne znaczniki
+obciêcia.
+
+Dla wygody u¿ytkownika rozpoznawanych jest wiele zwyczajowych sekwencji
+specjalnych (poprzedzanych odwrotnym uko¶nikiem), jakie wystêpuj± w C.
+S± one przekszta³cane na odpowiadaj±ce im znaki przez sam @code{ptx}.
+
+@item -M @var{³añcuch}
+@itemx --macro-name=@var{³añcuch}
+
+Okre¶la inny @var{³añcuch}, jaki ma byæ stosowany zamiast @samp{xx} przy
+tworzeniu wyj¶cia odpowiedniego dla @code{nroff}, @code{troff} lub @TeX{}.
+
+@item -O
+@itemx --format=roff
+
+Wybiera format wyj¶ciowy odpowiedni dla przetwarzania przez @code{nroff}
+lub @code{troff}.  Linie wyj¶ciowe s± typu:
+
+@example
+.xx "@var{koñc}" "@var{przed}" "@var{s³owoklucz_i_dalej}" "@var{pocz}" "@var{odno¶nik}"
+@end example
+
+wiêc mo¿liwe bêdzie napisanie makra @samp{.xx} roff-a do obs³ugi sk³adu
+otrzymanego wyj¶cia.  Jest to domy¶lny format wyj¶cia, gdy wy³±czone s±
+rozszerzenia GNU.  Opcj± @samp{-M} mo¿na zmieniæ @samp{xx} na inn± nazwê
+makra.
+
+W tym formacie ka¿dy znak nie-graficzny, jak znak nowej linii czy tabulacja,
+jest po prostu zamieniany na dok³adnie jedn± spacjê, bez specjalnych prób
+kompresowania ci±gu kolejnych spacji.  Wszystkie znaki cytowania: @kbd{"}
+s± podwajane, by zosta³y poprawnie przetworzone przez @code{nroff}
+czy @code{troff}.
+
+@item -T
+@itemx --format=tex
+
+Wybiera format wyj¶ciowy odpowiedni dla przetwarzania przez @TeX{}.
+Linie wyj¶ciowe s± typu:
+
+@example
+\xx @{@var{koñc}@}@{@var{przed}@}@{@var{s³owoklucz}@}@{@var{po}@}@{@var{pocz}@}@{@var{odno¶nik}@}
+@end example
+
+@noindent
+wiêc mo¿liwe bêdzie napisanie definicji @code{\xx} do obs³ugi sk³adu
+otrzymanego wyj¶cia.  Zauwa¿, ¿e gdy nie s± tworzone odno¶niki, to znaczy,
+gdy nie u¿yto ani opcji @samp{-A} ani @samp{-r}, nie pojawia siê ostatni
+parametr ka¿dego wywo³ania @code{\xx}.  Opcj± @samp{-M} mo¿na zmieniæ
+@samp{xx} na inn± nazwê makra.
+
+W tym formacie niektóre znaki specjalne, jak @kbd{$}, @kbd{%}, @kbd{&},
+@kbd{#} i @kbd{_} s± automatycznie chronione przed cytowaniem przez
+poprzedzenie ich odwrotnym uko¶nikiem.  Nawiasy klamrowe @kbd{@{}, @kbd{@}}
+te¿ s± chronione w ten sposób, ale równie¿ ujête miêdzy parê znaków dolara,
+by wymusiæ tryb matematyczny.  Sam odwrotny uko¶nik generuje sekwencjê
+@code{\backslash@{@}}.  Daszki (circumflex) i tyldy nad literami
+generuj± odpowiednio sekwencje @code{^\@{ @}} i @code{~\@{ @}}.  Inne znaki
+diakrytyczne w odno¶nym zestawie znaków daj± odpowiednie sekwencje @TeX{}-a,
+na ile jest to mo¿liwe.  Inne znaki nie-graficzne, jak znak nowej linii,
+i tabulacja, i wszystkie inne znaki nie bêd±ce czê¶ci± @sc{ascii},
+s± po prostu zamieniane na dok³adnie jedn± spacjê, bez specjalnych prób
+kompresowania ci±gu kolejnych spacji.  Proszê daæ znaæ autorowi jak
+ulepszyæ przetwarzanie tych znaków specjalnych dla @TeX{}-a.
+
+@end table
+
+
+@node Zgodno¶æ w ptx
+@subsection Rozszerzenia GNU w @code{ptx}
+
+Ta wersja @code{ptx} zawiera kilka cech nieistniej±cych w @code{ptx}
+z Systemu V.  Mo¿na je wyeliminowaæ przy pomocy opcji @samp{-G} linii
+poleceñ, chyba ¿e zostanie ona przes³oniêta przez inne opcje.  Niektóre
+rozszerzenia nie mog± byæ przywrócone przez przes³oniêcie, zatem prost±
+zasad± jest unikanie @samp{-G} je¿eli chce siê korzystaæ z rozszerzeñ GNU.
+Poni¿ej podano ró¿nice pomiêdzy tym programem a @code{ptx} z Systemu V.
+
+@itemize @bullet
+
+@item
+Niniejszy program potrafi czytaæ wiele plików wej¶ciowych naraz, zawsze
+zapisuje powsta³y skorowidz na standardowe wyj¶cie.  Z drugiej strony,
+@code{ptx} z System V czyta tylko jeden plik i tworzy wynik na standardowym
+wyj¶ciu lub, je¶li w wywo³aniu polecenia podano drugi parametr @var{plik},
+w zadanym @var{pliku}.
+
+Pos³ugiwanie siê parametrami wyj¶cia nie poprzedzonymi opcjami jest do¶æ
+niebezpieczn± praktyk±, której GNU w miarê mo¿liwo¶ci unika.  Zatem, przy
+pos³ugiwaniu siê @code{ptx} przeno¶nie miêdzy GNU a System V, powinno siê
+zwracaæ uwagê, by zawsze u¿ywaæ go z jednym plikiem wej¶ciowym i zawsze
+oczekiwaæ wyniku na standardowym wyj¶ciu.  Mo¿na równie¿ automatycznie
+skonfigurowaæ wywo³ywania @code{ptx} z opcj± @samp{-G} w produktach go
+u¿ywaj±cych, je¶li konfigurator zauwa¿y, ¿e instalowany @code{ptx} akceptuje
+@samp{-G}.
+
+@item
+Jedynymi opcjami dostêpnymi w @code{ptx} z System V s± @samp{-b}, @samp{-f},
+@samp{-g}, @samp{-i}, @samp{-o}, @samp{-r}, @samp{-t} i @samp{-w}.  
+Wszystkie inne opcje s± rozszerzeniami GNU i nie s± powtórzone
+w tym wyliczeniu.  Ponadto, niektóre opcje maj± nieco inne znaczenie
+przy w³±czonych rozszerzeniach GNU, jak wyja¶niono poni¿ej.
+
+@item
+Domy¶lnie, skorowidz wyj¶ciowy nie jest sformatowany dla @code{troff}
+czy @code{nroff}.  Zamiast tego sformatowany jest dla terminala uproszczonego.
+Wyj¶cie dla @code{troff} lub @code{nroff} mo¿na wybraæ opcj± @samp{-O}.
+
+@item
+Dopóki nie u¿yto opcji @samp{-R} maksymalna szeroko¶æ odno¶ników jest
+odejmowana od ca³kowitej szeroko¶ci linii wyj¶ciowej.  Przy wy³±czonych
+rozszerzeniach GNU, szeroko¶æ odno¶ników nie jest uwzglêdniana w obliczeniach
+szeroko¶ci linii wyj¶ciowej.
+
+@item
+Czytane i przetwarzane z pliku wej¶ciowego s± zawsze wszystkie z 256 znaków
+zestawu, nawet znaki @kbd{NUL}, bez niepoprawnego efektu, nawet gdy
+rozszerzenia GNU s± wy³±czone.  Jednak @code{ptx} z Systemu V nie przyjmuje
+8-bitowych znaków, odrzucanych jest kilka znaków steruj±cych, a tylda
+@kbd{~} jest potêpiona.
+
+@item
+D³ugo¶æ linii wej¶ciowej jest ograniczona tylko dostêpn± pamiêci±, nawet
+przy wy³±czonych rozszerzeniach GNU.  Jednak @code{ptx} z Systemu V
+przetwarza tylko 200 pierwszych znaków linii.
+
+@item
+Domy¶lnymi znakami podzia³u (nie-s³owami) s± wszystkie znaki oprócz liter
+odno¶nego zestawu znaków, diakrytycznych lub nie.  Przy wy³±czonych
+rozszerzeniach GNU domy¶lnymi znakami podzia³u s± wy³±cznie spacja, tabulacja
+i znak nowej linii.
+
+@item
+Program lepiej pos³uguje siê szeroko¶ci± linii wyj¶ciowej. Je¿eli wy³±czono
+rozszerzenia GNU, program próbuje zamiast tego imitowaæ @code{ptx}
+z System V, ale istnieje kilka niewielkich zak³óceñ, których niniejszy
+program ca³kowicie nie powiela.
+
+@item
+U¿ytkownik mo¿e podaæ równocze¶nie plik pomijania i plik wy³±czno¶ci.
+W @code{ptx} z System V nie jest to dozwolone.
+
+@end itemize
+
+
+@node Dzia³ania na polach wewn±trz linii
+@chapter Dzia³ania na polach wewn±trz linii
+
+@menu
+* Wywo³anie cut::         wypisywanie wybranych czê¶ci linii
+* Wywo³anie paste::       zlepianie linii plików
+* Wywo³anie join::        ³±czenie linii wed³ug wspólnego pola
+@end menu
+
+
+@node Wywo³anie cut
+@section @code{cut}: wypisywanie wybranych czê¶ci linii
+
+@pindex cut
+@code{cut} wypisuje na standardowym wyj¶ciu wybrane czê¶ci ka¿dej linii
+ka¿dego z plików wej¶ciowych albo standardowego wej¶cia je¶li nie podano
+¿adnego lub podano plik zwany @samp{-}.  Sk³adnia:
+
+@example
+cut [@var{opcja}]@dots{} [@var{plik}]@dots{}
+@end example
+
+W poni¿szej tabeli, @var{lista-bajtów}, @var{lista-znaków} i @var{lista-pól}
+to jedna lub wiêcej liczb lub zakresów (dwu liczb rozdzielonych my¶lnikiem),
+oddzielone przecinkami.  Pierwszy bajt, znak i pole maj± numer 1.  Mo¿na
+podawaæ niekompletne zakresy: @samp{-@var{m}} oznacza @samp{1-@var{m}};
+@samp{@var{n}-} oznacza @samp{@var{n}} a¿ do koñca linii lub ostatniego pola.
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -b @var{lista-bajtów}
+@itemx --bytes=@var{lista-bajtów}
+@opindex -b
+@opindex --bytes
+Wypisuje tylko bajty na pozycjach wyliczonych w @var{lista-bajtów}.
+Znaki tabulacji i backspace s± traktowane jak wszystkie inne znaki;
+zajmuj± po bajcie ka¿dy.
+
+@item -c @var{lista-znaków}
+@itemx --characters=@var{lista-znaków}
+@opindex -c
+@opindex --characters
+Wypisuje tylko znaki na pozycjach wyliczonych w @var{lista-znaków}.
+Obecnie to samo co @samp{-b}, ale umiêdzynarodowienie to zmieni.
+Znaki tabulacji i backspace s± traktowane jak wszystkie inne znaki;
+zajmuj± po bajcie ka¿dy.
+
+@item -f @var{lista-pól}
+@itemx --fields=@var{lista-pól}
+@opindex -f
+@opindex --fields
+Wypisuje tylko pola wyliczone w @var{lista-pól}.
+Pola domy¶lnie rozdzielane s± znakiem tabulacji.
+
+@item -d @var{sep-wej}
+@itemx --delimiter=@var{sep-wej}
+@opindex -d
+@opindex --delimiter
+Dla @samp{-f}, pola wej¶ciowe s± rozdzielone pierwszym znakiem @var{sep-wej}
+(domy¶lnie tabulacj±).
+
+@item -n
+@opindex -n
+Nie rozdziela znaków wielobajtowych (obecnie nie funkcjonuje).
+
+@item -s
+@itemx --only-delimited
+@opindex -s
+@opindex --only-delimited
+Dla @samp{-f}, nie wypisuje linii, które nie zawieraj± znaku separatora pól.
+
+@itemx --output-delimiter=@var{sep-wyj}
+@opindex --output-delimiter
+Dla @samp{-f}, pola wynikowe s± rozdzielane ³añcuchem @var{sep-wyj}.
+Domy¶lnie u¿ywany jest tu separator wej¶ciowy.
+
+@end table
+
+
+@node Wywo³anie paste
+@section @code{paste}: zlepianie linii plików
+
+@pindex paste
+@cindex zlepianie linii plików
+@cindex scalanie linii plików
+@cindex ³±czenie linii plików
+
+@code{paste} wypisuje na standardowym wyj¶ciu linie sk³adaj±ce siê z kolejno
+odpowiadaj±cych sobie linii ka¿dego z podanych plików, oddzielonych
+znakiem tabulacji.
+Je¶li nie podano ¿adnych plików lub plik o nazwie @samp{-}, u¿ywane jest
+standardowe wej¶cie.
+
+Sk³adnia:
+
+@example
+paste [@var{opcja}]@dots{} [@var{plik}]@dots{}
+@end example
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -s
+@itemx --serial
+@opindex -s
+@opindex --serial
+Wkleja linie jednego pliku na raz, a nie naprzemiennie po jednej linii
+z ka¿dego pliku.
+
+@item -d @var{lista-sep}
+@itemx --delimiters @var{lista-sep}
+@opindex -d
+@opindex --delimiters
+Zamiast tabulacji do oddzielania po³±czonych linii u¿ywa po kolei
+ograniczników z @var{listy-sep}.  Gdy lista zostanie wyczerpana, zaczyna
+na nowo od jej pocz±tku.
+
+@end table
+
+
+@node Wywo³anie join
+@section @code{join}: ³±czenie linii wed³ug wspólnego pola
+
+@pindex join
+@cindex pole po³±czeniowe, ³±czenie wg
+@cindex po³±czeniowe pole, ³±czenie wg
+@cindex wspólne pole, ³±czenie wg
+
+@code{join} wypisuje na standardowe wyj¶cie liniê dla ka¿dej pary linii
+wej¶ciowych o identycznych polach po³±czeniowych.  Sk³adnia:
+
+@example
+join [@var{opcja}]@dots{} @var{plik1} @var{plik2}
+@end example
+
+@vindex LC_COLLATE
+Ka¿d± z nazw plików (ale nie obydwoma) mo¿e byæ @samp{-}, oznaczaj±ce
+standardowe wej¶cie.  @var{plik1} i @var{plik2} powinny byæ ju¿ uprzednio
+posortowane w tekstowym porz±dku rosn±cym (nie numerycznie) wed³ug pól
+po³±czeniowych, z zastosowaniem porz±dku znaków okre¶lonego ustawieniem
+narodowym @env{LC_COLLATE}.  Sortowanie winno byæ wykonane z pominiêciem
+znaków pustych na pocz±tku pola po³±czeniowego, tak jak dzia³a @code{sort}
+z podan± opcj± @samp{-b}, chyba ¿e podano opcjê @samp{-t}, zmieniaj±c± znak
+rozdzielaj±cy pola.  Je¿eli podano opcjê @samp{--ignore-case}, linie powinny
+byæ posortowane bez rozró¿niania wielko¶ci znaków w polu po³±czeniowym, jak
+w @code{sort -f}.
+
+Warto¶ci domy¶lne to: pola po³±czeniowe s± pierwszymi polami w ka¿dej
+linii; pola w wej¶ciu rozdzielone s± jednym lub wiêcej znakami pustymi;
+znaki puste zaczynaj±ce liniê s± ignorowane; pola w wyj¶ciu rozdzielone
+s± spacj±; ka¿da linia wyj¶cia sk³ada siê z pola po³±czeniowego, pozosta³ych
+pól z @var{plik1}, a nastêpnie pozosta³ych pól z @var{plik2}.
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -a @var{numer-pliku}
+@opindex -a
+Oprócz normalnego wyj¶cia, wypisuje te¿ niesparowane linie z pliku
+@var{numer-pliku} (@samp{1} lub @samp{2}).
+
+@item -e @var{³añcuch}
+@opindex -e
+Zastêpuje @var{³añcuchem} te puste pola wynikowe, których brakuje na wej¶ciu.
+
+@item -i
+@itemx --ignore-case
+@opindex -i
+@opindex --ignore-case
+Ignoruje ró¿nice miêdzy ma³ymi i du¿ymi literami przy porównywaniu kluczy.
+Pola wej¶ciowe musz± byæ wówczas uporz±dkowane wed³ug tej samej regu³y.
+Do utworzenia takiego uporz±dkowania nale¿y u¿yæ @samp{sort -f}.
+
+@item -1 @var{pole}
+@itemx -j1 @var{pole}
+@opindex -1
+@opindex -j1
+£±czy wed³ug pola @var{pole} (dodatnia liczba ca³kowita) pliku 1.
+
+@item -2 @var{pole}
+@itemx -j2 @var{pole}
+@opindex -2
+@opindex -j2
+£±czy wed³ug pola @var{pole} (dodatnia liczba ca³kowita) pliku 2.
+
+@item -j @var{pole}
+Równowa¿ne @samp{-1 @var{pole} -2 @var{pole}}.
+
+@item -o @var{lista-pól}@dots{}
+Konstruuje ka¿d± liniê wyj¶cia wed³ug formatu zawartego w @var{li¶cie-pól}.
+Ka¿dy element listy jest albo pojedynczym znakiem @samp{0} albo ma postaæ
+@var{m.n}, gdzie @var{m} to numeru pliku (@samp{1} albo @samp{2}), za¶ @var{n}
+- numer pola (liczba naturalna).
+
+Specyfikacja pola postaci @samp{0} oznacza pole po³±czeniowe.
+W wiêkszo¶ci przypadków funkcjonalno¶æ specyfikacji @samp{0} mo¿na zast±piæ
+u¿yciem bezpo¶redniego zapisu @var{m.n}, odpowiedniego dla pola
+po³±czeniowego.  Jednak przy wydruku linii niesparowanych (u¿ycie opcji
+@samp{-a} lub @samp{-v}) nie mo¿na w ¿aden sposób okre¶liæ takiego pola
+przez u¿ycie @var{m.n} w li¶cie pól je¿eli linie niesparowane wystêpuj±
+w obu plikach.  Dla uzyskania takiej funkcjonalno¶ci @code{join} w @sc{posix}
+wynaleziono notacjê @samp{0}.
+
+Elementy listy pól oddzielone s± przecinkami lub znakami pustymi.
+Mo¿na podawaæ wielokrotne argumenty @var{lista-pól} po pojedynczej
+opcji @samp{-o}; warto¶ci wszystkich list podanych po @samp{-o} s± ³±czone
+razem.  Zadana lista pól jest stosowana do wszystkich linii wyj¶ciowych
+- tak¿e tworzonych wskutek dzia³ania opcji @samp{-a} czy @samp{-v}.
+
+@item -t @var{znak}
+U¿ywa znaku @var{znak} jako separatora pól wej¶cia i wyj¶cia.
+
+@item -v @var{numer-pliku}
+Wypisuje tylko niesparowane linie z pliku @var{numer-pliku} (1 albo 2),
+zamiast normalnego wyj¶cia.
+
+@end table
+
+Dodatkowo, kiedy GNU @code{join} wywo³ywane jest z dok³adnie jednym
+argumentem, rozpoznawane s± opcje @samp{--help} i @samp{--version}.
+@xref{Wspólne opcje}.
+
+
+@node Dzia³ania na znakach
+@chapter Dzia³ania na znakach
+
+@cindex dzia³ania na znakach
+
+Te polecenia dzia³aj± na pojedynczych znakach.
+
+@menu
+* Wywo³anie tr::          zamiana, ¶ciskanie, usuwanie znaków
+* Wywo³anie expand::      zamiana tabulacji na spacje
+* Wywo³anie unexpand::    zamiana spacji na tabulacje
+@end menu
+
+
+@node Wywo³anie tr
+@section @code{tr}: zamiana, ¶ciskanie, usuwanie znaków
+
+@pindex tr
+
+Sk³adnia:
+
+@example
+tr [@var{opcja}]@dots{} @var{zestaw1} [@var{zestaw2}]
+@end example
+
+@code{tr} kopiuje standardowe wej¶cie na standardowe wyj¶cie, dokonuj±c
+jednej z nastêpuj±cych operacji:
+
+@itemize @bullet
+@item
+przek³ad, opcjonalnie ¶ci¶niêcie powtórzonych znaków w wyniku,
+@item
+¶ci¶niêcie powtórzonych znaków,
+@item
+usuniêcie znaków,
+@item
+usuniêcie znaków, potem ¶ci¶niêcie powtórzonych znaków w wyniku.
+@end itemize
+
+Argumenty @var{zestaw1} i (je¶li podany) @var{zestaw2} definiuj±
+uporz±dkowane zbiory znaków.
+@c  , poni¿ej nazwane @var{zb1} i @var{zb2}.
+Owe zbiory to znaki z wej¶cia, na których dzia³a @code{tr}.
+Opcja @samp{--complement} (@samp{-c}) zastêpuje @var{zestaw1} jego
+dope³nieniem (wszystkimi znakami, których nie ma w @var{zestaw1}).
+
+@menu
+* Zestawy znaków::        Okre¶lanie zestawów znaków.
+* Konwersja::             Wymiana jednych znaków na inne.
+* ¦ciskanie::             ¦ciskanie powtórzeñ i usuwanie.
+* Ostrze¿enia w tr::      Komunikaty ostrzegawcze w tr.
+@end menu
+
+
+@node Zestawy znaków
+@subsection Okre¶lanie zestawów znaków
+
+@cindex okre¶lanie zestawów znaków
+
+Format argumentów @var{zestaw1} i @var{zestaw2} przypomina format
+wyra¿eñ regularnych; jednakowo¿, nie s± to wyra¿enia regularne, lecz
+tylko listy znaków.  Wiêkszo¶æ znaków w tych ³añcuchach reprezentuje
+po prostu same siebie, ale ³añcuchy mog± te¿, dla wygody, zawieraæ wyliczone
+poni¿ej skróty.  Niektórych z nich mo¿na u¿yæ tylko w @var{zestaw1} lub
+@var{zestaw2}, jak zaznaczono poni¿ej.
+
+@table @asis
+
+@item Sekwencje z odwrotnym uko¶nikiem
+@cindex backslash
+@cindex sekwencje specjalne
+@cindex sekwencje z odwrotnym uko¶nikiem
+
+Odwrotny uko¶nik, po którym nie nastêpuje znak spo¶ród wymienionych
+poni¿ej powoduje komunikat o b³êdzie.
+
+@table @samp
+@item \a
+Control-G.
+@item \b
+Control-H.
+@item \f
+Control-L.
+@item \n
+Control-J.
+@item \r
+Control-M.
+@item \t
+Control-I.
+@item \v
+Control-K.
+@item \@var{ooo}
+Znak o warto¶ci podanej przez @var{ooo}, czyli od 1 do 3 cyfr ósemkowych.
+@item \\
+Odwrotny uko¶nik (backslash).
+@end table
+
+@item Zakresy
+@cindex zakresy
+
+Notacja @samp{@var{m}-@var{n}} interpretowana jest jako wszystkie znaki
+od @var{m} do @var{n}, w porz±dku rosn±cym.  @var{m} powinno wystêpowaæ
+w porz±dku sortowania przed @var{n}; je¶li tak nie jest, nastêpuje b³±d.
+Dla przyk³adu, @samp{0-9} jest tym samym co @samp{0123456789}. Chocia¿ GNU
+@code{tr} nie obs³uguje sk³adni System V u¿ywaj±cej nawiasów kwadratowych
+do zamykania zakresów, t³umaczenia okre¶lone w tym formacie nadal bêd±
+dzia³aæ, o ile nawiasy w @var{zakres1} odpowiadaj± identycznym nawiasom
+w @var{zakres2}.
+
+@item Powtórzone znaki
+@cindex powtórzone znaki
+
+Notacja @samp{[@var{c}*@var{n}]} w @var{zestaw2} interpretowana jest jako
+@var{n} kopii znaku @var{c}.  Tak wiêc @samp{[y*6]} jest tym samym co
+@samp{yyyyyy}.  Notacja @samp{[@var{c}*]} w @var{zestaw2} rozszerzana jest
+na tyle kopii @var{c}, ile potrzeba na to aby @var{zestaw2} by³ tak d³ugi
+jak @var{zestaw2}.  Je¶li @var{n} zaczyna siê od @samp{0}, jest
+reprezentowane ósemkowo, w przeciwnym razie dziesiêtnie.
+
+@item Klasy znaków
+@cindex klasy znaków
+
+Notacji @samp{[:@var{nazwa-klasy}:]} odpowiadaj± wszystkie znaki
+z (predefiniowanej) klasy zwanej @var{nazwa-klasy}.  Znaki nie s± rozszerzane
+w jakim¶ szczególnym porz±dku, z wyj±tkiem klas @code{upper} i @code{lower},
+rozszerzanych w porz±dku rosn±cym.  Gdy podano zarówno opcjê @samp{--delete}
+(@samp{-d}) jak i @samp{--squeeze-repeats} (@samp{-s}) w @var{zestaw2} mo¿na
+u¿yæ ka¿dej klasy znaków.  W przeciwnym razie w @var{zestaw2} akceptowane s±
+tylko klasy znaków @code{upper} i @code{lower}, i to tylko wtedy, kiedy
+odpowiednie klasy @code{upper} i @code{lower} zosta³y okre¶lone na tej samej
+pozycji wzglêdnej w @var{zestaw1}.  Takie postêpowanie okre¶la konwersjê
+wielko¶ci liter.  Nazwy klas podano ni¿ej; je¶li poda siê nieprawid³ow± nazwê
+klasy, powstaje b³±d.
+
+@table @code
+@item alnum
+@opindex alnum
+Litery i cyfry.
+@item alpha
+@opindex alpha
+Litery.
+@item blank
+@opindex blank
+Poziomy bia³y znak.
+@item cntrl
+@opindex cntrl
+Znaki steruj±ce.
+@item digit
+@opindex digit
+Cyfry.
+@item graph
+@opindex graph
+Znaki drukowalne, z wy³±czeniem spacji.
+@item lower
+@opindex lower
+Ma³e litery.
+@item print
+@opindex print
+Znaki drukowalne, ³±cznie ze spacj±.
+@item punct
+@opindex punct
+Znaki interpunkcyjne.
+@item space
+@opindex space
+Pionowy lub poziomy bia³y znak (odstêp).
+@item upper
+@opindex upper
+Du¿e litery.
+@item xdigit
+@opindex xdigit
+Cyfry szesnastkowe.
+@end table
+
+@item Klasy równowa¿ne
+@cindex klasy równowa¿ne
+
+Sk³adnia @samp{[=@var{c}=]} oznacza wszystkie znaki równowa¿ne @var{c},
+bez szczególnej kolejno¶ci.  Klasy równowa¿ne to niedawny wynalazek pomy¶lany
+dla obs³ugi alfabetów nie-angielskich.  Jednak nie istnieje, zdaje siê,
+standardowa metoda ich zdefiniowania lub okre¶lenia ich zawarto¶ci.  Z tego
+powodu nie s± one w pe³ni zaimplementowane w GNU @code{tr}: klasa równowa¿na
+ka¿dego znaku sk³ada siê tylko z tego znaku, co obecnie czyni je konstrukcj±
+bezu¿yteczn±.
+
+@end table
+
+
+@node Konwersja
+@subsection Konwersja znaków
+
+@cindex t³umaczenie znaków
+@cindex konwersja znaków
+@cindex zamiana znaków
+
+@code{tr} dokonuje t³umaczenia, konwersji, gdy podane s± zarówno @var{zestaw1}
+jak i @var{zestaw2}, a nie podano opcji @samp{--delete} (@samp{-d}).
+Program przek³ada ka¿dy znak swojego wej¶cia znajduj±cy siê w @var{zestaw1}
+na odpowiedni znak w @var{zestaw2}.  Znaki, których nie ma w @var{zestaw1}
+przepuszczane s± w postaci niezmienionej.  Gdy jaki¶ znak pojawia siê wiêcej
+ni¿ jeden raz w @var{zestaw1}, a odpowiadaj±ce mu znaki w @var{zestaw2} nie
+s± takie same, u¿ywany jest tylko ostatni z nich.  Dla przyk³adu, poni¿sze
+dwa polecenia s± równowa¿ne:
+
+@example
+tr aaa xyz
+tr a z
+@end example
+
+Typowym zastosowaniem @code{tr} jest konwersja ma³ych liter na du¿e.
+Mo¿na to zrobiæ na wiele sposobów.  Oto trzy z nich:
+
+@example
+tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ
+tr a-z A-Z
+tr '[:lower:]' '[:upper:]'
+@end example
+
+Gdy @code{tr} dokonuje t³umaczenia, @var{zestaw1} i @var{zestaw2} powinny
+normalnie byæ tej samej d³ugo¶ci.  Je¶li @var{zestaw1} jest krótszy od
+@var{zestaw2}, dodatkowe znaki na koñcu @var{zestaw2} s± ignorowane.
+
+Z drugiej strony, podanie @var{zestaw1} d³u¿szego od @var{zestaw1} nie jest
+przewidziane: @sc{posix.2} stanowi, ¿e rezultat jest niezdefiniowany.
+W takiej sytuacji @code{tr} z BSD wyd³u¿a @var{zestaw2} do d³ugo¶ci
+@var{zestaw1} powtarzaj±c ostatni znak @var{zestaw2} tyle razy ile potrzeba.
+@code{tr} z System V obcina @var{zestaw1} do d³ugo¶ci @var{zestaw2}.
+
+Domy¶lnie, GNU @code{tr} za³atwia ten przypadek tak jak robi to wersja
+z BSD.  Gdy podano opcjê @samp{--truncate-set1} (@samp{-t}) GNU @code{tr}
+obs³uguje za³atwia ten przypadek tak jak wersja z System V.
+Opcja ta jest ignorowana dla operacji innych ni¿ t³umaczenie.
+
+Zachowywanie siê jak @code{tr} z System V w tym przypadku psuje stosunkowo
+czêsty idiom z BSD:
+
+@example
+tr -cs A-Za-z0-9 '\012'
+@end example
+
+@noindent
+poniewa¿ konwertuje na znaki nowej linii tylko bajty zerowe (pierwszy element
+dope³nienia @var{zestaw1}), a nie wszystkie znaki nie-alfanumeryczne.
+
+
+@node ¦ciskanie
+@subsection ¦ciskanie powtórzeñ i usuwanie
+
+@cindex ¶ciskanie powtórzeñ i usuwanie
+@cindex usuwanie znaków
+
+Je¶li podano tylko opcjê @samp{--delete} (@samp{-d}), @code{tr} usuwa
+z wej¶cia wszystkie znaki znajduj±ce siê w @var{zestaw1}.
+
+Je¶li podano tylko opcjê @samp{--squeeze-repeats} (@samp{-s}), @code{tr}
+zastêpuje w wej¶ciu ka¿d± sekwencjê powtórzonych znaków wystêpuj±cych
+siê w @var{zestaw1} pojedynczym wyst±pieniem tego¿ znaku.
+
+Je¶li podano zarówno opcjê @samp{--delete} jak i @samp{--squeeze-repeats},
+@code{tr} najpierw wykonuje wszelkie usuniêcia u¿ywaj±c @var{zestaw1}, potem
+¶ciska powtórzenia pozosta³ych znaków u¿ywaj±c @var{zestaw2}.
+
+Opcji @samp{--squeeze-repeats} mo¿na tak¿e u¿ywaæ podczas t³umaczenia.
+Wówczas program najpierw dokonuje t³umaczenia, potem ¶ciska powtórzenia
+pozosta³ych znaków u¿ywaj±c @var{zestaw2}.
+
+Oto kilka przyk³adów ilustruj±cych ró¿ne kombinacje opcji:
+
+@itemize @bullet
+
+@item
+Usuwanie wszystkich bajtów zerowych:
+
+@example
+tr -d '\000'
+@end example
+
+@item
+Umieszczenie ka¿dego s³owa w osobnej linii.  Konwertuje to wszystkie
+znaki nie-alfanumeryczne na znaki nowej linii, potem ¶ciska ka¿dy ³añcuch
+powtórzonych nowych linii w pojedyncz± now± liniê:
+
+@example
+tr -cs 'a-zA-Z0-9' '[\n*]'
+@end example
+
+@item
+Konwersja ka¿dej sekwencji powtórzonych nowych linii w pojedyncz± now± liniê:
+
+@example
+tr -s '\n'
+@end example
+
+@item
+Wyszukiwanie w dokumencie podwójnych wyst±pieñ s³ów. Na przyk³ad, zdarza siê
+pisanie ,,do do'', powtórzonych s³ów rozdzielonych znakiem nowej linii.
+Poni¿szy skrypt pow³oki Bourne'a najpierw zamienia ka¿d± sekwencjê znaków 
+interpunkcyjnych i znaków pustych na pojedynczy znak nowej linii.  Powoduje
+to umieszczenie ka¿dego ,,s³owa'' w osobnej linii.  Nastêpnie zamienia
+wszystkie du¿e litery na ma³e, i, na koniec, uruchamia @code{uniq} z opcj±
+@samp{-d}, co powoduje wypisanie tylko s³ów, które by³y powtórzone obok
+siebie.
+
+@example
+#!/bin/sh
+cat "$@@" \
+  | tr -s '[:punct:][:blank:]' '\n' \
+  | tr '[:upper:]' '[:lower:]' \
+  | uniq -d
+@end example
+
+@end itemize
+
+
+@node Ostrze¿enia w tr
+@subsection Komunikaty ostrzegawcze w tr
+
+@vindex POSIXLY_CORRECT
+Ustawienie zmiennej ¶rodowiskowej @env{POSIXLY_CORRECT} wy³±cza niektóre
+ostrze¿enia i komunikaty o b³êdach, dla ¶cis³ej zgodno¶ci z @sc{posix.2}.
+Komunikaty te wystêpuj± normalnie w nastêpuj±cych okoliczno¶ciach:
+
+@enumerate
+
+@item
+1. Gdy podano opcjê @samp{--delete}, ale nie @samp{--squeeze-repeats},
+a podano @var{zestaw2}, GNU @code{tr} domy¶lnie wypisuje komunikat o sposobie
+u¿ycia i koñczy pracê, poniewa¿ @var{zestaw2} nie zosta³by u¿yty.
+Specyfikacja @sc{posix} mówi, ¿e @var{zestaw2} nale¿y w tej sytuacji
+zignorowaæ.  Jednak milcz±ce ignorowanie argumentów to z³y pomys³.
+
+@item
+2. Gdy podano niejednoznaczne specjalne sekwencje ósemkowe.  Na przyk³ad,
+@samp{\400} to faktycznie @samp{\40} plus cyfra @samp{0}, poniewa¿ ósemkowa
+warto¶æ 400 nie mie¶ci siê w pojedynczym bajcie.
+
+@end enumerate
+
+Zauwa¿ ¿e GNU @code{tr} nie zapewnia pe³nej zgodno¶ci z BSD lub System V.
+Na przyk³ad, nie istnieje opcja wy³±czaj±ca interpretacjê konstrukcji
+@sc{posix}-owych @samp{[:alpha:]}, @samp{[=c=]} i @samp{[c*10]}.
+GNU @code{tr} nie usuwa tak¿e automatycznie bajtów zerowych, w odró¿nieniu
+od tradycyjnych wersji UNIX-owych, w których nie ma sposobu zachowania
+bajtów zerowych.
+
+
+@node Wywo³anie expand
+@section @code{expand}: zamiana tabulacji na spacje
+
+@pindex expand
+@cindex tabulacje na spacje, konwersja
+@cindex konwersja tabulacji na spacje
+@cindex zamiana tabulacji na spacje
+
+@code{expand} wypisuje zawarto¶æ ka¿dego podanego @var{pliku}, lub
+standardowego wej¶cia je¶li nie podano ¿adnej lub podano plik zwany @samp{-},
+na standardowe wyj¶cie, konwertuj±c znaki tabulacji na odpowiedni± liczbê
+spacji.  Sk³adnia:
+
+@example
+expand [@var{opcja}]@dots{} [@var{plik}]@dots{}
+@end example
+
+Domy¶lnie @code{expand} przekszta³ca na spacje wszystkie znaki tabulacji.
+Zachowuje jednak w pliku wynikowym znaki backspace; zmniejszaj± one licznik
+kolumn w o jeden przy obliczeniach pozycji tabulacji. Domy¶lne dzia³anie
+jest równowa¿ne opcji @samp{-8} (ustawia tabulacje co ósm± kolumnê).
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -@var{tab1}[,@var{tab2}]@dots{}
+@itemx -t @var{tab1}[,@var{tab2}]@dots{}
+@itemx --tabs=@var{tab1}[,@var{tab2}]@dots{}
+@opindex -@var{tab}
+@opindex -t
+@opindex --tabs
+@cindex tabulatory, ustawianie
+Je¶li podano tylko jedn± pozycjê tabulacji, ustawia tabulacje co @var{tab1}
+spacji, zamiast domy¶lnych o¶miu.  W przeciwnym razie, ustawia tabulacje
+w kolumnach @var{tab1}, @var{tab2}, itd. (numerowanych od 0), i zastêpuje
+wszystkie tabulacje za ostatni± podan± pozycj± pojedynczymi spacjami.
+Je¶li pozycje tabulacji podano opcj± @samp{-t} lub @samp{--tabs}, mog± byæ
+one rozdzielone nie tylko przecinkami, ale i znakami pustymi.
+
+@item -i
+@itemx --initial
+@opindex -i
+@opindex --initial
+@cindex pocz±tkowe tabulacje, zamiana
+Konwertuje na spacje tylko pocz±tkowe tabulacje (te, które poprzedzaj±
+wszelkie znaki nie bêd±ce tabulacjami ani spacjami) ka¿dej linii.
+[Inaczej mówi±c: nie dokonuje konwersji za znakami ró¿nymi od spacji
+i tabulacji.]
+
+@end table
+
+
+@node Wywo³anie unexpand
+@section @code{unexpand}: zamiana spacji na tabulacje
+
+@pindex unexpand
+@cindex spacje na tabulacje, konwersja
+@cindex konwersja spacji na tabulacje
+@cindex zamiana spacji na tabulacje
+
+@code{unexpand} wypisuje zawarto¶æ ka¿dego podanego @var{pliku}, lub
+standardowego wej¶cia je¶li nie podano ¿adnego lub podano plik zwany @samp{-},
+na standardowe wyj¶cie, zamieniaj±c ³añcuchy dwu lub wiêcej spacji na tyle
+tabulacji ile to mo¿liwe, plus tyle spacji ile potrzeba.  Sk³adnia:
+
+@example
+unexpand [@var{opcja}]@dots{} [@var{plik}]@dots{}
+@end example
+
+Domy¶lnie @code{unexpand} konwertuje w ka¿dej linii tylko spacje i tabulacje
+pocz±tkowe (poprzedzaj±ce wszystkie znaki nie bêd±ce spacjami i tabulacjami).
+Zachowuje w wyniku znaki backspace; zmniejszaj± one licznik kolumn
+w obliczeniach tabulacji.  Domy¶lnie tabulacje ustawiane s± co ósm± kolumnê.
+
+Program przyjmuje nastêpuj±ce opcje.  Zobacz te¿ @ref{Wspólne opcje}.
+
+@table @samp
+
+@item -@var{tab1}[,@var{tab2}]@dots{}
+@itemx -t @var{tab1}[,@var{tab2}]@dots{}
+@itemx --tabs=@var{tab1}[,@var{tab2}]@dots{}
+@opindex -@var{tab}
+@opindex -t
+@opindex --tabs
+@cindex tabulatory, ustawianie
+Je¶li podano tylko jedn± pozycjê tabulacji, ustawia tabulacje co @var{tab1}
+spacji zamiast domy¶lnych o¶miu.  W przeciwnym razie, ustawia tabulacje
+w kolumnach @var{tab1}, @var{tab2}, itd. (liczone od 0) i pozostawia spacje
+i tabulacje poza podanymi pozycjami niezmienione.  Je¶li pozycje tabulacji
+podano opcj± @samp{-t} lub @samp{--tabs}, mog± byæ one oddzielone nie tylko
+przecinkami, ale i znakami pustymi.  Opcja ta zak³ada opcjê @samp{-a}.
+
+@item -a
+@itemx --all
+@opindex -a
+@opindex --all
+Konwertuje na tabulacje wszystkie ³añcuchy dwu lub wiêcej spacji lub
+tabulacji, nie tylko pocz±tkowe.
+
+@end table
+
+@c              What's GNU?
+@c              Arnold Robbins
+@node Skrzynka z programami
+@chapter Skrzynka z programami
+
+Ten rozdzia³ pierwotnie pojawi³ siê w @cite{Linux Journal}, volume 1, nr 2,
+w dziale @cite{What's GNU?}. Zosta³ napisany przez Arnolda Robbinsa.
+
+@menu
+* Wprowadzenie do narzêdzi::    Wprowadzenie do narzêdzi
+* Przekierowanie I/O::          Przekierowanie wej¶cia/wyj¶cia
+* Polecenie who::               Polecenie @code{who}
+* Polecenie cut::               Polecenie @code{cut}
+* Polecenie sort::              Polecenie @code{sort}
+* Polecenie uniq::              Polecenie @code{uniq}
+* £±czenie narzêdzi::           £±czenie narzêdzi
+@end menu
+
+
+@node Wprowadzenie do narzêdzi
+@unnumberedsec Wprowadzenie do narzêdzi
+
+W tym miesi±cu artyku³ jest tylko ubocznie zwi±zany z Projektem GNU,
+gdy¿ opisuje kilka narzêdzi GNU obecnych w systemie Linux i sposoby,
+na jakie mo¿esz z nich korzystaæ. Faktycznie artyku³ jest o filozofii
+,,Narzêdzi programowych,, w rozwijaniu i wykorzystywaniu programów.
+
+Filozofia narzêdzi programowych by³a wa¿nym i integralnym pojêciem
+w pocz±tkowym projekcie i rozwoju Uniksa (którego Linux i GNU s± zasadniczo
+klonami).  Niestety, przy wspó³czesnym nacisku intersieci i b³yskotliwych GUI,
+wydaje siê, ¿e idea ta spad³a na pobocze.  To wstyd, poniewa¿ zapewnia ona
+potê¿ny model my¶lowy do rozwi±zywania wielu rodzajów problemów.
+
+Sporo ludzi nosi w kieszeniach spodni szwajcarski scyzoryk.  Scyzoryk jest
+wygodnym narzêdziem: ma kilka ostrzy, ¶rubokrêt, pincetê, wyka³aczkê, zestaw
+gwo¼dzi, korkoci±g i mo¿e kilka innych rzeczy.  Do codziennych drobnych,
+ró¿norodnych zadañ, gdzie potrzebujesz prostego narzêdzia ogólnego
+zastosowania, jest w³a¶nie tym, o co chodzi.
+
+Z drugiej strony, do¶wiadczony cie¶la nie buduje domu scyzorykiem.
+Zamiast tego ma skrzynkê wypchan± specjalizowanymi narzêdziami -- jest tam
+pi³a, m³otek, ¶rubokrêt, strug i tak dalej.  I dok³adnie wie kiedy i gdzie
+u¿yæ ka¿dego z narzêdzi. Nie przy³apa³by¶ go na wbijaniu gwo¼dzi rêkoje¶ci±
+¶rubokrêtu.
+
+Konstruktorzy Uniksa w Bell Labs byli ca³kiem zawodowymi programistami
+i wyszkolonymi naukowcami komputerowymi.  Zauwa¿yli, ¿e choæ rozwi±zanie
+wszystko-w-jednym mo¿e przyci±gaæ u¿ytkownika, gdy¿ ma on tylko jeden program
+do korzystania, w praktyce programy takie s±
+
+@enumerate a
+@item
+trudne do napisania,
+
+@item
+trudne w konserwacji i usuwaniu b³êdów, oraz
+
+@item
+rudne do rozbudowy, przystosowania do nowych sytuacji.
+@end enumerate
+
+Uwa¿ali, ¿e zamiast tego, programy powinny byæ specjalizowanymi narzêdziami.
+Krótko mówi±c, ka¿dy program ,,powinien robiæ jedn± rzecz dobrze''.
+Nie wiêcej i nie mniej.  Takie programy s± ³atwiejsze do zaprojektowania,
+napisania i zrozumienia -- robi± tylko jedn± rzecz.
+
+Ponadto zauwa¿yli, ¿e przy odpowiednim mechanizmie ³±czenia programów
+ca³o¶æ jest wiêksza od sumy sk³adowych.  Wi±¿±c kilka specjalizowanych
+programów mo¿esz zrealizowaæ konkretne zadanie, do którego ¿aden z nich
+nie by³ projektowany i osi±gn±æ to du¿o szybciej i ³atwiej ni¿ pisz±c dla
+niego specjalizowany program.  W dalszej czê¶ci artyku³u zobaczymy kilka
+(klasycznych) tego przyk³adów.  Wa¿nym dodatkowym punktem by³o to, ¿e je¶li
+jest to niezbêdne, nale¿y najpierw zrobiæ narzêdzia, które bêd± potrzebne,
+je¿eli nie ma siê jeszcze odpowiednich w skrzynce narzêdziowej.
+
+@node Przekierowanie I/O
+@unnumberedsec Przekierowanie wej¶cia/wyj¶cia
+
+Mam nadziejê, ¿e jeste¶ obeznany z podstawami przekierowywania wej¶cia/wyj¶cia
+w pow³oce, w szczególno¶ci z pojêciami ,,standardowego wej¶cia'', ,,standardowego
+wyj¶cia'' i ,,standardowego wyj¶cia b³êdów (diagnostycznego)''. Zwiê¼le:
+,,standardowe wej¶cie'' jest ¼ród³em danych, sk±d pochodz± dane. Program nie musi
+wiedzieæ ani dbaæ o to, czy ¼ród³em danych jest plik dyskowy, klawiatura,
+ta¶ma magnetyczna czy nawet czytnik kart perforowanych. Podobnie, ,,standardowe
+wyj¶cie'' jest odp³ywem danych, dok±d dane sp³ywaj±. Program nie powinien ani
+wiedzieæ ani dbaæ o to, gdzie to mo¿e byæ. Programy, które tylko czytaj± swoje
+standardowe wej¶cie, robi± co¶ z tymi danymi i wysy³aj± je na standardowe
+wyj¶cie, nazywane s± ,,filtrami'', przez analogiê do filtrów w wodoci±gach.
+
+W pow³oce uniksowej bardzo ³atwo jest zestawiæ potoki danych:
+[t³um.: ang.,,pipeline'' to ,,ruroci±g'' lub, w informatyce, ,,potok'']
+
+@example
+program_tworzacy_dane | filtr1 | .... | filtrN > koncowe.dane
+@end example
+
+Zaczynamy od utworzenia surowych danych pierwotnych. Ka¿dy z filtrów stosuje
+pewne kolejne przekszta³cenie danych, a¿ wychodz±c z potoku bêd± one mieæ
+po¿±dan± postaæ.
+
+To jest eleganckie i dobre dla standardowego wej¶cia i standardowego wyj¶cia.
+A gdzie siê tu pojawia standardowe wyj¶cie b³êdów? Có¿, pomy¶lmy o @code{filtr1}
+w powy¿szym potoku. Co siê stanie, je¶li napotka on b³±d w przyjmowanych
+danych? Je¿eli wypisze komunikat o b³êdzie na standardowe wyj¶cie, to po prostu
+zniknie on w potoku wej¶cia do @code{filtr2} a u¿ytkownik zapewne nigdy go
+nie zobaczy. Zatem programi¶ci potrzebuj± miejsca, gdzie mogliby wysy³aæ
+komunikaty o b³êdach, tak by u¿ytkownik je zauwa¿y³. Jest to standardowe
+wyj¶cie diagnostyczne i zwykle zwi±zane jest z twoj± konsol± lub oknem,
+nawet je¶li przekierowa³e¶ standardowe wyj¶cie programu gdzie¶ poza ekran.
+
+Aby programy filtruj±ce mog³y wspó³dzia³aæ, musi zostaæ uzgodniony format
+danych. Najprostszym i naj³atwiejszym w wykorzystaniu formatem s± zwyk³e
+wiersze tekstu. Uniksowe pliki danych s± zazwyczaj po prostu strumieniami
+bajtów, o wierszach zakoñczonych znakiem @sc{lf} @sc{ascii} (Line Feed - wysuw linii),
+konwencjonalnie w literaturze dotycz±cej Uniksa nazywanym ,,znakiem nowej linii''
+(newline). (Jest to @code{'\n'} je¶li programujesz w C.) To format stosowany przez
+wszystkie tradycyjne programy filtruj±ce. (Wiele wcze¶niejszych systemów
+operacyjnych wypracowa³o ¶rodki i specjalizowane programy do obs³ugi danych
+binarnych. Unix zawsze wystrzega³ siê takich rzeczy, zgodnie z filozofi±,
+¿e naj³atwiej jest móc przegl±daæ i modyfikowaæ dane po prostu edytorem
+tekstu.)
+
+Dobrze, starczy wprowadzenia. Przyjrzyjmy siê niektórym narzêdziom,
+a wtedy zobaczymy jak wi±zaæ je ze sob± na ciekawe sposoby. W dalszych
+rozwa¿aniach poka¿emy tylko te opcje wiersza poleceñ, które nas interesuj±.
+Tak jak zawsze powiniene¶, dwukrotnie sprawd¼ dokumentacjê systemow±.
+Znajdziesz tam pe³ne opisy.
+
+@node Polecenie who
+@unnumberedsec Polecenie @code{who}
+
+Pierwszym programem jest polecenie @code{who} (kto). Samodzielne, tworzy listê aktualnie
+zalogowanych u¿ytkowników. Mimo, ¿e piszê to w systemie jednou¿ytkownikowym,
+bêdziemy udawaæ, ¿e zalogowanych jest kilka osób:
+
+@example
+$ who
+arnold   console Jan 22 19:57
+miriam   ttyp0   Jan 23 14:19(:0.0)
+bill     ttyp1   Jan 21 09:32(:0.0)
+arnold   ttyp2   Jan 23 20:48(:0.0)
+@end example
+
+Znak @samp{$} jest tu zwyczajow± zachêt± pow³oki, po której napisa³em @code{who}.
+Zalogowane s± trzy osoby, w tym ja dwukrotnie. W tradycyjnych systemach Unix
+nazwy u¿ytkowników nigdy nie maj± wiêcej ni¿ osiem znaków. Ta ma³a ciekawostka
+przyda siê pó¼niej. Wyj¶cie z @code{who} wygl±da ³adnie, ale dane nie s± a¿ tak
+pasjonuj±ce.
+
+@node Polecenie cut
+@unnumberedsec Polecenie @code{cut}
+
+Nastêpnym programem, któremu siê przygl±dniemy jest polecenie @code{cut} (wytnij).
+Wycina ono kolumny lub pola z danych wej¶ciowych. Na przyk³ad, mo¿emy nakazaæ
+mu wypisanie tylko nazwy zg³oszeniowej i nazwiska z pliku @file{/etc/passwd}.
+Plik posiada siedem pól, rozdzielonych dwukropkami:
+
+@example
+arnold:xyzzy:2076:10:Arnold D. Robbins:/home/arnold:/bin/ksh
+@end example
+
+Do pobrania pierwszego i pi±tego pola, u¿yliby¶my takiego wycinania:
+
+@example
+$ cut -d: -f1,5 /etc/passwd
+root:Operator
+@dots{}
+arnold:Arnold D. Robbins
+miriam:Miriam A. Robbins
+@dots{}
+@end example
+
+Z opcj± @samp{-c}, @code{cut} wycina konkretne znaki (tj. kolumny) wierszy wej¶ciowych.
+To polecenie wygl±da na przydatne do filtrowania danych.
+
+
+@node Polecenie sort
+@unnumberedsec Polecenie @code{sort}
+
+Nastêpnie przyjrzymy siê @code{sort}.  To jedno z najpotê¿niejszych
+poleceñ w systemie typu uniksowego.  Czêsto bêdziesz go u¿ywa³ przy
+konstruowaniu ró¿nych wymy¶lnych ruroci±gów.  @code{sort} czyta i sortuje ka¿dy
+z podanych w wierszu poleceñ plików.  Nastêpnie scala uporz±dkowane dane
+i wypisuje na standardowe wyj¶cie.  Je¶li w wierszu poleceñ nie poda siê
+¿adnych nazw plików to czyta standardowe wej¶cie (w ten sposób robimy zeñ
+filtr).  Sortowanie oparte jest na leksykograficznym porz±dku znaków lub
+kryteriach porz±dkowania zadanych przez u¿ytkownika.
+
+
+@node Polecenie uniq
+@unnumberedsec Polecenie @code{uniq}
+
+Na koniec (przynajmniej na razie), przygl±dniemy siê programowi @code{uniq}.
+Przy sortowaniu danych czêsto uzyskasz powtórzone wiersze, wiersze,
+które s± identyczne.  Zazwyczaj potrzebujesz tylko jednego wyst±pienia ka¿dego
+z nich.  Tu w³a¶nie pojawia siê @code{uniq}.  Czyta on ze swego standardowego wej¶cia,
+spodziewaj±c siê, ¿e jest ono posortowane.  Wypisuje tylko jeden egzemplarz
+ka¿dego zduplikowanego wiersza.  @code{uniq} ma kilka opcji.  W dalszym ci±gu
+wykorzystamy opcjê @samp{-c}, wypisuj±c± przed niepowtarzalnym wierszem
+ile razy wyst±pi³ on w danych wej¶ciowych.
+
+
+@node £±czenie narzêdzi
+@unnumberedsec £±czenie narzêdzi
+
+Za³ó¿my teraz, ¿e mamy system BBS z zalogowanymi dziesi±tkami
+u¿ytkowników.  Zarz±dzaj±cy chc±, by operator systemu (SysOp) napisa³
+program tworz±cy posortowan± listê zalogowanych u¿ytkowników.
+Co wiêcej, nawet je¶li u¿ytkownik jest zalogowany wielokrotnie, jego nazwa
+powinna w wyniku pojawiæ siê tylko raz.
+
+SysOp móg³by si±¶æ z dokumentacj± systemow± i napisaæ program w C, który
+by to robi³.  Kosztowa³oby to pewnie kilkaset linii kodu i oko³o dwu godzin
+pisania, testowania i usuwania b³êdów.  Jednak, znaj±c narzêdzia programowe,
+SysOp mo¿e zamiast tego zacz±æ od utworzenia tylko listy zalogowanych
+u¿ytkowników:
+
+@example
+$ who | cut -c1-8
+arnold
+miriam
+bill
+arnold
+@end example
+
+Nastêpnie, posortowaæ listê:
+
+@example
+$ who | cut -c1-8 | sort
+arnold
+arnold
+bill
+miriam
+@end example
+
+Na koniec, przepu¶ciæ posortowan± listê przez @code{uniq}, by wypieliæ
+duplikaty:
+
+@example
+$ who | cut -c1-8 | sort | uniq
+arnold
+bill
+miriam
+@end example
+
+Polecenie @code{sort} faktycznie posiada opcjê @samp{-u}, która robi to,
+co @code{uniq}.  Jednak @code{uniq} ma inne zastosowania, w których nie
+mo¿na go zast±piæ przez @samp{sort -u}.
+
+SysOp umieszcza ten potok w skrypcie pow³oki i udostêpnia go wszystkim
+u¿ytkownikom systemu:
+
+@example
+# cat > /usr/local/bin/listusers
+who | cut -c1-8 | sort | uniq
+^D
+# chmod +x /usr/local/bin/listusers
+@end example
+
+Warto tu zauwa¿yæ cztery zalety.  Po pierwsze, przy pomocy zaledwie
+czterech programów, w jednej linii poleceñ, SysOp móg³ oszczêdziæ oko³o
+dwu godzin pracy.  Co wiêcej, potok pow³oki jest prawie tak samo wydajny,
+jak by³by program w C, a o wiele bardziej efektywny je¶li chodzi o czas
+programisty.  Czas ludzki jest o wiele kosztowniejszy ni¿ czas komputera,
+a w naszym wspó³czesnym spo³eczeñstwie, gdzie ,,nigdy nie ma do¶æ czasu by
+wszystko zrobiæ'', zaoszczêdzenie dwu godzin czasu programisty jest
+nie byle jakim wyczynem.
+
+Po drugie, równie istotne jest podkre¶lenie, ¿e przy pomocy @emph{po³±czenia}
+narzêdzi mo¿liwe jest wykonanie specyficznego zadania, nigdy nie
+przewidywanego przez autorów pojedynczych programów.
+
+Po trzecie, warto¶ciowe jest te¿ stopniowe budowanie potoku, jak to
+zrobili¶my.  Pozwala ono na przygl±dniêcie siê danym na ka¿dym etapie
+przebiegu potoku, co pomaga uzyskaæ pewno¶æ, ¿e rzeczywi¶cie poprawnie
+u¿ywasz narzêdzi.
+
+Na koniec, dziêki zapakowaniu potoku w skrypt pow³oki, inni u¿ytkownicy mog±
+korzystaæ z twojego polecenia, nie musz±c pamiêtaæ o zawarto¶ci tego
+wymy¶lnego opakowania.  Z punktu widzenia sposobu uruchamiania, skrypty pow³oki
+i skompilowane programy s± nierozró¿nialne.
+
+Po uprzedniej rozgrzewce, przypatrzymy siê dwu kolejnym, bardziej
+skomplikowanym potokom.
+Potrzebujemy dla nich wprowadziæ jeszcze dwa narzêdzia.
+
+Pierwszym jest polecenie @code{tr}, oznaczaj±ce ,,transliteracjê''.
+Polecenie @code{tr} wymienia znaki, dzia³aj±c na zasadzie znak-na-znak.
+Zwykle stosowane jest do takich rzeczy jak odwzorowanie du¿ych liter
+na ma³e.
+
+@example
+$ echo ThIs ExAmPlE HaS MIXED case! | tr '[A-Z]' '[a-z]'
+this example has mixed case!
+@end example
+
+Interesuje nas kilka opcji:
+
+@table @samp
+@item -c
+dzia³a na dope³nieniu wskazanych znaków, tj. dzia³ania odnosz± siê
+do znaków spoza zadanego zestawu
+
+@item -d
+usuwa z wyniku znaki okre¶lone w pierwszym zestawie
+
+@item -s
+¶ciska w wyj¶ciu powtórzone znaki w pojedynczy znak.
+@end table
+
+Za chwilê bêdziemy korzystaæ ze wszystkich trzech opcji.
+
+Innym poleceniem, któremu siê przyjrzymy jest @code{comm} (common - wspólne).
+Pobiera ono dwa
+posortowane pliki jako dane wej¶ciowe i wypisuje ich wiersze w trzech
+kolumnach.  Kolumny wynikowe s± unikalnymi wierszami z pierwszego pliku,
+unikalnymi wierszami z drugiego pliku i wierszami danych wspólnymi dla obu.
+Opcje @samp{1}, @samp{-2} i @samp{3} pomijaj± odpowiednie kolumny.  Nie jest
+to intuicyjne i wymaga pewnego przywykniêcia.  Na przyk³ad:
+
+@example
+$ cat f1
+11111
+22222
+33333
+44444
+$ cat f2
+00000
+22222
+33333
+55555
+$ comm f1 f2
+        00000
+11111
+                22222
+                33333
+44444
+        55555
+@end example
+
+Pojedyncza kreska jako nazwa pliku nakazuje @code{comm} czytanie standardowego
+wej¶cia zamiast zwyk³ego pliku.
+
+Jeste¶my teraz gotowi do skonstruowania wymy¶lnego potoku.
+Pierwszym zastosowaniem jest licznik czêsto¶ci s³ów. Pomaga autorowi
+stwierdziæ, czy nie nadu¿ywa on pewnych s³ów.
+
+Pierwszym krokiem jest zmiana wielko¶ci wszystkich liter z pliku wej¶ciowego
+na jedn± wielko¶æ. ,,To'' i ,,to'' przy zliczaniu s± tym samym s³owem.
+
+@example
+$ tr '[A-Z]' '[a-z]' < whats.gnu | ...
+@end example
+
+[t³um.: zauwa¿, ¿e dla jêzyka polskiego, podobnie jak w nastêpnym kroku,
+nale¿y uwzglêdniæ dodatkowo nasze znaki diakrytyczne.  Mo¿na do³±czyæ je
+do podanego zakresu lub, lepiej, pos³u¿yæ siê klas± znaków i ustawieniami
+narodowymi - zobacz @ref{Wywo³anie tr}.]
+
+Nastêpnym krokiem jest pozbycie siê znaków przestankowych.  S³owa cytowane
+i niecytowane powinny byæ traktowane identycznie; naj³atwiej bêdzie po prostu
+wyrzuciæ zawadzaj±c± interpunkcjê.
+
+@example
+$ tr '[A-Z]' '[a-z]' < whats.gnu | tr -cd '[A-Za-z0-9_ \012]' | ...
+@end example
+
+Drugie polecenie @code{tr} dzia³a na dope³nieniu podanych znaków, którymi s±
+litery, cyfry, podkre¶lenie i odstêp.  @samp{\012} oznacza znak nowej linii,
+nale¿y go pozostawiæ.  Dla dobrego pomiaru w dzia³aj±cym skrypcie
+powinien byæ te¿ zawarty znak tabulacji (@sc{ascii} tab).
+
+Na tym etapie, mamy dane sk³adaj±ce siê ze s³ów rozdzielonych odstêpami.
+S³owa zawieraj± wy³±cznie znaki alfanumeryczne i znak podkre¶lenia.
+Nastêpnym krokiem jest rozbicie danych na czê¶ci tak, by¶my mieli po jednym
+s³owie w wierszu.  Jak wkrótce zobaczymy, znacznie u³atwia to zliczanie.
+
+@example
+$ tr '[A-Z]' '[a-z]' < whats.gnu | tr -cd '[A-Za-z0-9_ \012]' |
+> tr -s '[ ]' '\012' | ...
+@end example
+
+To polecenie zamienia odstêpy w znaki nowej linii.  Opcja @samp{-s} ¶ciska
+wielokrotne znaki nowej linii wyniku w pojedynczy.  Pomaga nam to unikn±æ
+pustych wierszy. (Znak @samp{>} jest tu wtórnym znakiem zachêty pow³oki.
+Pow³oka wypisuje go, gdy zauwa¿y, ¿e nie zakoñczy³e¶ wpisywania ca³ego
+polecenia.)
+
+Teraz mamy dane sk³adaj±ce siê z jednego s³owa w ka¿dym wierszu, bez znaków
+interpunkcyjnych, wszystkie pisane jedn± wielko¶ci±.
+Jeste¶my gotowi do zliczania ka¿dego z nich:
+
+@example
+$ tr '[A-Z]' '[a-z]' < whats.gnu | tr -cd '[A-Za-z0-9_ \012]' |
+> tr -s '[ ]' '\012' | sort | uniq -c | ...
+@end example
+
+Na tym etapie, dane mog± wygl±daæ jako¶ tak:
+
+@example
+  60 a
+   2 able
+   6 about
+   1 above
+   2 accomplish
+   1 acquire
+   1 actually
+   2 additional
+@end example
+
+Wynik jest posortowany wed³ug s³ów, nie wed³ug liczby wyst±pieñ!
+Chcieliby¶my natomiast mieæ jako pierwsze najczê¶ciej u¿ywane s³owa.
+Na szczê¶cie, ³atwo to osi±gn±æ przy pomocy dwu dodatkowych opcji @code{sort}:
+
+@table @samp
+@item -n
+wykonuje sortowanie liczbowe, a nie tekstowe
+
+@item -r
+odwraca kolejno¶æ sortowania
+@end table
+
+Ostateczny potok wygl±da tak:
+
+@example
+$ tr '[A-Z]' '[a-z]' < whats.gnu | tr -cd '[A-Za-z0-9_ \012]' |
+> tr -s '[ ]' '\012' | sort | uniq -c | sort -nr
+ 156 the
+  60 a
+  58 to
+  51 of
+  51 and
+ ...
+@end example
+
+No, no! Sporo do opowiadania. Nadal jednak obowi±zuj± te same zasady.
+Przy pomocy sze¶ciu poleceñ, w dwu wierszach (faktycznie jednej d³ugiej linii
+podzielonej dla wygody), stworzyli¶my program, który robi co¶ ciekawego
+i po¿ytecznego, w du¿o krótszym czasie ni¿ mogliby¶my napisaæ program w C
+robi±cy to samo.
+
+Niewielkie zmiany w powy¿szym potoku mog± nam daæ prosty korektor pisowni!
+Do stwierdzenia, czy napisa³e¶ poprawnie jakie¶ s³owo wystarczy, ¿e
+poszukasz go w s³owniku. Je¶li w nim nie wystêpuje, to mo¿liwe, ¿e twoja
+pisownia jest nieprawid³owa. Tak wiêc, potrzebujemy s³ownika. Je¿eli masz
+dystrybucjê Slackware Linux, to plik @file{/usr/lib/ispell/ispell.words}
+jest posortowanym, zawieraj±cym 38.400 s³ów, s³ownikiem.
+
+Zatem, jak porównaæ nasz plik ze s³ownikiem? Jak poprzednio, utworzymy
+posortowan± listê s³ów, po jednym w wierszu:
+
+@example
+$ tr '[A-Z]' '[a-z]' < whats.gnu | tr -cd '[A-Za-z0-9_ \012]' |
+> tr -s '[ ]' '\012' | sort -u | ...
+@end example
+
+Teraz potrzebujemy tylko listy s³ów, których @emph{nie ma} w s³owniku.
+Tu w³a¶nie pojawia siê polecenie @code{comm}.
+
+@example
+$ tr '[A-Z]' '[a-z]' < whats.gnu | tr -cd '[A-Za-z0-9_ \012]' |
+> tr -s '[ ]' '\012' | sort -u |
+> comm -23 - /usr/lib/ispell/ispell.words
+@end example
+
+Opcje @samp{-2} i @samp{-3} likwiduj± wiersze wystêpuj±ce tylko s³owniku (drugi plik),
+i wystêpuj±ce w obu plikach. Wiersze obecne tylko w pierwszym pliku
+(standardowe wej¶cie, nasz strumieñ s³ów), s± s³owami, których nie ma
+w s³owniku. S± to prawdopodobne b³êdy pisowni.
+Taki potok by³ pierwszym etapem budowy korektora pisowni w Uniksie.
+
+Istnieje jeszcze kilka innych narzêdzi wymagaj±cych krótkiej wzmianki.
+
+@table @code
+@item grep
+szuka w plikach tekstu pasuj±cego do wyra¿enia regularnego
+
+@item egrep
+jak @code{grep}, ale z bardziej rozbudowanymi wyra¿eniami regularnymi
+
+@item wc
+zlicza wiersze, s³owa, znaki
+
+@item tee
+kopiuje dane do plików i na standardowe wyj¶cie;
+dzia³a jak T-kszta³tka w ruroci±gu danych
+
+@item sed
+edytor strumieniowy, zaawansowane narzêdzie
+
+@item awk
+jêzyk manipulacji danymi, kolejne zaawansowane narzêdzie
+@end table
+
+Filozofia narzêdzi programowych daje te¿ nastêpuj±c± radê: ,,Niech kto¶
+inny zrobi trudn± czê¶æ pracy''.
+To znaczy, we¼ co¶, co zaspokoi wiêkszo¶æ twoich potrzeb, a nastêpnie
+przekszta³caj dalej, a¿ uzyskasz po¿±dan± postaæ.
+
+Podsumowuj±c:
+
+@enumerate 1
+@item
+Ka¿dy program powinien robiæ jedn± rzecz, ale dobrze. Nie wiêcej, nie mniej.
+
+@item
+£±czenie programów w odpowiedni sposób prowadzi do rezultatu, gdzie
+ca³o¶æ jest lepsza od sumy czê¶ci. Prowadzi te¿ do nowatorskich
+zastosowañ programów, których ich autorzy nawet sobie nie wyobra¿ali.
+
+@item
+Programy nigdy nie powinny wypisywaæ dodatkowych danych nag³ówkowych
+czy koñcz±cych, gdy¿ mog³yby one zostaæ przes³ane potokiem.
+(Cecha, o której wcze¶niej nie wspominali¶my).
+
+@item
+Niech kto¶ inny wykona trudn± czê¶æ roboty.
+
+@item
+Znaj swoje narzêdzia! Ka¿dego programu u¿ywaj we w³a¶ciwy sposób.
+Je¿eli nie masz odpowiedniego narzêdzia - zrób je.
+@end enumerate
+
+W chwili powstania tego artyku³u, wszystkie omawiane programy by³y dostêpne
+przez anonimowe @code{ftp} z @code{prep.ai.mit.edu} jako
+@file{/pub/gnu/textutils-1.9.tar.gz}.@footnote{Wersja 1.9 by³a wówczas
+bie¿±c±. Sprawd¼ w najbli¿szym archiwum GNU jaka wersja jest aktualnie
+bie¿±ca. G³ówn± siedzib± archiwum jest obecnie @code{ftp.gnu.org}.}
+
+Nic z tego, co przedstawi³em w tym artykule nie jest nowe. Filozofia Narzêdzi
+Programowych zosta³a po raz pierwszy wprowadzona w ksi±¿ce @cite{Software Tools},
+Briana Kernighana i P.J. Plaugera (Addison-Wesley, ISBN 0-201-03669-X).
+Ksi±¿ka ta pokazywa³a jak pisaæ i wykorzystywaæ narzêdzia programowe.
+Zosta³a napisana w 1976, korzystaj±c z preprocesora FORTRAN-u o nazwie @code{ratfor}
+(RATional FORtran). Wówczas C nie by³ tak wszechobecny jak dzi¶. FORTRAN by³.
+Ostatni rozdzia³ przedstawia³ @code{ratfor} dla procesora FORTRAN-u, napisany w
+@code{ratfor}ze. @code{ratfor} wygl±da bardzo podobnie do C -- je¶li znasz C,
+nie bêdziesz mieæ ¿adnych k³opotów ze zrozumieniem kodu.
+
+W 1981 ksi±¿ka ta zosta³a zaktualizowana i udostêpniona jako @cite{Software Tools
+in Pascal} (Addison-Wesley, ISBN 0-201-10342-7). Obie ksi±¿ki s± nadal
+drukowane i s± rzeczywi¶cie warte przeczytania je¶li jeste¶ programist±.
+Z pewno¶ci± bardzo zmieni³y mój punkt widzenia na programowanie.
+
+Pocz±tkowo programy z obu ksi±¿ek by³y dostêpne (na 9-calowej ta¶mie)
+z Addison-Wesley. Niestety, ju¿ tak nie jest, mimo ¿e mo¿esz znale¼æ kopie
+rozproszone w Internecie. Przez wiele lat dzia³a³a Software Tools Users Group
+- Grupa U¿ytkowników Narzêdzi Programowych, której cz³onkowie przenie¶li
+pierwotne programy @code{ratfor} na niemal ka¿dy system komputerowy z kompilatorem
+FORTRAN-u. Popularno¶æ grupy zanik³a w po³owie lat 80-tych, gdy Unix zacz±³
+rozpowszechniaæ siê poza uniwersytetami.
+
+Przy obecnym rozmno¿eniu kodu GNU i innych klonów programów uniksowych,
+programom tym po¶wiêca siê teraz niewiele uwagi. Wspó³czesne wersje C
+s± o wiele wydajniejsze i robi± wiêcej ni¿ te programy. Niemniej jednak,
+ksi±¿ki te s± niezrównane jako opis dobrego stylu programowania, g³osz±c
+wci±¿ cenn± filozofiê. Gor±co je polecam.
+
+Podziêkowania: chcia³bym wyraziæ sw± wdziêczno¶æ Brianowi Kernighanowi
+z Bell Labs, pierwszemu Kowalowi Narzêdzi Programowych, za przejrzenie tego
+artyku³u.
+
+
+@node Skorowidz
+@unnumbered Skorowidz
+
+@printindex cp
+
+@contents
+@bye
+
+@c Local variables:
+@c texinfo-column-for-description: 32
+@c End:

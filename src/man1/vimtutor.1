@@ -1,0 +1,52 @@
+.\" {PTM/RL/16-02-2002/"samouczek vima"}
+.\" Translation: Robert Luberda <robert@debian.org>, Feb 2002; vim 6.0
+.\" Translation update: Robert Luberda <robert@debian.org>, Jul 2004; vim 6.3
+.\" $Id: vimtutor.1,v 1.4 2004/07/07 14:21:04 robert Exp $
+.\"
+.TH VIMTUTOR 1 "2 kwietnia 2001"
+.SH NAZWA
+vimtutor \- samouczek vima
+.SH SK£ADNIA
+.br
+.B vimtutor [jêzyk]
+.SH OPIS
+.B Vimtutor
+uruchamia samouczek
+.BR Vima .
+Najpierw kopiuje plik samouczka, tak ¿eby móg³ byæ modyfikowany bez zmieniania oryginalnego
+pliku.
+.PP
+.B Vimtutor
+mo¿e byæ u¿yteczny dla ludzi chc±cych siê nauczyæ swoich pierwszych poleceñ
+.BR vima .
+.PP
+Opcjonalny argument [jêzyk] jest dwuliterow± nazw± jêzyka, na przyk³ad
+"it" lub "es".
+Je¿eli nie podano argumentu [jêzyk], zostanie u¿yty jêzyk okre¶lony na podstawie bie¿±cych
+ustawieñ jêzykowych.
+Samouczek w tym jêzyku zostanie u¿yty, pod warunkiem, ¿e jest dostêpny. Je¿eli nie jest, to
+zostanie wy¶wietlona wersja angielska.
+.PP
+.B Vim
+jest zawsze uruchamiany w trybie kompatybilno¶ci z vi.
+.SH PLIKI
+.TP 15
+/usr/share/vim/vim63/tutor/tutor[.jêzyk]
+Plik(i) tekstowe samouczka
+.BR Vimtutor .
+.TP 15
+/usr/share/vim/vim63/tutor/tutor.vim
+Skrypt u¿ywany do kopiowania pliku samouczka
+.BR Vimtutor .
+.SH AUTOR
+.B Vimtutor
+zosta³ napisany dla edytora vi przez Michaela C. Pierce'a i Roberta K. Ware'a z
+Colorado School of Mines z wykorzystaniem pomys³u Charlesa Smitha z
+Colorado State University.
+E-mail: bware@mines.colorado.edu.
+.br
+Bram Moolenaar zmodyfikowa³ go dla edytora
+.BR vim .
+Nazwiska t³umaczy mo¿na znale¼æ w plikach samouczka.
+.SH ZOBACZ TAK¯E
+vim(1)

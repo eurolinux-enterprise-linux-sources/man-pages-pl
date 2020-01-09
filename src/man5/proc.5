@@ -1,0 +1,1344 @@
+.\" Copyright (C) 1994, 1995 by Daniel Quinlan (quinlan@yggdrasil.com)
+.\" with networking additions from Alan Cox (A.Cox@swansea.ac.uk)
+.\" and scsi additions from Michael Neuffer (neuffer@mail.uni-mainz.de)
+.\" and sysctl additions from Andries Brouwer (aeb@cwi.nl)
+.\" and System V IPC (as well as various other) additions from
+.\" Michael Kerrisk (mtk16@ext.canterbury.ac.nz)
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" Wed May 17 15:26:04 1995: faith@cs.unc.edu, updated BUGS section
+.\" Minor changes by aeb and Marty Leisner (leisner@sdsp.mc.xerox.com).
+.\" Sat Apr 13 02:32:45 1996: aeb@cwi.nl, added sys, various fixes.
+.\" Mon Jul 22 17:14:44 1996: aeb@cwi.nl, minor fix.
+.\" Sun Dec 16 11:39:19 2001: rwhron@earthlink.net, update for 2.4.
+.\" Sat Jul 13 14:00:00 2002: jbelton@shaw.ca, added to sys/fs and sys/kernel.
+.\" Modified, 22 Jul 2002, Michael Kerrisk <mtk16@ext.canterbury.ac.nz>
+.\"
+.\" Translation (c) 1998 Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Apr 2003,
+.\"              manpages 1.55
+.\"
+.TH PROC 5 2002-07-13 "" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+/proc \- pseudosystem plików z informacjami o procesach
+
+.SH OPIS
+/proc jest pseudosystemem plików, który s³u¿y jako lepszy interfejs do 
+struktur j±dra, ni¿ czytanie /dev/kmem. Jest on w wiêkszo¶ci przeznaczony
+tylko do odczytu, lecz niektóre pliki umo¿liwiaj± modyfikacje zmiennych j±dra.
+.LP
+Nastêpuj±cy szkic ukazuje w szybki sposób hierarchiê /proc.
+.LP
+.\" .na
+.\" .nh
+.PD 1
+.TP
+.I [numer]
+Ka¿demu dzia³aj±cemu procesowi odpowiada katalog o numerycznej nazwie;
+nazw± t± jest identyfikator procesu. Ka¿dy z tych katalogogów zawiera
+nastêpuj±ce pseudopliki i podkatalogi:
+.RS
+.TP
+.I cmdline
+Zawiera pe³n± liniê polecenia wydanego przy uruchamianiu procesu, chyba ¿e
+ca³y proces uleg³ wymianie lub jest tp proces-duch (zombie). W obu tych
+przypadkach plik bêdzie pusty, tzn. odczyt tego pliku zwróci zawsze 0 znaków.
+Argumenty linii poleceñ wystêpuj± w tym pliku rozdzielone znakami NUL,
+z dodatkowym znakiem NUL po ostatnim ³añcuchu.
+linii.
+.TP
+.I cwd
+Jest dowi±zaniem do bie¿±cego katalogu roboczego procesu. Aby dowiedzieæ siê,
+jaki jest katalog roboczy procesu, na przyk³ad, 20, mo¿na wydaæ nastêpuj±ce 
+polecenia:
+
+.br
+.nf
+.ft CW
+cd /proc/20/cwd; /bin/pwd
+.fi
+.ft
+.PP
+Nale¿y zauwa¿yæ, ¿e polecenie pwd jest czêsto wbudowanym poleceniem pow³oki
+i mo¿e nie dzia³aæ w tym kontek¶cie w sposób w³a¶ciwy.
+.TP
+.I environ
+Plik ten zawiera ¶rodowisko procesu. Wpisy s± oddzielone znakami NUL, mo¿e
+te¿ byæ wyst±piæ znak NUL na koñcu. Dlatego, aby wypisaæ zmienne ¶rodowiskowe
+procesu 1, nale¿y wykonaæ:
+
+.br
+.nf
+.ft CW
+(cat /proc/1/environ; echo) | tr "\\000" "\\n"
+.fi
+.ft P
+
+(Aby dowiedzieæ siê, z jakiego powodu kto¶ mia³by chcieæ co¶ takiego zrobiæ,
+zobacz
+.BR lilo (8).)
+.TP
+.I exe
+W Linuksie 2.2 i 2.4
+.I exe
+jest dowi±zaniem symbolicznym zawieraj±cym rzeczywist± nazwê ¶cie¿ki
+dzia³aj±cego polecenia. Dowi±zaniem symbolicznym
+.I exe
+mo¿na siê normalnie pos³ugiwaæ - próba otwarcia
+.I exe
+otworzy plik programu. Mo¿na nawet wydaæ polecenie
+.IR /proc/[numer]/exe ,
+aby uruchomiæ kolejn± kopiê tego samego procesu co [numer].
+
+W Linuksie 2.0 i wcze¶niejszych wersjach,
+.I exe
+jest wska¼nikiem do uruchomionego pliku binarnego i ma postaæ
+dowi±zania symbolicznego. Wywo³anie
+.BR readlink (2)
+dla pliku specjalnego
+.I exe
+zwróci w Linuksie 2.0 ³añcuch znakowy postaci:
+
+[urz±dzenie]:i-wêze³
+
+Na przyk³ad, [0301]:1502 bêdzie 1502 i-wêz³em na urz±dzeniu o numerze g³ównym
+03 (IDE, MFM itp.) i pobocznym 01 (pierwsza partycja pierwszego dysku).
+
+Do zlokalizowania pliku, mo¿na pos³u¿yæ siê poleceniem
+.BR find (1)
+z opcj± -inum.
+.TP
+.I fd
+Jest to podkatalog zawieraj±cy po jednym wpisie dla ka¿dego otwartego przez
+proces pliku; nazw± tego wpisu jest deskryptor pliku i jest on dowi±zaniem
+symbolicznym do rzeczywistego pliku (tak jak w przypadku exe). Dlatego 0 jest
+standardowym wej¶ciem, 1 jest standardowym wyj¶ciem, 2 jest standardow±
+diagnostyk±, itd.
+
+Mo¿na to efektywnie wykorzystaæ do oszukania programów, które pobieraj± dane
+wej¶ciowe z pliku, lecz nie czytaj± swojego standardowego wej¶cia i które
+zapisuj± do pliku, lecz nie wysy³aj± danych wyj¶ciowych na standardowe
+wyj¶cie. Zak³adaj±c, ¿e opcja -i okre¶la plik wej¶ciowy, a opcja -o okre¶la
+plik wyj¶ciowy:
+.br
+.nf
+\f(CWfoobar -i /proc/self/fd/0 -o /proc/self/fd/1 ...\fR
+.fi
+.br
+daje dzia³aj±cy filtr. Trzeba zauwa¿yæ, ¿e nie bêdzie to dzia³aæ z programami
+wyszukuj±cych w plikach za pomoc± seek, jako ¿e wyszukiwanie nie dzia³a dla
+plików z katalogu fd.
+
+/proc/self/fd/N jest w przybli¿eniu tym samym co /dev/fd/N na niektórych
+systemach uniksowych i uniksopodobnych. Wiêkszo¶æ linuksowych skryptów MAKEDEV
+tworzy dowi±zania symboliczne /dev/fd do /proc/self/fd.
+.TP
+.I maps
+Plik zawieraj±cy aktualnie zmapowane obszary pamiêci wraz z prawami
+dostêpu do nich.
+
+Format pliku jest nastêpuj±cy:
+
+.nf
+.ft CW
+.in 8n
+address           perms offset   dev   inode      pathname
+08048000-08056000 r-xp 00000000 03:0c 64593      /usr/sbin/gpm
+08056000-08058000 rw-p 0000d000 03:0c 64593      /usr/sbin/gpm
+08058000-0805b000 rwxp 00000000 00:00 0
+40000000-40013000 r-xp 00000000 03:0c 4165       /lib/ld-2.2.4.so
+40013000-40015000 rw-p 00012000 03:0c 4165       /lib/ld-2.2.4.so
+4001f000-40135000 r-xp 00000000 03:0c 45494      /lib/libc-2.2.4.so
+40135000-4013e000 rw-p 00115000 03:0c 45494      /lib/libc-2.2.4.so
+4013e000-40142000 rw-p 00000000 00:00 0
+bffff000-c0000000 rwxp 00000000 00:00 0
+.ft
+.fi
+.in
+
+gdzie address jest przestrzeni± adresemow± procesu, który j± zajmuje, perms
+jest zbiorem uprawnieñ:
+
+.nf
+.in +5
+r = odczyt
+w = zapis
+x = wykonywanie
+s = wspólne
+p = prywatne (kopiowane przy zapisie)
+.fi
+.in
+
+offset jest przesuniêciem w pliku/czymkolwiek, dev zawiera numeru
+(g³ówny:poboczny) urz±dzenia, a inode jest i-wêz³em na tym urz±dzeniu.
+0 wskazuje, ¿e nie istnieje i-wêze³ zwi±zany z tym obszarem pamiêci, jak to
+ma miejsce z bss.
+
+W Linuksie 2.0 nie ma pola pathname podaj±cego nazwê ¶cie¿ki.
+.TP
+.I mem
+Za po¶rednictwem pliku
+.I mem
+mo¿na korzystaj±c z
+.BR open (2),
+.BR read (2),
+i
+.BR fseek (3)
+uzyskaæ dostêp do stron pamiêci procesu.
+.TP
+.I root
+UNIX i linux wspieraj± pomys³ okre¶lonego dla ka¿dego procesu osobno katalogu
+g³ównego systemu plików, ustawianego przez wywo³anie systemowe
+.BR chroot (2).
+root wskazuje na katalog g³ówny systemu plików, zachowuj±c siê jak exe, fd/*,
+itp.
+.TP
+.I stat
+Informacje o stanie procesu. Korzysta z tego
+.BR ps (1).
+S± one zdefiniowane w
+.IR /usr/src/linux/fs/proc/array.c .
+
+Kolejne pola i ich w³a¶ciwe specyfikatory formatu
+.BR scanf (3)
+to:
+.RS
+.TP
+\fIpid\fP %d
+Identyfokator procesu (PID).
+.TP
+\fIcomm\fP %s
+Nazwa pliku wykonywalnego w nawiasach. Widaæ, czy plik jest uleg³ wymianie.
+.TP
+\fIstate\fP %c
+Jeden znak spo¶ród "RSDZTW", gdzie R oznacza proces dzia³aj±cy, S - proces
+u¶piony w oczekiwaniu przerywalnym, D - proces u¶piony w oczekiwaniu
+nieprzerywalnym, Z - proces duch (zombie), T - ¶ledzony lub zatrzymany
+(przez sygna³), a W - którego strony zast±piono.
+.TP
+\fIppid\fP %d
+PID procesu macierzystego.
+.TP
+\fIpgrp\fP %d
+Identyfikator grupy procesów danego procesu.
+.TP
+\fIsession\fP %d
+Identyfikator sesji procesu.
+.TP
+.\" tty_nr needs better explanation.
+\fItty_nr\fP %d
+Terminal (tty), z którego proces korzysta.
+.TP
+\fItpgid\fP %d
+Identyfikator grupy procesów, do której nale¿y proces bêd±cy w³a¶cicielem
+terminala (tty), do którego dany proces jest pod³±czony.
+.TP
+\fIflags\fP %lu
+Znaczniki procesu.
+Bit math ma dziesiêtn± warto¶æ 4, a bit ¶ledzenia ma dziesiêtn± warto¶æ 10.
+.TP
+\fIminflt\fP %lu
+Liczba drobnych b³êdów, które pope³ni³ proces, a które nie wymaga³y
+za³adowania strony pamiêci z dysku.
+.TP
+\fIcminflt\fP %lu
+Liczba drobnych b³êdów procesu i jego procesów potomnych.
+.TP
+\fImajflt\fP %lu
+Liczba g³ównych b³êdów, które pope³ni³ proces, a które wymaga³y za³adowania
+strony pamiêci z dysku.
+.TP
+\fIcmajflt\fP %lu
+Liczba g³ównych b³êdów procesu i jego procesów potomnych.
+.TP
+\fIutime\fP %lu
+Liczba jiffies (przerwañ zegarowych), podczas których proces by³ kolejkowany
+w trybie u¿ytkownika.
+.TP
+\fIstime\fP %lu
+Liczba jiffies, podczas których proces by³ kolejkowany w trybie j±dra.
+.TP
+\fIcutime\fP %ld
+Liczba jiffies, podczas których proces i jego procesy potomne by³y kolejkowane
+w trybie u¿ytkownika.
+.TP
+\fIcstime\fP %ld
+Liczba jiffies, podczas których proces i jego procesy potomne by³y kolejkowane
+w trybie j±dra.
+.TP
+\fIpriority\fP %ld
+Standardowa warto¶æ nice plus piêtna¶cie. Warto¶æ w j±drze jest zawsze
+nieujemna.
+.TP
+\fInice\fP %ld
+Warto¶æ nice znajduje siê w zakresie od 19 (najmilszy) do -19 (niemi³y dla
+innych).
+.\" .TP
+.\" \fIcounter\fP %d
+.\" Obecny maksymalny rozmiar nastêpnego przedzia³u czasowego procesu (w
+.\" jiffies), lub ilo¶æ pozosta³ych jednostek, je¶li jest to aktualnie pracuj±cy
+.\" proces.
+.\" .TP
+.\" \fItimeout\fP %u
+.\" Czas w jiffies nastêpnego timeoutu procesu.
+\fI0\fP %ld
+Trwale przypisana warto¶æ 0; jest to wype³niacz po usuniêtym polu.
+.TP
+\fIitrealvalue\fP %ld
+Czas w jiffies poprzedzaj±cy wys³anie przez czasomierz do procesu nastêpnego
+sygna³u SIGALRM.
+.TP
+\fIstarttime\fP %lu
+Czas uruchomienia procesu wyra¿ony w jiffies od uruchomienia systemu.
+.TP
+\fIvsize\fP %lu
+Rozmiar pamiêci wirtualnej w bajtach.
+.TP
+\fIrss\fP %ld
+Resident Set Size: ilo¶æ stron, które proces ma w rzeczywistej pamiêci minus
+3 dla celów administracyjnych. S± to po prostu strony, które obejmuj±
+segment text, segment data i przestrzeñ stosu. Nie obejmuje to stron, które
+nie by³y ³adowane na ¿±danie lub które uleg³y wymianie.
+.TP
+\fIrlim\fP %lu
+Aktualne ograniczenie rss procesu w bajtach (zwykle 4294967295 na i386).
+.TP
+\fIstartcode\fP %lu
+Adres, pod którym zaczyna siê kod programu.
+.TP
+\fIendcode\fP %lu
+Adres, pod którym koñczy siê kod programu.
+.TP
+\fIstartstack\fP %lu
+Adres pocz±tku stosu.
+.TP
+\fIkstkesp\fP %lu
+Aktualna warto¶æ esp (wska¼nika stosu), okre¶lona na podstawie strony stosu
+j±dra dla danego procesu.
+.TP
+\fIkstkeip\fP %lu
+Aktualny EIP (wska¼nik instrukcji).
+.TP
+\fIsignal\fP %lu
+Mapa bitowa nieobs³u¿onych sygna³ów (zwykle 0).
+.TP
+\fIblocked\fP %lu
+Mapa bitowa zablokowanych sygna³ów (zwykle 0, 2 dla pow³ok).
+.TP
+\fIsigignore\fP %lu
+Mapa bitowa ignorowanych sygna³ów.
+.TP
+\fIsigcatch\fP %lu
+Mapa bitowa przechwyconych sygna³ów.
+.TP
+\fIwchan\fP %lu
+Jest to "kana³", na którym oczekuje proces. Jest to adres funkcji systemowej
+i mo¿na go znale¼æ na li¶cie nazw, je¶li potrzebna jest nazwa tekstowa.
+(Gdy /etc/psdatabase jest aktualne, mo¿na zobaczyæ dzia³anie pola WCHAN,
+próbuj±æ \fIps -l\fP.)
+.TP
+\fInswap\fP %lu
+Liczba stron, które uleg³y wymianie - nie konserwowane.
+.TP
+\fIcnswap\fP %lu
+£±czna warto¶æ \fInswap\fP dla procesów potomnych.
+.TP
+\fIexit_signal\fP %d
+Sygna³ wysy³any przez gin±cy proces do jego procesu macierzystego.
+.TP
+\fIprocessor\fP %d
+Numer CPU, na którym proces ostatnio dzia³a³.
+.RE
+.TP
+.I statm
+Udostêpnia informacje o ilo¶ci stron pamiêci w danym stanie. Wystêpuj±
+nastêpuj±ce kolumny:
+ size       ³±czny rozmiar programu
+ resident   rozmiar czê¶ci rezydentnej
+ share      strony wspólne
+ trs        text (kod)
+ drs        dane/stos
+ lrs        biblioteki
+ dt         strony nieaktualne (dirty)
+.TP
+.I status
+Udostêpnia sporo informacji ze
+.I stat
+i
+.I statm
+w postaci ³atwiejszej do przeanalizowania przez cz³owieka.
+.RE
+.TP
+.I apm
+Wersja APM (Zaawansowane zarz±dzanie energi±) oraz onformacja o
+akumulatorach, gdy CONFIG_APM by³o zdefiniowane podczas kompilacji j±dra.
+.TP
+.I bus
+Zawiera podkatalogi odpowiadaj±ce zainstalowanym magistralom.
+.RS
+.TP
+.I pccard
+Podkatalog dla urz±dzeñ pcmcia, gdy CONFIG_PCMCIA by³o zdefiniowane podczas
+kompilacji j±dra.
+.RS
+.TP
+.I drivers
+.RE
+.RE
+.RS
+.TP
+.I pci
+Zawiera ró¿ne podkatalogi magistral oraz pseudopliki zawieraj±ce informacje
+o magistralach PCI, zainstalowanych urz±dzeniach oraz sterownikach urz±dzeñ.
+Niektóre z tych plików nie s± w postaci ASCII.
+.RS
+.TP
+.I devices
+Informacje o urz±dzeniach PCI. Dostêp do nich mo¿e siê odbywaæ poprzez
+.BR lspci (8)
+i
+.BR setpci (8).
+.RE
+.RE
+.TP
+.I cmdline
+Argumenty przekazane j±dru Linuksa podczas startu systemu. Zazwyczaj odbywa
+siê to poprzez zarz±dcê startu systemu, takiego jak
+.BR lilo (1).
+.TP
+.I cpuinfo
+Jest to zbiór elementów zale¿nych od CPU i architektury systemu; dla ka¿dej
+wspieranej architektury jest inna lista. Dwa popularne wpisy to:
+\fIprocessor\fP, który udostêpnia numer CPU oraz \fIbogomips\fP; jest to sta³a
+systemowa, wyliczona podczas inicjalizacji j±dra. Maszyny SMP zawieraj±
+informacje o ka¿dym z procesorów.
+.TP
+.I devices
+Listing tekstowy numerów g³ównych oraz grup urz±dzeñ. Mo¿e to s³u¿yæ skryptom
+MAKEDEV do zachowania spójno¶ci z j±drem.
+.TP
+.I dma
+Jest list± zarejestrowanych i u¿ywanych kana³ów DMA (direct memory access)
+szyny \fIISA\fP.
+.TP
+.I driver
+Pusty podkatalog.
+.TP
+.I execdomains
+Lista domen uruchamiania (wcieleñ ABI [Application Binary Interface - przyp.
+t³um.] ).
+.TP
+.I fb
+Informacje o framebuferze, o ile podczas kompilacji j±dra zdefiniowano
+CONFIG_FB.
+.TP
+.I filesystems
+Listing tekstowy wkompilowanych w j±dro systemów plików. Przypadkowo,
+informacje te s± wykorzystywane przez
+.BR mount (1)
+do kolejnego próbowania ró¿nych systemów plików, gdy ¿adnego nie podano.
+.TP
+.TP
+.I fs
+Pusty podkatalog.
+.I ide
+.I ide
+istnieje w systemach zawieraj±cych magistralê IDE. Zawiera po katalogu dla
+ka¿dego kana³u IDE oraz dla przy³±czonych urz±dzeñ. W¶ród plików s±:
+
+.nf
+cache              rozmiar bufora w KB
+capacity           liczba sektorów
+driver             wersja sterownika
+geometry           geometria fizyczna i logiczna
+identify           szesnastkowo
+media              rodzaj no¶nika
+model              numer modelu producenta
+settings           ustawienia napêdu
+smart_thresholds   szesnastkowo
+smart_values       szesnastkowo
+.fi
+
+Dostêp do tych informacji w przyjaznym formacie umo¿liwia program narzêdziowy
+.BR hdparm (8).
+.TP
+.I interrupts
+S³u¿y do zapamiêtania liczby przerwañ dla ka¿dego IRQ w (przynajmniej)
+architekturze i386. £atwe do odczytu formatowanie, zrobione w
+ASCII.
+.TP
+.I iomem
+Odwzorowanie portów we/wy w pamiêci w Linuksie 2.4.
+.TP
+.I ioports
+Jest to lista obecnie zarejestrowanych i u¿ywanych obszarów portów we/wy.
+.TP
+.I kcore
+Plik ten reprezentuje pamiêæ fizyczn± systemu i jest zachowany w formacie
+pliku core dla ELF. Korzystaj±c z tego pseudoplikiem oraz z niezestripowanego
+binarnego pliku j±dra (/usr/src/linux/vmlinux), mo¿na za pomoc± GDB testowaæ
+aktualny stan dowolnej struktury danych j±dra.
+
+Ca³kowity rozmiar tego pliku to rozmiar fizycznej pamiêci (RAM) plus 4KB.
+.TP
+.I kmsg
+Plik ten mo¿e s³u¿yæ do odczytu komunikatów j±dra, zamiast funkcji systemowej
+.BR syslog (2).
+Aby odczytaæ ten plik, proces musi mieæ uprawnienia superu¿ytkownika i tylko
+jeden proces powinien dokonywaæ jego odczytu. Pliku tego nie nale¿y czytaæ,
+gdy dzia³a proces syslog, korzystaj±cy z funkcji systemowej
+.BR syslog (2)
+do rejestrowania komunikatów j±dra.
+
+Z tego pliku pobiera komunikaty program
+.BR dmesg (8).
+.TP
+.I ksyms
+Zawiera wyeksportowane przez j±dro definicje symboli, które s± u¿ywane przez
+narzêdzia
+.BR modules (X)
+do dynamicznego pod³±czania ³adowanych modu³ów.
+.TP
+.I loadavg
+Liczby ¶redniego obci±¿enia okre¶laj± u¶rednione w ci±gu 1, 5 i 15 minut
+liczby zadañ w kolejce wykonania. S± to te same warto¶ci, które zwracaj±
+.BR uptime (1)
+i inne programy.
+.TP
+.I locks
+Plik ten pokazuje aktualne blokady plików
+.RB ( flock "(2) i " fcntl (2))
+oraz dzier¿awy
+.RB ( fcntl (2)).
+.TP
+.I malloc
+Ten plik istnieje tylko je¶li podczas kompilacji zdefiniowano
+CONFIGDEBUGMALLOC.
+.TP
+.I meminfo
+Plik ten jest u¿ywany przez 
+.BR free (1)
+do informowania o rozmiarze wolnej i zajêtej pamiêci (zarówno fizycznej, jak
+i wymiany) w systemie, a tak¿e o pamiêci wspólnej i buforach u¿ywanych przez
+j±dro.
+
+Jest on w tym samym formacie co
+.BR free (1),
+poza tym, ¿e podawanie informacji odbywa siê w bajtach, a nie w KB.
+.TP
+.I mounts
+Jest to lista wszystkich aktualnie zamontowanych w systemie systemów plików.
+Format pliku jest opisany w
+.IR fstab (5).
+.TP
+.I modules
+Tekstowa lista modu³ów, które za³adowano w systemie.
+Zobacz tak¿e
+.BR lsmod (8).
+.TP
+.I mtrr
+Memory Type Range Registers.
+Szczegó³y mo¿na znale¼æ w
+.IR /usr/src/linux/Documentation/mtrr.txt .
+.TP
+.I net
+Ró¿ne sieciowe pseudopliki, z których wszystkie podaj± stan pewnej czê¶ci
+warstwy sieciowej. Plik ten zawiera struktury ASCII i dlatego nadaje siê do
+odczytu za pomoc± cat. Jednak standardowy pakiet
+.BR netstat (8)
+daje du¿o czystszy dostêp do tych plików.
+.RS
+.TP
+.I arp
+Zawiera zrzut tabeli ARP j±dra u¿ywanej do rozwi±zywania adresów, w czytelnej
+postaci ASCII. Pokazane zostan± zarówno wyuczone dynamicznie, jak i wstêpnie
+zaprogramowane wpisy w tabeli ARP. Format jest nastêpuj±cy:
+
+.nf
+.ft CW
+.in 8n
+IP address     HW type   Flags     HW address          Mask   Device
+192.168.0.50   0x1       0x2       00:50:BF:25:68:F3   *      eth0
+192.168.0.250  0x1       0xc       00:00:00:00:00:00   *      eth0
+.ft
+.fi
+.in
+.PP
+Gdzie 'IP address' jest adresem IPv4 maszyny, a 'HW type' jest rodzajem
+sprzêtu wg RFC 826. 'Flags' s± to wewnêtrzne znaczniki struktury ARP
+(zdefiniowane w /usr/include/linux/if_arp.h) a 'HW address' jest odwzorowaniem
+adresu IP w warstwie fizycznej, je¶li jest ono okre¶lone.
+.TP
+.I dev
+Pseudoplik dev zawiera informacje o stanie urz±dzenia sieciowego. Zawieraj±
+one liczbê otrzymanych i wys³anych pakietów, liczbê b³êdów i kolizji oraz inne
+podstawowe statystyki. Informacje te s± wykorzystywane przez program
+.BR ifconfig (8)
+do informowania o stanie urz±dzenia. Format jest nastêpuj±cy:
+
+.nf
+.ft CW
+.in 1n
+Inter-|   Receive                                                |  Transmit
+ face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
+    lo: 2776770   11307    0    0    0     0          0         0  2776770   11307    0    0    0     0       0          0
+  eth0: 1215645    2751    0    0    0     0          0         0  1782404    4324    0    0    0   427       0          0
+  ppp0: 1622270    5552    1    0    0     0          0         0   354130    5669    0    0    0     0       0          0
+  tap0:    7714      81    0    0    0     0          0         0     7714      81    0    0    0     0       0          0
+.in
+.ft
+.fi
+.\" .TP
+.\" .I ipx
+.\" Brak opisu.
+.\" .TP
+.\" .I ipx_route
+.\" Brak opisu.
+.TP
+.I dev_mcast
+Zdefiniowany w
+.IR /usr/src/linux/net/core/dev_mcast.c :
+.nf
+.in +5
+indx ifterface_name  dmi_u dmi_g dmi_address
+2    eth0            1     0     01005e000001
+3    eth1            1     0     01005e000001
+4    eth2            1     0     01005e000001
+.in
+.fi
+.TP
+.I igmp
+Internetowy Protokó³ Zarz±dzania Grupami. Zdefiniowany w
+.IR /usr/src/linux/net/core/igmp.c .
+.TP
+.I rarp
+Plik ten ma ten sam format, co plik
+.I arp
+i zawiera aktualn± bazê odwrotnych odwzorowañ, u¿ywan± do udostêpniania us³ug
+odwrotnego poszukiwania adresów
+.BR rarp (8).
+Je¶li RARP nie jest skonfigurowane w j±drze, to plik ten nie bêdzie istnia³.
+.TP
+.I raw
+Zawiera zrzut tabeli gniazd surowych (RAW). Wiêkszo¶æ informacji nie jest
+przeznaczona do u¿ytku innego ni¿ odpluskwiania. Warto¶æ ,,sl'' jest slotem
+mieszania j±dra dla gniazda, ,,local address'' jest par± sk³adaj±c± siê z
+lokalnego adresu i numeru protoko³u. ,,st'' jest stanem wewnêtrznym gniazda.
+,,tx_queue'' i ,,rx_queue'' s± kolejkami danych przychodz±cych i wychodz±cych,
+w sensie zu¿ycia pamiêci j±dra. Pola ,,tr'', ,,tm->when'' i ,,rexmits'' nie s±
+u¿ywane przez gniazda surowe. Pole ,,uid'' zawiera efektywny UID twórcy
+gniazda.
+.\" .TP
+.\" .I route
+.\" Brak opisu, lecz wygl±da podobnie do
+.\" .BR route (8).
+.TP
+.I snmp
+Ten plik zawiera dane ASCII potrzebne bazom agenta snmp zarz±dzaj±cym
+informacjami o IP, ICMP, TCP i UDP.
+.TP
+.I tcp
+Zawiera zrzut tabeli gniazd TCP. Wiele informacji nie przydaje siê do u¿ytku
+poza odpluskwianiem. Warto¶æ ,,sl'' jest slotem mieszania j±dra dla gniazda,
+,,local address'' jest par± sk³adaj±c± siê z lokalnego adresu i numeru portu.
+,,remote addres'' jest par± sk³adaj±c± siê ze zdalnego adresu i numeru portu
+(je¶li gniazdo jest pod³±czone). ,,st'' jest stanem wewnêtrznym gniazda.
+,,tx_queue'' i ,,rx_queue'' s± kolejkami danych przychodz±cych i wychodz±cych
+w sensie zu¿ycia pamiêci j±dra. Pola ,,tr'', ,,tm-when'' i ,,rexmits''
+zawieraj± wewnêtrzne informacje o stanie gniazda w j±drze i s± przydatne tylko
+do odpluskwiania. Pole ,,uid'' zawiera efektywny UID twórcy gniazda.
+.TP
+.I udp
+Zawiera zrzut tabeli gniazd UDP. Wiele informacji nie przydaje siê do u¿ytku
+poza odpluskwianiem. Warto¶æ ,,sl'' jest slotem mieszania j±dra dla gniazda,
+,,local address'' jest par± sk³adaj±c± siê z lokalnego adresu i numeru portu.
+,,remote addres'' jest par± sk³adaj±c± siê ze zdalnego adresu i numeru portu
+(je¶li gniazdo jest pod³±czone). ,,st'' jest stanem wewnêtrznym gniazda.
+,,tx_queue'' i ,,rx_queue'' s± kolejkami danych przychodz±cych i wychodz±cych
+w sensie zu¿ycia pamiêci j±dra. Pola ,,tr'', ,,tm-when'' i ,,rexmits'' nie s±
+u¿ywane w gniazdach UDP. Pole ,,uid'' zawiera efektywny UID twórcy gniazda.
+Format jest nastêpuj±cy:
+
+.nf
+.ft CW
+.in 1n
+sl  local_address rem_address   st tx_queue rx_queue tr rexmits  tm->when uid
+ 1: 01642C89:0201 0C642C89:03FF 01 00000000:00000001 01:000071BA 00000000 0
+ 1: 00000000:0801 00000000:0000 0A 00000000:00000000 00:00000000 6F000100 0
+ 1: 00000000:0201 00000000:0000 0A 00000000:00000000 00:00000000 00000000 0
+.in
+.ft
+.fi
+.TP
+.I unix
+Wymienia gniazda domeny UNIX, obecne w systemie oraz ich stan.
+Format jest nastêpuj±cy:
+.nf
+.sp .5
+.ft CW
+Num RefCount Protocol Flags    Type St Path
+ 0: 00000002 00000000 00000000 0001 03
+ 1: 00000001 00000000 00010000 0001 01 /dev/printer
+.ft
+.sp .5
+.fi
+.PP
+Gdzie ,,Num'' jest numerem wpisu w tablicy j±dra, ,,RefCount'' jest liczb±
+u¿ytkowników gniazda, ,,Protocol'' obecnie jest zawsze zerem, ,,Flags''
+reprezentuje wewnêtrzne znaczniki j±dra, okre¶laj±ce stan gniazda. ,,Type''
+jest zawsze równe ,,1'' (Nie ma na razie w j±drze wsparcia dla gniazd
+datagramowych domeny UNIX). ,,St'' jest wewnêtrznym stanem gniazda, a ¶cie¿ka
+jest ¶cie¿k± (je¶li istnieje) zwi±zan± z gniazdem.
+.RE
+.TP
+.I partitions
+Zawiera liczby g³ówne i poboczne ka¿dej z partycji oraz liczby bloków i nazwy
+partycji.
+.TP
+.I pci
+Listing wszystkich urz±dzeñ PCI znalezionych podczas inicjalizacji j±dra i
+ich konfiguracja.
+.TP
+.I scsi
+Katalog z pseudoplikiem scsi na po¶rednim poziomie i ró¿nymi podkatalogami
+niskopoziomowych sterowników SCSI, zawieraj±cymi po jednym pliku dla ka¿dego
+kontrolera SCSI w danym systemie; ka¿dy z nich podaje stan jakiej¶ czê¶ci
+podsystemu we/wy SCSI. Pliki te zawieraj± struktury ASCII i dlatego nadaje siê
+do odczytu za pomoc± cat.
+
+Mo¿liwy jest te¿ zapis do niektórych z tych plików, w celu rekonfiguracji
+podsystemu, lub prze³±czania ró¿nych parametrów.
+.RS
+.TP
+.I scsi
+Jest listingiem wszystkich znanych j±dru urz±dzeñ SCSI. Listing jest podobny
+do widzianego podczas ³adowania systemu.
+scsi wspiera obecnie tylko polecenie \fIadd-single-device\fP umo¿liwiaj±ce
+rootowi dodanie do listy znanych urz±dzeñ urz±dzenia w³±czonego na gor±co.
+
+Polecenie
+.B echo 'scsi add-single-device 1 0 5 0' > /proc/scsi/scsi 
+spowoduje, ¿e
+kontroler scsi1 przeprowadzi skanowanie kana³u SCSI 0 w poszukiwaniu
+urz±dzenia o ID 5 i LUN 0. Je¶li ju¿ istnieje urz±dzenie o takim adresie, lub
+adres jest nieprawid³owy, zostanie zwrócony b³±d.
+.TP
+.I drivername
+\fIdrivername\fP mo¿e obecnie byæ jednym z:
+NCR53c7xx, aha152x, aha1542, aha1740, aic7xxx, buslogic, eata_dma, eata_pio,
+fdomain, in2000, pas16, qlogic, scsi_debug, seagate, t128, u15-24f,
+ultrastore lub wd7000. 
+Ukazuj± siê te z katalogów, dla których odpowiednie sterowniki zarejestrowa³y
+przynajmniej jeden kontroler SCSI. Ka¿dy katalog zawiera jeden plik dla
+ka¿dego zarejestrowanego kontrolera. Ka¿dy z plików kontrolera ma nazwê
+odpowiadaj±c± numerowi kontrolera, przyznanemu podczas jego inicjalizacji.
+
+Czytanie tych plików zwykle poka¿e konfiguracjê sterownika i kontrolera,
+statystyki itp.
+
+Pisanie do tych plików umo¿liwia ró¿ne operacje na ró¿nych kontrolerach. Na
+przyk³ad za pomoc± poleceñ \fIlatency\fP i \fInolatency\fP root mo¿e
+uaktywniaæ lub deaktywowaæ kod pomiaru czasu oczekiwania dla poleceñ (command
+latency) w sterowniku eata_dma. Za pomoc± poleceñ \fIlockup\fP i \fIunlock\fP
+root mo¿e sterowaæ symulowanym przez sterownik scsi_debug blokowaniem
+magistrali.
+.RE
+.TP
+.I self
+Ten katalog odnosi siê do procesu korzystaj±cego z systemu plików /proc i jest
+identyczny z katalogiem o nazwie bêd±cej jego PID-em.
+.TP
+.I slabinfo
+Informacje dotycz±ce buforów (cache) j±dra. Wystêpuj± nastêpuj±ce kolumny:
+.nf
+cache-name
+num-active-objs
+total-objs
+object-size
+num-active-slabs
+total-slabs
+num-pages-per-slab
+.fi
+Szczegó³y mo¿na znale¼æ w
+.BR slabinfo (5).
+.TP
+.I stat
+statystyki j±dra/systemu. Ró¿ni± siê pomiêdzy architekturami. W¶ród wspólnych
+wpisów s±:
+.RS
+.TP
+\fIcpu  3357 0 4313 1362393\fP
+Liczba jiffies (setnych sekundy), które system spêdzi³ w trybie u¿ytkownika,
+trybie u¿ytkownika o obni¿onym priorytecie (nice), trybie systemowym
+i w zadaniu idle. Ostatnia warto¶æ powinna byæ równa stukrotno¶ci drugiego
+wpisu w pseudopliku uptime.
+.TP
+\fIpage 5741 1808\fP
+Liczba stron, które system wstronicowa³ i liczba tych, które
+wystronicowa³ (z dysku).
+.TP
+\fIswap 1 0\fP
+Liczba stron wymiany, które wniesiono i wyniesiono.
+.TP
+\fIintr 1462898\fP
+Liczba przerwañ otrzymanych od uruchomienia systemu.
+.TP
+\fIctxt 115315\fP
+Liczba prze³±czeñ kontekstu, które przeszed³ system.
+.TP
+\fIbtime 769041601\fP
+Czas uruchomienia systemu, w sekundach, od epoki (1 stycznia 1970).
+.TP
+\fIprocesses 86031\fP
+Liczba rozwidleñ procesów od uruchomienia systemu.
+.RE
+.TP
+.I swaps
+U¿ywane obszary wymiany. Zobacz tak¿e
+.BR swapon (8).
+.TP
+.I sys
+Katalog ten (obecny od 1.3.57) zawiera wiele plików i podkatalogów
+odpowiadaj±cych zmiennym j±dra. Zmienne te mog± byæ odczytywane i czasem
+modyfikowane za po¶renictwem systemu plików \fIproc\fP, jak te¿ przy
+wykorzystaniu funkcji systemowej
+.BR sysctl (2).
+Istniej± w nim aktualnie podkatalogi
+.IR abi ", " debug ", " dev ", " fs ", " kernel ", " net ", " proc ", "
+.IR rxrpc ", " sunrpc " i " vm ,
+z których ka¿dy zawiera wiêcej plików i podkatalogów.
+.RS
+.TP
+.I abi
+Ten katalog mo¿e zawieraæ pliki z binarn± informacj± o aplikacji.
+W niektórych systemach nie wystêpuje.
+.TP
+.I debug
+Ten katalog mo¿e byæ pusty.
+.TP
+.I dev
+Ten katalog zawiera informacje specyficzne dla poszczególnych urz±dzeñ.
+(np. dev/cdrom/info). W niektórych systemach mo¿e byæ pusty.
+.TP
+.I fs
+Zawiera podkatalog
+.I binfmt_misc
+oraz pliki
+.IR dentry-state ", " dir-notify-enable ", " dquot-nr ", " file-max ", "
+.IR file-nr ", " inode-max ", " inode-nr ", " inode-state ", "
+.IR lease-break-time ", " leases-enable ", " overflowgid ", " overflowuid ", "
+.IR super-max " i " super-nr
+których dzia³anie wyja¶niaj± ich nazwy.
+.LP
+Dokumentacja plików z
+.I /proc/sys/binfmt_misc
+znajduje siê w ¼ród³ach j±dra w
+.IR Documentation/binfmt_misc.txt .
+.LP
+Plik
+.I dentry-state
+zawiera sze¶æ liczb:
+.IR nr_dentry ", " nr_unused ", " age_limit " (wiek w sekundach), " want_pages
+(strony, których za¿±da³ system) oraz dwie warto¶ci nieu¿ywane.
+nr_dentry wydaje siê byæ ca³y czas równe 0.
+nr_unused wydaje siê oznaczaæ liczbê nieu¿ywanych dentry.
+age_limit jest wyra¿onym w sekundach wiekiem dentry, po osi±gniêciu którego
+wpisy w cache'u dentry mog± zostaæ odzyskane, gdy brakuje pamiêci i want_pages
+ma warto¶æ niezerow±, podczas gdy j±dro wywo³a³o shrink_dcache_pages() oraz
+cache dentry nie zosta³ jeszcze wyczyszczony.
+.LP
+Plik
+.I dir-notify-enable
+mo¿e s³u¿yæ do wy³±czania lub w³±czania interfejsu
+.I dnotify
+opisanego w
+.BR fcntl (2)
+dla ca³ego systemu.
+Warto¶æ 0 w tym pliku wy³±cza interfejs, a warto¶æ 1 w³±cza go.
+.LP
+Plik
+.I dquot-max
+zawiera maksymaln± liczbê buforowanych wpisów kwot dyskowych.
+W niektórych (2.4) systemach nie wystêpuje.
+Gdy liczba wolnych zbuforowanych kwot dyskowych jest bardzo ma³a a jest
+przera¿aj±ca liczba jednoczesnych u¿ytkowników systemu, mo¿e istnieæ potrzeba
+zwiêkszenia tego ograniczenia.
+.LP
+Plik
+.I dquot-nr
+zawiera liczbê przydzielonych wpisów kwot dyskowych oraz liczbê wolnych
+wpisów kwot dyskowych.
+.LP
+Plik
+.I file-max
+zawiera ogólnosystemowe ograniczenie liczby otwartych przez wszystkie procesy
+plików. (Zobacz tak¿e
+.BR setrlimit (2),
+które mo¿e s³u¿yæ procesom do ustawiania ograniczenia dla procesu, 
+.BR RLIMIT_NOFILE ,
+jako liczby plików, które proces mo¿e otworzyæ.)
+Gdy otrzymuje siê mnóstwo komunikatów o przekroczeniu liczby uchwytów
+plików (file handles), to mo¿na spróbowaæ zwiêkszyæ tê warto¶æ:
+.br
+
+.br
+.nf
+.ft CW
+echo 100000 > /proc/sys/fs/file-max
+.fi
+.ft
+.LP
+Sta³a j±dra
+.I NR_OPEN
+narzuca górne ograniczenie warto¶ci, która mo¿e zostaæ umieszczona w
+.IR file-max .
+.LP
+Gdy zwiêksza siê
+.IR file-max ","
+nale¿y pamiêtaæ o zwiêkszeniu
+.I inode-max
+do warto¶ci 3-4 razy wiêkszej ni¿ nowa warto¶æ
+.IR file-max ","
+lub nale¿y siê liczyæ z tym, ¿e zabraknie i-wêz³ów.
+.LP
+Plik (tylko do odczytu)
+.I file-nr
+okre¶la liczbê aktualnie otwartych plików.
+Zawiera on trzy liczby: liczbê przydzielonych uchwytów plików, liczbê wolnych
+uchwytów plików oraz maksymaln± liczbê uchwytów plików. J±dro przydziela
+uchwyty plików dynamicznie, ale ich pó¼niej nie zwalnia. Gdy liczba
+przydzielonych uchwytów plików jest bliska maksimum, nale¿y rozwa¿yæ
+zwiêkszenie tego maksimum. Gdy jest du¿a liczba wolnych uchwytów plików,
+oznacza to, ¿e wyst±pi³o przesilenie w wykorzystaniu uchwytów plików
+i, prawdopodobnie, nie ma potrzeby zwiêkszania maksimum.
+.LP
+Plik
+.I inode-max
+zawiera maksymaln± liczbê i-wêz³ów w pamiêci. W niektórych (2.4) systemach
+mo¿e nie wystêpowaæ. Warto¶æ ta powinna byæ 3-4 razy wiêksza ni¿ warto¶æ w
+file-max, gdy¿ stdin, stdout i gniazda sieciowe równie¿ potrzebuj± i-wêz³ów,
+aby mo¿na by³o na nich operowaæ. Gdy systematycznie brakuje i-wêz³ów,
+istnieje potrzeba zwiêkszenia tej warto¶ci.
+.LP
+Plik
+.I inode-nr
+zawiera dwie pierwsze warto¶ci z inode-state.
+.LP
+Plik
+.I inode-state
+zawiera siedem liczb: nr_inodes, nr_free_inodes, preshrink i cztery warto¶ci
+nieu¿ywane.
+nr_inodes jest liczb± przydzielonych w systemie i-wêz³ów. Mo¿e ona byæ nieco
+wiêksza ni¿ inode-max, gdy¿ Linux przydziela je pe³nymi stronami.
+nr_free_inodes przedstawia liczbê wolnych i-wêz³ów.
+preshrink jest niezerowe, gdy nr_inodes > inode-max oraz w systemie wystêpuje
+potrzeba wyczyszczenia listy i-wêz³ów zamiast przydzielania nowych. 
+.LP
+Plik
+.I lease-break-time
+okre¶la okres ulgi, przez jaki j±dro zapewnia procesowi utrzymanie dzier¿awy
+pliku
+.RB ( fcntl (2)),
+a po którym wy¶le do tego procesu sygna³ zawiadamiaj±cy go, ¿e inny proces
+oczekuje na otwarcie pliku. Je¶li utrzymuj±cy dzier¿awê nie usunie jej lub
+nie ograniczy swoich praw do niej w przeci±gu tego czasu, j±dro wymusi
+zerwanie dzier¿awy.
+.LP
+Plik
+.I leases-enable
+mo¿e s³u¿yæ do ogólnosystemowego w³±czania lub wy³±czania dzier¿aw plików
+.RB ( fcntl (2)).
+Gdy plik ten zawiera warto¶æ 0, dzier¿awy s± wy³±czone. Warto¶æ niezerowa
+w³±cza dzier¿awy.
+.LP
+Pliki
+.IR overflowgid " i "
+.I overflowuid
+umo¿liwiaj± zmianê warto¶ci ustalonego UID-u i GID-u.
+Warto¶ci± domy¶ln± jest 65534.
+Niektóre systemy plików wspieraj± jedynie 16-bitowe UID-y i GID-y, podczas
+gdy linuksowe UID-y i GID-y s± 32-bitowe. Gdy który¶ z takich systemów plików
+jest zamontowany z mo¿liwo¶ci± zapisu, to wszystkie UID-y i GID-y
+przekraczaj±ce 65535 s± zastêpowane podanymi tu warto¶ciami przed zapisem na
+dysk. 
+.LP
+Plik
+.I super-max
+steruje maksymaln± liczb± superbloków, a wiêc i maksymaln± liczb±
+systemów plików, które j±dro mo¿e zamontowaæ. Potrzeba zwiêkszenia warto¶ci
+super-max wystepuje tylko wtedy, gdy chce siê zamontowaæ wiêcej systemów
+plików ni¿ na to pozwala aktualna warto¶æ super-max.
+Plik
+.I super-nr
+zawiera liczbê aktualnie zamontowanych systemów plików.
+.TP
+.I kernel
+Ten katalog zawiera pliki
+.IR acct ", " cad_pid "," cap-bound  ","  core_uses_pid  ","
+.IR ctrl-alt-del ", " dentry-state ", " domainname "," hostname ", "
+.IR htab-reclaim " (tylko PowerPC), "
+.IR java-appletviewer " (binfmt_java, przestarza³y), "
+.IR java-interpreter " (binfmt_java, przestarza³y), " l2cr " (tylko PowerPC), "
+.IR modprobe ", " msgmax ", " msgmnb ", "
+.IR msgmni ", " osrelease ", " ostype ", " overflowgid ", " overflowuid ", "
+.IR panic ", " powersave-nap " (tylko PowerPC), " printk ", " random ", "
+.IR real-root-dev ", " reboot-cmd " (SPARC only), " rtsig-max ", "
+.IR rtsig-nr ", " sem ", " sg-big-buff ", "
+.IR shmall ", " shmmax ", " shmmni ", " sysrq ", " tainted ", " threads-max ", "
+.IR version " i " zero-paged " (tylko PowerPC) "
+których dzia³anie wyja¶niaj± ich nazwy.
+.LP
+Plik
+.I acct
+zawiera trzy liczby: highwater, lowwater i frequency.
+Gdy w³±czone jest rejestrowanie procesów w stylu BSD, warto¶ci te steruj±
+jego zachowaniem. Gdy ilo¶æ wolnego miejsca na systemie plików, na którym
+znajduj± siê logi spada poni¿ej wyra¿onej w procentach warto¶ci lowwater,
+rejestrowanie jest wstrzymywane. Gdy ilo¶æ wolnego miejsca stanie siê wiêksza
+ni¿ wyra¿ona w procentach warto¶æ highwater, rejestrowanie jest wznawiane.
+frequency okre¶la jak czêsto jadro bêdzie sprawdzaæ ilo¶æ wolnego miejsca
+(warto¶æ w sekundach). Warto¶ciami domy¶lnymi s± 4, 2 i 30.
+Oznacza to, ¿e rejestrowanie procesów jest wstrzymywane, gdy ilo¶æ wolnego
+miejsca bêdzie <= 2%; wznowione zostanie, gdy wolne bêdzie >= 4%; zak³ada
+siê, ¿e informacja o ilo¶ci wolnego miejsca jest wa¿na przez 30 sekund.
+.LP
+Plik
+.I cap-bound
+przechowuje warto¶æ
+.IR "capability bounding set"
+dla j±dra.
+(wyra¿one jako liczba dziesiêtna ze znakiem).
+Warto¶æ ta jest mno¿ona (AND) bitowo z capabilities dozwolonymi dla procesu
+podczas exec.
+.LP
+Plik
+.I core_uses_pid
+mo¿e s³u¿yæ do okre¶lania nazwy pliku zrzuru pamiêci w Linuksie 2.4.
+Gdy plik ten zawiera warto¶æ 0, plik zrzutu pamiêci ma po prostu nazwê
+.IR core .
+Gdy zawiera on warto¶æ niezerow±, plik zrzutu pamiêci bêdzie zawiera³ w
+swojej nazwie ID procesu, w postaci
+.IR core.PID .
+.LP
+Plik
+.I ctrl-alt-del
+steruje obs³ug± kombinacji klawiszy Ctrl-Alt-Del.
+Gdy w pliku tym znajduje siê warto¶æ 0, Ctrl-Alt-Del jest przechwytywane
+i przesy³ane do programu
+.BR init (1)
+w celu wykonania wdziêcznego restartu.
+Gdy warto¶æ jest > 0, reakcj± Linuksa na Wulkanicznie Nerwowe Nêkanie
+(Vulcan Nerve Pinch (tm)) bêdzie natychmiastowy restart, nawet bez zrzucenia
+zmodyfikowanych buforów.
+Uwaga: gdy program (jak np. dosemu) korzysta z surowego trybu klawiatury,
+Ctrl-Alt-Del jest przechwytywane przez program zanim dotrze do warstwy
+terminalowej j±dra i decyzja co z tym zrobiæ zale¿y od programu.
+.LP
+Pliki
+.IR domainname " i "
+.I hostname
+mog± s³u¿yæ do ustawiania nazwy domeny i hosta NIS/YP maszyny dok³adnie w ten
+sam sposób, jak za pomoc± poleceñ domainname i hostname, np.
+.br
+
+.br
+# echo "darkstar" > /proc/sys/kernel/hostname
+.br
+# echo "mydomain" > /proc/sys/kernel/domainname
+.br
+
+.br
+daje taki sam efekt, jak
+.br
+
+.br
+# hostname "darkstar"
+.br
+# domainname "mydomain"
+.br
+
+.br
+Nale¿y tu zauwa¿yæ, ¿e klasyczny darkstar.frop.org posiada nazwê hosta
+"darkstar" i domenê "frop.org" w DNS (Internetowej Us³udze Nazw Domen -
+Internet Domain Name Service), których nie nale¿y myliæ z domen± NIS
+(Sieciowej Us³ugi Informacyjnej - Network Information Service) lub YP
+(Yellow Pages). Te dwa systemy nazw domenowych zasadniczo siê ró¿ni±.
+Szczegó³owe informacje mo¿na znale¼æ na stronie podrêcznika
+.BR hostname (1).
+.LP
+Je¶li do pliku
+.I htab-reclaim
+(tylko PowerPC) zostanie wpisana warto¶æ niezerowa,
+htab PowerPC
+(zobacz: plik Documentation/powerpc/ppc_htab.txt w ¼ród³ach) jest czyszczony
+za ka¿dym razem, gdy system natrafi na pêtlê oczekiwania ("idle").
+.LP
+Plik
+.I l2cr
+(tylko PowerPC) zawiera znacznik staeruj±cy cache'em L2 p³yt procesora G3.
+Je¶li zawiera 0, cache jest wy³±czony. Cache jest w³±czony, gdy plik zawiera
+warto¶æ ró¿n± od zera.
+.LP
+Plik
+.I modprobe
+opeisano w ¼ród³ach j±dra w pliku Documentation/kmod.txt.
+.LP
+Plik
+.I msgmax
+zawiera ogólnosystemowe ograniczenie maksymalnej liczby bajtów w pojedynczym
+komunikacie zapisywanym do kolejki komunikatów Systemu V.
+.LP
+Plik
+.I msgmni
+okre¶la ogólnosystemowe ograniczenie liczby identyfikatorów kolejek
+komunikatów. (Plik ten wystêpuje pocz±wszy od Linuksa 2.4.)
+.LP
+Plik
+.I msgmnb
+zawiera ogólnosystemowy parametr s³u¿±cy do inicjalizacji ustawienia
+.I msg_qbytes
+tworzonych pó¼niej kolejek komunikatów.
+Ustawienie
+.I msg_qbytes
+okre¶la maksymaln± liczbê bajtów, które mog± zostaæ zapisane do kolejki
+komunikatów.
+.LP
+Pliki
+.I ostype
+i
+.I osrelease
+podaj± pod³añcuchy z
+.IR /proc/version .
+.LP
+Pliki
+.I overflowgid
+i
+.I overflowuid
+s± kopiami plików
+.I /proc/sys/fs/overflowgid
+i
+.IR /proc/sys/fs/overflowuid .
+.LP
+Plik
+.I panic
+umo¿liwia dostêp (odczyt i zapis) do zmiennej j±dra
+.IR panic_timeout .
+Je¶li jest to zero, j±dro bêdzie siê zapêtlaæ podczas paniki; je¶li warto¶æ
+niezerowa, to okre¶la liczbê sekund, po której j±dro powinno siê automatycznie
+prze³adowaæ. Je¶li u¿ywane jest urz±dzenie+software watchdog device driver, the recommended setting is 60.
+.LP
+Plik
+.IR powersave-nap " (tylko PowerPC)"
+zawiera znacznik. Gdy jest on ustawiony, Linux-PPC u¿ywa trybu oszczêdzania
+energii 'nap', a w przeciwnym przypadku trybu 'doze'.
+.LP
+Cztery warto¶ci w pliku
+.I printk
+to: console_loglevel, default_message_loglevel, minimum_console_level i
+default_console_loglevel.
+Warto¶ci te wp³ywaj± na zachowanie printk() podczas wypisywania lub logowania
+komunikatów b³êdów. Informacja o ró¿nych poziomach logowania mo¿na znale¼æ w
+.BR syslog(2).
+Komunikaty o priorytecie wy¿szym ni¿ console_loglevel bêd± wypisywane na
+konsoli. Komunikaty bez jawnego priorytetu bêd± wypisywane z priorytetem
+default_message_level.
+minimum_console_loglevel jest najmniejsz± (najwy¿sz±) warto¶ci±, któr±
+mo¿na ustawiæ jako console_loglevel.
+default_console_loglevel jest domy¶ln± warto¶ci± dla console_loglevel.
+.LP
+Katalog
++.\" FIXME say more about random
+.I random
+zawiera ró¿ne parametry steruj±ce dzia³aniem pliku
+.IR /dev/random .
+.LP
+Plik
+.I real-root-dev
+jest udokumentowany w pliku Documentation/initrd.txt w ¼ród³±ch j±dra.
+.LP
+Plik
+.IR reboot-cmd " (tylko Sparc) "
+wydaje siê stanowiæ mechanizm podawania argumentów SPARC-owej ³adowarce
+systemu w ROM/Flash. Mo¿e, ¿e przekazuje jej, co zrobiæ po restarcie?
+.LP
+Plik
+.I rtsig-max
+mo¿e s³u¿yæ do sterowania maksymaln± liczb± zgodnych z POSIX nieobs³u¿onych
+(w kolejkach) sygna³ów czasu rzeczywistego w systemie.
+.LP
+Plik
+.I rtsig-nr
+podaje liczbê zgodnych z POSIX sygna³ów czasu rzeczywistego oczekuj±cych
+aktualnie w kolejce.
+.LP
+Plik
+.I sem
+(dostêpny pocz±wszy od Linuksa 2.4)
+zawiera 4 liczby definiuj±ce ograniczenia semaforów Systemu V.
+Sa to w kolejno¶ci:
+.IP SEMMSL 8
+Maksymalna liczba semaforów w zestawie semaforów.
+.IP SEMMNS 8
+Ogólnosystemowe ograniczenie liczby semaforów we wszystkich zestawiach
+semaforów.
+.IP SEMOPM 8
+Maksymalna liczba operacji, które mog± zostaæ podane w wywo³aniu
+.BR semop (2).
+.IP SEMMNI 8
+Ogólnosystemowe ograniczenie maksymalnej liczby identyfikatorów semaforów.
+.LP
+Plik
+.I sg-big-buff
+zawiera rozmiar bufora niskopoziomowego urz±dzenia SCSI (sg).
+Nie mo¿na nim na razie sterowaæ, ale mo¿na go zmieniæ podczas kompilacji
+poprzez edycjê include/scsi/sg.h i zmianê warto¶ci SG_BIG_BUFF.
+Jednak¿e nie ma ¿adnego powodu, aby to robiæ.
+.LP
+Plik
+.I shmall
+zawiera ogólnosystemowe ograniczenie ca³kowitej liczby stron pamiêci wspólnej
+Systemu V.
+.LP
+Plik
+.I shmmax
+mo¿e s³u¿yæ do odpytywania o aktualne ograniczenie maksymalnego rozmiaru
+tworzonego segmentu pamiêci wspólnej (System V IPC) oraz do zmiany tego
+ograniczenia. Jadro wspiera obecnie segmenty pamiêci wspólnej do 1GB.
+Warto¶ci± domy¶ln± jest SHMMAX.
+.LP
+Plik
+.I shmmni
+(dostêpny pocz±wszy od Linuksa 2.4)
+okre¶la ogólnosystemow± maksymaln± liczbê segmentów pamiêci wspólnej Systemu
+V, które mo¿na utworzyæ.
+.LP
+Plik
+.I version
+zawiera tekst jak np.
+.br
+
+.br
+#5 Wed Feb 25 21:49:24 MET 1998.TP
+.br
+
+.br
+'#5' oznacza, ¿e jest to pi±te z kolei j±dro zbudowane z tych samych ¼róde³
+a nastêpuj±ca dalej data okre¶la kiedy j±dro zosta³o zbudowane.
+.LP
+Plik
+.IR zero-paged " (tylko PowerPC) "
+zawiera znacznik. Gdy jest on ustawiony (niezerowy), Linux-PPC wstepnie
+zeruje strony w pêtli bezczynno¶ci. Prawdopodobnie przyspiesza to
+get_free_pages.
+.TP
+Katalog
+.I net
+zawiera rzeczy sieciowe.
+.TP
+.I proc
+Ten katalog mo¿e byæ pusty
+.TP
+.I sunrpc
+Ten katalog obs³uguje Sunowskie zdalne wywo³ywanie procedur dla sieciowego
+systemu plikowego (NFS). W niektórych systemach mo¿e nie istniec.
+.TP
+.I vm
+Ten katalog zawiera pliki steruj±ce zarz±dzaniem pamiêci±, buforami
+i zarz±dzaniem cachem.
+.RE
+.TP
+.I sysvipc
+Podkatalog zawieraj±cy psuedopliki
+.IR msg ", "  sem " i "  shm .
+Pliki te zawieraj± obiekty Komunikacji Miêdzyprocesowej (Interprocess
+Communication - IPC) Systemu V (odpowiednio: kolejki komunikatów, semafory
+i pamiêæ wspóln±) aktualnie istniej±ce w stystemie, udostêpniaj±c informacje
+podobne do tych, które s± dostêpne poprzez
+.BR ipcs (1).
+Pliki te zawieraj± nag³ówki i s± sformatowane (jeden obiekt IPC w woerszu)
+w celu ³atwiejszego zrozumienia.
+.BR ipc (5)
+udostêpnia dodatkowe t³o informacji zawartych w tych plikach.
+.TP
+.I tty
+Podkatalog zawieraj±cy psuedopliki i podkatalogi sterowników terminali
+(tty) oraz protoko³ów sterowania lini± (ine discipline).
+.TP
+.I uptime
+Ten plik zawiera dwie liczby: czas pracy systemu (w sekundach) i ilo¶æ czasu
+spêdzonego na wykonywaniu procesu idle (w sekundach).
+.TP
+.I version
+Ten napis okre¶la wersjê obecnie dzia³aj±cego j±dra. Zawiera on w sobie
+zawarto¶æ /proc/sys/ostype, /proc/sys/osrelease i /proc/sys/version.
+Na przyk³ad:
+.nf
+.in -2
+.ft CW
+Linux version 1.0.9 (quinlan@phaze) #1 Sat May 14 01:51:54 EDT 1994
+.ft
+.in +2
+.fi
+
+.RE
+.RE
+.SH "ZOBACZ TAK¯E"
+.BR cat (1),
+.BR find (1),
+.BR free (1),
+.BR mount (1),
+.BR ps (1),
+.BR tr (1),
+.BR uptime (1),
+.BR chroot (2),
+.BR mmap (2),
+.BR readlink (2),
+.BR syslog (2),
+.BR slabinfo (5),
+.BR hier (7),
+.BR arp (8),
+.BR dmesg (8),
+.BR hdparm (8),
+.BR ifconfig (8),
+.BR lsmod (8),
+.BR lspci (8),
+.BR netstat (8),
+.BR procinfo (8),
+.BR route (8)
+.BR /usr/src/linux/Documentation/filesystems/proc.txt
+.SH "ZGODNE Z"
+Jest to z grubsza zgodne z j±drem 2.4.17 Linuksa. Proszê, zaktualizuj, je¶li
+trzeba!
+
+Ostatnio aktualizowane dla Linuksa 2.4.17.
+.SH UWAGI
+Trzeba zauwa¿yæ, ¿e wiele ³añcuchów znakowych (np. ¶rodowisko czy linia
+poleceñ) wystêpuje w postaci wewnêtrznej, z polami zakoñczonymi bajtami NUL,
+wiêc je¶li do ich czytania u¿yje siê \fIod -c\fP lub \fItr "\\000" "\\n"\fP,
+to mog± byæ bardziej czytelne.
+Alternatywnie, \fIecho `cat <file>`\fP dzia³a równie dobrze.
+
+Ta strona podrêcznika jest niekompletna, prawdopodobnie niedok³adna i nale¿y
+do tych, które powinny byæ bardzo czêsto poprawiane.
+.SH PODZIÊKOWANIA
+Material dotycz±cy /proc/sys/fs i /proc/sys/kernel jest ¶ci¶le oparty na
+plikach dokumentacji ¼róde³ j±dra napisanych przez Rika van Riela.

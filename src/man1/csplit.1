@@ -1,0 +1,188 @@
+.\" {PTM/GSN/0.5/23-02-1999/"podziel plik na czê¶ci wed³ug linii kontekstowych"}
+.\" poszerzenie i aktualizacja do GNU textutils 2.0 PTM/WK/2000-IV
+.ig
+Transl.note: based on GNU man page csplit.1 and textutils.info
+ 
+Copyright 1994, 95, 96, 1999 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+..
+.TH CSPLIT "1" FSF "sierpieñ 1999" "Narzêdzia tekstowe GNU 2.0"
+.SH NAZWA
+csplit \- podziel plik na czê¶ci wed³ug linii kontekstowych
+.SH SK£ADNIA
+.TP 7
+.B csplit
+.RB [ -sqkz ]
+.RB [ -f
+.IR przedrostek ]
+.RB [ -b
+.IR przyrostek ]
+.RB [ -n
+.IR cyfry ]
+.br
+.RB [ --prefix= \fIprzedrostek\fP]
+.RB [ --suffix-format= \fIprzyrostek\fP]
+.br
+.RB [ --digits= \fIcyfry\fP]
+.RB [ --quiet ]
+.RB [ --silent ]
+.br
+.RB [ --keep-files ]
+.RB [ --elide-empty-files ]
+.RB [ --help ]
+.br
+.RB [ --version ]
+.I plik
+.IR wzorzec ...
+.SH OPIS
+Dokumentacja niniejsza nie jest ju¿ utrzymywana i mo¿e byæ niedok³adna
+lub niekompletna.  Autorytatywnym ¼ród³em jest obecnie dokumentacja
+Texinfo.  Dostêp do niej uzyskasz wpisuj±c w wierszu poleceñ:
+.RS
+.B pinfo csplit
+.RE
+lub
+.RS
+.BR "info csplit" .
+.RE
+.PP
+Ta strona podrêcznika opisuje polecenie \fBcsplit\fP w wersji GNU.
+.PP
+.B csplit
+tworzy zero lub wiêcej plików wyj¶ciowych zawieraj±cych sekcje danego
+.IR pliku ,
+wej¶ciowego lub standardowego wej¶cia je¶li podano nazwê '\-'. Domy¶lnie
+.B csplit
+wypisuje liczbê bajtów zapisanych do ka¿dego pliku wyj¶ciowego po jego
+utworzeniu.
+.PP
+Zawarto¶æ plików wyj¶ciowych ustalana jest wedle argumentów
+.I wzorzec
+Je¶li argument wzorca odnosi siê do nieistniej±cej w pliku wej¶ciowym
+linii, jak wtedy gdy ¿adna z pozosta³ych linii nie pokrywa siê z
+podanym wyra¿eniem regularnym, nastêpuje b³±d.  Po dopasowaniu wszystkich
+podanych wzorców pozosta³a czê¶æ wej¶cia kopiowana jest do jeszcze jednego,
+ostatniego pliku wyj¶ciowego.
+Typy argumentów wzorca to:
+.TP
+.I linia
+.br
+Tworzy plik wyj¶ciowy zawieraj±cy bie¿±c± liniê a¿ do (ale nie w³±cznie z)
+linii o numerze \fIlinia\fP (dodatnia liczba ca³kowita) pliku
+wej¶ciowego.  Je¶li nastêpuje po nim ilo¶æ powtórzeñ, tworzy tak¿e pliki
+wyj¶ciowe zawieraj±ce nastêpne \fIlinia\fP linii pliku wej¶ciowego, po
+jednym dla ka¿dego powtórzenia.
+.TP
+\fB/\fIregexp\fP\fB/\fP[\fIoffset\fP]
+.br
+Tworzy plik wyj¶ciowy zawieraj±cy bie¿±c± liniê a¿ do (ale nie w³±cznie z)
+nastêpnej linii, która zawiera co¶ pasuj±cego do \fIregexp\fP.  Opcjonalny
+\fIoffset\fP to `+' albo `\-', po którym nastêpuje liczba naturalna.
+Je¶li zosta³ podany, do pliku wyj¶ciowego wstawiane jest
+wej¶cie a¿ do pasuj±cej linii plus lub minus \fIoffset\fP, a kolejna
+linia zaczyna nastêpn± sekcjê wej¶cia.
+.TP
+\fB%\fIregexp\fP\fB%\fP[\fIoffset\fP]
+.br
+Jak w poprzednim typie, z wyj±tkiem tego, ¿e nie tworzy pliku wyj¶ciowego,
+wskutek czego owa sekcja pliku wej¶ciowego jest faktycznie ignorowana.
+.TP
+\fB{\fIilo¶æ-powtórzeñ\fB}\fP
+.br
+Powtarza poprzedni wzorzec zadan± liczbê razy (dodatnia liczba
+ca³kowita).  W miejsce ilo¶ci powtórzeñ mo¿na podaæ gwiazdkê -- w tym
+przypadku poprzedzaj±cy wzór jest powtarzany tyle razy, ile to
+potrzebne, a¿ do wyczerpania wej¶cia.
+.PP
+Nazwy plików wyj¶ciowych sk³adaj± siê z przedrostka (prefiksu), po którym
+nastêpuje przyrostek (sufix).  Domy¶lnie przyrostek jest jedynie liniowo
+rosn±c± sekwencj± dziesiêtnych liczb dwucyfrowych, pocz±wszy od 00 a¿ do 99.
+Jednak tê warto¶æ domy¶ln± mo¿na zmieniæ albo opcj±
+.B \-\-digits
+albo opcj±
+.B \-\-suffix\-format
+(patrz ni¿ej).  W ka¿dym przypadku, po³±czenie plików wyj¶ciowych
+posortowanych wed³ug nazwy pliku daje oryginalny plik wej¶ciowy, w poprawnej
+kolejno¶ci. Domy¶lny przedrostek nazwy pliku wyj¶ciowego to '\fBxx\fP'.
+.PP
+Domy¶lnie, je¶li
+.B csplit
+napotka b³±d lub otrzyma sygna³ zawieszania, przerwania, wyj¶cia lub
+zakoñczenia, to przed zakoñczeniem pracy usuwa wszystkie pliki wyj¶ciowe,
+które jak dot±d stworzy³.
+.SH OPCJE
+.TP
+.BR -f ", " --prefix=\fIprzedrostek\fR
+U¿ywa
+.I przedrostka
+jako ³añcucha bêd±cego przedrostkiem nazwy pliku wyj¶ciowego.
+.TP
+.BR -b ", " --suffix-format=\fIprzyrostek\fR
+U¿ywa
+.I przyrostka
+jako ³añcucha bêd±cego przyrostkiem nazwy pliku wyj¶ciowego.  Gdy podaje siê tê
+opcjê, ³añcuch przyrostka musi obejmowaæ dok³adnie jedn± specyfikacjê stylu
+konwersji \fIprintf\fP(3) (tak± jak %d), mog±c± zawieraæ flagi okre¶laj±ce
+format, szeroko¶æ pola, specyfikatory precyzji lub wszystkie te
+rodzaje modyfikatorów.  Specyfikacja konwersji musi byæ odpowiednia
+dla zamiany argumentu bêd±cego binarn± liczb± ca³kowit± na
+formê czyteln±.  Wobec tego dozwolone s± tylko specyfikatory formatu
+`d', 'i', `u', `o', `x' oraz `X'.  Ca³y ³añcuch przyrostka podawany jest
+(razem z bie¿±cym numerem pliku wyj¶ciowego) do \fIsprintf\fP(3), by stworzyæ
+przyrostki nazwy pliku dla ka¿dego kolejnego pliku wyj¶ciowego.
+Zauwa¿, ¿e gdy u¿ywa siê tej opcji, opcja
+.B \-\-digits
+jest ignorowana.
+.TP
+.BR -n ", " --digits=\fIcyfry\fR
+U¿ywa nazw plików wyj¶ciowych zawieraj±cych numery o d³ugo¶ci
+.I cyfry
+cyfr zamiast domy¶lnie dwucyfrowych.
+.TP
+.BR -k ", " --keep-files
+Nie usuwa plików wyj¶ciowych przy napotkaniu b³êdów.
+.TP
+.BR -z ", " --elide-empty\-files
+Wy³±cza tworzenie plików o d³ugo¶ci zerowej. (W przypadkach gdy ograniczniki
+sekcji pliku wej¶ciowego maj± zaznaczaæ pierwsze linie ka¿dej z sekcji,
+pierwszy plik wyj¶ciowy bêdzie mia³ przewa¿nie d³ugo¶æ zero, chyba ¿e
+u¿yjesz tej opcji.)  Zauwa¿, ¿e numery plików wyj¶ciowych
+zawsze biegn± po kolei, poczynaj±c od 0, nawet w przypadkach kiedy
+wy³±czono sekcje wyj¶cia o d³ugo¶ci zerowej z powodu u¿ycia tej opcji.
+.TP
+.BR -s ", " -q ", " --silent ", " --quiet
+Nie wypisuje obliczanych wielko¶ci plików wyj¶ciowych.
+.TP
+.B "\-\-help"
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach, koñczy pracê.
+.TP
+.B "\-\-version"
+Wy¶wietla numer wersji programu i koñczy pracê.
+.SH "ZG£ASZANIE B£ÊDÓW"
+B³êdy proszê zg³aszaæ, w jêz. ang., do <bug-textutils@gnu.org>.
+.SH COPYRIGHT
+Copyright \(co 1999 Free Software Foundation, Inc.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH ZOBACZ TAK¯E
+.BR head (1),
+.BR tail (1),
+.BR split (1),
+.BR textutils (1).
+.SH OD T£UMACZA
+Zaktualizowano i poszerzono wg dokumentacji Texinfo dla narzêdzi tekstowych
+GNU wersji 2.0.

@@ -1,0 +1,350 @@
+.\" {PTM/WK/2000-VI}
+.ds VE LPRng-3.6.13
+'\" e
+.\" @(#)lp.1 1.36 95/10/09 SMI; from SVr4
+.\" Copyright 1989 AT&T
+.\" Copyright (c) 1995, Sun Microsystems, Inc.
+.\" All Rights Reserved
+.\" Portions Copyright (c) 1992, X/Open Company Limited
+.\" Portions Copyright (c) 1996, Patrick Powell
+.\" All Rights Reserved
+.ig
+.EQ
+gsize 10
+delim $$
+.EN
+..
+.TH LP 1 \*(VE "LPRng"
+.SH NAZWA
+lp \- wysy³a ¿±dania do us³ugi druku LPRng
+.SH SK£ADNIA
+.TP 4
+.B lp
+.RB [ \-A ]
+.RB [ \-c ]
+.RB [ \-m ]
+.RB [ \-p ]
+.RB [ \-s ]
+.RB [ \-w ]
+.RB [ \-d
+.IR dest ]
+.br
+.RB [ \-f
+.I form-name
+.RB [ \-d
+.IR cokolwiek ]]
+.RB [ \-H
+.IR special-handling ]
+.br
+.RB [ \-n
+.IR number ]
+.RB [ \-o
+.IR option ]
+.RB [ \-P
+.IR page-list ]
+.br
+.RB [ \-q
+.IR priority-level ]
+.RB [ \-S
+.I character-set
+.RB [ \-d
+.IR cokolwiek ]]
+.br
+.RB [ \-S
+.IR print-wheel ]
+.RB [ \-t
+.IR title ]
+.RB [ \-T
+.I content-type
+.RB [ \-r ]]
+.br
+.RB [ \-y
+.IR mode-list ]
+.RB [ \-D
+.IR debug-options ]
+.RI [ file \|.\|.\|.]
+.SH OPIS
+.IX "lp command" "" "\fLlp\fP \(em send requests to an LP print service"
+.IX "LPRng print services" "print files" "" "print files \(em \fLlp\fP"
+.IX "printers" "send requests" "" "send requests \(em \fLlp\fP"
+.LP
+Gdy nale¿±cy do LPRng klient
+.B lpr
+zostanie wywo³any pod nazw± \fBlp\fP, to obs³uguje interfejs
+.BR lp .
+Zwykle robi siê to tworz±c dowi±zanie symboliczne o nazwie \fBlp\fP do
+programu \fBlpr\fP.
+Jest to podobne do zachowania programów
+.BR ex (1)
+i
+.BR vi (1).
+Obs³ugiwana postaæ polecenia \fBlp\fP organizuje wydruk wskazanego pliku(ów)
+\fIfile\fP i skojarzonej z nim informacji (³±cznie zwanych
+.IR ¿±daniem ,
+request).
+Je¿eli w wierszu poleceñ nie podano ¿adnego pliku, to przyjmowane jest
+standardowe wej¶cie. Mo¿na te¿ w wierszu poleceñ podaæ standardowe wej¶cie
+razem ze wskazaniem pliku(ów) wymieniaj±c nazwy plików i podaj±c \fB\-\fP
+(my¶lnik) dla standardowego wej¶cia.
+Pliki zostan± wydrukowane w kolejno¶ci, w jakiej wyst±pi³y w wierszu poleceñ.
+.LP
+Us³uga drukowania
+.SM LP
+z ka¿dym ¿±daniem kojarzy unikalny \fIidentyfikator ¿±dania\fP
+(\fIrequest-ID\fP) i wy¶wietla go na standardowym wyj¶ciu.
+Fragmentu bêd±cego numerem ¿±dania lub pe³nego ID-¿±dania mo¿na u¿yæ pó¼niej
+jako argumentu dla
+.BR cancel (1)
+lub
+.BR lprm (1)
+przy anulowaniu zadania lub przy okre¶laniu jego stanu.
+W podrêcznikach systemowych
+.BR cancel (1)
+i
+.BR lprm (1)
+zawarto szczegó³y dotycz±ce anulowania zadañ, za¶ w
+.BR lpstat (1)
+i
+.BR lpq (1)
+informacje o sprawdzaniu stanu ¿±dania druku.
+.SH OPCJE
+.LP
+Opcje
+.B lp
+zawsze poprzedzaj± ewentualne nazwy plików, ale mog± byæ podane w dowolnej
+kolejno¶ci. Dostêpne s± poni¿sze opcje:
+.TP
+.B \-A
+U¿ywa uwierzytelnianego przesy³ania.
+Zauwa¿, ¿e nie jest to standardowa opcja
+.BR lp (1),
+lecz zosta³a dodana w celu utrzymania zgodno¶ci z LPRng.
+.TP
+.B \-c
+Tworzy kopiê pliku \fIfile\fP przed jego drukowaniem.
+(Nie ma to ¿adnego skutku, gdy¿ LPRng zawsze wysy³a zadania bezzw³ocznie
+na serwer zdalny, gdzie bêd± drukowane.)
+.TP
+.BI \-d " dest"
+Wybiera
+.I dest
+jako drukarkê lub klasê drukarek, które maj± wykonaæ wydruk.
+Domy¶lnie,
+.I dest
+pobierane jest ze zmiennej ¶rodowiska
+.B \s-1LPDEST\s+1
+(je¶li jest ona ustawiona),
+a nastêpnie z
+.B \s-1PRINTER\s+1 .
+W przeciwnym wypadku u¿ywane jest (je¶li istnieje) domy¶lne miejsce docelowe
+w danym systemie komputerowym.
+.TP
+.BI \-f " form-name"
+Drukuje ¿±danie na formularzu o nazwie
+.IR form-name .
+Pierwsza litera \fIform-name\fP stosowana jest jako format filtru LPRng.
+Jest to zbli¿one do opcji \fB\-F\fP polecenia \fBlpr\fP.
+.TP
+.BI \-H " special-handling"
+Te opcje s± ignorowane.
+.TP
+.B \-m
+Po wydrukowaniu plików wysy³a wiadomo¶æ pocztow± do u¿ytkownika
+(zobacz
+.BR mail (1)).
+Adres pocztowy pobierany jest ze zmiennej ¶rodowiska \fBUSER\fP.
+Domy¶lnie, po normalnym zakoñczeniu wydruku ¿±dania nie jest wysy³ana
+¿adna poczta.
+.TP
+.BI \-n " number"
+Drukuje okre¶lon± przez
+.I number
+liczbê kopii (domy¶lnie jest to
+.BR 1 ).
+.TP
+.BI \-o " option"
+Okre¶la opcje zale¿ne do drukarki. Kilka takich opcji mo¿na po³±czyæ
+podaj±c literê kluczow±
+.B \-o
+wielokrotnie
+(\fB\-o $opcja sub 1$ \-o $opcja sub 2$ ... -o $opcja sub n$\fP),
+lub podaj±c po literze \fB\-o\fP listê opcji ujêt± w cudzys³owy
+(to jest, \fB\-o "$opcja sub 1$ $opcja sub 2$ ... $opcja sub n$"\fP).
+Poni¿sze opcje maj± efekt natychmiastowy; inne opcje przesy³ane s± jako
+pozycja
+.B Z
+wiersza pliku steruj±cego, tj. jako opcja
+.B \-Z
+polecenia
+.BR lpr (1).
+.RS
+.TP
+.B nobanner
+Nie drukuje nstony tytu³owej przy tym ¿±daniu. Jest to to samo, co opcja
+.B -h
+(no header) polecenia
+.BR lpr (1).
+.TP
+.BI width= number
+Drukuje to ¿±danie z szeroko¶ci± strony ustawion± na
+\fInumber\fP kolumn.  Jest to to samo, co opcja
+.BI -w " width"
+polecenia
+.BR lpr (1).
+.RE
+.TP
+.BI \-P " page-list"
+Drukuje strony ujête na li¶cie \fIpage-list\fP. Ta opcja jest ignorowana.
+.TP
+.B \-p
+W³±cza powiadamianie o zakoñczeniu wydruku ¿±dania. Ta opcja jest ignorowana.
+.TP
+.BI \-q " priority-level"
+Przypisuje temu ¿±daniu poziom priorytetu \fIpriority-level\fP w kolejce
+druku. Poziomu priorytetu jest liczb± z zakresu od
+.BR 0 ,
+najwy¿szy priorytet, do
+.BR 25 ,
+najni¿szy.
+Je¿eli nie podano priorytetu, to stosowany jest domy¶lny priorytet dla us³ugi
+druku, przypisany przez administratora systemu. Administrator mo¿e ustaliæ
+limit priorytetu dla konkretnych u¿ytkowników. Warto¶ci liczbowe s±
+przek³adane na odpowiadaj±ce im literowe warto¶ci priorytetu.
+.TP
+.B \-s
+Eliminuje komunikaty od \fBlp\fP, jak te rozpoczynaj±ce siê od
+"\fBrequest id is\fP\fI\|.\|.\|."\fP.
+.TP
+.PD 0
+.BI \-S " character-set"
+.TP
+.BI \-S " print-wheel"
+.PD
+Drukuje to ¿±danie u¿ywaj±c podanego zestawu znaków \fIcharacter-set\fP
+lub g³owicy \fIprint-wheel\fP (w drukarkach rozetkowych).
+Opcje te s± przekazywane jako opcja
+.B \-Z
+polecenia
+.BR lpr (1).
+.ne 7
+.TP
+.BI \-t " title"
+Drukuje tytu³
+.I title
+na stronie tytu³owej wyj¶cia.
+Je¿eli nie podano tytu³u, to na stronie tytu³owej drukowana jest nazwa pliku.
+Je¿eli tytu³ zawiera odstêpy, to nale¿y umie¶ciæ go w cudzys³owach.
+.TP
+.BR \-T " \fIcontent-type \fP[" \-r ]
+Drukuje ¿±danie na drukarce potrafi±cej obs³ugiwaæ podany typ zawarto¶ci
+\fIcontent-type\fP.
+Typ zawarto¶ci jest przekazywany jako opcja
+.B \-Z
+polecenia
+.BR lpr (1).
+.TP
+.B \-w
+Wypisuje komunikat na terminalu u¿ytkownika po wydrukowaniu zadanych plików.
+Ta opcja jest ignorowana.
+.TP
+.BI \-y " mode-list"
+Drukuje to ¿±danie zgodnie z trybami druku wyszczególnionymi
+w \fImode-list\fP.
+Podana lista trybów jest przekazywana jako opcja
+.B \-Z
+polecenia
+.BR lpr (1).
+.TP
+.BI \-D " debug-options"
+Podaje listê opcji diagnostycznych programu. Mo¿e to byæ liczba (poziom
+debuggowania) lub s³owo kluczowe i poziom (flaga), jak 9, network,
+network+2 itp.
+.ne 15
+.SH OPERANDY
+.B lp
+obs³uguje nastêpuj±ce operandy:
+.TP
+.I file
+Nazwa pliku, jaki ma zostaæ wydrukowany. Je¿eli nie podano ¿adnych
+nazw plików, lub gdy nazw± jest
+.BR \- ,
+to u¿ywane bêdzie standardowe wej¶cie.
+Argument
+.BR \-
+musi byæ ostatnim na li¶cie.
+.SH ¦RODOWISKO
+Zobacz w podrêczniku systemowym
+.BR environ (5),
+opisy poni¿szych zmiennych ¶rodowiska wp³ywaj±cych na wykonanie
+.BR lp
+i
+.BR cancel :
+.TP
+.SB LPDEST
+Okre¶la urz±dzenie wyj¶ciowe lub miejsce przeznaczenia.
+.SB LPDEST
+nie jest ustawiona, to zastosowana zostanie zmienna
+.SB PRINTER\s0\f1.
+Opcja
+.BI \-P \0dest
+ma pierwszeñstwo nad
+.SB LPDEST\s0\f1.
+Je¿eli nie podano
+.B \-P
+a
+.SB LPDEST
+zawiera warto¶æ nie bêd±c± poprawnym urz±dzeniem lub nazw± okre¶laj±c±
+miejsce przeznaczenia, to wyniki bêd± niezdefiniowane.
+.TP
+.SB PRINTER
+Okre¶la urz±dzenie wyj¶ciowe lub miejsce przeznaczenia.
+Je¿eli nie ustawiono
+.SB LPDEST
+ani
+.SB PRINTER\s0\f1,
+to stosowane jest nieokre¶lone urz±dzenie wyj¶ciowe.
+Opcja
+.BI \-P \0dest
+i zmienna ¶rodowiska
+.SB LPDEST
+maj± pierwszeñstwo nad
+.SB PRINTER\s0\f1.
+Je¿eli nie podano
+.BR \-P ,
+.SB LPDEST
+nie jest ustawione, za¶
+.SB PRINTER
+zawiera warto¶æ nie bêd±c± poprawnym urz±dzeniem lub nazw± okre¶laj±c±
+miejsce przeznaczenia, to wyniki bêd± niezdefiniowane.
+.SH "KOD ZAKOÑCZENIA"
+.B lp
+zwraca nastêpuj±ce kody zakoñczenia:
+.TP
+.B 0
+Wszystkie pliki wej¶ciowe przetworzono pomy¶lnie.
+.TP
+.B >0
+Nie by³o dostêpne ¿adne urz±dzenie wyj¶ciowe lub wyst±pi³ b³±d.
+.SH "ZOBACZ TAK¯E"
+.BR lpd.conf (5),
+.BR lpc (8),
+.BR lpd (8),
+.BR lpr (1),
+.BR lpq (1),
+.BR lprm (1),
+.BR printcap (5),
+.BR lpd.perms (5),
+.BR pr (1).
+.SH DIAGNOSTYKA
+Wiêkszo¶æ komunikatów diagnostycznych jest oczywista. Je¶li dok³adny powód
+niepowodzenia pozostaje niejasny, nale¿y w³±czyæ poziom debugowania (-D5)
+i uruchomiæ ponownie. Informacja diagnostyczna pomo¿e uchwyciæ dok³adn±
+przyczynê.
+.SH "HISTORIA"
+LPRng jest rozszerzonym systemem buforowania wydruku o funkcjonalno¶ci podobnej
+do oprogramowania Berkeley LPR. List± dyskusyjn± o LPRng jest lprng@lprng.com;
+subskrypcja przez wys³anie listu do lprng-request@lprng.com ze s³owem
+`subscribe` w tre¶ci.
+Oprogramowanie to jest dostêpne z ftp://ftp.astart.com/pub/LPRng.
+.SH "AUTOR"
+Patrick Powell <papowell@astart.com>.

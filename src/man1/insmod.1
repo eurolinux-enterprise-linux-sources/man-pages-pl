@@ -1,0 +1,101 @@
+.\" Copyright (c) 1996 Free Software Foundation, Inc.
+.\" This program is distributed according to the Gnu General Public License.
+.\" See the file COPYING in the kernel source directory.
+.\" $Id: insmod.1,v 1.3 2000/09/30 17:08:37 wojtek2 Exp $
+.\"
+.\" {PTM/MM/0.1/18-11-1998/"insmod.1 - instaluje ³adowalny modu³ j±dra"
+.TH INSMOD 1 "26 Dec 1996" Linux "Linux Module Support"
+.SH NAZWA
+insmod \- instaluje ³adowalny modu³ j±dra
+.SH SK£ADNIA
+.B insmod
+[ \-fkmpsxXv ] [ \-o nazwa_modu³u ] plik_modu³u [ symbol=warto¶æ ... ]
+.SH OPIS
+.B Insmod
+instaluje ³adowalny modu³ w pracuj±cym j±drze.
+.PP
+.B Insmod
+próbuje do³±czyæ modu³ do uruchomionego j±dra systemu przez
+rozwi±zanie wszystkich symboli z tabeli symboli j±dra.
+.PP
+Je¶li nazwa pliku modu³u, podana jest bez rozszerzenia,
+.B insmod
+bêdzie szuka³ modu³u w kilku standardowych katalogach. Zmienna ¶rodowiskowa
+MODPATH mo¿e zostaæ u¿yta aby zmieniæ zachowanie standardowe.
+.SS OPCJE
+.TP
+.I \-f
+Usi³uje za³adowaæ modu³ nawet je¶li wersja uruchomionego j±dra i j±dra dla
+którego modu³ zosta³ skompilowany nie zgadza siê.
+.TP
+.I \-k
+Ustawia atrybut auto-usuwania na danym module. 
+\fBkerneld\fP(8) usunie ka¿dy modu³ z t± flag±, je¶li nie bêdzie on u¿ywany
+przez pewien okres czasu
+\(em zazwyczaj jedn± minutê.
+.TP
+.I \-m
+Wy¶wietla mapê ³adowanych symboli, która mo¿e pomóc w odszukaniu usterki w przypadku 
+wyst±pienia b³êdu j±dra (kernel panic).
+.TP
+.I \-o
+Podanie dok³adnej nazwy modu³u, zamiast zmuszenia programu dochodzenia tej
+nazwy z nazwy pliku z modu³em.
+.TP
+.I \-p
+Sprawd¼ czy modu³ mo¿e byæ za³adowany bez k³opotów. Sprawdzenie to dokonuje
+znalezienia modu³u w ¶cie¿ce wyszukiwañ modu³ów, sprawdzanie numerów wersji
+i analizê symboli. 
+.TP
+.I \-s
+Przeka¿ ca³e wyj¶cie do \fBsyslog\fP(3) zamiast na terminal.
+.TP
+.I \-v
+Opcja w³±czaj±ca wy¶wietlanie du¿ej ilo¶ci informacji.
+.TP
+.I "\-X, -x"
+Eksportuj lub nie, kolejno wszystkie symbole zewnêtrzne modu³ów.
+Standardowo symbole s± eksportowane. Ta opcja daje jakikolwiek wynik je¶li 
+modu³ sam wyra¼nie nie eksportuje jego w³asnej tabeli symbolów i dlatego
+jest unikana.
+.SS "PARAMETRY MODU£ÓW"
+Niektóre z modu³ów akceptuj± podawanie im parametrów w czasie ³adowania w
+celu dostosowania ich do okre¶lonych warunków.
+Te parametry to najczê¶ciej adresy portów I/O i numery przerwañ, które
+zmieniaj± siê w zale¿no¶ci od sprzêtu na jakim uruchamiany jest modu³, a
+które nie mog± byæ okre¶lone automagiczne.
+.PP
+W modu³ach zbudowanych dla j±der seri 2.0, jakikolwiek symbol bêd±cy
+wska¼nikiem do typu ca³kowitego lub znakowego
+mo¿e byæ potraktowany jako parametr i zmodyfikowany. Poczynaj±c od
+j±der 2.1, symbole s± wyra¼nie zaznaczane jako parametry aby tylko okre¶lone
+parametry mog³y byæ modyfikowane. Co wiêcej, podawana jest informacja o typie
+parametru aby przy ³adowaniu mo¿na by³o j± wyegzekwowaæ.
+.PP
+W przypadku warto¶ci ca³kowitych, wszystkie warto¶ci mog± zostaæ podane
+dziesiêtnie, ósemkowo lub szenastkowo np.: 17, 021 lub 0x11.
+Tablice warto¶ci podajemy elementami oddzielonymi przecinkami; nie wszystkie 
+elementy musz± byæ podane i w tym przypadku po prostu pomijamy je.
+.PP
+W modu³ach serii 2.0, warto¶ci które nie zaczynaj± siê od cyfry traktowane
+s± jako ³añcuchy. Poczynaj±c od j±der 2.1, informacja o typie parametru
+wskazuje jak ma byæ interpretowany typ podanego parametru.
+Je¶li warto¶æ zaczyna siê od cudzys³owia, ³añcuch jest
+interpretowany jak w C, sekwencje escapuj±ce.
+Zauwa¿, ¿e podaj±c parametry z promptu pow³oki,
+znaki cudzys³owia mog± byæ potrzebne aby unikn±æ interpretacji przez pow³okê.
+.SH ZOBACZ TAK¯E
+\fBrmmod\fP(1), \fBmodprobe\fP(1), \fBdepmod\fP(1), \fBlsmod\fP(1),
+\fBksyms\fP(1), \fBmodules\fP(2), \fBgenksyms\fP(8), \fBkerneld\fP(8).
+.SH HISTORIA
+Wsparcie dla modu³ów zapocz±tkowane przez Anonima
+.br
+Pierwsza wersja Linuksowa przygotowana przez Bas Laarhoven <bas@vimec.nl>
+.br
+Wersja 0.99.14 przygotowana przez Jon Tombs <jon@gtex02.us.es>
+.br
+Rozbudowana przez Bjorn Ekwall <bj0rn@blox.se>
+.br
+Originial ELF help from Eric Youngdale <eric@aib.com>
+.br
+Aktualizowna do 2.1.17 przez Richard Henderson <rth@tamu.edu>

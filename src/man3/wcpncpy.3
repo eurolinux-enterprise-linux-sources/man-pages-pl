@@ -1,0 +1,45 @@
+.\" 2002 PTM Przemek Borys <pborys@dione.ids.pl>
+.\" Copyright (c) Bruno Haible <haible@clisp.cons.org>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" References consulted:
+.\"   GNU glibc-2 source code and manual
+.\"   Dinkumware C library reference http://www.dinkumware.com/
+.\"   OpenGroup's Single Unix specification http://www.UNIX-systems.org/online.html
+.\"
+.TH WCPNCPY 3  1999-07-25 "GNU" "Podrêcznik programisty linuksowego"
+.SH NAZWA
+wcpncpy \- kopiuje ³añcuch szerokich znaków o ustalonej d³ugo¶ci i zwraca
+wska¼nik do jego koñca
+.SH SK£ADNIA
+.nf
+.B #include <wchar.h>
+.sp
+.BI "wchar_t *wcpncpy(wchar_t *" dest ", const wchar_t *" src ", size_t " n );
+.fi
+.SH OPIS
+Funkcja \fBwcpncpy\fP jest odpowiednikiem \fBstpncpy\fP dla szerokich
+znaków. Kopiuje co najwy¿ej \fIn\fP znaków z ³añcucha szerokich znaków
+wskazywanego przez \fIsrc\fP, ³±cznie z koñcz±cym znakiem L'\\0' do tablicy
+wskazywanej przez \fIdest\fP. W \fIdest\fP zapisywanych jest dok³adnie \fIn\fP
+szerokich znaków. Je¶li d³ugo¶æ \fIwcslen(src)\fP jest mniejsza ni¿ \fIn\fP,
+pozosta³e znaki tablicy \fIdest\fP s± wype³niane znakami L'\\0'. Je¶li
+d³ugo¶æ \fIwcslen(src)\fP jest wiêksza lub równa \fIn\fP, to ³añcuch w
+\fIdest\fP nie bêdzie zakoñczony L'\\0'.
+.PP
+£añcuchy nie mog± zachodziæ na siebie.
+.PP
+Programist amusi zapewniæ, ¿e bêdzie miejsce przynajmniej na \fIn\fP
+szerokich znaków w \fIdest\fP.
+.SH "WARTO¦Æ ZWRACANA"
+\fBwcpncpy\fP zwraca wska¼nik do ostatniego zapisanego szerokiego znaku, tj.
+\fIdest + n - 1\fP.
+.SH "ZGODNE Z"
+Funkcja ta jest rozszerzeniem GNU.
+.SH "ZOBACZ TAK¯E"
+.BR stpncpy (3),
+.BR wcsncpy (3)

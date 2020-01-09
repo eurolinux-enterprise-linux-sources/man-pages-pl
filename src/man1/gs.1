@@ -1,0 +1,339 @@
+.\" 1999 PTM Przemek Borys
+.\"- -*- nroff -*- - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+.\"
+.\"This file describes version 3.0 of Aladdin Ghostscript.
+.\"
+.\"- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+.de TQ
+.br
+.ns
+.TP \\$1
+..
+.TH GS 1 "28 lipca 1994"
+.SH NAZWA
+gs \- Aladdin Ghostscript wersja 3.0 -- interpreter/przegl±darka
+.SH SK£ADNIA
+.B gs
+[
+.I opcje
+] [
+.I pliki
+] ...
+.br
+.SH OPIS
+Ghostscript jest jêzykiem programowania, podobnym do jêzyka PostScript (tm)
+firmy Adobe Systems, który z kolei jest podobny do Fortha.
+.I Gs
+odczytuje kolejno
+.I pliki
+i wykonuje je jako programy Ghostscripta. Po zrobieniu tego, odczytuje
+dalsze wej¶cie ze strumienia standardowego wej¶cia (zwykle klawiatura).
+Ka¿da linia jest interpretowana osobno. Aby zakoñczyæ pracê z interpreterem,
+wykonaj komendê `quit'. Interpreter koñczy dzia³anie równie¿ po napotkaniu
+koñca pliku. Bezpieczne jest wpisanie znaku przerwanai (np. Ctrl-C).
+.PP
+Interpreter rozpoznaje ró¿ne ni¿ej opisane prze³±czniki, które mog± pojawiæ
+siê w dowolnym miejscu linii komend i tyczyæ siê dalszych plików.
+.PP
+Informacjê o pomocy mo¿na uzyskaæ, wywo³uj±c Ghostscript z prze³±cznikiem
+.B \-h
+lub
+.BR \-? .
+Informacja ta zawiera te¿ listê dostêpnych urz±dzeñ.
+.PP
+Ghostscript mo¿e zostaæ skompilowany z wieloma urz±dzeniami wyj¶ciowymi.
+Normalnie otwiera pierwsze i kieruje tam wyj¶cie. Aby u¿yæ urz±dzenia xyz,
+za³±cz prze³±cznik
+.nf
+	\-sDEVICE=xyz
+.fi
+w linii komend. Zauwa¿, ¿e ten prze³±cznik musi poprzedzaæ pierwszy plik .ps
+i ¿e tylko jego pierwsze wywo³anie ma efekt. Na przyk³ad dla wyj¶cia na
+drukarce Epson, mo¿esz u¿yæ komendy pow³oki
+.nf
+	gs \-sDEVICE=epson myfile.ps
+.fi
+zamiast
+.nf
+	gs myfile.ps
+.fi
+Mo¿esz te¿ wpisaæ
+.nf
+	(epson) selectdevice
+	(myfile.ps) run
+.fi
+Ca³e wyj¶cie idzie na drukarkê, zamiast na wy¶wietlacz, a¿ do notki. Mo¿esz
+prze³±czaæ urz±dzenia w dowolnym momencie, u¿ywaj±c procedury selectdevice,
+.nf
+	(vga) selectdevice
+.fi
+lub
+.nf
+	(epson) selectdevice
+.fi
+Jako trzeci± opcjê, mo¿esz zdefiniowaæ zmienn± ¶rodowiskow± GS_DEVICE, która
+przechowuje potrzebn± nazwê. Priorytety tych sposobów, od najwy¿szego do
+najni¿szego to:
+.nf
+	selectdevice
+	(command line)
+	GS_DEVICE
+	(pierwsze urz±dzenie z listy kompilacji)
+.fi
+.PP
+Aby wybraæ gêsto¶æ wydruku na drukarce, u¿yj
+.nf
+	gs \-sDEVICE=<urz±dzenie> \-r<xwym>x<ywym>
+.fi
+Np. tryb najni¿szej gêsto¶ci na 9 ig³owym Epsonie mo¿na uzyskaæ przez
+.nf
+	gs \-sDEVICE=epson \-r60x72
+.fi
+a najwy¿szej przez
+.nf
+	gs \-sDEVICE=epson \-r240x72.
+.fi
+.PP
+Je¶li jako urz±dzenie wyj¶ciowe wybierzesz drukarkê, Ghostscript umo¿liwi ci
+kontrolowanie gdzie urz±dzenie wysy³a swoje wyj¶cie. Zazwyczaj wyj¶cie idzie
+na systemach uniksowych bezpo¶rednio do pliku scratch. Aby wys³aæ wyj¶cie do
+serii plików foo1.xyz, foo2.xyz, u¿yj prze³±cznika
+.nf
+	\-sOutputFile=foo%d.xyz
+.fi
+Znak %d jest specyfikacj± formatu printf; mo¿esz u¿yæ innych formatów,
+takich jak %02d. Ka¿dy plik odbierze jedn± stronê wyj¶cia.
+W innym wypadku, aby wys³aæ wyj¶cie do pojedynczego pliku foo.xyz, w którym
+po³±czone s± wszystkie strony, u¿yj prze³±cznika
+.nf
+	\-sOutputFile=foo.xyz
+.fi
+.PP
+Na systemach uniksowych mo¿na wyj¶cie przesy³aæ przez ³±cze. Na przyk³ad, aby
+przelaæ wyj¶cie komendy `lpr' (która pod wieloma systemami Unixowymi jest
+komend±, która sk³aduje wyj¶cie drukarki), u¿yj prze³±cznika
+.nf
+	\-sOutputFile=\\|lpr
+.fi
+Mo¿esz te¿ wysy³aæ wyj¶cie na stdout, umo¿liwiaj±c tworzenie ³±cza, 
+.nf
+	\-sOutputFile=\-
+.fi
+W tym wypadku musisz te¿ u¿yæ prze³±cznika \-q, aby uchroniæ Ghostscript
+przed drukowaniem na stdout komunikatów.
+.PP
+Aby zobaczyæ, jakie urz±dzenia s± dostêpne, wpisz po uruchomieniu
+Ghostscripta
+.nf
+	devicenames ==
+.fi
+Listê tê mo¿esz zobaczyæ te¿ u¿ywaj±c prze³±czników \-h lub \-? w linii
+komend.
+.PP
+Aby wybraæ inny rozmiar papieru, u¿yj prze³±cznika linii komend
+.nf
+        -sPAPERSIZE=znany rozmiar papieru
+.fi
+np,
+.nf
+        -sPAPERSIZE=a4
+.fi
+lub
+.nf
+        -sPAPERSIZE=legal
+.fi
+.SH "PLIKI INICJALIZACYJNE"
+Szukaj±c plików inicjalizacyjnych (gs_*.ps), plików zwi±zanych z fontami,
+lub pliku dla operatora `run', Ghostscript najpierw próbuje otworzyæ plik o
+podanej nazwie (w bie¿±cym katalogu, je¶li nie podano ¿adnego). Je¶li to siê
+nie powiedzie, a nazwa pliku nie wskazuje jawnie katalogu, lub napêdu (nie
+rozpoczyna siê od `/' na systemach uniksowych), Ghostscript korzysta z
+nastêpuj±cych katalogów (odpowiednio w kolejno¶ci):
+.TP
+1.
+Katalogi podane prze³±cznikami \-I w linii komend;
+.TP
+2.
+Katalogi podane w zmiennej ¶rodowiskowej GS_LIB;
+.TP
+3.
+Katalogi podane w makrze GS_LIB_DEFAULT w pliku makefile Ghostscripta (które
+jest ustawione na
+"/usr/local/lib/ghostscript:/usr/local/lib/ghostscript/fonts" ).
+.PP
+Katalogi podane w wy¿ej wymienionych sposobach mog± byæ pojedynczymi
+katalogami, lub listami katalogów, rozdzielonymi znakiem `:'.
+.SH ZASOBY X
+Ghostscript szuka nastêpuj±cych zasobów dla programu o nazwie `Ghostscript':
+.TP
+.B borderWidth
+Szeroko¶æ ramki w pikselach (domy¶lnie = 1).
+.TP
+.B borderColor
+Nazwa koloru ramki (domy¶lnie = black).
+.TP
+.B geometry 
+Rozmiar okna i jego po³o¿enie WxH+X+Y (domy¶lnie NULL).
+.TP
+.B xResolution 
+Liczba pikseli x na cal (domy¶lnie obliczana z
+WidthOfScreen i WidthMMOfScreen).
+.TP
+.B yResolution
+Liczba pikseli y na cal (domy¶lnie obliczana z
+HeightOfScreen i HeightMMOfScreen).
+.TP
+.B useBackingPixmap
+Okre¶la czy u¿ywaæ mechanizmu backing store do zachowywania okna
+wy¶wietlania (domy¶lnie = true).
+.PP
+Zobacz tez plik `use.doc' dla kompletniejszej listy zasobów.
+.PP
+Aby ustawiæ te zasoby, wstaw je do pliku (takiego jak ~/.Xresources) w
+nastêpuj±cej postaci:
+.sp
+.nf
+	Ghostscript*geometry:	612x792\-0+0
+	Ghostscript*xResolution: 72
+	Ghostscript*yResolution: 72
+.fi
+.PP
+Nastêpnie za³aduj warto¶ci domy¶lne do serwera X:
+.sp
+.nf
+	% xrdb \-merge ~/.Xresources
+.fi
+.SH OPCJE
+.TP
+.BI \-\- " nazwapliku arg1 ..."
+Bierze nastêpny argument jako nazwê pliku, lecz pozosta³e argumenty pobiera
+i definiuje nazwê ARGUMENTS w userdict (nie w systemdict) jako tablicê tych
+³añcuchów,
+.I przed
+uruchomieniem pliku. Gdy Ghostscript zakoñczy wykonywanie pliku, wychodzi do
+pow³oki.
+.TP
+.BI \-D nazwa = token
+.TQ
+.BI \-d nazwa = token
+Definiuj nazwê w systemdict na podan± definicjê. Token musi byæ dok³adnie
+jeden (jak zdefiniowano operatorem `token') i nie mo¿e zawieraæ bia³ych
+spacji.
+.TP
+.BI \-D nazwa
+.TQ
+.BI \-d nazwa
+Definiuj nazwê w systemdict, której warto¶æ wynosi null.
+.TP
+.BI \-S nazwa = napis
+.TQ
+.BI \-s nazwa = napis
+Definiuj nazwê w systemdict na podan± warto¶æ napisow±. Jest to ró¿ne od \-d.
+Na przyk³ad, \-dnazwa=35 jest równowa¿ne fragmentowi programu
+.br
+			/nazwa 35 def 
+.br
+podczas gdy 
+\-s nazwa=35 jest równowa¿ne
+.br
+			/nazwa (35) def
+.TP
+.B \-q
+Ciche uruchamianie \- nie drukuj normalnych komunikatów startowych i rób to,
+co \-dQUIET.
+.TP
+.BI \-g liczba1 x liczba2
+Równowa¿ne z
+.BI \-dDEVICEWIDTH= liczba1 
+i
+.BI \-dDEVICEHEIGHT= liczba2 .
+Jest to dla u¿ytku urz±dzeñ (takich jak okna X11), które wymagaj± (lub
+zezwalaj±) na podanie wysoko¶ci i szeroko¶ci.
+.TP
+.BI \-r liczba
+.TQ
+.BI \-r liczba1 x liczba2
+Równowa¿ne z
+.BI \-dDEVICEXRESOLUTION= liczba1
+i
+.BI \-dDEVICEYRESOLUTION= liczba2 .
+Jest to dla u¿ytku urz±dzeñ (takich jak drukarki), które obs³uguj± wiele
+rozdzielczo¶ci X i Y.
+(Je¶li podana jest tylko jedna liczba, to u¿ywana jest ona dla
+rozdzielczo¶ci zarówno X jak i Y.)
+.TP
+.BI \-I katalogi
+Dodaje podan± listê katalogów na pocz±tek ¶cie¿ki przeszukiwania plików
+bibliotecznych.
+.TP
+.B \-
+Nie jest to tak naprawdê prze³±cznik. Mówi Ghostscriptowi, ¿e z pliku, lub
+potoku nadchodzi standardowe wej¶cie. Ghostscript odczytuje to wej¶cie a¿ do
+koñca pliku, wykonuj±c je jak ka¿dy inny plik, a nastêpnie kontynuuje
+przetwarzanie linii poleceñ. Na koñcu linii poleceñ, Ghostscript koñczy
+dzia³anie (a nie przechodzi do trybu interaktywnego).
+.PP
+Zauwa¿, ¿e gs_init.ps powoduje, ¿e systemdict staje siê dostêpny tylko dla
+odczytu, wiêc warto¶ci nazw zdefiniowanych przez
+\-D/d/S/s nie mog± byæ zmieniane (choæ oczywi¶cie mog± byæ powstrzymywane
+przez definicje w userdict, lub innych s³ownikach.)
+.SH "NAZWY SPECJALNE"
+.TP
+.B \-dDISKFONTS
+Powoduje, ¿e kszta³ty znaków bêd± ³adowane z dysku za pierwszym napotkaniem.
+(Normalnie Ghostscript ³aduje wszystkie podczas ³adowania fontu.) Mo¿e to
+umo¿liwiæ za³adowanie wiêkszej ilo¶ci fontów do pamiêci, spowalniaj±c
+renderowanie.
+.TP
+.B \-dNOCACHE
+Wy³±cza buforowanie znaków. Przydatne tylko dla debuggowania.
+.TP
+.B \-dNOBIND
+Wy³±cza operator `bind'. Przydatne dla debuggowania.
+.TP
+.B \-dNODISPLAY
+Powstrzymuje normaln± inicjalizacjê urz±dzenia wyj¶ciowego.
+Mo¿e to byæ przydatne dla debuggowania.
+.TP
+.B \-dNOPAUSE
+Wy³±cza znak zachêty i pauzowanie na koñcu ka¿dej strony. Mo¿e to byæ
+przydatne dla aplikacji, gdzie inny program kieruje Ghostscriptem.
+.TP
+.B \-dNOPLATFONTS
+Wy³±cza u¿ywanie fontów, przekazanych przez podlegaj±c± platformê (np. X
+Window System). Mo¿e to byæ potrzebne je¶li fonty platformy wygl±daj± gorzej
+ni¿ fonty skalowalne.
+.TP
+.B \-dSAFER
+Wy³±cza operatory deletefile i renamefile, oraz zdolno¶æ otwierania plików w
+innych trybach ni¿ tylko dla odczytu. Mo¿e to byæ przydatne dla sk³adowisk i
+innych wra¿liwych ¶rodowisk.
+.TP
+.B \-dWRITESYSTEMDICT
+Pozostawia systemdict w stanie zezwolenia na zapis. Jest to potrzebne
+podczas uruchamiania specjalnych programów narzêdziowych, takich jak font2c
+i pcharstr, które musz± obchodziæ normaln± ochronê dostêpu PostScript.
+.TP
+.BI \-sDEVICE= urz±dzenie
+Wybierz alternatywne pocz±tkowe urz±dzenie wyj¶ciowe.
+.TP
+.BI \-sOutputFile= nazwapliku
+Wybierz alternatywny plik wyj¶ciowy (lub ³±cze) dla pocz±tkowego urz±dzenia
+wyj¶ciowego.
+.SH PLIKI
+.TP 
+.B /usr/local/lib/ghostscript/*
+Pliki startowe, narzêdzia i podstawowe definicje fontów.
+.TP 
+.B /usr/local/lib/ghostscript/fonts/*
+Dodatkowe definicje fontów.
+.TP
+.B /usr/local/lib/ghostscript/examples/*
+Demonstracyjne pliki Ghostscript.
+.TP
+.B /usr/local/lib/doc/ghostscript/doc/*
+Dokumentacja.
+.SH "ZOBACZ TAK¯E"
+Pliki dokumentacji (patrz wy¿ej).
+.SH B£ÊDY
+Zobacz grupê dyskusyjn± `comp.lang.postscript'.

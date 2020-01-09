@@ -1,0 +1,57 @@
+.\" {PTM/RL/30-04-2002/"³atwy vim"}
+.\" Translation: Robert Luberda <robert@debian.org>, Apr 2002; vim 6.1
+.\" Translation update: Robert Luberda <robert@debian.org>, Jul 2004; vim 6.3
+.\" $Id: evim.1,v 1.2 2004/07/07 14:21:04 robert Exp $
+.\"
+.TH EVIM 1 "16 lutego 2002"
+.SH NAZWA
+evim \- ³atwy vim, edycja pliku vimem ustawionym jako edytor bez ¿adnych trybów
+.SH SK£ADNIA
+.br
+.B evim
+[opcje] [plik ..]
+.br
+.B eview
+.SH OPIS
+.B evim
+uruchamia
+.B vima
+i ustawia takie opcje, ¿eby siê zachowywa³ jak edytor bez ¿adnych trybów (edycji,
+poleceñ itp.).
+To ci±gle jest vim, ale u¿ywany jako edytor typu wska¿-i-kliknij, tak ¿e ma
+siê wra¿enie u¿ywania notepada pod MS-Windows.
+.B evim
+zawsze uruchamia siê w GUI, daj±c mo¿liwo¶æ u¿ywania menu i paska narzêdzi.
+.PP
+Jest przeznaczony dla ludzi, którzy na prawdê nie potrafi± w normalny sposób
+pracowaæ z vimem.
+Edycja jest mniej wydajna.
+.PP
+.B eview
+zachowuje siê tak samo, ale uruchamia siê w trybie tylko do odczytu, jak evim -R.
+.PP
+Aby uzyskaæ szczegó³owe informacje o vimie, jego opcjach itp., proszê przeczytaæ vim(1) .
+.PP
+Opcja 'insertmode' jest w³±czona, tak aby by³a mo¿liwo¶æ bezpo¶redniego wpisywania tekstu.
+.br
+Mapowanie klawiszy jest tak ustawione, aby operacjê  "skopiuj i wklej" ("copy and paste")
+uruchamia³o siê tak samo, jak pod MS-Windows.
+CTRL-X wycina tekst, CTRL-C kopiuje, a CTRL-V wkleja tekst.
+Aby uzyskaæ poprzednie znaczenie CTRL-V, nale¿y u¿yæ CTRL-Q.
+.SH OPCJE
+Patrz vim(1).
+.SH PLIKI
+.TP 15
+/usr/share/vim/vim63/evim.vim
+Skrypt inicjuj±cy evima.
+.SH AKA
+Tak¿e znany jako (w oryg.`Also Known As') "Vim dla opornych".
+U¿ywaj±c evima, powiniene¶ wzi±æ chusteczkê do nosa, zawi±zaæ sup³y
+w ka¿dym rogu i za³o¿yæ j± na g³owê.
+.SH ZOBACZ TAK¯E
+vim(1)
+.SH AUTOR
+Wiêkszo¶æ
+.B vima
+zosta³a napisana przez Brama Moolenaara, jednak¿e z du¿± pomoc± innych ludzi.
+Zobacz Help/Credits w menu.

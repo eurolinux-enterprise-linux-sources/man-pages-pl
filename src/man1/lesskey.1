@@ -1,0 +1,392 @@
+.\" {PTM/WK/1999-XII}
+.\" updated from 3.32 to 3.74, VIII 2002
+.TH LESSKEY 1 "wersja 374: 19 lutego 2002"
+.SH NAZWA
+lesskey \- okre¶l przypisanie klawiszy dla less
+.SH SK£ADNIA
+.B lesskey
+.RB [-o
+.IR output ]
+.RB [ -- ]
+.RI [ input ]
+.br
+.B lesskey
+.RB [ --output=\fIoutput\fP ]
+.RB [ -- ]
+.RI [ input ]
+.br
+.B "lesskey -V"
+.br
+.B "lesskey --version"
+.SH OPIS
+.I Lesskey
+s³u¿y do przypisanie zastawu klawiszy, jakie bêd± u¿ywane przez
+.I less.
+Tekstowy plik wej¶ciowy \fIinput\fP opisuje przypisania klawiszy. Je¶li jako
+nazwê tego pliku podano "-", to odczytywane jest standardowe wej¶cie.
+Je¿eli nie podano pliku wej¶ciowego, to zostanie wziêta standardowa nazwa pliku
+wej¶cia, zale¿na o u¿ywanego systemu:
+na systemach Unixowych jest to $HOME/.lesskey;
+na systemach MS-DOS jest to $HOME/_lesskey;
+na systemach OS/2 jest to $HOME/lesskey.ini,
+lub $INIT/lesskey.ini, je¶li nie zdefiniowano $HOME.
+Plik wyj¶ciowy (wynikowy) \fIoutput\fP jest plikiem binarnym, którym pos³uguje
+siê
+.I less.
+Je¿eli nie podano pliku wyj¶ciowego, a okre¶lona jest zmienna ¶rodowiskowa
+LESSKEY, to jej warto¶æ jest u¿ywana jako nazwa pliku wynikowego. W przeciwnym
+wypadku zostanie wziêta standardowa nazwa pliku wyj¶cia, zale¿na od u¿ywanego
+systemu:
+na systemach Unixowych oraz OS-9 jest to $HOME/.less;
+na systemach MS-DOS jest to $HOME/_less;
+za¶ na systemach OS/2 jest to $HOME/less.ini,
+lub $INIT/less.ini, je¶li nie zdefiniowano $HOME.
+Je¿eli plik wynikowy ju¿ istnieje, to
+.I lesskey
+nadpisze go.
+.PP
+Opcja -V lub --version powoduje, ¿e
+.I lesskey
+wy¶wietla swój numer wersji i natychmiast koñczy dzia³anie.
+Je¶li wyst±pi opcja -V lub --version, to inne opcje i argumenty s± ignorowane.
+.PP
+Plik wej¶ciowy sk³ada siê z jednej lub wiêcej sekcji
+.IR sekcji .
+Ka¿da sekcja zaczyna siê od wiersza identyfikuj±cego jej typ.
+Mo¿liwymi sekcjami s±:
+.IP #command
+Definiuje nowe klawisze komend.
+.IP #line-edit
+Definiuje nowe klawisze edycji wiersza.
+.IP #env
+Definiuje zmienne ¶rodowiska.
+.PP
+Wiersze puste i rozpoczynaj±ce siê od znaku krzy¿yka (#) s± ignorowane,
+z wyj±tkiem specjalnych wierszy nag³ówkowych sekcji.
+.SH SEKCJA KOMEND
+Sekcja komend rozpoczyna siê od wiersza
+.sp
+#command
+.sp
+Je¿eli sekcja komend jest pierwsz± sekcj± w pliku, to wiersz ten mo¿e zostaæ
+pominiêty.
+Sekcja komend sk³ada siê z wierszy o postaci:
+.sp
+    \fI³añcuch\fP <bia³aspacja> \fIakcja\fP [extra-³añcuch] <newline>
+.sp
+Bia³a spacja jest dowolnym ci±giem jednego lub wiêcej znaków spacji i/lub
+tabulacji.
+\fI³añcuch\fP jest klawiszem (klawiszami) wywo³uj±cym dan± akcjê.
+\fI³añcuch\fP mo¿e byæ pojedynczym klawiszem komendy lub sekwencj± co najwy¿ej
+15 klawiszy.
+\fIakcja\fP jest nazw± akcji less, z poni¿ej podanej listy.
+Znaki \fI³añcucha\fP mog± wystêpowaæ dos³ownie albo byæ poprzedzone znakiem
+daszku (^) wskazuj±cym na klawisz steruj±cy (z³o¿enie z Ctrl).
+Do zapisu znaku poprzez jego warto¶æ ósemkow± mo¿na pos³u¿yæ siê znakiem
+odwrotnego uko¶nika (backslash "\"), po którym powinna nast±piæ jedna do
+trzech cyfr ósemkowych.
+Odwrotny uko¶nik w po³±czeniu z pewnymi znakami okre¶la nastêpuj±ce
+znaki wej¶ciowe:
+.IP \eb
+BACKSPACE
+.IP \ee
+ESCAPE
+.IP \en
+NEWLINE (znak nowej linii)
+.IP \er
+RETURN (powrót karetki)
+.IP \et
+TAB (znak tabulacji)
+.IP \eku
+UP ARROW (strza³ka w górê)
+.IP \ekd
+DOWN ARROW (strza³ka w dó³)
+.IP \ekr
+RIGHT ARROW (strza³ka w prawo)
+.IP \ekl
+LEFT ARROW (strza³ka w lewo)
+.IP \ekU
+PAGE UP (strona w górê)
+.IP \ekD
+PAGE DOWN (strona w dó³)
+.IP \ekh
+HOME
+.IP \eke
+END
+.IP \ekx
+DELETE
+.PP
+Odwrotny uko¶nik poprzedzaj±cy dowolny inny znak oznacza, ¿e znak ten
+powinien zostaæ potraktowany dos³ownie.
+W¶ród znaków, które musz± byæ poprzedzone odwrotnym uko¶nikiem wystêpuj±
+daszek (^), spacja, znak tabulacji i sam odwrotny uko¶nik.
+.PP
+Po akcji mo¿e wyst±piæ "dodatkowy" (extra) ³añcuch.
+Je¶li wprowadzona zostanie taka komenda podczas pracy z
+.IR less ,
+to wykonywana jest akcja, a nastêpnie analizowany jest podany dodatkowy
+³añcuch, tak jak gdyby zosta³ on naci¶niêty (wpisany do
+.IR less ).
+W³a¶ciwo¶æ ta mo¿e pos³u¿yæ w pewnych przypadkach do poszerzenia
+funkcjonalno¶ci komendy.
+Obejrzyj komendy "{" i ":t" w przyk³adzie poni¿ej.
+Dla akcji "quit" dodatkowy ³añcuch ma znaczenie specjalne:
+gdy
+.I less
+koñczy pracê, pierwszy znak tego dodatkowego ³añcucha u¿ywany jest jako kod
+zakoñczenia (exit status).
+.SS PRZYK£AD
+Poni¿szy plik wej¶ciowy opisuje zestaw domy¶lnych klawiszy komend u¿ywany
+przez less:
+.sp
+.nf
+	#command
+	\er		forw-line
+	\en		forw-line
+	e		forw-line
+	j		forw-line
+	\ekd	forw-line
+	^E		forw-line
+	^N		forw-line
+	k		back-line
+	y		back-line
+	^Y		back-line
+	^K		back-line
+	^P		back-line
+	J		forw-line-force
+	K		back-line-force
+	Y		back-line-force
+	d		forw-scroll
+	^D		forw-scroll
+	u		back-scroll
+	^U		back-scroll
+	\e40	forw-screen
+	f		forw-screen
+	^F		forw-screen
+	^V		forw-screen
+	\ekD	forw-screen
+	b		back-screen
+	^B		back-screen
+	\eev		back-screen
+	\ekU	back-screen
+	z		forw-window
+	w		back-window
+	\ee\e40		forw-screen-force
+	F		forw-forever
+	R		repaint-flush
+	r		repaint
+	^R		repaint
+	^L		repaint
+	\eeu		undo-hilite
+	g		goto-line
+	\ekh	goto-line
+	<		goto-line
+	\ee<		goto-line
+	p		percent
+	%		percent
+	\ee[		left-scroll
+	\ee]		right-scroll
+	\ee(		left-scroll
+	\ee)		right-scroll
+	{		forw-bracket {}
+	}		back-bracket {}
+	(		forw-bracket ()
+	)		back-bracket ()
+	[		forw-bracket []
+	]		back-bracket []
+	\ee^F		forw-bracket
+	\ee^B		back-bracket
+	G		goto-end
+	\ee>		goto-end
+	>		goto-end
+	\eke	goto-end
+	=		status
+	^G		status
+	:f		status
+	/		forw-search
+	?		back-search
+	\ee/		forw-search *
+	\ee?		back-search *
+	n		repeat-search
+	\een		repeat-search-all
+	N		reverse-search
+	\eeN		reverse-search-all
+	m		set-mark
+	'		goto-mark
+	^X^X		goto-mark
+	E		examine
+	:e		examine
+	^X^V		examine
+	:n		next-file
+	:p		prev-file
+	t		next-tag
+	T		prev-tag
+	:x		index-file 
+	:d		remove-file
+	-		toggle-option
+	:t		toggle-option t
+	s		toggle-option o
+	_		display-option
+	|		pipe
+	v		visual
+	!		shell
+	+		firstcmd
+	H		help
+	h		help
+	V		version
+	0		digit
+	1		digit
+	2		digit
+	3		digit
+	4		digit
+	5		digit
+	6		digit
+	7		digit
+	8		digit
+	9		digit
+	q		quit
+	Q		quit
+	:q		quit
+	:Q		quit
+	ZZ		quit
+.fi
+.sp
+.SS PRIORYTET
+Komendy okre¶lone przez
+.I lesskey
+maj± pierwszeñstwo przed komendami domy¶lnymi.
+Domy¶lny klawisz komendy mo¿e zostaæ wy³±czony przez zawarcie go w pliku
+wej¶ciowym z przypisan± akcj± "invalid" (niepoprawny).
+Alternatywnie, mo¿na zdefiniowaæ, by klawisz nie robiæ niczego, przypisuj±c
+mu akcjê "noaction" (bez akcji).
+"noaction" jest podobne do "invalid", lecz
+.I less
+bêdzie sygnalizowa³ d¼wiêkiem b³±d dla "niepoprawnej" komendy, czego
+nie czyni dla komendy "bez akcji".
+Dodatkowo, mo¿na wy³±czyæ WSZYSTKIE domy¶lne komendy w³±czaj±c do pliku
+wej¶ciowego tak± liniê steruj±c±:
+.sp
+#stop
+.sp
+Spowoduje to, ¿e wszystkie komendy domy¶lne bêd± ignorowane.
+Wiersz #stop powinien byæ ostatnim wierszem w tej sekcji pliku.
+.PP
+B±d¼ ¶wiadom tego, ¿e #stop mo¿e byæ niebezpieczne. Poniewa¿ wy³±czone s±
+wszystkie domy¶lne komendy, musisz zapewniæ wystarczaj±cy zestaw komend przed
+wierszem #stop, tak by udostêpniæ wszelkie niezbêdne akcje.
+Na przyk³ad, zaniedbanie dostarczenia komendy "quit" mo¿e prowadziæ do
+frustracji.
+
+.SH SEKCJA EDYCJI WIERSZA
+Sekcja edycji wiersza rozpoczyna siê wierszem:
+.sp
+#line-edit
+.sp
+Sekcja ta okre¶la nowe przypisania klawiszy dla komend edycji wiersza,
+w sposób podobny do przypisañ klawiszy do zwyk³ych komend w sekcji #command.
+Sekcja edycji wiersza sk³ada siê z listy klawiszy i akcji, po jednej parze
+na wiersz, tak jak w przyk³adzie poni¿ej.
+.SS PRZYK£AD
+Poni¿szy plik wej¶ciowy opisuje zestaw domy¶lnych klawiszy edycji wiersza
+u¿ywany przez less:
+.sp
+.nf
+	#line-edit
+	\et	    	forw-complete
+	\e17		back-complete
+	\ee\et		back-complete
+	^L		expand
+	^V		literal
+	^A		literal
+   	\eel		right
+	\ekr		right
+	\eeh		left
+	\ekl		left
+	\eeb		word-left
+	\ee\ekl	word-left
+	\eew		word-right
+	\ee\ekr	word-right
+	\eei		insert
+	\eex		delete
+	\ekx		delete
+	\eeX		word-delete
+	\eekx		word-delete
+	\ee\eb		word-backspace
+	\ee0		home
+	\ekh		home
+	\ee$		end
+	\eke		end
+	\eek		up
+	\eku		up
+	\eej		down
+.fi
+.sp
+
+.SH ZMIENNE ¦RODOWISKA LESS
+Sekcja zmiennych ¶rodowiska rozpoczyna siê wierszem
+.sp
+#env
+.sp
+Po nim wystêpuje lista przypisañ warto¶ci dla zmiennych ¶rodowiskowych.
+Ka¿dy wiersz sk³ada siê z nazwy zmiennej ¶rodowiska, znaku równo¶ci (=)
+oraz warto¶ci, jaka ma zostaæ przypisana tej zmiennej.
+Zmienne przypisane w ten sposób widoczne s± wy³±cznie dla
+.IR less .
+Je¿eli dana zmienna okre¶lona jest w ¶rodowisku systemowym i równocze¶nie
+w pliku lesskey, to pierwszeñstwo ma jej warto¶æ z pliku lesskey.
+Mimo, ¿e plik lesskey mo¿e s³u¿yæ do nadpisywania zestawu zmiennych
+ze ¶rodowiska systemu, to g³ównym celem nadawania warto¶ci zmiennym w lesskey
+jest po prostu przechowywanie ca³ej informacji konfiguracyjnej dla
+.I less
+w jednym pliku.
+.SS PRZYK£AD
+Poni¿szy plik wej¶ciowy ustawia opcjê -i podczas uruchamiania
+.I less
+oraz podaje, ¿e u¿ywanym zestawem znaków ma byæ "latin1"
+.br
+[od t³um.: ustawienie "latin1" jest niezbêdne dla prawid³owej obs³ugi
+polskich znaków]:
+.sp
+.nf
+	#env
+	LESS = -i
+	LESSCHARSET = latin1
+.fi
+.sp
+
+.SH ZOBACZ TAK¯E
+.BR less (1).
+.SH OSTRZE¯ENIA
+Okre¶lenie klawiszy specjalnych, takich jak strza³ka w górê, w sposób
+niezale¿ny od klawiatury jest niemo¿liwe.
+Jedyn± metod± okre¶lenia takich klawiszy jest podanie sekwencji specjalnej,
+jak± wysy³a konkretna klawiatura przy naci¶niêciu ¿±danego klawisza.
+.PP
+W systemach MS-DOS i OS/2 pewne klawisze wysy³aj± sekwencje rozpoczynaj±ce
+siê od znaku NUL (0).
+Taki znak NUL w pliku lesskey powinien byæ reprezentowany przez \e340.
+.SH COPYRIGHT
+Copyright (c) 2000  Mark Nudelman
+.PP
+lesskey jest czê¶ci± projektu GNU i stanowi wolne oprogramowanie.
+Mo¿esz go rozprowadzaæ dalej i/lub modyfikowaæ na warunkach Powszechnej
+Licencji Publicznej GNU, wydanej przez Fundacjê Wolnego Oprogramowania
+- wed³ug wersji 2 tej Licencji lub (wed³ug twojego wyboru) której¶
+z pó¼niejszych wersji.
+.PP
+lesskey rozpowszechniany jest z nadziej±, i¿ bêdzie u¿yteczny
+- jednak BEZ JAKIEJKOLWIEK GWARANCJI, nawet domy¶lnej gwarancji
+PRZYDATNO¦CI HANDLOWEJ albo PRZYDATNO¦CI DO OKRE¦LONYCH
+ZASTOSOWAÑ. W celu uzyskania bli¿szych informacji siêgnij do
+Powszechnej Licencji Publicznej GNU.
+.PP
+Wraz z lesskey powiniene¶ otrzymaæ egzemplarz Powszechnej Licencji
+Publicznej GNU (GNU General Public License) - zobacz plik COPYING.
+Je¶li nie - napisz do Free Software Foundation, 59 Temple Place,
+Suite 330, Boston, MA  02111-1307, USA.
+.SH AUTOR
+.PP
+Mark Nudelman <markn@greenwoodsoftware.com>
+.br
+Zg³oszenia b³êdów lub komentarze proszê przesy³aæ na powy¿szy adres
+albo do bug-less@gnu.org.

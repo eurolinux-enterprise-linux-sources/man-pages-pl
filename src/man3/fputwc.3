@@ -1,0 +1,63 @@
+.\" T³umaczenie na podstawie wersji man-pages 1.45
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" ------------
+.\" Copyright (c) Bruno Haible <haible@clisp.cons.org>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" References consulted:
+.\"   GNU glibc-2 source code and manual
+.\"   Dinkumware C library reference http://www.dinkumware.com/
+.\"   OpenGroup's Single Unix specification http://www.UNIX-systems.org/online.html
+.\"   ISO/IEC 9899:1999
+.\"
+.TH FPUTWC 3 1999-07-25 "GNU" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+fputwc \- zapisanie szerokiego znaku do strumienia FILE
+.SH SK£ADNIA
+.nf
+.B #include <stdio.h>
+.br
+.B #include <wchar.h>
+.sp
+.BI "wint_t fputwc(wchar_t " wc ", FILE *" stream );
+.BI "wint_t putwc(wchar_t " wc ", FILE *" stream );
+.fi
+.SH OPIS
+Funkcja \fBfputwc\fP jest szerokoznakowym odpowiednikiem funkcji \fBfputc\fP.
+Zapisuje ona szeroki znak \fIwc\fP do \fIstream\fP. Gdy \fIferror(stream)\fP
+stanie siê prawdziwe, zwraca WEOF. Je¶li wyst±pi b³±d konwersji szerokiego
+znaku, ustawia ona \fBerrno\fP na \fBEILSEQ\fP i równie¿ zwraca WEOF.
+W pozosta³ych przypadkach zwraca \fIwc\fP.
+.PP
+Funkcja lub makro \fBputwc\fP zachowuje siê identycznie jak \fBfputwc\fP.
+Gdy \fBputwc\fP jest zaimplementowane jako makro, mo¿e wskutek tego rozwijaæ
+swój argument wiêcej ni¿ raz. Nie ma ¿adnego powodu, aby tej funkcji/makra
+u¿ywaæ.
+.PP
+Informacje o nieblokuj±cych odpowiednikach znajduj± siê w
+.BR unlocked_stdio (3).
+.SH "WARTO¦Æ ZWRACANA"
+Funkcja \fBfputwc\fP zwraca \fIwc\fP, gdy nie wyst±pi³ b³±d, a WEOF aby
+zasygnalizowaæ wyst±pienie b³êdu.
+.SH B£ÊDY
+Oprócz zwyk³ych jest jeszcze
+.TP
+.B EILSEQ
+Konwersja \fIwc\fP do kodowania stosowanego w strumieniu nie powiod³a siê.
+.SH "ZGODNE Z"
+ISO/ANSI C, UNIX98
+.SH UWAGI
+Zachowanie \fBfputwc\fP zale¿y od ustawienia kategorii LC_CTYPE aktualnego
+locale.
+.PP
+W przypadku nieprzekazania dodatkowych informacji przy wywo³aniu
+fopen, rozs±dne jest oczekiwanie, ¿e \fBfputwc\fP faktycznie zapisze
+wielobajtowy ci±g odpowiadaj±cy szerokiemu znakowi \fIwc\fP.
+.SH "ZOBACZ TAK¯E"
+.BR fgetwc (3),
+.BR fputws (3),
+.BR unlocked_stdio (3)

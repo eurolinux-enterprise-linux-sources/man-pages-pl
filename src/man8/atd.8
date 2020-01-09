@@ -1,0 +1,78 @@
+.\" {PTM/WK/1999-XII}
+.Id $Id: atd.8,v 1.2 2001/02/06 17:16:05 wojtek2 Exp $
+.TH ATD 8 "marzec 1997" local "Podrêcznik Programisty Linuksa"
+.SH NAZWA
+atd \- uruchom zadania kolejkowane do pó¼niejszego wykonania
+.SH SK£ADNIA
+.B atd
+.RB [ -l
+.IR load_avg ]
+.RB [ -b
+.IR batch_interval ]
+.RB [ -d ]
+.RB [ -s ]
+.SH OPIS
+.B atd
+uruchamia zadania kolejkowane przez
+.BR at(1) .
+.PP
+.SH OPCJE
+.TP
+.B -l
+Okre¶la ograniczenie wska¼nika obci±¿enia (load factor), powy¿ej którego
+zadania wsadowe nie powinny byæ uruchamiane, zamiast wyboru wbudowanego
+wska¼nika 0.8.
+Dla systemów SMP z
+.I n
+CPU, zechcesz zapewne ustawiæ go wy¿ej ni¿
+.IR n-1.
+.TP
+.B -b
+Okre¶la minimalny odstêp w sekundach pomiêdzy startem dwu zadañ wsadowych
+(domy¶lnie 60).
+.TP
+.B -d
+Debug; wy¶wietla komunikaty o b³êdach na standardowe wyj¶cie b³êdów zamiast
+wykorzystywania
+.BR syslog(3) .
+.TP
+.B -s
+Przetwarza kolejkê at/batch tylko jednokrotnie. S³u¿y g³ównie do uzyskania
+zgodno¶ci ze starszymi wersjami
+.BR at ;
+.B "atd -s"
+jest równowa¿ne staremu poleceniu
+.BR atrun .
+Dla celów wstecznej zgodno¶ci jako
+.B /usr/sbin/atrun
+instalowany jest skrypt wywo³uj±cy
+.BR "atd -s" .
+.SH OSTRZE¯ENIE
+\fBatd\fP nie bêdzie dzia³±æ je¶li katalog do przechowywania wyników
+jest zamontowany poprzez NFS, nawet je¿eli ustawiono \fBno_root_squash\fP.
+.SH PLIKI
+.I /var/spool/atjobs
+Katalog przechowuj±cy zadania; powinien posiadaæ prawa dostêpu 700
+i w³a¶ciciela at.
+.PP
+.I /var/spool/atspool
+Katalog przechowuj±cy wyniki (wyj¶cie); powinien posiadaæ prawa dostêpu 700
+i w³a¶ciciela at.
+.PP
+.IR /etc/at.allow ,
+.IR /etc/at.deny
+okre¶laj±, kto mo¿e pos³ugiwaæ siê systemem
+.BR at .
+.SH ZOBACZ TAK¯E
+.BR at (1),
+.BR atrun (1),
+.BR cron (8),
+.BR crontab (1),
+.BR syslog (3),
+.BR at_deny (5),
+.BR at_allow(5).
+.SH B£ÊDY
+Funkcjonalno¶æ
+.B atd
+powinna byæ wcielona do
+.BR cron (8).

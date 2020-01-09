@@ -1,0 +1,154 @@
+.TH PSNUP 1 "PSUtils Wydanie 1 £ata 17"
+.SH NAZWA
+psnup \- wiele stron na arkusz
+.SH SK£ADNIA
+.B psnup
+[
+.B \-w\fIszeroko¶æ\fR
+] [
+.B \-h\fIwysoko¶æ\fR
+] [
+.B \-p\fIpapier\fR
+] [
+.B \-W\fIszeroko¶æ\fR
+] [
+.B \-H\fIwysoko¶æ\fR
+] [
+.B \-P\fIpapier\fR
+] [
+.B \-l
+] [
+.B \-r
+] [
+.B \-f
+] [
+.B \-c
+] [
+.B \-m\fImargines\fR
+] [
+.B \-b\fIramka\fR
+] [
+.B \-d\fIlszeroko¶æ\fR
+] [
+.B \-s\fIskala\fR
+] [
+.B \-\fInup\fR
+] [
+.B \-q
+] [
+.I plik_we
+[
+.I plik_wy
+] ]
+.SH OPIS
+.I Psnup
+wstawia wiele stron logicznych na jeden fizyczny arkusz papieru. Plik
+wej¶ciowy powinien byæ zgodny z konwencjami strukturyzacji dokumentu Adobe
+(DSC).
+.PP
+Opcja
+.I \-w
+podaje szeroko¶æ papieru, a
+.I \-h
+jego wysoko¶æ. S± one normalnie podawane w
+.B "cm"
+lub
+.B "in"
+(cale). Bez jednostki, u¿ywane s± punkty postscriptowe o rozmiarze 1/72
+cala.
+Opcja
+.I \-p
+s³u¿y jako alternatywny sposób ustawiania rozmiaru papieru na
+.B a3, a4, a5, b5, letter, legal, tabloid, statement, executive, folio, quarto
+lub
+.B 10x14.
+Domy¶lnym rozmiarem jest
+.B a4.
+.PP
+Opcje
+.I \-W, \-H,
+i
+.I \-P
+ustawiaj± rozmiar papieru wej¶ciowego. Jest to wymagane, je¶li ró¿ni siê on
+od rozmiaru wyj¶ciowego. U³atwia to narzucanie stron z jednego rozmiaru na
+drugi.
+.PP
+Opcja
+.I \-l
+s³u¿y do [generowania] stron, które s± w orientacji landscape (obróconych o 90
+stopni przeciwnie do ruchu wskazówek zegara). Opcja
+.I \-r
+s³u¿y do [generowania] stron, które s± w orientacji seascape (obróconych o 90
+stopni w kierunku ruchu wskazówek zegara). Opcja
+.I \-f
+s³u¿y do [generowania] stron, których wysoko¶æ i szeroko¶æ s± wymienione, lecz nie
+s± obrócone.
+.PP
+.I Psnup
+normalnie u¿ywa rozk³adu `row-major', gdzie przyleg³e strony s± umieszczane
+w wierszach na przestrzeni arkusza.
+Opcja
+.I \-c
+zmienia uporz±dkowanie na `column-major', gdzie kolejne strony s±
+umieszczane w kolumnach w dó³ aruksza.
+.PP
+Margines wokó³ ca³ej strony mo¿na ustawiæ opcj±
+.IR \-m .
+Jest to przydatne, gdy¿ marginesy normalnych stron s± redukowane przez
+wstawianie wielu stron na jeden arkusz.
+.PP
+Opcja 
+.I \-b
+jest u¿ywana do podawania dodatkowego marginesu wokó³ ka¿dej strony arkusza.
+.PP
+Opcja
+.I \-d
+rysuje wokó³ ramki ka¿dej strony liniê okre¶lonej grubo¶ci. Je¶li parametr
+\fIlszeroko¶æ\fR jest ominiêty, u¿ywana jest szeroko¶æ 1 punktu. Grubo¶æ
+linii jest liczona wzglêdem wymiarów oryginalnej strony, tj. mo¿e byæ
+skalowana wraz z reszt± strony.
+.PP
+Skala, wybrana przez
+.I psnup
+mo¿e byæ przeci±¿ona opcj±
+.IR \-s .
+Jest to przydatne do ³±czenia stron, które ju¿ s± zredukowane.
+.PP
+Opcja
+.I \-\fInup\fR
+wybiera liczbê stron logicznych, któr± wstawiæ na ka¿dy arkusz papieru. Mo¿e
+to byæ dowolna liczba ca³kowita;
+.I psnup
+próbuje optymalizowaæ rozk³ad tak, aby zmarnowaæ jak najmniej miejsca. Je¶li
+.I psnup
+nie mo¿e znale¼æ rozk³adu w zakresie limitu tolerancji, przerwie dzia³anie z
+komunikatem o b³êdzie. Mo¿na u¿yæ alternatywnej postaci
+.I \i \fInup\fR,
+która jest wprowadzona dla kompatybilno¶ci z innymi programami n-up.
+.PP
+.I Psnup
+normalnie drukuje numery przearan¿owanych stron; opcja
+.I \-q
+powstrzymuje to.
+.SH PRZYK£ADY
+U¿ycie tego narzêdzia jest ró¿norodne, lecz jednym z nich jest po³±czenie z 
+.I psbook(1).
+Na przyk³ad, je¶li u¿ywasz groff do tworzenia dokumentu PS, a lpr jako
+mened¿era wydruku, to linia poleceñ mo¿e wygl±daæ tak:
+.sp
+groff -Tps -ms \fIplik\fP | psbook | psnup -2 | lpr
+.sp
+Gdzie plik jest 4-stronicowym dokumentem. Wynikiem polecenia bêdzie
+dwustronicowy dokument, drukuj±cy dwie strony \fIpliku\fP na stronê i
+rearan¿uj±cy kolejno¶æ stron aby odpowiada³a stronom 4 i 1 wej¶cia na
+pierwszej stronie wyj¶cia i stronom 2 i 3 wej¶cia na drugiej stronie wyj¶cia.
+.SH AUTOR
+Copyright (C) Angus J. C. Duggan 1991-1995
+.SH "ZOBACZ TAK¯E"
+psbook(1), psselect(1), pstops(1), epsffit(1), psnup(1), psresize(1), psmerge(1), fixscribeps(1), getafm(1), fixdlsrps(1), fixfmps(1), fixmacps(1), fixpsditps(1), fixpspps(1), fixtpps(1), fixwfwps(1), fixwpps(1), fixwwps(1), extractres(1), includeres(1)
+.SH ZNAKI TOWAROWE
+.B PostScript
+jest znakiem towarowym Adobe Systems Incorporated.
+.SH B£ÊDY
+.I Psnup
+nie przyjmuje wszystkich komentarzy DSC.

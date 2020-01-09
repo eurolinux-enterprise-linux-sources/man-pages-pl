@@ -1,0 +1,771 @@
+/*     _    _____   _   _ 
+ *   / _ \ \_   _/ |  \|  \
+ *  / ___/   | |   | |\_|\ \
+ * <_/       |_|   |_|    \_>
+ *
+ * PTM FAQ v1.0.6
+ * 1999-2000 Przemek Borys
+ * Napisane w oparciu o pierwotne FAQ Paw³a Olszewskiego
+ * Opis otrzymywania konta w CVS: Tomasz K³oczko
+ * Druga wersja polonizowania systemu: Filipa Ozimek
+ * Sprawy Debianowe: Piotr Roszatycki
+ * Skrypt add2ptm, sprawa .so, identyfikacja ¼róde³,
+ * Jak t³umaczyæ Info: Wojtek Kotwica
+ * Ispell, skrypty i zmienne ¶rodowiskowe: Pawe³ Wilk
+ *
+ * Spis tre¶ci:
+ * 1.    Co to jest PTM?
+ * 2.    Jak zainstalowaæ pakiet PTM u siebie? (por. te¿ p. 18)
+ * 3.    Chcê przy³±czyæ siê do projektu! Co zrobiæ?
+ * 4.    O co chodzi w jêzyku makr, w którym s± pisane manuale!?
+ * 5.    Przyjête konwencje t³umaczenia nazw sekcji.
+ * 6.    Apropos mi nie dzia³a po polsku. Co zrobiæ?!
+ * 7.    Jak wydrukowaæ polskie manuale w postscripcie?
+ * 8.    Jak zrealizowaæ pomys³, by nie ¶ci±gaæ przy ka¿dej zmianie ca³ej
+ *       paczki manuali, a tylko manuale, które siê zmieni³y?
+ * 9.    Jak zainstalowaæ pakiet PTM na systemie Debiana?
+ * 10.   S³ownik
+ * 11.   Od¶wie¿anie zawarto¶ci manuali
+ * 12.   Skrypty i zmienne ¶rodowiskowe
+ * 12.1  add2ptm
+ * 12.2  heniu
+ * 13.   Po co jest plik ispell.sprawdzane?
+ * 14.   Apropos/whatis pokazuj±, ¿e jest t³umaczenie, a mimo to zamiast
+ *       niektórych polskich wy¶wietlane s± angielskie strony manuala. 
+ *       Co zrobiæ?
+ * 15.   Dla t³umaczy: Linux czy Linuks
+ * 16.   Dla t³umaczy: spolszczanie nazwy X Window System
+ * 17.   Identyfikacja ¼róde³
+ * 18.   Instalowanie dokumentacji info
+ * 19.   Dla t³umaczy: na co uwa¿aæ w plikach Texinfo
+ * 20.   Kwestie prawne: czy pytaæ autorów podrêczników o zgodê na t³umaczenie?
+ * Dodatek I: Literatura
+ *
+ */
+
+/*
+ * 1. Co to jest PTM?
+ */
+
+	Od jakiego¶ czasu daje siê zauwa¿yæ na ¶wiecie ³adn± tendencjê do
+lokalizowania (w tym t³umaczenia) wszelkich pakietów. Do pakietów takich
+nale¿± równie¿ strony podrêcznika systemowego man -- potocznie "manuale".
+	PTM ma na celu t³umaczenie tych stron na jêzyk polski. Dos³ownie,
+PTM oznacza Projekt T³umaczenia Manuali. Koordynujê go ja, czyli Przemek
+Borys <pborys@dione.ids.pl>
+	Projekt powsta³ w okolicach wrze¶nia 1998 roku, najstarsze
+t³umaczenie, jakie uda³o mi siê znale¼æ w bazie to 11 wrzesieñ 1998.
+	Podobne projekty istniej± na ca³ym ¶wiecie; wystarczy choæby
+przyjrzeæ siê trochê anonsom na comp.os.linux.announce. Nawiasem mówi±c,
+nasz wydaje siê byæ na razie jednym z wiêkszych :)
+	Pocz±tkowo PTM mia³o na celu przet³umaczyæ standardowy zestaw
+manuali z pakietu man pages. Jednak szybko okaza³o siê, ¿e to za ma³o. Wiele
+z niemal we wszystkich systemach obecnych programów dostarcza swoje strony
+man poza tym systemem. Dlatego w tej chwili nasze prace obejmuj± w³a¶ciwie
+wszystko, czego przet³umaczenie mo¿e byæ u¿yteczne. Dodatkowo, poczynaj±c od
+lipca roku 2000, PTM z inicjatywy Wojtka Kotwicy zaczyna równie¿ prace nad
+polonizowaniem dokumentacji info (dotyczy to przede wszystkim przypadków,
+gdzie jest ona na dzi¶ dzieñ autorytatywnym ¼ród³em informacji).
+	Obecnie oficjaln± stron± projektu jest
+
+	http://ptm.linux.pl
+
+/*
+ * 2. Jak zainstalowaæ pakiet PTM u siebie?
+ */
+
+Trzeba wykonaæ kilka kroków. Oto one:
+
+a) Rozpakowaæ pakiet do katalogu z manualami, np. /usr/local/man.
+   [Przemys³aw Sztoch]
+   man'y standardowo w RH sa w /usr/man, a nie jak napisaliscie w FAQ
+   /usr/local/man.
+   [koniec komentarza]
+   Tak naprawdê jest to kwestia konfiguracji programu `man'. (ad PB)
+b) Ustawiæ zmienn± ¶rodowiskow± $LANG na warto¶æ pl_PL. W bash robi to
+   komenda
+
+   export LANG=pl_PL
+
+c) Skonfigurowaæ program `man' tak, aby wy¶wietla³ polskie znaki -- w tym
+   celu trzeba wyedytowaæ /etc/man.config i zamieniæ tam wywo³ania groffa
+   z parametrem -Tascii na -Tlatin1. (W innych dystrybucjach, np. Slackware 7
+   mo¿e to byæ w pliku /usr/lib/man/conf.)
+d) Je¶li chcesz, by wyrazy by³y przenoszone z jednej linii na drug± w
+   polskiej konwencji ³amania, skopiuj z /usr/lib/texmf/tex/generic/hyphen/
+   plik pohyph.tex do pliku /usr/lib/groff/tmac/hyphen.pl. Nastêpnie
+   w /usr/lib/groff/tmac/troffrc ustaw makra
+  .\" Set the hyphenation language to PL'.
+  .do hla pl
+  .\" Load hyphenation patterns from yphen.pl' (in the tmac directory).
+  .do hpf hyphen.pl
+e) Nale¿y te¿, o ile tego jeszcze nie masz ustawionego, zadbaæ o to, by sam
+   manual-pager obs³ugiwa³ polskie znaki. Np. dla `less' trzeba ustawiæ
+   zmienn± ¶rodowiskow± LESSCHARSET=latin1.
+   Znacznie ³adniejszym wy¶ciem jest jednak zmiana manual-pagera na na
+   przyk³ad pinfo :) (autoreklama -- http://zeus.polsl.gliwice.pl/~pborys/)
+f) Pamiêtaj o odpowiednich prawach zapisu/odczytu katalogu z manualami, oraz
+   samych manuali (odczytaæ je powinien móc ka¿dy).
+
+/*
+ * 2.1 Uzupe³niaj±cy sposób -- opisany przez Filipa Ozimka
+ */
+
+(a) mo¿na na "sztywno" ustawiaæ (np. w /etc/profile) zmienn± MANPATH na
+    "/usr/local/man/pl_PL:$MANPATH"
+(b) albo dokonaæ drobnych modyfikacji w /etc/manpath.config, tj. zast±piæ
+    linie bardzo podobne to tych, nastêpuj±cymi:
+
+    MANPATH_MAP     /bin                    /usr/local/man/pl_PL/
+    MANPATH_MAP     /usr/bin                /usr/local/man/pl_PL/
+    MANPATH_MAP     /sbin                   /usr/local/man/pl_PL/
+    MANPATH_MAP     /usr/sbin               /usr/local/man/pl_PL/
+    MANPATH_MAP     /usr/local/bin          /usr/local/man/pl_PL/
+    MANPATH_MAP     /usr/local/sbin         /usr/local/man/pl_PL/
+    MANPATH_MAP     /usr/X11R6/bin          /usr/local/man/pl_PL/
+    MANPATH_MAP     /usr/bin/X11            /usr/local/man/pl_PL/
+    MANPATH_MAP     /usr/games              /usr/local/man/pl_PL/
+    MANPATH_MAP     /opt/bin                /usr/local/man/pl_PL/
+    MANPATH_MAP     /opt/sbin               /usr/local/man/pl_PL/
+
+    oraz dodaæ
+
+    MANDATORY_MANPATH                       /usr/local/man/pl_PL
+
+    oraz
+
+    MANDB_MAP       /usr/local/man/pl_PL/   /var/catman/pl_PL
+
+    Ten manewr skutecznie u mnie dzia³a, tzn. "przes³ania" angielskie strony
+    polskimi oraz w razie braku polskiej wy¶wietla angielsk±.
+
+/*
+ * 2.2 Uzupe³niaj±cy sposób bazuj±cy na CVSie -- opisany przez Jaros³awa
+ *     Kampera
+ */
+
+Opisana metoda pozwala nie tylko zainstalowaæ najnowsze t³umaczenia manuali,
+ale równie¿ pó¼niejsze od¶wie¿ania ju¿ istniej±cej bazy poprzez pobieranie 
+tylko naniesionych poprawek. Do korzystania z CVS niezbêdne jest zainstalowanie 
+pakietu cvs dostêpnego w ka¿dej dystrybucji (chyba) lub ze strony domowej 
+http://www.cyclic.com/. Sposób u¿ywania CVS opisany jest w pkt 3 tego FAQ.
+Po pobraniu zawarto¶ci z repozytorium pl_PL nale¿y dodaæ do zmiennej $MANPATH 
+(znajduj±cej siê np. w /etc/profile) ci±g $HOME/CVS/pl_PL (zak³adaj±c, ¿e 
+w³a¶nie tam sk³adujemy manuale z repozytorium), najlepiej na pocz±tku zmiennej 
+$MANPATH, wpisuj±c pe³n± (dostêpn±) ¶cie¿kê katalogu 
+(np. u mnie /home/jack/CVS/pl_PL) oddzielaj±c nowy wpis ":" na koñcu od 
+pozosta³ych argumentów zmiennej.
+
+UWAGA: aby wprowadzona nowa warto¶æ zmiennej $MANPATH "zadzia³a³a" nale¿y siê 
+wylogowaæ i zalogowaæ ponownie.
+
+/*
+ * 3. Chcê przy³±czyæ siê do projektu! Co zrobiæ?
+ */
+
+	Przede wszystkim zastanów siê, co chcesz t³umaczyæ. Je¶li jest ci
+to obojêtne -- w porz±dku. Nastêpnie zg³o¶ chêæ dzia³ania koordynatorowi
+projektu (czyli mnie) -- na adres `Przemek Borys <pborys@dione.ids.pl>'.
+Je¶li masz preferencje co do t³umaczenia, dobrze je zg³osiæ, lecz wpierw
+spróbuj sprawdziæ, czy rzeczy, którymi chcesz siê zaj±æ nie s± ju¿ 
+(prze)t³umaczone (sprawd¼ na stronach www projektu). Nastêpnie przydzielê
+ci teksty do t³umaczenia i zaznaczê w bazie, ¿e siê nimi zajmujesz.
+
+	Ostatnio wrzuci³em bazê z t³umaczami do CVS (patrz ni¿ej). Mo¿na siê
+wiêc ju¿ do  niej zapisywaæ bezpo¶rednio, bez konsultacji ze mn±. Plik z baz±
+t³umaczy to `zasoby/robotnicy', w którym umieszczane s± pliki, nad którymi 
+dana osoba pracuje. Je¶li t³umaczysz manuale, umieszczasz nazwê manuala.
+Je¶li info, umieszczasz nazwê plik.texi. Mimo tego odhumanizowania mechanizmu
+zapisów, postaraj siê jednak poinformowaæ mnie co robiæ -- s± sytuacje, kiedy
+jako koordynator muszê mieæ rozeznanie, co gdzie siê dzieje.
+
+	W tym momencie dobrze jest siê zapisaæ na listê dyskusyjn± ptm,
+wysy³aj±c do majordomo@amg.net.pl list o tre¶ci
+subscribe ptm
+Wypisaæ siê z niej mo¿na wysy³aj±c temu samemu robotowi polecenie
+unsubscribe ptm
+Na li¶cie mo¿esz liczyæ na pomoc w t³umaczeniach i w innych zwi±zanych z
+prac± sprawach.
+	Po przet³umaczeniu tekstu, s± dwie drogi do jego za³±czenia do
+dystrybucji projektu:
+a) Za³atwiæ sobie konto CVS na cvs.pld.org.pl. CVS to mechanizm `Concurent
+Versions System', daj±cy w sieci swego rodzaju katalog (taki jak normalne
+katalogi na twoim dysku), do którego maj± dostêp wszyscy pracuj±cy nad
+projektem. Katalog ten daje mo¿liwo¶æ synchronizacji z twoj± lokaln± kopi±
+tych danych i umo¿liwia ich aktualizacjê oraz wprowadzanie zmian, które
+pochodz± od ciebie. CVS posiada oczywi¶cie jeszcze inne mo¿liwo¶ci, ale te
+wydaj± siê najistotniejsze.
+
+   "¯eby uzyskaæ dostêp RW trzeba wys³aæ na pld-cvs@pld.org.pl:
+   - e-adres kontaktowy,
+   - imiê i nazwisko
+   - to co zwróci:
+
+   $ echo -n "<login>:"; perl -e 'print crypt "<password>", "<salt>"; print "\n";'
+
+   <salt> to dwie dowolne literki. 
+   <login> i <password> to chyba nie musze t³umaczyæ .. :)"
+
+   Po uzyskaniu dostêpu RW do cvs, nale¿y wyeksportowaæ sobie do ¶rodowiska
+   zmienn± CVSROOT=":pserver:login@cvs.pld.org.pl:/cvsroot".
+   Wtedy mo¿na ju¿ korzystaæ z CVS -- przejd¼ do katalogu, w którym
+   chcia³by¶ przechowywaæ lokaln± kopiê CVS (np. ~/CVS) i wydaj komendê
+
+   cvs login
+
+   Wtedy siê zalogujesz. Nastêpnie wydaj komendê
+ 
+   cvs co pl_PL
+
+   Sprawdzi (CheckOut) ona, czy w repozytorium nie ma czego¶ nowego -- a 
+   je¶li bêdzie, to ¶ci±gnie te zmiany na twój dysk. Nastêpnie robisz co¶ 
+   takiego
+
+   cd ~/CVS/pl_PL/man[1-9]
+   cp /sciezka/gdzie/masz/przet³umaczony_manual .
+   cvs add przet³umaczony_manual
+   cd ~/CVS
+
+   W ten sposób dodaje siê pliki do repozytorium. Nastêpnie trzeba je
+   przes³aæ (commit) na serwer CVS
+
+   cvs ci pl_PL
+
+   I gotowe. Bêdziesz musia³ jeszcze tylko wype³niæ opis, co wysy³asz.
+
+b) Mniej zalecany sposób, ale je¶li nie jeste¶ w stanie u¿ywaæ CVS, to
+   podrzuæ mi przet³umaczonego manuala jako za³±cznik w poczcie.
+
+/*
+ * 4. O co chodzi w jêzyku makr, w którym s± pisane manuale!?
+ */
+
+	Manuale s± pisane z wykorzystaniem makr groffa. Najwa¿niejsze rzeczy,
+jakie o nich powinien wiedzieæ cz³onek PTM, to fakt, ¿e makra te maj±
+nastêpuj±c± postaæ:
+
+.X linijka tekstu
+
+lub
+
+\fX tekst 
+
+gdzie X okre¶la zmianê fontu (np. `B' w³±cza bold, `I' w³±cza kursywê, `R'
+w³±cza standardowy font Roman -- dlatego np. czêsto mo¿na spotkaæ "wciêcia"
+w tek¶cie, maj±ce postaæ "teraz sobie co¶ napiszemy \fBboldem\fR, a teraz
+\fIkursyw±\fR". Ten tekst mo¿na napisaæ inaczej, np.
+
+teraz sobie co¶ napiszemy
+.B boldem,
+a teraz
+.I kursyw±.
+
+W tym drugim wypadku bêdziemy jednak mieli ten problem, ¿e zarówno
+przecinek, jak i kropka nie bêd± napisane fontem Roman. Aby to wyeliminowaæ,
+stosuje siê inny wariant tej metody, przyk³ad:
+
+teraz sobie co¶ napiszemy
+.BR boldem ,
+a teraz
+.IR kursyw± .
+
+Gdy u¿ywa siê komendy ".XY", to znaczy ¿e pierwsze s³owo (lub tekst ujêty w
+cudzys³ów) po makrze nale¿y wypisaæ fontem "X", a drugi fontem "Y".
+Je¶li wystêpuje wiêcej s³ów, to wyst±pi naprzemienne u¿ycie fontów:
+
+.RI ( opcje )
+
+lewy nawias zwyk³ym fontem, s³owo 'opcje' kursyw±, prawy nawias ponownie
+zwyk³ym fontem.
+
+Makra typu ".X" dzia³aj± na tylko pocz±tku wiersza, makra "\fX" w dowolnym
+miejscu tekstu.
+
+Komentarze obejmuj±ce pojedynczy wiersz wprowadza siê sekwencj± 
+
+.\" Komentarz
+
+	Istniej± te¿ inne, zwykle kilkuznakowe makra formatuj±ce.
+	Wiêksze partie tekstu (np.kilka wierszy) najpro¶ciej komentowaæ
+przy u¿yciu makra ".ig" koniec komentarza wyznaczany jest wówczas makrem ".."
+
+.ig 
+komentarz z wielu wierszy; powinny byæ pominiête,
+np. dlatego, ¿e odnosz± siê do poprzedniej wersji opisywanego programu
+..
+
+	Dodatkowo, manuale zwykle dzieli siê na sekcje. Do wprowadzenia
+tekstu "nag³ówkowego", informuj±cego o sekcji, stosuje siê makro
+
+.SH SEKCJA
+
+	Poza tym, czêsto zdarza siê, ¿e w manualach wystêpuj± np. listy
+(makra ".TP", i inne symbole) -- ale t³umacz w³a¶ciwie nie musi ju¿ wiedzieæ
+co one oznaczaj± -- wystarczy zostawiæ je w spokoju. Dla dociekliwych
+pozostaje zawsze dostêpna dokumentacja groffa i ewentualnie man-howto lub
+`man 7 man', `man 7 me' (nawiasem mówi±c przet³umaczone w ramach PTM :).
+
+/*
+ * 5. Przyjête konwencje t³umaczenia nazw sekcji.
+ */
+
+	Wiêkszo¶æ manuali dzieli siê na sekcje. W jêzyku angielskim ich
+nazewnictwo jest jednolite; celowe jest zatem uczynienie tego samego dla
+jêzyka polskiego. Przyjêli¶my nastêpuj±ce t³umaczenia:
+
+NAME		NAZWA
+SYNOPSIS	SK£ADNIA (ewentualnie STRESZCZENIE, co jest dos³ownym
+			 t³umaczeniem, lecz nie zawsze  oddaje istotê
+                         rzeczy)
+DESCRIPTION     OPIS
+FILES           PLIKI
+SEE ALSO        ZOBACZ TAK¯E
+AUTHOR          AUTOR
+COPYING         KOPIOWANIE
+ERRORS          B£ÊDY
+BUGS            B£ÊDY (ewentualnie gdy k³óci siê z ERRORS -- USTERKI)
+ENVIRONMENT     ¦RODOWISKO
+EXAMPLES        PRZYK£ADY
+RUNLEVELS	POZIOMY PRACY
+BOOTFLAGS	FLAGI STARTOWE (ew. USTAWIENIA POCZ¡TKOWE)
+CONFORMING TO	ZGODNE Z
+CAVEATS		ZASTRZE¯ENIA/PRZESTROGI (ma to jakby znaczenie umywania 
+		r±k, ostrze¿enia, itp.)
+USAGE		U¯YTKOWANIE
+RETURN VALUE	WARTO¦Æ ZWRACANA
+
+/*
+ * 6. Apropos mi nie dzia³a po polsku! Co zrobiæ?
+ */
+
+Apropos do dzia³ania potrzebuje wpisu whatis w korzeniu katalogu z
+manualami. Wraz z dystrybucj± powiniene¶ dostaæ wpis whatis. Je¶li jednak go
+nie bêdzie lub bêdzie nieaktualny, uruchom skrypt makewhatis, dostarczany z
+dystrybucj±.
+
+/*
+ * 7. Jak wydrukowaæ polskie manuale w postscripcie?
+ */
+
+[Pisze Jarek Woloszyn]
+Ja sobie z ogonkify jaki¶ czas temu nie poradzi³em. Mo¿e jakie¶ nowe
+ogonkify zadzia³a.
+
+Problem pomóg³ mi rozwi±zaæ Staszek Ciszewski. Stworzy³ on po prostu
+dodatkowe urz±dzenie, które obs³uguje fonty latin2.
+Trzeba po³ataæ groffa (ver 1-11).
+[koniec]
+
+Niezbêdna ³ata jest dostêpna pod adresem http://ptm.linux.pl.
+
+Alternatyw± do drukowania manuali w postscripcie jest drukowanie ich z
+formatu ASCII (man problem | colcrt > plik.do.wydruku). Traci siê jednak
+pewne elementy sk³adu, jak np. pogrubienia, podkre¶lenia, itp.
+Pogrubienia w wielu wypadkach mo¿na zachowaæ, drukuj±c plik bez
+filtrowania nadstukiwañ przez colcrt (man problem > plik.do.wydruku).
+
+/*
+ * 8. Jak zrealizowaæ pomys³, by nie ¶ci±gaæ przy ka¿dej zmianie ca³ej
+ *    paczki manuali, a tylko manuale, które siê zmieni³y?
+ */
+
+Skorzystaj z CVS. Sposób u¿ywania CVS jest podany w punkcie (3.) tego FAQ.
+Jedyna ró¿nica, to to, ¿e jako u¿ytkownik anonimowy, nie korzystasz ze
+swojego w³asnego konta, ale z konta `anonymous' lub `cvs'. Zamiast has³a
+pisze siê `cvs'. Ponadto, trochê modyfikuje siê adres serwera CVS.
+
+Przyk³adowy skrypt, który za³atwi ¶ci±ganie przy za³o¿eniu, ¿e masz
+zainstalowanego klienta CVS:
+
+--- cut ---
+#!/bin/sh
+cvs -d :pserver:cvs@anoncvs.pld.org.pl:/cvsroot login
+cvs -z 9 -d :pserver:cvs@anoncvs.pld.org.pl:/cvsroot co pl_PL
+cvs -d :pserver:cvs@anoncvs.pld.org.pl:/cvsroot logout
+--- cut ---
+
+/*
+ * 9. Jak zainstalowaæ pakiet PTM na systemie Debiana?
+ */
+ 
+Najprostsza odpowied¼ brzmi - zainstalowaæ pakiety manpages-pl_*.deb oraz
+manpages-pl-dev_*.deb. Znale¼æ je mo¿na na ka¿dym serwerze z archiwum Debiana
+w podkatalogu pool/main/m/manpages-pl/ .
+
+Komfortow± sytuacjê mamy, gdy dzia³a system obs³ugi pakietów APT.
+Wystarczy wywo³aæ polecenia
+
+apt-get install manpages-pl
+apt-get install manpages-pl-dev
+
+i odpowiedni pakiet ¶ci±gnie siê z sieci i zainstaluje w systemie. Pó¼niejsza
+aktualizacja ogranicza siê do wydania poleceñ
+
+apt-get update
+apt-get upgrade
+
+A co zrobiæ, je¶li nie chcemy ¶ci±gaæ za ka¿dym razem ca³ych pakietów? 
+Najpro¶ciej jest wykorzystaæ pomys³ z CVS podany w punkcie 8 tego FAQ.
+
+Do zbudowania pakietu potrzeba nam nastêpuj±cych pakietów zainstalowanych 
+w systemie: dpkg-dev, debhelper, fakeroot.
+
+Po ¶ci±gniêciu najnowszych plików z serwera CVS nale¿y wej¶æ do katalogu
+pl_PL i wykonaæ polecenie
+
+fakeroot debian/rules binary
+
+Gotowe pakiety znajd± siê w katalogu wy¿ej, pod odpowiednimi nazwami.
+Wystarczy je ju¿ zainstalowaæ jako root:
+
+dpkg -i *.deb
+
+/*
+ * 10. S³ownik
+ */
+
+W archiwum PTM znajduje siê s³ownik, który ma w za³o¿eniach
+
+a) pomagaæ t³umaczom w t³umaczeniu trudnych wyra¿eñ
+b) ujednolicaæ s³ownictwo t³umaczeñ
+
+Szczegó³y implementacji s³ownika s± opisane w samym s³owniku.
+
+/*
+ * 11. Od¶wie¿anie zawarto¶ci manuali
+ */
+
+Manuale z czasem mog± siê trochê dezaktualizowaæ. Dlatego trzeba je
+od¶wie¿aæ. Dobrze jest w tym celu trzymaæ oryginaln± angielsk± wersjê
+manuala, a w wypadku gdy dostaniemy now±, wykonaæ
+
+diff -c stara.wersja.angielska nowa.wersja.angielska
+
+i nanie¶æ poprawki do t³umaczenia. Teoretycznie ró¿nica kontekstowa 
+(diff -c) powinna byæ na tyle czytelna, ¿e nie powinno byæ problemów.
+
+W tym momencie dodam jeszcze, ¿e warto w t³umaczeniach wstawiaæ wersjê
+programu, który siê t³umaczy. U³atwia to pó¼niej aktualizacjê.
+
+/*
+ * 12. Skrypty i zmienne ¶rodowiskowe
+ */
+
+Dawno, dawno temu, gdy repozytoria przypomina³y Pola Elizejskie i gdy
+¶nieg by³ jeszcze bia³y a powietrze czyste... wtedy by³ porz±dek w
+module pl_PL. Lecz kilka miesiêcy potem developerzy chytrzy zaczêli 
+mieszaæ, kombinowaæ i reorganizowaæ! I nie by³o to niczym z³ym, 
+lecz wychowani w coraz brudniejszym ¶wiecie chaosu nie¶wiadomie czynili 
+porutê wewn±trz owych zasobów. Wtedy to, w³a¶ciwego czasu i na w³a¶ciwej 
+dyskusyjnej li¶cie zst±pi³ z niebios koordynator nasz wszechmog±cy i 
+zarz±dzi³ Nowy £ad! I ³aska zst±pi³a na dyrektoria i na pliki nasze. 
+Tak, ¿e pos³a³ swego s³ugê Siefcê by za dan± przez Archanio³a Wysokiej
+Jako¶ci (ang. HQ) zgod± uczyi³ odpowiedni± strukturê pod³ug danego mu 
+zamys³u. A wiêc wzi±³ zasoby w swoje skodowane rêce i zacz±³ je 
+dostosowywaæ do planu Pana - dzieñ pierwszy i ostatni zarazem.
+
+Skrypty i pliki ulokowane zosta³y w dodatkowym katalogu 'zasoby' 
+wewn±trz modu³u, o którym mowa by³a na pocz±tku tej przypowie¶ci. 
+Od tego te¿ czasu wszystkie skrypty wspomagaj±ce i raportuj±ce przyjê³y 
+nastêpuj±cy standard w postaci zmiennych ¶rodowiskowych, które 
+translatorzy dobroduszni powinni wyeksportowaæ w swej sesji na chwa³ê 
+projektu i na zgodê z ich upodobaniem:
+
+PTM_EMAIL       - zawieraj±c± twój adres e-mail, który jest (bêdzie)
+                  u¿yty do identyfikacji w pliku robotnicy
+PTM_NAME        - zawieraj±c± twoje imiê i nazwisko
+PTM_PL_DIR      - zawieraj±c± po³o¿enie katalogu pl_PL
+PTM_DICT_DIR    - zawieraj±c± po³o¿enie katalogu pl_DICT 
+                  (je¶li u¿ywasz i sprawdzasz podrêczniki)
+
+PRZYK£AD do umieszczenia w .bash_profile :
+
+-------------------------------------------------
+
+PTM_EMAIL="jankow@gdziestam.pl"
+PTM_NAME="Jan Kowalski"
+PTM_PL_DIR="~/cvs/pl_PL"
+PTM_DICT_DIR="~/cvs/pl_DICT"
+
+export PTM_EMAIL PTM_NAME PTM_PL_DIR PTM_DICT_DIR
+
+--------------------------------------------------
+
+Zmienne owe u¿yteczne siê staj±, gdy z innej ni¿ oryginalna
+lokacji skrypty wo³aæ raczysz.
+
+ * 12.1 Skrypt add2ptm
+
+W archiwum PTM znajduje siê skrypt maj±cy za zadanie nieco u³atwiaæ
+t³umaczom zadanie rezerwowania plików do t³umaczenia. Rezerwowane manuale
+wpisywane s± do pliku 'robotnicy' po identyfikatorze t³umacza. 
+Oczywi¶cie, zapisy te pozostaj± równie¿ po wykonaniu pracy.
+Skrypt jest stosunkowo prosty, ale
+a) nie umo¿liwia rezerwacji plików osobom, których nie ma jeszcze na
+   li¶cie t³umaczy :(,
+b) nale¿y pamiêtaæ, by nie dostosowywaæ do swoich danych egzemplarza
+   w lokalnym katalogu CVS. Zosta³ on umieszczony w repozytorium tylko
+   dla wygody dystrybucji. Powinno siê korzystaæ z odpowiednio zmienionej
+   kopii umieszczonej w prywatnym katalogu, poza struktur± synchronizowanego
+   repozytorium CVS.
+[sekcjê do³±czono ze wzglêdu na zdarzaj±ce siê nieporozumienia - HQ]
+
+ * 12.2 Skrypt heniu
+ 
+Heniu to prosty, nieinteraktywny skrypt raportuj±cy, którego zadaniem jest
+wspomagaæ t³umaczy znajduj±c logiczne wiêzi miêdzy pakietami a stronami
+podrêczników, które do nich nale¿±. Informacje o tym jakie podrêczniki 
+nale¿± do konkretnych pakietów heniu pobiera z plików po³o¿onych w
+pl_PL/zasoby/pakiety. Korzysta tak¿e z pliku pl_PL/zasoby/ispell.sprawdzane
+aby dowiedzieæ siê wiêcej o stanie podrêcznika. Oto opcje z jakimi mo¿esz
+go zawo³aæ:
+
+heniu -g	poda ci wszystkie gotowe pakiety
+heniu -n	powie ci jakie pakiety s± niedokoñczone
+heniu -q nazwa	wy¶wietli informacje o stanie pakietu o podanej nazwie
+heniu -m nazwa	wy¶wietli informacje o stanie podanego podrêcznika
+heniu		wy¶wietli informacje o stanie wszystkich pakietów
+
+Przyk³ad zapytania o pakiet rlinetd:
+
+> [koder@szarik koder]$ heniu -q rlinetd
+> Heniu v.0.04 (GPL) by P.Wilk <siewca@dione.ids.pl>
+> 
+> Raport stanu pakietu.
+> --------------------------------------------------
+> PAKIET: rlinetd
+> 
+> Do przet³umaczenia:
+> rlinetd.conf.5 (istnieje lokalnie)
+> 
+> Do sprawdzenia:         (nic)
+
+Zauwa¿my zapis 'istnieje lokalnie'. Je¶li takie co¶ pojawi siê u ciebie
+to znaczy, ¿e dany podrêcznik nie zosta³ przes³any na serwer CVS i
+traktujemy go jako nieprzet³umaczony.
+
+Przyk³ad zapytania o rlinetd.conf.5:
+
+> [koder@szarik koder]$ heniu -m rlinetd.conf.5
+> Heniu v.0.04 (GPL) by P.Wilk <siewca@dione.ids.pl>
+> 
+> Raport stopnia gotowo¶ci podrêcznika.
+> --------------------------------------------------
+> PODRÊCZNIK: rlinetd.conf.5
+> 
+> W pakiecie:     rlinetd
+> Przet³umaczony: ??? (istnieje tylko lokalnie).
+> Sprawdzony:     NIE
+
+
+/*
+ * 13. Po co jest plik ispell.sprawdzane?
+ */
+
+¯eby manuale by³y poprawne ortograficznie powsta³o repozytorium o nazwie
+pl_DICT. Znajduj± siê w nim s³owniki do programu Ispell, odpowiednie narzêdzia,
+a tak¿e skrypcik 'manspell', który po ustawieniu paru zmiennych bêdzie odwala³
+ca³± brudn± robotê za Ciebie. Wymaganiem jest posiadanie w miarê nowego
+(wersja 3.1.18 3.1.20) Ispella. W³a¶nie jednym z zadañ manspella jest 
+umieszczanie odpowiednich adnotacji w tym pliku. More info: pl_DICT/FAQ .
+To by³a reklama. :-) [siefca]
+
+/*
+ * 14. Apropos/whatis pokazuj±, ¿e jest t³umaczenie, a mimo to zamiast
+ *     niektórych polskich wy¶wietlane s± angielskie strony manuala. Co zrobiæ?
+*/
+
+Przyk³ad dla 'zless': upewnij siê jak wyszukiwana jest w³a¶ciwa wersja manuala
+
+man -w zless
+
+Wyst±pienie w odpowiedzi dwu wierszy, z których pierwszy wskazuje na polsk±
+wersjê (i opisuje b³±d), za¶ drugi na oryginaln±, objawia problem czytnika
+stron man. Wystêpuje on np. w dystrybucji SuSE i spowodowany jest ograniczon±
+interpretacj± makra .so. Wykonuje ono wy¶wietlenie innej strony manuala zamiast
+wskazanej.
+Mo¿liwe rozwi±zania:
+a) (zalecane) zmieñ pakiet man na lepszy,
+b) nie przejmuj siê. Na podstawie whatis/apropos, 'man -w' lub nag³ówka
+   wy¶wietlanego orygina³u wywo³aj sam w³a¶ciw± stronê (np. dla zless jest to
+   zmore),
+c) znajd¼ plik ¼ród³owy sprawiaj±cy k³opoty (/usr/man/pl_PL/man1/zless.1)
+   i zmieñ zawarto¶æ typu
+      .so zmore.1
+   dopisuj±c odpowiedni podkatalog:
+      .so man1/zmore.1
+   Zauwa¿, ¿e jest to bardzo k³opotliwe. Plików man tego rodzaju jest wiêcej,
+   bêdziesz zapewne okresowo aktualizowa³ pakiet PTM, a ponadto ¿±danie .so
+   z podanym podkatalogiem nie jest poprawnie obs³ugiwane przez popularnego
+   Midnight Commandera.
+
+/*
+ * 15. Dla t³umaczy: Linux czy Linuks
+ */
+
+Do ok. 1998 sprawa by³a jasna, wszyscy pisali `Linux'. Nastêpnie, po latach
+spokoju na grupie pl.comp.os.linux zaczê³a siê na ten temat burza.
+
+Wed³ug polskich regu³ odmiany, Linux we wszystkich odmienionych formach
+powinien byæ pisany przez `ks'. Jednak historycznie zakorzeniona odmiana nie
+podlega tej regule. W wyniku tej rozbie¿no¶ci, wiele osób pisze tê nazwê
+przez `ks', a wiele przez `x'.
+
+Z uwagi na brak wystêpowania formy `ks' w dawnych czasach, po d³ugich
+dyskusjach uda³o siê wypracowaæ pewien kompromis. Odmiana `x' jest obecnie
+archaiczna i d±¿±c do usystematyzowania jêzyka  w dokumentacjach powinna byæ
+stosowana forma `ks'.
+
+Na poparcie tezy, ¿e forma `x' jest archaiczna, a nie b³êdna, mo¿na przyj±æ
+wiele argumentów. Jednymi z wa¿niejszych s± te, ¿e pocz±tkowo nikt nie zna³
+i nie u¿ywa³ formy `ks'. Nawet ksi±¿ki. I to nie tylko techniczne.
+Literatura piêkna równie¿ nie zna³a tak ca³kiem zasad odmiany s³ów koñcz±cych
+siê na `x' (por. `Opowie¶ci o pilocie Pirxie'). Znani mi poloni¶ci
+jeszcze w 1998 roku musieli SPRAWDZAÆ w podrêcznikach jak odmieniæ s³owo
+`Hortex'. Wszystko to kumuluje siê na stwierdzenie, ¿e s³owo `linux'
+wesz³o do jêzyka polskiego na drodze niezrêczno¶ci s³owotwórczej, lecz w
+tamtych czasach nie by³a ona ra¿±ca. A poniewa¿ u¿ywano jej potem przez
+wiele lat w niezmienionej formie, ³±cz±c z ni± nierzadko ideologie
+opensource i pracê `pod sztandarem Linuxa', nale¿y uszanowaæ tradycjê i nie
+uznawaæ tej odmiany za b³±d. W jêzyku polskim zdarza³o siê ju¿
+niejednokrotnie wprowadzanie nazw bez przestrzegania zasad, a jednak nikt
+tych s³ów pó¼niej na si³ê nie prostowa³. Przyk³ad jaki nasun±³ mi siê przy
+tej argumentacji to imiê `Moj¿esz', które w Biblii przet³umaczono z jêzyka
+obcego nie zwa¿aj±c na zasadê pisania `rz' po `j'.
+
+Nie nale¿y natomiast pisaæ `Linuks' w mianowniku.
+W wypadku u¿ywania form `x' nie nale¿y tez u¿ywaæ ¿adnych apostrofów czy
+my¶lników w formach takich, jak `Linuxa', `Linuxowi'.
+
+/*
+ * 16.   Dla t³umaczy: spolszczanie nazwy X Window System
+ */
+
+Oficjalna nazwa tego systemu to "X Window System", "X Window" lub "X". Po
+polsku oznacza to mniej wiêcej tyle co System Okna X. Okna, nie okien. Choæ
+w potocznej mowie sens jest podobny, w technicznej jest drobna ró¿nica.
+X Window System oznacza dawanie jakiego¶ interfejsu tworzenia okna i jego
+obs³ugi. Nie oznacza on jednak, ¿e s± tam jakie¶ konkretne okienka.
+
+Wynika z tego, ¿e nadawanie tej nazwie podtekstu liczby mnogiej (X Windows,
+X-y) jest nie do koñca poprawne (w szczególno¶ci nie jest "poprawne
+politycznie", gdy¿ ¶rodowiska ludzi u¿ywaj±cych X czêsto nie chc± byæ mylone
+z innym produktem z "Windows" w nazwie :).
+
+/*
+ * 17. Identyfikacja ¼róde³
+ */
+
+Zdarza siê, ¿e ró¿ne pakiety pos³uguj± siê poleceniami o tych samych nazwach.
+Chc±c utrzymaæ t³umaczenie kilku plików o tych samych nazwach orygina³u,
+przyjêli¶my w takich przypadkach dodawanie pojedynczej litery na koñcu nazwy.
+I tak np. 'id.1' opisuje polecenie id z pakietu GNU (standardowe), za¶
+'id.1s' zastêpuj±ce je polecenie z pakietu 'shadow'.
+Zaleca siê t³umaczom podawanie opisanej w manualu wersji oraz, w razie
+w±tpliwo¶ci, równie¿ nazwy pakietu. Nawet je¿eli orygina³ ich nie podawa³.
+Informacjê tê najlepiej umie¶ciæ w nag³ówku .TH lub ewentualnie w formie
+komentarza (.\") na pocz±tku pliku.
+
+/*
+ * 18.   Instalowanie dokumentacji info
+ */
+
+PTM t³umaczy równie¿ dokumentacjê texinfo programów. Póki co nie ma jej
+jeszcze praktycznie wcale gotowej, ale przedstawiê tu teoretyczne mo¿liwo¶ci
+jej instalacji:
+Napierw trzeba j± oczywi¶cie skompilowaæ do postaci info. W najprostszym
+przypadku robimy `makeinfo plik.texi'.
+Po skompilowaniu, gotowe pliki info kopiujemy np. do katalogu
+/usr/info/pl_PL. Teraz zaczyna siê zabawa: je¶li u¿ywasz do czytania
+dokumentacji texinfo programu `pinfo', wystarczy ustawiæ zmienn±
+¶rodowiskow± $LANG na `pl_PL' (pinfo szuka w katalogach info podkatalogów
+nazwanych $infodir/$LANG).
+W przypadku programu `info' sprawa jest inna: nie obs³uguje on locali, ale
+od czego moja nieskromna inwencja twórcza :) Mo¿na zrobiæ nastêpuj±cy trik:
+
+export $INFOPATH="/usr/info/pl_PL:/usr/info:/usr/local/info:/usr/share/info:"
+
+rozumiecie ideê ;)
+
+/*
+ * 19.   Dla t³umaczy: na co uwa¿aæ w plikach Texinfo
+ */
+
+Instrukcje texinfo zaczynaj± siê od "ma³py" (@). Podwojona daje litera³ "@".
+Wiersze przetwarzane s± podobnie jak w groffie czy TeX-u (nieco podobnie jak
+w HTML-u). Mo¿na swobodnie ³amaæ zbyt d³ugie wiersze - zmiana akapitu nast±pi
+w miejscu pustego wiersza. Wymuszone ³amanie wiersza robimy poleceniem "@*".
+"@page" dotyczy tylko postaci drukowanej i wymusza zmianê strony, za¶
+"@group"-"@end group" wymuszenie wyst±pienia wierszy razem na stronie.
+
+Instrukcja "@c foo.." oznacza komentarz, podobnie dzia³a para "@ignore"
+i "@end ignore".
+
+Pary "@ifinfo"-"@end ifinfo" i "@iftex"-"@end iftex" ograniczaj± tekst, który
+ma pojawiæ sie tylko, odpowiednio, w pliku Info albo, w dokumencie drukowanym.
+Konstrukcja typu "@set BOOK ksi±¿ka" nadaje warto¶æ zmiennej. Warto¶æ
+ta bêdzie wykorzystana przez @value{BOOK}. Tu nale¿y uwa¿aæ, gdy¿ stosowane
+s± rozwi±zania typu:
+  @ifinfo
+  @set BOOK Info file
+  @end ifinfo
+  @iftex
+  @set BOOK book
+  @end iftex
+  ...
+  In this @value{BOOK}....
+
+"@node" okre¶la wêze³ struktury:
+  @node Drugi, nastêpny, poprzedni, macierzysty
+podczas, gdy "@chapter", "@section" itp. tytu³ danej czê¶ci:
+  @chapter Drugi podrozdzia³
+Nazwy wêz³ów t³umaczymy. Musz± byæ niepowtarzalne w ramach dokumentu.
+U¿ywane s± ponadto jako argumenty instrukcji odno¶ników @ref{},
+@pxref{}, @xref{} oraz w menu, po lewej:
+  @menu
+  * Pierwszy:: Mi³e z³ego pocz±tki
+  * Drugi::    Kontynuujemy naukê
+  @end menu
+Opisy w prawej stronie menu, podobnie jak kolejny parametr @ref{} nie musz±
+odpowiadaæ tytu³owi odpowiedniego wêz³a. Jest to tekst, jaki pojawi siê jako
+odno¶nik. Przy odsy³aczach nale¿y uwa¿aæ na gramatykê - @xref{} i pxref{}
+poprzedzane s± odpowiednio przez 'See', 'see', co nie zawsze
+da siê ³adnie wepchn±æ w nasz± sk³adniê. @ref{} nie daje przedrostka.
+Z powodu "*Note" wszystkie te konstrukcje s± k³opotliwe przy formacie Info.
+
+Wêze³ "Top" reprezentuje wierzcho³ek dokumentu - jego nazwy nigdy nie
+t³umaczymy. Podobnie nie t³umaczymy nazwy wêz³a (dir), oznaczaj±cego
+wierzcho³ek struktury z³o¿onej ze wszystkich zainstalowanych plików Info
+(zawarty jest on w pliku /usr/info/dir, uzupe³nianym rêcznie lub skryptem
+wg "@direntry").
+"@bye" oznacza koniec przetwarzania dokumentu. Reszta nie jest przetwarzana.
+
+/*
+ * 20.   Kwestie prawne: czy pytaæ autorów podrêczników o zgodê na t³umaczenie?
+ */
+
+Je¶li dokumentacja jest rozprowadzana w ramach pakietów GNU, to nie ma
+problemu i mo¿na t³umaczyæ.  Zachowujemy oczywi¶cie stare copyrighty.
+
+W przypadku pozosta³ych dokumentacji -- je¶li licencja jest niejasna; lepiej
+zapytaæ. Je¶li nie ma jej w ogóle -- równie¿ nale¿y prosiæ o zgodê.
+
+/*
+ * Dodatek I: Literatura :)
+ */
+
+man man..........................................Opis u¿ywania programu man
+man man.config.....................Opis pliku konfiguracyjnego programu man
+man less......................Opis domy¶lnej linuxowej przegl±darki manuali
+man pinfo................Opis alternatywnej (mojego autorstwa) przegl±darki
+man groff...................Opis programu u¿ywanego do formatowania manuali
+man troff.................Opis programu sk³adu tekstu, wo³anego przez groff
+man 7 man.........................................Makra u¿ywane w manualach
+man me.....................................Makra u¿ywane czasem w manualach
+info gettext...........................Opis problemów zwi±zanych z localami
+Locale MiniHowto................................Opis locali w postaci HOWTO
+Man-Page MiniHowto.....................................Jak pisaæ strony man
+http://www.agh.edu.pl/ogonki..Jak uzyskaæ polskie litery na swojej maszynie
+FHS (dostêpne na mirrorach GNU)..............Opis hierarchii systemu plików
+http://www2.linuxjournal.com/lj-issues/issue6/2840.html....Wstêp do Texinfo
+[p]info texinfo...........................Opis systemu dokumentacji Texinfo

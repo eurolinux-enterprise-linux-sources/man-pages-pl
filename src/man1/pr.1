@@ -1,0 +1,341 @@
+.\" {PTM/GSN/0.5/23-02-1999/"skonwertuj pliki tekstowe do drukowania"}
+.\" poszerzenie i aktualizacja do GNU textutils 2.0 PTM/WK/2000-IV
+.ig
+Transl.note: based on GNU man page pr.1 and textutils.info
+ 
+Copyright 1994, 95, 96, 1999 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+..
+.TH PR "1" FSF "sierpieñ 1999" "Narzêdzia tekstowe GNU 2.0"
+.SH NAZWA
+pr \- skonwertuj pliki tekstowe do drukowania
+.SH SK£ADNIA
+.B pr
+.RI [ opcja ...]
+.RI [ plik ...]
+.SH OPIS
+Dokumentacja niniejsza nie jest ju¿ utrzymywana i mo¿e byæ niedok³adna
+lub niekompletna.  Autorytatywnym ¼ród³em jest obecnie dokumentacja
+Texinfo.  Dostêp do niej uzyskasz wpisuj±c w wierszu poleceñ:
+.RS
+.B pinfo pr
+.RE
+lub
+.RS
+.BR "info pr" .
+.RE
+.PP
+Ta strona podrêcznika opisuje polecenie \fBpr\fP w wersji GNU.
+.PP
+.B pr
+wypisuje na standardowe wyj¶cie zawarto¶æ plików tekstowych podanych w linii
+poleceñ, dziel±c j± na strony i opcjonalnie w formacie wielokolumnowym.
+Pliki mog± byæ scalane, wypisywane wszystkie równocze¶nie, po jednym
+w kolumnie.
+Je¶li nie podano ¿adnych plików, albo napotkano nazwê pliku '\-', to czytane
+jest standardowe wej¶cie.
+.PP
+Domy¶lnie, na ka¿dej stronie wypisywany jest 5-linijkowy nag³ówek: dwie puste
+linie, linia z dat±, nazw± pliku i numerem strony i dwie kolejne puste linie.
+Tworzona jest te¿ z³o¿ona z 5 linii stopka. Przy opcji \fB-F\fP tworzony jest
+nag³ówek 3-linijkowy: pocz±tkowe dwie puste linie s± pomijane, nie jest u¿ywana
+stopka. Domy¶lna d³ugo¶æ strony w obu przypadkach wynosi 66 linii. Linia
+tekstu z nag³ówkiem zajmuje ca³± szeroko¶æ strony i ma postaæ
+`yyyy-mm-dd HH:MM ³añcuch Page nnnn'. £añcuch nag³ówka jest centrowany.
+.PP
+Znaki wysuwu strony (FF) w wej¶ciu powoduj± ³amanie strony w wyniku.
+Powtórzone znaki zmiany strony daj± puste strony.
+.PP
+Kolumny tekstu maj± jednakow± szeroko¶æ, rozdzielone s± opcjonalnym ³añcuchem
+(domy¶lnie spacj±). Przy tworzeniu wyj¶cia wielokolumnowego, linie bêd±
+zawsze obcinane do zadanej szeroko¶ci strony (PAGE_WIDTH), domy¶lnie 72, chyba
+¿e zostanie u¿yta opcja \fB-J\fP. Przy wyniku jednokolumnowym domy¶lnie nie
+zachodzi obcinanie linii. W tym przypadku do uciêcia linii nale¿y u¿yæ opcji
+\fB\-W\fP.
+.PP
+Od wersji 1.22i:
+.br
+Niektóre opcje podawane ma³ymi literami
+.RB ( -s ,
+.BR -w )
+zosta³y przedefiniowane w celu uzyskania lepszej zgodno¶ci z POSIX.
+Wyj¶cie uzyskiwane z niektórych opcji zosta³o przystosowane do innych
+UNIX-ów. Nale¿y siê pogodziæ z naruszeniem zgodno¶ci wstecznej.
+.PP
+Wprowadzono nieco nowych opcji podawanych du¿ymi literami
+.RB ( -J ,
+.BR -S ,
+.BR -W ),
+s³u¿±cych do wy³±czania nieoczekiwanych kolizji opcji podawanych ma³ymi
+literami. Opcja \fB\-N\fP i drugi argument \fIostatnia\fP opcji
+.BI \+ pierwsza
+oferuj± wiêksz± elastyczno¶æ. Precyzyjna obs³uga ustawieñ zmiany strony
+w plikach wej¶ciowych wymaga opcji \fB\-T\fP.
+.PP
+Opcje o du¿ych literach maj± przewagê nad opcjami wyra¿anymi ma³ymi literami.
+.PP
+Niektóre z argumentów opcji (porównaj
+.BR -s ,
+.BR -S ,
+.BR -e ,
+.BR -i ,
+.BR -n )
+nie mog± byæ podawane odsuniête od poprzedzaj±cej je litery opcji
+(ju¿ ustanowiono w specyfikacji POSIX).
+.SH OPCJE
+.TP
+.BR +\fIpierwsza [ :\fIostatnia "], " --pages=\fIpierwsza [ :\fIostatnia ]
+Zaczyna wypisywanie od \fIpierwszej\fP i koñczy na \fIostatniej\fP stronie.
+Pominiêcie wskazania
+.BI : ostatniej
+strony oznacza do koñca pliku. Przy szacowaniu liczby pomijanych stron ka¿dy
+znak wysuwu strony w pliku wej¶ciowym daje now± stronê. Numeracja stron
+z opcj±
+.BI + pierwsza
+i bez niej jest identyczna. Domy¶lnie, numerowanie rozpoczyna siê od
+pierwszej strony pliku wej¶ciowego (a nie pierwszej strony wynikowej).
+Numerowanie linii mo¿na zmieniæ opcj± \fB\-N\fP.
+.TP
+.BR \-\fIkolumn ", "  --columns= \fIkolumn
+Dla ka¿dego \fIpliku\fP tworzy zadan± ilo¶æ \fIkolumn\fP wyj¶cia (domy¶lnie 1)
+i wype³nia je pionowo, chyba ¿e u¿yto opcji \fB\-a\fP. Szeroko¶æ kolumny jest
+automatycznie zmniejszana wraz ze wzrostem liczby kolumn, chyba ¿e u¿yto
+równocze¶nie opcji
+.BR \-W / \-w
+do zmiany szeroko¶ci strony. Opcja ta mo¿e spowodowaæ obciêcie niektórych
+linii. Na ka¿dej stronie wyrównywana jest liczba linii w kolumnach.
+Dla wyj¶cia wielokolumnowego w³±czone s± opcje \fB\-e\fP i \fB\-i\fP.
+Przy po³±czeniu z opcj± \fB\-J\fP wyrównywanie kolumn i ucinanie linii
+s± wy³±czane. Linie pe³nej d³ugo¶ci s± ³±czone w formacie pól swobodnych
+.\"  Lines of full length are joined in a free field format and `-S'
+a opcj± \fB\-S\fP mo¿na wyznaczyæ separatory pól.
+Opcja
+.BI \- kolumn
+nie mo¿e byæ stosowana z opcj± \fB\-m\fP.
+.TP
+.BR \-a ", " --across
+Dla ka¿dego pliku, wypisuje kolumny w poprzek, nie w dó³. Musi byæ podana
+opcja
+.BI \- kolumn
+z liczb± kolumn wiêksz± od 1. Je¿eli linia jest zbyt d³uga, by zmie¶ciæ siê
+w kolumnie, to jest obcinana.
+.ig
+.TP
+.B \-b
+Wyrównuje kolumny na ostatniej stronie.
+..
+.TP
+.BR \-c ", " --show-control-chars
+Wypusje znaki kontrolne u¿ywaj±c notacji z daszkiem (np. '^G'), za¶
+inne niedrukowalne znaki w notacji ósemkowej z odwrotnym uko¶nikiem.
+Domy¶lnie znaki niedrukowalne nie s± zmieniane.
+.TP
+.BR \-d ", "  --double-space
+U¿ywa podwójnych odstêpów [miêdzy liniami] w wyniku.
+.TP
+.PD 0
+.BR \-e [\fIznak-tab-wej\fP[\fIszer-tab-wej\fP]]
+.TP
+.PD
+.BR --expand-tabs [ = \fIznak-tab-wej\fP[\fIszer-tab-wej\fP]]
+Rozwija tabulacje na spacje w wej¶ciu.  Opcjonalny argument \fIznak-tab-wej\fP
+to wej¶ciowy znak tabulacji, domy¶lnie TAB.   Drugi opcjonalny argument
+\fIszer-tab-wej\fP to szeroko¶æ znaków tabulacji w wej¶ciu, domy¶lnie 8.
+.TP
+.BR \-F ", " \-f ", " --form-feed
+U¿ywa znaku koñca strony, a nie znaków nowej linii, do rozdzielania stron
+wynikowych. Domy¶lna d³ugo¶æ strony (66 linii) nie jest zmieniana, ale liczba
+linii tekstu na stronie zmienia siê z domy¶lnych 56 na 63.
+.TP
+.BR \-h " \fInag³ówek\fP, " --header= \fInag³ówek
+Zastêpuje nazwê pliku w nag³ówku wypo¶rodkowanym ³añcuchem \fInag³ówek\fP.
+Mo¿e wyst±piæ uciêcie lewej strony (zaznaczone przez '\fB*\fP'), je¶li ca³a
+linia nag³ówka `yyyy-mm-dd HH:MM nag³ówek Page nnnn' bêdzie wiêksza ni¿
+szeroko¶æ strony.
+.B -h ""
+daje w wyniku pust± liniê nag³ówka. Proszê nie u¿ywaæ
+.BR -h"" .
+Odstêp pomiêdzy \fB-h\fP a argumentem jest zawsze konieczny.
+.TP
+.PD 0
+.BR \-i [\fIznak-tab-wyj\fP[\fIszer-tab-wyj\fP]]
+.TP
+.PD
+.BR \-\-output\-tabs [ = \fIznak-tab-wyj\fP[\fIszer-tab-wyj\fP]]
+Zastêpuje spacje tabulacjami w wyj¶ciu.  Opcjonalny argument \fIznak-tab-wyj\fP
+to wyj¶ciowy znak tabulacji, domy¶lnie TAB.  Drugi opcjonalny argument
+\fIszer-tab-wyj\fP to szeroko¶æ znaków tabulacji w wyj¶ciu, domy¶lnie 8.
+.TP
+.BR \-J ", " --join-lines
+£±czy linie pe³nej d³ugo¶ci. U¿ywane razem z opcjami dotycz±cymi kolumn
+.BI - kolumn\fR,
+.BI "-a -" kolumn
+lub
+.BR -m .
+Wy³±cza ucinanie linii przez
+.BR \-W / \-w .
+Nie jest wykonywane wyrównywanie kolumn. Mo¿na u¿ywaæ w po³±czeniu z
+.BR -S [\fI³añcuch\fP].
+Opcjê \fB\-J\fP wprowadzono (razem z \fB\-W\fP i \fB\-S\fP) w celu rozpl±tania
+starych (zgodnych z POSIX) opcji \fB\-w\fP i \fB\-s\fP z powy¿szymi
+trzema opcjami kolumnowymi.
+.TP
+.BR \-l " \fId³ug-strony\fP, " --length= \fId³ug-strony
+Ustawia d³ugo¶æ strony na \fId³ug-strony\fP linii, ³±cznie z liniami nag³ówka
+i stopki.  Warto¶æ domy¶lna to 66.  Je¶li \fId³ug-strony\fP jest mniejsza
+lub równa 10 (za¶ <=3 z \fB-F\fP), pomijane s± nag³ówki i stopki oraz usuwane
+s± wszystkie ustawienia zmiany strony z plików wej¶ciowych,
+tak jak gdyby zosta³a podana opcja \fB\-T\fP.
+.TP
+.BR \-m ", " --merge
+Scala i wypisuje wszystkie pliki równolegle, jeden w ka¿dej kolumnie.
+Je¶li linia nie mie¶ci siê w kolumnie, to jest ucinana, chyba ¿e
+podano opcjê \fB\-J\fP. Mo¿na wykorzystaæ
+.BR -S [\fI³añcuch\fP].
+Puste strony niektórych plików (ustawione zmiany strony) daj± w wyniku puste
+kolumny, nadal oznakowane \fI³añcuchem\fP. Wynikiem jest ci±g³a numeracja
+linii i oznakowanie kolumn w ca³ym scalonym pliku. Ca³kiem puste po³±czone
+strony nie maj± ani separatorów ani numerów linii. Domy¶lny nag³ówek zmieniany
+jest na `yyyy-mm-dd HH:MM <odstêpy> Page nnnn'. Do wype³nienia ¶rodkowej,
+pustej jego czê¶ci mo¿na u¿yæ opcji
+.BR \-h " \fInag³ówek\fP.
+.TP
+.PD 0
+.BR \-n [\fIsep-liczb\fP[\fIcyfry\fP]]
+.TP
+.PD
+.BR --number-lines= [\fIsep-liczb\fP[\fIcyfry\fP]]
+Powoduje poprzedzanie wyniku numerami linii.
+Opcjonalny argument \fIcyfry\fP to liczba cyfr na numer linii, domy¶lnie 5.
+Przy wyj¶ciu wielokolumnowym numer zajmuje pierwsze \fIcyfr\fP pozycji
+ka¿dej kolumny tekstu. W wyj¶ciu jednokolumnowym oraz przy scalonych plikach
+(\fB\-m\fP) numer poprzedza ka¿d± liniê.
+Domy¶lnie numeracja linii rozpoczyna siê od pierwszej linii pliku wej¶ciowego
+(nie od pierwszej linii wynikowej, porównaj opcje \fB\-\-page\fP i \fB\-N\fP).
+Opcjonalny argument \fIsep-liczb\fP to znak, który nale¿y wypisaæ po ka¿dym
+numerze, dla oddzielenia go od nastêpuj±cego po nim tekstu, domy¶lnie
+tabulacja. ¦ci¶le mówi±c, znak tabulacji jest zawsze wpisywany tylko
+w wyj¶ciu jednokolumnowym. Szeroko¶æ tabulacji zmienia siê w zale¿no¶ci
+od jej pozycji, np. zale¿nie od lewego \fImarginesu\fP okre¶lonego
+przez opcjê \fB\-o\fP. Przy wyj¶ciu wielokolumnowym priorytetem jest 'równa
+szeroko¶æ kolumn wynikowych' (specyfikacja POSIX). Szeroko¶æ tabulacji
+ustalana jest na warto¶æ z pierwszej kolumny i nie zmienia siê z ró¿nymi
+warto¶ciami lewego marginesu. Znaczy to, ¿e zamiast \fIsep-liczb\fP=TAB
+wypisywana jest zawsze sta³a liczba spacji. Tabularyzacja zale¿y od pozycji
+w wyj¶ciu.
+.TP
+.BR -N " \fInr-linii\fP, " --first-line-number= \fInr-linii
+Rozpoczyna numeracjê linii od \fInr-linii\fP dla pierwszej linii na
+pierwszej stronie wynikowej (przewa¿nie nie jest to pierwsza linia pliku
+wej¶ciowego).
+.TP
+.BR \-o " \fIlewy-marg\fP, " --indent= \fIlewy-marg
+Wysuwa ka¿d± liniê o margines szeroki na \fIlewy-marg\fP spacji (domy¶lnie zero).
+Ca³kowita szeroko¶æ strony to owo wciêcie plus szeroko¶æ strony ustawiona opcj±
+.BR \-W / \-w .
+Przy numerowanym wyj¶ciu jednokolumnowym (por.opcja \fB\-n\fP) mo¿e pojawiæ
+siê ograniczony nadmiar.
+.TP
+.BR \-r ", " --no-file-warnings
+Nie wypisuje komunikatu ostrzegawczego kiedy nie mo¿na otworzyæ pliku
+bêd±cego argumentem.  Nieudane otwarcie pliku ci±gle jednak ustawia
+kod zakoñczenia na niezerowy.
+.TP
+.BR \-s [ \fIsep\fP "], " --separator [ = \fIsep\fP]
+Oddziela kolumny pojedynczym znakiem \fIsep\fP. Domy¶lnie, bez opcji
+\fB\-w\fP jest to tabulacja, z opcj± \fB\-w\fP 'brak znaku'. Bez \fB\-s\fP
+domy¶lnym separatorem jest spacja.Opcja ta wy³±cza obcinanie linii
+we wszystkich trzech opcjach dotycz±cych kolumn (
+.BI - kolumn\fR,
+.BI "-a -" kolumn\fR,
+.BR -m ),
+chyba ¿e jawnie w³±czone jest \fB\-w\fP. Jest to zgodne z regulacjami POSIX.
+.TP
+.BR \-S [ \fI³añcuch\fP "], " --sep-string [ = \fI³añcuch\fP]
+`-S[STRING]'
+`--sep-string[=STRING]'
+Oddziela kolumny ³añcuchem \fI³añcuch\fP. Opcja ta, w odró¿nieniu od \fB-s\fP
+nie ma wp³ywu na dzia³anie
+.BR \-W / \-w .
+Nie wp³ywa na obcinanie linii czy wyrównywanie kolumn. Je¶li \fB\-S\fP nie
+jest ustawiona a pos³u¿ono siê \fB\-J\fP, to u¿yty zostanie domy¶lny
+separator, tabulacja. Je¶li ¿adna z nich nie jest ustawiona to separatorem
+jest spacja (tak samo jak przy \fB\-S" "\fP). Podanie \fB\-S\fP bez
+\fI³añcucha\fP jest równowa¿ne \fB\-S""\fP. Zauwa¿, ¿e w niektórych
+z jednoliterowych opcji polecenia \fBpr\fP odpowiedni argument musi wyst±piæ
+bezpo¶rednio po nazwie opcji. Nie mo¿na u¿ywaæ rozdzielaj±cych spacji.
+.BR -S / -s
+to jeden z takich przypadków. Proszê nie u¿ywaæ \fB\-S" ³añcuch"\fP.
+Tego wymaga POSIX.
+.TP
+.BR \-t ", " --omit-header
+Nie wypisuje nag³ówka i stopki znajduj±cych siê zwykle na ka¿dej stronie,
+i nie wype³nia do³ów strony (linami pustymi lub znakami nowej strony).
+Nie jest tworzona struktura strony, ale ustawienia zmian strony z plików
+wej¶ciowych s± zachowywane. Nie jest zmieniane predefiniowane stronicowanie.
+\fB\-t\fP lub \fB-T\fP mog± byæ przydatne z innymi opcjami, np.
+\fB-t -e4\fP rozwija znaki tabulacji pliku wej¶ciowego do 4 spacji, ale
+nie wykonuje innych zmian. U¿ycie \fB\-t\fP przes³ania opcjê \fB\-h\fP.
+.TP
+.BR \-T ", " --omit-pagination
+Nie wypisuje nag³ówka i stopki. Oprócz tego ignoruje wszystkie zmiany
+strony ustawiane w plikach wej¶ciowych.
+.TP
+.BR \-v ", " --show-nonprinting
+Wypisuje znaki niedrukowalne w notacji ósemkowej z odwrotnym uko¶nikiem.
+.TP
+.BR \-w " \fIszer-strony\fP, " --width= \fIszer-strony
+Ustawia szeroko¶æ strony na \fIszer-strony\fP znaków -- tylko dla wyj¶cia
+wielokolumnowego. Warto¶æ domy¶lna to 72.
+\fB\-s\fP[\fIsep\fP] wy³±cza domy¶ln± szeroko¶æ strony, obcinanie
+linii i wyrównywanie kolumn. Linie pe³nej d³ugo¶ci s± scalane, bez wzglêdu
+na ustawienia opcji kolumn. Mo¿liwe jest nieustawienie szeroko¶ci strony
+przy wyj¶ciu jednokolumnowym. Zgodne z regulacjami POSIX.
+.TP
+.BR \-W " \fIszer-strony\fP, " --page-width= \fIszer-strony
+Ustawia szeroko¶æ strony na \fIszer-strony\fP znaków (domy¶lnie 72). Obowi±zuje
+zarówno z opcjami kolumnowymi jak i bez nich. Linie tekstu s± obcinane,
+chyba ¿e podano \fB\-J\fP. £±cznie z jedn± z trzech opcji dotycz±cych kolumn (
+.BI - kolumn\fR,
+.BI "-a -" kolumn\fR,
+.BR -m )
+zawsze stosowane jest wyrównywanie kolumn. Opcje separatora \fB\-S\fP
+czy \fB\-s\fP nie maj± wp³ywu na \fB\-W\fP.
+Je¿eli nie u¿yto ani tej opcji ani ¿adnej z opcji kolumnowych, to nie jest
+stosowane \fB¿adne\fP obcinanie linii (zdefiniowane w celu utrzymania
+zgodno¶ci wstecznej i spe³niania najczêstszych zadañ). Jest to równowa¿ne
+ustawieniu \fB-W 72 -J\fP. Zarówno z opcj± \fB\-W\fP, jak i bez niej, nag³ówek
+jest zawsze obcinany dla unikniêcia nadmiaru.
+.TP
+.B "\-\-help"
+Wy¶wietla informacjê o stosowaniu programu i dostêpnych opcjach, koñczy pracê.
+.TP
+.B "\-\-version"
+Wy¶wietla numer wersji programu i koñczy pracê.
+.SH "ZG£ASZANIE B£ÊDÓW"
+B³êdy proszê zg³aszaæ, w jêz. ang., do <bug-textutils@gnu.org>.
+.SH COPYRIGHT
+Copyright \(co 1999 Free Software Foundation, Inc.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH ZOBACZ TAK¯E
+.BR fmt (1),
+.BR fold (1),
+.BR textutils (1).
+.SH OD T£UMACZA
+Zaktualizowano i poszerzono wg dokumentacji Texinfo dla narzêdzi tekstowych
+GNU wersji 2.0.

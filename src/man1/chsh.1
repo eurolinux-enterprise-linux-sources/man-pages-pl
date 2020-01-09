@@ -1,0 +1,56 @@
+.\" {PTM/PB/0.1/28-09-1998/"zmieñ pow³okê loginow±"}
+.\"
+.\"  chsh.1 -- change your login shell
+.\"  (c) 1994 by salvatore valente <svalente@athena.mit.edu>
+.\"
+.\"  this program is free software.  you can redistribute it and
+.\"  modify it under the terms of the gnu general public license.
+.\"  there is no warranty.
+.\"
+.\"  $Author: wojtek2 $
+.\"  $Revision: 1.3 $
+.\"  $Date: 2001/10/07 15:47:40 $
+.\"
+.\"  Translation (c) 1998 Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.TH CHSH 1 "13 pa¼dziernika 1994" "chsh" "Linux Reference Manual"
+.SH NAZWA
+chsh \- zmieñ pow³okê zg³oszeniow±
+.SH SK£ADNIA
+.B chsh
+.RB [-s
+.IR pow³oka ]
+.RB [ -l ]
+.RB [ -u ]
+.RB [ -v ]
+.RI [ nazwau¿ytkownika ]
+.SH OPIS
+.B chsh
+jest u¿ywany do zmiany pow³oki zg³oszeniowej (login shell) u¿ytkownika.
+Je¶li nie podano go w wierszu poleceñ,
+.B chsh
+pyta o niego.
+.SS PRAWID£OWE POW£OKI
+.B chsh
+przyjmie pe³n± ¶cie¿kê do dowolnego pliku wykonywalnego w systemie. Jednak¿e
+wypisze ostrze¿enie, je¶li pow³oka nie jest podana w pliku
+.IR /etc/shells .
+.SH OPCJE
+.TP
+.BR \-s ", " \-\-shell
+Podaje pow³okê zg³oszeniow±.
+.TP
+.BR \-l ", " \-\-list-shells
+Wypisuje listê pow³ok z pliku
+.IR /etc/shells .
+.TP
+.BR \-u ", " \-\-help
+Wypisuje informacje o u¿yciu programu.
+.TP
+.BR -v ", " \-\-version
+Wypisuje wersjê programu.
+.SH "ZOBACZ TAK¯E"
+.BR login (1),
+.BR passwd (5),
+.BR shells (5)
+.SH AUTOR
+Salvatore Valente <svalente@mit.edu>

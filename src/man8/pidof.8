@@ -1,0 +1,50 @@
+.\" {PTM/PB/0.1/02-10-1998/"znajd¼ pid pracuj±cego programu"}
+.TH PIDOF 8 "1 wrze¶nia 1998" "" "Podrêcznik administratora Linuksa"
+.SH NAZWA
+pidof - znajd¼ pid dzia³aj±cego programu.
+.SH SK£ADNIA
+.B pidof
+.RB [ \-s ]
+.RB [ \-x ]
+.RB [ \-o
+.IR pomiñpid ]
+.RB [ \-o
+.IR pomiñpid.. ]
+.B program
+.RB [ program.. ]
+.SH OPIS
+.B Pidof
+wyszukuje identyfikatory procesów (PID-y) wskazanych programów. Drukuje je
+nastêpnie na standardowe wyj¶cie. Program ten jest na ogó³ u¿ywany w
+skryptach zmian poziomu pracy (runlevel change scripts), szczególnie je¶li
+system ma strukturê \fIrc\fP typu \fISystem-V\fP. Skrypty te s± wtedy
+zlokalizowane w /etc/rc.?d, gdzie ? oznacza poziom pracy.
+Je¿eli system posiada program \fBstart-stop-daemon\fP(8), to powinien byæ on
+stosowany zamiast \fBpidof\fP.
+.SH OPCJE
+.IP -s
+Pojedynczy strza³ - mówi to programowi, by wy¶wietli³ tylko jeden \fIpid\fP.
+.IP -x
+Skrypty równie¿ - to powoduje, ¿e program zwraca równie¿ identyfikatory
+procesów pow³ok, pracuj±cych z podanymi skryptami.
+.IP "-o \fIpomiñpid\fP"
+Mówi programowi, by omin±³ procesy z podanym identyfikatorem procesu.
+Istnieje specjalny pid \fB%PPID\fP, który mo¿e byæ u¿ywany do wskazywania
+procesu rodzicielskiego programu \fIpidof\fP, czyli innymi s³owy do
+wywo³uj±cej pow³oki lub skryptu.
+.SH UWAGI
+\fIpidof\fP jest po prostu dowi±zaniem symbolicznym do programu
+\fIkillall5\fP,
+który powinien te¿ byæ zlokalizowany w \fP/sbin\fP.
+.PP
+Gdy \fPpidof\fP jest wywo³ywany z pe³n±, ¶cie¿kow± nazw± programu, którego pid
+ma znale¼æ, jest rozs±dnie bezpieczny. W przeciwnym razie mo¿liwe, ¿e
+zwróci identyfikatory pid programów, które przypadkowo maj± tê sam± nazwê,
+co szukany przez nas, ale faktycznie s± innymi programami.
+.SH ZOBACZ TAK¯E
+.BR shutdown (8),
+.BR init (8),
+.BR halt (8),
+.BR reboot (8).
+.SH AUTOR
+Miquel van Smoorenburg, miquels@cistron.nl

@@ -1,0 +1,45 @@
+.\" 1999 PTM, Przemek Borys
+.\" Copyright (c) 1994 Peter Tobias <tobias@server.et-inf.fho-emden.de>
+.\" This file may be distributed under the GNU General Public License.
+.TH ISSUE.NET 5 "22 May 1994" "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+issue.net \- plik identyfikacji dla sesji telnetowych
+.SH OPIS
+Plik \fB/etc/issue.net\fP jest plikiem tekstowym, zawieraj±cym wiadomo¶æ,
+lub identyfikacjê systemu, drukowan± przed promptem loginowym sesji
+telnetowej. Mo¿e zawieraæ ró¿ne sekwencje
+.BI "%" znak .
+Nastêpuj±ce sekwencje s± obs³ugiwane przez
+.BR telnetd :
+.TP
+.B %t
+- poka¿ bie¿±cy tty
+.TP
+.B %h
+- poka¿ nazwê wêz³a systemu
+.TP
+.B %D
+- poka¿ nazwê domeny NIS
+.TP
+.B %d
+- poka¿ bie¿±cy czas i datê
+.TP
+.B %s
+- poka¿ nazwê systemu operacyjnego
+.TP
+.B %m
+- poka¿ typ (sprzêtowy) maszyny
+.TP
+.B %r
+- poka¿ wersjê (release) systemu operacyjnego
+.TP
+.B %v
+- poka¿ wersjê (version) systemu operacyjnego
+.TP
+.B %%
+- Wy¶wietl znak `%'
+.PP
+.SH PLIKI
+/etc/issue.net
+.SH "ZOBACZ TAK¯E"
+.BR telnetd (8)

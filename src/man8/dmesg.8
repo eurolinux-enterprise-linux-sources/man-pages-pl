@@ -1,0 +1,58 @@
+.\" {PTM/WK/1999-XII}
+.\" Copyright 1993 Rickard E. Faith (faith@cs.unc.edu)
+.\" May be distributed under the GNU General Public License
+.TH DMESG 8 
+.SH NAZWA
+dmesg \- drukuje bufor warstwy j±dra lub steruje buforem
+.SH SK£ADNIA
+.B dmesg
+.RB [ \-c ]
+.RB [ \-n \fIpoziom\fP]
+.RB [ \-s \fIrozm_buf\fP]
+.SH OPIS
+.B dmesg
+s³u¿y do sprawdzania bufora warstwy j±dra (kernel ring buffer) lub sterowania
+nim.
+
+Program ten pomaga u¿ytkownikom wy¶wietliæ komunikaty startowe ³adowania
+systemu. Zamiast rêcznego kopiowania komunikatów, wystarczy jedynie:
+.RS
+dmesg > boot.messages
+.RE
+i przes³anie pliku
+.I boot.messages
+do kogo¶, kto potrafi zdiagnozowaæ k³opot.
+.SH OPCJE
+.TP
+.B \-c
+wyczy¶æ zawarto¶æ bufora po wy¶wietleniu.
+.TP
+.BI \-s rozm_buf
+do odpytania bufora j±dra u¿yj bufora o wielko¶ci rozm_buf. Domy¶lnie jest to
+8196 (odpowiada to domy¶lnej wielko¶ci bufora syslog dla j±dra
+2.0.33 i 2.1.103). Je¿eli ustawi³e¶ bufor j±dra wiêkszy od domy¶lnego,
+to mo¿esz pos³u¿yæ siê t± opcj± do przegl±dniêcia ca³ego bufora.
+.TP
+.BI \-n poziom
+ustaw
+.IR poziom ,
+na którym odbywa siê rejestrowanie komunikatów na konsoli. Na przyk³ad,
+.B \-n 1
+zapobiega pojawianiu siê na konsoli wszelkich komunikatów poza komunikatami
+typu 'panic'. Wszystkie poziomy komunikatów s± nadal zapisywane do
+.IR /proc/kmsg ,
+zatem wci±¿ mo¿na pos³ugiwaæ siê
+.BR syslogd (8)
+do dok³adnej kontroli, gdzie pojawiaj± siê komunikaty j±dra.
+Gdy u¿ywana jest opcja
+.BR \-n ,
+to
+.B dmesg
+.I nie
+wy¶wietla ani nie czy¶ci bufora warstwy j±dra.
+
+Je¿eli u¿yto obu opcji, to zadzia³a tylko ostatnia opcja z wiersza poleceñ.
+.SH ZOBACZ TAK¯E
+.BR syslogd (8)
+.SH AUTOR
+Theodore Ts'o (tytso@athena.mit.edu)

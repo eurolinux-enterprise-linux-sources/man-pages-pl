@@ -1,0 +1,95 @@
+.\" Copyright (c) 1994 Andries Brouwer (aeb@cwi.nl), Mon Oct 31 21:03:19 MET 1994
+.\" 
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\" 
+.\" Modified, Sun Feb 26 14:58:45 1995, faith@cs.unc.edu
+.\" 
+.\" T³umaczenie na jêzyk polski: Pawe³ Olszewski (alder@amg.net.pl)
+.\" {PTM/PO/0.3/02-06-1998/"terminal na konsoli i konsole wirtualne"}
+.\" Last update: Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>, Mar 2002,
+.\"              man-pages 1.48
+.\" 
+.TH CONSOLE 4 1994-10-31 "Linux" "Podrêcznik Programisty Linuksa"
+.SH NAZWA
+console \- terminal na konsoli i konsole wirtualne
+.SH OPIS
+System Linux obs³uguje do 63 \fIkonsoli wirtualnych\fP (urz±dzenia
+znakowe z numerem g³ównym 4 i numerem pobocznym od 1 do 63), zazwyczaj
+zwanych \fB/dev/tty\fP\fIn\fP, gdzie 1 \(<= \fIn\fP \(<= 63. Bie¿±ca
+konsola dostêpna jest jako \fB/dev/console\fP lub \fB/dev/tty0\fP,
+urz±dzenie znakowe z numerem g³ównym 4 i numerem pobocznym 0. Pliki
+urz±dzeñ /dev/* tworzy siê najczê¶ciej przy u¿yciu skryptu MAKEDEV
+lub polecenia
+.BR mknod (1),
+zazwyczaj z prawami dostêpu 0622 i w³a¶cicielami root.tty.
+.LP
+W j±drach przed wersj± 1.1.54 liczba wirtualnych konsoli by³a
+wkompilowana do j±dra (w tty.h: #define NR_CONSOLES 8) i mog³a byæ
+zmieniona przez edycjê i ponown± kompilacjê. Od wersji 1.1.54 wzwy¿,
+konsole wirtualne tworzone s± na bie¿±co, kiedy tylko s± potrzebne.
+.LP
+Najczêstsze sposoby uruchamiania procesów na konsoli to:
+(a) polecenie programowi
+.BR init (8)
+(w pliku
+.BR inittab (5))
+uruchomienia programu
+.BR getty (8)
+na konsoli;
+(b) u¿ycie
+.BR openvt (1)
+do uruchomienia procesu na konsoli;
+(c) uruchomienie X - znajdzie on pierwsz± nie u¿ywan± konsolê i zacznie na
+niej wy¶wietlaæ. (Istnieje równie¿ zamierzch³e polecenie
+.BR doshell (8)).
+.LP
+Powszechne sposoby zmiany konsoli to: (a) u¿ycie kombinacji klawiszy
+Alt+F\fIn\fP lub Ctrl+Alt+F\fIn\fP do prze³±czenia na konsolê \fIn\fP;
+AltGr+F\fIn\fP mo¿e prze³±czyæ na konsolê \fIn\fP+12 [Alt i AltGr
+odnosz± siê tutaj odpowiednio do lewego i prawego klawisza Alt];
+(b) u¿ycie kombinacji Alt+Prawa-Strza³ka lub Alt+Lewa-Strza³ka do
+przechodzenia cyklicznego przez wszystkie aktywne w danym momencie
+konsole; (c) u¿ycie programu
+.BR chvt (1).
+(Mapowanie klawiszy mo¿na dostosowaæ do w³asnych potrzeb, zobacz
+.BR loadkeys (1);
+wspomniane wy¿ej przypisania klawiszy odnosz± siê do ustawieñ domy¶lnych).
+.LP
+Polecenie
+.BR deallocvt (1)
+(niegdy¶ \fBdisalloc\fP) zwolni pamiêæ przydzielon± dla buforów ekranu
+konsoli, z którymi nie s± ju¿ skojarzone ¿adne procesy.
+
+.SH W£A¦CIWO¦CI
+Konsole przechowuj± wiele parametrów. Mam nadziejê, ¿e uda mi siê je
+kiedy¶ udokumentowaæ. Najwa¿niejszym faktem jest to, ¿e konsole
+symuluj± zachowanie terminali vt100. W szczególno¶ci, ustawienia
+konsoli mo¿na przywo³aæ do stanu pocz±tkowego poprzez wpisanie dwóch
+znaków ESC c. Wszystkie sekwencje specjalne mo¿na znale¼æ w stronie
+podrêcznika man dla
+.BR console_codes (4).
+
+.LP
+.SH PLIKI
+.I /dev/console
+.br
+.I /dev/tty*
+.SH "ZOBACZ TAK¯E"
+.BR chvt (1),
+.BR deallocvt (1),
+.BR loadkeys (1),
+.BR mknod (1),
+.BR openvt (1),
+.BR console_codes (4),
+.BR console_ioctl (4),
+.BR tty (4),
+.BR ttys (4),
+.BR charsets (7),
+.BR getty (8),
+.BR init (8),
+.BR mapscrn (8),
+.BR resizecons (8),
+.BR setfont (8)

@@ -1,0 +1,145 @@
+.\" {PTM/PB/0.1/09-05-1999/"repozycjonuj offset pliku"}
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\"
+.\" Copyright (c) 1980, 1991 Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     @(#)lseek.2	6.5 (Berkeley) 3/10/91
+.\"
+.\" Modified Fri Jul 23 22:17:00 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified 10 June 1995 by Andries Brouwer <aeb@cwi.nl>
+.\" Modified Thu Oct 31 15:18:33 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified Sat Jan 17 13:00:32 MET 1998 by Michael Haardt
+.\"   <michael@cantor.informatik.rwth-aachen.de>
+.\" Modified Mon Sep 24 16:18:02 CEST 2001 by Michael Haardt <michael@moria.de>
+.\"
+.TH LSEEK 2 2001-09-24 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+lseek \- zmiana pozycji w pliku dla odczytu/zapisu
+.SH SK£ADNIA
+.B #include <sys/types.h>
+.br
+.B #include <unistd.h>
+.sp
+.BI "off_t lseek(int " fildes ", off_t " offset ", int " whence );
+.SH OPIS
+Funkcja
+.B lseek
+zmienia przesuniêcie dla deskryptora pliku
+.I fildes
+na warto¶æ podan± w argumencie
+.IR offset ,
+zgodnie z dyrektyw±
+.I whence
+w nastêpuj±cy sposób:
+.TP
+.B SEEK_SET
+Przesuniêcie jest ustawiane na
+.I offset
+bajtów.
+.TP
+.B SEEK_CUR
+Przesuniêcie jest ustawiane na aktualn± pozycjê plus
+.I offset
+bajtów.
+.TP
+.B SEEK_END
+Przesuniêcie jest ustawiane na rozmiar pliku plus
+.I offset
+bajtów.
+.PP
+Funkcja
+.B lseek
+umo¿liwia ustawienie przesuniêcia w pliku poza istniej±cy koniec pliku. Je¶li
+pó¼niej w tym miejscu zostan± zapisane jakie¶ dane, to kolejne odczyty danych
+z luki zwróc± bajty zerowe (a¿ do czasu, gdy dane zostan± rzeczywi¶cie w tej
+luce zapisane).
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu
+.B lseek
+zwraca ustawione przesuniêcie, liczone w bajtach od pocz±tku pliku.
+W przeciwnym wypadku zwracane jest (off_t)\-1 oraz ustawiane jest
+.I errno
+w sposób wskazuj±cy rodzaj b³êdu.
+.SH B£ÊDY
+.TP
+.B EBADF
+.I fildes
+nie jest otwartym deskryptorem pliku.
+.TP
+.B ESPIPE
+.I fildes
+jest zwi±zany z potokiem, gniazdem, lub FIFO.
+.TP
+.B EINVAL
+.I whence
+jest nieprawid³ow± warto¶ci±.
+.SH "ZGODNE Z"
+SVr4, POSIX, BSD 4.3
+.SH OGRANICZENIA
+urz±dzenie musi wspieraæ tê operacjê.
+
+Ograniczenia specyficzne dla Linuksa, to: u¿ycie \fBlseek\fP na urz±dzeniu
+terminalowym zwraca \fBESPIPE\fP. Inne systemy zwracaj± liczbê zapisanych
+znaków, u¿ywaj±c SEEK_SET do ustawiania licznika. Niektóre urz±dzenia, np.
+\fB/dev/null\fP nie powoduj± wyst±pienia b³êdu \fBESPIPE\fP, ale zwracaj±
+wska¼nik o nieokre¶lonej warto¶ci.
+.SH UWAGI
+Podczas konwersji starego kodu, nale¿y podstawiaæ zamiast warto¶ci
+\fIwhence\fP 
+nastêpuj±ce makra:
+.PP
+.TS
+c c
+l l.
+stare   nowe
+0       SEEK_SET
+1       SEEK_CUR
+2       SEEK_END
+L_SET   SEEK_SET
+L_INCR  SEEK_CUR
+L_XTND  SEEK_END
+.TE
+.PP
+SVR1-3 zwracaj± \fBlong\fP zamiast \fBoff_t\fP, BSD zwraca \fBint\fP.
+.PP
+Nale¿y zauwa¿yæ, ¿e deskryptory plików utworzone przez
+.BR dup (2)
+i
+.BR fork (2)
+wspó³dziel± wska¼nik bie¿±cej pozycji w pliku, wiêc wykonywanie operacji
+typu "seek" na takich plikach mo¿e prowadziæ do wy¶cigu.
+.SH "ZOBACZ TAK¯E"
+.BR dup (2),
+.BR fork (2),
+.BR open (2),
+.BR fseek (3)

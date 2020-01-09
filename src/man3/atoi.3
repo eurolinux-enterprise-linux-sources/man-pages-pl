@@ -1,0 +1,84 @@
+.\" {PTM/AB/0.1/12-12-1998/"atoi - przekszta³cenie ³añcucha na warto¶æ ca³kowit±"}
+.\" t³umaczenie Adam Byrtek (abyrtek@priv.onet.pl)
+.\"
+.\"Last update: Robert Luberda <robert@pingu.ii.uj.edu.pl>, Jun 2001, manpages 1.38
+.\" ------------
+.\" Copyright 1993 David Metcalfe (david@prism.demon.co.uk)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" References consulted:
+.\"     Linux libc source code
+.\"     Lewine's _POSIX Programmer's Guide_ (O'Reilly & Associates, 1991)
+.\"     386BSD man pages
+.\" Modified Mon Mar 29 22:39:41 1993, David Metcalfe
+.\" Modified Sat Jul 24 21:38:42 1993, Rik Faith (faith@cs.unc.edu)
+.\" Modified Sun Dec 17 18:35:06 2000, Joseph S. Myers
+.\"
+.\" ------------
+.TH ATOI 3 2001-12-17 "GNU" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+atoi, atol, atoll, atoq \- przekszta³cenie ³añcucha na warto¶æ ca³kowit±
+.SH SK£ADNIA
+.nf
+.B #include <stdlib.h>
+.sp
+.BI "int atoi(const char *" nptr );
+.br
+.BI "long atol(const char *" nptr );
+.br
+.BI "long long atoll(const char *" nptr );
+.br
+.BI "long long atoq(const char *" nptr );
+.fi
+.SH OPIS
+Funkcja \fBatoi()\fP przekszta³ca pocz±tkow± czê¶æ ³añcucha wskazywanego
+przez \fInptr\fP na
+.IR int .
+Dzia³a tak samo, jak
+.sp
+.RS
+.B strtol(nptr, (char **)NULL, 10);
+.RE
+.sp
+z wyj±tkiem tego, ¿e \fBatoi()\fP nie wykrywa b³êdów.
+.PP
+Funkcje \fBatol()\fP i \fBatoll()\fP zachowuj± siê tak samo, jak \fBatoi\fR,
+z tym wyj±tkiem, ¿e przekszta³caj± pocz±tkow± czê¶æ przekazanego im ³añcucha
+na - w zale¿no¶ci od typu zwracanego przez te funkcje - odpowiednio
+\fIlong\fP oraz \fIlong long\fP.
+\fBatoq()\fP jest przestarza³± nazw± dla \fBatoll()\fP.
+.SH "WARTO¦Æ ZWRACANA"
+Zwracany jest wynik przekszta³cenia.
+.SH "ZGODNE Z"
+SVID 3, POSIX.1, BSD 4.3, ISO/IEC 9899.  ISO/IEC 9899:1990 (C89) i
+POSIX.1 (edycja z 1996r.) zawieraj± tylko funkcje \fBatoi()\fP i
+\fBatol()\fP; C99 dodaje funkcje \fBatoll()\fP.
+.SH UWAGI
+Niestandardowa funkcja \fBatoq()\fP nie wystêpuje w libc 4.6.27
+i glibc 2, ale jest obecna w libc5 i libc 4.7 (chocia¿ tylko jako funkcja
+w³±czana (inline) w \fB<stdlib.h>\fP a¿ do libc 5.4.44).  Funkcja
+\fBatoll()\fP wystêpuje w glibc 2 od wersji 2.0.2, ale ma jej w libc4 i libc5.
+.SH "ZOBACZ TAK¯E"
+.BR atof (3),
+.BR strtod (3),
+.BR strtol (3),
+.BR strtoul (3)

@@ -1,0 +1,282 @@
+#! /usr/bin/perl
+
+# skrypt wspomagaj±cy rezerwacjê t³umaczenia pliku dla PTM
+
+# Pamiêtaj, proszê o skopiowaniu tego skryptu do prywatnego katalogu
+# z plikami wykonywalnymi (np. ~/bin). Zmiany przeprowad¼ na takiej,
+# prywatnej kopii. Nie chcieliby¶my, by zmienia³ siê w repozytorium PTM
+# ka¿dorazowo z kolejnymi osobami, tworz±c zamieszanie, prawda?
+
+###################################################
+#
+#   HQ, X-1999
+#   w podziêkowaniu Przemkowi Borysowi za PTM
+#   i inspiracjê t³umaczeniami perl*.1
+#
+###################################################
+
+
+############################ KONFIGURACJA ##################################
+
+# ----------------------- to raczej nie wymaga zmian -----------------------
+
+# ¦cie¿ka do lokalnych zasobów pl_PL
+#
+$PLPL = "..";
+
+# ¦cie¿ka alternatywna - gdy uruchamiamy np. z ~/bin
+#
+$PLALTERNATE = $ENV{PTM_PL_DIR};
+
+# Twój adres poczty elektronicznej - ten sam, który identyfikuje ciê 
+# w pliku 'robotnicy' z modu³u pl_PL
+#
+$EMAIL = $ENV{PTM_EMAIL};	
+
+# Twoje imiê i nazwisko
+#
+$IMIE = $ENV{PTM_NAME};
+
+# Katalog, gdzie przechowujesz orygina³y do przet³umaczenia.
+# Nie u¿ywaj proszê listy katalogów. Ten skrypt na razie jest zbyt g³upi :(
+#
+($MAN) = split(":",$ENV{MANPATH});   # pierwszy katalog z $MANPATH wystarczy ;)
+$MAN="/usr/man" if ($MAN eq "");     # nieustawione ¶rodowisko - to siê zdarza
+
+# czy rezerwowany plik dodaæ na koniec ju¿ wziêtych przez siebie
+$NA_KONIEC = 1;
+
+# ------------------ a tego na pewno nie zmieniamy ---------------------------
+
+# pe³na nazwa pliku t³umaczy
+$TLUMACZE = "$PLPL/zasoby/robotnicy";
+
+# tymczasowy plik t³umaczy (w tym samym katalogu co $TLUMACZE)
+$TMP_TLUM = "$TLUMACZE.tmp";
+
+# kopia archiwalna pliku t³umaczy (w tym samym katalogu co $TLUMACZE)
+$OLD_TLUM = "$TLUMACZE~";
+
+############################################################################
+
+# tu bêdziemy przechowywaæ dane t³umaczy
+@ludzie=();
+
+# tablica @pliki bêdzie zawieraæ skalary przechowuj±ce odwo³ania do anonimowych
+# tablic z plikami danego t³umacza. Rozmiar tablicy @pliki jest, oczywi¶cie,
+# równy rozmiarowi tablicy @ludzie. W ten sposób emulujemy tablice 2-wymiarowe.
+#
+# Ta metoda nie jest najlepsza, gdy¿ wymaga przechowania ca³ego pliku w pamiêci;
+# u¿yto jej tutaj g³ownie do celów edukacyjnych (perlref.1)
+@pliki=();
+
+# szybki dostêp do par plik-t³umacz przez tablicê asocjacyjn±
+%czyj={};
+
+# ---------------------------------------------------------------------------
+sub czytajROB() {
+    open(PLIK,"< $TLUMACZE") or die "Nie mogê otworzyæ pliku '$TLUMACZE'\n";
+    while (defined($wiersz=<PLIK>)) {
+	chomp($wiersz);
+	if ($wiersz=~/\//) {  # po tym poznamy wizytówkê t³umacza
+	    if ($#ludzie == $#pliki) { # poprzedni t³umacz nie mia³ plików
+		push @ludzie, $wiersz  # rozumiem, ¿e to wspólne t³umaczenie
+		}
+	    else {
+		@ludzie[$#ludzie] = "@ludzie[$#ludzie]\n$wiersz";
+		}
+	    next;
+	    }
+	push @{$pliki[$#ludzie]}, $wiersz;  # plik do odpowiedniej podtablicy
+	}
+    close(PLIK);
+    # czyj jest dany plik, umie¶cimy w haszu (szybkie szukanie)
+    for ($i=0; $i<=$#ludzie; $i++) {
+        foreach $plik (@{$pliki[$i]}) {	# pliki i-tego t³umacza
+	    $czyj{$plik} = @ludzie[$i];
+	    }
+	}
+    }  # end sub
+# ---------------------------------------------------------------------------
+sub TakNie($) { # parametr - tekst zachêty, zwraca logiczn± wg tak/nie
+    my $zacheta = shift;
+    my $odp = "";
+    while (!($odp=~/^\s*[TtYyNn]/)) {
+        print "$zacheta"; $odp=<STDIN>;
+        chomp($odp);
+        }
+    return ($odp =~/^\s*[TtYy]/)
+    }
+# ---------------------------------------------------------------------------
+sub Dopisz($) { # dopisuje plik do listy t³umaczonych przez Ciebie
+    my $plik = shift;
+    open(TMP_TLUM,"> $TMP_TLUM") 
+	or die "Nie mogê utworzyæ tymczasowego pliku '$TMP_TLUM'\n"; 
+    for ($i=0; $i<=$#ludzie; $i++) {
+	print TMP_TLUM "@ludzie[$i]\n";		# t³umacz
+	if ((@ludzie[$i]=~/$IMIE/) && ! $NA_KONIEC) {	# pocz.w³asnej sekcji
+	    print TMP_TLUM "$plik\n";
+	    }
+        foreach $staryplik (@{$pliki[$i]}) {	# pliki t³umacza
+	    print TMP_TLUM "$staryplik\n";
+	    }
+	if ((@ludzie[$i]=~/$IMIE/) && $NA_KONIEC) {	# koniec w³asnej sekcji
+	    print TMP_TLUM "$plik\n";
+	    }
+	}
+    close(TMP_TLUM);
+    # a teraz zamieniamy na w³a¶ciwy
+    unlink($OLD_TLUM);
+    rename($TLUMACZE, $OLD_TLUM)
+	or die "K³opoty ze zmiana nazwy '$TLUMACZE'\n";
+    rename($TMP_TLUM, $TLUMACZE)
+	or die "K³opoty ze zmian± nazwy tymczasowego '$TMP_TLUM'\n";
+    print "Dokonano rezerwacji '$plik'.\n";
+    } # end sub
+# ---------------------------------------------------------------------------
+sub StatusTlumaczenia($) {  # drukuje status t³umaczonego pliku
+    my $plk = shift;
+    print "$czyj{$plk}\n";
+    ($cyf)=($plk=~/\.([n1-9])[^.]*$/);
+    if (-f "$PLPL/man$cyf/$plk") {
+        print "i przet³umaczony.\n";
+        }
+    else {
+        print "choæ jeszcze nie gotowy.\n"
+        }
+    }
+# ---------------------------------------------------------------------------
+sub Rezerwacja($) {	# szukanie mo¿liwo¶ci rezerwacji pliku
+    my $plik = shift;
+
+    $jest = 0 ;
+    for ($i=0; $i<=$#ludzie; $i++) {
+	if (@ludzie[$i]=~/$IMIE/) {$jest = 1}
+	}
+    die "Niestety, nie znalaz³em Ciê w¶ród t³umaczy. Skrypt jest zbyt g³upi :-(\n"
+	unless $jest;
+	
+    die "Podaj, proszê, nazwê pliku bez ¶cie¿ki.\n"
+	if ($plik=~/\//);
+
+    ($cyfra)=($plik=~/\.([n1-9])[^.]*$/);
+    die "Nie mogê znale¼æ sekcji, w której mia³by byæ '$plik'.\n"
+	if ($cyfra eq "");
+
+    ($baza)=($plik=~/(.*\.[n1-9])[^.]*$/); # obetnij literê po numerze sekcji
+    $jest = 0 ;
+    if ( exists $czyj{$plik} ) {
+	$jest = 1;
+	print "\nPlik '$plik' ju¿ wziêty przez:\n";
+	&StatusTlumaczenia($plik);
+        }
+    else {  # nie ma pliku z dok³adnie tak± nazw±
+        if ( ($baza ne $plik) && (exists $czyj{$baza}) ) {
+	    print "\nPodobny plik '$baza', wziêty przez:\n";
+	    &StatusTlumaczenia($baza);
+            if (! TakNie("Mo¿liwe, ¿e to ten sam. Kontynuowaæ? ")) {
+		$jest = 1;
+		}
+	    }
+        if ($baza eq $plik) { # podano *.[1-9], mo¿e t³umaczono *.[1-9][a-z]?
+	    $znalazl = 0;
+	    foreach $plk (keys %czyj) {
+		if ($plk=~/($baza[a-zA-Z])$/) {
+		    $znalazl = 1;
+		    $inny = $1;
+		    }
+		}
+	    if ($znalazl) {
+		print "\nPodobny plik '$inny', wziêty przez:\n";
+		&StatusTlumaczenia($inny);
+        	if (! TakNie("Mo¿liwe, ¿e to ten sam. Kontynuowaæ? ")) {
+		    $jest = 1;
+		    }
+		}
+	    }
+	}
+    if (! $jest) {
+        if (-f "$PLPL/man$cyfra/$plik") {
+	    print "\nDziwne, plik '$plik' jest w zasobach PTM,\n";
+	    print "ale brak adnotacji na li¶cie t³umaczy. Czy¿by literówka?\n";
+	    }
+        elsif (-f "$PLPL/man$cyfra/$baza") {
+	    print "\nW zasobach PTM jest plik o zbli¿onej nazwie '$baza',\n";
+	    print "ale brak adnotacji na li¶cie t³umaczy. Czy¿by ten sam?\n";
+            if (TakNie("Czy mimo to chcesz go zarezerwowaæ? ")) {
+	        &Dopisz($plik);
+	        }
+	    }
+	else {
+	    if (-f "$MAN/man$cyfra/$plik") {
+	        print "\nWygl±da na to, ¿e mo¿esz wzi±æ '$plik'\n";
+	        if (TakNie("Czy chcesz go zarezerwowaæ? ")) {
+		    &Dopisz($plik);
+		    }
+	        }
+	    elsif (-f "$MAN/man$cyfra/$baza") {
+		print "Nie znalaz³em pliku orygina³u, ale jest o podobnej nazwie\n";
+	        print "\t'$MAN/man$cyfra/$baza'.\n";
+	        if (TakNie("Czy chcesz go zarezerwowaæ pod nazw± '$plik'? ")) {
+		    &Dopisz($plik);
+		    }	
+	        elsif (TakNie("A pod oryginaln± nazw± ('$baza')? ")) {
+		    &Dopisz($plik);
+		    }	
+		}
+	    else {  # brak orygina³u
+	        print "\nNikt jeszcze nad nim nie pracowa³, ";
+	        print "ale nie znalaz³em pliku orygina³u\n";
+	        print "\t'$MAN/man$cyfra/$plik'.\n";
+	        if (TakNie("Czy mimo to chcesz go zarezerwowaæ? ")) {
+		    &Dopisz($plik);
+		    }	
+		}
+	    }
+	    } # brak takiego pliku
+    print "\n";
+    } # end sub Rezerwacja
+# ---------------------------------------------------------------------------
+
+############################################################################
+
+$plik=shift or die <<SYNTAX;
+Sk³adnia: $0 plik
+Rezerwuje do t³umaczenia w PTM podany plik podrêcznika man.
+SYNTAX
+
+if (! -d "$PLPL/CVS" || ! -d "$PLPL/zasoby" || ! -f "$PLPL/FAQ")
+	{
+	if ("$PLALTERNATE" ne "")
+	    {
+	    $PLPL = "$PLALTERNATE";
+	    $TLUMACZE = "$PLPL/zasoby/robotnicy";
+	    $TMP_TLUM = "$TLUMACZE.tmp";
+	    $OLD_TLUM = "$TLUMACZE~";
+	    }
+	else
+	    {
+	    print "\nUWAGA!\nObecna wersja programu przystosowana jest do pracy\nbezpo¶rednio z poziomu katalogu CVS.\
+Je¶li chcesz u¿ywaæ jej z tej lokacji musisz ustawiæ zmienn± ¶rodowiskow± PTM_PL_DIR,\nwskazuj±c± na po³o¿enie katalogu pl_PL z CVS-u.\
+Na przyk³ad: export PTM_PL_DIR=\"\$HOME/cvs/pl_PL\"\n";
+	    exit (1);
+	    }
+	}
+
+if ($EMAIL eq "")
+    {
+    print "Wyeksportuj zmienn± PTM_EMAIL zawieraj±c± twój adres poczty\nelektronicznej identyfikuj±cy ciê w pliku robotnicy\n";
+    exit (1);
+    }
+
+if ($IMIE eq "")
+    {
+    print "Wyeksportuj zmienn± PTM_NAME zawieraj±c± twoje imiê i nazwisko,\ntakie jak identyfikuj±ce ciê w pliku robotnicy\n";
+    exit (1);
+    }
+print "\nU¿ytkownik: $IMIE <$EMAIL>\n";
+
+&czytajROB;	 # "zassanie" ca³ego pliku t³umaczy do zmiennych
+&Rezerwacja($plik);
+
+# end of script

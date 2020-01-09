@@ -1,0 +1,88 @@
+.\" T³umaczenie na podstawie wersji man-pages 1.45
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" ------------
+.\" Copyright (C) 2001 Andries Brouwer <aeb@cwi.nl>.
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" ------------
+.TH LOCKFILE 3  2001-10-18 "" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+flockfile, ftrylockfile, funlockfile \- blokowanie strumienia FILE dla stdio
+.SH SK£ADNIA
+.nf
+.B #include <stdio.h>
+.sp
+.BI "void flockfile(FILE *" filehandle );
+.br
+.BI "int ftrylockfile(FILE *" filehandle );
+.br
+.BI "void funlockfile(FILE *" filehandle );
+.fi
+.SH OPIS
+Powy¿sze funkcje stdio s± przystosowane do pracy wielow±tkowej.
+Uzyskuje siê to poprzez przypisanie ka¿demu z obiektów FILE licznika blokad
+oraz (dla niezerowej warto¶ci licznika) w±tku bêd±cego jego w³a¶cicielem.
+Przy ka¿dym wywo³aniu funkcji bibliotecznej funkcje te czekaj± a¿ obiekt FILE
+nie bêdzie ju¿ blokowany przez inny w±tek, a nastêpnie go blokuj±, wykonuj±
+¿±dane operacje we/wy i odblokowuj± obiekt ponownie.
+.LP
+(Uwaga: blokowanie to nie ma nic wspólnego z blokowaniem plików za pomoc±
+funkcji w rodzaju
+.BR flock (2)
+i
+.BR lockf (3).)
+.LP
+Wszystko to dzieje siê w sposób niewidoczny dla programisty C, jednak mog±
+pojawiæ siê dwa powody wymagaj±ce bardziej szczegó³owej kontroli.
+Z jednej strony, szereg operacji we/wy wykonywanych w jednym w±tku mo¿e
+stanowiæ ca³o¶æ, która nie mo¿e zostaæ przerwana przez operacjê we/wy
+innego w±tku. Z drugiej strony, mo¿e istnieæ potrzeba unikniêcia narzutu
+wywo³anego przez pojedyncze blokady w celu uzyskania wiêkszej wydajno¶ci.
+.LP
+W takich sytuacjach w±tek mo¿e jawnie zablokowaæ obiekt FILE, wykonaæ
+szereg operacji we/wy i odblokowaæ go. Uniemo¿liwia to innym w±tkom
+przeszkadzanie w miêdzyczasie. Je¶li powodem za³o¿enia blokady ma byæ
+osi±gniêcie wiêkszej wydajno¶ci, wykonuje siê operacje we/wy za pomoc±
+nieblokuj±cych wersji funkcji stdio: \fIgetc_unlocked\fP() i
+\fIputc_unlocked\fP() zamiast \fIgetc\fP() i \fIputc\fP().
+.LP
+Funkcja \fBflockfile()\fP czeka a¿ *\fIfilehandle\fP nie bêdzie zablokowany
+przez inny w±tek, a nastêpnie czyni bie¿±cy w±tek w³a¶cicielem
+*\fIfilehandle\fP i zwiêksza o jeden licznik blokad.
+.LP
+Funkcja \fBfunlockfile()\fP zminiejsza licznik blokad o jeden.
+.LP
+Funkcja \fBftrylockfile()\fP jest nieblokuj±c± wersj± \fBflockfile()\fP.
+Nie robi ona nic gdy inny w±tek jest w³a¶cicielem *\fIfilehandle\fP, a w
+przeciwnym przypadku przejmuje w³asno¶æ i zwiêksza o jeden licznik blokad.
+.SH "WARTO¦Æ ZWRACANA"
+Funkcja \fBftrylockfile()\fP zwraca zero w przypadku sukcesu
+(blokada zosta³a za³o¿ona), a warto¶æ niezerow± w razie niepowodzenia.
+.SH B£ÊDY
+Brak.
+.SH DOSTÊPNO¦Æ
+Funkcje te s± dostêpne, gdy zdefiniowane jest _POSIX_THREAD_SAFE_FUNCTIONS.
+Znajduj± siê one w libc pocz±wszy od libc 5.1.1 oraz w glibc pocz±wszy od
+glibc 2.0.
+.SH "ZGODNE Z"
+POSIX.1
+.SH "ZOBACZ TAK¯E"
+.BR unlocked_stdio (3)

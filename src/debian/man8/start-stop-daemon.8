@@ -1,0 +1,264 @@
+.\" {PTM/PR/0.2/16\-01\-2000/"uruchamia i zatrzymuje demony systemowe"}
+.\" Translation 1999\-2000 by Piotr Roszatycki
+.\" Translation update: Robert Luberda, Jul 2004, dpkg 1.10.22
+.\" Hey, Emacs!  This is an \-*\- nroff \-*\- source file.
+.TH START\-STOP\-DAEMON 8 "15 marca 1997" "Projekt Debiana" "Debian GNU/Linux"
+.SH NAZWA
+start\-stop\-daemon \- uruchamia i zatrzymuje demony systemowe
+.SH SK£ADNIA
+.B start\-stop\-daemon
+.BR \-S | \-\-start
+.IR opcje
+.RB [ \-\- ]
+.IR argumenty
+.HP
+.B start\-stop\-daemon
+.BR \-K | \-\-stop
+.IR opcje
+.HP
+.B start\-stop\-daemon
+.BR \-H | \-\-help
+.HP
+.B start\-stop\-daemon
+.BR \-V | \-\-version
+.SH OPIS
+.B start\-stop\-daemon
+jest wykorzystywany do kontroli procesów uruchamianych i zatrzymywanych
+podczas prze³±czania trybów pracy.
+Opcje
+.BR \-\-exec ", " \-\-pidfile ", " \-\-user " i " \-\-name
+mog± okre¶liæ, w jaki sposób
+.B start\-stop\-daemon
+ma sprawdziæ, czy dany proces jest ju¿ uruchomiony.
+
+Operacja
+.B \-\-start
+wymaga, aby
+.B start\-stop\-daemon
+sprawdzi³, czy dany proces jest ju¿ uruchomiony.
+Je¶li proces ju¿ istnieje,
+.B start\-stop\-daemon
+nie wykonuje ¿adnych czynno¶ci i koñczy siê, zwracaj±c
+kod b³êdu 1 (lub 0, je¶li podano opcjê
+.BR \-\-oknodo ).
+Je¶li dany proces nie jest jeszcze uruchomiony,
+to wykonywany jest program okre¶lony opcj±
+.B \-\-exec
+(lub, je¶li podano, opcj±
+.BR \-\-startas ).
+Wszelkie argumenty podane tu¿ po opcji
+.B \-\-
+s± przekazywane do wykonywanego polecenia.
+
+Operacja
+.B \-\-stop
+tak¿e powoduje, ¿e
+.B start\-stop\-daemon
+sprawdza, czy dany proces jest ju¿ uruchomiony. Je¶li tak jest, to
+.B start\-stop\-daemon
+wysy³a sygna³ okre¶lony opcj±
+.B \-\-signal
+i koñczy swoj± pracê z kodem b³êdu 0.
+Je¶li proces nie istnieje,
+.B start\-stop\-daemon
+koñczy siê z kodem b³êdu 1 (lub 0, je¶li podano opcjê
+.BR \-\-oknodo ).
+Je¿eli podano opcjê
+.BR \-\-retry ,
+to
+.B start\-stop\-daemon
+sprawdzi, czy proces(y) siê zakoñczy³(y).
+
+Proszê zauwa¿yæ, ¿e je¿eli nie podano opcji
+.BR \-\-pidfile ,
+to
+.B start\-stop\-daemon
+zachowuje siê podobnie do
+.BR killall (1).
+.B start\-stop\-daemon
+przejrzy tabelê procesów, szukaj±c jakiegokolwiek procesu o zgodniej
+nazwie, identyfikatorze u¿ytkownika i/lub grupy (je¿eli je podano).
+Znalezienie jakiegokolwiek pasuj±cego procesu spowoduje, ¿e
+.BR \-\-start
+nie uruchomi procesu.
+W wypadku opcji
+.BR \-\-stop
+do wszystkich pasuj±cych procesów zostanie
+wys³any sygna³ KILL.
+Procesom, maj±cym d³ugo uruchomione dzieci, które musz± prze¿yæ
+operacjê
+.BR \-\-stop ,
+nale¿y okre¶liæ plik pidfile.
+
+.SH OPCJE
+
+.TP
+\fB\-x\fP|\fB\-\-exec\fP \fIprogram\fP
+Sprawdza istnienie procesów, które by³yby wywo³ane uruchomieniem podanego
+w opcji programu (sprawdzana jest zawarto¶æ
+.B /proc/\fIpid\fB/exe\fP
+).
+.TP
+\fB\-p\fP|\fB\-\-pidfile\fP \fIplik-pid\fP
+Sprawdzanie procesów, których pid jest podany w pliku
+.IR plik-pid .
+.TP
+\fB\-u\fP|\fB\-\-user\fP \fIu¿ytkownik\fP|\fIuid\fP
+Sprawdzanie dla procesów, których w³a¶cicielem jest u¿ytkownik
+o nazwie
+.I u¿ytkownik
+lub numerze
+.IR uid .
+.TP
+\fB\-n\fP|\fB\-\-name\fP \fInazwa-procesu\fP
+Sprawdzanie dla procesów o nazwie
+.I nazwa-procesu
+(sprawdzana jest zawarto¶æ
+.BR /proc/\fIpid\fB/stat\fP ).
+.TP
+\fB\-s\fP|\fB\-\-signal\fP \fIsygna³\fP
+Przy operacji
+.BR \-\-stop ,
+wysy³any jest sygna³ o podanej warto¶ci do zatrzymywanego procesu
+(domy¶lnie jest to 15).
+.TP
+\fB\-R\fP|\fB\-\-retry\fP \fItimeout\fP|\fIplan-dzia³ania\fP
+W czasie operacji
+.B \-\-stop
+powoduje sprawdzenie przez
+.BR start\-stop\-daemon ,
+czy proces(y) siê zakoñczy³(y). Sprawdzanie jest powtarzane, je¿eli dzia³a
+jakikolwiek pasuj±cy proces, dopóki wszystkie siê nie skoñcz±.
+Je¿eli procesy siê nie zakoñcz±, podejmowane s± akcje okre¶lone przez
+parametr
+.IR plan-dzia³ania .
+
+Je¿eli okre¶lono
+.I timeout
+zamiast
+.IR plan-dzia³ania ,
+to wtedy u¿ywany jest nastêpuj±cy plan dzia³ania:
+.IB sygna³ / timeout /KILL/ timeout \fR,
+gdzie
+.I sygna³
+jest okre¶lony za pomoc± opcji
+.BR \-\-signal .
+
+.I plan-dzia³ania
+jest list± co najmniej dwóch warto¶ci oddzielonych znakami uko¶nika
+.RB ( / );
+ka¿d± z tych warto¶ci mo¿e byæ albo
+.BI \- numer-sygna³u
+lub [\fB\-\fP]\fInazwa-sygna³u\fP, co oznacza wys³anie tego sygna³u,
+albo
+.IR timeout ,
+okre¶laj±cy liczbê sekund, któr± nale¿y czekaæ na zakoñczenie procesu,
+albo
+.IR forever ,
+oznaczaj±cy, ¿e reszta planu dzia³ania ma byæ powtarzana dopóki jest to
+konieczne.
+
+Je¿eli osi±gniêto koniec planu dzia³ania, a opcja
+.B forever
+nie zosta³a u¿yta, to
+.B start\-stop\-daemon
+koñczy dzia³anie z kodem b³êdu 2.
+Je¿eli zosta³ okre¶lony plan dzia³ania, to sygna³ podany w
+.B \-\-signal
+jest ignorowany.
+.TP
+\fB\-a\fP|\fB\-\-startas\fP \fI¶cie¿ka\fP
+Przy operacji
+.BR \-\-start ,
+Uruchamiany jest program o okre¶lonej
+.IR ¶cie¿ce .
+Je¶li brak tej opcji, domy¶lnie uruchamiany jest program podany
+w opcji
+.BR \-\-exec .
+.TP
+.BR \-t | \-\-test
+Wy¶wietlana jest czynno¶æ, jak± nale¿a³oby wykonaæ, a tak¿e zwracany
+jest odpowiedni kod b³êdu, ale opcja ta nie powoduje ¿adnych operacji.
+.TP
+.BR \-o | \-\-oknodo
+Zwracany jest kod b³êdu 0, nawet gdyby operacja nie zakoñczy³a siê
+powodzeniem (zwróci³aby 1).
+.TP
+.BR \-q | \-\-quiet
+Nie s± wy¶wietlane ¿adne informacje oprócz komunikatów o b³êdach.
+.TP
+\fB\-c\fP|\fB\-\-chuid\fP \fIu¿ytkownik\fR|\fIuid\fP
+Zmiana u¿ytkownika/uid przed uruchomieniem procesu. Mo¿na tak¿e zmieniæ
+grupê poprzez do³±czenie
+.B :
+wraz z nazw± grupy b±d¼ numerem gid, podobnie
+jak w poleceniu `chown' (\fIu¿ytkownik\fP\fB:\fP\fIgrupa\fP).
+Podczas korzystania z tej
+opcji nale¿y pamiêtaæ, ¿e grupa g³ówna i poboczne zostan± ustawione, nawet gdy
+nie podano opcji
+.BR \-\-group .
+Opcja
+.B \-\-group
+jest przydatna tylko dla grup, których podany u¿ytkownik nie jest cz³onkiem
+(na przyk³ad przy dodawaniu procesowi cz³onkostwa grupy dla takich
+u¿ytkowników jak
+.BR nobody ).
+.TP
+\fB\-r\fP|\fB\-\-chroot\fP \fIroot\fP
+Zmienia katalog bie¿±cy na
+.I root
+i czyni go g³ównym katalogiem (rootem) przed wystartowaniem procesu.
+Proszê zauwa¿yæ, ¿e plik pidfile jest tworzony po wykonaniu chroot.
+.TP
+\fB\-d\fP|\fB\-\-chdir\fP \fI¶cie¿ka\fP
+Przed uruchomieniem procesu zmienia katalog bie¿±cy na
+.IR ¶cie¿kê .
+Robione jest to przed zmienieniem g³ównego katalogu (roota),
+je¿eli podano równie¿ opcjê \fB\-r\fP|\fB\-\-chroot\fP. Je¶li
+nie podano tej opcji, to przed uruchomieniem procesu
+.B start\-stop\-daemon
+ustawi jego katalog bie¿±cy na g³ówny katalog (root).
+.TP
+.BR \-b | \-\-background
+Zwykle u¿ywa siê tej opcji dla programów, które nie od³±czaj± siê od terminala
+(detach) samoistnie. Ta opcja spowoduje, ¿e
+.B start\-stop\-daemon
+utworzy proces potomny przed uruchomieniem programu i bêdzie kontynuowaæ
+go w tle.
+.B UWAGA: start\-stop\-daemon
+nie mo¿e sprawdziæ kodu b³êdu je¿eli proces siê nie wykona z
+.B jakiegokolwiek
+powodu. Ta opcja powinna byæ u¿ywana w ostateczno¶ci, gdy dany program
+sam nie tworzy procesu potomnego.
+.TP
+\fB\-N\fP|\fB\-\-nicelevel\fP \fIliczba\fP
+Zmienia priorytet uruchamianego procesu.
+.TP
+.BR \-m | \-\-make\-pidfile
+Opcja u¿ywana, gdy program sam nie tworzy w³asnego pliku pid. Wykorzystanie
+tej opcji spowoduje, ¿e
+.B start\-stop\-daemon
+utworzy plik, który zosta³ podany w opcji
+.B \-\-pidfile
+i umie¶ci w nim numer pid tu¿ przed uruchomieniem procesu. Nale¿y zauwa¿yæ,
+¿e ta opcja nie skasuje tego pliku po zatrzymaniu programu.
+.B UWAGA:
+Ta opcja mo¿e nie zadzia³aæ w ka¿dym przypadku. Zadzia³a przede wszystkim,
+gdy program zostanie uruchomiony z procesu potomnego, dlatego te¿ ta
+opcja jest u¿yteczna jedynie wraz z opcj±
+.BR \-\-background .
+.TP
+.BR \-v | \-\-verbose
+Wy¶wietlane s± dodatkowe komunikaty.
+.TP
+.BR \-H | \-\-help
+Wy¶wietlana jest krótka pomoc.
+.TP
+.BR \-V | \-\-version
+Wy¶wietlana jest informacja o wersji programu.
+
+.SH AUTORZY
+Marek Micha³kiewicz <marekm@i17linuxb.ists.pwr.wroc.pl> na podstawie
+poprzedniej wersji napisanej przez Iana Jacksona <ijackson@gnu.ai.mit.edu>
+
+Podrêcznik napisa³ Klee Dienes <klee@mit.edu>, a poprawi³ Ian Jackson.

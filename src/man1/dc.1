@@ -1,0 +1,438 @@
+.\" {PTM/WK/0.1 /21-08-1999/"kalkulator dowolnej precyzji"}
+.\" wersja 1.06, z listopada 2000.
+.\"
+.\" dc.1 - the *roff document processor source for the dc manual
+.\"
+.\" This file is part of GNU dc.
+.\" Copyright (C) 1994, 1997, 1998, 2000 Free Software Foundation, Inc.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License , or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; see the file COPYING.  If not, write to:
+.\"   The Free Software Foundation, Inc.
+.\"   59 Temple Place, Suite 330
+.\"   Boston, MA 02111 USA
+.\"
+.TH DC 1 "1997-03-25" "Projekt GNU"
+.ds dc \fBdc\fP
+.ds Dc \fBDc\fP
+.SH NAZWA
+dc - kalkulator dowolnej precyzji
+.SH SK£ADNIA
+.B dc
+.RB [ -V ]
+.RB [ --version ]
+.RB [ -h ]
+.RB [ --help ]
+.RB [ -e
+.IR wyra¿-skryptowe ]
+.RB [ --expression=
+.IR wyra¿-skryptowe ]
+.RB [ -f
+.IR plik-skryptu ]
+.RI [ --file=
+.RB plik-skryptu ]
+.RI [ plik ...]
+.SH OPIS
+Dokument ten opisuje \fBdc\fR w wersji 1.06, z listopada 2000.
+.PP
+\fBdc\fR jest kalkulatorem pracuj±cym w odwrotnej notacji polskiej,
+obs³uguj±cym arytmetykê nieograniczonej precyzji.
+Pozwala równie¿ na definiowanie i wywo³ywanie makr.
+Zwykle \fBdc\fR czyta ze standardowego wej¶cia. Je¶li u¿yto argumentów
+polecenia \fBdc\fR, to s± one traktowane jak nazwy plików. Zawarto¶æ tych
+plików jest odczytywana i wykonywana przez \fBdc\fR przed odczytem
+standardowego wej¶cia.
+Wszystkie zwyk³e wyniki kierowane s± na standardowe wyj¶cie; wszystkie
+komunikaty o b³êdach kierowane s± na standardowe wyj¶cie b³êdów.
+.PP
+Kalkulator odwrotnej notacji polskiej przechowuje liczby na stosie.
+Wprowadzenie liczby odk³ada j± na stos.
+Operacje arytmetyczne pobieraj± argumenty ze stosu i odk³adaj± na nim wyniki.
+.PP
+W celu wprowadzenia liczby do \fBdc\fR wpisujemy cyfry z opcjonaln±
+kropk± dziesiêtn±. Nie jest rozpoznawana notacja wyk³adnicza.
+Liczbê ujemn± poprzedzamy znakiem podkre¶lenia ``_''. Nie mo¿na pos³u¿yæ
+siê w tym celu znakiem ``-'' (minus), gdy¿ jest to dwuargumentowy operator
+odejmowania.
+Dwie kolejne liczby wprowadzamy oddzielaj±c je spacjami lub znakami nowej
+linii.  Nie maj± one znaczenia jako polecenia.
+.SH OPCJE
+\*(Dc mo¿na wywo³ywaæ z nastêpuj±cymi opcjami wiersza poleceñ:
+.TP
+.B -V
+.TP
+.B --version
+Wypisuje numer wersji uruchomionego \*(dc i informacjê o prawach autorskich,
+a nastêpnie koñczy dzia³anie.
+.TP
+.B -h
+.TP
+.B --help
+Wypisuje komunikat o sposobie wywo³ania, podaj±c w skrócie opcje wiersza
+poleceñ i adres, na który nale¿y zg³aszaæ b³êdy, a nastêpnie koñczy dzia³anie.
+.TP
+.B -e \fIskrypt\fP
+.TP
+.BI --expression= skrypt
+Dodaje polecenia ze
+.I skryptu
+do zestawu poleceñ, jakie maj± byæ wykonane podczas przetwarzania wej¶cia.
+.TP
+.B -f \fIplik-skryptu\fP
+.TP
+.BI --file= plik-skryptu
+Dodaje polecenia zawarte w
+.I pliku-skryptu
+do zestawu poleceñ, jakie maj± byæ wykonane podczas przetwarzania wej¶cia.
+.PP
+Je¿eli po przetworzeniu powy¿szych opcji pozostan± jeszcze jakie¶ parametry
+wiersza poleceñ, to s± one interpretowane jako nazwy plików wej¶ciowych,
+które nale¿y wykonaæ.  Nazwa \fB-\fP odnosi siê do standardowego strumienia
+wej¶ciowego.  Je¶li nie podano ani opcji \fB-e\fP ani ¿adnych plików, to
+polecenia do wykonania bêd± czytane ze standardowego wej¶cia.
+.PD
+.SH Polecenia wypisywania
+.TP
+.B p
+Wypisuje warto¶æ z wierzcho³ka stosu, bez jego zmiany. Po warto¶ci wypisywany
+jest znak nowej linii.
+.TP
+.B n
+Wypisuje warto¶æ z wierzcho³ka stosu, zdejmuj±c j± równocze¶nie ze stosu.
+Nie wypisuje po niej znaku nowej linii.
+.B P
+Zdejmuje warto¶æ z wierzcho³ka stosu.
+Je¶li jest to ³añcuch, to jest on po prostu wypisywany bez koñcowego znaku
+nowej linii. W przeciwnym razie jest to liczba, a czê¶æ ca³kowita jej
+warto¶ci bezwzglêdnej wypisywana jest jako strumieñ bajtów "o podstawie
+(UCHAR_MAX+1)". Zak³adaj±c, ¿e (UCHAR_MAX+1) wynosi 256 (jak to jest
+w wiêkszo¶ci maszyn o 8-bitowych bajtach), funkcjê tê realizuje tak¿e
+sekwencja \fBKSK 0k1/ [_1*]sx d0>x [256~aPd0<x]dsxx sxLKk\fP, z wyj±tkiem
+skutku ubocznego, jakim jest nadpisanie warto¶ci z rejestru x.
+.TP
+.B f
+Wypisuje ca³± zawarto¶æ stosu
+.ig
+i zawarto¶æ wszystkich rejestrów,
+..
+nie zmieniaj±c niczego.
+Jest polecenie przydatne w sytuacji, gdy siê pogubili¶my lub chcemy siê
+zorientowaæ, jaki by³ efekt pewnych poleceñ.
+.PD
+.SH Arytmetyka
+.TP
+.B +
+Zdejmuje ze stosu dwie warto¶ci, dodaje je i odk³ada wynik na stos.
+Dok³adno¶æ wyniku zale¿y wy³±cznie od warto¶ci argumentów i jest
+wystarczaj±co ¶cis³a.
+.TP
+.B -
+Zdejmuje ze stosu dwie warto¶ci, odejmuje pierwsz± zdjêt± od drugiej
+i sk³ada wynik ponownie na stos.
+.TP
+.B *
+Zdejmuje ze stosu dwie warto¶ci, mno¿y je i odk³ada wynik na stos.
+Liczba cyfr u³amkowych wyniku jest kontrolowana przez aktualn± warto¶æ
+dok³adno¶ci (patrz ni¿ej) i liczby cyfr u³amkowych mno¿onych warto¶ci.
+.TP
+.B /
+Zdejmuje ze stosu dwie warto¶ci, dzieli drug± zdjêt± przez pierwsz±
+i odk³ada wynik ponownie na stos.
+Liczba cyfr u³amkowych wyniku okre¶lana jest przez warto¶æ dok³adno¶ci.
+.TP
+.B %
+Zdejmuje ze stosu dwie warto¶ci, oblicza resztê z dzielenia, jakie by³oby
+wykonane przez \fB/\fR i odk³ada wynik na stos.
+Obliczona warto¶æ jest t± sam±, co otrzymana z sekwencji \fBSd dld/ Ld*-\fP.
+.TP
+.B ~
+Zdejmuje ze stosu dwie warto¶ci, dzieli drug± zdjêt± przez pierwsz±.
+Odk³ada na stos iloraz, a nastêpnie resztê z dzielenia.
+Dzielenie wykonywane jest z liczb± cyfr u³amkowych okre¶lon± warto¶ci±
+dok³adno¶ci.
+(Funkcjê tê mo¿e te¿ spe³niaæ sekwencja \fBSdSn lnld/ LnLd%\fP, z nieco
+odmiennym sprawdzaniem b³êdów.)
+.TP
+.B ^
+Zdejmuje ze stosu dwie warto¶ci i wykonuje potêgowanie, pos³uguj±c siê
+pierwsz± zdjêt± jako wyk³adnikiem, za¶ drug± jako podstaw± potêgowania.
+U³amkowa czê¶æ wyk³adnika jest ignorowana.
+Warto¶æ dok³adno¶ci okre¶la liczbê cyfr u³amkowych wyniku.
+.TP
+.B |
+Zdejmuje ze stosu trzy warto¶ci i oblicza potêgowanie modulo
+[od t³um: modular exponentiation == (a^b) mod c].
+.br
+Pierwsza ze zdjêtych warto¶ci u¿ywana jest jako dzielnik operacji
+(reduction modulus).
+Warto¶æ ta musi byæ niezerowa i powinna byæ liczb± ca³kowit±.
+Druga u¿ywana jest jako wyk³adnik i musi byæ liczb± nieujemn±,
+a jej czê¶æ u³amkowa zostanie zignorowana.
+Trzecia z pobranych ze stosu warto¶ci okre¶la podstawê potêgowania,
+powinna ona byæ ca³kowita.
+Dla ma³ych liczb jest to zbli¿one do sekwencji \fBSm^Lm%\fP, ale,
+w odró¿nieniu od \fB^\fP, polecenie to dzia³a z dowolnie du¿ymi wyk³adnikami.
+.TP
+.B v
+Zdejmuje ze stosu pojedyncz± warto¶æ, oblicza jej pierwiastek kwadratowy
+i odk³ada go na stos.
+Warto¶æ dok³adno¶ci okre¶la liczbê cyfr u³amkowych wyniku.
+.PP
+Na wiêkszo¶æ operacji arytmetycznych wp³ywa ``warto¶æ dok³adno¶ci'', któr±
+ustala siê za pomoc± polecenia \fBk\fR.
+Domy¶ln± warto¶ci± dok³adno¶ci jest zero, co oznacza, ¿e wszystkie dzia³ania
+arytmetyczne z wyj±tkiem dodawania i odejmowania daj± wyniki ca³kowite.
+.PP
+Operacja reszty
+.B %
+wymaga pewnego wyja¶nienia:
+zastosowana do argumentów  ``a'' i ``b'' daje w wyniku ``a - (b * (a / b))'',
+gdzie ``a/b'' obliczane jest z bie¿±c± dok³adno¶ci±.
+.SH Kontrola stosu
+.TP
+.B c
+Czy¶ci stos, powoduje, ¿e bêdzie on pusty.
+.TP
+.B d
+Powiela warto¶æ na wierzcho³ku stosu, odk³adaj±c na stos jej kopiê.
+Zatem ``4d*p'' oblicza 4 podniesione do kwadratu i wypisuje wynik.
+.TP
+.B r
+Zamienia miejscami dwie górne warto¶ci na stosie.
+.SH Rejestry
+\fBdc\fR udostêpnia 256 rejestrów pamiêciowych, ka¿dy nazwany pojedynczym
+znakiem. W rejestrze mo¿na przechowaæ liczbê lub ³añcuch znakowy i pó¼niej
+je odtworzyæ.
+.TP
+.BI s r
+Zdejmuje warto¶æ z wierzcho³ka stosu i zapisuje w rejestrze \fIr\fR.
+.TP
+.BI l r
+Kopiuje warto¶æ zawart± w rejestrze \fIr\fR i odk³ada j± na stos.
+Nie zmienia to zawarto¶ci \fIr\fR.
+.PP
+Ka¿dy z rejestrów posiada równie¿ swój w³asny stos. Bie¿±c± warto¶ci± rejestru
+jest wierzcho³ek stosu rejestru.
+.TP
+.BI S r
+Zdejmuje warto¶æ z wierzcho³ka stosu (g³ównego) i odk³ada j± na stosie
+rejestru \fIr\fR. Poprzednia warto¶æ rejestru staje siê niedostêpna.
+.TP
+.BI L r
+Zdejmuje warto¶æ z wierzcho³ka stosu rejestru \fIr\fR i odk³ada j±
+na g³ównym stosie. Poprzednia warto¶æ stosu rejestru \fIr\fR,
+je¶li by³a takowa, jest teraz dostêpna poprzez polecenie \fBl\fIr\fR.
+.ig
+.PP
+Polecenie
+.B f
+wypisuje listê wszystkich rejestrów zawieraj±cych przechowywane warto¶ci,
+razem z tymi zawarto¶ciami. Wypisywana jest tylko bie¿±ca zawarto¶æ ka¿dego
+z rejestrów (wierzcho³ek jego stosu).
+..
+.SH Parametry
+\fBdc\fR posiada trzy parametry kontroluj±ce jego pracê:
+dok³adno¶æ, podstawê systemu pozycyjnego wej¶cia i podstawê wyj¶cia.
+Dok³adno¶æ okre¶la liczbê cyfr dziesiêtnych, jaka bêdzie zachowana w wyniku
+wiêkszo¶ci operacji arytmetycznych.
+Podstawa wej¶cia odpowiada za interpretacjê wprowadzanych liczb; wszystkie
+wprowadzane liczby u¿ywaj± tej podstawy.
+Podstawa wyj¶cia u¿ywana jest do wypisywania liczb.
+.PP
+Podstawa wej¶cia i wyj¶cia s± odrêbnymi parametrami; mo¿na spowodowaæ,
+¿e bêd± ró¿ne, co mo¿e byæ u¿yteczne lub myl±ce.
+Podstawa wej¶cia musi byæ liczb± z zakresu od 2 do 16.
+Podstawa wyj¶cia musi wynosiæ co najmniej 2.
+Dok³adno¶æ musi byæ równa zeru lub wiêksza. Dok³adno¶æ zawsze okre¶lana jest
+jako liczba cyfr dziesiêtnych, niezale¿nie od bie¿±cej podstawy wej¶cia czy
+wyj¶cia.
+.TP
+.B i
+Zdejmuje warto¶æ z wierzcho³ka stosu i pos³uguje siê ni± do ustawienia
+podstawy wej¶cia.
+.TP
+.B o
+Zdejmuje warto¶æ z wierzcho³ka stosu i pos³uguje siê ni± do ustawienia
+podstawy wyj¶cia.
+.TP
+.B k
+Zdejmuje warto¶æ z wierzcho³ka stosu i pos³uguje siê ni± do ustawienia
+dok³adno¶ci.
+.TP
+.B I
+Odk³ada bie¿±c± warto¶æ podstawy wej¶cia na stosie.
+.TP
+.B O
+Odk³ada bie¿±c± warto¶æ podstawy wyj¶cia na stosie.
+.TP
+.B K
+Odk³ada bie¿±c± dok³adno¶æ na stosie.
+.SH £añcuchy znakowe
+.PP
+\fBdc\fR oprócz pracy z liczbami mo¿e te¿ dzia³aæ na ³añcuchach znakowych.
+£añcuchy mo¿na jedynie wypisywaæ i wykonywaæ jako makra (co oznacza,
+¿e zawarto¶æ ³añcucha przetwarzana jest jako polecenia \fBdc\fR).
+Stos i wszystkie rejestry mog± przechowywaæ ³añcuchy, a \fBdc\fR zawsze wie,
+czy dany obiekt jest ³añcuchem czy liczb±.
+Niektóre z poleceñ, jak np. operacje arytmetyczne, wymagaj± liczb jako swych
+argumentów i wy¶wietlaj± b³êdy, je¶li dostarczono im ³añcuch.
+Inne akceptuj± zarówno liczby, jak i ³añcuchy znakowe. Na przyk³ad,
+polecenie
+.B p
+akceptuje oba rodzaje argumentów i wypisuje obiekt stosownie do jego typu.
+.TP
+.BI [ znaki ]
+Tworzy ³añcuch zawieraj±cy
+.I znaki
+(zawarte pomiêdzy nawiasami kwadratowymi \fB[\fR i \fB]\fR)
+i odk³ada go na stos.
+Na przyk³ad,
+.B [foo]P
+wypisuje znaki
+.B foo
+(bez zakoñczenia znakiem nowej linii).
+.TP
+.B a
+Zdejmowany jest wierzcho³ek stosu.
+Je¿eli jest to liczba, to m³odszy bajt (low-order byte) tej liczby zamieniany
+jest na ³añcuch i odk³adany na stos. W przeciwnym przypadku, wierzcho³ek stosu
+by³ ³añcuchem, a z powrotem na stos odk³adany jest pierwszy znak tego
+³añcucha.
+.TP
+.B x
+Zdejmuje warto¶æ ze stosu i wykonuje j± jako makro. Zwykle powinien to byæ
+³añcuch znakowy. Je¿eli jest to liczba, to zostanie po prostu zwrócona na stos.
+Na przyk³ad,
+.B [1p]x
+wykonuje makro
+.BR 1p ,
+które odk³ada
+.B 1
+na stosie i wypisuje
+.B 1
+w osobnym wierszu.
+.PP
+Makra s± najczê¶ciej przechowywane w rejestrach:
+.B [1p]sa
+sk³aduje makro do wypisania
+.B 1
+w rejestrze
+.BR a ,
+za¶
+.B lax
+wywo³uje to makro.
+.TP
+.BI > r
+Zdejmuje dwie warto¶ci ze stosu i porównuje je, zak³adaj±c, ¿e s± one liczbami,
+wykonuj±c zawarto¶æ rejestru
+.I r
+jako makro, je¶li pierwotny wierzcho³ek stosu jest wiêkszy.
+Tak wiêc,
+.B 1 2>a
+wywo³a zawarto¶æ rejestru
+.B a
+za¶
+.B 2 1>a
+nie wywo³a.
+.TP
+.BI !> r
+Podobnie, ale wywo³uje makro je¶li pierwotny wierzcho³ek stosu nie jest
+wiêkszy (jest mniejszy b±d¼ równy) od liczby wystêpuj±cej pod nim.
+.TP
+.BI < r
+Podobnie, ale wywo³uje makro je¶li pierwotny wierzcho³ek stosu jest mniejszy
+od liczby wystêpuj±cej pod nim.
+.BI !< r
+Podobnie, ale wywo³uje makro je¶li pierwotny wierzcho³ek stosu nie jest
+mniejszy (jest wiêkszy b±d¼ równy) od liczby wystêpuj±cej pod nim.
+.TP
+.BI = r
+Podobnie, ale wywo³uje makro, gdy obie zdjête ze stosu liczby s± równe.
+.TP
+.BI != r
+Podobnie, ale wywo³uje makro, gdy obie zdjête ze stosu liczby nie s± równe.
+.ig
+Jest to równie¿ poprawna forma sprawdzenia równo¶ci dwu ³añcuchów.
+..
+.TP
+.B ?
+Czyta wiersz z terminala i wykonuje go. Polecenie to umo¿liwia makru
+pobieranie danych od u¿ytkownika.
+.TP
+.B q
+powoduje zakoñczenie pracy makra i makra, z którego by³o ono wywo³ane.
+Polecenie to wywo³ane na najwy¿szym poziomie lub z makra wywo³anego
+bezpo¶rednio z najwy¿szego poziomu spowoduje zakoñczenie pracy \fBdc\fR.
+.TP
+.B Q
+Zdejmuje ze stosu warto¶æ i u¿ywa jej jako liczby poziomów wykonania makr,
+jakie maj± zostaæ zakoñczone.
+Tak wiêc,
+.B 3Q
+koñczy pracê trzech poziomów makr.
+Polecenie
+.B Q
+nigdy nie powoduje zakoñczenia pracy \fBdc\fR.
+.SH Informacja o stanie
+.TP
+.B Z
+Zdejmuje warto¶æ ze stosu, oblicza liczbê jej cyfr (lub liczbê znaków, je¶li
+jest to ³añcuch) i odk³ada tê liczbê na stos.
+.TP
+.B X
+Zdejmuje warto¶æ ze stosu, oblicza liczbê jej cyfr u³amkowych i odk³ada tê
+liczbê na stos. Dla ³añcuchów warto¶ci± odk³adan± na stos jest
+.\" -1.
+0.
+.TP
+.B z
+Odk³ada na stos bie¿±c± wysoko¶æ stosu: liczbê obiektów na stosie przed
+wykonaniem polecenia \fBz\fR.
+.SH Ró¿ne
+.TP
+.B !
+Uruchamia resztê wiersza jako polecenie systemu.
+Zauwa¿, ¿e pierwszeñstwo w analizie sk³adni maj± polecenia \fB!<\fP,
+\fB!=\fP i \fB!>\fP, wiêc je¶li chcemy uruchomiæ polecenie systemu
+zaczynaj±ce siê od \fB<\fP, \fB>\fP lub \fB=\fP, to po \fB!\fP musimy
+dodaæ odstêp.
+.TP
+.B #
+Interpretuje resztê wiersza jako komentarz.
+.TP
+.BI : r
+Zdejmuje ze stosu dwie górne warto¶ci. Warto¶æ, która by³a drug± od góry
+stosu zostanie zachowana w tablicy
+.IR r ,
+indeksowanej warto¶ci± by³ego wierzcho³ka stosu.
+.TP
+.BI ; r
+Zdejmuje wierzcho³ek stosu i pos³uguje siê nim jako indeksem tablicy
+.IR r .
+Wybrana w ten sposób warto¶æ jest nastêpnie odk³adana na stos.
+Zauwa¿, ¿e ka¿da ze sk³adowanych na stosie instancji rejestru ma swoj±
+w³asn±, skojarzon± z ni± tablicê.
+Zatem, \fB1 0:a 0Sa 2 0:a La 0;ap\fP wypisze 1, gdy¿ 2 zosta³o zapamiêtane
+w instancji 0:a, która zosta³a pó¼niej od³o¿ona na stos.
+.SH UWAGI
+Operacje tablicowe
+.B :
+oraz
+.B ;
+s± zwykle u¿ywane wy³±cznie przez tradycyjne implementacje \fBbc\fR.
+(Program
+.B bc
+w wersji GNU jest samowystarczalny i nie potrzebuje \fBdc\fR by dzia³aæ.)
+.SH B£ÊDY
+B³êdy proszê zg³aszaæ (w jêz.angielskim) na adres
+.BR bug-dc@gnu.org .

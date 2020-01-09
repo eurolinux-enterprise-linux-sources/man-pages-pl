@@ -1,0 +1,365 @@
+.\" {PTM/PB/0.1/02-10-1998/"Debugger GNU"}
+.\" Copyright (c) 1991 Free Software Foundation
+.\" See section COPYING for conditions for redistribution
+.\" $Id: gdb.1,v 1.4 2001/06/14 08:43:12 wojtek2 Exp $
+.\" Translation (c) 1998 Przemek Borys <pborys@p-soft.silesia.linux.org.pl>
+.TH gdb 1 "4nov1991" "Narzêdzia GNU" "Narzêdzia GNU"
+.SH NAZWA
+gdb \- Debugger GNU
+.SH SK£ADNIA
+.na
+.TP
+.B gdb
+.RB "[\|" \-help "\|]"
+.RB "[\|" \-nx "\|]"
+.RB "[\|" \-q "\|]"
+.RB "[\|" \-batch "\|]"
+.RB "[\|" \-cd=\c
+.I dir\c
+\|]
+.RB "[\|" \-f "\|]"
+.RB "[\|" "\-b\ "\c
+.IR bps "\|]"
+.RB "[\|" "\-tty="\c
+.IR dev "\|]"
+.RB "[\|" "\-s "\c
+.I symfile\c
+\&\|]
+.RB "[\|" "\-e "\c
+.I prog\c
+\&\|]  
+.RB "[\|" "\-se "\c
+.I prog\c
+\&\|]
+.RB "[\|" "\-c "\c
+.I core\c
+\&\|]
+.RB "[\|" "\-x "\c
+.I cmds\c
+\&\|]
+.RB "[\|" "\-d "\c
+.I dir\c
+\&\|]
+.RB "[\|" \c
+.I prog\c
+.RB "[\|" \c
+.IR core \||\| procID\c
+\&\|]\&\|]
+.ad b
+.SH OPIS
+Celem [istnienia] debuggera takiego jak GDB jest umo¿liwienie ci ogl±dania,
+co dzieje siê ``w ¶rodku'' innego programu podczas jego wykonywania siê
+\em\&lub co inny program robi³ w momencie padu.
+
+GDB mo¿e robiæ cztery podstawowe rzeczy (plus inne rzeczy, wspieraj±ce te),
+które mog± byæ pomocne w wychwytywaniu usterek:
+
+.TP
+\ \ \ \(bu
+Uruchomiæ program, podaj±c wszystko, co mo¿e dotyczyæ jego zachowania.
+
+.TP
+\ \ \ \(bu
+Doprowadziæ do zatrzymania programu przy okre¶lonych warunkach.
+
+.TP
+\ \ \ \(bu
+Sprawdziæ co siê sta³o po zatrzymaniu programu.
+
+.TP
+\ \ \ \(bu
+Zmieniæ rzeczy w programie tak, ¿e mo¿esz eksperymentowaæ z poprawianiem
+efektów jednej usterki, aby przej¶æ dalej i dowiedzieæ siê czego¶ o reszcie.
+.PP
+
+Mo¿esz u¿ywac GDB do debuggowania programów napisanych w C, C++ i Modula-2.
+Wsparcie dla fortrana zostanie dodane kiedy zostanie ukoñczony jego kompilator
+GNU.
+
+GDB wywo³uje siê poleceniem pow³oki \c
+.B gdb\c
+\&.  Po uruchomieniu, odczytuje komendy z terminala, a¿ nie powiesz mu, ¿e
+koñczysz pracê, korzystaj±c z komendy \c
+.B quit\c
+\&.  Mo¿esz uzyskaæ pomoc on-line z samego \c
+.B gdb\c
+\& , wpisuj±c komendê \c
+.B help\c
+\&.
+
+Mo¿esz uruchomiæ \c
+.B gdb\c
+\& bez argumentów lub opcji; jednak najpopularniejszym sposobem uruchomienia
+GDB jest jeden lub dwa argumenty, okre¶laj±ce program wykonywalny jako
+argument:
+.sp
+.br
+gdb\ program
+.br
+.sp
+
+Mo¿esz tak¿e uruchomiæ GDB zarówno z plikiem wykonywalnym, jak i z jego
+plikiem core:
+.sp
+.br
+gdb\ program\ core
+.br
+.sp
+
+Zamiast tego, mo¿esz podaæ ID procesu (PID) jako kolejny argument. Robi siê
+tak, kiedy chcesz debuggowaæ pracuj±cy proces:
+.sp
+.br
+gdb\ program\ 1234
+.br
+.sp
+
+pod³±czy GDB do procesu \c
+.B 1234\c
+\& (chyba ¿e posiadasz plik nazwany `\|\c
+.B 1234\c
+\&\|'; GDB szuka najpierw pliku core).
+
+Oto kilka z najczê¶ciej u¿ywanych komend GDB:
+.TP
+.B break \fR[\|\fIfile\fB:\fR\|]\fIfunction
+\&
+Ustaw breakpoint na funkcji \c
+.I function\c
+\& (w pliku \c
+.I file\c
+\&).
+.TP
+.B run \fR[\|\fIarglist\fR\|]
+Uruchom program (z list± argumentów \c
+.I arglist\c
+\&, je¶li zostanie podana).
+.TP
+.B bt
+Backtrace: wy¶wietl stos programu.
+.TP
+.BI print " expr"\c
+\&
+Wydrukuj warto¶æ wyra¿enia.
+.TP
+.B c
+Kontynuuj wykonywanie programu (po zastopowaniu, np. na breakpointcie).
+.TP
+.B next
+Wykonaj nastêpn± liniê programu (po zastopowaniu); \c
+.I pomiñ\c
+\& wszystkie [rozwiniêcia] wywo³añ funkcji w linii.
+.TP
+.B step
+Wykonaj nastêpn± liniê programu (po zastopowaniu); \c
+.I rozwiñ\c
+\& ka¿de wywo³anie funkcji w linii.
+.TP
+.B help \fR[\|\fIname\fR\|]
+Poka¿ dane o komendzie GDB \c
+.I name\c
+\&, lub ogólne informacje o u¿yciu GDB.
+.TP
+.B quit
+Zakoñcz pracê z GDB.
+.PP
+Je¶li interesuj± ciê pe³ne detale obs³ugi GDB, zobacz \c
+.I 
+Using GDB: A Guide to the GNU Source-Level Debugger\c
+\&, Richarda M. Stallmana i Rolanda H. Pescha. Ten¿e tekst jest dostêpny
+online jako wpis
+.B gdb\c
+\& programu \c
+.B info\c
+\& .
+.SH OPCJE
+Dowolne argumenty inne ni¿ opcje okre¶laj± plik wykonywalny i plik core
+(lub ID procesu); tj. pierwszy argument, który jest napotkany bez zwi±zanej
+flagi opcji jest równowa¿ny z opcj± `\|\c
+.B \-se\c
+\&\|' , a drugi jest równowa¿ny z opcj± `\|\c
+.B \-c\c
+\&\|' je¶li jest to nazwa pliku. Wiele opcji ma zarówno d³ugie, jak i
+krótkie formy; tu pokazane s± obydwie. D³ugie formy s± tak¿e rozpoznawane,
+je¶li skrócisz je do d³ugo¶ci, w której opcja pozostaje rozstrzygalna.
+(je¶li wolisz, mo¿esz flagowaæ argumenty opcyjne u¿ywaj±c `\|\c
+.B +\c
+\&\|' zamiast `\|\c
+.B \-\c
+\&\|', choæ opisujemy bardziej tradycyjn± konwencjê.)
+
+Wszystkie opcjie i argumenty linii komend, które podajesz, s± przetwarzane w
+sekwencyjnej kolejno¶ci. kolejno¶æ powoduje ró¿nicê, je¶li zostanie u¿yta
+opcja
+`\|\c
+.B \-x\c
+\&\|' .
+
+.TP
+.B \-help
+.TP
+.B \-h
+Wylistuj wszystkie opcje, wraz z krótkimi opisami.
+
+.TP
+.BI "\-symbols=" "file"\c
+.TP
+.BI "\-s " "file"\c
+\&
+Odczytaj tablicê symboli z pliku \c
+.I file\c
+\&.
+
+.TP
+.BI "\-exec=" "file"\c
+.TP
+.BI "\-e " "file"\c
+\&
+U¿yj pliku \c
+.I file\c
+\& jako pliku wykonywalnego do wykonania kiedy potrzeba i do
+testowania czystych danych w po³±czeniu ze zrzutem core.
+
+.TP
+.BI "\-se=" "file"\c
+\&
+Odczytaj tablicê symboli z pliku \c
+.I file\c
+\& i u¿yj go jako plik wykonywalny.
+
+.TP
+.BI "\-core=" "file"\c
+.TP
+.BI "\-c " "file"\c
+\&
+U¿yj pliku \c
+.I file\c
+\& jako zrzut core do porównania.
+
+.TP
+.BI "\-command=" "file"\c
+.TP
+.BI "\-x " "file"\c
+\&
+Wywo³aj komendy GDB z pliku \c
+.I file\c
+\&.  
+
+.TP
+.BI "\-directory=" "directory"\c
+.TP
+.BI "\-d " "directory"\c
+\&
+Dodaj katalog \c
+.I directory\c
+\& do ¶cie¿ki przeszukiwania plików ¼ród³owych.
+.PP
+
+.TP
+.B \-nx
+.TP
+.B \-n
+Nie wywo³uj komend z ¿adnego z plików inicjalizacyjnych `\|\c
+.B .gdbinit\c
+\&\|' .
+Normalnie, komendy z tych plików s± wykonywane zaraz po przetworzeniu
+wszystkich argumentów linii komend.
+
+
+.TP
+.B \-quiet
+.TP
+.B \-q
+``Cicho''.  Nie drukuj wiadomo¶ci wprowadzaj±cych i o prawach kopiowania. Te
+wiadomo¶ci sa tak¿e hamowane w trybie wsadowym.
+
+.TP
+.B \-batch
+Uruchom w trybie wsadowym. Zakoñcz ze statusem \c
+.B 0\c
+\& po przetworzeniu wszystkich plików komend podanych w `\|\c
+.B \-x\c
+\&\|' (i `\|\c
+.B .gdbinit\c
+\&\|', je¶li go nie wy³±czono).
+Zakoñcz ze statusem niezerowym je¶li pojawi³ siê b³±d w wywo³aniu komend GDB
+z plików komend.
+
+Tryb wsadowy mo¿e byæ u¿yteczny do uruchamiania GDB jako filtru, np. do
+za³adowania i uruchomienia programu na innym komputerze; w celu uczynienia
+tego bardziej u¿ytecznym, wiadomo¶æ
+.sp
+.br
+Program\ exited\ normally.
+.br
+.sp
+
+(która jest normalnie produkowana za ka¿dym razem, gdy program dzia³aj±cy
+pod kontrol± GDB koñczy pracê) nie jest wy¶wietlana w trybie wsadowym.
+
+.TP
+.BI "\-cd=" "directory"\c
+\&
+Uruchom GDB, u¿ywaj±c katalogu \c
+.I directory\c
+\& jako swojego katalogu roboczego, zamiast bie¿±cego katalogu.
+
+.TP
+.B \-fullname
+.TP
+.B \-f
+Emacs ustawia tê opcjê kiedy uruchamia GDB jako podproces. Mówi GDB aby
+produkowa³ pe³n± nazwê pliku i numer linii w standardowym, rozpoznawalnym
+stylu za ka¿dym razem gdy wy¶wietlana jest klatka stosu (która jest za³±czana
+przy ka¿dym zatrzymaniu programu). Ten rozpoznawalny program wygl±da jak dwa
+znaki `\|\c
+.B \032\c
+\&\|' za którymi nastêpuje nazwa pliku, numer linii i pozycja znakowa,
+oddzielona dwukorpkami i now± lini±. Interfejs
+Emacs-do-GDB u¿ywa dwóch znaków `\|\c
+.B \032\c
+\&\|' jako sygna³ów do wy¶wietlenia kodu ¼ród³owego dla klatki.
+
+.TP
+.BI "\-b " "bps"\c
+\&
+Ustaw szybko¶æ linii (baud, lub bity na sekundê) dowolnego interfejsu
+szeregowego, u¿ywanego przez GDB dla zdalnego debuggowania.
+
+.TP
+.BI "\-tty=" "device"\c
+\&
+Uruchom siê, u¿ywaj±c urz±dzenia \c
+.I device\c
+\& jako standardowego wej¶cia i wyj¶cia programu.
+.PP
+
+.SH "ZOBACZ TAK¯E"
+Wpis
+.RB "`\|" gdb "\|'"
+w
+.B info\c
+\&;
+.I 
+Using GDB: A Guide to the GNU Source-Level Debugger\c
+, Richard M. Stallman i Roland H. Pesch, July 1991.
+.SH KOPIOWANIE
+(Autor nie ¿yczy sobie t³umaczenie poni¿szej noty bez zatwierdzenia ze
+strony FSF)
+.PP
+Copyright (c) 1991 Free Software Foundation, Inc.
+.PP
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+.PP
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+.PP
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be included in
+translations approved by the Free Software Foundation instead of in
+the original English.

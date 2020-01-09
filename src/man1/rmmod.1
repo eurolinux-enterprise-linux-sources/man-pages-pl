@@ -1,0 +1,43 @@
+.\" Copyright (c) 1996 Free Software Foundation, Inc.
+.\" This program is distributed according to the Gnu General Public License.
+.\" See the file COPYING in the kernel source directory
+.\" $Id: rmmod.1,v 1.2 2000/09/30 17:08:37 wojtek2 Exp $
+.\"
+.\" {PTM/MM/0.1/18-11-1998/"rmmod.1 - usuñ za³adowany modu³"
+.TH RMMOD 1 "26 Dec 1996" Linux "Linux Module Support"
+.SH NAZWA
+rmmod \- usuñ za³adowany modu³
+.SH SK£ADNIA
+.B rmmod
+[ \-as ] modu³ ...
+.SH OPIS
+.B rmmod
+usuwa za³adowany modu³ z dzia³aj±cego j±dra systemu.
+.PP
+.B rmmod
+próbuje usun±æ zbiór modu³ów z j±dra, pod warunkiem, ¿e nie s± one u¿ywane i 
+nie odnosz± siê do nich inne modu³y.
+.PP
+Je¶li wiêcej ni¿ jeden modu³ zosta³ podany w lini poleceñ, wymienione modu³y
+bêd± usuniête równocze¶nie.  Zostan± usuniête tak¿e modu³y wymagaj±ce siebie
+nawzajem (stacked modules).
+.SS OPCJE
+.TP
+.I \-a
+Usuñ wszystkie nieu¿ywane modu³y.
+.TP
+.I \-s
+Wyj¶cie przeka¿ do \fBsyslog\fP(3) zamiast na terminal.
+.SH ZOBACZ TAK¯E
+insmod(1), lsmod(1), ksyms(1), modules(2)
+.SH HISTORIA
+.lp
+Wsparcie dla modu³ów zapocz±tkowane przez Anonima
+.br
+Pierwsza wersja Linuksowa przygotowana przez Bas Laarhoven <bas@vimec.nl>
+.br
+Wersja 0.99.14 przygotowana przez Jon Tombs <jon@gtex02.us.es>
+.br
+Rozbudowana przez Bjorn Ekwall <bj0rn@blox.se>
+.br
+Aktualizowna do 2.1.17 przez Richard Henderson <rth@tamu.edu>

@@ -1,0 +1,32 @@
+.\" {PTM/WK/0.1/15-07-1999/"zmieñ katalog MSDOS"}
+.TH mcd 1 "15 lipca 1999" mtools-3.9.6
+.SH NAZWA
+mcd - zmieñ katalog MSDOS
+.SH SK£ADNIA
+.BR mcd
+.RI [ katalogMSDOS ]
+.SH OPIS
+Polecenie \fBmcd\fR u¿ywane jest do zmiany katalogu roboczego mtools
+na dysku MS-DOS.
+.PP
+Bez argumentów \fBmcd\fR podaje bie¿±ce urz±dzenie i katalog roboczy.
+W przypadku podania argumentu zmienia bie¿±ce urz±dzenie i bie¿±cy katalog
+roboczy odnosz±ce siê do systemu plików MS-DOS.
+.PP
+Do znalezienia pliku przechowuj±cego urz±dzenie i bie¿±cy katalog roboczy
+mo¿na u¿yæ zmiennej ¶rodowiska \fRMCWD\fR.
+Domy¶lnie jest to \fB$HOME/.mcwd\fR. Informacja w tym pliku jest ignorowana
+je¶li jest pochodzi on sprzed ponad 6 godzin.
+.PP
+\fBMcd\fR zwraca 0 w przypadku powodzenia, za¶ 1 w przypadku b³êdu.
+.PP
+W przeciwieñstwie do polecenia \fBCD\fR DOSu, \fBmcd\fR mo¿na u¿yæ do
+zmiany bie¿±cego urz±dzenia. Rozs±dnie jest usuwaæ stare
+pliki \fB.mcwd\fR przy wylogowaniu siê.
+.SH UWAGI
+Niniejsza, polska wersja dokumentacji, powsta³a jako t³umaczenie pliku
+Texinfo pakietu mtools wersji 3.9.6. W stosunku do automatycznie generowanej
+z Textinfo dokumentacji oryginalnej dokonano przesuniêcia sekcji opisuj±cej
+konwersjê dokumentacji do \fBmtools\fR(1). Tam te¿ znajdziesz notê prawn±
+dotycz±c± rozpowszechniania, modyfikacji i t³umaczenia dokumentacji pakietu
+mtools

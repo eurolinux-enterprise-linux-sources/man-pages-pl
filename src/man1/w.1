@@ -1,0 +1,77 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+.\"             -*-Nroff-*-
+.\"
+.TH W 1 "8 Dec 1993 " " " "Linux User's Manual"
+.SH NAZWA
+w \- Poka¿ kto jest zalogowany i co robi
+.SH SK£ADNIA
+.B w \-
+.RB [ husfV ]
+.RI [ u¿ytkownik ]
+.SH OPIS
+.B "w "
+wy¶wietla informacje u u¿ytkownikach, zajmuj±cych obecnie maszynê, oraz o
+ich procesach. Nag³ówek pokazuje odpowiednio, czas bie¿±cy, czas pracy
+systemu, liczbê zalogowanych u¿ytkowników i obci±¿enie systemu w poprzedniej
+minucie, w 5 i 15 minutach.
+.sp
+Dla ka¿dego u¿ytkownika wy¶wietlane s± nastêpuj±ce wpisy:
+nazwa zg³oszeniowa, nazwa tty, zdalny host, czas zg³oszenia, czas
+bezczynno¶ci, JCPU, PCPU i linia poleceñ ich obecnego procesu.
+.sp
+Czas JCPU jest czasem zu¿ytym przez wszystkie procesy podwieszone do tty.
+Nie uwzglêdnia poprzednich zadañ z t³a, lecz uwzglêdnia obecnie dzia³aj±ce
+zadania t³a.
+.sp
+Czas PCPU jest czasem, zu¿ywanym przez proces bie¿±cy, nazwany w polu
+"what".
+
+.PP
+.SH "OPCJE LINII POLECEÑ"
+.TP 0.5i
+.B "\-h "
+Nie drukuj nag³ówka.
+.TP 0.5i
+.B "\-u "
+Ingnoruje nazwê u¿ytkownika podczas wyszukiwania obecnych czasów procesu i
+cpu. Aby to zademonstrowaæ, zrób "su", a nastêpnie "w" i "w -u".
+.TP 0.5i
+.B "\-s "
+Uzyj krótkiego formatu.
+Nie drukuj czasu zg³oszenia, JCPU i PCPU.
+.TP 0.5i
+.B "\-f "
+Prze³±czaj drukowanie pola
+.B from
+(zdalnego hosta). Domy¶lnie, pole
+.B from
+nie jest drukowane, choæ administrator systemu mo¿e wkompilowaæ inn± warto¶æ
+domy¶ln±.
+.TP 0.5i
+.B "\-V "
+Wy¶wietl informacjê o wersji
+.TP 0.5i
+.B "u¿ytkownik "
+Poka¿ informacjê jedynie o podanym u¿ytkowniku.
+
+.SH PLIKI
+.ta
+.IR /etc/utmp " informacja o tym, kto jest obecnie zalogowany"
+.IR /proc " informacja procesów"
+.fi
+
+.SH "ZOBACZ TK¯E"
+.BR free (1),
+.BR ps (1),
+.BR top (1),
+.BR uptime (1),
+.BR utmp (5),
+.BR who (1)
+
+.SH AUTORZY
+.B w
+zosta³ w ca³o¶ci przepisany przez Charlesa Blake, w oparciu o wersjê
+Larry'ego Greenfielda <greenfie@gauss.rutgers.edu> i Michaela K. Johnsona
+<johnsonm@redhat.com>.
+
+Raporty o b³êdach ¶lij do <procps-bugs@redhat.com>

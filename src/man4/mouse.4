@@ -1,0 +1,153 @@
+'\" t
+.\"roff.\" Copyright
+.\" This manpage is Copyright (C) 1996 Michael Haardt.
+.\" Updates Nov 1998, Andries Brouwer
+.\" 
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\" 
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" 
+.\" T³umaczenie na jêzyk polski: Pawe³ Olszewski (alder@amg.net.pl)
+.\" {PTM/PO/0.2/03-06-1998/"interfejs myszy szeregowej"}
+.\" Ostatnia aktualnizacja: Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\"                         man-pages 1.48
+.\" 
+.TH MOUSE 4 1996-02-10 Linux "Pliki specjalne"
+.SH NAZWA
+mouse \- interfejs myszy szeregowej
+.SH KONFIGURACJA
+Myszy szeregowe pod³±czane s± do linii szeregowej RS232/V24, której
+opis mo¿na znale¼æ w
+.BR ttys (4).
+.SH OPIS
+.SS Wstêp
+Po³±czenia zwyk³ej wtyczki 9-pinowej stosowanej w myszach to:
+
+.TS
+center;
+r c l.
+pin	nazwa	zastosowanie
+2	RX	Dane
+3	TX	-12 V, Imax = 10 mA
+4	DTR	+12 V, Imax = 10 mA
+7	RTS	+12 V, Imax = 10 mA
+5	GND	Masa
+.TE
+
+Taka jest specyfikacja, ale w praktyce dla wiêkszo¶ci myszy wystarcza 9 V.
+.PP
+Sterownik mo¿e rozpoznawaæ mysz poprzez ustawienie niskiego poziomu linii RTS,
+a naztêpnie przywrócenie jej poziomu wysokiego. Po oko³o 14 ms mysz ode¶le
+0x4D ('M') lini± danych. Po kolejnych 63 ms 3-przyciskowa mysz zgodna
+z Microsoft prze¶le 0x33 ('3').
+.PP
+Wzglêdne przemieszczenie myszy wysy³ane jest jako \fIdx\fP (warto¶æ dodatnia
+oznacza w prawo) i \fIdy\fP (warto¶æ dodatnia oznacza w dó³). Myszy mog±
+pracowaæ z ró¿nymi prêdko¶ciami. Wybór prêdko¶ci odbywa siê poprzez cykliczne
+przej¶cie przez prêdko¶ci 9600, 4800, 2400 i 1200 bitów/s, za ka¿dym razem
+zapisuj±c dwa znaki z poni¿szej tabeli i czekaj±c 0,1 sekundy. Nastêpuj±ca
+tabela pokazuje dostêpne prêdko¶ci i sekwencje znaków, s³u¿±ce do ich wyboru:
+
+.TS
+center;
+l l.
+bitów/s	sekwencja
+9600	*q
+4800	*p
+2400	*o
+1200	*n
+.TE
+
+Pierwszy bajt pakietu danych mo¿e byæ u¿ywany do celów synchronizacji.
+.SS "Protokó³ Microsoft"
+Protokó³ \fBMicrosoft \fP u¿ywa 1 bitu startu, 7 bitów danych, bez parzysto¶ci
+i z jednym bitem stopu przy prêdko¶ci 1200 bitów/sekundê. Dane s± przesy³ane
+do RxD w 3-bajtowych pakietach. Przesuniêcia \fIdx\fP i \fIdy\fP s± przesy³ane
+jako uzupe³nienie do dwóch, \fIlb\fP (\fIrb\fP) s± ustawiane gdy wci¶niêty
+jest lewy (prawy) przycisk myszy:
+
+.TS
+center;
+r c c c c c c c.
+bajt	d6	d5	d4	d3	d2	d1	d0
+1	1	lb	rb	dy7	dy6	dx7	dx6
+2	0	dx5	dx4	dx3	dx2	dx1	dx0
+3	0	dy5	dy4	dy3	dy2	dy1	dy0
+.TE
+.SS "3-przyciskowy protokó³ Microsoft"
+Oryginalne myszy Microsoft posiadaj± jedynie dwa przyciski. Istniej±
+jednak myszy trójprzyciskowe, które równie¿ korzystaj± z protoko³u
+Microsoft. Wci¶niêcie trzeciego przycisku zg³aszane jest poprzez
+wys³anie pakietu z zerowym przesuniêciem i bez wci¶niêtych przycisków.
+(Zatem, w odró¿nieniu od pozosta³ych dwu przycisków, stan przycisku ¶rodkowego
+nie jest zg³aszany w ka¿dym pakiecie.)
+.SS "Protokó³ Logitech"
+Szeregowa 3-przyciskowa mysz Logitech korzysta z innego rozszerzenia protoko³u
+Microsoft: gdy ¶rodkowy przycisk jest zwalniany, wysy³any jest 3-bajtowy
+pakiet opisany powy¿ej. Gdy ¶rodkowy przycisk jest naciskany, wysy³any jest
+4-bajtowy pakiet, w którym czwarty bajt ma warto¶æ 0x20 (lub ma ustawiony
+przynajmniej bit 0x20). W szczególno¶ci, naci¶niêcie ¶rodkowego przycisku jest
+sygnalizowane jako 0,0,0,0x20, gdy ¿adan inny przycisk nie jest wci¶niêty.
+.SS "Protokó³ Mousesystems"
+Protokó³ \fBMousesystems\fP korzysta z 1 bitu startu, 8 bitów danych, bez
+parzysto¶ci i dwu bitów stopu przy prêdko¶ci 1200 bitów/s. Dane s± wysy³ane do
+RxD w 5-bajtowych pakietach. \fIdx\fP jest przesy³any jako suma dwóch warto¶ci
+uzupe³nionych do dwóch, \fIdy\fP jest przesy³ane jako zanegowana suma dwóch
+warto¶ci uzupe³nionych do dwóch. \fIlb\fP (\fImb\fP, \fIrb\fP) s± zerowane,
+gdy wci¶niêty jest lewy (¶rodkowy, prawy) przycisk myszy:
+
+.TS
+center;
+r c c c c c c c c.
+bajt	d7	d6	d5	d4	d3	d2	d1	d0
+1	1	0	0	0	0	lb	mb	rb
+2	0	dxa6	dxa5	dxa4	dxa3	dxa2	dxa1	dxa0
+3	0	dya6	dya5	dya4	dya3	dya2	dya1	dya0
+4	0	dxb6	dxb5	dxb4	dxb3	dxb2	dxb1	dxb0
+5	0	dyb6	dyb5	dyb4	dyb3	dyb2	dyb1	dyb0
+
+Bajty 4 i 5 opisuj± zmianê, która nast±pi³a od chwili wys³ania bajtów 2 i 3.
+.TE
+.SS "Protokó³ Sun"
+Protokó³ \fBSun\fP jest 3-bajtow± wersj± opisanego powy¿ej protoko³u\
+Mousesystems: ostatnie dwa bajty nie s± wysy³ane.
+.SS "Protokó³ MM"
+Protokó³ \fBMM\fP u¿ywa 1 bitu startu, 8 bitów danych, nieparzysto¶ci
+i jednego bitu stopu przy prêdko¶ci 1200 bitów/s. Dane s± wysy³ane do
+RxD w 3-bajtowych pakietach. \fIdx\fP i \fIdy\fP s± wysy³ane jako
+pojedyncze warto¶ci ze znakiem, bit znaku oznacza warto¶æ ujemn±.
+\fIlb\fP (\fImb\fP, \fIrb\fP) s± ustawiane, gdy wci¶niêty jest lewy
+(¶rodkowy, prawy) przycisk myszy:
+
+.TS
+center;
+r c c c c c c c c.
+bajt	d7	d6	d5	d4	d3	d2	d1	d0
+1	1	0	0	dxs	dys	lb	mb	rb
+2	0	dx6	dx5	dx4	dx3	dx2	dx1	dx0
+3	0	dy6	dy5	dy4	dy3	dy2	dy1	dy0
+.TE
+
+.SH PLIKI
+.I /dev/mouse
+Powszechnie u¿ywane dowi±zanie symboliczne wskazuj±ce na urz±dzenie myszy.
+
+.SH "ZOBACZ TAK¯E"
+.BR ttys (4),
+.BR gpm (8)

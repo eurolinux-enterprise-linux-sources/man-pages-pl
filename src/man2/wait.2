@@ -1,0 +1,261 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\" 
+.\" 1999 PTM Przemek Borys
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Aug 2002,
+.\"              manpages 1.52
+.\" 
+.\" (c) 1993 by Thomas Koenig (ig25@rz.uni-karlsruhe.de)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" License.
+.\"
+.\" Modified Sat Jul 24 13:30:06 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified Sun Aug 21 17:42:42 1994 by Rik Faith <faith@cs.unc.edu>
+.\"          (Thanks to Koen Holtman <koen@win.tue.nl>)
+.\" Modified Wed May 17 15:54:12 1995 by Rik Faith <faith@cs.unc.edu>
+.\"           To remove *'s from status in macros (Thanks to Michael Shields).
+.\" Modified as suggested by Nick Duffek <nsd@bbc.com>, aeb, 960426
+.\" Modified Mon Jun 23 14:09:52 1997 by aeb - add EINTR.
+.\" Modified Thu Nov 26 02:12:45 1998 by aeb - add SIGCHLD stuff.
+.\" Modified Mon Jul 24 21:37:38 2000 by David A. Wheeler
+.\"          <dwheeler@dwheeler.com> - noted thread issues.
+.\" Modified 26 Jun 01 by Michael Kerrisk
+.\"          Added __WCLONE, __WALL, and __WNOTHREAD descriptions
+.\" Modified 2001-09-25, aeb
+.\" Modified 26 Jun 01 by Michael Kerrisk, <mtk16@ext.canterbury.ac.nz>
+.\"    Updated notes on setting disposition of SIGCHLD to SIG_IGN
+.\"
+.TH WAIT 2 2000-07-24 "Linux" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+wait, waitpid \- oczekiwanie na zakoñczenie procesu
+.SH SK£ADNIA
+.B #include <sys/types.h>
+.br
+.B #include <sys/wait.h>
+.sp
+.BI "pid_t wait(int *" "status" );
+.br
+.BI "pid_t waitpid(pid_t " pid ", int *" status ", int " options );
+.SH OPIS
+Funkcja
+.B wait
+zatrzymuje wykonywanie bie¿±cego procesu a¿ do zakoñczenia procesu potomka
+lub a¿ do dostarczenia sygna³u koñcz±cego bie¿±cy proces lub innego, dla
+którego wywo³ywana jest funkcja obs³ugi sygna³u. Je¶li potomek zakoñczy³
+dzia³anie przed wywo³aniem tej funkcji (tak zwany proces-duch - "zombie"),
+to funkcja koñczy siê natychmiast. Wszelkie zasoby potomka s± zwalniane.
+
+Funkcja
+.B waitpid
+zawiesza wykonywanie bie¿±cego procesu dopóki potomek okre¶lony przez
+.I pid
+nie zakoñczy dzia³ania lub dopóki nie zostanie dostarczony sygna³, którego
+akcj± jest zakoñczenie procesu lub wywo³anie funkcji obs³uguj±cej sygna³y.
+Je¶li potomek, podany jako
+.IR pid ,
+zakoñczy³ swoje dzia³anie przed wywo³aniem tej funkcji (tak zwany proces
+"zombie"), funkcja koñczy siê natychmiast. Wszelkie zasoby potomka s±
+zwalnianie.
+
+Warto¶æ
+.I pid
+mo¿e byæ:
+.IP "< \-1"
+co oznacza oczekiwanie na dowolny proces potomny, którego ID grupy procesów
+jest równy warto¶ci bezwzglêdnej
+.IR pid .
+.IP \-1
+co oznacza oczekiwanie na dowolny proces potomny; jest to takie samo
+zachowanie, jakie wykazuje
+.BR wait .
+.IP 0
+co oznacza oczekiwanie na ka¿dy proces potomny, którego ID grupy procesu
+jest równe ID grupy procesu wywo³uj±cego funkcjê.
+.IP "> 0"
+oznacza oczekiwanie na potomka, którego ID procesu jest równy warto¶ci
+.IR pid .
+.PP
+Warto¶æ
+.I options
+jest sum± OR zera lub wiêcej spo¶ród nastêpuj±cych sta³ych:
+.TP
+.B WNOHANG
+oznacza natychmiastowy powrót z funkcji, je¶li potomek nie zakoñczy³ pracy.
+.TP
+.B WUNTRACED
+oznacza zakoñczenie tak¿e dla zatrzymanych (ale nie ¶ledzonych) procesów
+potomnych, których stan jeszcze nie zosta³ zg³oszony.
+Stan ¶ledzonych procesów potomnych, które zosta³y zatrzymane, jest
+udostêpniany równie¿ bez tej opcji.
+.PP
+(Poni¿sze opcje dotycz± wy³±cznie Linuksa.)
+.PP
+Je¶li
+.I status
+nie jest równe
+.BR NULL ,
+.B wait
+lub
+.B waitpid
+zapisuje dane o stanie w buforze wskazywanym przez
+.IR status .
+
+Stan ten mo¿na zanalizowaæ nastêpuj±cymi makrami (makra te pobieraj± jako
+argument bufor stat (typu \fBint\fR), \(em nie wska¼nik do bufora!):
+.TP
+.BI WIFEXITED( status )
+jest niezerowe, je¶li potomek normalnie zakoñczy³ pracê.
+.TP
+.BI WEXITSTATUS( status )
+analizuje osiem najmniej znacz±cych bitów kodu powrotu zakoñczonego potomka,
+które mog³y byæ ustawione jako argument wywo³ania
+.B exit()
+lub jako argument instrukcji
+.B return
+w programie g³ównym. Makro to mo¿e byæ przetworzone, tylko je¶li
+.B WIFEXITED
+zwróci³o warto¶æ niezerow±.
+.TP
+.BI WIFSIGNALED( status )
+zwraca prawdê, je¶li proces potomny zakoñczy³ pracê z powodu nieprzechwyconego
+sygna³u.
+.TP
+.BI WTERMSIG( status )
+zwraca numer sygna³u, który spowodowa³ zakoñczenie procesu potomnego. Makro
+to mo¿e byæ przetworzone, tylko je¶li
+.B WIFSIGNALED
+zwróci³o warto¶æ niezerow±.
+.TP
+.BI WIFSTOPPED( status )
+zwraca prawdê, je¶li proces potomny jest obecnie zatrzymany; jest to
+mo¿liwe tylko gdy w wywo³aniu u¿yto
+.B WUNTRACED
+oraz gdy proces potomny jest ¶ledzony (zobacz
+.BR ptrace (2)).
+.TP
+.BI WSTOPSIG( status )
+zwraca numer sygna³u, który spowodowa³ zatrzymanie potomka. Makro to mo¿e
+byæ przetworzone, tylko je¶li
+.B WIFSTOPPED
+zwróci³o warto¶æ niezerow±.
+.LP
+Niektóre wersje Uniksa (np. Linux, Solaris, ale nie AIX, SunOS) definiuj±
+tak¿e makro
+.BI WCOREDUMP( status )
+sprawdzaj±ce, czy proces potomny dokona³ zrzutu pamiêci. Nale¿y go u¿ywaæ
+tylko pomiêdzy dyrektywami kompilatora #ifdef WCOREDUMP ... #endif.
+.SH "WARTO¦Æ ZWRACANA"
+PID zakoñczonego potomka lub zero, je¶li u¿yto
+.BR WNOHANG ,
+a nie by³o dostêpnego ¿adnego potomka, albo \-1 w przypadku b³êdu (w tym
+ostatnim wypadku odpowiednia warto¶æ jest nadawana
+.IR errno ).
+.SH "B£ÊDY"
+.TP 
+.B ECHILD
+je¶li proces o zadanym
+.I pid
+nie istnieje lub nie jest potomkiem procesu wywo³uj±cego. (Mo¿e siê to zdarzyæ
+równie¿ w przypadku potomka, który ustawi³ akcjê obs³ugi sygna³u SIGCHLD na
+SIG_IGN. Zobacz tak¿e: w±tki w sekcji UWAGI LINUKSOWE.)
+.TP
+.B EINVAL
+je¶li argument 
+.I options
+jest niepoprawny.
+.TP
+.B EINTR
+je¶li
+.B WNOHANG
+nie by³o ustawione, a zosta³ przechwycony niezablokowany sygna³ lub
+.BR SIGCHLD .
+.SH UWAGI
+Specyfikacja Single Unix Specification opisuje znacznik SA_NOCLDWAIT
+(nieobs³ugiwany pod Linuksem) taki, ¿e je¿eli jest ustawiony ten znacznik
+albo akcja dla SIGCHLD jest ustawiona na SIG_IGN, to procesy potomne po
+zakoñczeniu nie staj± siê procesami-duchami ("zombies") i wywo³anie funkcji
+.BR wait()
+lub 
+.BR waitpid()
+zablokuje proces do czasu, gdy wszystkie procesy potomne zakoñcz± dzia³anie,
+a nastêpnie zakoñczy siê b³êdem z 
+.I errno 
+ustawionym na ECHILD.
+.LP
+Oryginalny standard POSIX nie okre¶la zachowania w przypadku ustawienia
+SIGCHLD na SIG_IGN. Pó¼niejsze standardy, w³±czaj±c SUSv2 i POSIX
+1003.1-2001 okre¶laj± zachowanie w sposób taki, jaki opisano w opcji
+zgodno¶ci z XSI. Linux nie spe³nia tego drugiego w dwóch opisanych powy¿ej
+punktach: je¶li wywo³anie
+.BR wait "() lub " waitpid ()
+jest wykonywane z ignorowaniem SIGCHLD, zachowuje siê ono tak, jakby SIGCHLD
+nie by³y ignorowane, to znaczy, wywo³anie zostaje zablokowane do chwili
+zakoñczenia nastêpnego potomka, a nastêpnie zwraca PID i kod powrotu tego
+potomka.
+.SH "UWAGI LINUKSOWE"
+Pod Linuksem, w±tek zarz±dzany przez j±dro nie jest uruchamiany inaczej ni¿
+zwyk³y proces. Zamiast tego w±tek jest po prostu procesem stworzonym przez
+wywo³anie dostêpnej tylko pod Linuksem funkcji systemowej 
+.BR clone(2) . 
+Inne funkcje, jak na przyk³ad przeno¶ne
+.BR pthread_create (3)
+s± zaimplementowane przez wywo³ania funkcji
+.BR clone (2).
+W wersjach Linuksa poprzedzaj±cych 2.4, w±tek by³ po prostu specyficznym
+przypadkiem procesu. W zwi±zku z tym nie móg³ on czekaæ na potomków innego
+w±tku nawet w przypadku, gdy ten drugi w±tek nale¿a³ do tej samej grupy
+w±tków. Jednak¿e, POSIX zaleca tak± funkcjonalno¶æ, wiêc pocz±wszy od Linuksa
+2.4 w±tek mo¿e (i domy¶lnie bêdzie) czekaæ na potomków innych w±tków
+nale¿±cych do tej samej grupy w±tków.
+.LP
+Nastêpuj±ce, specyficzne dla Linuksa opcje w
+.I options
+s± przeznaczone dla potomków utworzonych za pomoc±
+.BR clone (2).
+.TP
+.B __WCLONE
+.\" od 0.99pl10
+Oczekiwanie tylko na potomków typu "clone". Je¶li opcja ta zostanie pominiêta
+bêdzie oczekiwanie tylko na potomków typu "nie-clone". (Potomek typu "clone"
+to taki, który po zakoñczeniu nie dostarcza swojemu procesowi macierzystemu
+sygna³u lub dostarcza sygna³ inny ni¿
+.BR SIGCHLD .)
+Opcja ta jest ignorowana, je¶li ustawiona jest równie¿ opcja
+.BR __WALL .
+.TP
+.B __WALL
+.\" od patch-2.3.48
+(Pocz±wszy od Linuksa 2.4) Oczekiwanie na procesy potomne niezale¿nie od ich
+typu ("clone" lub "non-clone").
+.TP
+.B __WNOTHREAD
+.\" od patch-2.4.0-test8
+(Pocz±wszy od Linuksa 2.4) Nie oczekiwaæ na procesy potomne innych w±tków w
+obrêbie tej samej grupy w±tków. By³o to w Linuksie domy¶lne przed wersj± 2.4.
+.SH "ZGODNE Z"
+SVr4, POSIX.1
+.SH "ZOBACZ TAK¯E"
+.BR clone (2),
+.BR ptrace (2),
+.BR signal (2),
+.BR wait4 (2),
+.BR pthread_create (3),
+.BR signal (7)

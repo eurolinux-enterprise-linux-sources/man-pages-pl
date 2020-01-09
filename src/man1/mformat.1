@@ -1,0 +1,151 @@
+.\" {PTM/WK/0.1/15-07-1999/"dodaje system plików DOS do dyskietki"}
+.TH mformat 1 "15 lipca 1999" mtools-3.9.6
+.SH NAZWA
+mformat - dodaje system plików DOS do niskopoziomowo sformatowanej dyskietki
+.SH SK£ADNIA
+.B mformat
+.RB [ -t
+.IR cylindry ]
+.RB [ -h
+.IR g³owice ]
+.RB [ -s
+.IR sektory ]
+.RB [ -l
+.IR etykieta_dysku ]
+.RB [ -F ]
+.RB [ -I
+.IR wersja_systemu ]
+.RB [ -S
+.IR rozmiar_kodu ]
+.RB [ -2
+.IR sektorów_na_¶cie¿ce_0 ]
+.RB [ -M
+.IR sektor_software'owy ]
+.RB [ -a ]
+.RB [ -X ]
+.RB [ -C ]
+.RB [ -H
+.IR ukryte_sektory ]
+.RB [ -r
+.IR sektory_root]
+.RB [ -B
+.IR boot_sector ]
+.RB [-0
+.IR rate_on_track_0 ]
+.RB [ -A
+.IR rate_on_other_tracks ]
+.RB [ -1 ]
+.RB [ -k ]
+.IB napêd :
+.SH OPIS
+\fBmformat\fR dodaje mimimalne elementy systemu plikowego MS_DOS (boot sector,
+FAT i katalog g³ówny) do dyskietki, która zosta³a ju¿ sformatowana
+niskopoziomowo przez Unixa.
+.SH OPCJE
+Obs³ugiwane s± nastêpuj±ce opcje (mog± nie byæ dostêpne opcje \fB-S\fR,
+\fB-2\fR, \fB-1\fR, je¶li \fBmtools\fR zosta³y skompilowane bez opcji
+\fBUSE_2M\fR):
+.TP
+.B -t 
+Liczba cylindrów.
+.TP
+.B -h 
+Liczba g³owic (stron).
+.TP
+.B -s 
+Liczba sektorów na ¶cie¿kê. Przy u¿yciu opcji \fB2m\fR jest to liczba
+512-bajtowych równowa¿ników sektora na typow± ¶cie¿kê (tj. inn± ni¿
+g³owica 0 ¶cie¿ka 0). Je¶li nie u¿yto opcji \fB2m\fR, jest to liczba
+fizycznych sektorów na ¶cie¿kê (mog± byæ one wiêksze ni¿ 512 bajtów).
+.TP
+.B -l 
+Opcjonalna etykieta dysku.
+.TP
+.B -S 
+Rozmiar kodu. Rozmiar sektora wynosi 2^(\fIrozmiar_kodu\fR+7).
+.TP
+.B -2 
+Format 2m. Parametr tej opcji opisuje liczbê sektorów na ¶cie¿ce 0,
+g³owicy 0. Opcja zalecana dla sektorów wiêkszych ni¿ zwyk³e.
+.TP
+.B -1
+Nie u¿ywaj formatu 2m, nawet je¶li obecna geometria dysku jest
+geometri± 2m. 
+.TP
+.B -M
+Rozmiar sektora software'owego. Parametr ten opisuje rozmiar w bajtach
+sektora u¿ywanego przez system plikowy MS-DOS. Domy¶lnie jest on równy
+rozmiarowi sektora fizycznego. 
+.TP
+.B -a
+Podanie tej opcji powoduje generowanie numeru seryjnego jak dla Atari.
+Atari przechowuj± numer seryjny w etykiecie OEM. 
+.TP
+.B -X
+Formatuje dyskietkê jako dyskietkê XDF. Patrz sekcja \fBXDF\fR
+w \fBmtools\fR(1). Dyskietka musi byæ uprzednio sformatowana niskopoziomowo
+przy u¿yciu narzêdzia \fBxdfcopy\fR zawartego w pakiecie \fBfdutils\fR.
+.TP
+.B -C
+Tworzy plik obrazu dysku, na którym bêdzie zainstalowany system plików
+MS-DOS. Oczywi¶cie, bezu¿yteczne w odniesieniu do fizycznych
+urz±dzeñ takich jak dyskietki czy partycje dysku twardego.
+.TP
+.B -H
+Liczba sektorów ukrytych. Parametr przydatny do formatowania partycji dysku
+twardego, które nie s± wyrównane do granic ¶cie¿ek (tj. pierwsza g³owica
+pierwszej ¶cie¿ki nie nale¿y do partycji, ale zawiera tablicê partycji).
+W takim przypadku liczba ukrytych sektorów jest zwykle liczb± sektorów na
+cylinder. Nie testowano.
+.TP
+.B -n 
+Numer seryjny.
+.TP
+.B -F
+Formatuj partycjê jako FAT32 (opcja eksperymentalna). 
+.TP
+.B -I
+Ustaw identyfikator \fIwersji_systemu\fR przy formatowaniu napêdu FAT32.
+Uruchom \fBminfo\fR na istniej±cym napêdzie FAT32, aby j± odnale¼æ, a
+nastêpnie powiadom autora przez e-mail, by móg³ do³±czyæ poprawn± warto¶æ
+w przysz³ych wersjach \fBmtools\fR.
+.TP
+.B -c
+Ustaw rozmiar klastra (cluster) w sektorach. Je¶li rozmiar ten spowodowa³by
+utworzenie zbyt du¿ej tablicy alokacji plików (FAT), \fBmtools\fR
+automatycznie powiêkszy go, a¿ do uzyskania dostatecznie ma³ego FATu.
+.TP
+.B -r
+Ustala rozmiar katalogu g³ównego (root) w sektorach. Odnosi siê wy³±cznie do
+12 i 16 bitowych tablic alokacji plików (FAT).
+.TP
+.B -B
+Zamiast w³asnego u¿yj sektora startowego (boot sector) przechowywanego
+w zadanym pliku lub na zadanym urz±dzeniu. Aktualizowane s± jedynie pola
+geometrii, tak by pasowa³y do parametrów dysku docelowego.
+.TP
+.B -k
+Zachowaj z istniej±cego sektora startowego tyle, ile tylko mo¿liwe.
+Aktualizowane s± jedynie pola geometrii, tak by pasowa³y do parametrów
+dysku docelowego.
+.TP
+.B -0 
+Prêdko¶æ transferu danych na ¶cie¿ce 0.
+.TP
+.B -A 
+Prêdko¶æ transferu danych na ¶cie¿kach innych ni¿ 0.
+.PP
+Chc±c sformatowaæ dyskietkê o gêsto¶ci innej ni¿ domy¶lna, nale¿y podaæ
+co najmniej te parametry linii poleceñ, które s± ró¿ne od domy¶lnych.
+.PP
+\fBmformat\fR zwraca 0 w przypadku powodzenia, 1 przy b³êdzie.
+.PP
+Polecenie nie zapisuje informacji o b³êdnych blokach (bad blocks) w FAT.
+Nale¿y w tym celu u¿yæ \fBmbadblocks\fR.
+.SH UWAGI
+Niniejsza, polska wersja dokumentacji, powsta³a jako t³umaczenie pliku
+Texinfo pakietu mtools wersji 3.9.6. W stosunku do automatycznie generowanej
+z Textinfo dokumentacji oryginalnej dokonano przesuniêcia sekcji opisuj±cej
+konwersjê dokumentacji do \fBmtools\fR(1). Tam te¿ znajdziesz notê prawn±
+dotycz±c± rozpowszechniania, modyfikacji i t³umaczenia dokumentacji pakietu
+mtools

@@ -1,0 +1,84 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+.TH PSSELECT 1 "PSUtils Release 1 Patchlevel 17"
+.SH NAZWA
+psselect \- wybiera z pliku postscriptowego strony
+.SH SK£ADNIA
+.B psselect
+[
+.B \-q
+] [
+.B \-e
+] [
+.B \-o
+] [
+.B \-r
+] [
+.B \-p\fIstrony\fR
+] [
+.I strony
+] [
+.I plik_we
+[
+.I plik_wy
+] ]
+.SH OPIS
+.I Psselect
+wybiera strony z dokumentu postscriptowego i wkleja je do nowego pliku. Plik
+wej¶ciowy powinien byæ zgodny z konwencjami strukturyzacji dokumentu Adobe
+(DSC).
+.PP
+Opcja
+.I \-e
+wybiera wszystkie strony parzyste; mo¿na jej u¿ywaæ w po³±czeniu z innymi
+opcjami wyboru stron do wyboru stron parzystych z zakresu stron.
+.PP
+Opcja
+.I \-o
+wybiera wszystkie strony nieparzyste; mo¿na jej u¿ywaæ w po³±czeniu z innymi
+opcjami wyboru stron.
+.PP
+Opcja
+.I \-p\fIstrony\fR
+okre¶la strony, które nale¿y wybraæ.
+.I Strony
+to rozdzielona przecinkami lista zakresów stron, z których ka¿dy mo¿e byæ
+albo numerem strony, albo zakresem, w postaci \fIpierwszy\fR-\fIostatni\fR.
+Je¶li \fIpierwszy\fR zostanie pominêty, wybrana zostanie pierwsza strona, a
+je¶li pominiêty zostanie \fIostanie\fR, wybrana zostanie strona ostatnia.
+
+Znak przedrostkowy `_' oznacza, ¿e numer strony liczony jest od koñca
+dokumentu. Bez numeru, znak ten oznacza ¿±danie wstawienia pustej strony.
+.PP
+Opcja
+.I \-r
+powoduje, ¿e
+.I psselect
+wydaje wybrane strony w odwróconej kolejno¶ci.
+.PP
+Normalnie, psselect drukuje numery prztwarzanych stron; opcja
+.I \-q
+powstrzymuje to dzia³anie.
+.PP
+Je¶li podana jest która¶ z opcji
+.I \-r, \-e
+lub
+.IR \-o ,
+zakres stron trzeba podaæ poprzez opcjê
+.I \-p
+Jest tak dla kompatybilno¶ci wstecznej z poprzednimi wersjami.
+
+.SH UWAGI
+Numer strony podawany do
+.I psselect
+jest numerem strony, licz±c od pocz±tku lub koñca pliku, zaczynaj±cym siê od
+jedynki. Rzeczywisty numer strony w dokumencie mo¿e byæ inny.
+.SH AUTOR
+Copyright (C) Angus J. C. Duggan 1991-1995
+.SH "ZOBACZ TAK¯E"
+psbook(1), psselect(1), pstops(1), epsffit(1), psnup(1), psresize(1), psmerge(1), fixscribeps(1), getafm(1), fixdlsrps(1), fixfmps(1), fixmacps(1), fixpsditps(1), fixpspps(1), fixtpps(1), fixwfwps(1), fixwpps(1), fixwwps(1), extractres(1), includeres(1)
+.SH ZNAKI TOWAROWE
+.B PostScript
+jest znakiem towarowym Adobe Systems Incorporated.
+.SH B£ÊDY
+.I Psselect
+nie przyjmuje wszystkich komentarzy DSC.

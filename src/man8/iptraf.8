@@ -1,0 +1,80 @@
+.\" {PTM/RM//31-08-2000}
+.\" Bardzo skromny manual, lepiej korzystaæ z dokumentacji 
+.TH IPTRAF 8 "IPTraf Strona pomocy"
+.SH NAZWA
+iptraf \- interaktywny (kolorowy) monitor IP LAN
+.SH SK£ADNIA
+.BR iptraf " [ " -f " ] [ " -q " ] [[ " -h " ] [ { " -i " | " -g " | " -d
+.IR interfejs " | "
+.BR -s
+.IR interfejs " | "
+.BR -l " } [ " -t
+.IR timeout " ]]"
+.br
+.SH OPIS
+.B iptraf 
+jest bazuj±cym na bibliotece ncurses monitorem pakietów IP w sieci lokalnej 
+generuj±cym
+ró¿norodne statystyki sieciowe zawieraj±ce: informacje o pakietach TCP, 
+zliczenia UDP,
+ICMP i OSPF, informacje o wykorzystaniu Ethetnetu, stany wêz³ów, b³êdy sum 
+kontrolnych IP i inne. 
+.PP
+Je¿eli 
+.B iptraf 
+jest uruchomiony bez opcji, przechodzi do trybu interaktywnego z menu g³ównym.
+
+.SH OPCJE
+Poni¿sze opcje mog± byæ dodane w linii komend:
+.TP
+.B "-i"
+uruchamia siê bezpo¶rednio jako monitor ruchu pakietów IP (IP traffic monitor)
+.TP
+.B "-g"
+uruchamia siê bezpo¶rednio jako monitor statystyk interfejsów sieciowych 
+(general interface statistics)
+.TP
+.BI "-d " interfejs
+uruchamia siê bezpo¶rednio jako szczegó³owy monitor dla konkretnego \fIinterfejs\fR-u
+.TP
+.BI "-s " interfejs
+uruchamia siê bezpo¶rednio jako monitor pakietów TCP i UDP dla konkretnego \fIinterfejs\fR-u
+.TP
+.B "-l"
+startuje jako monitor sieci lokalnej
+.TP
+.BI "-t " timeout
+ustawia 
+.I timeout 
+dla danej us³ugi (konkretnego monitora) w minutach. (Ta opcja jest
+u¿ywana tylko z opcjami znajduj±cymi siê powy¿ej)
+.TP
+.B "-f"
+forsuje w³asne ustawienia nadpisuj±c (kasuj±c) inne pochodz±ce od
+innych aktualnie pracuj±cych procesów IPTraf-a. U¿ywaæ z ostro¿no¶ci±.
+Mo¿e spowodowaæ konflikty z innymi procesami IPTrafa. Ta opcja
+mo¿e byæ u¿yta do przywróceniu ustawieñ IPTraf-a po niespodziewanym
+przerwaniu jego pracy.
+.TP
+.BI "-q"
+wy³±cza wy¶wietlanie ostrze¿eñ na maszynach z w³±czonym IP-masquaradingiem.
+Ostrze¿enia te s± domy¶lnie wy¶wietlane w celu poinformowania
+o mo¿liwo¶ci przek³amañ w wynikach pracy IPTraf-a w zwi±zku z forwardowaniem 
+pakietów.
+.TP
+.B "-h"
+pokazuje skrócony opis opcji IPTraf-a
+.SH PLIKI
+/var/log/iptraf/iptraf.log - plik dziennika
+
+.SH ZOBACZ TAK¯E
+Documentation/* - pe³na dokumentacja napisana przez autora
+.br
+
+.SH AUTOR
+Gerard Paul Java (riker@mozcom.com)
+
+.SH AUTOR MANUAL-a
+Frederic Peters (fpeters@debian.org), u¿ywaj±c komenedy iptraf --help.
+Ogólne modyfikacje w tym dokumencie wykona³ Gerard Paul Java (riker@mozcom.com).
+

@@ -1,0 +1,419 @@
+.\" Copyright 1993 Giorgio Ciucci (giorgio@crcc.it)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified 1996-10-22, Eric S. Raymond <esr@thyrsus.com>
+.\" Modified 2002-01-08, Michael Kerrisk <mtk16@ext.canterbury.ac.nz>
+.\" Modified 2003-04-28, Ernie Petrides <petrides@redhat.com>
+.\"
+.\" Translated by Rafa³ Lewczuk, 9 May 1999
+.\" Last update: Robert Luberda <robert@debian.org>, Oct 2004
+.\"              manpages 1.67
+.\" 
+.TH SEMOP 2 2003-04-28 "Linux 2.4" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+semop, semtimedop \- operacje na semaforach
+.SH SK£ADNIA
+.nf
+.B
+#include <sys/types.h>
+.B
+#include <sys/ipc.h>
+.B
+#include <sys/sem.h>
+.fi
+.sp
+.BI "int semop(int " semid ,
+.BI "struct sembuf *" sops ,
+.BI "unsigned " nsops );
+.sp
+.BI "int semtimedop(int " semid ,
+.BI "struct sembuf *" sops ,
+.BI "unsigned " nsops ,
+.BI "struct timespec *" timeout );
+.SH OPIS
+Semafor jest reprezentowany za pomoc± anonimowej struktury zawieraj±cej
+nastêpuj±ce pola:
+.sp
+.in +4n
+.nf
+unsigned short  semval;   /* warto¶æ semafora */
+unsigned short  semzcnt;  /* # oczekiwanie na  zero */
+unsigned short  semncnt;  /* # oczekiwanie na zwiêkszenie */
+pid_t           sempid;   /* proces, który wykona³ ost. op. */
+.sp
+.in -4n
+.fi
+Funkcja
+.B semop
+wykonuje operacje na wybranych semaforach z zestawu wskazywanego przez
+.IR semid .
+Ka¿dy z
+.I nsops
+elementów tablicy wskazywanej przez parametr
+.I sops
+okre¶la operacjê, która ma byæ wykonana na semaforze. Struktura
+.B "struct sembuf"
+zawiera nastêpuj±ce pola:
+.sp
+.in +4n
+.nf
+unsigned short sem_num;        /* numer semafora */
+short sem_op;                  /* operacja na semaforze */
+short sem_flg;                 /* dodatkowe znaczniki operacji */
+.sp
+.in -4n
+.fi
+W
+.I sem_flg
+mog± zostaæ ustawione znaczniki operacji:
+.B IPC_NOWAIT
+i
+.BR SEM_UNDO .
+Je¶li operacja jest opatrzona znacznikiem
+.BR SEM_UNDO ,
+to zostanie cofniêta w chwili, gdy proces zakoñczy dzia³anie.
+.PP
+Zestaw operacji zawartych w
+.I sops
+jest wykonywany
+.IR atomowo ,
+to znaczy, operacje s± wykonywane jednocze¶nie i tylko wtedy, gdy wszystkie
+mog± byæ jednocze¶nie wykonywane.
+Zachowanie funkcji systemowej w sytuacji, gdy nie wszystkie operacje mog±
+byæ wykonane natychmiast, zale¿y od ustawienia znacznika
+.B IPC_NOWAIT
+w poszczególnych polach
+.IR sem_flg ,
+jak to opisano poni¿ej.
+
+Ka¿da z nich jest wykonywana na
+.IR sem_num \-tym
+semaforze w zestawie, przy czym pierwszy semafor ma numer
+.BR 0 .
+Istniej± trzy rodzaje operacji, rozró¿niane na podstawie warto¶ci
+.IR sem_op .
+.PP
+Je¶li
+.I sem_op
+jest liczb± dodatni±, to warto¶æ semafora
+.RI ( semval )
+zostanie zwiêkszona o tê liczbê. Ponadto, je¶li zosta³ przekazany znacznik
+.BR SEM_UNDO ,
+wówczas system zaktualizuje licznik zmian 
+.RI ( semadj )
+tego semafora dla procesu
+Operacja ta nigdy nie powoduje wstrzymania procesu. Proces wywo³uj±cy funkcjê
+musi mieæ prawo do modyfikacji zestawu semaforów.
+.PP
+Je¶li
+.I sem_op
+jest równe 0, proces musi mieæ prawo do odczytu zestawu semaforów.
+Jest to operacja "oczekiwania na zero" (wait-for-zero): gdy
+.I semval
+ma warto¶æ 0, operacja mo¿e byæ kontynuowana bezzw³ocznie.
+W przeciwnym razie, je¶li w
+.I sem_flg
+przekazany zosta³ znacznik
+.BR IPC_NOWAIT ,
+wówczas funkcja systemowa zg³osi b³±d,
+za¶ zmienna
+.I errno
+przyjmie warto¶æ
+.B EAGAIN
+(i ¿adna z operacji z
+.I sops
+nie zostanie wykonana).
+Je¶li proces zostanie wstrzymany przez system, wówczas warto¶æ
+.I semzcnt
+(liczby procesów oczekuj±cych na osi±gniêcie przez semafor warto¶ci zero)
+zostanie zwiêkszona o 1. Proces bêdzie zawieszony a¿ do chwili, gdy
+spe³niony zostanie jeden z poni¿szych warunków:
+.IP \(bu
+.I semval
+osi±gnie warto¶æ 0; wówczas warto¶æ pola
+.I semzcnt
+zostanie zmniejszona o 1.
+.IP \(bu
+Zestaw semaforów zostanie usuniêty: system zg³osi b³±d, przypisuj±c zmiennej
+.I errno
+warto¶æ
+.BR EIDRM.
+.IP \(bu
+Proces wywo³uj±cy funkcjê przechwyci sygna³:
+warto¶æ
+.I semzcnt
+zostanie zmniejszona o 1, natomiast system zg³osi b³±d, przypisuj±c zmiennej
+.I errno
+warto¶æ
+.BR EINTR .
+.PP
+Je¶li
+.I sem_op
+ma warto¶æ mniejsz± od 0, to proces musi mieæ prawo do modyfikacji zestawu
+semaforów. Je¶li wówczas warto¶æ semafora
+.I semval
+jest wiêksza lub równa warto¶ci bezwzglêdnej
+.BR sem_op ,
+to operacja mo¿e byæ kontynuowana bezzw³ocznie:
+warto¶æ semafora
+.I semval
+zostanie zmniejszona o warto¶æ bezwzglêdn±
+.IR sem_op .
+Ponadto, je¶li przekazano znacznik
+.BR SEM_UNDO ,
+wówczas system zaktualizuje licznik zmian semafora dla procesu
+.RI ( semadj ).
+Je¶li warto¶æ bezwzglêdna
+.I sem_op
+jest wiêksza ni¿
+.IR semval ,
+a w
+.I sem_flg
+przekazano znacznik
+.BR IPC_NOWAIT ,
+system zg³osi b³±d przypisuj±c zmiennej
+.I errno
+warto¶æ
+.B EAGAIN
+(i ¿adna z operacji  z
+.I sops
+nie zostanie wykonana).
+W przeciwnym wypadku
+.I semncnt
+(licznik procesów oczekuj±cych na zwiêkszenie warto¶ci tego semafora)
+zostanie zwiêkszony o 1. Proces mo¿e byæ wznowiony w nastêpuj±cych sytuacjach:
+.IP \(bu
+.I semval
+osi±gnie warto¶æ wiêksz± lub równ± warto¶ci bezwzglêdnej
+.BI sem_op ;
+wtedy warto¶æ
+.I semncnt
+zostanie zmniejszona o 1, za¶ warto¶æ bezwzglêdna z
+.I sem_op
+zostanie odjêta od
+.I semval .
+Je¶li przekazany zosta³ znacznik
+.B SEM_UNDO ,
+to system zaktualizuje licznik zmian semafora dla procesu
+.RI ( semadj ).
+.IP \(bu
+Zestaw zostanie usuniêty z systemu: funkcja systemowa zg³osi b³±d,
+przypisuj±c zmiennej
+.I errno
+warto¶æ
+.BR EIDRM .
+.IP \(bu
+Proces wywo³uj±cy funkcjê przechwyci sygna³: warto¶æ
+.I semncnt
+zostanie zmniejszona o 1, natomiast funkcja systemowa zg³osi b³±d,
+przypisuj±c zmiennej
+.I errno
+warto¶æ
+.BR EINTR .
+.PP
+Je¶li operacja zostanie zakoñczona pomy¶lnie, to warto¶ci
+.I sempid
+ka¿dego z semaforów wyszczególnionych w tablicy wskazywanej przez
+.I sops
+przypisany zostanie identyfikator procesu (PID), który wywo³a³
+.IR semop .
+Ponadto, polu
+.I sem_otime
+.\" oraz
+.\" .I sem_ctime
+przypisany zostanie aktualny czas.
+Funkcja
+.B semtimedop
+zachowuje siê tak samo jak funkcja
+.BR semop ,
+poza tym ¿e w tych przypadkach gdy proces wywo³uj±cy by spa³,
+czas trwania spania jest ograniczony przez czas okre¶lony 
+w strukturze
+.BR timespec ,
+do której adres jest przekazywany w parametrze
+.IR timeout .
+Je¶li osi±gniêto okre¶lony limit czasu, to wywo³anie systemowe
+zwraca b³±d, ustawiaj±c
+.I errno
+na
+.B EAGAIN
+(i ¿adna z operacji w
+.I sops
+nie jest wykonywana).
+Je¿eli parametr
+.I timeout
+jest
+.BR NULL ,
+to
+.B semtimedop
+zachowuje siê dok³adnie tak samo jak
+.BR semop .
+.SH "WARTO¦Æ ZWRACANA"
+Je¶li operacja zakoñczy siê pomy¶lnie, wówczas funkcja zwróci
+.BR 0 ,
+a w przeciwnym wypadku zwróci
+.BR \-1 ,
+przypisuj±c zmiennej
+.I errno
+kod okre¶laj±cy rodzaj b³êdu.
+.SH B£ÊDY
+Po niepomy¶lnym zakoñczeniu, zmienna
+.I errno
+przyjmie jedn± z nastêpuj±cych warto¶ci:
+.TP
+.B E2BIG
+Warto¶æ
+.I nsops
+przekracza
+.BR SEMOPM ,
+maksymaln± liczbê operacji wykonywanych w jednym wywo³aniu.
+.TP
+.B EACCES
+Proces nie ma uprawnieñ potrzebnych do wykonania jednej z podanych operacji.
+.TP
+.B EAGAIN
+Operacja opatrzona znacznikiem
+.BR IPC_NOWAIT
+w
+.I sem_flg
+nie mo¿e byæ natychmiast wykonana lub up³yn±³
+limit czasu okre¶lony w parametrze
+.IR timeout .
+.TP
+.B EFAULT
+Adres wskazywany przez
+.I sops
+jest niedostêpny.
+.TP
+.B EFBIG
+Numer semafora
+.IR sem_num ,
+do którego odnosi siê jedna z operacji, jest mniejszy od 0 albo wiêkszy lub
+równy liczbie semaforów w zestawie.
+.TP
+.B EIDRM
+Zestaw zosta³ usuniêty z systemu.
+.TP
+.B EINTR
+Podczas oczekiwania na wykonanie operacji proces przechwyci³ sygna³.
+.TP
+.B EINVAL
+Zestaw semaforów nie istnieje lub warto¶æ
+.I semid
+jest mniejsza od 0 lub warto¶æ
+.I nsops
+nie jest liczb± dodatni±.
+.TP
+.B ENOMEM
+Brak pamiêci na zapamiêtanie zmian wywo³anych przez operacjê (znacznik
+.B SEM_UNDO
+w
+.IR sem_flg ).
+.TP
+.B ERANGE
+Dla pewnej operacji warto¶æ
+.I sem_op+semval
+przekroczy³a
+.BR SEMVMX ,
+zale¿n± od implementacji maksymaln± warto¶æ
+.IR semval .
+.SH UWAGI
+Struktury
+.I sem_undo
+nie s± dziedziczone poprzez wywo³ania funkcji systemowej
+.BR fork (2) ,
+ale s± dziedziczone poprzez wywo³ania funkcji systemowej
+.BR execve (2) .
+.PP
+.B semop
+nie jest nigdy automatycznie uruchamiana ponownie po jej przerwaniu przez
+funkcjê obs³ugi sygna³u, niezale¿nie od ustawieñ znacznika
+.B SA_RESTART
+podczas tworzenia funkcji obs³ugi sygna³u.
+.PP
+.I semadj
+jest przypisan± procesowi liczb± ca³kowit±, która stanowi po prostu (ujemny)
+licznik wszystkich operacji na semaforach wykonanych z podaniem znacznika
+.BR SEM_UNDO .
+Podczas bezpo¶redniego nadawania warto¶ci semaforowi za pomoc± poleceñ
+.B SETVAL
+lub
+.B SETALL
+dla
+.BR semctl (2),
+odpowiednie warto¶ci
+.I semadj
+dla wszystkich procesów s± zerowane.
+.PP
+Warto¶ci \fIsemval\fP, \fIsempid\fP, \fIsemzcnt\fP i \fIsemnct\fP dla
+semafora mo¿na odczytaæ za pomoc± odpowiednich wywo³añ
+.BR semctl (2).
+.PP
+Wywo³ania
+.I semop
+dotycz± nastêpuj±ce ograniczenia zasobów:
+.TP
+.B SEMOPM
+Maksymalna liczba operacji, które mog± byæ wykonane w jednym wywo³aniu
+.BR semop :
+(32).
+.TP
+.B SEMVMX
+Maksymalna dozwolona warto¶æ
+.IR semval :
+zale¿y od implementacji (32767).
+.PP
+Implementacja w systemie Linux nie nak³ada wewnêtrznych ograniczeñ na
+maksymaln± zmianê warto¶ci semafora podczas zakoñczenia procesu
+.RB ( SEMAEM ),
+na ogólnosystemow± liczbê struktur przechowuj±cych informacje o zmianach
+stanu semaforów
+.RB ( SEMMNU ),
+ani na maksymaln± dla procesu liczbê struktur przechowuj±cych informacje
+o zmianach stanu semaforów.
+.SH USTERKI
+Gdy proces koñczy dzia³anie, zestaw skojarzonych z nim struktur
+.I semadj
+jest wykorzystywany do cofniêcia efektów wszystkich operacji na semaforach,
+które ten proces wykona³ z ustawionym znacznikiem
+.BR SEM_UNDO .
+Wprowadza to trudno¶æ: je¿eli jedna (lub wiêcej) spo¶ród tych zmian
+semaforów spowodowa³by próbê zmniejszenia warto¶ci semafora poni¿ej zera,
+to co implementacja powinna uczyniæ?
+Jednym z mo¿liwych podej¶æ do tego zadadnienia mog³o by byæ zablokowanie do
+chwili, gdy przeprowadzenie wszystkich zmian semaforów bêdzie mo¿liwe. 
+Jest to jednak¿e niepo¿±dane, gdy¿ spowodowa³oby wymuszenie zablokowania
+zakoñczenia procesu na dowolnie d³ugi okres.
+Inn± mo¿liwo¶ci± jest zignorowanie wszystkich takich zmian semaforów (nieco
+analogiczne do niepomy¶lnego zakoñczenia, gdy dla operacji na semaforze
+podany jest znacznik 
+.BR IPC_NOWAIT ).
+Linux przyj±³ trzecie rozwi±zanie: zmniejszenie warto¶ci semafora na tyle,
+na ile jest to mo¿liwe (tzn. do zera) i umo¿liwienie natychmiastowej
+kontynuacji koñczenia dzia³ania procesu.
+.SH "ZGODNE Z"
+SVr4, SCID.  SVr4 dokumentuje dodatkowe kody b³êdów: EINVAL, EFBIG i ENOSPC.
+.SH "ZOBACZ TAK¯E"
+.BR ipc (5),
+.BR semctl (2),
+.BR semget (2),
+.BR sigaction (2)

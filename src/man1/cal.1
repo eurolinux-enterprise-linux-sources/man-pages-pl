@@ -1,0 +1,93 @@
+.\" {PTM/WK/1999-XII}   wg man.en z 2000-05-25
+.\" Copyright (c) 1989, 1990, 1993
+.\"	The Regents of the University of California.  All rights reserved.
+.\"
+.\" This code is derived from software contributed to Berkeley by
+.\" Kim Letkeman.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     @(#)cal.1	8.1 (Berkeley) 6/6/93
+.\"
+.Dd July 6, 1993
+.Dt CAL 1
+.Os
+.Sh NAZWA
+.Nm cal
+.Nd wy¶wietla kalendarz
+.Sh SK£ADNIA
+.Nm cal
+.Op Fl mjy
+.Op Ar miesi±c Op Ar rok
+.Sh OPIS
+.Nm Cal
+wy¶wiela prosty kalendarz. Je¿eli nie podano ¿adnych argumentów, to
+wy¶wietlany jest bie¿±cy miesi±c. Dostêpne s± nastêpuj±ce opcje:
+.Bl -tag -width Ds
+.It Fl m
+Wy¶wietl poniedzia³ek (Monday) jako pierwszy dzieñ tygodnia.
+Domy¶lnie jest to niedziela (Sunday).
+.It Fl j
+Wy¶wietl daty juliañskie (liczbê dni od wspólnej podstawy, 1 stycznia).
+.It Fl y
+Wy¶wietl kalendarz na bie¿±cy rok.
+.El
+.Pp
+Pojedynczy parametr okre¶la rok (1 - 9999), jaki ma zostaæ wy¶wietlony;
+zauwa¿, ¿e rok musi zostaæ podany w pe³nej postaci:
+.Dq Li cal 99
+.Em nie
+wy¶wietli kalendarza dla 1999.
+Dwa parametry okre¶laj± odpowiednio miesi±c (1 - 12) i rok.
+Je¿eli nie podano parametrów, to wy¶wietlany jest kalendarz na bie¿±cy
+miesi±c.
+.Pp
+Rok rozpoczyna siê od 1 stycznia.
+.Pp
+Przyjêto, ¿e reforma gregoriañska wydarzy³a siê 3 wrze¶nia 1752.
+.br
+[t³um:chodzi o reformê starego kalendarza juliañskiego, wyrównuj±c± opó¼nienie
+w stosunku do roku s³onecznego i modyfikuj±c± regu³ê lat przestêpnych.
+Wprowadzona bull± papie¿a Grzegorza XIII, obowi±zywa³a od 4 pa¼dziernika 1582;
+b.szybko przyjêta przez ¶wiat katolicki, du¿o pó¼niej przez kraje
+protestanckie (Anglia 1752, Szwecja 1753) i prawos³awne.]
+.br
+Do tego czasu (3.IX.1752) wiêkszo¶æ krajów przyjê³a zreformowany kalendarz
+(choæ kilka uczyni³o to dopiero na pocz±tku XIX wieku [Rosja 1917]).
+Dziesiêæ dni nastêpuj±cych po dacie zmiany kalendarza zosta³o pominiêtych
+zatem kalendarz dla tego miesi±ca jest do¶æ niezwyk³y.
+.br
+[t³um: tak w oryginale. Faktycznie ró¿nica kalendarzy wynosi³a 10 dni w
+1582r., w XVIIIw. osi±gnê³a ju¿ 11 dni. Mimo tej nie¶cis³o¶ci dokumentacji,
+program dzia³a zgodnie z za³o¿eniem, tj. po dacie 2 wrze¶nia 1752 nastêpuje
+14 wrze¶nia.]
+.Sh HISTORIA
+Polecenie
+.Nm
+pojawi³o siê w wersji 6 AT&T UNIX.

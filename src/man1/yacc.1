@@ -1,0 +1,107 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+.\"	%W%	%R% (Berkeley) %E%
+.\"
+.TH YACC 1 "15 lipca 1990"
+.UC 6
+.SH NAZWA
+Yacc \- generator analizatorów sk³adni LALR(1)
+.SH SK£ADNIA
+.B yacc [ -dlrtv ] [ -b
+.I przedrostek_pliku
+.B ] [ -p
+.I przedrostek_symbolu
+.B ]
+.I nazwapliku
+.SH OPIS
+.I Yacc
+czyta opis gramatyki z pliku
+.I nazwapliku
+i generuje dla niej analizator sk³adni LR(1).
+Analizatory sk³adaj± siê z zestawu tabel analizy LALR(1) i procedury
+steruj±cej napisanej w jêzyku C.
+.I Yacc
+zazwyczaj zapisuje tabele analizy i funkcjê steruj±c± do pliku
+.IR y.tab.c.
+.PP
+Dostêpne s± nastêpuj±ce opcje:
+.RS
+.TP
+\fB-b \fIprzedrostek_pliku\fR
+Opcja
+.B -b
+zmienia przedrostek, który jest doklejany do wyj¶ciowych nazw plików. Nowym
+przedrostkiem staje siê
+.IR przedrostek_pliku .
+Domy¶lnym przedrostkiem jest znak
+.IR y.
+.TP
+.B -d
+Opcja \fB-d\fR powoduje zapisanie pliku nag³ówkowego
+.IR y.tab.h .
+.TP
+.B -l
+Je¶li nie poda siê opcji
+.BR -l ,
+.I yacc
+wstawi do generowanego kodu dyrektywy #line. Dyrektywy te umo¿liwiaj±
+kompilatorowi C wi±zanie b³êdów w generowanym kodzie z oryginalnym kodem
+u¿ytkownika.
+Je¶li podana jest opcja \fB-l\fR,
+.I yacc
+nie bêdzie wstawia³ dyrektyw #line.
+Dyrektywy #line, podawane przez u¿ytkownika zostan± zachowane.
+.TP
+\fB-p \fIprzedrostek_symbolu\fR
+Opcja
+.B -p
+zmienia przedrostek doklejany do symboli generowanych przez yacc na ³añcuch
+okre¶lony przez
+.IR przedrostek_symbolu .
+Domy¶lnym przedrostkiem jest ³añcuch
+.IR yy.
+.TP
+.B -r
+Opcja
+.B -r
+powoduje, ¿e
+.I yacc
+tworzy oddzielne pliki z kodem i tabelami. Plik z kodem jest nazywany
+.IR y.code.c ,
+a plik z tabelami
+.IR y.tab.c .
+.TP
+.B -t
+Opcja
+.B -t
+zmienia dyrektywy preprocesora, generowane przez
+.I yacc
+tak, ¿e do skompilowanego kodu zostan± za³±czone instrukcje debugguj±ce.
+.TP
+.B -v
+Opcja
+.B -v
+powoduje wy¶wietlenie czytelnego dla cz³owieka opisu generowanego
+analizatora do pliku
+.IR y.output.
+.RE
+.PP
+Je¶li ustawiona jest zmienna ¶rodowiskowa TMPDIR, to ³añcuch wskazany przez
+TMPDIR bêdzie u¿ywany jako nazwa katalogu plików tymczasowych.
+.SH PLIKI
+.IR y.code.c
+.br
+.IR y.tab.c
+.br
+.IR y.tab.h
+.br
+.IR y.output
+.br
+.IR /tmp/yacc.aXXXXXX
+.br
+.IR /tmp/yacc.tXXXXXX
+.br
+.IR /tmp/yacc.uXXXXXX
+.SH DIAGNOSTYKA
+Je¶li istniej± nieredukowalne regu³y, to ich liczba jest zg³aszana na
+stderr.
+Je¶li istniej± konflikty z LALR(1), to ich liczba zg³aszana jest na stderr.

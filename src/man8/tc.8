@@ -1,0 +1,415 @@
+.\" Translation by Pawel Wilk <siefca@gnu.org>
+.\" {PTM/PW/0.1/07-04-2003/"manipuluj ustawieniami sterowania przep³ywem"}
+.\" 
+.TH "TC" "8" "16 Grudzieñ 2001" "iproute2" "Linux"
+.SH "NAZWA"
+tc \- poka¿ / manipuluj ustawieniami sterowania przep³ywem
+.SH "SK£ADNIA"
+.B tc qdisc [ add | change | replace | link ] dev
+DEV
+.B 
+[ parent
+qdisc\-id
+.B | root ]
+.B [ handle
+qdisc\-id ] qdisc
+[ specyficzne parametry ]
+.P
+
+.B tc class [ add | change | replace ] dev
+DEV
+.B parent
+qdisc\-id
+.B [ classid
+class\-id ] qdisc
+[ specyficzne parametry ]
+.P
+
+.B tc filter [ add | change | replace ] dev
+DEV
+.B  [ parent
+qdisc\-id
+.B | root ] protocol
+protocol
+.B prio
+priority filtertype
+[ specyficzne parametry ]
+.B flowid
+flow\-id
+
+.B tc [\-s | \-d ] qdisc show [ dev
+DEV
+.B  ]
+.P
+.B tc [\-s | \-d ] class show dev
+DEV
+.P
+.B tc filter show dev
+DEV
+
+.SH "OPIS"
+.B Tc
+u¿ywane jest do konfigurowania Sterowania Przep³ywem w j±drze Linux. Sterowanie
+Przep³ywem sk³ada siê z:
+
+.TP 
+CIÊCIA (SHAPING)
+Gdy ruch jest przycinany to pod kontrol± jest czêsto¶æ jego transmisji. Przycinanie
+mo¿e byæ czym¶ wiêcej ni¿ tylko zmniejszaniem dostêpnego pasma \- bywa tak¿e u¿ywane
+w celu wyg³adzenia nag³ych przyrostów ruchu, aby sieæ jako ca³o¶æ dzia³a³a lepiej.
+Ciêcia pasma nastêpuje zawsze na wyj¶ciu interfejsu sieciowego.
+
+.TP 
+SZEREGOWANIA (SCHEDULING)
+Poprzez szeregowanie transmisji pakietów mo¿liwym staje siê zwiêkszenie interaktywno¶ci
+ruchu, który tego wymaga, przy jednoczesnym gwarantowaniu pasma dla du¿ych transferów.
+Takie porz±dkowanie kolejno¶ci bywa równie¿ nazywane priorytetyzacj± i nastêpuje tylko
+i wy³±cznie na wyj¶ciu.
+
+.TP 
+NADZOROWANIA (POLICING)
+Tak jak ciêcie pasma dotyczy transmitowania ruchu tak nadzorowanie i
+preselekcja odnosi siê do ruchu, który przychodzi. Selekcjonowanie
+zachodzi na wej¶ciu.
+
+.TP 
+ODRZUCANIA (DROPPING)
+Ruch o natê¿eniu przekraczaj±cym ustalone pasmo mo¿e byæ odrzucany zarówno
+na wej¶ciu jak i na wyj¶ciu.
+
+.P
+Przetwarzanie ruchu jest kontrolowane przez trzy rodzaje obiektów:
+dyscypliny kolejkowania (qdiscs), klasy (classes), oraz filtry (filters).
+
+.SH "QDISCS"
+.B qdisc
+jest skrótem od 'queueing discipline' (dyscyplina kolejkowania) i jest
+pojêciem podstawowym w rozumieniu sterowania przep³ywem. Je¶li kiedykolwiek
+j±dro chce wysy³aæ pakiet do interfejsu sieciowego to pakiet ten jest
+.B kolejkowany
+przy pomocy odpowiedniego obiektu qdisc skonfigurowanego dla tego interfejsu.
+Zaraz potem j±dro próbuje pobraæ mo¿liwie najwiêksz± ilo¶æ pakietów z
+obiektu qdisc (z \- nazwijmy umownie \- wyj¶cia z kolejki), aby przekazaæ
+je sterownikowi karty sieciowej.
+
+Prostym QDISC jest kolejka 'pfifo', która wcale nie dokonuje przetwarzania
+nap³ywaj±ch pakietów i jest tylko czyst± kolejk± FIFO (pierwszy na wej¶ciu,
+pierwszy na wyj¶ciu). Jej jedyne zadanie to przetrzymywanie pakietów w krótkich
+chwilach, gdy interfejs sieciowy nie mo¿e ich obs³u¿yæ.
+
+.SH "KLASY"
+Niektóre obiekty dyscypliny kolejkowania (qdisc) nie s± takie proste jak opisany
+powy¿ej i mog± zawieraæ w sobie tak zwane klasy. Klasy te s± z kolei
+swoistymi kontenerami dla innych obiektów qdisc \- ruch mo¿e byæ wiêc
+kolejkowany w ka¿dym innym obiekcie qdisc, który nale¿y do tych zdefiniowanych
+wewn±trz
+.B klas.
+Gdy j±dro próbuje zdj±æ pakiet z takiego
+.B klasyfikuj±cego qdisc
+to mo¿e on pochodziæ z którejkolwiek z nale¿±cych do qdisc klas. Dla przyk³adu
+qdisc mo¿e priorytetyzowaæ pewn± czê¶æ ruchu poprzez usi³owanie zdjêcia pakietów
+z jednych ze swych kolejek wcze¶niej ni¿ z innych.
+
+.SH "QDISC A KLASY"
+Chocia¿ istniej± obiekty qdisc (dyscypliny kolejkowania), które mog± w sobie
+zawieraæ klasy to nie nale¿y uto¿samiaæ pojêcia qdisc z pojêciem klasy. Klasa
+jest swoistym slotem, w którym mo¿na osadziæ potomne qdisc. Klasa sama w sobie
+nie jest obiektem kolejkuj±cym.
+
+.SH "ALGORYTMY KOLEJKOWANIA"
+Niektóre opracowania i t³umaczenia pos³uguj± siê terminem Algorytmy Kolejkowania.
+Algorytm kolejkowania to innymi s³owy logika dzia³ania danego typu qdisc, czyli
+w praktyce u¿ytej kolejki pakietów.
+Algorytm kolejkowania mo¿e byæ elementarny lub z³o¿ony. Elementarne (podstawowe)
+algorytmy kolejkowania obecne s± w kolejkach, które wyspecjalizowane s± w
+sterowaniu przep³ywaj±cym przez dan± kolejkê ruchem pakietów. Nie mamy w takich
+kolejkach do czynienia z niczym ponad stosowanie pewnego algorytmu do zarz±dzania
+przep³ywno¶ci± tego co do kolejki przychodzi. Algorytmy z³o¿one to jak sugeruje nazwa takie,
+które stanowi± logikê obiektów qdisc zawieraj±cych w sobie wiêcej ni¿ jeden obiekt,
+a dok³adnie wiele obiektów opartych na elementarnych algorytmach. Przyk³adem
+implementacji z³o¿onego algorytmu mo¿e byæ obiekt qdisc zawieraj±cy klasy,
+a opisany wcze¶niej.
+
+.SH "FILTRY"
+.B Filtr
+jest u¿ywany przez kolejki klasyfikuj±ce by okre¶liæ do jakiej konkretnie
+kolejki pakiet powinien trafiæ. Gdy na wej¶ciu kolejki zawieraj±cej
+podklasy pojawia siê ruch to ruch ten musi zostaæ sklasyfikowany. Aby to
+osi±gn±æ mo¿emy zastosowaæ wiele ró¿nych metod. Jedn± z tych metod
+przydzielania ruchu spe³niaj±cego jakie¶ kryteria do konkretnych podklas
+jest w³a¶nie u¿ycie filtrów. Filtry przydzielamy do obiektów qdisc.
+Wszystkie pod³±czone filtry s± uruchamiane (tzn. ka¿dy pakiet podlegaj±cy
+danej dyscyplinie kolejkowania jest z nimi porównywany), a¿ do momentu a¿ bêdzie
+pasowa³ do jakiego¶ filtra i powróci z werdyktem. Je¶li ¿aden filtr nie
+"z³apa³" pakietu to mog± byæ brane pod uwagê jeszcze inne kryteria. Zale¿y
+to od typu qdisc.
+
+Jest bardzo istotnym by zauwa¿yæ, ¿e filtry s± obecne
+.B wewn±trz
+obiektów qdisc \- one bezpo¶rednio nie decyduj± o tym co siê stanie.
+
+.SH "BEZKLASOWE QDISC"
+Bezklasowe obiekty qdisc (bazuj±ce na elementarnych algorytmach
+kolejkowania) s± to:
+.TP 
+[p|b]fifo
+Najprostszy mo¿liwy do zastosowania obiekt qdisc, czyste zachowanie FIFO \- pierwszy
+na wej¶ciu \- pierwszy na wyj¶ciu. Mo¿liwy limit to pakiety lub bajty.
+.TP 
+pfifo_fast
+Standardowy obiekt qdisc je¶li j±dro skompilowano z opcj± 'Advanced Router'.
+Zawiera trójwstêgow± kolejkê, która honoruje flagi Typu Us³ugi (TOS), tak
+jak i priorytet, który mo¿e zostaæ przypisany do pakietu.
+.TP 
+red
+Losowa Wczesna Detekcja (ang. Random Early Detection \- w skr. RED)
+symuluje fizyczne przeci±¿enia losowo porzucaj±c pakiety, gdy natê¿enie
+ruchu zbli¿a siê do ustalonego limitu. Dobrze radzi sobie ze sterowaniem
+ruchem masowym, czyli zawieraj±cym du¿e transfery w du¿ej ilo¶ci.
+.TP 
+sfq
+Stochastyczne Sprawiedliwe Kolejkowanie (ang. Stochastic Fairness Queueing \-
+w skr. SFQ) tak szereguje kolejkowany ruch, ¿eby ka¿da 'sesja' mia³a tak±
+sam± zdolno¶æ transmisji.
+.TP 
+tbf
+Filtr Kube³ka ¯etonów (ang. The Token Bucket Filter \- w skr. TBF) jest
+przewidziany do spowalniania ruchu do precyzyjnie okre¶lonej czêsto¶ci.
+¦wietnie siê skaluje do du¿ych szeroko¶ci pasm.
+
+.SH "KONFIGUROWANIE BEZKLASOWYCH QDISC"
+Je¶li nie jest obecny klasyfikuj±cy obiekt qdisc, wtedy bezklasowe obiekty
+qdisc mog± zostaæ skojarzone tylko z interfejsem sieciowym. Tylko jednen
+taki bezklasowy qdisc mo¿e byæ przy³±czony do jednego urz±dzenia sieciowego
+bezpo¶rednio.
+Pe³na sk³adnia:
+.P
+.B tc qdisc add dev
+DEV
+.B root
+QDISC PARAMETRY\-QDISC
+
+By usun±æ wprowad¼
+.P
+.B tc qdisc del dev
+DEV
+.B root
+
+Obiekt qdisc typu
+.B pfifo_fast
+jest ustawiany automatycznie jako domy¶lny qdisc dla ka¿dego interfejsu
+sieciowego, je¶li nic jeszcze nie zosta³o odpowiednio skonfigurowane.
+
+.SH "KLASYFIKUJ¡CE QDISC"
+Klasyfikuj±ce obiekty qdisc to:
+.TP 
+CBQ
+Kolejkowanie Bazuj±ce na Klasach (ang. Class Based Queueing) implementuje
+bogat± hierarchiê klas dla dzielenia pasma.
+Zawiera ono elementy przycinaj±ce ruch, jak i mo¿liwo¶ci priorytetyzacji.
+Przycinanie jest przeprowadzane przy pomocy wyliczania czasu bezczynno¶ci ³±cza.
+Obliczenia bazuj± na ¶redniej wielko¶ci pakietu i szeroko¶ci dostêpnego pasma na
+najni¿szej warstwie ³±cza. Ten ostatni parametr mo¿e byæ trudno definiowalny
+dla niektórych typów interfejsów sieciowych.
+.TP 
+HTB
+Hierarchiczny Kube³ek ¯etonów (ang. The Hierarchy Token Bucket) implementuje
+bogat± hierarchiê klas, k³ad±c szczególny nacisk na zgodno¶æ z istniej±cymi
+praktykami. Udogodnienia HTB gwarantuj± pasmo dla klas i jednocze¶nie pozwalaj±
+specyfikowaæ wysokie limity dzielenia miêdzy klasami. HTB zawiera elementy
+przycinania pasma bazuj±ce na TBF i mo¿e priorytetyzowaæ podczepione klasy.
+.TP 
+PRIO
+Obiekty qdisc typu PRIO s± nieprzycinaj±cymi kontenerami dla konfigurowalnej
+liczby podklas, których kolejki s± opró¿niane w kolejno¶ci. Pozwala to prostym
+sposobem w³±czyæ priorytetyzacjê ruchu, gdzie klasy o ni¿szym priorytecie
+mog± tylko wysy³aæ, je¶li klasy o priorytecie wy¿szym nie maj± ju¿ pakietów
+do wys³ania. By u³atwiæ konfiguracjê, domy¶lnym kryterium s± bity Typu Us³ugi (TOS)
+z pakietów.
+
+.SH "SPOSÓB DZIA£ANIA"
+Klasy tworz± drzewo, gdzie ka¿da klasa ma jednego rodzica.
+Klasa mo¿e mieæ wiele potomków. Niektóre obiekty qdisc pozwalaj± na
+dodawanie podklas w trakcie dzia³ania (CBQ, HTB), podczas gdy inne
+(PRIO) s± tworzone ze statyczn± liczb± potomków.
+
+Obiekty qdisc pozwalaj±ce na dynamiczne dodawanie podklas mog± mieæ ich
+zero lub wiêcej. Do tych podklas kierowany bêdzie potem ruch.
+
+Ponadto, ka¿da klasa zawiera tak zwan±
+.B kartê qdisc
+która domy¶lnie zachowuje siê jak
+.B pfifo
+a ka¿dy dodawany do klasy obiekt qdisc aplikowany jest przed kart±.
+Qdisc mo¿e znów zawieraæ klasy, lecz ka¿da klasa mo¿e mieæ tylko jedn± tak± kartê.
+Pod pojêciem karty rozumiemy tu domy¶lnie aktywowany sposób kolejkowania,
+który jest potem zastêpowany przez ten ju¿ skonfigurowany.
+
+Gdy pakiet wchodzi do klasyfikuj±cego obiektu qdisc to mo¿e byæ
+.B sklasyfikowany
+i trafiæ do jednej z zawartych podklas. S± tu dostêpne trzy kryteria, chocia¿
+nie wszystkie obiekty qdisc u¿ywaj± wszystkich trzech:
+.TP 
+tc filtry
+Je¶li do klasy przy³±czone s± filtry tc to s± one rozpatrywane w pierwszej
+kolejno¶ci. Filtr mo¿e byæ uczulony na dowolne pola nag³ówka pakietu, jak i na
+znacznik zapory ogniowej (fwmark) dodany przez mechanizmy ipchains lub iptables
+dzia³aj±ce w j±drze. Zobacz tak¿e
+.BR tc\-filters (8).
+.TP 
+Typ Us³ugi (TOS)
+Niektóre obiekty qdisc maj± wbudowane regu³y do klasyfikowania pakietów
+bazuj±c na polu TOS.
+.TP 
+skb\->priority
+Programy dzia³aj±ce w przestrzeni u¿ytkownika mog± zakodowaæ identyfikator
+danej klasy, która powinna byæ u¿yta w odniesieniu do wysy³anych przez
+program pakietów. Znacznik ten nazywa siê 'skb\->priority' i mo¿na go
+ustawiæ przy pomocy opcji SO_PRIORITY.
+.P
+Ka¿dy wêze³ wewn±trz drzewa mo¿e posiadaæ swoje w³asne filtry, lecz
+filtry wy¿szego poziomu mog± tak¿e wskazywaæ bezpo¶rednio na ni¿sze klasy.
+
+Je¶li klasyfikacja nie powiedzie siê to pakiety s± kolejkowane do
+karty qdisc pod³±czonej do danej klasy. Przeczytaj jednak specyficzne
+podrêczniki, aby uzyskaæ wiêcej szczegó³ów.
+
+.SH "NAZEWNICTWO"
+Wszystkie obiekty qdisc, klasy i filtry maj± IDentyfikatory, które mog±
+byæ albo wyspecyfikowane jawnie, albo te¿ przydzielone automatycznie.
+
+IDentyfikatory sk³±daj± siê z dwóch numerów: g³ównego i dodatkowego.
+Numery te s± oddzielone znakiem dwukropka. Numer g³ówny specyfikuje
+obiekt nadrzêdny qdisc, za¶ numer dodatkowy obiekt bêd±cy potomkiem.
+
+.TP 
+QDISCS
+Obiekt qdisc, który potencjalnie mo¿e posiadaæ klasy
+zajmuje przypisany mu numer g³ówny, zwany uchwytem (handle),
+zostawiaj±c przestrzeñ nazw numeru dodatkowego dla swych podklas.
+Uchwyt jest wyra¿any np. jako '10:'. Jest w zwyczaju dok³adne
+przypisywanie uchwytu do qdisc, który bêdzie mia³ pod sob± potomków.
+
+.TP 
+KLASY
+Klasy rezyduj±ce pod qdisc dziel± z obiektem macierzystym numer g³ówny,
+lecz ka¿da z klas posiada oddzielny numer dodatkowy nazywany
+identyfikatorem klasy (classid). Identyfikator klasy nie ma zwi±zku z
+klas± macierzyst±, tylko i wy³±cznie z macierzystym obiektem qdisc.
+Stosuje siê takie samo nazewnictwo jak przy qdisc.
+
+.TP 
+FILTRY
+Filtry maj± trzyczê¶ciowe IDentyfikatory, które s± potrzebne tylko
+wówczas, gdy u¿ywamy hierarchii filtrów opartej na tablicy haszuj±cej
+Wiêcej o tym mo¿esz przeczytaæ w
+.BR tc\-filters (8).
+
+.SH "JEDNOSTKI"
+Wszystkie parametry akceptuj± zapis zmiennoprzecinkowy, z mo¿liwo¶ci±
+zakoñczenia go jednostk±.
+.P
+Pasma lub czêsto¶ci mog± zostaæ podane w:
+.TP 
+kbps
+Kilobajtach na sekundê
+.TP 
+mbps
+Megabajtach na sekundê
+.TP 
+kbit
+Kilobitach na sekundê
+.TP 
+mbit
+Megabitach na sekundê
+.TP 
+bps lub czysta liczba
+Bitach na sekundê.
+.P
+Ilo¶æ danych mo¿e byæ podana w:
+.TP 
+kb or k
+Kilobajtach
+.TP 
+mb or m
+Megabajtach
+.TP 
+mbit
+Megabitach
+.TP 
+kbit
+Kilobitach
+.TP 
+b lub czysta liczba
+Bajtach.
+.P
+D³ugo¶ci czasu mog± byæ wyspecyfikowane w:
+.TP 
+s, sec or secs
+ca³kowitej liczbie sekund
+.TP 
+ms, msec or msecs
+Milisekundach
+.TP 
+us, usec, usecs lub czysta liczba
+Mikrosekundach.
+
+.SH "POLECENIA TC"
+Poni¿sze polecenia s± dostêpne dla obiektów qdisc, klas i filtrów:
+.TP 
+add
+Dodaje qdisc, klasê lub filtr do wêz³a. Dla wszystkich encji musi byæ
+podany
+.B rodzic (parent)
+albo przez przekazanie jego IDentyfikatora, albo przez do³±czenie bezpo¶rednio do
+bazowego urz±dzenia sieciowego.
+
+Podczas tworzenia qdisc lub filtra mo¿emy nadaæ nazwê u¿ywaj±c
+jako parametru
+.B uchwytu (handle)
+Klasy za¶ mog± byæ nazywane przy u¿yciu
+parametru zwanego
+.B identyfikatorem (classid)
+
+.TP 
+remove
+Obiekt qdisc mo¿e byæ usuniêty przez podanie jego uchwytu, którym mo¿e byæ
+równie¿ 'root'. Wszystkie podklasy i ich karty qdisc s± automatycznie usuwane,
+podobnie jak przypisane filtry.
+
+.TP 
+change
+Niektóre encje mog± zostaæ zmodyfikowane 'na miejscu'. Sk³adnia taka jak w
+przypadku 'add', z tym wyj±tkiem, ¿e nie mo¿na zmieniaæ uchwytu, podobnie
+zreszt± jak rodzica. Innymi s³owy,
+.B 
+change
+nie mo¿e s³u¿yæ do usuwania wêz³a.
+
+.TP 
+replace
+Dokonuje niemal atomowej operacji remove/add na istniej±cym wê¼le o podanym
+identyfikatorze. Je¶li wêze³ nie istnieje jeszcze to jest tworzony.
+
+.TP 
+link
+Dostêpne tylko dla qdisc. Dokonuje zast±pienia (replace) na ju¿
+istniej±cym wê¼le.
+
+.SH "HISTORIA"
+.B tc
+zosta³o napisane przez Alexeja N. Kuznetsova i dodane w j±drach Linux 2.2.
+.SH "ZOBACZ TAK¯E"
+.BR tc\-cbq (8),
+.BR tc\-htb (8),
+.BR tc\-sfq (8),
+.BR tc\-red (8),
+.BR tc\-tbf (8),
+.BR tc\-pfifo (8),
+.BR tc\-bfifo (8),
+.BR tc\-pfifo_fast (8),
+.BR tc\-filters (8)
+
+.SH "AUTHOR"
+Stronê podrêcznika utrzymuje bert hubert (ahu@ds9a.nl)
+Niewielkie rozszerzenia i t³umaczenie na jêzyk polski napisa³ pawe³ wilk (siefca@gnu.org)

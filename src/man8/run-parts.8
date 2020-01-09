@@ -1,0 +1,113 @@
+.\" {PTM/WK/2001-IV}
+.\" Translation  update: Robert Luberda <robert@debian.org>, Apr 2004, debianutils 2.8
+.\" $Id: run-parts.8,v 1.4 2004/04/05 11:04:55 robert Exp $
+.\"
+.\" Hey, Emacs!  This is an -*- nroff -*- source file.
+.\" Build-from-directory and this manpage are Copyright 1994 by Ian Jackson.
+.\" Changes to this manpage are Copyright 1996 by Jeff Noxon.
+.\" More
+.\"
+.\" This is free software; see the GNU General Public Licence version 2
+.\" or later for copying conditions.  There is NO warranty.
+.TH RUN\-PARTS 8 "24 lutego 2004" "Debian"
+.SH NAZWA
+run\-parts \- uruchamia skrypty lub programy w katalogu
+.SH SK£ADNIA
+.B run\-parts
+[\-\-test] [\-\-verbose] [\-\-report] [\-\-lsbsysinit] [\-\-umask=umask]
+[\-\-arg=argument] [\-\-exit\-on\-error] [\-\-help] [\-\-version]
+[\-\-list] [\-\-reverse] [\-\-] KATALOG
+.PP
+.B run\-parts
+\-V
+.SH OPIS
+.PP
+.B run\-parts
+uruchamia wszystkie programy wykonywalne znalezione w katalogu
+.IR katalog .
+Pozosta³e pliki s± po cichu ignorowane.
+
+Je¿eli nie podano opcji \-\-lsbsysinit, to nazwy plików musz± sk³adaæ
+siê w tylko i wy³±cznie z du¿ych i ma³ych liter, cyfr, podkre¶leñ
+i my¶lników.
+
+Je¿eli podano opcjê  \-\-lsbsysinit, to nazwy plików nie mog± koñczyæ
+siê na .dpkg\-old lub .dpkg\-dist i musz± nale¿eæ do jednej lub kilku
+z nastêpuj±cych przestrzeni nazw:
+przestrzeñ nazw przydzielona przez LANANA (^[a\-z0\-9]+$);
+hierarchiczna i zarezerwowana przestrzeñ nazw LSB (^_?([a\-z0\-9_.]+\-)+[a\-z0\-9]+$);
+i przestrzeñ nazw skryptów crona Debiana (^[a\-z0\-9][a\-z0\-9\-]*$).      
+
+Znalezione pliki s± uruchamiane w alfabetycznej kolejno¶ci ich nazw,
+chyba ¿e w linii poleceñ podano opcjê \-\-reverse \- w tym wypadku skrypty
+bêd± uruchamiane w odwrotnej kolejno¶ci.
+
+.SS OPCJE
+.TP
+.B \-\-test
+wypisuje nazwy skryptów, które zosta³yby uruchomione, ale faktycznie ich
+nie uruchamia.
+.TP
+.B \-\-list
+wypisuje nazwy wszystkich plików (nie tylko wykonywalnych), ale faktycznie
+ich nie uruchamia. Ta opcja nie mo¿e byæ u¿yta z \-\-test.
+.TP
+.B \-\-verbose
+przed uruchomieniem ka¿dego ze skryptów wypisuje jego nazwê na stderr.
+.TP
+.B \-\-report
+podobne do
+.BR \-\-verbose ,
+ale wypisuje nazwy tylko tych skryptów, które generuj± wyj¶cie.
+Nazwa skryptu jest wypisywana na stdout lub stderr, w zale¿no¶ci od tego,
+gdzie skrypt wysy³a swoje pierwsze wyniki.
+.TP
+.B \-\-reverse
+odwraca porz±dek wykonywania skryptów.
+.TP
+.B \-\-exit\-on\-error
+koñczy pracê, gdy tylko który¶ ze skryptów zakoñczy siê niezerowym kodem wyj¶cia.
+.TP
+.B \-\-lsbsysinit
+U¿ywa konwencji nazw LSB, zamiast zwyk³ej.
+.B
+.TP
+.BI "\-u, \-\-umask=" umask
+Przed uruchomieniem skryptów nadaje umask warto¶æ
+.IR umask .
+Powinna ona zostaæ podana ósemkowo. Domy¶lnie umask otrzymuje warto¶æ 022.
+.TP
+.BI "\-a, \-\-arg=" argument
+Przekazuje
+.I argument
+do skryptów. Nale¿y u¿yæ osobnego
+.B \-\-arg
+dla ka¿dego argumentu, który chce siê przekazaæ.
+.TP
+.B "\-\-"
+Oznacza koniec opcji. Jakakolwiek nazwa pliku wystêpuj±ca po
+.B "\-\-"
+nie bêdzie interpretowana jako opcja, nawet je¶li zaczyna siê od my¶lnika.
+.TP
+.B \-h, \-\-help
+Wy¶wietla informacjê o sposobie wywo³ania i koñczy pracê.
+.TP
+.B \-V, \-\-version
+Wy¶wietla numer wersji i informacjê o prawach autorskich i koñczy pracê.
+
+.SH COPYRIGHT
+.P
+Copyright (C) 1994 Ian Jackson.
+.P
+Copyright (C) 1996 Jeff Noxon.
+.P
+Copyright (C) 1996, 1997, 1998 Guy Maor
+.P
+Copyright (C) 2002, 2003, 2004 Clint Adams
+
+.B run\-parts
+jest wolnym oprogramowaniem; warunki kopiowania mo¿na znale¼æ w Powszechnej
+Licencji Publicznej GNU w wersji 2 lub pó¼niejszej.
+Nie ma
+.I ¿adnej
+gwarancji.

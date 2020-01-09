@@ -1,0 +1,49 @@
+.\" T³umaczenie wersji man-pages 1.39 - wrzesieñ 2001 PTM
+.\" aktualizacja do man-pages 1.45 - grudzieñ 2001
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" -------
+.\" Copyright (c) Bruno Haible <haible@clisp.cons.org>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" References consulted:
+.\"   GNU glibc-2 source code and manual
+.\"   Dinkumware C library reference http://www.dinkumware.com/
+.\"   OpenGroup's Single Unix specification
+.\"      http://www.UNIX-systems.org/online.html
+.\"   ISO/IEC 9899:1999
+.\" --------
+.TH GETWCHAR 3  1999-07-25 "GNU" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+getwchar \- odczytanie szerokiego znaku ze standardowego wej¶cia
+.SH SK£ADNIA
+.nf
+.B #include <wchar.h>
+.sp
+.BI "wint_t getwchar(void);"
+.fi
+.SH OPIS
+Funkcja \fBgetwchar\fP jest szerokoznakowym odpowiednikiem funkcji
+\fBgetchar\fP. Odczytuje ona szeroki znak z \fBstdin\fP i zwraca go.
+Gdy osi±gniêty zostanie koniec strumienia lub gdy \fIferror(stdin)\fP stanie
+siê prawdziwe, zwraca ona WEOF. Przy wyst±pieniu b³êdu konwersji szerokiego
+znaku, ustawia \fBerrno\fP na \fBEILSEQ\fP i równie¿ zwraca WEOF.
+.PP
+Informacje o nieblokuj±cym odpowiedniku znajduj± siê w
+.BR unlocked_stdio (3).
+.SH "WARTO¦Æ ZWRACANA"
+Funkcja \fBgetwchar\fP zwraca nastêpny szeroki znak ze standardowego wej¶cia
+lub WEOF.
+.SH "ZGODNE Z"
+ISO/ANSI C, UNIX98
+.SH UWAGI
+Zachowanie \fBgetwchar\fP zale¿y od kategorii LC_CTYPE bie¿±cego locale.
+.PP
+Uzasadnione jest oczekiwanie, ¿e \fBgetwchar\fP rzeczywi¶cie przeczyta
+wielobajtowy ci±g ze standardowego wej¶cia i przetworzy go na szeroki znak.
+.SH "ZOBACZ TAK¯E"
+.BR fgetwc (3),
+.BR unlocked_stdio (3)

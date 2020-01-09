@@ -1,0 +1,63 @@
+.TH ACCESS 1 "4 stycznia 1998" "Kpathsea 3.3.1"
+.\"=====================================================================
+.if n .ds MP MetaPost
+.if t .ds MP MetaPost
+.if n .ds MF Metafont
+.if t .ds MF M\s-2ETAFONT\s0
+.if t .ds TX \fRT\\h'-0.1667m'\\v'0.20v'E\\v'-0.20v'\\h'-0.125m'X\fP
+.if n .ds TX TeX
+.ie t .ds OX \fIT\v'+0.25m'E\v'-0.25m'X\fP\" for troff
+.el .ds OX TeX\" for nroff
+.\" the same but obliqued
+.\" BX definition must follow TX so BX can use TX
+.if t .ds BX \fRB\s-2IB\s0\fP\*(TX
+.if n .ds BX BibTeX
+.\" LX definition must follow TX so LX can use TX
+.if t .ds LX \fRL\\h'-0.36m'\\v'-0.15v'\s-2A\s0\\h'-0.15m'\\v'0.15v'\fP\*(TX
+.if n .ds LX LaTeX
+.\"=====================================================================
+.SH NAZWA
+access \- okre¶la czy dostêp do pliku jest mo¿liwy
+.SH SK£ADNIA
+.B access
+.I -tryb
+.I plik
+.\"=====================================================================
+.SH OPIS
+Pomy¶lnie koñczy pracê, je¿eli
+.I plik
+jest dostêpny z podanymi prawami.
+.I Tryb
+to jedna lub wiêcej liter spo¶ród
+.IR rwx ,
+gdzie
+.I r
+to prawo odczytu,
+.I w
+zapisu, a
+.I x
+wykonania.
+.PP
+.B Access
+i
+.B test
+ró¿ni± siê tym, ¿e to drugie patrzy na bity praw, podczas gdy pierwsze z nich 
+sprawdza u¿ywaj±c wywo³ania systemowego 
+.BR access (2).
+Ró¿nica uwidacznia siê, gdy system plików zostanie zamontowany w trybie 
+tylko do odczytu.
+.\"=====================================================================
+.SH OPCJE
+.B access
+przyjmuje nastêpuj±ce opcje dodatkowe:
+.TP
+.B --help
+.rb
+Wy¶wietla tekst pomocy i koñczy pracê.
+.TP
+.B --version
+.rb
+Wy¶wietla informacje o wersji i koñczy pracê.
+.\"=====================================================================
+.SH "ZOBACZ TAK¯E"
+.BR access (2)

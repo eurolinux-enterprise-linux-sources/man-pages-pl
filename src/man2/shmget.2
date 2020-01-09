@@ -1,0 +1,272 @@
+.\" Copyright (c) 1993 Luigi P. Bai (lpb@softint.com) July 28, 1993
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Wed Jul 28 10:57:35 1993, Rik Faith <faith@cs.unc.edu>
+.\" Modified Sun Nov 28 16:43:30 1993, Rik Faith <faith@cs.unc.edu>
+.\"          with material from Giorgio Ciucci <giorgio@crcc.it>
+.\" Portions Copyright 1993 Giorgio Ciucci <giorgio@crcc.it>
+.\" Modified Tue Oct 22 22:03:17 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified, 8 Jan 2003, Michael Kerrisk, <mtk16@ext.canterbury.ac.nz>
+.\"    Removed EIDRM from errors - that can't happen...
+.\" 
+.\" Translated by Rafa³ Lewczuk, 9 May 1999
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Apr 2003,
+.\"              manpages 1.55
+.\" 
+.TH SHMGET 2 1993-11-28 "Linux 0.99.11" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+shmget \- utworzenie segmentu pamiêci wspólnej
+.SH SK£ADNIA
+.ad l
+.B #include <sys/ipc.h>
+.sp
+.B #include <sys/shm.h>
+.sp
+.BI "int shmget(key_t " key ", int " size ", int " shmflg );
+.ad b
+.SH OPIS
+Funkcja
+.B shmget()
+zwraca deskryptor segmentu pamiêci wspólnej, skojarzonego z
+warto¶ci± (kluczem) przekazan± w parametrze
+.IR key .
+Nowy segment zostanie utworzony, 
+Je¶li parametr
+.I key
+bêdzie mieæ warto¶æ
+.B IPC_PRIVATE
+lub je¶li bêdzie mieæ inn± warto¶æ, a segment skojarzony z
+.I key
+nie istnieje za¶ w parametrze
+.shmflg
+zostanie przekazany znacznik
+.B IPC_CREAT 
+(tj. 
+.IB shmflg &IPC_CREAT
+nie jest równe 0), to zostanie utworzony nowy segment, a jego rozmiar
+bêdzie równy parametrowi
+.I size
+zaokr±glonemu w górê do wielokrotno¶ci
+.BR PAGE_SIZE .
+.PP
+Warto¶æ
+.I shmflg
+sk³±da siê z:
+.TP 12
+.BR IPC_CREAT ,
+aby utworzyæ nowy segment. Je¶li ten znaczniek nie zostanie ustawiony, to
+.B shmget()
+spróbuje znale¼æ segment skojarzony z \fIkey\fP i sprzwdziæ, czy u¿ytkownik
+ma uprawnienia dla dostêpu do segmentu.
+.TP
+.B IPC_EXCL
+przekazane ³±cznie z \fBIPC_CREAT\fP zapewnia sygnalizacjê b³êdu, je¶li
+segment ju¿ isnieje.
+.TP
+.B mode_flags (9 najmniej znacz±cych bitów)
+okre¶la prawa dostêpu do segmentu dla jego w³a¶ciciela, grupy oraz reszty
+¶wiata. Prawa uruchamiania nie s± obecnie przez system u¿ywane.
+.PP
+W momencie tworzenia segmentu, prawa dostêpu s± kopiowane z parametru
+.I shmflg
+do pola
+.I shm_perm
+definiuj±cej segment struktury 
+.IR shmid_ds .
+Budowa struktury
+.IR shmid_ds :
+.PP
+.in +0.5i
+.nf
+struct shmid_ds {
+    struct ipc_perm shm_perm;    /* prawa dostêpu */
+    int	            shm_segsz;   /* rozmiar segmentu (w bajtach) */
+    time_t	    shm_atime;   /* czas ostatniego do³±czenia */
+    time_t	    shm_dtime;   /* czas ostatniego od³±czenia */
+    time_t	    shm_ctime;   /* czas ostatniej modyfikacji */
+    unsigned short  shm_cpid;    /* PID twórcy segmentu */
+    unsigned short  shm_lpid;    /* PID ostatniego operuj±cego procesu */
+    short	    shm_nattch;	 /* aktualna liczba do³±czeñ */
+};
+.fi
+.in -0.5i
+.PP
+.in +0.5i
+.nf
+struct ipc_perm {
+    key_t  key;
+    ushort uid;   /* euid i egid w³a¶ciciela*/
+    ushort gid;
+    ushort cuid;  /* euid i egid twórcy */
+    ushort cgid;
+    ushort mode;  /* 9 najmniej znacz±cych bitów \fIshmflg\fP */
+    ushort seq;   /* numer porz±dkowy */
+};
+.fi
+.PP
+Podczas tworzenia segmentu pamiêci wsólnej, funkcja ta inicjalizuje strukturê
+.B shmid_ds
+w nastêpuj±cy sposób:
+.IP
+.B shm_perm.cuid
+i
+.B shm_perm.uid
+przypisywany jest efektywny identyfikator u¿ytkownika procesu, który wywo³a³
+.BR shmget .
+.IP
+.B shm_perm.cgid
+i
+.B shm_perm.gid
+przypisywany jest efektywny identyfikator grupy procesu, który wywo³a³
+.BR shmget .
+.IP
+9 najmniej znacz±cych bitów parametru
+.B shmflg
+jest kopiowanych do pola
+.BR shm_perm.mode .
+.IP
+.B shm_segsz
+przypisywana jest warto¶æ parametru
+.IR size .
+.IP
+Polom
+.BR shm_lpid ,
+.BR shm_nattch ,
+.B shm_atime
+i
+.B shm_dtime
+przypisywana jest warto¶æ 
+.BR 0 .
+.IP
+Polu 
+.B shm_ctime
+przypisywany jest aktualny czas.
+.PP
+Je¶li dany segment pamiêci wspólnej ju¿ istnieje, wówczas system sprawdza
+prawa dostêpu oraz bada, czy segment nie zosta³ zaznaczony do usuniêcia.
+.PP
+.SH "WYWO£ANIA SYSTEMOWE"
+.TP
+.B fork()
+Po wywo³aniu
+.B fork()
+proces potomny dziedziczy do³±czone segmenty pamiêci wspólnej.
+.TP
+.B exec()
+Po wywo³aniu 
+.B exec()
+wszystkie do³±czone segmenty s± od³±czane (nie s± usuwane).
+.TP
+.B exit()
+Podczas wywo³ywania
+.B exit()
+wszystkie do³±czone segmenty s± od³±czane (nie s± usuwane).
+.PP
+.SH "WARTO¦Æ ZWRACANA"
+Funkcja po pomy¶lnym zakoñczeniu zwraca deskryptor segmentu, a \-1, je¶li
+wyst±pi b³±d.
+.SH B£ÊDY
+W przypadku wyst±pienia b³êdu, zmiennej
+.B errno
+przypisywana jest jedna z nastêpuj±cych warto¶ci:
+.TP 12
+.BR EINVAL ,
+je¶li mia³ zostaæ utworzony nowy segment, a \fIsize\fP < \fBSHMMIN\fP
+lub \fIsize\fP > \fBSHMMAX\fP, lub gdy nie mia³ byæ utworzony nowy segment,
+a segment o podanej warto¶ci key istnieje, lecz \fIsize\fP jest wiêksze ni¿
+rozmiar tego segmentu.
+.TP
+.BR EEXIST ,
+je¶li przekazane zosta³y znaczniki
+.B IPC_CREAT | IPC_EXCL ,
+ale segment o zadanym kluczu ju¿ istnieje.
+.TP
+.B EIDRM
+je¶li segment zosta³ zaznaczony do usuniêcia lub usuniêty.
+.TP
+.B ENOSPC
+je¶li przekroczony zosta³ limit ilo¶ci segmentów pamiêci wspólnej w systemie
+.RB ( SHMMNI )
+lub sumarycznej wielko¶ci wszystkich segmentów
+.RB ( SHMALL ).
+.TP
+.BR ENOENT ,
+je¶li segment o zadanej warto¶ci \fIkey\fP nie istnieje, a nie ustawiono
+znacznika
+.BR IPC_CREAT .
+.TP
+.BR EACCES ,
+je¶li u¿ytkownik nie ma praw dostêpu do zadanego segmentu pamiêci wspólnej.
+.TP
+.BR ENOMEM ,
+gdy nie uda siê przydzieliæ pamiêci dla segmentu.
+.SH UWAGI
+.B IPC_PRIVATE
+nie jest znacznikiem, lecz warto¶ci± typu
+.BR key_t .
+Je¶li jako
+.I key
+zostanie u¿yta ta warto¶æ specjalna, to funkcja zignoruje wszystko oprócz
+9 najmniej znacz±cych bitów
+.I shmflg
+i utworzy nowy segment pamiêci wspólnej nie posiadaj±cy klucza (je¶li
+wywo³anie zakoñczy siê pomy¶lnie).
+.PP
+Nastêpuj±ce ograniczenia odnosz±ce siê do zasobów pamiêci wspólnej dotycz±
+funkcji
+.BR shmget :
+.TP 11
+.B SHMALL
+Maksymalna liczba stron pamiêci u¿ytych do stworzenia segmentów pamiêci
+wspólnej: zale¿na od polityki.
+.TP
+.B SHMMAX
+Maksymalny rozmiar (w bajtach) pojedynczego segmentu pamiêci wspólnej: zale¿ny
+od implementacji (aktualnie 4MB).
+.TP
+.B SHMMIN
+Minimalny rozmiar (w bajtach) pojedynczego segmentu pamiêci wspólnej: zale¿ny
+od implementacji (aktualnie 1 bajt, ale efektywny minimalny rozmiar wynosi
+.B PAGE_SIZE ).
+.TP
+.B SHMMNI
+Maksymalna liczba segmentów pamiêci wspólnej w systemie: zale¿na od
+implementacji (aktualnie 4096, ale w wersjach Linuksa wcze¶niejszych ni¿
+2.3.99 wynosi³a 128)
+.PP
+System Linux nie stawia ograniczeñ dotycz±cych ilo¶ci segmentów do³±czonych
+do jednego procesu
+.RB ( SHMSEG ).
+.SH USTERKI
+Wybrana nazwa, IPC_PRIVATE, prawdopodobnie nie jest najszczê¶liwsza.
+IPC_NEW w sposób bardziej przejrzysty odzwierciedla³o by rolê tej warto¶ci.
+.SH "ZGODNE Z"
+SVr4, SVID. SVr4 dokumentuje dodatkowy kod b³êdu EEXIST.
+Do wersji 2.3.30 Linux zwraca³ EIDRM w przepadku wywo³ania
+.B shmget
+na segmencie pamiêci wspólnej przeznaczonym do skasowania.
+.SH "ZOBACZ TAK¯E"
+.BR ftok (3),
+.BR ipc (5),
+.BR shmctl (2),
+.BR shmat (2),
+.BR shmdt (2)

@@ -1,0 +1,200 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright (c) 1992 Drew Eckhardt (drew@cs.colorado.edu), March 28, 1992
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified by Michael Haardt (michael@moria.de)
+.\" Modified Wed Jul 21 20:18:11 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified Sun Jan 12 14:31:17 MET 1997 by Michael Haardt
+.\"   (michael@cantor.informatik.rwth-aachen.de): NFS details
+.\" Translation (c) 1998 Przemek Borys <pborys@dione.ids.pl>
+.\" Last update: A. Krzysztofowicz <ankry@mif.pg.gda.pl>, Jan 2002,
+.\"              manpages 1.47
+.\"
+.TH CHMOD 2 1997-12-10 "Linux 2.0.32" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+chmod, fchmod \- zmiana praw do pliku
+.SH SK£ADNIA
+.B #include <sys/types.h>
+.br
+.B #include <sys/stat.h>
+.sp
+.BI "int chmod(const char *" path ", mode_t " mode );
+.br
+.BI "int fchmod(int " fildes ", mode_t " mode );
+.SH OPIS
+Zmienione zostaj± prawa dostêpu do pliku okre¶lonego przez
+.I path
+lub wskazywanego przez
+.IR filedes .
+
+Prawa s± podawane jako
+.IR or
+nastêpuj±cych warto¶ci:
+.RS
+.sp
+.TP 1.0i
+S_ISUID
+04000 ustawia ID u¿ytkowinka przy uruchomieniu
+.TP
+S_ISGID
+02000 ustawia ID grupy przy uruchomieniu
+.TP
+S_ISVTX
+01000 bit "sticky"
+.TP
+S_IRUSR (S_IREAD)
+00400 odczyt przez w³a¶ciciela
+.TP
+S_IWUSR (S_IWRITE)
+00200 zapis przez w³a¶ciciela
+.TP
+S_IXUSR (S_IEXEC)
+00100 uruchomianie/przeszukiwanie przez w³a¶ciciela
+.TP
+S_IRGRP
+00040 odczyt przez grupê
+.TP
+S_IWGRP
+00020 zapis przez grupê
+.TP
+S_IXGRP
+00010 uruchomianie/przeszukiwanie przez grupê
+.TP
+S_IROTH
+00004 odczyt przez pozosta³ych
+.TP
+S_IWOTH
+00002 zapis przez pozosta³ych
+.TP
+S_IXOTH
+00001 uruchomianie/przeszukiwanie przez pozosta³ych
+.sp
+.RE
+
+Efektywny UID procesu musi byæ zerem, lub odpowiadaæ w³a¶cicielowi pliku.
+
+Je¶li efektywny UID procesu jest ró¿ny od zera, a grupa pliku ró¿ni siê
+od efektywnego ID grupy procesu i nie jest te¿ ¿adn± z kego grup
+dodatkowych, to bit S_ISGID zostanie wyzerowany, ale nie spowoduje to
+wyst±pienia b³êdu.
+
+Zale¿nie od systemu plików, bity SUID i SGID mog± zostaæ wy³±czone podczas
+zapisywania pliku. Na niektórych systemach plików, tylko superu¿ytkownik mo¿e
+ustawiæ bit "sticky", który mo¿e mieæ specjalne znaczenie. Znaczenie bitów
+"sticky", SUID i SGID dla katalogów opisano w
+.BR stat (2).
+
+Na systemach plików NFS, ograniczanie praw bêdzie mia³o natychmiastowy wp³yw
+na aktualnie otwarte pliki, gdy¿ kontrola dostêpu dokonywana jest na serwerze,
+a otwarte pliki obs³ugiwane sa przez klienta. Rozszerzenie uprawnieñ mo¿e
+zostaæ udostêpnione z opó¼nieniem innym klientom, je¶li maj± w³±czone
+buforowanie atrybutów.
+.SH "WARTO¦Æ ZWRACANA"
+Po pomy¶lnym zakoñczeniu, zwracane jest zero. W wypadku b³êdu zwracane jest
+\-1 i odpowiednio ustawiane
+.IR errno .
+.SH B£ÊDY
+Dla niektórych systemów plików mog± byæ zwracane inne b³êdy ni¿ opisane
+poni¿ej. Najogólniejsze b³êdy
+.B chmod
+to:
+
+.TP
+.B EPERM
+Efektywny UID nie odpoiwada w³a¶cicielowi pliku i nie jest zerem.
+.TP
+.B EROFS
+Podany plik znajduje siê na systemie plików przeznaczonym tylko do odczytu.
+.TP
+.B EFAULT
+.I path
+wskazuje poza dostêpn± dla u¿ytkownika przestrzeñ adresow±.
+.TP
+.B ENAMETOOLONG
+.I path
+jest zbyt d³ugie.
+.TP
+.B ENOENT
+Plik nie istnieje.
+.TP
+.B ENOMEM
+Brak pamiêci j±dra.
+.TP
+.B ENOTDIR
+Sk³adnik ¶cie¿ki nie jest katalogiem.
+.TP
+.B EACCES
+Brak praw do przeszukiwania dla sk³adnika ¶cie¿ki.
+.TP
+.B ELOOP
+Podczas rozwi±zywania
+.I path
+napotkano zbyt wiele dowi±zañ symbolicznych.
+.TP
+.B EIO
+Wyst±pi³ b³±d wej¶cia-wyj¶cia.
+.PP
+Ogólne b³êdy dla
+.B fchmod
+to:
+.TP
+.B EBADF
+Deskryptor pliku
+.I fildes
+jest nieprawid³owy.
+.TP
+.B EROFS
+Zobacz wy¿ej.
+.TP
+.B EPERM
+Zobacz wy¿ej.
+.TP
+.B EIO
+Zobacz wy¿ej.
+.SH "ZGODNE Z"
+Funkcja
+.B chmod
+jest zgodna z SVr4, SVID, POSIX, X/OPEN, 4.4BSD.
+SVr4 dokumentuje b³êdy EINTR, ENOLINK i EMULTIHOP, lecz nie dokumentuje
+ENOMEM. POSIX.1 nie dokumentuje b³êdów EFAULT, ENOMEM, ELOOP i EIO, ani
+makr \fBS_IREAD\fP, \fBS_IWRITE\fP i \fBS_IEXEC\fP.
+.PP
+Funkcja
+.B fchmod
+jest zgodna z 4.4BSD i SVr4.
+SVr4 dokumentuje dodatkowe b³êdy EINTR i ENOLINK.
+POSIX wymaga funkcji
+.BR fchmod ,
+gdy zdefiniowane jest co najmniej jedno z
+.B _POSIX_MAPPED_FILES
+i
+.B _POSIX_SHARED_MEMORY_OBJECTS
+oraz dokumentuje dodatkowe b³êdy ENOSYS i EINVAL, ale nie dokumentuje EIO.
+.PP
+POSIX i X/OPEN nie dokumentuj± bitu "sticky".
+.TP
+.SH "ZOBACZ TAK¯E"
+.BR open (2),
+.BR chown (2),
+.BR execve (2),
+.BR stat (2)

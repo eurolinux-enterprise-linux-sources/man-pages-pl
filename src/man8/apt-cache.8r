@@ -1,0 +1,339 @@
+.\" T³umaczenie w oparciu o t³umaczenie apt-cache.8 dla systemu Debian
+.\" Roberta Luberdy <robert@debian.org> wykona³ w listopadzie 2001
+.\" A. Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\"
+.TH "apt-cache" "8" "25 pa¼dzienika 2000" "apt" ""
+.SH NAZWA
+apt-cache \- narzêdzie zarz±dzania pakietami APT -- manipulator do bufora
+.SH SK£ADNIA
+apt-cache polecenie [argument ...]
+.PP
+.SH OPIS
+\fBapt-cache\fP wykonuje ró¿norodne operacje na buforze (cache) pakietów
+programu APT. \fBapt-cache\fR rzadko jest wywo³ywany bezpo¶rednio; jego
+operacje s± zazwyczaj wywo³ywane przez inne narzêdzia \fBapt\fP.
+.PP
+\fIpolecenie\fP jest jednym z:
+.IP o
+add plik1 [plik2] [...]
+.IP o
+gencaches
+.IP o
+showpkg pakiet1 [pakiet2] [...]
+.IP o
+stats
+.IP o
+dump
+.IP o
+dumpavail
+.IP o
+unmet
+.IP o
+check
+.IP o
+search
+.IP o
+show
+.IP o
+showpkg
+.IP o
+depends
+.IP o
+pkgnames
+.IP o
+dotty
+.PP
+Je¿eli nie zostanie podana opcja -h lub --help, musi byæ u¿yte jedno
+z powy¿szych poleceñ.
+.PP
+.IP "\fBadd\fP"
+\fBadd\fP
+dodaje pliki zawieraj±ce indeks nazw pakietów do bufora.
+.IP
+.IP "\fBgencaches\fP"
+\fBgencaches\fP wykonuje te same operacje, co
+\fBapt-get check\fP. Buduje bufor pakietów oraz ¼róde³ pakietów na podstawie
+¼róde³ wymienionych w \fB/etc/apt/sources.list\fP oraz w pliku 
+\fB/var/lib/dpkg/status\fP (lub w bazie RPM).
+.IP
+.IP "\fBshowpkg\fP"
+\fBshowpkg\fP wypisuje informacje na temat pakietów podanych w linii
+poleceñ. Dalsze argumenty s± nazwami pakietów. Wy¶wietlane s± dostêpne wersje
+oraz odwrotne zale¿no¶ci dla ka¿dego z podanych pakietów, jak równie¿ zwyk³e
+zale¿no¶ci dla ka¿dej z wersji.
+Proste (zwyk³e) zale¿no¶ci to s± pakiety, od których dany pakiet zale¿y;
+odwrotne zale¿no¶ci stanowi± te pakiety, które zale¿± od danego pakietu.
+Tak wiêc, pakiet musi spe³niaæ zale¿no¶ci proste, ale odwrotnych
+zale¿no¶ci - nie musi.
+Na przyk³ad, \fBapt-cache showpkg libreadline2\fP wypisze na wyj¶ciu
+tekst podobny do poni¿szego:
+.IP
+
+.nf
+
+
+Package: libreadline2
+
+Versions:
+
+2.1-12(/var/lib/apt/lists/debian.midco.net_debian_dists_slink_main_binary-i386_Packages),
+
+Reverse Depends:
+
+  libreadlineg2,libreadline2
+
+  libreadline2-altdev,libreadline2
+Dependencies:
+
+2.1-12 - libc5 (2 5.4.0-0) ncurses3.0 (0 (null)) ldso (2 1.9.0-1)
+
+Provides:
+
+2.1-12 -
+
+Reverse Provides:
+
+.fi
+
+
+.IP
+Jak widaæ libreadline2 w wersji 2.1-12 zale¿y od libc5, ncurses3.0 i ldso, 
+które musz± byæ zainstalowane, aby libreadline2 dzia³a³a.
+Z kolei libreadlineg2 i libreadline2-altdev zale¿± od libreadline2. Je¿eli
+libreadline2 jest zainstalowany, to libc5 i ncurses3.0 musz± byæ tak¿e
+zainstalowane; natomiast libreadlineg2 oraz libreadline2-altdev zainstalowane
+byæ nie musz±. W celu zrozumienia, co oznaczaj± pozosta³e linie,
+najlepiej przejrzeæ kod ¼ród³owy programu apt.
+.IP
+.IP "\fBstats\fP"
+\fBstats\fP wypisuje statystyki dotycz±ce bufora pakietów.
+Nie wymaga ¿adnych argumentów. Wypisywane s± nastêpuj±ce statystyki:
+.IP o
+\fBCa³kowita liczba nazw pakietów\fP (Total package names) jest to liczba
+nazw pakietów znajduj±cych siê w buforze.
+.IP
+.IP o
+\fBZwyk³e pakiety\fP (Normal packages) jest to liczba zwyk³ych, regularnych
+nazw pakietów; s± to pakiety, dla których istnieje relacja typu
+"jeden do jednego" pomiêdzy ich nazwami a nazwami u¿ywanymi jako zale¿no¶ci
+przez zale¿ne od nich pakiety.
+Wiêkszo¶æ pakietów nale¿y do tej kategorii.
+.IP
+.IP o
+\fBPakiety czysto wirtualne\fP (Pure virtual packages) jest to liczba
+pakietów, które istniej± tylko jako nazwa pakietu wirtualnego; to znaczy,
+pewne pakiety "pe³ni± rolê" ukryt± pod t± nazw± wirtualn±, ale ¿aden pakiet
+nie u¿ywa tej nazwy jako swojej. Na przyk³ad "mail-transport-agent" w systemie
+Debian GNU/Linux jest pakietem czysto wirtualnym; kilka pakietów pe³ni rolê
+"mail-transport-agent", ale ¿aden pakiet nie nazywa siê
+"mail-transport-agent".
+.IP
+.IP o
+\fBPojedyncze pakiety wirtualne\fP (Single virtual packages) jest to liczba
+pakietów, dla których istnieje tylko jeden pakiet który spe³nia rolê danego
+pakietu wirtualnego.
+Na przyk³ad, w systemie Debian GNU/Linux "X11-text-viewer" jest pakietem
+wirtualnym, ale tylko jeden pakiet - xless - pe³ni rolê "X11-text-viewer".
+.IP
+.IP o
+\fBMieszane pakiety wirtualne\fP (Mixed virtual packages) jest to liczba
+pakietów, które albo pe³ni± rolê poszczególnych pakietów wirtualnych, albo
+nazywaj± siê tak, jak nazwa pakietu wirtualnego.
+Na przyk³ad, w systemie Debian GNU/Linux e2fsprogs jest zarówno zwyk³ym
+pakietem, jak i pakietem wirtualnym, którego rolê pe³ni pakiet e2compr.
+.IP
+.IP o
+\fBBrakuj±ce\fP (Missing) jest to liczba nazw pakietów, do których odnosz±
+siê jakie¶ zale¿no¶ci, ale które nie s± spe³nione przez ¿aden
+z dostêpnych pakietów. Brakuj±ce pakiety mog± byæ dowodem, ¿e nie ma
+dostêpu do ca³ej dystrybucji albo ¿e pakiet (rzeczywisty lub wirtualny)
+zosta³ usuniêty z dystrybucji.
+.IP
+.IP o
+\fBCa³kowita liczba ró¿nych wersji\fP (Total distinct versions) jest to liczba
+wersji pakietów znajduj±cych siê w buforze; tak wiêc ta warto¶æ jest co
+najmniej równa liczbie wszystkich nazw pakietów. Je¿eli pobierane 
+s± pakiety z wiêcej ni¿ jednej dystrybucji (na przyk³ada zarówno "stable",
+jak i "unstable"), warto¶æ ta mo¿e byæ znacznie wiêksza ni¿ liczba
+wszystkich nazw pakietów.
+.IP
+.IP o
+\fB£±cznie zale¿no¶ci\fP (Total dependencies) jest to liczba relacji
+zale¿no¶ci zg³aszanych przez wszystkie pakiety w buforze.
+.IP
+.IP "\fBdump\fP"
+\fBdump\fP pokazuje krótk± listê wszystkich pakietów w buforze. S³u¿y
+g³ównie do odpluskwiania.
+.IP
+.IP "\fBdumpavail\fP"
+\fBdumpavail\fP wypisuje na standardowe wyj¶cie (stdout) listê dostêpnych
+pakietów. Jest to polecenie odpowiednie do u¿ycia z programem \fBdpkg\fP(8)
+i jest u¿ywane w metodzie \fBdselect\fP(8)
+.IP
+.IP "\fBunmet\fP"
+\fBunmet\fP pokazuje podsumowanie wszystkich niespe³nionych zale¿no¶ci
+w buforze pakietów
+.IP
+.IP "\fBcheck\fP"
+\fBcheck\fP jest funkcj± losow± s³u¿±c± do testowania pewnych w³a¶ciwo¶ci
+bufora pakietów. Nie u¿ywaj jej\&.
+.IP
+.IP "\fBshowpkg\fP"
+\fBshowpkg\fP wypisuje strukturê bufora dla zadanego pakietu oraz pewne
+zwi±zane z nim informacje. Przeznaczona jest ona g³ównie do odpluskwiania.
+.IP
+.IP "\fBshow\fP"
+\fBshow\fP spe³nia funkcje podobne do dpkg --print-avail lub rpm -qi,
+pokazuje szczegó³owe informacje o podanych pakietach.
+.IP
+.IP "\fBsearch\fP"
+\fBsearch\fP wykonuje pe³ne wyszukiwanie podanego wzorca (wyra¿enia
+regularnego) we wszystkich dostêpnych plikach pakietów.
+Przeszukuje nazwy pakietów i ich opisy, wyszukuj±c w nich podany ³añcuch
+znaków i wypisuje nazwê pakietu i jego krótki opis. Je¿eli podana jest
+opcja --full, to dla ka¿dego znalezionego pakietu informacje wypisywane na
+wyj¶ciu s± podobne do tego co pokazuje \fBshow\fP. Je¿eli podano
+opcjê --names-only to s± przeszukiwane tylko nazwy pakietów, a nie ich
+d³ugie opisy.
+.IP
+.IP "\fBdepends\fP"
+\fBdepends\fP wypisuje listê wszystkich zale¿no¶ci dla danego pakietu
+i dla ka¿dej zale¿no¶ci wszystkie mo¿liwe pakiety, które mog± spe³niæ
+tê zale¿no¶æ.
+.IP
+.IP "\fBpkgnames\fP"
+To polecenie wypisuje nazwy wszystkich pakietów zainstalowanych w systemie.
+Opcjonalnym argumentem jest przedrostek nazwy pakietów. Wynik jest odpowiedni
+do wykorzystanie przez funkcjê pow³oki uzupe³niaj±c± nazwy za pomoc± klawisza
+tabulacji, a wynik jest wypisywany bardzo szybko. Tego polecenia najlepiej
+u¿ywaæ z opcj± \fB--no-generate\fP.
+.IP
+.IP "\fBdotty\fP"
+\fBdotty\fP pobiera listê pakietów z linii poleceñ i generuje na wyj¶ciu
+wynik odpowiedni dla programu dotty z pakietu GraphVis
+(http://www.research.att.com/sw/tools/graphviz/).
+Wynikiem bêdzie zbiór wierzcho³ków i krawêdzi reprezentuj±cych powi±zania
+pomiêdzy pakietami. Domy¶lnie, dla podanych pakietów wy¶ledzone zostan±
+wszystkie pakiety od nich zale¿ne, co powoduje wypisanie bardzo du¿ego grafu.
+Mo¿na to zachowanie wy³±czyæ, u¿ywaj±c opcji APT::Cache::GivenOnly.
+.IP
+Wynikowe wierzcho³ki bêd± mia³y ró¿norakie kszta³ty: zwyk³e pakiety
+s± prostok±tami, czysto wirtualne to trójk±ty, mieszane pakiety 
+wirtualne s± rombami, sze¶ciok±ty oznaczaj± brakuj±ce pakiety. Pomarañczowe
+prostok±ty oznaczaj± koniec rekursji (li¶cie), niebieskie linie to
+pre-zale¿no¶ci, linie zielone - to konflikty.
+.IP
+Uwaga, dotty nie potrafi narysowaæ wiêkszego zbioru pakietów.
+.IP
+.PP
+.SH OPCJE
+Wszystkie opcje linii poleceñ mog± byæ ustawione w pliku konfiguracyjnym.
+Poni¿sze opisy wskazuj±, któr± opcjê w pliku konfiguracyjnym nale¿y ustawiæ.
+W przypadku opcji logicznych, mo¿na uniewa¿niæ ustawienia pliku
+konfiguracyjnego, u¿ywaj±c \fB-f-\fP, \fB--no-f\fP, \fB-f=no\fP albo czego¶
+podobnego.
+.PP
+.IP "\fB-h\fP, \fB--help\fP"
+Pokazuje krótk± informacjê o sposobie u¿ycia.
+.IP
+.IP "\fB-v\fP, \fB--version\fP"
+Pokazuje wersjê programu.
+.IP
+.IP "\fB-p\fP, \fB--pkg-cache\fP"
+Pozwala okre¶liæ nazwê pliku do przechowywania bufora pakietów, który jest
+podstawowym buforem u¿ywanym we wszystkich operacjach.
+Odpowiadaj±cy element konfiguracji: \fBDir::Cache::pkgcache\fP.
+.IP
+.IP "\fB-s\fP, \fB--src-cache\fP"
+Pozwala okre¶liæ nazwê pliku do przechowywania bufora ¼róde³. Jest on u¿ywany
+tylko przez \fBgencaches\fP i przechowuje przeanalizowan± wersjê informacji
+o pakietach pobran± ze zdalnych ¼róde³. Podczas budowania bufora pakietów,
+bufor ¼róde³ jest u¿ywany w celu unikniêcia ponownej analizy wszystkich plików
+pakietów.
+Odpowiadaj±cy element konfiguracji: \fBDir::Cache::srcpkgcache\fP.
+.IP
+.IP "\fB-q\fP, \fB--quiet\fP"
+Po cichu; wypisuje tylko informacje potrzebne do logowania, opuszczaj±c
+wska¼niki postêpu. Wiêcej znaków q spowoduje jeszcze bardziej ciche
+wyj¶cie, maksimum wynosi 2. Mo¿na tak¿e ustawiæ poziom cicho¶ci za pomoc±
+\fB-q=#\fP, nadpisuj±c tym samym opcjê z pliku konfiguracyjnego.
+Odpowiadaj±cy element konfiguracji: \fBquiet\fP.
+.IP
+.IP "\fB-i\fP, \fB--important\fP"
+Wypisuje tylko wa¿ne zale¿no¶ci. U¿ywane z unmet powoduje wypisanie tylko
+zale¿no¶ci typu \fIDepends\fP i \fIPre-Depends\fP.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Cache::Important\fP.
+.IP
+.IP "\fB-f\fP, \fB--full\fP"
+Podczas szukania wypisuje pe³n± informacjê o pakiecie.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Cache::ShowFull\fP.
+.IP
+.IP "\fB-a\fP, \fB--all-versions\fP"
+Wypisuje pe³ne rekordy dla wszystkich dostêpnych wersji, ma zastosowanie
+tylko z poleceniem show.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Cache::AllVersions\fP
+.IP
+.IP "\fB-g\fP, \fB--no-generate\fP"
+Nie wykonuje automatycznego przebudowania bufora pakietów, korzysta
+z istniej±cego bufora.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Cache::NoGenerate\fP.
+.IP
+.IP "\fB--names-only\fP"
+Przeszukuje tylko nazwy pakietów, pomijaj±c szczegó³owe opisy.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Cache::NamesOnly\fP
+.IP
+.IP "\fB--all-names\fP"
+Powoduje, ¿e \fBpkgnames\fP wypisze nazwy wszystkich pakietów, ³±cznie
+z pakietami wirtualnymi oraz pakietami o niespe³nionych zale¿no¶ciach.
+Odpowiadaj±cy element konfiguracji: \fBAPT::Cache::AllNames\fP.
+.IP
+.IP "\fB-c\fP, \fB--config-file\fP"
+Plik konfiguracyjny. Okre¶la plik konfiguracyjny, którego nale¿y u¿yæ.
+Program najpierw przeczyta swój domy¶lny plik konfiguracyjny, a nastêpnie plik
+podany jako argument tej opcji.
+Informacje na temat sk³adni mo¿na znale¼æ w \fBapt.conf(5)\fP.
+.IP
+.IP "\fB-o\fP, \fB--option\fP"
+Ustawia opcjê konfiguracyjn±. Mo¿na ustawiæ dowoln± opcjê konfiguracyjn±,
+Sk³adnia jest nastêpuj±ca:
+
+.nf
+
+-o Foo::Bar=bar
+.fi
+
+
+.PP
+.SH PLIKI
+.IP o
+/etc/apt/sources.list
+lokalizacje, z których bêd± pobierane pakiety
+.IP
+.IP o
+/var/lib/apt/lists/
+sk³adnica informacji o stanie ka¿dej lokalizacji pakietów podanej w
+sources.list
+.IP
+.IP o
+/var/lib/apt/lists/partial/
+sk³adnica informacji o stanie w trakcie pobierania.
+.PP
+.SH "ZOBACZ TAK¯E"
+apt-get(8),
+sources.list(5),
+apt.conf(5)
+.PP
+.SH DIAGNOSTYKA
+apt-cache zwraca zero, gdy zakoñczy³o siê pomy¶lnie, 100 dziesiêtnie -
+w przypadku b³êdu.
+.SH B£ÊDY
+.PP
+Zobacz http://bugs.debian.org/apt. Aby z³o¿yæ raport o b³êdzie w APT,
+przeczytaj \fB/usr/share/doc/debian/bug-reporting.txt\fP lub u¿yj polecenia
+\fBbug(1)\fP. Je¶li korzystasz z programu apt w systemie opartym na RPM,
+korzystaj z http://distro.conectiva.com.br/bugzilla/.
+.PP
+.SH AUTOR
+apt-get zosta³ napisany przez zespó³ APT <apt@packages.debian.org> a
+do potrzeb systemów opartych na RPM przystosowa³ go Alfredo K. Kojima
+z Conectiva S.A. <kojima@conectiva.com.br>.

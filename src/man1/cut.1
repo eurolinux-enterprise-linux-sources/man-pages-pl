@@ -1,0 +1,92 @@
+.\" {PTM/GSN/0.5/23-02-1999/"usuñ sekcje z ka¿dej linii plików"}
+.\" Translation update: Robert Luberda <robert@debian.org>, Mar 2003, coreutils 4.5.7
+.\" $Id: cut.1,v 1.6 2003/03/15 16:41:48 robert Exp $
+.TH CUT "1" "luty 2003" "cut (coreutils) 4.5.7" "Polecenia u¿ytkownika"
+.SH NAZWA
+cut \- usuñ sekcje z ka¿dej linii plików
+.SH SK£ADNIA
+.B cut
+[\fIOPCJA\fR]... [\fIPLIK\fR]...
+.SH OPIS
+.\" Add any additional description here
+.PP
+Wypisuje wybrane czê¶ci linii z ka¿dego PLIKU na standardowe wyj¶cie.
+.PP
+Argumenty obowi±zkowe dla opcji d³ugich obowi±zuj± równie¿ dla krótkich.
+.TP
+\fB\-b\fR, \fB\-\-bytes\fR=\fILISTA\fR
+wypisuje tylko bajty okre¶lone w LI¦CIE
+.TP
+\fB\-c\fR, \fB\-\-characters\fR=\fILISTA\fR
+wypisuje tylko znaki okre¶lone w LI¦CIE
+.TP
+\fB\-d\fR, \fB\-\-delimiter\fR=\fIOGRANICZNIK\fR
+u¿ywa jako separatora pól znaku OGRANICZNIK zamiast tabulacji
+.TP
+\fB\-f\fR, \fB\-\-fields\fR=\fILISTA\fR
+wypisuje tylko podane pola oraz wszystkie linie, które 
+nie zawieraj± znaku separatora, chyba ¿e podano opcjê \fB\-s\fR 
+.TP
+\fB\-n\fR
+(ignorowane)
+.TP
+\fB\-s\fR, \fB\-\-only\-delimited\fR
+nie wypisuje linii nie zawieraj±cych separatora
+.TP
+\fB\-\-output\-delimiter\fR=\fI£AÑCUCH\fR
+u¿ywa £AÑCUCHA jako separatora danych wyj¶ciowych; domy¶lnie
+u¿ywany jest w tej roli separator danych wej¶ciowych
+.TP
+\fB\-\-help\fR
+wy¶wietla krótki komunikat pomocy i koñczy pracê
+.TP
+\fB\-\-version\fR
+wy¶wietla informacjê o wersji i koñczy pracê
+.PP
+Nale¿y u¿yæ jednej i tylko jednej spo¶ród opcji \fB\-b\fR, \fB\-c\fR lub \fB\-f\fR.  
+.PP
+Ka¿da LISTA sk³ada siê z jednego zakresu lub z kilku zakresów rozdzielonych przecinkami.
+Ka¿dy zakres sk³ada siê z jednego z podanych wyra¿eñ: 
+.TP
+.B N
+N-ty bajt, znak lub pole, liczone od 1
+.TP
+.B N\-
+od N-tego bajtu, znaku lub pola do koñca linii
+.TP
+.B N\-M
+od N-tego do M-tego (w³±cznie) bajtu, znaku lub pola
+.TP
+.B \-M
+od pierwszego do M-tego (w³±cznie) bajtu, znaku lub pola
+.PP
+Porz±dek bajtów, znaków lub pól na wyj¶ciu programu bêdzie dok³adnie
+taki sam, jak na wej¶ciu.
+Je¿eli nie podano argumentu PLIK, lub gdy PLIK jest równy '-', 
+bêdzie u¿ywane standardowe wej¶cie.
+.SH AUTOR
+Napisane przez Davida Ihnata, Davida MacKenzie i Jima Meyeringa.
+.SH "ZG£ASZANIE B£ÊDÓW"
+B³êdy proszê zg³aszaæ, w jêz. ang., do <bug-coreutils@gnu.org>.
+.SH COPYRIGHT
+Copyright \(co 2003 Free Software Foundation, Inc.
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH ZOBACZ TAK¯E
+.BR paste (1),
+.BR join (1),
+.BR textutils (1)
+.PP
+Pe³na dokumentacja programu
+.B cut
+jest utrzymywana w postaci podrêcznika Texinfo.
+Je¿eli masz zainstalowane odpowiednie programy, to
+dostêp do niego uzyskasz wpisuj±c w wierszu poleceñ:
+.RS
+.B pinfo cut
+.RE
+lub
+.RS
+.BR "info cut" .
+.RE

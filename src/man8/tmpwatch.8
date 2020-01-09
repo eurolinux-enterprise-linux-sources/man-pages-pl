@@ -1,0 +1,78 @@
+.TH TMPWATCH 8 "Mon Feb 14 2000"
+.UC 4
+.SH NAZWA
+tmpwatch \- kasuje pliki w oparciu o czas ostatniego dostêpu
+.SH SK£ADNIA
+\fBtmpwatch\fR [-u|-m] [-faqstv] [--verbose] [--force] [--all] [--test] [--fuser] [--atime|--mtime] [--quiet] <czas-ostatniego-dostêpu> <katalogi>
+
+.SH OPIS
+\fBtmpwatch\fR przeszukuje rekursywnie okre¶lone katalogi i usuwa z nich
+pliki, które nie by³y odczytywane przez okre¶lony czas. Zazwyczaj jest 
+u¿ywany do porz±dkowania katalogów, w których znajduj± siê pliki tymczasowe (na 
+przyk³ad /tmp).
+
+Podczas zmiany katalogów, \fBtmpwatch\fR jest bardzo czu³y na mo¿liwy
+sytuacje wy¶cigów i zakoñczy siê b³êdem gdy takowa zostanie wykryta. Program
+pomija dowi±zanie symboliczne w katalogach, które porz±dkuje (nawet je¶li
+dowi±zanie symboliczne zosta³o podane jako argument), pracuje na jednym systemie
+plików i usuwa tylko puste katalogi oraz zwyk³e pliki.
+
+\fBtmpwatch\fR okre¶la pliki wed³ug ich czasu dostêpu, a nie czasu modyfikacji. Je¶li
+pliki nie zosta³y usuniête kiedy \fBls -l\fR sugeruje, ¿e tak powinno byæ,
+do sprawdzenia ich czasu dostêpu nale¿y wykorzystaæ \fBls -u\fR i zobaczyæ
+czy to wyja¶nia problem.
+
+Parametr \fIczas-ostatniego-dostêpu\fR okre¶la warto¶æ progow± dla usuwanych plików. Je¶li
+plik nie by³ odczytywany przez okres zdefiniowany jako \fIczas-ostatniego-dostêpu\fR, zostanie usuniêty.
+Postêpuj±c tak, mo¿na zadaæ kilka katalogów, które \fBtmpwatch\fR wyczy¶ci.
+
+.SH OPCJE
+.TP
+\fB-u, -\-atime\fR
+podejmuje decyzjê o usuwaniu pliku na podstawie czasu ostatniego dostêpu. 
+Jest to domy¶lne zachowanie. Opcja ta jest niekompatybilna z -\-mtime.
+
+.TP
+\fB-m, -\-mtime\fR
+podejmuje decyzjê o usuwaniu pliku na podstawie czasu ostatniej modyfikacji 
+zamiast czasu ostatniego dostêpu. Opcja ta jest niekompatybilna z -\-atime.
+
+.TP
+\fB-a, -\-all\fR
+usuwa wszystkie typy plików, a nie tylko pliki zwyk³e i katalogi.
+
+.TP
+\fB-f, -\-force\fR
+usuwa pliki nawet je¶li root nie ma do nich prawa zapisu (pokrewne \fBrm -f\fR).
+
+.TP
+\fB-t, -\-test\fR
+nie usuwa plików, ale symuluje ich usuwanie.
+Powoduje równoczesne zastosowanie \fB\-v\fR.
+
+.TP
+\fB-s, -\-fuser\fR
+przed przyst±pieniem do usuniêcia pliku próbuje u¿yæ polecenia "fuser" w celu
+sprawdzenia czy plik jest obecnie otwarty.
+Opcja nie jest w³±czona domy¶lnie. Mo¿e pomóc w niektórych
+przypadkach, ale nie we wszystkich.  Zale¿ne od zainstalowanego "fuser" w /sbin.
+
+.TP
+\fB-v, -\-verbose\fR
+Drukuje rozwlek³y ekran. Dostêpne s± dwa poziomy "rozwlek³o¶ci" -- u¿yj
+tej opcji dwukrotnie, aby otrzymaæ najbardziej rozwlek³y tryb pracy na wyj¶ciu.
+
+.SH ZOBACZ TAK¯E
+.IR cron (1),
+.IR ls (1),
+.IR rm (1),
+.IR fuser (1)
+
+.SH OSTRZE¯ENIA
+D³ugi opcje w stylu GNU nie s± obs³ugiwane w systemie HP-UNIX.
+
+.SH AUTORZY
+.nf
+Erik Troan <ewt@redhat.com>
+Preston Brown <pbrown@redhat.com>
+.fi

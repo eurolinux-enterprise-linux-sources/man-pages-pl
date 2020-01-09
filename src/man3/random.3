@@ -1,0 +1,93 @@
+.\" T³umaczenie wersji man-pages 1.39 - wrzesieñ 2001 PTM
+.\" Andrzej Krzysztofowicz <ankry@mif.pg.gda.pl>
+.\" --------
+.\" Copyright 1993 David Metcalfe (david@prism.demon.co.uk)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one
+.\" 
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\" 
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" References consulted:
+.\"     Linux libc source code
+.\"     Lewine's _POSIX Programmer's Guide_ (O'Reilly & Associates, 1991)
+.\"     386BSD man pages
+.\" Modified Sun Mar 28 00:25:51 1993, David Metcalfe
+.\" Modified Sat Jul 24 18:13:39 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified Sun Aug 20 21:47:07 2000, aeb
+.\" --------
+.TH RANDOM 3  2000-08-20 "GNU" "Podrêcznik programisty Linuksa"
+.SH NAZWA
+random, srandom, initstate, setstate \- generator liczb losowych
+.SH SK£ADNIA
+.nf
+.B #include <stdlib.h>
+.sp
+.B long int random(void);
+.nl
+.BI "void srandom(unsigned int " seed );
+.nl
+.BI "char *initstate(unsigned int " seed ", char *" state ", size_t " n );
+.nl
+.BI "char *setstate(char *" state );
+.fi
+.SH OPIS
+Funkcja \fBrandom()\fP korzysta z generatora liczb losowych opartego na
+nieliniowych addytywnych przesuniêciach, stosuj±cego domy¶ln± tablicê
+o rozmiarze 31 d³ugich liczb ca³kowitych do zwracania kolejnych liczb
+pseudolosowych z zakresu pomiêdzy 0 a \fBRAND_MAX\fR.
+Okres tego generatora liczb losowych jest bardzo du¿y, wynosi oko³o
+16*((2**31)\-1).
+.PP
+Funkcja \fBsrandom()\fP ustawia swój argument jako warto¶æ pocz±tkow± dla
+nowego ci±gu pseudolosowych liczb ca³kowitych zwracanych przez \fBrandom()\fP.
+Ci±gi te s± powtarzalne poprzez wywo³anie \fBsrandom()\fP z t± sam± warto¶ci±
+pocz±tkow±. Je¶li nie podano warto¶ci pocz±tkowej, funkcja \fBrandom()\fP
+automatycznie ustawia tê warto¶æ na 1.
+.PP
+Funkcja \fBinitstate()\fP pozwala na inicjalizacjê tablicy stanów \fIstate\fP
+w celu wykorzystania jej przez \fBrandom()\fP. \fBinitstate()\fP wykorzystuje
+rozmiar tablicy stanów \fIn\fP do podjêcia decyzji o tym, jakiego wymy¶lnego
+generatora liczb losowych powinna u¿ywaæ \(em im wiêksza tablica stanów, tym
+lepszy bêdzie generator liczb losowych. \fIseed\fP jest warto¶ci± pocz±tkow±
+dla inicjalizacji, która okre¶la punkt startu ci±gu generatora liczb losowych
+oaz zapewnia restart w tym samym punkcie.
+.PP
+Funkcja \fBsetstate()\fP zmienia tablicê stanów wykorzystywan± przez funkcjê
+\fBrandom()\fP. Tablica stanu \fIstate\fP jest u¿ywana do generacji liczb
+losowych a¿ do nastêpnego wywo³ania \fBinitstate()\fP lub \fBsetstate()\fP.
+\fIstate\fP musi byæ uprzednio zainicjalizowana za pomoc± \fBinitstate()\fP
+lub byæ wynikiem wcze¶niejszego wywo³ania \fBsetstate()\fP.
+.SH "WARTO¦Æ ZWRACANA"
+Funkcja \fBrandom()\fP zwraca warto¶ci pomiêdzy 0 a RAND_MAX.
+Funkcja \fBsrandom()\fP nie zwraca ¿adnej warto¶ci. Funkcje \fBinitstate()\fP
+i \fBsetstate()\fP zwracaj± wska¼nik do poprzedniej tablicy stanów lub NULL
+w przypadku b³êdu.
+.SH B£ÊDY
+.TP
+.B EINVAL
+Podano mniejsz± ni¿ 8-bajtow± tablicê stanów dla \fBinitstate()\fP.
+.SH UWAGI
+Obecnie "optymalnymi" warto¶ciami dla rozmiaru tablicy stanów \fIn\fP s±
+8, 32, 64, 128 i 256 bajtów; inne warto¶ci bêd± zaokr±glane w dó³ do
+najbli¿szej znanej warto¶ci. U¿ycie mniej ni¿ 8 bajtów spowoduje b³±d.
+.SH "ZGODNE Z"
+BSD 4.3
+.SH "ZOBACZ TAK¯E"
+.BR rand (3),
+.BR srand (3)

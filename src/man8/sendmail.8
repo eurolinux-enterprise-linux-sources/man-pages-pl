@@ -1,0 +1,554 @@
+.\" 1999 PTM Przemek Borys
+.\" Copyright (c) 1988, 1991, 1993
+.\"	The Regents of the University of California.  All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     @(#)sendmail.8	8.10 (Berkeley) 9/20/96
+.\"
+.Dd September 20, 1996
+.Dt SENDMAIL 8
+.Os BSD 4
+.Sh NAZWA
+.Nm sendmail
+.Nd agent transportu poczty elektronicznej
+.Sh SK£ADNIA
+.Nm sendmail
+.Op Ar flagi
+.Op Ar adres ...
+.Nm newaliases
+.Nm mailq
+.Op Fl v
+.Sh OPIS
+.Nm Sendmail
+wysy³a wiadomo¶æ do jednego, lub wiêcej
+.Em odbiorców ,
+przerzucaj±c j± przez wszelkie niezbêdne sieci.
+.Nm Sendmail
+mo¿e dokonywaæ forwardowania miêdzysieciowego, aby dostarczyæ wiadomo¶æ do
+w³a¶ciwego miejsca.
+.Pp
+.Nm Sendmail
+nie jest komend± interfejsu u¿ytkownika;
+do tego s³u¿± inne programy;
+.Nm sendmail
+u¿ywany jest do dostarczania jedynie preformatowanych wiadomo¶ci.
+.Pp
+Bez podanych flag,
+.Nm sendmail
+czyta standardowe wej¶cie, a¿ do EOF, lub linii zawieraj±cej pojedyncz±
+kropkê i wysy³a kopiê tej wiadomo¶ci do wymienionych adresów.
+Okre¶la u¿ywane sieæ(i) na podstawie sk³adni adresów.
+.Pp
+Adresy lokalne sa podgl±dane w pliku i odpowiednio aliasowane.
+Aliasowanie mo¿na wy³±czyæ, poprzedzaj±c adres odwrotnym uko¶nikiem.
+Zazwyczaj, w rozszerzeniach aliasowych nie jest w³±czony nadawca, np.
+je¶li `john' wysy³a do `grupy',
+a `grupa' zawiera `johna', to wiadomo¶æ nie bêdzie dostarczana `johnowi'.
+.Ss Parametry
+.Bl -tag -width Fl
+.It Fl B Ns Ar typ
+Ustaw rodzaj cia³a listu na
+.Ar typ .
+Obecnie legalne warto¶ci to
+.Li 7BIT
+lub
+.Li 8BITMIME .
+.It Fl ba
+Wejd¼ w tryb
+.Tn ARPANET .
+Wszystkie linie wej¶ciowe musz± koñczyæ siê CR-LF, i wszystkie generowane 
+wiadomo¶ci bêd± mia³y na koñcu CR-LF.
+Poza tym, pola
+``From:'' i ``Sender:'' s± testowane w poszukiwaniu imienia nadawcy.
+.It Fl bd
+Dzia³aj jako demon. Wymage berkeleyowskiego
+.Tn IPC .
+.Nm Sendmail
+bêdzie forkowa³ (patrz fork(2)) i ruszy w tle, nas³uchuj±c na gnie¼dzie 25
+za nadchodz±cymi po³±czeniami
+.Tn SMTP .
+Jest on zazwyczaj wywo³ywany w tej postaci z
+.Pa /etc/rc .
+.It Fl bD
+To samo co
+.Fl bd
+lecz powoduje pracê na g³ównym planie.
+.It Fl bh
+Drukuj trwa³± bazê statusu hosta.
+.It Fl bH
+Wypró¿nij trwa³± bazê statusu hosta.
+.It Fl bi
+Inicjalizuj bazê aliasów.
+.It Fl bm
+Dostarcz pocztê w normalny sposób (domy¶lne).
+.It Fl bp
+Wydrukuj listing kolejki.
+.It Fl bs
+U¿yj na standardowym wej¶ciu i wyj¶ciu protoko³u
+.Tn SMTP ,
+opisanego w
+.Tn RFC821 .
+Flaga ta powoduje wszystkie operacje flagi
+.Fl ba ,
+które sa kompatybilne z
+.Tn SMTP .
+.It Fl bt
+Dzia³aj w trybie testowania adresu. Tryb ten odczytuje adresy i pokazuje
+etapy ich obróbki; mo¿e to byæ u¿ywane do testowania tablic konfiguracji.
+.It Fl bv
+Weryfikuj tylko nazwy \- nie próbuj zebraæ, lub dostarczyæ wiadomo¶ci.
+Tryb ten jest u¿ywany zwykle do zatwierdzania u¿ytkowników, lub list
+dyskusyjnych.
+.It Fl C Ns Ar plik
+U¿yj alternatywnego pliku konfiguracyjnego. 
+.Nm Sendmail
+odmawia pracy jako root, je¶li zostanie podany alternatywny plik
+konfiguracyjny.
+.It Fl d Ns Ar X
+Ustaw zmienn± debuggowania na
+.Ar X .
+.ne 1i
+.It Fl F Ns Ar pe³nanazwa
+Ustaw pe³n± nazwê wysy³aj±cego.
+.It Fl f Ns Ar nazwa
+Ustaw nazwê osoby ``from'' (np, nadawcy listu).
+.Fl f
+Mo¿e byæ u¿yte tylko przez ``zaufanych'' u¿ytkowników
+(zwykle
+.Em root ,
+.Em daemon ,
+i
+.Em network )
+lub je¶li osoba, któr± chcesz siê staæ jest t± sam± osob±, któr± jeste¶.
+.It Fl h Ns Ar N
+Ustaw licznik hopów na
+.Ar N .
+Licznik ten jest zwiêkszany za ka¿dym przetworzeniem listu. Gdy siêgnie
+limitu, list zwracany jest z komunikatem o b³êdzie, jako ofiara pêtli
+aliasowej.
+Je¶li opcja ta nie jest podana, linie
+``Received:'' nie s± zliczane.
+.It Fl i
+Ignoruj samotne kropki w liniach w nadchodz±cych wiadomo¶ciach.
+Powinno to byæ ustawione je¶li odczytujesz dane z pliku.
+.It Fl N Ar dsn
+Ustaw powiadamianie o statusie dostarczenia na warto¶æ
+.Ar dsn,
+która mo¿e byæ
+.Ql never
+dla braku powiadomieñ,
+lub oddzielon± przecinkami list± warto¶ci
+.Ql failure
+aby byæ powiadamianym po niepowiedzeniu siê dostarczenia,
+.Ql delay
+aby byæ powiadamianym po opó¼nieniu dostarczenia i
+.Ql success
+aby byæ powiadamianym o szczê¶liwym dostarczeniu wiadomo¶ci.
+.It Fl n
+Nie rób aliasowania.
+.It Fl O Ar opcja Ns = Ns Em warto¶æ
+Ustaw opcjê
+.Ar opcja
+na warto¶æ
+.Em warto¶æ .
+Postaæ ta u¿ywa d³ugich nazw. Patrz ni¿ej dla szczegó³ów.
+.It Fl o Ns Ar x Em warto¶æ
+Ustaw opcjê
+.Ar x
+na okre¶lon±
+.Em warto¶æ .
+Ta postaæ u¿ywa nazw jednoznakowych. Krótkie nazwy nie s± opisane w tym
+podrêczniku, zobacz
+.%T "Sendmail Installation and Operation Guide".
+(w /usr/doc/sendmail/op/ - przyp. t³um.)
+.It Fl p Ns Ar protokó³
+Ustaw nazwê protoko³u, u¿ywanego do odbierania wiadomo¶ci. Mo¿e to byæ
+prosta nazwa protoko³u, taka jak ``UUCP'', lub protokó³ i nazwa hosta, np.
+``UUCP:ucbvax''.
+.It Fl q Ns Bq Ar czas
+Przetwórz wiadomo¶ci zachowane w kolejce w podanych interwa³ach.
+Je¶li
+.Ar czas
+jest pominiêty,
+przetwórz kolejkê tylko raz. (jest to to, czego siê u¿ywa do wysy³ania
+poczty przez [otwarte po³±czenie] PPP -- przyp. t³um.)
+.Xr Czas
+jest podawany jako oznaczona liczba, gdzie
+.Ql s
+oznacza sekundy,
+.Ql m
+minuty,
+.Ql h
+godziny,
+.Ql d
+dni
+i
+.Ql w
+oznacza tygodnie.
+Na przyk³ad
+.Ql \-q1h30m
+lub
+.Ql \-q90m
+ustawiaj± timeout na jedn± godzinê i 30 minut.
+Je¶li
+.Ar czas
+jest podany,
+.Nm sendmail
+bêdzie dzia³a³ w tle.
+Opcja ta mo¿e byæ bezpiecznie u¿ywana z
+.Fl bd .
+.It Fl qI Ns Ar substr
+Ogranicz przetwarzane zadania do tych, zawieraj±cych
+.Ar substr
+jako podci±g identyfikatora kolejki.
+.It Fl qR Ns Ar substr
+Ogranicz przetwarzane zadania do tych, zawieraj±cych
+.Ar substr
+jako podci±g w nazwie jednego z odbiorców.
+.It Fl qS Ns Ar substr
+Ogranicz przetwarzane zadania do tych, zawieraj±cych
+.Ar substr
+jako podci±g w nazwie nadawcy.
+.It Fl R Ar return
+Ustaw ilo¶æ wiadomo¶ci, zwracanych przy odbijaniu listu.
+Parametr
+.Ar return
+mo¿e byæ
+.Ql full
+aby zwracaæ ca³± wiadomo¶æ, lub
+.Ql hdrs
+aby zwracaæ jedynie nag³ówki.
+.It Fl r Ns Ar nazwa
+Alternatywna i przedawniona postaæ flagi
+.Fl f .
+.It Fl t
+Szukaj odbiorców w wiadomo¶ci.
+W poszukiwaniu odbiorców, sendmail poszuka w wiadomo¶ci linii To:, Cc:,
+Bcc:. (Normalnie wymaga podania odbiorcy w linii komend - przyp. t³um.)
+Argumenty adresowe z linii komend 
+.Em nie
+otrzymaj± kopii wiadomo¶ci.
+.It Fl U
+Pierwotna (u¿ytkownikowa) przyleg³o¶æ
+Powinno to byæ ustawiane
+.Em zawsze
+w wypadku wo³ania z agenta u¿ytkownika, takiego jak
+.Nm mail (1)
+czy
+.Nm exmh
+i
+.Em nigdy
+w wypadku wywo³ywania z sieciowego agenta dostarczaj±cego, takiego jak
+.Nm rmail (1).
+.It Fl V Ar envid
+Ustaw oryginalny identyfikator koperty.
+Jest to rozprzestrzeniane przez SMTP do serwerów obs³uguj±cych DSNy i
+zwracane w wiadomo¶ciach o b³êdach, zgodnych z DSN.
+.It Fl v
+Wejd¼ w tryb gadatliwy. Rozwijanie aliasów bêdzie og³aszane, itp.
+.It Fl X Ar logfile
+Loguj ca³y przep³yw do wskazanych plików z logami. Powinno to byæ u¿ywane
+tylko jako ostatni sposób debuggowania b³êdów mailera. Bêdzie szybko logowaæ
+du¿e ilo¶ci danych.
+.El
+.Ss Opcje
+Istnieje równie¿ spora liczba opcji przetwarzania, które mo¿na ustawiæ.
+Normalnie s± one u¿ywane tylko przez administratora systemu. Opcje mog± byæ
+ustawiane albo z linii komend, przy u¿yciu flagi
+.Fl o
+(dla nazw krótkich),
+lub
+.Fl O
+(dla nazw d³ugich),
+albo w pliku konfiguracyjnym.
+Oto czê¶ciowa lista, ograniczona do tych opcji, które mog± byæ przydatne w
+linii komend i pokazuje tylko d³ugie nazwy; kompletna lista (i szczegó³y)
+znajduj± siê w
+.%T "Sendmail Installation and Operation Guide" (który masz przypuszczalnie
+w katalogu /usr/doc/sendmail/op/ - przyp. t³um.).
+Opcje to:
+.Bl -tag -width Fl
+.It Li AliasFile= Ns Ar plik
+U¿yj alternatywnego pliku z aliasami.
+.It Li HoldExpensive
+Na mailerach, które s± kosztowne podczas ³±czenia siê z nimi, nie
+inicjalizuj natychmiastowych po³±czeñ. Implikuje to kolejkowanie.
+.It Li CheckpointInterval= Ns Ar N
+Sprawdzaj plik kolejki po ka¿dych
+.Ar N
+szczê¶liwych dostarczeniach (domy¶lnie 10).
+Zapobiega to kosztownym dostarczeniom duplikatów, podczas wysy³ania na
+d³ugie (odleg³e?) listy dyskusyjne, przerwane padem systemu.
+.ne 1i
+.It Li DeliveryMode= Ns Ar x
+Ustaw tryb dostarczania na
+.Ar x .
+Tryby dostarczania to
+.Ql i
+dla interaktywnego dostarczania (synchronicznego),
+.Ql b
+dla dostarczania w tle (asynchronicznego),
+.Ql q
+dla kolejkowania \- np. w³a¶ciwe dostarczenie bêdzie dokonane w nastêpnym
+uruchomieniu kolejki,
+.Ql d
+dla od³o¿onego \- to samo co
+.Ql q
+lecz unikane sa podgl±dy baz danych (szczególnie DNS i NIS).
+.It Li ErrorMode= Ns Ar x
+Ustaw przetwarzanie b³êdów na tryb
+.Ar x .
+Prawid³owe tryby to
+.Ql m
+do odsy³ania poczt± komunikatu o b³êdzie,
+.Ql w
+do ``odpisania'' (write) komunikatu o b³êdzie
+(lub odes³ania go z powrotem, je¶li nadawca nie jest zalogowany),
+.Ql p
+do wypisania b³êdów na terminal (domy¶lnie),
+.Ql q
+do zignorowania komunikatów o b³êdach (zwracany jest tylko status wyj¶cia),
+i
+.Ql e
+do robienia specjalnego przetwarzania dla BerkNet.
+Je¶li tekst wiadomo¶ci nie jest odsy³any przez tryby
+.Ql m
+lub
+.Ql w
+i je¶li nadawca jest lokalny, kopia wiadomo¶ci jest doklejana do pliku
+.Pa dead.letter
+w katalogu domowym  nadawcy.
+.It Li SaveFromLine
+Zachowaj linie From z pocz±tku wiadomo¶ci, bêd±ce w stylu
+.Tn UNIX Ns \-style .
+.It Li MaxHopCount= Ar N
+Maksymalna liczba razy, kiedy wiadomo¶æ mo¿e prze¿yæ ``hop'' nim
+zdecydujemy, ¿e jest zapêtlona.
+.It Li IgnoreDots
+Nie uwa¿aj kropek w pustych liniach jako terminatorów wiadomo¶ci.
+.It Li SendMimeErrors
+Wysy³aj komunikaty o b³êdach w formacie MIME.
+Je¶li nie ustawione, rozszerzenie DSN (Delivery Status Notification -- 
+Powiadomienie o Statusie Dostarczenia) SMTP jest wy³±czane.
+.It Li ConnectionCacheTimeout= Ns Ar timeout
+Ustaw timeout cache po³±czenia.
+.It Li ConnectionCacheSize= Ns Ar N
+Ustaw rozmiar cache po³±czenia.
+.It Li LogLevel= Ns Ar n
+Ustaw poziom logowania.
+.It Li MeToo
+Wysy³aj te¿ do ``mnie'' (nadawcy), je¶li znajdujê siê w rozwiniêciu
+aliasowym.
+.It Li CheckAliases
+Uprawomocnij rhs aliasów podczas komendy
+.Xr newaliases 1
+\fR.
+.It Li OldStyleHeaders
+Je¶li jest to ustawione, wiadomo¶ci moga mieæ starodawne nag³ówki.
+Je¶li nie, wiadomo¶æ musi mieæ nowe nag³ówki (np. orzecinki zamiast spacji
+miêdzy adresami). Je¶li jest ot ustawione, u¿ywany jest adaptacyjny
+algorytm, który rozpoznaje prawid³owo te nag³ówki.
+.It Li QueueDirectory= Ns Ar katalogkolejki
+Wybierz katalog, do którego kolejkowac wiadomo¶ci.
+.It Li StatusFile= Ns Ar plik
+Zachowaj statystyki do podanego pliku.
+.It Li Timeout.queuereturn= Ns Ar czas
+Ustaw timeout dla niedostarczonych wiadomo¶ci z kolejki na okre¶lony czas.
+Po tym, jak dostarczenie nie powiedzie siê przez podany czas,
+wiadomo¶æ zostanie zwrócona do nadawcy. Domy¶ln± warto¶ci± jest 5 dni.
+.It Li UserDatabaseSpec= Ns Ar userdatabase
+Je¶lijest to ustawione, do forwardowania sprawdzana jest baza u¿ytkownika.
+Mo¿na uwa¿aæ to jako rozszerzenie mechanizmu aliasowania, poza tym, ¿e baza
+powinna byæ dystrybutowana; aliasy s± lokalne na danym ho¶cie.
+Mo¿e to nie byæ dostêpne, je¶li twój sendmail nie ma wkompilowanej opcji
+.Dv USERDB .
+.It Li ForkEachJob
+Forkuj ka¿de zadanie podczas przeleceñ kolejki.
+Mo¿e byæ przydatne dla maszyn z ma³± ilo¶ci± pamiêci.
+.It Li SevenBitInput
+Rozbierz nadchodz±ce wiadomo¶ci do 7 bitów.
+.It Li EightBitMode= Ns Ar tryb
+Ustaw traktowanie ósmego bitu wej¶ciowego dla siedmiobitowych celów na
+.Ar tryb :
+.Li m
+(mimefy) konwertuje na siedmiobitowy format MIME,
+.Li p
+(pass) przeka¿e wiadomo¶æ jako o¶miobitow± (naruszaj±c protoko³y),
+i
+.Li s
+(strict) odbije wiadomo¶æ.
+.It Li MinQueueAge= Ns Ar timeout
+Ustaw, jak d³ugo zadanie musi fermentowaæ w kolejce nim nast±pi próba jego
+wys³ania.
+.It Li DefaultCharSet= Ns Ar charset
+Ustawia domy¶lny zestaw znaków, oznaczany do oznaczania danych 8-bitowych.
+.It Li DialDelay= Ns Ar czasspania
+Je¶li otwarcie po³±czenia siê nie powiedzie, za¶nij na
+.Ar czasspania
+sekund i spróbuj ponownie.
+Przydatne w hostach dzwoñ-na-¿±danie.
+.It Li NoRecipientAction= Ns Ar akcja
+Ustaw zachowanie gdy nie ma nag³ówków odbiorców (To:, Cc: lub Bcc:)
+na 
+.Ar akcjê :
+.Li none
+pozostawia wiadomo¶æ bez zmian,
+.Li add-to
+dodaje nag³ówek To: z odbiorcami koperty,
+.Li add-apparently-to
+dodaje nag³ówek Apparently-To: z odbiorcami koperty,
+.Li add-bcc
+dodaje nag³ówek Bcc: i
+.Li add-to-undisclosed
+dodaje nag³ówek
+.Ql "To: undisclosed-recipients:;" .
+.It Li MaxDaemonChildren= Ns Ar N
+Ustawia maksymaln± liczbê dzieci, których demon SMTP mo¿e mieæ naraz na
+.Ar N .
+.It Li ConnectionRateThrottle= Ns Ar N
+Ustawia maksymaln± liczbê po³±czeñ na sekundê na porcie SMTP na
+.Ar N .
+.El
+.Pp
+W aliasach, pierwszy znak nazwy mo¿e byæ pionow± kresk±, powoduj±c tak
+interpretacjê reszty nazwy jako komendy, do której nale¿y przes³aæ list
+poprzez potok. Mo¿e byæ niezbêdnym zacytowanie tej nazwy, by 
+.Nm sendmail
+nie wyci± spacji miêdzy argumentami. Na przyk³ad, czêstym aliasem jest
+.Pp
+.Bd -literal -offset indent -compact
+msgs: "|/usr/bin/msgs -s"
+.Ed
+.Pp
+Aliasy mog± mieæ te¿ sk³adniê
+.Dq :include: Ns Ar nazwapliku
+\fR, prosz±c tak
+.Xr sendmaila
+by odczyta³ podany plik z list± odbiorców.
+Na przyk³ad, alias taki jak:
+.Pp
+.Bd -literal -offset indent -compact
+poets: ":include:/usr/local/lib/poets.list"
+.Ed
+.Pp
+odczyta
+.Pa /usr/local/lib/poets.list
+dla listy adresów, tworz±cych grupê.
+.Pp
+.Nm Sendmail
+zwraca status wyj¶cia, opisuj±cy co zrobi³.
+Kody s± zdefiniowane w
+.Aq Pa sysexits.h :
+.Bl -tag -width EX_UNAVAILABLE -compact -offset indent
+.It Dv EX_OK
+Szczê¶liwe zakoñczenie wszystkich adresów.
+.It Dv EX_NOUSER
+Nie rozpoznana nazwa u¿ytkownika.
+.It Dv EX_UNAVAILABLE
+Potrzebne zasoby nie by³y dostêpne.
+.It Dv EX_SYNTAX
+B³±d sk³adni w adresie.
+.It Dv EX_SOFTWARE
+Wewnêtrzny b³±d oprogramowania, w³±czaj±cy nieprawid³owe argumenty.
+.It Dv EX_OSERR
+Tymczasowy b³±d systemu operacyjnego, taki jak
+.Dq niemo¿no¶æ forka .
+.It Dv EX_NOHOST
+Nazwa hosta nierozpoznana.
+.It Dv EX_TEMPFAIL
+Wiadomo¶æ nie mog³a byæ dostarczona, lecz jest skolejkowana.
+.El
+.Pp
+Po wywo³aniu jako
+.Nm newaliases ,
+.Nm sendmail
+przebudowuje bazê aliasów.
+Po wywo³aniu jako
+.Nm mailq ,
+.Nm sendmail
+drukuje zawarto¶æ kolejki pocztowej.
+.Sh PLIKI
+Oprócz pliku
+.Pa /etc/sendmail.cf
+\fR,
+wystêpuj± w nim nastêpuj±ce ¶cie¿ki:
+(warto¶ci te s± wiêc tylko przybli¿eniami).
+.Pp
+.Bl -tag -width /usr/lib/sendmail.fc -compact
+.It Pa /etc/aliases
+czyste dane dla nazw aliasowych
+.It Pa /etc/aliases.db
+baza danych nazw aliasowych
+.It Pa /etc/sendmail.cf
+plik konfiguracyjny
+.It Pa /etc/sendmail.hf
+plik pomocy
+.It Pa /var/log/sendmail.st
+zebrane statystyki
+.It Pa /var/spool/mqueue/*
+pliki tymczasowe
+.It Pa /var/run/sendmail.pid
+Id procesu demona.
+.El
+.Sh ZOBACZ TAK¯E
+.Xr binmail 1 ,
+.Xr mail 1 ,
+.Xr rmail 1 ,
+.Xr syslog 3 ,
+.Xr aliases 5 ,
+.Xr mailaddr 7 ,
+.Xr rc 8 ;
+.Pp
+DARPA
+Internet Request For Comments
+.%T RFC819 ,
+.%T RFC821 ,
+.%T RFC822 .
+.Rs
+.%T "Sendmail \- An Internetwork Mail Router"
+.%V SMM
+.%N \&No. 9
+.Re
+.Rs
+.%T "Sendmail Installation and Operation Guide"
+.%V SMM
+.%N \&No. 8
+.Re
+.Re
+.Rs
+Po polsku, \fI`Krótka i polska instrukcja konfiguracji sendmaila'\fR
+z \fIhttp://dione.ids.pl/~pborys/txt/linux/sendmail.txt\fR, streszczaj±ca
+wy¿ej wymienion± pozycjê.
+.Re
+.Sh HISTORIA
+Komenda
+.Nm
+pojawi³a siê w
+.Bx 4.2 .

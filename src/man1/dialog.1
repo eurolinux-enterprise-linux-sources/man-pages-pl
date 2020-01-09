@@ -1,0 +1,240 @@
+.\" {PTM/PB/0.1/09-05-1999/"wy¶wietlaj okienka dialogowe ze skryptów pow³oki"}
+.TH DIALOG 1 "10 czerwca 1994" "Dialog wersja 0.6"
+.SH NAZWA
+dialog \- wy¶wietla dialogi ze skryptów pow³oki
+.SH SK£ADNIA
+.B dialog --clear
+.br
+.BI "dialog --create-rc " plik
+.br
+.B dialog
+[
+.B \-\-title
+.I tytu³
+]
+[
+.B \-\-backtitle
+.I tytu³_t³a
+]
+[
+.B \-\-clear
+]
+[
+.B \-\-separate\-output
+]
+.B opcje-okienka
+.SH OPIS
+.B Dialog
+jest programem, który umo¿liwi Ci prezentowanie ró¿nych pytañ lub
+wy¶wietlanie komunikatów przy u¿yciu okienek dialogowych ze skryptu pow³oki.
+Obecnie rozpoznawane s± nastêpuj±ce okienka dialogowe:
+.LP
+.BR yes/no " box," " menu" " box," " input" " box,"
+.BR message " box," " text" " box," " info" " box,"
+.BR checklist " box," " radiolist" " box i" " gauge" " box."
+.SH OPCJE
+.TP
+.B \-\-clear
+Ekran zostanie wyczyszczony po wyj¶ciu z programu.
+.TP
+.BI \-\-create-rc " plik"
+.RB "Poniewa¿ " dialog " obs³uguje konfiguracjê podczas dzia³ania,"
+mo¿na tego u¿yæ do wygenerowania przyk³adowego pliku konfiguracyjnego do
+podanego \fIpliku\fR.
+.TP
+.BI \-\-separate\-output
+Dla widgetów checklist, produkuj wyj¶cie w osobnych liniach, bez cytowania.
+Umo¿liwia to przetwarzanie przez inny program.
+.TP
+.BI \-\-title " tytu³"
+Podaje napis
+.IR tytu³u ,
+który bêdzie wy¶wietlony na górze okna dialogowego.
+.TP
+.BI \-\-backtitle " tytu³_t³a"
+Podaje napis
+.IR tytu³u_t³a ,
+który bêdzie wy¶wietlony w tle, na górze ekranu.
+.TP
+.B Opcje okienek
+.TP
+.BI \-\-yesno " tekst wysoko¶æ szeroko¶æ"
+.RB "Okienko dialogowe" " yes/no" 
+o wielko¶ci
+.I wysoko¶æ
+linii na
+.I szeroko¶æ
+kolumn. Napis przekazywany jako
+.I tekst
+jest wy¶wietlany wewn±trz okna dialogowego. Je¶li napis jest zbyt d³ugi,
+aby móg³ siê zmie¶ciæ w linii, zostanie podzielony w odpowiednich miejscach
+na wiele linii.
+Napis
+.I tekst
+mo¿e tak¿e zawieraæ podnapis
+.I
+"\en"
+lub znaki nowej linii.
+.IR `\en\' ,
+umo¿liwiaj±ce rêczne kontrolowanie ³amania linii. To okienko dialogowe jest
+u¿yteczne do zadawania pytañ, które wymagaj± od u¿ytkownika odpowiedzi tak
+lub nie.
+.RB "Okienko dialogowe ma guzik" " Yes" "i guzik " No,
+miêdzy którymi u¿ytkownik mo¿e siê prze³±czaæ, przyciskaj±c klawisz
+.IR TAB .
+.TP
+.BI \-\-msgbox " tekst wysoko¶æ szeroko¶æ"
+.RB Okienko " msgbox" " jest bardzo podobne do okienka" " yes/no" "."
+Jedyna ró¿nica miêdzy nimi to to, ¿e 
+.B msgbox
+posiada tylko pojedynczy guzik
+.B OK
+Mo¿esz u¿ywaæ tego okienka dialogowego do wy¶wietlania komunikatów. Po
+przeczytaniu komunikatu, u¿ytkownik mo¿e nacisn±æ klawisz
+.IR ENTER ,
+a dialog
+.B dialog
+zakoñczy dzia³anie i wywo³uj±cy go skrypt bêdzie móg³ kontynuowaæ.
+.TP
+.BI \-\-infobox " tekst wysoko¶æ szeroko¶æ"
+.RB "okienko dialogowe" " infobox" " jest ogólnie podobne do" " msgbox."
+Jednak w tym wypadku,
+.B dialog
+zakoñczy dzia³anie natychmiast po wy¶wietleniu wiadomo¶ci u¿ytkownikowi. Po
+zakoñczeniu ekran nie jest czyszczony, wiêc wiadomo¶æ pozostanie na ekranie
+dopóki skrypt jej nie wyczy¶ci. Jest to u¿yteczne, je¶li chcesz informowaæ o
+przebiegu jakich¶ operacji, które wymagaj± trochê czasu.
+.TP
+.BI \-\-inputbox " tekst wysoko¶æ szeroko¶æ [init]"
+.RB "Okienko dialogowe " inputbox
+jest u¿yteczne gdy chcesz zadawaæ pytania, które wymagaj± jakiego¶ napisu w
+odpowiedzi. Je¶li podano parametr init, to jest on u¿ywany do
+zainicjowania napisu wej¶ciowego. Podczas pobierania napisu,
+.I BACKSPACE
+mo¿e byæ u¿ywany do poprawiania literówek. Je¶li napis wej¶ciowy jest
+d³u¿szy ni¿ rozmiar okienka, to zostanie zaskrollowany. Po wyj¶ciu, napis
+wej¶ciowy zostanie wydrukowany na
+.IR stderr "."
+.TP
+.BI \-\-textbox " plik wysoko¶æ szeroko¶æ"
+.RB "Okienko dialogowe" " textbox 
+umo¿liwia wy¶wietlenie zawarto¶ci pliku w okienku dialogowym. Jest to prosta
+przegl±darka plików tekstowych. U¿ytkownik mo¿e poruszaæ siê w pliku,
+przyciskaj±c klawisze
+.IR UP/DOWN ", " PGUP/PGDN
+.RI i " HOME/END" "."
+Je¶li linie s± zbyt d³ugie, aby pomie¶ciæ siê w okienku, mo¿na je przewijaæ
+przy u¿yciu klawiszy
+.IR LEWO/PRAWO .
+Udostêpniono równie¿ funkcje przeszukiwania w przód i w ty³. 
+.IP "\fB\-\-menu \fItekst wysoko¶æ szeroko¶æ wysoko¶æ-menu \fR[ \fIelement opis\fR] \fI..."
+Jak wskazuje nazwa, okienko dialogowe
+.B menu
+jest okienkiem, które mo¿e byæ u¿ywane do prezentowania listy wyborów w
+postaci menu, z którego u¿ytkownik wybiera pozycjê. Ka¿dy wpis sk³ada siê z
+napisu
+.IR opisu " i " elementu "."
+.I Element
+podaje wpisowi nazwê, wed³ug której mo¿na go odró¿niæ od innych wpisów w
+menu. 
+.I Opis
+jest krótkim opisem opcji, któr± reprezentuje. U¿ytkownik mo¿e przemieszczaæ
+siê miêdzy wpisami menu, wciskaj±c klawisze
+.IR GÓRA/DÓ£ .
+Pierwsza litera
+.I elementu
+jest skrótem. Mog± nimi byæ te¿ cyfry
+.IR 1-9 ". Wy¶wietlanych jest"
+.I wysoko¶æ-menu
+wpisów naraz, lecz menu mo¿e byæ przewijane je¶li jest ich wiêcej. Kiedy
+dialog koñczy dzia³anie, na stderr drukowany jest
+.I element
+wybranej opcji.
+.IP "\fB\-\-checklist \fItekst wysoko¶æ szeroko¶æ wysoko¶æ-listy \fR[\fIelement obiekt status \fR] \fI..."
+.RB "Okienko dialogowe " checklist " jest podobne do okienka " menu ", szczególnie w tym, ¿e"
+znajduje siê tam wiele wpisów prezentowanych w postaci menu. Zamiast
+wybierania wielu wpisów, ka¿dy z nich mo¿na w³±czyæ lub wy³±czyæ. Pocz±tkowy
+stan w³±czenia/wy³±czenia jest okre¶lany przez
+.IR status "."
+Na koniec, na stderr drukowana jest lista napisów
+.IR elementów ,
+których ustawienia by³y w³±czone.
+
+.IP "\fB\-\-radiolist \fItekst wysoko¶æ szeroko¶æ wysoko¶æ-listy \fR [\fIelement obiekt status \fR] \fI..."
+.RB "Okienko dialogowe " radiolist " jest podobne do okienka " menu ". Jedyn± ró¿nic± jest to,"
+¿e mo¿esz wskazaæ, który wpis jest obecnie wybrany, przez ustawienie jego
+.IR statusu " na " on "."
+
+.IP "\fB\-\-gauge \fItekst wysoko¶æ szeroko¶æ procent\fR"
+.RB "Okienko " gauge " wy¶wietla miarkê na dole okienka.
+Miarka okre¶la procentowo¶æ. Nowe warto¶ci procentowe s± odczytywane ze
+standardowego wej¶cia, jeden integer na liniê. Miarka jest odnawiana aby
+odzwierciedliæ ka¿dy nowy procent. Okienko koñczy dzia³anie na EOF.
+
+.SH "KONFIGURACJA DZIA£ANIA"
+.TP 4
+1.
+Utwórz przyk³adowy plik konfiguracyjny przy u¿yciu:
+.LP
+.in +1i
+"dialog --create-rc <file>"
+.TP 4
+2.
+Podczas uruchamiania 
+.B dialog
+okre¶la u¿ywane ustawienia w nastêpuj±cy sposób:
+.RS
+.TP 4
+a)
+je¶li ustawiona jest zmienna ¶rodowiskowa
+.B DIALOGRC
+to jej warto¶æ okre¶la nazwê pliku konfiguracyjnego.
+.TP 4
+b)
+je¶li nie znaleziono pliku (a), u¿yj pliku
+.IR $HOME/.dialogrc .
+.TP 4
+c)
+je¶li plik (b) nie zosta³ znaleziony, u¿yj wkompilowanych warto¶ci
+domy¶lnych.
+.RE
+.TP 4
+3.
+Edytuj przyk³adowy plik konfiguracyjny i skopiuj go w jakie¶ miejsce, gdzie
+.B dialog
+mo¿e go znale¼æ, jak okre¶lono powy¿ej w kroku 2.
+.SH ¦RODOWISKO
+.TP 15
+.B DIALOGRC
+Zdefiniuj tê zmienn±, je¶li chcesz podaæ nazwê u¿ywanego pliku
+konfiguracyjnego.
+.SH PLIKI
+.TP 20
+.I $HOME/.dialogrc
+domy¶lny plik konfiguracyjny.
+.SH DIAGNOSTYKA
+Status wyj¶cia jest 0, je¶li
+.BR dialog " zakoñczy³ dzia³anie po naci¶niêciu guzika " Yes " lub " OK ","
+a 1, je¶li wci¶niêto guzik
+.BR No " lub " Cancel .
+W przeciwnym wypadku, je¶li pojawi± siê b³êdy w
+.B dialogu
+lub gdy 
+.B dialog
+zostanie opuszczony przez naci¶niêcie klawisza
+.IR ESC ,
+status wyj¶cia wyniesie -1.
+.SH B£ÊDY
+Pliki tekstowe, zawieraj±ce znaki
+.I tab
+mog± powodowaæ pewne problemy z
+.BR textbox .
+Znaki
+.I tab
+w plikach tekstowych musz± byæ najpierw rozwijane w spacje.
+.TP
+Od¶wie¿anie ekranu jest zbyt wolne.
+.SH AUTOR
+Savio Lam (lam836@cs.cuhk.hk) - wersja 0.3
+.LP
+Stuart Herbert (S.Herbert@sheffield.ac.uk) - patch dla wersji 0.4

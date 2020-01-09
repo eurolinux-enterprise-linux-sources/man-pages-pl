@@ -1,0 +1,149 @@
+.\" {PTM/WK/0.1/20-07-1999/"partycjonowanie dysku twardego DOS"}
+.TH mpartition 1 "20 lipca 1999" mtools-3.9.6
+.SH NAZWA
+mpartition - partycjonowanie dysku twardego MSDOS
+.SH SK£ADNIA
+.B mpartition -p
+.I napêd
+.br
+.B mpartition -r
+.I napêd
+.br
+.B mpartition -I 
+.RB [ -B
+.IR bootSector "] " napêd
+.br 
+.B mpartition -a
+.I napêd
+.br
+.B mpartition -d
+.I napêd
+.br
+.B mpartition -c 
+.RB [ -s
+.IR sektory ]
+.RB [ -h
+.IR g³owice ] 
+.RB [ -t
+.IR cylindry ]
+.RB [ -v ]
+.RB [ -T
+.IR typ ]
+.RB [ -b
+.IR pocz±tek ]
+.RB [ -l
+.IR d³ugo¶æ ]
+.RB [ -f ]
+.SH OPIS 
+Polecenie \fBmpartition\fR tworzy system plików MS-DOS jako partycjê.
+Przeznaczone jest do wykorzystania w systemach innych ni¿ Linux, tj.
+w systemach, gdzie brak jest polecenia \fBfdisk\fR i ³atwego dostêpu do
+urz±dzeñ SCSI. Polecenie to dzia³a tylko na napêdach, dla których ustawiono
+zmienn± partycji.
+.\" This command only works on drives whose partition variable is set.
+.SH OPCJE
+mpartition obs³uguje nastêpuj±ce operacje:
+.TP
+.B -p
+Wy¶wietla liniê poleceñ do odtworzenia partycji napêdu. Je¿eli dla napêdu
+nie zdefiniowano partycji lub wykryto b³êdy logiczne, to nie pojawi siê
+¿aden wynik. Przy w³±czonej opcji wy¶wietlania szczegó³ów (\fB-v\fR)
+wy¶wietla bie¿±c± tablicê partycji.
+.TP
+.B -r
+Usuwa partycjê opisan± przez \fInapêd\fR.
+.TP
+.B -I
+Inicjalizuje tablicê partycji i usuwa wszystkie partycje.
+.TP
+.B -c 
+Tworzy partycjê opisan± przez \fInapêd\fR.
+.TP
+.B -a 
+"Aktywuje" partycjê, tj. czyni j± partycj± startow± (bootable). Równocze¶nie
+mo¿e istnieæ tylko jedna partycja startowa.
+.TP
+.B -d
+"Deaktywuje" partycjê, tj. zdejmuje znacznik aktywno¶ci ustawiony przez
+\fB-a\fR. Partycja przestaje byæ partycj± startow±.
+.PP
+Je¿eli nie podano ¿adnej operacji, to wy¶wietlane s± bie¿±ce ustawienia.
+.PP
+Przy tworzeniu partycji dostêpne s± nastêpuj±ce opcje:
+.TP
+.BI -s " sektory"
+Liczba sektorów na ¶cie¿kê partycji (jest to równie¿ liczba sektorów na
+¶cie¿kê dla ca³ego napêdu).
+.TP
+.BI -h " g³owice"
+Liczba g³owic partycji (jest to równie¿ liczba g³owic dla ca³ego napêdu).
+Domy¶lnie informacja o geometrii (liczba sektorów i g³owic) wyliczana jest
+z s±siednich pozycji tablicy partycji lub odgadywana na podstawie rozmiaru.
+.TP
+.BI -t " cylindry"
+Liczba cylindrów partycji (nie jest to liczba cylindrów ca³ego napêdu).
+.TP
+.BI -b " pocz±tek"
+Pocz±tkowy offset partycji, wyra¿ony w sektorach. Je¶li nie podano pocz±tku
+mpartition rozpoczyna partycjê od pocz±tku dysku (dla partycji numer 1) lub
+bezpo¶rednio za koñcem poprzedniej partycji.
+.TP
+.BI -l " d³ugo¶æ"
+Rozmiar (d³ugo¶æ) partycji, wyra¿ona w sektorach. Je¶li nie podano koñca,
+to  mpartition wylicza rozmiar na podstawie liczby sektorów, g³owic
+i cylindrów. Je¶li równie¿ ich nie podano, nadaje partycji najwiêkszy
+mo¿liwy rozmiar, uwzglêdniaj±c rozmiar dysku i pocz±tek nastêpnej partycji.
+.TP
+.BI -T " typ"
+[dodane przez t³umacza na podstawie pobie¿nego przegl±du kodu ¼ród³owego:
+Typ partycji.
+.br
+Na przyk³ad:
+.RS
+.RS
+\fB1\fR FAT 12-bitowy,
+.br
+\fB4\fR FAT 16-bitowy partycja mniejsza ni¿ 32MB,
+.br
+\fB6\fR FAT 16-bitowy >=32MB,
+.br
+\fBb\fR Win95 FAT32.
+.br
+\fBf\fR Win95 Extended (LBA)
+.RE
+Opcja ta mo¿e byæ przydatna do "rêcznego" tworzenia partycji rozszerzonych.]
+.RE
+.PP
+Dla wszystkich operacji modyfikuj±cych tablicê partycji dostêpne s± opcje:
+.TP
+.B -f
+Zwykle przed zapisem jakichkolwiek zmian partycji mpartition wykonuje
+pewne sprawdzenia spójno¶ci logicznej, jak kontrola nak³adania siê i
+prawid³owego wyrównywania partycji. Je¶li które¶ z nich zawiedzie, to
+tablica partycji nie jest zmieniana. \fB-f\fR pozwala na obej¶cie tych
+zabezpieczeñ.
+.PP
+Poni¿sze opcje dostêpne s± przy wszystkich operacjach:
+.TP
+.B -v
+W po³±czeniu z \fB-p\fR wy¶wietla informacjê o aktualnej tablicy partycji
+(bez zmian); albo po zmianach.
+.TP
+.B -vv
+Podanie podwojonej flagi w³±czenia szczegó³ów powoduje, ¿e mpartition bêdzie
+wy¶wietlaæ szesnastkowo (hexdump) tablicê partycji przy odczycie i zapisie
+na urz±dzenie.
+.PP
+Opcja dostêpna przy inicjalizacji tablicy partycji:
+.TP
+.BI -B " bootSector" 
+Czyta wzorcowy g³ówny rekord startowy (master boot record)
+z pliku \fIbootSector\fR.
+.RE
+.SH UWAGI
+Niniejsza, polska wersja dokumentacji, powsta³a jako t³umaczenie pliku
+Texinfo pakietu mtools wersji 3.9.6. W stosunku do automatycznie generowanej
+z Textinfo dokumentacji oryginalnej dokonano przesuniêcia sekcji opisuj±cej
+konwersjê dokumentacji do \fBmtools\fR(1). Tam te¿ znajdziesz notê prawn±
+dotycz±c± rozpowszechniania, modyfikacji i t³umaczenia dokumentacji pakietu
+mtools

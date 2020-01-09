@@ -1,0 +1,33 @@
+.\" {PTM/WK/0.1/18-07-1999/"zrzuæ obraz dyskietki"}
+.TH mcat 1 "18 lipca 1999" mtools-3.9.6
+.SH NAZWA
+mcat - zrzuæ obraz dyskietki
+.SH SK£ADNIA
+.B mcat
+.RB [ -w ]
+.IB napêd :
+.SH OPIS
+Polecenie \fBmcat\fR s³u¿y do skopiowania obrazu ca³ej dyskietki 
+z napêdu lub na napêd dyskietek.
+.PP
+\fBmcat\fR wykonuje to samo zadanie co unixowe polecenie \fBcat\fR. Zosta³o
+do³±czone do pakietu mtools, gdy¿ \fBcat\fR nie ma dostêpu do zdalnych
+napêdów dyskietek obs³ugiwanych przez demona dyskietek pakietu
+(\fBfloppyd\fR).
+Teraz mo¿liwe jest zdalne tworzenie dyskietek startowych.
+.PP
+Domy¶ln± operacj± jest odczyt. Wynik zapisywany jest na standardowym
+wyj¶ciu.
+.PP
+Przy u¿yciu opcji \fB-w\fR mcat odczytuje obraz dyskietki ze standardowego
+wej¶cia i zapisuje go na zadane urz±dzenie.
+\fBPos³uguj siê nim ostro¿nie!\fR Poniewa¿ polecenie to dzia³a na niskim
+poziomie zniszczy ono bez ostrze¿enia dane znajduj±ce siê uprzednio
+na dyskietce!
+.SH UWAGI
+Niniejsza, polska wersja dokumentacji, powsta³a jako t³umaczenie pliku
+Texinfo pakietu mtools wersji 3.9.6. W stosunku do automatycznie generowanej
+z Textinfo dokumentacji oryginalnej dokonano przesuniêcia sekcji opisuj±cej
+konwersjê dokumentacji do \fBmtools\fR(1). Tam te¿ znajdziesz notê prawn±
+dotycz±c± rozpowszechniania, modyfikacji i t³umaczenia dokumentacji pakietu
+mtools

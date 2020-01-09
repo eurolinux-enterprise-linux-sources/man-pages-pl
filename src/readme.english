@@ -1,0 +1,6 @@
+Note for Linux distribution maintainers:
+
+These manpages contain polish diacritical marks (8bit characters); do not 
+forget to change all calls to `groff -Tascii' to `groff -Tlatin1' in
+/etc/man.config. Besides, it is often desirable to set the environment
+variable LESSCHARSET to latin1 (if you use less as the manpager).

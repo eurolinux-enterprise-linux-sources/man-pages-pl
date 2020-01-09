@@ -1,0 +1,288 @@
+''' $Id: uucico.8,v 1.4 2001/09/16 09:38:35 wojtek2 Exp $
+.\" {PTM/PB/0.1/02-10-1998/"Demon transferów plików UUCP"}
+.TH uucico 8 "Taylor UUCP 1.06"
+.SH NAZWA
+uucico \- Demon transferów plików UUCP
+.SH SK£ADNIA
+.B uucico
+.RI [ opcje ]
+.SH OPIS
+Demon
+.I uucico
+przetwarza ¿±dania transferów plików skolejkowane przez polecenia
+.IR uucp (1)
+i
+.IR uux (1).
+Jest on uruchamiany gdy wywo³ane zostanie
+.I uucp
+lub
+.I uux
+(chyba ¿e przekazana im zostanie opcja
+.BR \-r ).  
+Jest równie¿ cz±sto uruchamiany periodycznie przy u¿yciu tabel
+.IR crontab . 
+
+Podczas uruchomienia z opcjami
+.BR \-r1 ,
+.BR \-\-master ,
+.BR \-s ,
+.B \-\-system
+lub
+.BR \-S ,
+demon zapocz±tkuje po³±czenie telefoniczne ze zdalnym systemem, pracuj±c
+w trybie master.
+W przeciwnym wypadku, demon uruchomi siê w trybie slave, przyjmuj±c
+po³±czenie ze zdalnego systemu. Zazwyczaj konfigurowany jest specjalny
+u¿ytkownik dla UUCP, który automatycznie uruchamia 
+.I uucico
+podczas po³±czenia.
+
+Gdy
+.I uucico
+koñczy dzia³anie, wywo³uje ono demona
+.IR uuxqt (8),
+chyba ¿e podano mu opcjê
+.B \-q
+lub
+.BR \-\-nouuxqt ;
+.IR uuxqt (8)
+wykonuje wszelkie ¿±dania zadañ stworozne przez
+.IR uux (1)
+na zdalnej maszyni i wszelkie zadania stworzone lokalnie, które
+otrzyma³y zdalne pliki, na które oczekiwa³y.
+
+Je¶li po³±czenie siê nie uda,
+.I uucico
+odmówi ponowienia po³±czenia, a¿ nie minie okre¶lona (konfigurowalna) ilo¶æ
+czasu. Mo¿e to byæ przes³oniête opcjami
+.BR -f ,
+.B --force
+lub
+.BR -S .
+
+Opcji
+.BR \-l ,
+.BR \-\-prompt ,
+.B \-e
+lub
+.B \-\-loop
+mo¿na u¿yæ do zmuszenia
+.I uucico
+do przedstawienia swoich w³asnych zachêt zamiast "Login:" i "Password:". Gdy
+dzwoni inny demon, ujrzy on te zachêty i zaloguje siê jak zwykle. Nazwa
+u¿ytkownika i has³o bêd± sprawdzane w oddzielnej li¶cie
+.I uucico
+zamiast w pliku
+.IR /etc/passwd ;
+jest jednak mo¿liwe na wiêkszo¶ci systemów doprowadzenie 
+.I uucico
+do korzystania z pliku
+.IR /etc/passwd .
+Opcje
+.B \-l
+lub
+.B \--prompt
+przedstawi± zachêtê jednorazowo, a potem zakoñcz± dzia³anie. W tym trybie
+administrator UUCP lub superu¿ytkownik mo¿e u¿yæ opcji
+.B \-u
+lub
+.B \--login
+aby wymusiæ nazwê u¿ytkownika, wówczas
+.I uucico
+nie bêdzie o ni± pytaæ.
+Opcja
+.B \-e
+lub
+.B \--loop
+bêdzie pytaæ gdy pierwsza sesja zostanie zakoñczona; w tym trybie
+.I uucico
+bêdzie stale kontrolowaæ port. 
+
+Je¶li
+.I uucico
+otrzyma sygna³ SIGQUIT, SIGTERM lub SIGPIPE, to zakoñczy czysto ka¿d±
+bie¿±c± konwersacjê ze zdalnym systemem i zakoñczy pracê. Je¶li otrzyma
+sygna³ SIGHUP, przerwie ka¿d± konwersacjê, lecz bêdzie wci±¿ dzwoniæ
+(je¶li wywo³ane z opcjami
+.B \-r1
+lub
+.BR \-\-master )
+i przyjmowaæ po³±czenia telefoniczne (je¶li wywo³ane z opcjami
+.B \-e
+lub
+.BR \-\-loop )
+innych systemów. Je¶li otrzyma sygna³ SIGINT, zakoñczy bie¿±c± konwersacjê,
+lecz nie bêdzie ju¿ dokonywaæ lub odbieraæ innych po³±czeñ.
+.SH OPCJE
+.I uucico
+mo¿na przekazaæ nastêpuj±ce opcje:
+.TP 5
+.B \-r1, \-\-master
+Uruchamia siê w trybie master (dzwoni do systemu); implikowane przez
+.BR \-s ,
+.B \-\-system
+lub
+.B \-S.
+Je¶li nie podano systemu, dzwoni do dowolnego systemu, dla którego oczekuje
+jakie¶ zadanie.
+.TP 5
+.B \-r0, \-\-slave
+Uruchamia siê w trybie slave. Tak jest domy¶lnie.
+.TP 5
+.B \-s system, \-\-system system
+£±czy siê z podanym systemem.
+.TP 5
+.B \-S system
+Dzwoni do podanego systemu, ignoruj±c wszelkie okresy oczekiwania. Jest to
+równowa¿ne
+.B \-s system \-f.
+.TP 5
+.B \-f, \-\-force
+Ignoruje wszelkie wymagane oczekiwania na zadzwonienie do jakichkolwiek
+systemów.
+.TP 5
+.B \-l, \-\-prompt
+Pyta o nazwê u¿ytkownika i has³o przy u¿yciu "login:" i "Password:".
+Umo¿liwia uruchamianie
+.I uucico
+z
+.IR inetd (8).
+Nazwa u¿ytkownika i has³o s± sprawdzane wed³ug pliku z has³ami,
+nale¿±cego do UUCP, które najprawdopodobniej nie ma ¿adnego zwi±zku z
+plikiem
+.IR /etc/passwd .
+Opcja
+.B \-\-login 
+mo¿e byæ u¿ywana do wymuszania nazwy u¿ytkownika - wówczas
+.I uucico
+zapyta tylko o has³o.
+.TP 5
+.B \-p port, \-\-port port
+Podaje port, do którego dzwoniæ lub na którym nas³uchiwaæ.
+.TP 5
+.B \-e, \-\-loop
+Wchodzi w nieskoñczon± pêtlê promptów login/password i uruchami siê w trybie
+slave. Program nie zatrzyma siê sam z siebie; trzeba u¿yæ polecenia
+.IR kill (1),
+aby go zamkn±æ.
+.TP 5
+.B \-w, \-\-wait
+Po wydzwonieniu (do danego systemu, po otrzymaniu opcji
+.BR \-s ,
+.B \-\-system
+lub
+.BR \-S ,
+lub do wszystkich systemów, które maj± zadania gdy podano tylko
+.B \-r1
+lub
+.BR \-\-master ),
+rozpoczyna nieskoñczon± pêtlê, jak przy
+.B \-\-loop.
+.TP 5
+.B \-q, \-\-nouuxqt
+Nie uruchamia demona
+.IR uuxqt (8)
+po zakoñczeniu.
+.TP 5
+.B \-c, \-\-quiet
+Je¶li o tej porze nie s± dozwolone po³±czenia, nie wykonuje po³±czenia, lecz
+równie¿ nie daje informacji o b³êdzie do pliku dziennika i nie odnawiaj
+statusu systemu (zg³aszanego przez
+.IR uustat (1)).
+Mo¿e to mieæ zastosowanie dla automatyzowania skryptów pooluj±cych,
+które mog± po prostu próbowaæ dzwoniæ do ka¿dego systemu ni¿ martwiæ siê o
+to, do którego w danej chwili mo¿na zadzwoniæ. Opcja ta eliminuje równie¿
+informacjê dziennika, wskazuj±c±, ¿e nie ma ju¿ zadañ do wykonania.
+.TP 5
+.B \-C, \-\-ifwork
+Dzwoni do systemów podanych przez
+.BR \-s ,
+.B \-\-system
+lub
+.B \-S
+jedynie w wypadku, gdy s± dla nich jakie¶ zadania.
+.TP 5
+.B \-D, \-\-nodetach
+Nie od³±cza siê od kontroluj±cego terminala. Normalnie
+.I uucico
+od³±cza siê od terminala przed jakimkolwiek wydzwonieniem do innego systemu
+i przed wywo³aniem
+.I uuxqt.
+Opcja ta eliminuje takie zachowanie.
+.TP 5
+.B \-u nazwa, \-\-login nazwa
+Ustawia nazwê loguj±cego siê u¿ytkownika. Bêdzie ona u¿yta zamiast pobranej
+nazwy wywo³uj±cego u¿ytkownika. Tej opcji mo¿e u¿yæ tylko administrator UUCP
+lub superu¿ytkownik.
+Je¶li zastosowano j± w po³±czeniu z 
+.B \-\-prompt,
+to spowoduje, ¿e
+.I uucico
+zapyta tylko o has³o, pomijaj±c nazwê u¿ytkownika.
+.TP 5
+.B \-z, \-\-try-next
+Je¶li po³±czenie siê nie uda po osi±gniêciu zdalnego systemu, próbuje
+nastêpnej alternatywy zamiast po prostu zakoñczyæ.
+.TP 5
+.B \-i typ, \-\-stdin typ
+Ustawia typ portu wykorzystywanego podczas u¿ywania standardowego wej¶cia.
+Jedynym obs³ugiwanym typem jest TLI i jest on dostêpny tylko na maszynach
+obs³uguj±cych ten interfejs sieciowy. Podanie
+.B \-iTLI
+powoduje, ¿e
+.I uucico
+zacznie u¿ywaæ wywo³añ TLI do dokonywania I/O.
+.TP 5
+.B \-x typ, \-X typ, \-\-debug typ
+W³±cza dany rodzaj diagnostyki. Rozpoznawane s± nastêpuj±ce:
+abnormal, chat, handshake, uucp-proto, proto, port,
+config, spooldir, execute, incoming, outgoing.  
+
+Mo¿na podawaæ wiele typów rozdzielonych przecinkami, a opcja
+.B \-\-debug
+mo¿e pojawiæ siê wiele razy. Mo¿na podaæ tak¿e liczbê, która w³±czy kolejne
+typy powy¿szej listy; np,
+.B \-\-debug 2
+jest równowa¿ne
+.B \-\-debug abnormal,chat.
+
+Wyj¶cie diagnostyczne jest wysy³ane do pliku pliku informacji diagnostycznych,
+zwykle jednego z
+/usr/spool/uucp/Debug, /usr/spool/uucp/DEBUG, lub
+/usr/spool/uucp/.Admin/audit.local.
+.TP 5
+.B \-I plik, \-\-config plik
+Wskazuje plik konfiguracyjny, z którego ma korzystaæ program.
+Opcja ta mo¿e nie byæ dostêpna, zale¿nie od tego, jak skompilowano
+.IR uucico .
+.TP 5
+.B \-v, \-\-version
+Wypisuje wersjê i koñczy pracê.
+.TP 5
+.B \-\-help
+Wypisuje informacjê o sposobie u¿ycia i koñczy pracê.
+.SH PLIKI
+Nazwy plików mo¿na zmieniaæ podczas kompilacji lub w pliku
+konfiguracyjnym, wiêc poni¿sze s± tylko przybli¿eniami.
+
+.br
+/usr/lib/uucp/config - Plik konfiguracyjny.
+.br
+/usr/lib/uucp/passwd - Domy¶lny plik z has³ami UUCP.
+.br
+/usr/spool/uucp -
+Katalog kolejkowy UUCP.
+.br
+/usr/spool/uucp/Log -
+Plik log UUCP.
+.br
+/usr/spool/uucppublic -
+Domy¶lny katalog publiczny UUCP.
+.br
+/usr/spool/uucp/Debug -
+Plik z informacjami diagnostycznymi.
+.SH ZOBACZ TAK¯E
+kill(1), uucp(1), uux(1), uustat(1), uuxqt(8)
+.SH AUTOR
+Ian Lance Taylor
+<ian@airs.com>

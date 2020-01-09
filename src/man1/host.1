@@ -1,0 +1,200 @@
+.\" ++Copyright++ 1993
+.\" -
+.\" Copyright (c) 1993
+.\"    The Regents of the University of California.  All rights reserved.
+.\" 
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\" 	This product includes software developed by the University of
+.\" 	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\" 
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\" -
+.\" Portions Copyright (c) 1993 by Digital Equipment Corporation.
+.\" 
+.\" Permission to use, copy, modify, and distribute this software for any
+.\" purpose with or without fee is hereby granted, provided that the above
+.\" copyright notice and this permission notice appear in all copies, and that
+.\" the name of Digital Equipment Corporation not be used in advertising or
+.\" publicity pertaining to distribution of the document or software without
+.\" specific, written prior permission.
+.\" 
+.\" THE SOFTWARE IS PROVIDED "AS IS" AND DIGITAL EQUIPMENT CORP. DISCLAIMS ALL
+.\" WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES
+.\" OF MERCHANTABILITY AND FITNESS.   IN NO EVENT SHALL DIGITAL EQUIPMENT
+.\" CORPORATION BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
+.\" DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
+.\" PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
+.\" ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+.\" SOFTWARE.
+.\" -
+.\" --Copyright--
+.\" $Id: host.1,v 1.4 2004/10/09 14:48:56 robert Exp $
+.\" Translation (c) 1998 Marcin Mazurek <mazek@capella.ae.poznan.pl>
+.\" {PTM/MM/0.1/08-10-1998/"host.1 - wyszukuje nazwy hostów u¿ywaj±c serwerów domen"}
+.TH HOST 1
+.SH NAZWA
+host \- wyszukuje nazwy hostów, u¿ywaj±c serwerów domen
+.SH SK£ADNIA 
+host [-l] [-v] [-w] [-r] [-d] [-t typ_zapytania] [-a] host [ serwer ] 
+.SH OPIS 
+.I Host
+wyszukuje informacje o hostach w Internecie.  Pobiera te informacje z sieci
+po³±czonych ze sob± serwerów, które s± rozrzucone po ca³ym kraju.
+Standardowo przekszta³ca on nazwy hostów w adresy internetowe.
+Z opcj± -t i -a, mo¿e byæ u¿ywany do otrzymania pe³nej informacji o ho¶cie,
+o którym informacjê utrzymuje dany serwer domen.
+.PP
+Argumentami mog± byæ nazwy hostów jak i ich numery. Program standardowo na
+pocz±tku stara siê zinterpretowaæ je jako numery hosta. Je¶li to siê nie
+powiedzie, program podany argument potraktuje jako nazwê hosta. Numer hosta
+sk³ada siê z liczb oddzielonych kropkami np. 128.6.4.194
+Nazwa hosta sk³ada siê z nazw oddzielonych kropkami np. topaz.rutgers.edu.  
+Je¶li nazwa nie koñczy siê kropk±, lokalna domena jest dodawana
+automatycznie do nazwy.  Je¶li wiêc u¿ytkownik wpisze
+"host topaz", program w rzeczywisto¶ci wyszuka informacjê o "topaz.rutgers.edu".
+Je¶li to siê nie uda, wyszukiwana jest informacja o nazwie hosta podanego
+jako argument (w tym wypadku, "topaz").
+Ta sama konwencja zosta³a utrzymana dla programów pocztowych czy innych
+narzêdzi sieciowych. Przyrostek, który ma byæ dodany na koniec nazwy hosta
+jest otrzymywany w wyniku wykonania funkcji "hostname". U¿ywana jest czê¶æ
+po pierwszej kropce, w³±cznie z ni±. (Poni¿ej mo¿esz siê dowiedzieæ wiêcej
+jak dostosowywaæ do w³asnych potrzeb wyszukiwanie nazw hostów).
+.PP
+Pierwszym argumentem jest nazwa hosta jaki chcemy sprawdziæ. Je¶li jest to
+numer, zadawane jest "odwrotne zapytanie", tj. system domen
+przeszukuje oddzielne bazy danych u¿ywane do konwersji numerów na nazwy.
+.PP
+Drugi argument jest opcjonalny. Pozwala on na podanie konkretnego serwera
+który bêdzie odpytywany. Je¶li nie podasz tego argumentu, u¿ywany jest
+standardowy serwer (zazwyczaj lokalny komputer).
+.PP
+Je¶li nazwa zosta³a podana, mo¿esz zobaczyæ na wyj¶ciu ró¿ne wyniki.
+Poni¿ej zamieszczony jest przyk³ad, który pokazuje je wszystkie:
+.br
+   % host sun4
+.br
+   sun4.rutgers.edu is a nickname for ATHOS.RUTGERS.EDU
+.br
+   ATHOS.RUTGERS.EDU has address 128.6.5.46
+.br
+   ATHOS.RUTGERS.EDU has address 128.6.4.4
+.br
+   ATHOS.RUTGERS.EDU mail is handled by ARAMIS.RUTGERS.EDU
+.br
+U¿ytkownik wpisa³ komendê "host sun4".  Pierwsza linia pokazuje, ¿e
+nazwa "sun4.rutgers.edu" jest w rzeczywisto¶ci nazw± zastêpcz±.  Oficjalna 
+nazw± tego hosta jest "ATHOS.RUTGERS.EDU'.  Dwie nastêpne linie pokazuj±
+jego adres. Je¶li system ma wiêcej ni¿ jeden interfejs sieciowy, podany
+zostanie oddzielny adres dla ka¿dego. Ostatnia linia wskazuje, ¿e
+ATHOS.RUTGERS.EDU nie zajmuje siê poczt± kierowan± do niego. T± czynno¶ci±
+przejmuje host o nazwie ARAMIS.RUTGERS.EDU. Mo¿liwe jest wystêpowanie wiêcej
+ni¿ jednej takiej linii, poniewa¿ niektóre systemy maj± wiêcej ni¿ jeden
+system który zajmuje siê jego poczt±. Profesjonalnie rzecz bior±c,
+ka¿dy system który mo¿e otrzymywaæ pocztê powinien podawaæ
+liniê tego typu. Je¶li system sam zajmuje siê swoj± poczt±, powinna siê
+pokazaæ linia która podaje ten w³a¶nie system np.
+"XXX mail is handled by XXX".  Chocia¿ jest wiele systemów które zajmuj± siê
+w³asn± poczt± nie wspominaj±c o tym. Je¶li jednak system posiada liniê
+zawieraj±c± tekst "mail is handled by", ale bez adresu, to wskazuje, ¿e nie
+jest on czê¶ci Internetu, ale systemem któremu w momencie po³±czenia z
+sieci± zostanie poczta przekazana. Systemy Usenet, Bitnet czy wiele innych
+sieci ma wpisy tego typu.
+.PP
+Przed nazw± hosta mo¿e zostaæ u¿ytych wiele opcji. Wiêkszo¶æ z nich ma
+znaczenie jedynie dla ludzi utrzymuj±cych bazê danych o domenie.
+.PP
+Opcja -w powoduje, ¿e host bêdzie czeka³ bez koñca na odpowied¼. Normalnie
+czekanie zostanie przerwane po oko³o minucie.
+.PP
+Opcja -v powoduje, ¿e wypisywane s± bardziej szczegó³owe informacje. 
+Wypisywane s± one w formacie g³ównego pliku domeny, którego budowa jest
+opisana w podrêczniku "named". Bez tej opcji, informacja wy¶wietlana w
+zasadzie pokrywa siê z formatem "named", ale poczynione zosta³y pewne
+starania aby by³a ona bardzie czytelna dla 
+normalnych u¿ytkowników. Bez opcji -v, rekordy
+"a", "mx", i "cname" s± wypisywane jako  "has address" (ma adres), "mail is handled by"
+(poczt± zajmuje siê), i "is a nickname for"(jest nickname dla), a pola TTL i
+class s± nie pokazywane.
+.PP
+Opcja -r powoduje wy³±czenie rekurencyjnego odpytywania. To znaczy, ¿e
+serwer nazw zwróci jedynie te informacje, które on sam posiada we w³asnej bazie
+danych. Nie bêdzie on pyta³ innych serwerów o dalsze informacje.
+.PP
+Opcja -d w³±cza debugging. Transakcje sieciowe s± pokazywane bardzo
+szczegó³owo.
+.PP
+Opcja -t pozwala na podanie typu informacji jakiej potrzebujemy.
+Argumenty s± opisane na stronie manuala do "named".
+Aktualnie mo¿na u¿yæ typów: a, ns, md, mf, cname,
+soa, mb, mg, mr, null, wks, ptr, hinfo, minfo, mx, uinfo,
+uid, gid, unspec, oraz znaków specjalnych: "any" lub "*".
+Typy musz± byæ podane ma³ymi literami. Nale¿y zauwa¿yæ, ¿e standardowo
+wyszukiwana jest informacja typu "a", nastêpnie "mx", chyba ¿e
+w³±czona jest opcja -v, wtedy standardowo podawana jest informacja typu "a".
+.PP
+Opcja -a ("all") odpowiada opcjom "-v -t any".
+.PP
+Opcja -l powoduje wypisanie ca³ej domeny.  Np.
+.br
+   host -l rutgers.edu
+.br
+poda nam listê wszystkich hostów w domenie rutgers.edu. Opcja -t
+jest u¿ywana do filtrowania wy¶wietlanej informacji.
+Standardowo jest to informacja o adresie hosta, zawieraj±ca tak¿e rekordy
+PTR i NS. Komenda
+.br
+   host -l -v -t any rutgers.edu
+.br
+da nam kompletn± informacjê dla strefy rutgers.edu,
+w oficjalnym formacie pliku "named". (Jakkolwiek rekord SOA jest podany dwa
+razy, dla tajemniczych powodów) ZAUWA¯: opcja -l dzia³a w ten sposób, ¿e najpierw
+jest ¶ci±gana ca³a informacja o strefie (zone) i z tego jest filtrowana
+informacja, o któr± nam chodzi³o. Ta komenda powinna byæ u¿ywana tylko
+w koniecznych wypadkach.
+.SH DOSTRAJANIE WYSZUKIWANIA NAZW HOSTÓW
+Je¿eli nazwa podana przez u¿ytkownika nie zawiera ¿adnych kropek w sobie,
+standardowa domena jest dodawana na koniec nazwy. Domena ta mo¿e byæ
+zdefiniowana w /etc/resolv.conf, ale normalnie pobierana jest ona z lokalnej
+nazwy hosta, a konkretnie czê¶ci wystêpuj±ca po pierwszej kropce. U¿ytkownik mo¿e podaæ
+inn± standarow± domenê u¿ywaj±c zmiennej ¶rodowiskowej
+.IR LOCALDOMAIN .
+Dodatkowo, u¿ytkownik mo¿e podaæ skróty dla nazw hostów.
+Powinny one siê znajdowaæ w pliku w którym w ka¿dej linii podajemy skrót, po
+a odstêpie pe³n± nazwê hosta. Po³o¿enie i nazwê tego pliku wskazuje zmienna ¶rodowiskowa  
+.IR HOSTALIASES .
+.SH "ZOBACZ TAK¯E"
+.BR named (8)
+.SH B£ÊDY
+Podaj±c nazwê, która nie jest czê¶ci± lokalnej domeny, mo¿emy uzyskaæ
+niespodziewane efekty. Proszê zwróciæ uwagê na to, ¿e lokalna domena jest
+dodawana do ka¿dej nazwy, która nie koñczy siê kropka. Je¶li mimo wszystko nie
+zostanie odnaleziona, dopiero wtedy u¿ywana jest niezmieniona nazwa.
+.PP
+Opcja -l odpytuje jedynie pierwszy serwer nazw podany dla domeny, któr±
+odpytujemy. Je¶li serwer ten nie dzia³a, powiniene¶ podaæ nazwê serwera.
+Np. aby uzyskaæ informacjê o foo.edu, mo¿esz u¿yæ  "host -t ns foo.edu"
+aby otrzymaæ listê wszystkich serwerów nazw dla for foo.edu, a pó¼niej
+spróbowaæ "host -l foo.edu xxx" dla wszystkich xxx w li¶cie serwerów nazw,
+a¿ znajdziesz jeden dzia³aj±cy.

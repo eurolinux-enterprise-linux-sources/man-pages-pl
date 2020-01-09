@@ -1,0 +1,168 @@
+.\" 2000 PTM Przemek Borys <pborys@dione.ids.pl>
+.TH PSTOPS 1 "PSUtils Wydanie 1 £ata 17"
+.SH NAZWA
+pstops \- przetasuj strony pliku postscriptowego
+.SH SK£ADNIA
+.B pstops
+[
+.B \-q
+] [
+.B \-b
+] [
+.B \-w\fIszeroko¶æ\fR
+] [
+.B \-h\fIwysoko¶æ\fR
+] [
+.B \-p\fIpapier\fR
+] [
+.B \-d\fIlszeroko¶æ\fR
+]
+.I specyfikacjestrony
+[
+.I plik_we
+[
+.I plik_wy
+] ]
+.SH OPIS
+.I Pstops
+przearan¿owuje strony dokumentu postscriptowego, tworz±c nowy plik. Plik
+wej¶ciowy powinien byæ zgodny z konwencjami strukturyzacji dokumentu Adobe
+(DSC).
+.I Pstops
+mo¿e byæ u¿ywany do wielu rodzajów przetasowañ dokumentów, wliczaj±c w to
+przekszta³canie do drukowania 2-stronnego, 4-stronnego, broszur, odwracania,
+wybierania górnych lub tylnych stron dokumentu, skalowania, itp.
+.PP
+.I specyfikacjestrony
+maj± nastêpuj±c± sk³adniê:
+.RS
+.TP 12
+.I specyfikacjestrony
+.I = [modulo:]specyfikacje
+.TP
+.I specyfikacje
+.I = spec[+specyfikacje][,specyfikacje]
+.TP
+.I spec
+.I = [-]numerstrony[L][R][U][@skala][(xoff,yoff)]
+.RE
+.sp
+.I modulo
+jest liczb± stron w ka¿dym bloku. Warto¶æ
+.I modulo
+powinna byæ wiêksza ni¿ 0; domy¶lnie jest to 1.
+.I specyfikacje
+s± specyfikacjami strony dla stron z ka¿dego bloku. Warto¶æ
+.I numerustrony
+w ka¿dym
+.I spec
+powinna byæ miêdzy 0 (pierwsza strona bloku) a \fImodulo\fR-1 (ostatnia
+strona w ka¿dym bloku).
+Dodatkowe wymiary
+.I xoff
+i
+.I yoff
+przesuwaj± stronê o podany obszar.
+.I xoff
+i
+.I yoff
+liczone s± w punktach postscriptowych, lecz mo¿na je zapisywaæ te¿ w
+jednostkach metrycznych,
+.B "cm"
+lub
+.B "in"
+(cale). Mo¿na je te¿ zapisaæ w jednostkach szeroko¶ci lub wysoko¶ci strony,
+korzystaj±c z symboli
+.B "w"
+lub
+.BR "h" .
+Opcjonalne parametry \fIL\fR, \fIR\fR i \fIU\fR obracaj± stronê w lewo, w
+prawo i do góry nogami.
+Opcjonalny parametr
+.I skala
+skalue stronê o podany u³amek. 
+
+Je¶li podany jest opcjonalny znak minusa,
+strona jest liczona wzglêdem koñca dokumentu (zamiast wzglêdem pocz±tku).
+
+Je¶li \fIspec\fRyfikacje strony s± rozdzielone znakami
+.B \+
+to strony zostan± z³±czone w jedn± stronê; je¶li s± rozdzielone
+.B ,
+to pozostan± na osobnych stronach. Je¶li jest tylko jedna specyfikacja,
+gdzie 
+.I numerstrony
+to zero, \fInumerstrony\fR mo¿na pomin±æ.
+
+Przesuwanie, rotacja i skalowanie jest dokonywane w tej kolejno¶ci,
+niezale¿nie od kolejno¶ci pojawienia w linii poleceñ.
+.PP
+Opcja
+.I \-w
+przekazuje szeroko¶æ, u¿ywan± jako specyfikator wymiaru
+.BR "w" ,
+a 
+.I \-h
+przekazuje wysoko¶æ, u¿ywan± przez wymiar
+.BR "h" .
+Wymiary te s± u¿ywane (po skalowaniu) do ustawienia ¶cie¿ki przycinania dla
+ka¿dej ze stron.
+Alternatyw± jest u¿ycie opcji
+.IR \-p ,
+która ustawia rozmiar papieru na
+.B a3, a4, a5, b5, letter, legal, tabloid, statement, executive, folio, quarto
+lub
+.B 10x14.
+Domy¶lnym rozmiarem jest
+.B a4.
+.PP
+Opcja
+.I \-b
+zapobiega wi±zaniu wszelkich operatorów
+.B bind
+w prologu postscriptu. Mo¿e to byæ wymagane w wypadkach z³o¿onych
+wielostronicowych przearan¿owañ.
+.PP
+Opcja
+.I \-d
+rysuje wokó³ ramki ka¿dej strony ramkê o okre¶lonej grubo¶ci. Je¶li parametr
+\fIlszeroko¶æ\fR zostanie pominiêty, zak³adana jest szeroko¶æ 1 punktu.
+Szeroko¶æ ta jest liczona wzglêdem oryginalnych wymiarów, tj. jest skalowana
+wraz z reszt± strony.
+.PP
+Pstops normalnie drukuje numery przearan¿owanych stron; opcja
+.I \-q
+powstrzymuje to dzia³anie.
+.SH PRZYK£ADY
+Ta sekcja zawiera kilka przyk³adowych przearan¿owañ. Aby wstawiæ dwie strony
+na jeden arkusz (A4), u¿yj nastêpuj±cej specyfikacjistrony:
+.sp
+.ce
+2:0L@.7(21cm,0)+1L@.7(21cm,14.85cm)
+.sp
+Aby wybraæ wszystkie strony nieparzyste w odwróconym porz±dku:
+.sp
+.ce
+2:-0
+.sp
+Aby przearan¿owaæ strony do drukowania dwustronnych broszur, u¿yj
+.sp
+.ce
+4:-3L@.7(21cm,0)+0L@.7(21cm,14.85cm)
+.sp
+dla czê¶ci przednich i
+.sp
+.ce
+4:1L@.7(21cm,0)+-2L@.7(21cm,14.85cm)
+.sp
+dla czê¶ci tylnych (lub po³±cz je przecinkiem dla drukowania dupleksowego).
+.SH AUTOR
+Copyright (C) Angus J. C. Duggan 1991-1995
+.SH "ZOBACZ TAK¯E"
+psbook(1), psselect(1), pstops(1), epsffit(1), psnup(1), psresize(1), psmerge(1), fixscribeps(1), getafm(1), fixdlsrps(1), fixfmps(1), fixmacps(1), fixpsditps(1), fixpspps(1), fixtpps(1), fixwfwps(1), fixwpps(1), fixwwps(1), extractres(1), includeres(1)
+.SH ZNAKI TOWAROWE
+.B PostScript
+jest znakiem towarowym Adobe Systems Incorporated.
+.SH B£ÊDY
+.I Pstops
+nie przyjmuje wszystkich komentarzy DSC.
