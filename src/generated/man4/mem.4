@@ -1,0 +1,98 @@
+.\" Copyright (c) 1993 Michael Haardt (michael@moria.de),
+.\"     Fri Apr  2 11:32:09 MET DST 1993
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" Modified Sat Jul 24 16:59:10 1993 by Rik Faith (faith@cs.unc.edu)
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993 Michael Haardt (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Paweł Olszewski (PTM) <alder@amg.net.pl>, 1998.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH MEM 4 1992\-11\-21 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+mem, kmem, port \- pamięć systemowa, pamięć jądra i porty systemowe
+.SH OPIS
+\fBmem\fP jest plikiem urządzenia znakowego, który jest obrazem całej pamięci
+głównej komputera. Może być używany na przykład do badania (a nawet
+poprawiania) systemu.
+.LP
+Adresy bajtów w \fBmem\fP interpretuje się jako fizyczne adresy
+pamięci. Odwołania do nieistniejących miejsc w pamięci spowodują, że będą
+zwracane błędy.
+.LP
+Badanie i poprawianie pamięci przy ustawionych bitach tylko\-odczyt lub
+tylko\-zapis najprawdopodobniej doprowadzi do niespodziewanych wyników.
+.LP
+Najczęściej jest tworzony w następujący sposób:
+.RS
+.sp
+mknod \-m 660 /dev/mem c 1 1
+.br
+chown root:kmem /dev/mem
+.RE
+.LP
+Plik \fBkmem\fP jest tym samym, co \fBmem\fP, z tym wyjątkiem, że zamiast pamięci
+fizycznej udostępniana jest wirtualna pamięć jądra.
+.LP
+Najczęściej jest tworzony w następujący sposób:
+.RS
+.sp
+mknod \-m 640 /dev/kmem c 1 2
+.br
+chown root:kmem /dev/kmem
+.RE
+.LP
+Plik \fBport\fP jest zbliżony do \fBmem\fP, ale udostępniane są porty
+wejścia/wyjścia.
+.LP
+Najczęściej jest tworzony w następujący sposób:
+.RS
+.sp
+mknod \-m 660 /dev/port c 1 4
+.br
+chown root:mem /dev/port
+.RE
+.SH PLIKI
+\fI/dev/mem\fP
+.br
+\fI/dev/kmem\fP
+.br
+\fI/dev/port\fP
+.SH "ZOBACZ TAKŻE"
+\fBmknod\fP(1), \fBchown\fP(1), \fBioperm\fP(2)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Paweł Olszewski (PTM) <alder@amg.net.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

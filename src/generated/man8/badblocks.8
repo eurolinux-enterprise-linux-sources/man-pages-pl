@@ -1,0 +1,167 @@
+.\" -*- nroff -*-
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993-2008 Theodore Ts'o (GPL-2)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+.\" Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>, 2002.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH BADBLOCKS 8 "kwiecień 2012" "E2fsprogs wersja 1.42.2" 
+.SH NAZWA
+badblocks \- poszukiwanie uszkodzonych bloków na urządzeniu
+.SH SKŁADNIA
+\fBbadblocks\fP [ \fB\-svwnfBX\fP ] [ \fB\-b\fP \fIrozmiar\-bloku\fP ] [ \fB\-c\fP
+\fIbloków\-na\-raz\fP ] [ \fB\-e\fP \fImaks\-złych\-bloków\fP ] [ \fB\-d\fP
+\fIwspółcz\-opóźn\-odczytu\fP ] [ \fB\-i\fP \fIplik\-wejściowy\fP ] [ \fB\-o\fP
+\fIplik\-wynikowy\fP ] [ \fB\-p\fP \fIliczba\-przebiegów\fP ] [ \fB\-t\fP \fIwzorzec\-test\fP ]
+\fIurządzenie\fP [ \fIostatni\-blok\fP ] [ \fIpoczątkowy\-blok\fP ]
+.SH OPIS
+\fBbadblocks\fP służy do wyszukiwania uszkodzonych bloków na urządzeniu (zwykle
+na partycji dyskowej). \fIUrządzenie\fP jest plikiem specjalnym odpowiadającym
+danemu urządzeniu (np. \fI/dev/hdc1\fP). \fIOstatni\-blok\fP jest ostatnim
+sprawdzanym blokiem; jeśli nie zostanie podany, domyślnie przyjmowany jest
+ostatni blok na danym urządzeniu. \fIPierwszy\-blok\fP jest opcjonalnym
+parametrem, określającym początkowy numer bloku do sprawdzenia, który
+pozwala rozpocząć testowanie w połowie dysku. Jeśli nie zostanie podany,
+domyślnie używany jest pierwszy blok dysku.
+.PP
+\fBWażna uwaga:\fP Jeżeli wyjście \fBbadblocks\fP ma być przekierowane do programu
+\fBe2fsck\fP lub \fBmke2fs\fP, to ważnym jest, aby został prawidłowo określony
+rozmiar bloku, gdyż generowane numery bloków mocno zależą od użytego
+rozmiaru bloku.  Z tego powodu zdecydowanie zalecane jest, aby użytkownicy
+\fBnie\fP uruchamiali \fBbadblocks\fP bezpośrednio, a raczej posługiwali się opcją
+\fB\-c\fP programów \fBe2fsck\fP i \fBmke2fs\fP.
+.SH OPCJE
+.TP 
+\fB\-b\fP\fI rozmiar\-bloku\fP
+Określa rozmiar bloku w bajtach. Domyślnie wynosi 1024.
+.TP 
+\fB\-c\fP\fI bloków\-na\-raz\fP
+Liczba bloków, testowanych za jednym razem. Domyślnie wynosi 64.
+.TP 
+\fB\-e\fP\fI maksymalna\-liczba\-złych\-bloków\fP
+Określa maksymalną liczbę złych bloków przed przerwaniem testu. Domyślnie
+wynosi 0, co oznacza, że test będzie kontynuowany aż do osiągnięcia końca
+testowanego obszaru.
+.TP 
+\fB\-d\fP\fI współczynnik\-opóźnienia\-odczytu\fP
+Ten parametr powoduje, jeśli zostanie podany i jest niezerowy, że program
+będzie czekał pomiędzy odczytami, czy nie wystąpią błędy spowodowane
+operacją odczytu. Opóźnienie zostanie obliczone jako procent czasu, jaki
+zajęło przeprowadzenie operacji odczytu. Innymi słowy, wartość 100
+spowoduje, że każdy odczyt zostanie opóźniony o czas, jaki zajął poprzedni
+odczyt, a wartość 200 podwoi ten czas.
+.TP 
+\fB\-f\fP
+Normalnie, badblocks odmówi wykonania sprawdzenia w trybie odczytu i zapisu
+lub w trybie nie niszczącym danych na zamontowanym urządzeniu, gdyż każdy z
+nich może potencjalnie spowodować awarię systemu. Nawet sprawdzenie nie
+niszczące danych może spowodować uszkodzenie zamontowanego systemu plików.
+Można to zachowanie zmienić za pomocą opcji \fB\-f\fP, ale prawie nigdy nie
+należy jej używać \-\-\- jeśli użytkownik uważa, że jest mądrzejszy niż program
+\fBbadblocks\fP, prawie na pewno nie powinien tego robić. Jedyny przypadek,
+kiedy można bezpiecznie posłużyć się tą opcją, to sytuacja, gdy zawartość
+pliku /etc/mtab jest nieprawidłowa, a urządzenie w rzeczywistości nie jest
+zamontowane.
+.TP 
+\fB\-i\fP\fI plik\-wejściowy\fP
+Odczytuje listę aktualnie istniejących, znanych uszkodzonych bloków. Program
+\fBbadblocks\fP nie wykona sprawdzenia tych bloków, gdyż wiadomo, że są one
+uszkodzone.  Jeśli \fIplik_wejściowy\fP zostanie podany jako "\-", lista
+zostanie odczytana ze standardowego wejścia.  Bloki występujące na tej
+liście zostaną pominięte na liście \fInowych\fP uszkodzonych bloków tworzonej
+na standardowym wyjściu lub w pliku wynikowym.  Opcja \fB\-b\fP programu
+\fBdumpe2fs\fP(8)  może służyć do odtworzenia listy bloków aktualnie
+zaznaczonych jako uszkodzone w istniejącym systemie plików, w postaci
+odpowiedniej dla tej opcji.
+.TP 
+\fB\-n\fP
+Korzystanie podczas sprawdzenia z nieniszczącego danych trybu odczytu i
+zapisu. Domyślnie przeprowadzane są wyłącznie sprawdzenia nieniszczące
+danych. Opcji tej nie można łączyć z opcją \fB\-w\fP, gdyż wykluczają się one
+wzajemnie.
+.TP 
+\fB\-o\fP\fI plik\-wynikowy\fP
+Zapisuje listę uszkodzonych bloków do podanego pliku. Bez tej opcji,
+\fBbadblocks\fP wypisuje listę na standardowe wyjście. Plik ten ma postać
+odpowiednią do wykorzystania go
+.
+w opcji \fB\-l\fP programu \fBe2fsck\fP(8) lub \fBmke2fs\fP(8).
+.TP 
+\fB\-p\fP\fI liczba\-przebiegów\fP
+Powtarza skanowanie dysku tak długo, aż w ciągu liczba\-przebiegów kolejnych
+skanowań dysku nie zostanie odkryty żaden nowy uszkodzony blok.  Domyślną
+wartością jest 0, co oznacza, że \fBbadblocks\fP zakończy po pierwszym
+przebiegu.
+.TP 
+\fB\-s\fP
+Pokazuje postęp skanowania, wypisując zgrubny procent ukończenia bieżącego
+przebiegu programu na dysku. Proszę zauważyć, że badblocks może wykonać
+kilka przebiegów na dysku, szczególnie jeśli podano opcję \fB\-p\fP lub \fB\-w\fP.
+.TP 
+\fB\-t\fP\fI wzorzec\-testowy\fP
+Określa wzorzec testowy, który będzie odczytany (i zapisany) do bloków
+dysku. \fIwzorzec\-testowy\fP może być albo wartością liczbową pomiędzy 0 a
+ULONG_MAX\-1 (włącznie), albo słowem "random", które wskazuje, że bloki
+powinny być wypełniane losowym wzorcem bitowym. W trybach odczytu/zapisu
+(\fB\-w\fP) i niedestruktywnym (\fB\-n\fP), jeden lub więcej wzorców testowych można
+podać za pomocą opcji \fB\-t\fP do każdego żądanego wzorca testowego. W
+przypadku trybu tylko do odczytu, można podać wyłącznie jeden wzorzec i nie
+może być to "random". Testowanie tylko do odczytu ze wzorcem zakłada, że
+podany wzorzec został wcześniej zapisany na dysk \- jeśli nie, to duża liczba
+bloków nie przejdzie weryfikacji. Jeśli poda się wiele wzorców, to wszystkie
+bloki zostaną przetestowane jednym wzorcem, przed przejściem do następnego
+wzorca.
+.TP 
+\fB\-v\fP
+Tryb szczegółowy. Wypisze liczbę błędów odczytu, zapisu i uszkodzonych
+błędów na standardowe wyjście błędów.
+.TP 
+\fB\-w\fP
+Podczas sprawdzenia korzysta z testu zapisywania. Po podaniu tej opcji,
+\fBbadblocks\fP wyszukuje uszkodzone bloki zapisując pewne wzorce (0xaa, 0x55,
+0xff, 0x00) w każdym bloku urządzenia, odczytując każdy blok i porównując
+zawartość. Opcji tej nie można łączyć z opcją \fB\-n\fP, gdyż wykluczają się one
+wzajemnie.
+.TP 
+\fB\-B\fP
+Używa buforowanego wejścia/wyjścia i nie używa bezpośredniego
+wejścia/wyjścia, nawet jeśli jest dostępne.
+.TP 
+\fB\-X\fP
+Wewnętrzna flaga, przeznaczona do użycia tylko przez \fBe2fsck\fP(8) i
+\fBmke2fs\fP(8). Pomija ona kontrolę bezpieczeństwa w trybie wyłączności
+urządzenia.
+.SH OSTRZEŻENIE
+Nigdy nie należy używać opcji \fB\-w\fP na urządzeniu zawierającym istniejący
+system plików. Ta opcja kasuje dane! Jeśli istnieje potrzeba wykonania testu
+w trybie zapisu na istniejącym systemie plików, należy posłużyć się zamiast
+niej opcją \fB\-n\fP.  Jest to wolniejsze, ale zachowa istniejące dane.
+.PP
+Opcja \fB\-e\fP powoduje, że badblocks wypisuje, prawdopodobnie niekompletną,
+listę uszkodzonych bloków. Zaleca się użycie jej tylko, gdy chce się
+wiedzieć, czy na urządzeniu są jakieś uszkodzone bloki, a nie gdy potrzebna
+jest ich lista.
+.SH AUTOR
+\fBbadblocks\fP został napisany przez Remy'ego Carda
+<Remy.Card@linux.org>. Aktualnie zarządza nim Theodore Ts'o
+<tytso@alum.mit.edu>. Niedestrukcyjny test odczytu/zapisu
+zaimplementował David Beattie <dbeattie@softhome.net>.
+.SH DOSTĘPNOŚĆ
+\fBbadblocks\fP jest częścią pakietu e2fsprogs i jest dostępny na stronie
+http://e2fsprogs.sourceforge.net.
+.SH "ZOBACZ TAKŻE"
+\fBe2fsck\fP(8), \fBmke2fs\fP(8)
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>,
+Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 1.42.4 \fPoryginału.

@@ -1,0 +1,39 @@
+.\"  Copyright 2005 walter harms (walter.harms@informatik.uni-oldenburg.de)
+.\"  and Copyright 2005 Michael Kerrisk (mtk.manpages@gmail.com).
+.\"  Distributed under the GNU General Public License.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2005 Walter Harms, Michael Kerrisk (GPL-1)
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2005, 2006, 2012.
+.TH CANONICALIZE_FILE_NAME 3 2005\-07\-14 GNU "Podręcznik programisty Linuksa"
+.SH NAZWA
+canonicalize_file_name \- zwraca kanoniczną nazwę pliku
+.SH SKŁADNIA
+\fB#define _GNU_SOURCE\fP /* Patrz feature_test_macros(7) */
+.br
+\fB#include <stdlib.h>\fP
+.sp
+\fBchar *canonicalize_file_name(const char *\fP\fIścieżka\fP\fB);\fP
+.SH OPIS
+Wywołanie \fIcanonicalize_file_name(ścieżka)\fP jest odpowiednikiem wywołania
+\fIrealpath(ścieżka,\ NULL)\fP.
+.SH "ZGODNE Z"
+Funkcja jest rozszerzeniem GNU.
+.SH "ZOBACZ TAKŻE"
+\fBrealpath\fP(3)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

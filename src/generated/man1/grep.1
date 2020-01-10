@@ -1,0 +1,684 @@
+.if  !\n(.g \{\
+.	if !\w|\*(lq| \{\
+.		ds lq ``
+.		if \w'\(lq' .ds lq "\(lq
+.	\}
+.	if !\w|\*(rq| \{\
+.		ds rq ''
+.		if \w'\(rq' .ds rq "\(rq
+.	\}
+.\}
+.\" GNU grep man page
+.ie  t .ds Tx \s-1T\v'.4n'\h'-.1667'E\v'-.4n'\h'-.125'X\s0
+. el  .ds Tx TeX
+.de  Id
+. ds Yr \\$4
+. substring Yr 0 3
+. ds Mn \\$4
+. substring Mn 5 6
+. ds Dy \\$4
+. substring Dy 8 9
+. \" ISO 8601 date, complete format, extended representation
+. ds Dt \\*(Yr-\\*(Mn-\\*(Dy
+..
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1992, 1997-2002, 2004-2009 Free Software Foundation, Inc. (GPL-3+)
+.\" Copyright © of Polish translation:
+.\" Gwidon S. Naskrent (PTM) <naskrent@hoth.amu.edu.pl>, 1998.
+.\" Wojciech Kotwica (PTM) <wkotwica@post.pl>, 2001.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH GREP 1 \*(Dt "GNU grep 2.12" "Polecenia użytkownika"
+.hy 0
+.
+.SH NAZWA
+grep, egrep, fgrep, rgrep \- wypisuje wiersze pasujące do wzorca
+.
+.SH SKŁADNIA
+\fBgrep\fP [\fIOPCJE\fP] \fIWZORZEC\fP [\fIPLIK\fP.\|.\|.]
+.br
+\fBgrep\fP [\fIOPCJE\fP] [\fB\-e\fP \fIWZORZEC\fP | \fB\-f\fP \fIPLIK\fP] [\fIPLIK\fP.\|.\|.]
+.
+.SH OPIS
+Program \fBgrep\fP przeszukuje wskazane \fIPLIKI\fP wejściowe (lub standardowe
+wejście, jeśli nie podano żadnych lub podano nazwę pliku pojedynczy minus
+(\fB\-\fP) jako nazwę pliku) szukając wierszy zawierających coś pasującego do
+podanego \fIWZORCA\fP. Domyślnie, \fBgrep\fP wypisuje pasujące wiersze.
+.PP
+Dodatkowo, dostępne są trzy programy wariantowe \fBegrep\fP, \fBfgrep\fP i
+\fBrgrep\fP. Program \fBegrep\fP jest odpowiednikiem \fBgrep\ \-E\fP, \fBfgrep\fP jest
+tym samym, co \fBgrep\ \-F\fP, a \fBrgrep\fP odpowiada \fBgrep\ \-r\fP. Bezpośrednie
+wywołanie \fBegrep\fP lub \fBfgrep\fP jest przestarzałe, ale jest zapewnione w
+celu zachowania zgodności ze starszymi programami.
+.
+.SH OPCJE
+.SS "Standardowe informacje programu"
+.TP 
+\fB\-\^\-help\fP
+Wypisuje krótkie podsumowanie poniższych opcji oraz adres do przesyłania
+informacji o błędach, po czym wychodzi.
+.TP 
+\fB\-V\fP, \fB\-\^\-version\fP
+Wypisuje numer wersji \fBgrep\fPa na standardowe wyjście. Ów numer wersji
+powinno się dołączać do wszystkich zgłoszeń błędów (patrz niżej).
+.SS "Wybór dopasowań"
+.TP 
+\fB\-E\fP, \fB\-\^\-extended\-regexp\fP
+Interpretuje \fIWZORZEC\fP jako rozszerzone wyrażenie regularne \- ERE, patrz
+niżej (\fB\-E\fP jest określone normą \s-1POSIX\s0).
+.TP 
+\fB\-F\fP, \fB\-\^\-fixed\-strings\fP
+Interpretuje \fIWZORZEC\fP jako listę ciągów (nie wzorców!), umieszczonych po
+jednym w każdym wierszu, z których dowolny ma zostać dopasowany (\fB\-F\fP jest
+określone normą \s-1POSIX\s0).
+.TP 
+\fB\-G\fP, \fB\-\^\-basic\-regexp\fP
+Interpretuje \fIWZORZEC\fP jako podstawowe wyrażenie regularna \- BRE, patrz
+niżej. Jest to zachowanie domyślne.
+.TP 
+\fB\-P\fP, \fB\-\^\-perl\-regexp\fP
+Interpretuje \fIWZORZEC\fP jako wyrażenie regularne Perla \- PCRE, patrz
+niżej. Jest to opcja wysoce eksperymentalna i \fBgrep \-P\fP może ostrzegać o
+jeszcze niewdrożonych funkcjach.
+.SS "Kontrola dopasowania"
+.TP 
+\fB\-e\fP\fI WZORZEC\fP,\fB \-\^\-regexp=\fP\fIWZORZEC\fP
+Używa \fIWZORCA\fP jako wzorca. Może to zostać użyte do podania wielu wzorców
+lub do chronienia wzorców rozpoczynających się minusem: \fB\-\fP (\fB\-e\fP jest
+określone normą \s-1POSIX\s0).
+.TP 
+\fB\-f\fP\fI PLIK\fP,\fB \-\^\-file=\fP\fIPLIK\fP
+Pobiera wzorce z \fIPLIKU\fP, po jednym z każdego wiersza. Plik pusty zawiera
+zero wzorców, nie pasując do niczego (\fB\-f\fP jest określone normą
+\s-1POSIX\s0).
+.TP 
+\fB\-i\fP, \fB\-\^\-ignore\-case\fP
+Ignoruje rozróżnianie wielkości znaków, zarówno we \fIWZORCU\fP, jak i w
+plikach wejściowych (\fB\-i\fP jest określone normą \s-1POSIX\s0).
+.TP 
+\fB\-v\fP, \fB\-\^\-invert\-match\fP
+Odwraca sens dopasowania, wybierając linie niepasujące (\fB\-v\fP jest określone
+normą \s-1POSIX\s0).
+.TP 
+\fB\-w\fP, \fB\-\^\-word\-regexp\fP
+Wybiera tylko te wiersze, w których dopasowane wzorce tworzą całe
+słowa. Przeprowadzany test polega na tym, że dopasowany podłańcuch musi albo
+znajdować się na początku wiersza, albo być poprzedzony znakiem nietworzącym
+słowa. Podobnie, musi albo znajdować się na końcu wiersza, albo musi
+następować po nim znak nietworzący słowa. Znakami tworzącymi słowa są
+litery, cyfry i znak podkreślenia.
+.TP 
+\fB\-x\fP, \fB\-\^\-line\-regexp\fP
+Wybiera tylko te dopasowania, które dokładnie pasują do całego wiersza
+(\fB\-x\fP jest określone normą \s-1POSIX\s0).
+.TP 
+\fB\-y\fP
+Przestarzały synonim \fB\-i\fP.
+.SS "Ogólna kontrola wyniku"
+.TP 
+\fB\-c\fP, \fB\-\^\-count\fP
+Wyłącza normalne wyjście, zamiast niego, dla każdego pliku wejściowego,
+wypisuje liczbę pasujących wierszy. Z opcją \fB\-v\fP, \fB\-\^\-invert\-match\fP
+(patrz niżej), liczy wiersze niepasujące (\fB\-c\fP jest określone normą
+\s-1POSIX\s0).
+.TP 
+\fB\-\^\-color\fP[\fB=\fP\fIKIEDY\fP], \fB\-\^\-colour\fP[\fB=\fP\fIKIEDY\fP]
+Otacza pasujące (niepuste) łańcuchy, pasujące wiersze, wiersze kontekstu,
+nazwy plików, numery wierszy, offset bajtowy oraz separatory (dla pól i grup
+w wierszach kontekstu) znakami odpowiadającymi za wyświetlanie kolorów w
+terminalu. Kolory są zdefiniowane przez zmienną środowiskową
+\fBGREP_COLORS\fP. Przestarzała zmienna środowiskowa \fBGREP_COLOR\fP jest wciąż
+obsługiwana, ale jej ustawienia nie mają pierwszeństwa. Parametr \fIKIEDY\fP
+może przyjmować wartości: \fBnever\fP, \fBalways\fP i \fBauto\fP.
+.TP 
+\fB\-L\fP, \fB\-\^\-files\-without\-match\fP
+Wyłącza normalne wyjście, zamiast niego wypisuje nazwę każdego pliku, z
+którego normalnie nie wypisano by żadnego wyniku. Przeszukiwanie zakończy
+się na pierwszym pasującym wyniku.
+.TP 
+\fB\-l\fP, \fB\-\^\-files\-with\-matches\fP
+Wyłącza normalne wyjście, zamiast niego wypisuje nazwę każdego pliku, z
+którego wypisano by jakieś wyjście. Przeszukiwanie zakończy się na pierwszym
+pasującym wyniku (\fB\-l\fP jest określone normą \s-1POSIX\s0).
+.TP 
+\fB\-m\fP\fI LICZBA\fP,\fB \-\^\-max\-count=\fP\fILICZBA\fP
+Zatrzymuje odczytywanie pliku po \fILICZBIE\fP pasujących wierszy. Jeśli
+wejście jest standardowym wejściem ze zwykłego pliku, a \fILICZBA\fP pasujących
+wierszy jest wyjściem, \fBgrep\fP upewnia się przed zakończeniem działania, że
+standardowe wejście jest ustawione zaraz za ostatnim pasującym wierszem,
+niezależnie od obecności końcowych wierszy kontekstu. Umożliwia to
+wywołującemu procesowi wznowienie wyszukiwania. Jeśli \fBgrep\fP zatrzyma się
+po \fILICZBIE\fP pasujących wierszy, nie wyświetla końcowych wierszy
+kontekstu. Jeżeli podano także opcję \fB\-c\fP lub \fB\-\^\-count\fP, \fBgrep\fP nie
+wyświetla liczby większej niż \fILICZBA\fP. Jeśli podano również opcję \fB\-v\fP
+lub \fB\-\^\-invert\-match\fP, to \fBgrep\fP zatrzymuje wyświetlanie po wypisaniu
+\fILICZBY\fP niepasujących wierszy.
+.TP 
+\fB\-o\fP, \fB\-\^\-only\-matching\fP
+Wyświetla tylko pasujące (niepuste) części pasującego wiersza, każda w
+osobnym wierszu.
+.TP 
+\fB\-q\fP, \fB\-\^\-quiet\fP, \fB\-\^\-silent\fP
+Po cichu, nie wyświetla niczego na standardowe wyjście. Przeszukiwanie
+zakończy się na pierwszym pasującym wierszu ze statusem zero, nawet jeśli
+wykryto błąd. Patrz również opcje \fB\-s\fP lub \fB\-\^\-no\-messages\fP (\fB\-q\fP jest
+określone normą \s-1POSIX\s0).
+.TP 
+\fB\-s\fP, \fB\-\^\-no\-messages\fP
+Wyłącza komunikaty błędów o plikach nieistniejących lub nie do
+odczytania. Uwaga o przenośności: w przeciwieństwie do \s-1GNU\s0 \fBgrep\fP,
+siódme wydanie uniksowego \fBgrep\fPa nie jest zgodne z normą \s-1POSIX\s0,
+ponieważ brakuje mu opcji \fB\-q\fP, a opcja \fB\-s\fP zachowuje się jak \fB\-q\fP z
+\s-1GNU\s0 \fBgrep\fP. Przenośne skrypty powłoki powinny unikać zarówno \fB\-q\fP
+jak i \fB\-s\fP i zamiast tego przekierowywać wyjście do \fB/dev/null\fP (\fB\-s\fP
+jest określone normą \s-1POSIX\s0).
+.SS "Kontrola przedrostków w wierszu wyjścia"
+.TP 
+\fB\-b\fP, \fB\-\^\-byte\-offset\fP
+Wypisuje przed każdym wierszem wyjścia jego, liczony od 0, offset bajtowy w
+pliku wejściowym. Jeśli użyto opcji \fB\-o\fP (\fB\-\^\-only\-matching\fP), wyświetla
+offset samej pasującej części.
+.TP 
+\fB\-H\fP, \fB\-\^\-with\-filename\fP
+Wyświetla nazwę pliku dla każdego dopasowania. Jest to domyślne ustawienia,
+jeśli jest więcej niż jeden plik do przeszukania.
+.TP 
+\fB\-h\fP, \fB\-\^\-no\-filename\fP
+Odwołuje poprzedzanie wyjścia nazwami plików. Jest to ustawienie domyślne,
+jeśli jest tylko jeden plik (lub standardowe wejście) do przeszukania.
+.TP 
+\fB\-\^\-label=\fP\fIETYKIETA\fP
+Wyświetla wejście, które w rzeczywistości pochodzi ze standardowego wejścia,
+jako wejście pochodzące z pliku \fIETYKIETA\fP. Jest to szczególnie przydatne w
+implementacji narzędzi takich jak \fBzgrep\fP np. \fBgzip \-cd foo.gz | grep
+\-\-label=foo \-H coś\fP. Patrz też: opcja \fB\-H\fP.
+.TP 
+\fB\-n\fP, \fB\-\^\-line\-number\fP
+Poprzedza każdy wiersz wyjścia, liczonym od 1, numerem wiersza z pliku
+wejściowego (\fB\-n\fP jest określone przez normą \s-1POSIX\s0).
+.TP 
+\fB\-T\fP, \fB\-\^\-initial\-tab\fP
+Upewnia się, że pierwszy znak wiersza zawartości zależy od tabulacji, dzięki
+czemu wyrównanie tabulacji wygląda normalnie. Jest to użyteczne z opcjami,
+które poprzedzają swoje wyjście jakąś zawartością: \fB\-H\fP, \fB\-n\fP i \fB\-b\fP. Aby
+zwiększyć prawdopodobieństwo, że wiersze z danego pliku będą się zaczynać w
+tej samej kolumnie, numer wiersza i offset bajtowy (jeśli jest obecny)
+zostanie wyświetlony z najmniejszą szerokością pola.
+.TP 
+\fB\-u\fP, \fB\-\^\-unix\-byte\-offsets\fP
+Wyświetla offsety bajtowe w stylu uniksowym. Przełącznik ten powoduje, że
+\fBgrep\fP wyświetla offsety bajtowe tak, jakby był plikiem tekstowym typu
+uniksowego tzn. bez znaków CR (powrót karetki). Da to rezultaty identyczne
+jak uruchomienie \fBgrep\fPa na systemie uniksowym. Opcja ta nie wywołuje
+żadnego efektu, chyba że użyto także opcji \fB\-b\fP oraz nic nie zmienia na
+platformach innych niż MS\-DOS i MS Windows.
+.TP 
+\fB\-Z\fP, \fB\-\^\-null\fP
+Zamiast znaku, który normalnie występuje po nazwie pliku, wypisuje bajt
+zerowy (\s-1ASCII\s0 \fBNUL\fP). Na przykład, \fBgrep \-lZ\fP wypisuje po nazwie
+pliku bajt zerowy, zamiast, jak zwykle, znak nowego wiersza. Opcja ta
+powoduje, że wyjście jest jednoznaczne, nawet przy nazwach plików
+zawierających niecodzienne znaki, jak znak nowego wiersza. Może być
+wykorzystywana z poleceniami typu: \fBfind \-print0\fP, \fBperl \-0\fP, \fBsort \-z\fP i
+\fBxargs \-0\fP, umożliwiając przetwarzanie plików o dowolnych nazwach, nawet
+zawierających znaki nowego wiersza.
+.SS "Kontrola wierszy z kontekstem"
+.TP 
+\fB\-A\fP\fI LICZBA\fP,\fB \-\^\-after\-context=\fP\fILICZBA\fP
+Wyświetla \fILICZBĘ\fP wierszy z kontekstem, następujących po dopasowanych
+wierszach. Pomiędzy ciągłymi grupami dopasowań umieszczany jest wiersz
+zawierający separator grupy (\fB\-\^\-\fP). Nie działa z opcją \fB\-o\fP lub
+\fB\-\^\-only\-matching\fP, wyświetlane jest wówczas również ostrzeżenie.
+.TP 
+\fB\-B\fP\fI LICZBA\fP,\fB \-\^\-before\-context=\fP\fILICZBA\fP
+Wyświetla \fILICZBĘ\fP wierszy z kontekstem, poprzedzających dopasowane
+wiersze. Pomiędzy ciągłymi grupami dopasowań umieszczany jest wiersz
+zawierający separator grupy (\fB\-\^\-\fP). Nie działa z opcją \fB\-o\fP lub
+\fB\-\^\-only\-matching\fP, wyświetlane jest wówczas również ostrzeżenie.
+.TP 
+\fB\-C\fP\fI LICZBA\fP,\fB \-\fP\fILICZBA\fP,\fB \-\^\-context=\fP\fILICZBA\fP
+Wyświetla \fILICZBĘ\fP wierszy z kontekstem. Pomiędzy ciągłymi grupami
+dopasowań umieszczany jest wiersz zawierający separator grupy (\fB\-\^\-\fP). Nie
+działa z opcją \fB\-o\fP lub \fB\-\^\-only\-matching\fP, wyświetlane jest wówczas
+również ostrzeżenie.
+.SS "Wybór plików i katalogów"
+.TP 
+\fB\-a\fP, \fB\-\^\-text\fP
+Przetwarza plik binarny tak, jakby był on plikiem tekstowym; jest to
+odpowiednik opcji \fB\-\^\-binary\-files=text\fP.
+.TP 
+\fB\-\^\-binary\-files=\fP\fITYP\fP
+Jeśli pierwszych kilka bajtów pliku wskazuje, że zawiera on dane binarne, to
+zakładane jest, że jest to plik danego \fITYPU\fP. Domyślnym \fITYPEM\fP jest
+binarny \fBbinary\fP, a \fBgrep\fP normalnie albo wypisuje jednowierszowy
+komunikat mówiący o dopasowaniu pliku binarnego, albo nie wypisuje
+komunikatu, jeśli nie znaleziono dopasowania. Jeżeli \fITYPEM\fP jest
+\fBwithout\-match\fP (bez dopasowania), to \fBgrep\fP zakłada, że ten plik binarny
+nie pasuje; jest to równoważne działaniu opcji \fB\-I\fP. Jeśli \fITYPEM\fP jest
+\fBtext\fP, to \fBgrep\fP przetwarza plik binarny tak, jakby był on tekstowy; jest
+to równoważne opcji \fB\-a\fP. \fIOstrzeżenie:\fP Może się zdarzyć, że wypisane
+przez \fBgrep \-\^\-binary\-files=text\fP śmieci binarne dadzą przykre skutki
+uboczne, jeżeli wyjściem będzie terminal, a jego sterownik zinterpretuje
+niektóre z nich jako swoje polecenia.
+.TP 
+\fB\-D\fP\fI DZIAŁANIE\fP,\fB \-\^\-devices=\fP\fIDZIAŁANIE\fP
+Jeśli plik wejściowy jest urządzeniem, FIFO lub gniazdem, używa \fIDZIAŁANIA\fP
+do przetworzenia go. Domyślnym \fIDZIAŁANIEM\fP jest \fBread\fP, co znaczy, że
+urządzenia są odczytywane dokładnie tak samo, jak gdyby były zwykłymi
+plikami. Jeśli wartością \fIDZIAŁANIA\fP jest \fBskip\fP, to urządzenia są po
+cichu pomijane.
+.TP 
+\fB\-d\fP\fI DZIAŁANIE\fP,\fB \-\^\-directories=\fP\fIDZIAŁANIE\fP
+Jeśli plik wejściowy jest katalogiem, używa \fIDZIAŁANIA\fP do przetworzenia
+go. Domyślnym \fIDZIAŁANIEM\fP jest \fBread\fP, co znaczy, że katalogi są
+odczytywane dokładnie tak samo, jak gdyby były zwykłymi plikami. Jeśli
+wartością \fIDZIAŁANIA\fP jest \fBskip\fP, to urządzenia są po cichu
+pomijane. Jeśli \fIDZIAŁANIEM\fP jest \fBrecurse\fP, \fBgrep\fP odczytuje rekursywnie
+wszystkie pliki w danym katalogu; jest to równoważne podaniu opcji \fB\-r\fP.
+.TP 
+\fB\-\^\-exclude=\fP\fIWZORZEC\fP
+Pomija pliki, których nazwy pasują do wzorca \fIWZORZEC\fP (używając maski;
+taki wzorzec nazywany jest tradycyjnie "glob"). Wzorzec nazwy pliku może
+używać \fB*\fP, \fB?\fP, oraz \fB[\fP...\fB]\fP jako masek i \fB\e\fP aby zacytować symbol
+lub znak odwrotnego ukośnika.
+.TP 
+\fB\-\^\-exclude\-from=\fP\fIPLIK\fP
+Pomija pliki, których nazwa pasuje do któregoś ze wzorców odczytanego z
+\fIPLIKU\fP (używając masek, opisanych w opcji \fB\^\-exclude\fP).
+.TP 
+\fB\-\^\-exclude\-dir=\fP\fIKATALOG\fP
+Pomija katalogi pasujące do wzorca \fIKATALOG\fP z wyszukiwania rekursywnego.
+.TP 
+\fB\-I\fP
+Przetwarza plik binarny tak, jakby nie zawierał pasujących danych, jest to
+równoważne opcji \fB\-\^\-binary\-files=without\-match\fP.
+.TP 
+\fB\-\^\-include=\fP\fIWZORZEC\fP
+Przeszukuje jedynie pliki, których nazwy pasują do \fIWZORCA\fP (używając masek
+opisanych w opcji \fB\-\^\-exclude\fP).
+.TP 
+\fB\-R\fP, \fB\-r\fP, \fB\-\^\-recursive\fP
+Czyta rekurencyjnie wszystkie pliki pod każdym katalogiem, jest to
+równoważne opcji \fB\-d recurse\fP.
+.SS "Inne opcje"
+.TP 
+\fB\-\^\-line\-buffered\fP
+Używa buforowania wierszy wyjścia. Użycie tej opcji może spowodować niższą
+wydajność.
+.TP 
+\fB\-\^\-mmap\fP
+Jeśli to możliwe, do odczytu wejścia korzysta z funkcji systemowej
+\fBmmap\fP(2), zamiast domyślnej \fBread\fP(2). W pewnych sytuacjach, \fB\-\^\-mmap\fP
+daje lepszą wydajność. Może jednak spowodować niezdefiniowane zachowanie
+(łącznie ze zrzutem pamięci) jeśli podczas działania \fBgrep\fPa plik wejściowy
+skurczy się lub wystąpi błąd wejścia/wyjścia.
+.TP 
+\fB\-U\fP, \fB\-\^\-binary\fP
+Traktuje plik(i) jako binarne. Domyślnie, w \s-1MD\-DOS\s0\-ie i \s-1MS\s0
+Windows, \fBgrep\fP zgaduje typ pliku analizując zawartość pierwszych 32 kB
+odczytanych z pliku. Jeśli zdecyduje, że plik jest tekstowy, usuwa znaki CR
+(powrót karetki) z oryginalnej zawartości pliku (po to żeby wyrażenia
+regularne z \fB^\fP i \fB$\fP działały poprawnie). Podanie \fB\-U\fP wyłącza tę
+analizę powodując, że wszystkie pliki są odczytywane i przekazywane
+mechanizmowi dopasowującemu dosłownie; jeśli plik jest plikiem tekstowym z
+parami CR/LF na końcu wierszy, spowoduje to, że niektóre wyrażenia regularne
+nie zadziałają. Opcja ta nie działa na platformach innych niż \s-1MS\-DOS\s0
+i \s-1MS\s0 Windows.
+.TP 
+\fB\-z\fP, \fB\-\^\-null\-data\fP
+Traktuje wejście jako zestaw wierszy zakończonych bajtem zerowym (znak
+\s-1ASCII\s0 \fBNUL\fP) zamiast znakiem końca wiersza. Podobnie jak opcje \fB\-Z\fP
+lub \fB\-\^\-null\fP, ta opcja może być używana z programami takimi jak \fBsort
+\-z\fP, aby przetworzyć nazwy plików o dowolnych nazwach.
+.
+.SH "WYRAŻENIA REGULARNE"
+Wyrażenie regularne to wzorzec opisujący zbiór łańcuchów. Wyrażenia
+regularne są budowane analogicznie do wyrażeń arytmetycznych, przez
+zastosowanie do połączenia mniejszych wyrażeń, rozmaitych operatorów.
+.PP
+Program \fBgrep\fP rozumie trzy różne wersje składni wyrażeń regularnych:
+"podstawową" (BRE), "rozszerzoną" (ERE) i "perlową" (PRCE). W \s-1GNU\s0
+\fBgrep\fP nie ma różnicy w funkcjonalności pomiędzy składniami podstawową i
+rozszerzoną. W innych implementacjach, podstawowe wyrażenia regularne są
+uboższe. Poniższy opis stosuje się do rozszerzonych wyrażeń regularnych,
+różnice w stosunku do wyrażeń podstawowych podsumowano na końcu. Wyrażenia
+regularne Perla mają więcej funkcji, ale mogą nie być dostępne na każdym
+systemie. Ich dokumentacja znajduje się w podręcznikach systemowych
+pcresyntax(3) i pcrepattern(3).
+.PP
+Podstawowymi "cegiełkami" są wyrażenia regularne pasujące do pojedynczego
+znaku. Większość znaków, w tym wszystkie litery i cyfry są wyrażeniami
+regularnymi pasującymi do samych siebie. Każdy metaznak mający specjalne
+znaczenie może być zacytowany przez poprzedzenie go odwrotnym ukośnikiem.
+.PP
+Kropka \fB.\&\fP pasuje do każdego pojedynczego znaku.
+.SS "Klasy znakowe i wyrażenia klamrowe"
+\fIWyrażenie klamrowe\fP jest listą znaków zawartych pomiędzy \fB[\fP a
+\fB]\fP. Pasuje do każdego pojedynczego znaku na tej liście, a jeśli pierwszy
+znak z listy jest daszkiem \fB^\fP, to wyrażenie pasuje do każdego pojedynczego
+znaku \fInie\fP znajdującego się na liście. Na przykład, wyrażenie regularne
+\fB[0123456789]\fP pasuje do każdej cyfry.
+.PP
+W obrębie wyrażenia klamrowego, \fIwyrażenie zakresowe\fP składa się z dwóch
+znaków rozdzielonych minusem. Pasuje do pojedynczego znaku, który mieści się
+między tymi dwoma znakami, łącznie z nimi, używając ustawień językowych
+(locale) określających kolejność i zestaw znaków. Na przykład, w domyślnych
+ustawieniach locale C, \fB[a\-d]\fP jest odpowiednikiem \fB[abcd]\fP. Wiele
+ustawień regionalnych sortuje znaki w kolejności słownikowej, i \fB[a\-d]\fP nie
+jest wtedy z reguły odpowiednikiem \fB[abcd]\fP, może być na przykład
+równoważne \fB[aBbCcDd]\fP (dla języka polskiego: \fB[aąbcćd]\fP \- tłum.). Aby
+uzyskać tradycyjną interpretację wyrażeń zakresowych, można użyć locale C,
+przypisując zmiennej środowiskowej \fBLC_ALL\fP wartość \fBC\fP.
+.PP
+Istnieją predefiniowane, nazwane klasy znakowe, których można używać
+wewnątrz wyrażeń klamrowych. Posiadają opisowe nazwy w języku angielskim i
+są to: \fB[:alnum:]\fP (litery i cyfry), \fB[:alpha:]\fP (litery), \fB[:cntrl:]\fP
+(znaki kontrolne), \fB[:digit:]\fP (cyfry), \fB[:graph:]\fP ([:alnum:] i
+[:punct:]), \fB[:lower:]\fP (małe litery), \fB[:print:]\fP ([:graph:] i spacja),
+\fB[:punct:]\fP (znaki przestankowe), \fB[:space:]\fP (białe znaki), \fB[:upper:]\fP
+(duże litery) i \fB[:xdigit:]\fP (znaki szesnastkowe). Na przykład
+\fB[[:alnum:]]\fP zawiera zestaw liter i cyfr zależnych od aktualnych ustawień
+językowych. W ustawieniach locale C i kodowaniu znaków \s-1ASCII\s0, jest to
+odpowiednik \fB[0\-9A\-Za\-z]\fP. Proszę zauważyć, że nawiasy kwadratowe w nazwach
+klas są częścią nazw symbolicznych i muszą być umieszczone dodatkowo, oprócz
+pary nawiasów ograniczającej samą listę. Większość metaznaków traci swoje
+szczególne znaczenie wewnątrz wyrażeń klamrowych. Aby umieścić tam dosłowny
+znak \fB]\fP, należy go umieścić jako pierwszy. Podobnie, dosłowny \fB^\fP, może
+się znaleźć gdziekolwiek poza pierwszym miejscem. W końcu, dosłowny \fB\-\fP
+musi się znaleźć na końcu.
+.SS "Początek i koniec wiersza"
+Znak daszka \fB^\fP i dolara \fB$\fP są metaznakami, które pasują odpowiednio do
+łańcucha pustego na początku i końcu wiersza.
+.SS "Ukośnik i wyrażenia specjalne "
+Symbole \fB\e<\fP i \fB\e>\fP oznaczają pusty łańcuch odpowiednio na
+początku i końcu słowa. Symbol \fB\eb\fP pasuje do pustego łańcucha na krawędzi
+słowa, zaś \fB\eB\fP pasuje do ciągu pustego zakładając, że \fInie\fP jest na
+krawędzi słowa. Symbol \fB\ew\fP jest synonimem \fB[_[:alnum:]]\fP, z kolei \fB\eW\fP
+jest synonimem \fB[^_[:alnum:]]\fP.
+.SS Powtarzanie
+Po wyrażeniach regularnych mogą się znajdować jeden lub kilka operatorów
+powtórzenia:
+.PD 0
+.TP 
+\fB?\fP
+Poprzedzający element jest opcjonalny i dopasowany co najwyżej jeden raz.
+.TP 
+\fB*\fP
+Poprzedzający element będzie dopasowany zero lub więcej razy.
+.TP 
+\fB+\fP
+Poprzedzający element będzie dopasowany jeden lub więcej razy.
+.TP 
+\fB{\fP\fIn\fP\fB}\fP
+Poprzedzający element pasuje dokładnie \fIn\fP razy.
+.TP 
+\fB{\fP\fIn\fP\fB,}\fP
+Poprzedzający element pasuje \fIn\fP lub więcej razy.
+.TP 
+\fB{\fP\fIn\fP\fB,\fP\fIm\fP\fB}\fP
+Poprzedzający element pasuje co najmniej \fIn\fP razy, ale nie więcej niż \fIm\fP
+razy.
+.PD
+.SS Suma
+Dwa wyrażenia regularne można ze sobą złączyć; do wynikowego wyrażenia
+regularnego pasuje każdy łańcuch utworzony przez złączenie dwóch
+podłańcuchów, które odpowiednio pasują do złączonych wyrażeń.
+.SS Alternatywa
+Dwa wyrażenia regularne można połączyć operatorem wrostkowym \fB|\fP; do
+wynikowego wyrażenia regularnego pasuje dowolny łańcuch pasujące do jednego
+bądź do drugiego z podwyrażeń.
+.SS "Kolejność wykonywania"
+Powtarzanie ma priorytet na sumowaniem, które z kolei ma priorytet nad
+alternatywą. Całe wyrażenie regularne można ująć w nawiasy, celem
+unieważnienia reguł priorytetowych. W ten sposób zostanie utworzone
+podwyrażenie.
+.SS "Odwołania zwrotne i podwyrażenia"
+Odwołanie zwrotne \fB\e\fP\fIn\fP\&, gdzie \fIn\fP jest cyfrą pasującą do podłańcucha
+dopasowanego poprzednio przez \fIn\fP\-te podwyrażenie wyrażenia regularnego,
+ujęte w nawiasy.
+.SS "Podstawowe i rozszerzone wyrażenia regularne"
+W podstawowych wyrażeniach regularnych metaznaki \fB?\fP, \fB+\fP, \fB{\fP, \fB|\fP,
+\fB(\fP i \fB)\fP tracą swoje szczególne znaczenie; zamiast nich należy używać
+wersji z odwrotnym ukośnikiem: \fB\e?\fP, \fB\e+\fP, \fB\e{\fP, \fB\e|\fP, \fB\e(\fP oraz
+\fB\e)\fP.
+.PP
+Tradycyjny \fBegrep\fP nie obsługuje metaznaku \fB{\fP. Niektóre implementacje
+udostępniają zamiast niego \fB\e{\fP, więc przenośne skrypty powinny unikać
+\fB{\fP we wzorcach \fBgrep\ \-E\fP, a do dopasowania dosłownego znaku \fB{\fP
+stosować \fB[{]\fP.
+.PP
+\s-1GNU\s0 \fBgrep\ \-E\fP usiłuje obsługiwać tradycyjny sposób użycia
+zakładając, że \fB{\fP nie posiada specjalnego znaczenia, jeśli byłby on
+początkiem nieprawidłowego określenia liczby powtórzeń. Na przykład
+polecenie \fBgrep\ \-E\ \(aq{1\(aq\fP szuka dwuznakowego łańcucha \fB{1\fP zamiast
+zgłaszać błąd składni w wyrażeniu regularnym. \s-1POSIX.2\s0 pozwala na
+takie zachowanie jako rozszerzenie standardu, ale przenośne skrypty powinny
+go unikać.
+.
+.SH ZMIENNE\ ŚRODOWISKA
+Zachowanie \fBgrep\fPa można zmienić poniższymi zmiennymi środowiskowymi.
+.PP
+Ustawienia regionalne (locale) dla kategorii \fBLC_\fP\fIfoo\fP są określane przez
+sprawdzanie trzech zmiennych środowiska, \fBLC_ALL\fP, \fBLC_\fP\fIfoo\fP, \fBLANG\fP; w
+tej kolejności. Pierwsza z tych zmiennych, która jest ustawiona, określa
+locale. Na przykład, jeśli \fBLC_ALL\fP nie jest ustawiona, ale \fBLC_MESSAGES\fP
+jest ustawiona na \fBpt_BR\fP, to dla kategorii \fBLC_MESSAGES\fP używane są
+ustawienia brazylijskiej odmiany portugalskiego. Jeśli żadna z powyższych
+zmiennych nie jest ustawiona, katalog locale nie jest zainstalowany, lub
+\fBgrep\fP nie został skompilowany z obsługą języka narodowego (\s-1NLS\s0), to
+używane są locale C.
+.TP 
+\fBGREP_OPTIONS\fP
+Ta zmienna określa domyślne opcje, jakie zostaną umieszczone przed
+wszystkimi opcjami podanymi wprost. Na przykład, jeśli \fBGREP_OPTIONS\fP jest
+ustawione na \fB\(aq\-\^\-binary\-files=without\-match \-\^\-directories=skip\(aq\fP,
+to \fBgrep\fP zachowa się tak, jakby podano dwie opcje
+\fB\-\^\-binary\-files=without\-match\fP i \fB\-\^\-directories=skip\fP, przed
+ewentualnymi jawnymi opcjami. Określenia opcji oddziela się białymi
+znakami. Odwrotny ukośnik cytuje następny znak, zatem można go wykorzystać
+do podania opcji zawierającej biały znak lub odwrotny ukośnik.
+.TP 
+\fBGREP_COLOR\fP
+Ta zmienna określa kolor używany do podświetlenia dopasowanego (niepustego)
+tekstu. Jest przestarzała, lecz wciąż obsługiwana; powinno się obecnie
+używać \fBGREP_COLORS\fP. Możliwości \fBmt\fP, \fBms\fP i \fBmc\fP zmiennej
+\fBGREP_COLORS\fP mają nad nią priorytet. Zmienna może określać jedynie kolor
+używany do podświetlania pasującego, niepustego tekstu w pasującym wierszu
+(wybranym, jeśli nie podano opcji \fB\-v\fP albo wierszu kontekstu jeśli ją
+wpisano). Domyślnym ustawieniem jest \fB01;31\fP, czyli pogrubiony, czerwony
+tekst na domyślnym tle terminala.
+.TP 
+\fBGREP_COLORS\fP
+Określa kolory i inne atrybuty użyte do podświetlania różnych części
+wyniku. Jej wartością jest lista możliwości, oddzielonych dwukropkami, która
+domyślnie wygląda następująco:
+\fBms=01;31:mc=01;31:sl=:cx=:fn=35:ln=32:bn=32:se=36\fP, z pominiętymi
+wartościami logicznymi \fBrv\fP i \fBne\fP (tzn. ustawionymi na
+fałsz). Obsługiwane możliwości to:
+.RS
+.TP 
+\fBsl=\fP
+Podciąg SGR dla całego wybranego wiersza (tzn. pasującego, jeśli nie podano
+opcji \fB\-v\fP lub niepasującego w przeciwnym wypadku). Jeśli jednak wartość
+logiczna \fBrv\fP i opcja wiersza poleceń \fB\-v\fP zostały podane, to będzie on
+dotyczył w zamian kontekstu pasujących wierszy. Domyślnie jest pusta
+(tzn. ustawiona jest domyślna para kolorów terminala).
+.TP 
+\fBcx=\fP
+Podciąg SGR dla wszystkich wierszy kontekstu (tzn. niepasujących wierszy,
+jeśli nie podano opcji \fB\-v\fP  lub pasujących w przeciwnym wypadku). Jeśli
+jednak wartość logiczna \fBrv\fP i opcja wiersza poleceń \fB\-v\fP zostały podane,
+to będzie on dotyczył w zamian wybranych, niepasujących wierszy. Domyślnie
+jest pusta (tzn. ustawiona jest domyślna para kolorów terminala).
+.TP 
+\fBrv\fP
+Wartość logiczna, która odwraca znaczenie możliwości \fBsl=\fP i \fBcx=\fP, kiedy
+podano opcję wiersza poleceń \fB\-v\fP. Domyślnie jest ustawiona na fałsz
+(tzn. możliwość jest pominięta).
+.TP 
+\fBmt=01;31\fP
+Podciąg SGR do pasującego, niepustego tekstu w dowolnym pasującym wierszu
+(tzn. wybranego wiersza, jeśli nie podano opcji wiersza poleceń \fB\-v\fP lub
+wiersza kontekstu w przeciwnym wypadku). Ustawienie go jest odpowiednikiem
+podania \fBms=\fP i \fBmc=\fP z tą samą wartością. Domyślnie jest to czerwony,
+pogrubiony tekst na aktualnym tle wiersza.
+.TP 
+\fBms=01;31\fP
+Podciąg SGR do pasującego, niepustego tekstu w wybranym wierszu (jest
+używana tylko jeśli nie podano opcji wiersza poleceń \fB\-v\fP). Efekt
+możliwości \fBsl=\fP (lub \fBcx=\fP w przypadku \fBrv\fP) pozostaje
+aktywny. Domyślnie jest to czerwony, pogrubiony tekst na aktualnym tle
+wiersza.
+.TP 
+\fBmc=01;31\fP
+Podciąg SGR do pasującego, niepustego tekstu w wierszu kontekstu (jest
+używana tylko jeśli podano opcję wiersza poleceń \fB\-v\fP). Efekt możliwości
+\fBcx=\fP (lub \fBsl=\fP w przypadku \fBrv\fP) pozostaje aktywny. Domyślnie jest to
+czerwony, pogrubiony tekst na aktualnym tle wiersza.
+.TP 
+\fBfn=35\fP
+Podciąg SGR do nazw plików poprzedzających wszystkie wiersze
+zawartości. Domyślnie jest to purpurowy tekst na domyślnym tle terminala.
+.TP 
+\fBln=32\fP
+Podciąg SGR do numerów wierszy poprzedzających wszystkie wiersze
+zawartości. Domyślnie, jest to zielony tekst na domyślnym tle terminala.
+.TP 
+\fBbn=32\fP
+Podciąg SGR do offsetu bajtowego poprzedzającego wszystkie wiersze
+zawartości. Domyślnie, jest to zielony tekst na domyślnym tle terminala.
+.TP 
+\fBse=36\fP
+Podciąg SGR do separatorów wstawianych pomiędzy wybranymi polami wiersza
+(\fB:\fP), pomiędzy polami wierszy kontekstu (\fB\-\fP i pomiędzy grupami
+przyległych wierszy, jeśli wybrano niezerowy kontekst (\fB\-\^\-\fP). Domyślnie
+jest to cyjanowy tekst na domyślnym tle terminala.
+.TP 
+\fBne\fP
+Wartość logiczna, która zapobiega czyszczeniu końca wiersza przy użyciu
+sekwencji Erase in Line (EL) to Right (\fB\e\33[K\fP) za każdym razem, gdy
+kończy ko pokolorowany wpis. Jest to wymagane na terminalach, które nie
+obsługują EL. Wartość jednak potrzebna na terminalach, dla których możliwość
+logiczna \fBback_color_erase\fP (\fBbce\fP) nie ma zastosowania, gdy wybrane
+kolory podświetlenia nie zmieniają tła, gdy EL jest zbyt wolne bądź powoduje
+znaczne migotanie. Domyślnym ustawieniem jest fałsz (tzn. możliwość jest
+pominięta).
+.PP
+Proszę zauważyć, że wartości logiczne nie posiadają części "\fB=\fP...". Są one
+domyślne pominięte (tzn. fałszywe) i stają się prawdziwe, jeśli zostaną
+podane.
+.PP
+Proszę zapoznać się z rozdziałem Select Graphic Rendition (SGR) w
+dokumentacji używanego terminala tekstowego, aby dowiedzieć się jakie są
+dozwolone wartości oraz poznać ich znaczenie. Te wartości podciągów są
+liczbami całkowitymi w systemie dziesiętnych i mogą być łączone
+średnikami. Program \fBgrep\fP zajmuje się łączeniem rezultatu w kompletną
+sekwencję SGR (\fB\e\33[\fP...\fBm\fP). Najczęściej używane wartości to: \fB1\fP \-
+pogrubienie, \fB4\fP \- podkreślenie, \fB5\fP \- miganie, \fB7\fP \- odwrócenie kolorów,
+\fB39\fP \- domyślny kolor tła, od \fB30\fP do \fB37\fP \- kolory tekstu, od \fB90\fP do
+\fB97\fP \- kolory tekstu w trybie 16 kolorów, od \fB38;5;0\fP do \fB38;5;255\fP \-
+kolory tekstu w trybie 88 i 256 kolorów, \fB49\fP \- domyślny kolor tła, od
+\fB40\fP do \fB47\fP kolory tła, od \fB100\fP do \fB107\fP \- kolory tła w trybie 16
+kolorów i od \fB48;5;0\fP do \fB48;5;255\fP \- kolory tła w trybie 88 i 256
+kolorów.
+.RE
+.TP 
+\fBLC_ALL\fP, \fBLC_COLLATE\fP, \fBLANG\fP
+Zmienne określające ustawienia regionalne dla kategorii \fBLC_COLLATE\fP, która
+wyznacza kolejność sortowania używaną do interpretowania wyrażeń
+zakresowych, takich jak \fB[a\-z]\fP.
+.TP 
+\fBLC_ALL\fP, \fBLC_CTYPE\fP, \fBLANG\fP
+Zmienne określające ustawienia regionalne dla kategorii \fBLC_CTYPE\fP, która
+wyznacza typ znaków np. które znaki są białymi znakami.
+.TP 
+\fBLC_ALL\fP, \fBLC_MESSAGES\fP, \fBLANG\fP
+Zmienne określające ustawienia regionalne dla kategorii \fBLC_MESSAGES\fP,
+która wyznacza język, używany przez \fBgrep\fPa do wyświetlania
+komunikatów. Domyślne locale C używają wiadomości w amerykańskiej odmianie
+angielskiego.
+.TP 
+\fBPOSIXLY_CORRECT\fP
+Jeśli jest ustawiona, to \fBgrep\fP zachowuje się zgodnie z wymaganiami normy
+\s-1POSIX.2\s0; w przeciwnym razie \fBgrep\fP działa bardziej jak inne programy
+\s-1GNU\s0. \s-1POSIX.2\s0 żąda, by opcje, które występują po nazwach plików
+były traktowane jak nazwy plików. Domyślnie zaś, opcje takie są przesuwane
+na początek listy argumentów i traktowane jak opcje. Ponadto, \s-1POSIX.2\s0
+wymaga, by nierozpoznane opcje były zgłaszane jako "nielegalne" ("illegal"),
+ale ponieważ tak naprawdę nie naruszają one prawa, domyślnie zgłaszane są
+jako "nieprawidłowe" ("invalid"). \fBPOSIXLY_CORRECT\fP wyłącza także
+\fB_\fP\fIN\fP\fB_GNU_nonoption_argv_flags_\fP, opisane poniżej.
+.TP 
+\fB_\fP\fIN\fP\fB_GNU_nonoption_argv_flags_\fP
+\fIN\fP jest tu numerycznym identyfikatorem procesu \fBgrep\fPa. Jeśli \fIi\fP\-tym
+znakiem wartości tej zmiennej środowiska jest \fB1\fP, to \fIi\fP\-ty argument
+przekazany do \fBgrep\fPa nie jest uważany za opcję, nawet jeśli na nią
+wygląda. Powłoka może umieścić tę zmienną w środowisku dla każdego polecenia
+jakie uruchamia, podając, które argumenty są wynikiem rozwinięcia nazw
+plików i dlatego nie powinny być traktowane jako opcje. Zachowanie to jest
+dostępne tylko z biblioteką \s-1GNU\s0 C i tylko wtedy, gdy nie ustawiono
+\fBPOSIXLY_CORRECT\fP.
+.
+.SH DIAGNOSTYKA
+Status zakończenia wynosi \fB0\fP jeśli znaleziono dopasowania i \fB1\fP jeśli nie
+znaleziono żadnych. W przypadku wystąpienia błędu, status zakończenia wynosi
+\fB2\fP (uwaga: kod obsługujący błędy zgodnie z normą POSIX powinien szukać
+statusu wynoszącego \fB2\fP lub więcej).
+.
+.SH PRAWA\ AUTORSKIE
+Copyright 1998\-2000, 2002, 2005\-2012 Free Software Foundation, Inc.
+.PP
+Jest to wolne oprogramowanie; warunki rozpowszechniania znajdują się w
+źródle programu. NIE ma gwarancji, nawet PRZYDATNOŚCI\ HANDLOWEJ czy
+PRZYDATNOŚCI DO OKREŚLONEGO CELU.
+.
+.SH BŁĘDY
+.SS "Zgłaszanie błędów"
+Proszę wysyłać zgłoszenia błędów na adres <\fBbug\-grep@gnu.org\fP>,
+strona internetowa odpowiadająca tej grupie dyskusyjnej to
+<\fBhttp://lists.gnu.org/mailman/listinfo/bug\-grep\fP>. System
+śledzenia błędów Savannah \fBgrep\fPa można znaleźć pod adresem
+<\fBhttp://savannah.gnu.org/bugs/?group=grep\fP>.
+.SS "Znane błędy"
+Duże liczniki powtórzeń w konstrukcji \fB{\fP\fIn\fP\fB,\fP\fIm\fP\fB}\fP mogą spowodować,
+że \fBgrep\fP zużyje mnóstwo pamięci. Oprócz tego, pewne inne niejasne
+wyrażenia regularne wymagają czasu i przestrzeni rosnącej wykładniczo i mogą
+spowodować, że \fBgrep\fPowi zabraknie pamięci.
+.PP
+Odwołania zwrotne są bardzo powolne i mogą wymagać czasu rosnącego
+wykładnicza.
+.
+.SH "ZOBACZ TAKŻE"
+.SS "Zwykłe strony man"
+\fBawk\fP(1), \fBcmp\fP(1), \fBdiff\fP(1), \fBfind\fP(1), \fBgzip\fP(1), \fBperl\fP(1),
+\fBsed\fP(1), \fBsort\fP(1), \fBxargs\fP(1), \fBzgrep\fP(1), \fBmmap\fP(2), \fBread\fP(2),
+\fBpcre\fP(3) \fBpcresyntax\fP(3), \fBpcrepattern\fP(3), \fBterminfo\fP(5), \fBglob\fP(7),
+\fBregex\fP(7).
+.SS "Podręcznik programisty \s-1POSIX\s0"
+\fBgrep\fP(1p).
+.SS "Dokumentacja \*(Txinfo"
+Pełna dokumentacja \fBgrep\fPa jest dostępna w podręczniku \*(Txinfo. Jeśli
+programy \fBinfo\fP i \fBgrep\fP są poprawnie zainstalowane, to polecenie
+.IP
+\fBinfo grep\fP
+.PP
+powinno dać dostęp do pełnego podręcznika.
+.
+.SH UWAGI
+.\" Work around problems with some troff -man implementations.
+\s-1GNU\s0's to nie Unix, ale Unix jest bestią \- wszak w liczbie mnogiej
+mieni się Unixenem.
+.br
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Gwidon S. Naskrent (PTM) <naskrent@hoth.amu.edu.pl>,
+Wojciech Kotwica (PTM) <wkotwica@post.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.12 \fPoryginału.

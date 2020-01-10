@@ -1,0 +1,399 @@
+# Polish translation of umount.8 man page
+# This file is distributed under the same license as original manpage
+# Copyright of the original manpage:
+# Copyright © 1996 Andries Brouwer (GPL-2+)
+# Copyright © of Polish translation:
+# Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+# Robert Luberda (PTM) <robert@debian.org>, 2004.
+# Michał Kułach <michal.kulach@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-pl\n"
+"POT-Creation-Date: 2012-05-08 01:46+0300\n"
+"PO-Revision-Date: 2012-04-21 14:35+0200\n"
+"Last-Translator: Michał Kułach <michal.kulach@gmail.com>\n"
+"Language-Team: Polish <manpages-pl-list@lists.sourceforge.net>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+
+#. type: TH
+#, no-wrap
+msgid "UMOUNT"
+msgstr "UMOUNT"
+
+#. type: TH
+#, no-wrap
+msgid "March 2010"
+msgstr "marzec 2010"
+
+#. type: TH
+#, no-wrap
+msgid "util-linux"
+msgstr "util-linux"
+
+#. type: TH
+#, no-wrap
+msgid "System Administration"
+msgstr "Administracja systemem"
+
+#. type: SH
+#, no-wrap
+msgid "NAME"
+msgstr "NAZWA"
+
+#. type: Plain text
+msgid "umount - unmount file systems"
+msgstr "umount - odmontowuje systemy plików"
+
+#. type: SH
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "SKŁADNIA"
+
+#. type: Plain text
+msgid "B<umount> [B<-hV>]"
+msgstr "B<umount> [B<-hV>]"
+
+#. type: Plain text
+msgid "B<umount -a> [B<-dflnrv>] [B<-t> I<vfstype>] [B<-O> I<options>]"
+msgstr ""
+"B<umount -a> [B<-dflnrv>] [B<-t> I<typ-systemu-plików>] [B<-O> I<opcje>]"
+
+#. type: Plain text
+msgid "B<umount> [B<-dflnrv>] {I<dir>|I<device>}..."
+msgstr "B<umount> [B<-dflnrv>] {I<katalog>|I<urządzenie>}"
+
+#. type: SH
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "OPIS"
+
+#. type: Plain text
+msgid ""
+"The B<umount> command detaches the file system(s) mentioned from the file "
+"hierarchy.  A file system is specified by giving the directory where it has "
+"been mounted. Giving the special device on which the file system lives may "
+"also work, but is obsolete, mainly because it will fail in case this device "
+"was mounted on more than one directory."
+msgstr ""
+"Polecenie B<umount> odłącza wymienione systemy plików z hierarchii plików. "
+"System plików jest określany przez podanie katalogu, w którym został "
+"zamontowany.  Podanie urządzenia, na którym system plików istnieje, może "
+"również działać, jednakże jest przestarzałe, głównie dlatego, że zawiedzie, "
+"gdy urządzenie jest zamontowane w więcej niż jednym katalogu."
+
+#. type: Plain text
+msgid ""
+"Note that a file system cannot be unmounted when it is `busy' - for example, "
+"when there are open files on it, or when some process has its working "
+"directory there, or when a swap file on it is in use.  The offending process "
+"could even be B<umount> itself - it opens libc, and libc in its turn may "
+"open for example locale files.  A lazy unmount avoids this problem."
+msgstr ""
+"Proszę zauważyć, że system plików nie może być odmontowany, gdy jest \"busy"
+"\" (zajęty) - na przykład, gdy są na nim otwarte pliki, gdy jakiś proces ma "
+"tam swój katalog roboczy albo gdy w użytku jest znajdujący się na nim plik "
+"wymiany.  Przeszkadzającym procesem może być nawet sam B<umount> - otwiera "
+"on libc, zaś libc z kolei może otwierać na przykład pliki ustawień locale.  "
+"Leniwe odmontowywanie (\"lazy umount\")  rozwiązuje ten problem."
+
+#. type: Plain text
+msgid "Options for the B<umount> command:"
+msgstr "Polecenie B<umount> przyjmuje następujące opcje:"
+
+#. type: TP
+#, no-wrap
+msgid "B<-V>"
+msgstr "B<-V>"
+
+#. type: Plain text
+msgid "Print version and exit."
+msgstr "Wypisuje wersję i wychodzi."
+
+#. type: TP
+#, no-wrap
+msgid "B<-h>"
+msgstr "B<-h>"
+
+#. type: Plain text
+msgid "Print help message and exit."
+msgstr "Wypisuje informację o użyciu i wychodzi."
+
+#. type: TP
+#, no-wrap
+msgid "B<-v>"
+msgstr "B<-v>"
+
+#. type: Plain text
+msgid "Verbose mode."
+msgstr "Tryb szczegółowy."
+
+#. type: TP
+#, no-wrap
+msgid "B<-n>"
+msgstr "B<-n>"
+
+#. type: Plain text
+msgid "Unmount without writing in I</etc/mtab>."
+msgstr "Odmontowuje bez zapisywania w I</etc/mtab>."
+
+#. type: TP
+#, no-wrap
+msgid "B<-r>"
+msgstr "B<-r>"
+
+#. type: Plain text
+msgid "In case unmounting fails, try to remount read-only."
+msgstr ""
+"Jeśli odmontowanie się nie powiedzie, próbuje zamontować ponownie w trybie "
+"tylko do odczytu."
+
+#. type: TP
+#, no-wrap
+msgid "B<-d>"
+msgstr "B<-d>"
+
+#. type: Plain text
+msgid ""
+"In case the unmounted device was a loop device, also free this loop device."
+msgstr ""
+"Jeżeli odmontowane urzdzenie było urządzeniem pętli zwrotnej (\"loop device"
+"\"), to je zwalnia."
+
+#. type: TP
+#, no-wrap
+msgid "B<-i>"
+msgstr "B<-i>"
+
+#. type: Plain text
+msgid ""
+"Don't call the /sbin/umount.E<lt>filesystemE<gt> helper even if it exists. "
+"By default /sbin/umount.E<lt>filesystemE<gt> helper is called if one exists."
+msgstr ""
+"Nie wywołuje programu pomocniczego /sbin/umount.E<lt>system-plikówE<gt>, "
+"nawet jeśli istnieje. Domyślnie jest on wywoływany, jeśli istnieje."
+
+#. type: TP
+#, no-wrap
+msgid "B<-a>"
+msgstr "B<-a>"
+
+#. type: Plain text
+msgid ""
+"All of the file systems described in I</etc/mtab> are unmounted. (With "
+"B<umount> version 2.7 and later: the I<proc> filesystem is not unmounted.)"
+msgstr ""
+"Odmontowuje wszystkie systemy plików opisane w I</etc/mtab>.  (W B<umount> w "
+"wersji 2.7 i późniejszych nie jest odłączany system plików I<proc>)."
+
+#. type: TP
+#, no-wrap
+msgid "B<-t>I< vfstype>"
+msgstr "B<-t>I< typ-systemu-plików>"
+
+#. type: Plain text
+msgid ""
+"Indicate that the actions should only be taken on file systems of the "
+"specified type.  More than one type may be specified in a comma separated "
+"list.  The list of file system types can be prefixed with B<no> to specify "
+"the file system types on which no action should be taken."
+msgstr ""
+"Wskazuje, że akcje powinny być dokonywane tylko na systemach plików "
+"określonego typu. Można podać więcej niż jeden typ, używając listy "
+"oddzielanej przecinkami. Lista systemów plików może być poprzedzona słowem "
+"B<no>, aby wskazać, że akcja wymienionych systemów plików nie dotyczy."
+
+#. type: TP
+#, no-wrap
+msgid "B<-O>I< options>"
+msgstr "B<-O>I< opcje>"
+
+#. type: Plain text
+msgid ""
+"Indicate that the actions should only be taken on file systems with the "
+"specified options in I</etc/fstab>.  More than one option type may be "
+"specified in a comma separated list.  Each option can be prefixed with B<no> "
+"to specify options for which no action should be taken."
+msgstr ""
+"Określa, że akcje powinny być wykonane tylko na systemach plików z "
+"odpowiednimi opcjami wymienionymi w I</etc/fstab>. Można podać więcej niż "
+"jedną opcję, używając listy oddzielanej przecinkami. Lista opcji może być "
+"poprzedzona słowem B<no>, aby podać opcje, dla których nie powinna być "
+"podejmowana żadna akcja."
+
+#. type: TP
+#, no-wrap
+msgid "B<-f>"
+msgstr "B<-f>"
+
+#. type: Plain text
+msgid ""
+"Force unmount (in case of an unreachable NFS system).  (Requires kernel "
+"2.1.116 or later.)"
+msgstr ""
+"Wymusza odmontowanie (w przypadku nieosiągalnego systemu NFS).  (Wymaga "
+"jądra 2.1.116 lub późniejszego)."
+
+#. type: TP
+#, no-wrap
+msgid "B<-l>"
+msgstr "B<-l>"
+
+#. type: Plain text
+msgid ""
+"Lazy unmount. Detach the filesystem from the filesystem hierarchy now, and "
+"cleanup all references to the filesystem as soon as it is not busy anymore.  "
+"(Requires kernel 2.4.11 or later.)"
+msgstr ""
+"Leniwe odmontowanie (\"lazy umount\"). Od razu odłącza system plików od "
+"hierarchii systemu plików i czyści wszystkie referencje do tego systemu "
+"plików, gdy tylko przestanie być zajęty (\"busy\").  (Wymaga jądra 2.4.11 "
+"lub późniejszego)."
+
+#. type: IP
+#, no-wrap
+msgid "B<--no-canonicalize>"
+msgstr "B<--no-canonicalize>"
+
+#. type: Plain text
+msgid ""
+"Don't canonicalize paths. For more details about this option see the B<mount"
+"(8)> man page."
+msgstr ""
+"Nie normalizuje ścieżek. Więcej szczegółów na temat tej opcji można uzyskać "
+"zapoznając się ze stroną podręcznika B<mount(8)>."
+
+#. type: IP
+#, no-wrap
+msgid "B<--fake>"
+msgstr "B<--fake>"
+
+#. type: Plain text
+msgid ""
+"Causes everything to be done except for the actual system call; this "
+"``fakes'' unmounting the filesystem.  It can be used to remove entries from "
+"I</etc/mtab> that were unmounted earlier with the -n option."
+msgstr ""
+"Powoduje wykonywanie wszystkiego poza faktycznym wywołaniem funkcji "
+"systemowej.  Jeśli nie jest to oczywiste: \"udaje\" to odmontowanie systemu "
+"plików.  Opcja może być używana do usuwania wpisów z I</etc/mtab> dla "
+"urządzeń, które zamontowano wcześniej z opcją -n."
+
+#. type: SH
+#, no-wrap
+msgid "THE LOOP DEVICE"
+msgstr "URZĄDZENIE PĘTLI ZWROTNEJ - LOOP DEVICE"
+
+#. type: Plain text
+msgid ""
+"The B<umount> command will free the loop device (if any) associated with the "
+"mount, in case it finds the option `loop=...' in I</etc/mtab>, or when the -"
+"d option was given.  Any pending loop devices can be freed using `losetup -"
+"d', see B<losetup>(8)."
+msgstr ""
+"Polecenie B<umount> może zwolnić związane z montowaniem urządzenie pętli "
+"zwrotnej.  Dzieje się tak, gdy napotkana zostanie opcja \"loop=...\" w pliku "
+"I</etc/mtab>, lub gdy podano opcję -d.  Pozostałe urządzenia loop mogą być "
+"zwolnione przez \"losetup -d\", patrz B<losetup>(8)."
+
+#. type: SH
+#, no-wrap
+msgid "NOTES"
+msgstr "UWAGI"
+
+#. type: Plain text
+msgid "The syntax of external umount helpers is:"
+msgstr "Składnia zewnętrznych programów pomocniczych umount jest następująca:"
+
+#. type: Plain text
+msgid ""
+"B</sbin/umount.>I<E<lt>suffixE<gt>> {I<dir>|I<device>} [B<-nlfvr>] [B<-t> "
+"I<type.subtype>]"
+msgstr ""
+"B</sbin/umount.>I<E<lt>przyrostekE<gt>> {I<katalog>|I<urządzenie>} [B<-"
+"nlfnv>] [B<-t> I<typ.podtyp>]"
+
+#. type: Plain text
+msgid ""
+"where the E<lt>suffixE<gt> is filesystem type or a value from \"uhelper=\" "
+"or \"helper=\" mtab option.  The -t option is used for filesystems with "
+"subtypes support (for example /sbin/mount.fuse -t fuse.sshfs)."
+msgstr ""
+"gdzie E<lt>przyrostekE<gt> jest typem systemu plików lub wartością z opcji "
+"mtab \"uhelper=\" lub \"helper=\". Opcja -t jest używana do systemów plików, "
+"które obsługują podtypy (np. /sbin/mount.fuse -t fuse.sshfs)."
+
+#. type: Plain text
+msgid ""
+"The uhelper= (unprivileged umount helper) is possible to use when non-root "
+"user wants to umount a mountpoint which is not defined in the /etc/fstab "
+"file (e.g devices mounted by udisk)."
+msgstr ""
+"Gdy użytkownik niebędący rootem chce odmontować punkt montowania, którego "
+"niezdefiniowano w /etc/fstab (np. urządzenie zamontowane przez udisk), można "
+"użyć opcji uhelper= (nieuprzywilejowany program pomocniczy umount)."
+
+#. type: Plain text
+msgid ""
+"The helper= mount option redirects all umount requests to the /sbin/umount."
+"E<lt>helperE<gt> independently on UID."
+msgstr ""
+"Opcja montowania helper= przekierowuje wszystkie żądania umount do /sbin/"
+"umount.E<lt>helperE<gt> niezależnie od UID."
+
+#. type: SH
+#, no-wrap
+msgid "FILES"
+msgstr "PLIKI"
+
+#. type: Plain text
+msgid "I</etc/mtab> table of mounted file systems"
+msgstr "I</etc/mtab> tabela zamontowanych systemów plików"
+
+#. type: SH
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "ZOBACZ TAKŻE"
+
+#. type: Plain text
+msgid "B<umount>(2), B<mount>(8), B<losetup>(8)."
+msgstr "B<umount>(2), B<mount>(8), B<losetup>(8)."
+
+#. type: SH
+#, no-wrap
+msgid "HISTORY"
+msgstr "HISTORIA"
+
+#. type: Plain text
+msgid "A B<umount> command appeared in Version 6 AT&T UNIX."
+msgstr "Polecenie B<umount> pojawiło się w wersji 6 AT&T UNIX."
+
+#. type: SH
+#, no-wrap
+msgid "AVAILABILITY"
+msgstr "DOSTĘPNOŚĆ"
+
+#. type: Plain text
+msgid ""
+"The umount command is part of the util-linux package and is available from "
+"ftp://ftp.kernel.org/pub/linux/utils/util-linux/."
+msgstr ""
+"Polecenie umount jest częścią pakietu util-linux i jest dostępne pod adresem "
+"ftp://ftp.kernel.org/pub/linux/utils/util-linux/."
+
+#, fuzzy
+#~ msgid "26 July 1997"
+#~ msgstr "26 lipca 1997"
+
+#, fuzzy
+#~ msgid "Linux 2.0"
+#~ msgstr "Linux 2.0"
+
+#, fuzzy
+#~ msgid "Linux Programmer's Manual"
+#~ msgstr "Podręcznik programisty linuksowego"

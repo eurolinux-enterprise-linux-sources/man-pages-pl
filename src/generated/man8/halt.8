@@ -1,0 +1,122 @@
+.\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2001 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"{{{}}}
+.\"{{{  Title
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1997-2004 Miquel van Smoorenburg, Michael Haardt (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH HALT 8 "6 listopada 2001" "" "Podręcznik administratora systemu Linux"
+.\"}}}
+.\"{{{  Name
+.SH NAZWA
+.\"}}}
+.\"{{{  Synopsis
+halt, reboot, poweroff \- zatrzymuje system
+.SH SKŁADNIA
+\fB/sbin/halt\fP [\fB\-n\fP] [\fB\-w\fP] [\fB\-d\fP] [\fB\-f\fP] [\fB\-i\fP] [\fB\-p\fP] [\fB\-h\fP]
+.br
+\fB/sbin/reboot\fP [\fB\-n\fP] [\fB\-w\fP] [\fB\-d\fP] [\fB\-f\fP] [\fB\-i\fP]
+.br
+.\"}}}
+.\"{{{  Description
+\fB/sbin/poweroff\fP [\fB\-n\fP] [\fB\-w\fP] [\fB\-d\fP] [\fB\-f\fP] [\fB\-i\fP] [\fB\-h\fP]
+.SH OPIS
+Program \fBhalt\fP zaznacza w pliku \fI/var/log/wtmp\fP, że system jest zamykany,
+a następnie zleca jądru zatrzymanie systemu, jego restart lub wyłączenie
+komputera.
+.PP
+Jeśli podczas wywołania polecenia \fBhalt\fP lub \fBreboot\fP system \fInie\fP
+znajduje się w trybie pracy (runlevel) \fB0\fP ani \fB6\fP, to zamiast tego
+zostanie wywołany \fBshutdown\fP (z parametrem \fB\-h\fP lub \fB\-r\fP). Aby uzyskać
+więcej informacji, proszę zapoznać się ze stronę podręcznika \fBshutdown\fP(8).
+.PP
+.\"}}}
+.\"{{{  Options
+Pozostała część niniejszego podręcznika opisuje zachowanie w poziomach pracy
+0 i 6, to znaczy gdy skryptu zatrzymujące system są uruchomione.
+.SH OPCJE
+.IP \fB\-n\fP
+Nie wykonuje sync (opróżniania buforów na dysk) przed restartem lub
+zatrzymaniem. Proszę zauważyć, że jądro i sterowniki dyskowe mogą wciąż
+wykonać sync. Opcja implikuje \fB\-d\fP.
+.IP \fB\-w\fP
+Nie restartuje ani nie zatrzymuje systemu naprawdę, lecz zapisuje tylko
+rekord wtmp (w pliku \fI/var/log/wtmp\fP).
+.IP \fB\-d\fP
+Nie zapisuje rekordu wtmp.
+.IP \fB\-f\fP
+Wymusza zatrzymanie lub restart, nie wywołuje \fBshutdown\fP(8).
+.IP \fB\-i\fP
+Bezpośrednio przed zatrzymaniem systemu lub restartem wyłącza wszystkie
+interfejsy sieciowe.
+.IP \fB\-h\fP
+Bezpośrednio przed zatrzymaniem systemu lub restartem umieszcza wszystkie
+dyski twarde w trybie gotowości (stand\-by).
+.IP \fB\-p\fP
+.\"}}}
+.\"{{{  Diagnostics
+W przypadku zatrzymywania systemu wyłącza komputer. Jest to domyślne
+zachowanie, gdy halt jest wołany jako \fBpoweroff\fP.
+.SH DIAGNOSTYKA
+.\"}}}
+.\"{{{  Notes
+Użytkownik nie będący superużytkownikiem otrzyma komunikat "must be
+superuser" (trzeba być superużytkownikiem).
+.SH UWAGI
+We wcześniejszych wersjach \fBsysvinit\fP, ani \fBreboot\fP ani \fBhalt\fP nie
+powinny być wywoływane bezpośrednio. Począwszy od wersji 2.74, polecenia
+\fBhalt\fP i \fBreboot\fP wywołują \fBshutdown\fP(8), o ile system nie znajduje się w
+trybie 0 ani 6. Oznacza to, że jeżeli \fBhalt\fP lub \fBreboot\fP nie będą mogły
+określić aktualnego trybu pracy (na przykład, gdy nie zostanie prawidłowo
+zainicjowany \fI/var/run/utmp\fP), to zostanie wywołany \fBshutdown\fP. Takie
+zachowanie może różnić się od oczekiwanego.  W celu uzyskania twardego
+\fBhalt\fP lub \fBreboot\fP, należy użyć opcji \fB\-f\fP.
+.PP
+Opcja \fB\-h\fP ustawia, bezpośrednio przed zatrzymaniem systemu lub restartem,
+wszystkie dyski twarde w trybie gotowości (stand\-by). Obecnie jest to
+zaimplementowane wyłącznie dla dysków IDE. Efektem ubocznym umieszczenia
+dysków w trybie stand\-by jest opróżnienie buforów zapisu (write cache)
+dysków. Jest to istotne w przypadku napędów IDE, ponieważ samo jądro nie
+wykonuje takiej operacji przed wyłączeniem komputera.
+.PP
+Program \fBhalt\fP używa /proc/ide/hd* w celu znalezienia wszystkich urządzeń
+dyskowych IDE, co oznacza, że \fI/proc\fP musi być zamontowane w czasie
+wywołania \fBhalt\fP lub \fBpoweroff\fP, bowiem w przeciwnym wypadku przełącznik
+\fB\-h\fP nie zadziała.
+.PP
+.\"}}}
+.\"{{{  Author
+.SH AUTOR
+.\"}}}
+.\"{{{  See also
+Miquel van Smoorenburg, miquels@cistron.nl
+.SH "ZOBACZ TAKŻE"
+\fBshutdown\fP(8), \fBinit\fP(8)
+.\"}}}
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.88 \fPoryginału.

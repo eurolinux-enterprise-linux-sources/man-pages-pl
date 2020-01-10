@@ -1,0 +1,188 @@
+.\" Copyright (c) 1980, 1991 Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"     @(#)swapon.8	6.3 (Berkeley) 3/16/91
+.\"
+.\" Sun Dec 27 12:31:30 1992: Modified by faith@cs.unc.edu
+.\" Sat Mar  6 20:46:02 1993: Modified by faith@cs.unc.edu
+.\" Sat Oct  9 09:35:30 1993: Converted to man format by faith@cs.unc.edu
+.\" Sat Nov 27 20:22:42 1993: Updated authorship information, faith@cs.unc.edu
+.\" Mon Sep 25 14:12:38 1995: Added -v and -p information
+.\" Tue Apr 30 03:32:07 1996: Added some text from A. Koppenhoefer
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1980, 1991 Regents of the University of California (BSD-4-clause)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH SWAPON 8 "wrzesień 1995" util\-linux "Administracja systemem"
+.SH NAZWA
+swapon, swapoff \- włącza/wyłącza urządzenia oraz pliki stronicowania i
+wymiany
+.SH SKŁADNIA
+Wyświetl informacje:
+.br
+.in +5
+\fBswapon \-s\fP [\fB\-h\fP] [\fB\-V\fP]
+.sp
+.in -5
+Włącz/wyłącz:
+.br
+.in +5
+\fBswapon\fP [\fB\-d\fP] [\fB\-f\fP] [\fB\-p\fP \fIpriorytet\fP] [\fB\-v\fP] \fIplik\-specjalny\fP...
+.br
+\fBswapoff\fP [\fB\-v\fP] \fIplik\-specjalny\fP...
+.sp
+.in -5
+Włącz/wyłącz wszystkie:
+.br
+.in +5
+\fBswapon \-a\fP [\fB\-e\fP] [\fB\-f\fP] [\fB\-v\fP]
+.br
+\fBswapoff \-a\fP [\fB\-v\fP]
+.in -5
+.SH OPIS
+Polecenie \fBswapon\fP jest używane do określania urządzeń do stronicowania i
+wymiany.
+
+Urządzenie lub plik może być podany za pomocą parametru
+\fIplik\-specjalny\fP. Może mieć on postać \fB\-L\fP\fI etykieta\fP lub \fB\-U\fP\fI uuid\fP
+aby określić urządzenie za pomocą etykiety lub uuid (unikalnego
+identyfikatora).
+
+Odwołanie do \fBswapon\fP normalnie powinno się pojawiać w systemowych
+skryptach uruchomieniowych, udostępniając wszystkie urządzenia wymiany,
+dzięki czemu stronicowanie i wymiana jest rozłożone między wiele urządzeń i
+plików.
+
+Polecenie \fBswapoff\fP wyłącza wymianę na podanych urządzeniach i
+plikach. Jeśli użyto opcji \fB\-a\fP, to swap jest wyłączany na wszystkich
+znanych urządzeniach i plikach wymiany (zgodnie z plikiem \fI/proc/swaps\fP lub
+\fI/etc/fstab\fP).
+
+.TP 
+\fB\-a, \-\-all\fP
+Udostępnia wszystkie urządzenia oznaczone jako "swap" w pliku \fI/etc/fstab\fP,
+z wyjątkiem plików z opcją "noauto". Urządzenia, które są już używane jako
+swap, są po cichu pomijane.
+.TP 
+\fB\-d, \-\-discard\fP
+Oznacza zwolnione strony swap jako wolne, przed ich ponownym użyciem, jeśli
+urządzenie obsługuje operacje discard lub trim. Może to poprawić wydajność
+na niektórych dyskach SSD, choć często tak się nie dzieje. Opcja montowania
+\fBdiscard\fP w pliku \fI/etc/fstab\fP może być również użyta do włączenia opcji
+discard.
+.TP 
+\fB\-e, \-\-ifexists\fP
+Pomija po cichu nieistniejące urządzenia. Opcja montowania \fBnofail\fP w
+\fI/etc/fstab\fP może być również użyta do pomijania nieistniejących urządzeń.
+
+.TP 
+\fB\-f, \-\-fixpgsz\fP
+Ponownie inicjuje przestrzeń swap (exec /sbin/mkswap), jeśli rozmiar strony
+nie pasuje do rozmiaru podawanego przez aktualnie uruchomione
+jądro. Polecenie \fBmkswap(2)\fP inicjuje całe urządzenie i nie sprawdza go pod
+kątem błędnych bloków.
+.TP 
+\fB\-h, \-\-help\fP
+Udostępnia pomoc.
+.TP 
+\fB\-L \fP\fIetykieta\fP
+Używa partycji z określoną \fIetykietą\fP (potrzebny jest w tym celu dostęp do
+\fI/proc/partitions\fP).
+.TP 
+\fB\-p, \-\-priority \fP\fIpriorytet\fP
+Określa priorytet urządzenia wymiany. \fIPriorytet\fP jest wartością z
+przedziału pomiędzy 0 a 32767. Wyższa liczba oznacza wyższy
+priorytet. Podręcznik polecenia \fBswapon\fP(2) zawiera pełny opis priorytetów
+swap. Do pliku \fI/etc/fstab\fP można dodać opcję \fBpri=\fP\fIwartość\fP, która
+będzie używana ze \fBswapon \-a\fP.
+.TP 
+\fB\-s, \-\-summary\fP
+Wyświetla podsumowanie użycia swapu wg urządzenia. Jest to odpowiednik "cat
+/proc/swaps". Opcja jest niedostępna w przypadku Linuksa starszego niż
+2.1.25.
+.TP 
+\fB\-U \fP\fIuuid\fP
+Używa partycji o określonym \fIuuid\fP (unikalnym identyfikatorze).
+.TP 
+\fB\-v, \-\-verbose\fP
+Więcej szczegółów.
+.TP 
+\fB\-V, \-\-version\fP
+Wyświetla wersję.
+.SH UWAGI
+Nie powinno się używać \fBswapon\fP na pliku z dziurami (tzw. rzadki
+plik). Swap poprzez NFS może nie działać.
+.PP
+Polecenie \fBswapon\fP automatycznie wykrywa i nadpisuje podpis przestrzeni
+wymiany ze starymi danymi wstrzymania (np. S1SUSPEND, S2SUSPEND, ...). Jest
+to konieczne, gdyż w przeciwnym wypadku nastąpiłoby uszkodzenie danych przy
+kolejnej próbie wybudzenia.
+.PP
+Program \fBswapon\fP może nie działać prawidłowo z plikiem wymiany na
+niektórych wersjach btrfs. Jest to spowodowane implementacją pliku wymiany w
+jądrze, które oczekuje możliwości bezpośredniego zapisu do pliku, bez
+pośrednictwa systemu plików. Ponieważ btrfs jest systemem plików używającym
+kopiowania przy zapisie, położenie pliku może nie być statyczne, co może
+spowodować błąd. Btrfs aktywnie nie pozwala na używanie plików w swoim
+systemie plików, odmawiając przypisania (zmapowania) pliku. Można to
+dostrzec w dzienniku systemowym jako "swapon: swapfile has holes." Możliwym
+obejściem problemu jest przypisanie pliku do urządzenia typu
+loopback. Pozwoli to systemowi plików na poprawne określenie przypisania,
+ale może odbić się negatywnie na wydajności.
+
+.SH "ZOBACZ TAKŻE"
+\fBswapon\fP(2), \fBswapoff\fP(2), \fBfstab\fP(5), \fBinit\fP(8), \fBmkswap\fP(8),
+\fBrc\fP(8), \fBmount\fP(8)
+.SH PLIKI
+.br
+\fI/dev/sd??\fP standardowe urządzenia stronicowania
+.br
+\fI/etc/fstab\fP tablica opisująca systemy plików w ascii
+.SH HISTORIA
+Polecenie \fBswapon\fP pojawiło się w 4.0BSD.
+.SH DOSTĘPNOŚĆ
+Polecenie swapon jest częścią pakietu util\-linux i jest dostępne pod adresem
+ftp://ftp.kernel.org/pub/linux/utils/util\-linux/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.20.1 \fPoryginału.

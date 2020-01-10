@@ -1,0 +1,185 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1980-2008 Marco van Wieringen, Jan Kara et al (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Wojtek Kotwica (PTM) <wkotwica@post.pl>, 2000.
+.\" Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>, 2002.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH QUOTAON 8   
+.UC 4
+.SH NAZWA
+quotaon, quotaoff \- włącza i wyłącza mechanizm udziałów dyskowych systemu
+plików
+.SH SKŁADNIA
+\fB/usr/sbin/quotaoff\fP [ \fB\-vugp\fP ] [ \fB\-F\fP \fInazwa\-formatu\fP ]
+\fIsystemplików\fP.\|.\|.
+.br
+\fB/usr/sbin/quotaon\fP [ \fB\-avugfp\fP ] [ \fB\-F\fP \fInazwa\-formatu\fP ]
+.LP
+\fB/usr/sbin/quotaoff\fP [ \fB\-vugp\fP ] [ \fB\-x\fP \fIstan\fP ] \fIsystemplików\fP.\|.\|.
+.br
+\fB/usr/sbin/quotaoff\fP [ \fB\-avugp\fP ]
+.SH OPIS
+.SS quotaon
+.IX "quotaon command" "" "\fLquotaon\fR \(em turn filesystem quotas on"
+.IX "user quotas" "quotaon command" "" "\fLquotaon\fR \(em turn filesystem quotas on"
+.IX "disk quotas" "quotaon command" "" "\fLquotaon\fR \(em turn filesystem quotas on"
+.IX quotas "quotaon command" "" "\fLquotaon\fR \(em turn filesystem quotas on"
+.IX filesystem "quotaon command" "" "\fLquotaon\fR \(em turn filesystem quotas on"
+.LP
+\fBquotaon\fP wskazuje systemowi, że na podanych systemach plików należy
+włączyć mechanizm kwot dyskowych. W katalogu głównym danego systemu plików
+muszą znajdować się pliki definiujące udziały, noszące nazwy \fIaquota.user\fP
+(dla wersji 2 kwot użytkowników), \fIquota.user\fP (dla wersji 1 kwot
+użytkowników), \fIaquota.group\fP (dla wersji 2 kwot grup) lub \fIquota.group\fP
+(dla wersji 1 kwot grup).
+.PP
+Specyficznym przypadkiem jest system plików XFS \- traktuje on informacje o
+kwotach jako metadane systemu plików i korzysta z dziennika aby
+zagwarantować wyższy poziom ich spójności. System kwot dyskowych XFS zawiera
+dwa składniki: zliczanie i wymuszanie ograniczeń. System plików XFS wymaga,
+aby zliczanie kwot było włączane podczas montowania. Włączanie i wyłączanie
+wymuszania ograniczeń jest możliwe w każdym systemie plików XFS, w którym
+jest aktualnie włączone zliczanie. Domyślnym zachowaniem jest włączanie
+zarówno zliczania, jak i wymuszania ograniczeń.
+.PP
+Implementacja kwot w XFS nie przechowuje informacji o nich w widocznych
+plikach, lecz przechowuje te informacje wewnętrznie.
+.SS quotaoff
+.IX "quotaoff command" "" "\fLquotaoff\fR \(em turn filesystem quotas off"
+.IX "user quotas" "quotaoff command" "" "\fLquotaoff\fR \(em turn filesystem quotas off"
+.IX "disk quotas" "quotaoff command" "" "\fLquotaoff\fR \(em turn filesystem quotas off"
+.IX quotas "quotaoff command" "" "\fLquotaoff\fR \(em turn filesystem quotas off"
+.IX filesystem "quotaoff command" "" "\fLquotaoff\fR \(em turn filesystem quotas off"
+.LP
+\fBquotaoff\fP wskazuje systemowi, że podane systemy plików powinny mieć
+wyłączone wszystkie mechanizmy kwot dyskowych.
+.SH OPCJE
+.SS quotaon
+.TP 
+\fB\-F\fP, \fB\-\-format=\fP\fInazwa\-formatu\fP
+Określa format udziałów (np. nie przeprowadza automatycznego wykrywania
+formatu). Dostępne nazwy formatów to: \fBvfsold\fP \- pierwotny format udziałów
+z 16\-bitowymi UID\-ami/GID\-ami, \fBvfsv0\fP \- format udziałów z 32\-bitowymi
+UID\-ami/GID\-ami, 64\-bitowe użycie przestrzeni, 32\-bitowe użycie i\-węzłów
+oraz limity, \fBvfsv1\fP \- format udziałów z 64\-bitowymi limitami i użyciem,
+\fBxfs\fP \- udziały w systemie plików XFS.
+.TP 
+\fB\-a\fP, \fB\-\-all\fP
+Włącza mechanizm kwot dyskowych na wszystkich automatycznie montowanych (bez
+opcji \fBnoauto\fP)  systemach plików z \fB/etc/fstab\fP oprócz NFS. Opcja ta
+służy zazwyczaj do włączania kwot podczas startu systemu.
+.TP 
+\fB\-v\fP, \fB\-\-verbose\fP
+Wyświetla komunikat dla każdego z systemów plików, dla których włączane są
+kwoty.
+.TP 
+\fB\-u\fP, \fB\-\-user\fP
+Operuje na kwotach dyskowych użytkowników. Jest to zachowanie domyślne.
+.TP 
+\fB\-g\fP, \fB\-\-group\fP
+Operuje na kwotach dyskowych grup.
+.TP 
+\fB\-p\fP, \fB\-\-print\-state\fP
+Jedynie wypisuje stan kwot (tzn. czy są one włączone, czy wyłączone)
+zamiast ich włączania.
+.TP 
+\fB\-x\fP, \fB\-\-xfs\-command enforce\fP
+Włącza wymuszania ograniczeń dla systemów plików XFS. Jest to domyślne
+działanie we wszystkich systemach plików XFS. Ta opcja ma zastosowanie
+jedynie do XFS i jest milcząco ignorowana dla pozostałych rodzajów systemów
+plików.
+.TP 
+\fB\-f\fP, \fB\-\-off\fP
+Powoduje, że \fBquotaon\fP zachowuje się tak, jak podczas wywoływania go jako
+\fBquotaoff\fP.
+.SS quotaoff
+.TP 
+\fB\-F\fP, \fB\-\-format=\fP\fInazwa\-formatu\fP
+Określa format udziałów (np. nie przeprowadza automatycznego
+wykrywania). Dostępne nazwy formatów to: \fBvfsold\fP (1 wersja udziałów),
+\fBvfsv0\fP (2 wersja udziałów), \fBxfs\fP (udziały w systemie plików XFS).
+.TP 
+\fB\-a\fP, \fB\-\-all\fP
+Wymusza wyłączenie mechanizmu kwot dyskowych na wszystkich systemach plików
+wymienionych w \fB/etc/fstab\fP.
+.TP 
+\fB\-v\fP, \fB\-\-verbose\fP
+Wyświetla komunikat dla każdego z systemów plików, dla którego wyłączane są
+kwoty.
+.TP 
+\fB\-u\fP, \fB\-\-user\fP
+Operuje na kwotach dyskowych użytkowników. Jest to zachowanie domyślne.
+.TP 
+\fB\-g\fP, \fB\-\-group\fP
+Operuje na kwotach dyskowych grup.
+.TP 
+\fB\-p\fP, \fB\-\-print\-state\fP
+Jedynie wypisuje stanu kwot (tzn. czy są one włączone, czy wyłączone)
+zamiast ich wyłączania.
+.TP 
+\fB\-x\fP, \fB\-\-xfs\-command delete\fP
+Zwalnia przestrzeń używaną do przechowywania informacji o kwotach
+(obsługiwane wewnętrznie) w XFS. Ta opcja ma zastosowanie jedynie do XFS i
+jest milcząco ignorowana dla pozostałych rodzajów systemów plików.  Może być
+zastosowana wyłącznie do systemu plików, dla którego uprzednio wyłączono
+kwoty.
+.TP 
+\fB\-x\fP, \fB\-\-xfs\-command enforce\fP
+Wyłącza wymuszanie ograniczeń dla systemów plików XFS (przeprowadzanie
+jedynie zliczania). Ta opcja ma zastosowanie jedynie do XFS i jest milcząco
+ignorowana dla pozostałych rodzajów systemów plików.
+.TP 
+\fB\-x\fP, \fB\-\-xfs\-command account\fP
+Ta opcja może zostać użyta do wyłączania zliczania kwot. Nie da się włączyć
+zliczania kwot za pomocą narzędzi quota. Proszę użyć w tym celu
+\fBmount\fP(8). Ta opcja ma zastosowanie jedynie do XFS i jest milcząco
+ignorowana dla pozostałych rodzajów systemów plików.
+.SH "UWAGI NT. SYSTEMÓW PLIKÓW XFS"
+Włączanie zarówno zliczania, jak i wymuszania ograniczeń odbywa się za
+pomocą \fBmount\fP(8)  lub opcji dotyczących kwot w \fB/etc/fstab\fP.  Nie można
+stosować w tym celu programu narzędziowego \fBquotaon\fP.
+.PP
+Włączenie udziałów w głównym (korzeń) systemie plików XFS wymaga przekazania
+opcji montowania udziałów jądru w czasie rozruchu, za pomocą opcji
+rozruchowej \fBrootflags\fP Linuksa.
+.PP
+Aby wyłączyć wymuszania ograniczeń w systemie plików XFS, należy się
+najpierw upewnić, że włączone są zarówno zliczanie kwot, jak i wymuszanie
+ograniczeń, za pomocą \fBrepquota \-v\fP \fIsystem\-plików\fP. Następnie proszę użyć
+\fBquotaoff \-v\fP \fIsystem\-plików\fP, aby wyłączyć wymuszanie ograniczeń. Można
+to zrobić na zamontowanym systemie plików.
+.PP
+Włączania wymuszenia ograniczeń w systemie plików XFS można wykonać za
+pomocą \fBquotaon \-v\fP \fIsystem\-plików\fP. Można to zrobić na zamontowanym
+systemie plików.
+.SH PLIKI
+.PD 0
+.TP  20
+\fBaquota.user\fP lub \fBaquota.group\fP
+pliki kwot dyskowych umieszczone w głównym katalogu systemu plików (wersja 2
+kwot, systemy plików inne niż XFS)
+.TP 
+\fBquota.user\fP lub \fBquota.group\fP
+pliki kwot dyskowych umieszczone w głównym katalogu systemu plików (wersja 1
+kwot, systemy plików inne niż XFS)
+.TP 
+\fB/etc/fstab\fP
+domyślne systemy plików
+.PD
+.SH "ZOBACZ TAKŻE"
+\fBquotactl\fP(2), \fBfstab\fP(5), \fBquota_nld\fP(8), \fBrepquota\fP(8),
+\fBwarnquota\fP(8)
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Wojtek Kotwica (PTM) <wkotwica@post.pl>,
+Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 4.00 \fPoryginału.

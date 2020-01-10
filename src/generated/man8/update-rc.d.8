@@ -1,0 +1,255 @@
+.\" Hey, Emacs!  This is an -*- nroff -*- source file.
+.\" Authors: Ian Jackson, Miquel van Smoorenburg
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © Ian Jackson, Miquel van Smoorenburg (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Piotr Roszatycki (PTM) <dexter@debian.org>, 1999.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH UPDATE\-RC.D 8 "14 listopada 2005" "Projekt Debiana" sysv\-rc
+.SH NAZWA
+update\-rc.d \- instaluje lub usuwa dowiązania do skryptów startowych w stylu
+System\-V
+.SH SKŁADNIA
+\fBupdate\-rc.d\fP [\fI\-n\fP] [\fI\-f\fP] \fInazwa\fP\fB remove\fP
+.HP
+\fBupdate\-rc.d\fP [\fI\-n\fP] \fInazwa\fP\fB defaults\fP [\fINN\fP | \fISS\fP \fIKK\fP]
+.HP
+\fBupdate\-rc.d\fP [\fI\-n\fP] \fInazwa\fP \fBstart\fP|\fBstop\fP \fINN runlevel\fP
+[\fIrunlevel\fP]...  \fB.\fP \fBstart\fP|\fBstop\fP \fINN runlevel\fP [\fIrunlevel\fP]...
+\&\fB.\fP ...
+.HP
+\fBupdate\-rc.d\fP [\fI\-n\fP] \fInazwa\fP\fB disable|enable \fP [\fI S|2|3|4|5 \fP]
+.SH OPIS
+\fBupdate\-rc.d\fP automatycznie aktualizuje dowiązania do skryptów w stylu
+System V.  Dowiązania o nazwie \fB/etc/rc\fP\fIrunlevel\fP\fB.d/\fP\fINNnazwa\fP są
+kierowane do skryptu \fB/etc/init.d/\fP\fInazwa\fP.  Uruchamiane są przez \fBinit\fP,
+gdy zmieniany jest tryb pracy (\fIrunlevel\fP), i ogólnie używane są do
+uruchamiania oraz zatrzymywania pracy serwisów systemowych, takich jak
+demony.  \fIrunlevel\fP jest jednym z trybów pracy obsługiwanym przez \fBinit\fP,
+mianowicie \fB0123456789S\fP, a \fINN\fP jest dwucyfrowym kodem używanym przez
+\fBinit\fP do określenia kolejności uruchamiania skryptów.
+
+Ten podręcznik opisuje jedynie sposób użycia i zachowanie się polecenia
+\fBupdate\-rc.d\fP.  Szczegóły dotyczące mechanizmów skryptów startowych w stylu
+System V są zawarte w opisie \fBinit\fP(8)  oraz w dokumencie \fIDebian Policy
+Manual\fP.
+
+.SH "INSTALOWANIE DOWIĄZAŃ DO SKRYPTÓW STARTOWYCH"
+\fBupdate\-rc.d\fP zawiera dwa tryby dodawania skryptów w sekwencji startowania
+systemu: tryb przestarzały, w którym sekwencja uruchamiania i konfiguracja
+poziomu uruchamiania brane są z argumentów linii poleceń, oraz tryb
+domyślny, w którym informacje dotyczące sekwencji i poziomu odczytywane są z
+nagłówków LSB zawartych w komentarzach skryptów startowych \fIinit.d\fP. Taki
+nagłówek musi być obecny w skryptach \fIinit.d\fP, szczegółowe informacje
+dotyczące formatu nagłówka LSB można znaleźć w podręczniku
+\fBinsserv\fP(8). Decyzja o tym, który z tych dwóch trybów jest używany, zapada
+podczas instalacji lub aktualizacji systemu. Podczas aktualizacji, jeśli
+zależności deklarowane w nagłówkach LSB wszystkich zainstalowanych skryptów
+\fIinit.d\fP nie są zapętlone, system uruchomieniowy jest konwertowany do
+nowego trybu opartego na zależnościach pomiędzy skryptami
+startowymi. Konwersja jest możliwa tylko w jedną stronę. Komputery używające
+trybu przestarzałego można rozpoznać po istnieniu pliku
+\fI/etc/init.d/.legacy\-bootordering\fP.
+
+Pakiety instalujące skrypty \fIinit.d\fP powinny wspierać obie powyższe metody
+w celu zachowania zgodności z systemami, które jeszcze nie przeszły na nową
+metodę.
+
+Poniższa sekcja opisuje poprzednie zachowanie, dostępne, gdy używany jest
+tryb przestarzały.
+
+\fBupdate\-rc.d\fP uruchamiany z opcjami \fBdefaults\fP, \fBstart\fP lub \fBstop\fP,
+tworzy dowiązania o nazwie \fB/etc/rc\fP\fIrunlevel\fP\fB.d/[SK]\fP\fINNnazwa\fP do
+skryptu \fB/etc/init.d/\fP\fInazwa\fP.
+
+Jeśli istnieje już jakiś plik o nazwie
+\fB/etc/rc\fP\fIrunlevel\fP\fB.d/[SK]??\fP\fInazwa\fP, to \fBupdate\-rc.d\fP nie tworzy
+dowiązania. Dzięki temu administrator systemu może poprzestawiać dowiązania
+(zmieniając tym samym kolejność wykonywania skryptów) i jeżeli pozostanie
+przynajmniej jedno dowiązanie, to ta konfiguracja utworzona przez
+administratora nie zostanie nadpisana przez \fBupdate\-rc.d\fP. Program tworzy
+dowiązania tylko wtedy, gdy żadne dowiązanie nie jest obecne, tj. gdy wydaje
+się, że usługa nigdy wcześniej nie była zainstalowana.
+.P
+Częstym błędem popełnianym przez administratorów jest usuwanie wszystkich
+dowiązań z przekonaniem, że tym sposobem "wyłączy się" usługę, czyli że
+usługa nie będzie już uruchamiana. Jednakże, jeżeli usunie się wszystkie
+dowiązania, to podczas kolejnej aktualizacji pakietu, jego skrypt
+poinstalacyjny uruchomi \fBupdate\-rc.d\fP, które ponownie utworzy dowiązania,
+zgodnie z ustawieniami podanymi przez opiekuna pakietu. Poprawnym sposobem
+wyłączania usług jest skonfigurowanie usługi jako zatrzymanej we wszystkich
+poziomach pracy, w których wcześniej była uruchamiana. W systemie init z
+Systemu V oznacza to zmienienie nazwy dowiązaniom symbolicznym z \fBS\fP na
+\fBK\fP.
+.P
+Jeśli użyta jest opcja \fBdefaults\fP, to \fBupdate\-rc.d\fP utworzy dowiązania do
+uruchomienia serwisu w trybach pracy \fB2345\fP oraz zatrzymania serwisu w
+trybach pracy \fB016\fP. Domyślnie, wszystkie dowiązania będą miały kod
+określający kolejność o wartości 20, ale powinno to zostać nadpisane, jeśli
+występują zależności od innych usług. Na przykład jeśli usługa systemowa B
+zależy od usługi A, to A musi być uruchomione przed B, a podczas zamykania
+systemu B musi zostać zakończone wcześniej niż A. Uzyskuje się to przed
+podanie dwóch argumentów \fINN\fP. W ogólności, usługi podstawowe powinny być
+uruchamiane wcześnie (podczas startu systemu), a zabijane późno (gdy system
+jest zamykany), podczas gdy pozostałe aplikacje mogą zostać uruchomione
+później i zakończone wcześniej. Patrz sekcja \fBPRZYKŁADY\fP poniżej.
+.P
+Pierwszy argument \fINN\fP podaje numer sekwencji startowej, a drugi \fINN\fP
+określa numer sekwencji używany do zatrzymania usługi. Najpierw są
+uruchamiane skrypty zatrzymujące usługi i przekazywany jest do nich argument
+\fIstop\fP. Następnie uruchomione zostają skrypty startowe z przekazanym do
+nich argumentem \fIstart\fP. W obu przypadkach, skrypty są uruchamiane według
+rosnącej kolejności numerów sekwencji.
+.P
+Podanie pojedynczego argumentu \fINN\fP spowoduje użycie tego samego numeru
+sekwencji zarówno dla dowiązań uruchamiających i zatrzymujących usługi. Jest
+to wspierane w celu zachowania kompatybilności z poprzednimi wersjami, ale
+nie jest zalecane, ponieważ może prowadzić do niekonsekwentnych
+ustawień. Należy przyjąć następującą regułę: jeśli numer sekwencji
+uruchamiającej zostanie zwiększony, to numer sekwencji kończącej powinien
+zostać zmniejszony i na odwrót.
+.P
+Jako zasadę należy przyjąć, że numer sekwencji dowiązania zatrzymującego
+powinien być równy liczbie 100 pomniejszonej o numer sekwencji dowiązania
+uruchamiającego. Pozwala to na zatrzymywanie usług w kolejności odwrotnej do
+tej, w której były uruchamiane. Oczywiście, dlatego domyślnym numerem
+sekwencji zatrzymującej powinno być 80. Wartością domyślną jest jednak 20 z
+powodu starego błędu w \fBupdate\-rc.d\fP \(em błędu, którego nie można łatwo
+usunąć, gdyż istnieje ryzyko popsucia innych programów.
+.P
+Zamiast argumentu \fIdefaults\fP, można podać jeden lub więcej zbiorów
+argumentów określających poszczególne poziomy pracy, w których usługi będą
+uruchamiane lub zatrzymywane. Każdy z tych zbiorów argumentów zaczyna się od
+słowa kluczowego \fBstart\fP lub \fBstop\fP oraz numeru sekwencji \fInn\fP, po którym
+następuje jeden lub więcej poziomów pracy. Zbiór ten jest zakończony
+kropką. Zazwyczaj przy takim podawaniu będzie użyty jeden zbiór \fBstart\fP i
+jeden \fBstop\fP. Jeżeli wymagane jest podanie różnych numerów sekwencji w
+różnych poziomach pracy, to można użyć kilku zbiorów \fBstart\fP i
+\fBstop\fP. Jeżeli ten sam poziom pracy występuje w kilku zbiorach, to liczy
+się ten ostatni. Dlatego nie jest możliwe utworzenie kilku dowiązań \fBstart\fP
+lub \fBstop\fP dla tej samej usługi w pojedynczym katalogu trybu pracy.
+.P
+Skrypt \fB/etc/init.d/\fP\fInazwa\fP musi już istnieć w momencie wywołania
+polecenia \fBupdate\-rc.d\fP.
+.SH "USUWANIE DOWIĄZAŃ"
+\fBupdate\-rc.d\fP uruchomiony z opcją \fIremove\fP usuwa wszystkie dowiązania
+symboliczne do skryptu \fB/etc/init.d/\fP\fInazwa\fP z katalogów
+\fB/etc/rc\fP\fIrunlevel\fP\fB.d\fP. Sam skrypt musi być wcześniej usunięty. Jeżeli
+skrypt wciąż istnieje, to \fBupdate\-rc.d\fP przerywa działanie, zwracając
+odpowiedni komunikat błędu.
+.P
+\fBupdate\-rc.d\fP jest zazwyczaj uruchamiany ze skryptu usuwającego pakiet,
+jeżeli przekazano temu skryptowi argument \fBpurge\fP. Jakiekolwiek pliki w
+katalogach \fB/etc/rc\fP\fIrunlevel\fP\fB.d\fP, które nie są dowiązaniami
+symbolicznymi do \fB/etc/init.d/\fP\fInazwa\fP nie będą zmieniane.
+.SH "WYŁĄCZANIE DOWIĄZAŃ DO SKRYPTÓW STARTOWYCH"
+\fBupdate\-rc.d\fP uruchomiony z opcjami \fBdisable\fP [ \fBS|2|3|4|5\fP ] zmieni
+istniejące dowiązania  skryptu \fB/etc/init.d/\fP\fInazwa\fP przez zastąpienie
+dowiązań uruchamiających usługę na dowiązania ją zatrzymujące i ustawi im
+numer sekwencji równy różnicy między liczbą 100 a oryginalnym numerem
+sekwencji.
+.P
+\fBupdate\-rc.d\fP uruchomiony z opcjami \fBenable\fP [ \fBS|2|3|4|5\fP ] zmieni
+istniejące dowiązania  skryptu \fB/etc/init.d/\fP\fInazwa\fP przez zastąpienie
+dowiązań zatrzymujących usługę na dowiązania ją uruchamiające i ustawi im
+numer sekwencji równy różnicy między liczbą 100 a oryginalnym numerem
+sekwencji, co powinno spowodować powrót do oryginalnego numeru sekwencji, z
+którym skrypt został  zainstalowany zanim go wyłączono.
+.P
+Obie opcje działają tylko na dowiązaniach startowych w poziomach S, 2, 3, 4
+lub 5. Jeśli po słowach kluczowych \fIdisable\fP lub \fIenable\fP nie poda się
+żadnych poziomów uruchomieniowych, to skrypt spróbuje zmienić dowiązania we
+wszystkich poziomach uruchomieniowych.
+
+.SH OPCJE
+.TP  
+\fI\-n\fP
+Niczego nie rusza, tylko pokazuje, co mogłoby być zmienione.
+.TP  
+\fI\-f\fP
+Zmusza do usunięcia dowiązań, nawet w przypadku, gdyby skrypt
+\fB/etc/init.d/\fP\fInazwa\fP wciąż istniał.
+.SH PRZYKŁADY
+Utworzenie domyślnych dowiązań:
+.nf 
+\fBupdate\-rc.d blabla defaults\fP
+Odpowiadający mu nagłówek zależności określałby zależności
+uruchamiające i kończące od "$remote_fs" i "$syslog" oraz uruchamianie
+usługi w poziomach 2\-5 i jej zatrzymywanie w poziomach 0, 1 i 6.
+.fi 
+Odpowiednikiem tego polecenia będzie:
+.nf 
+\fBupdate\-rc.d blabla start 20 2 3 4 5 . stop 20 0 1 6 .\fP
+.fi 
+Bardziej typowa wersja tego polecenia, używająca wprost zbioru argumentu:
+.nf 
+\fBupdate\-rc.d blabla start 30 2 3 4 5 . stop 70 0 1 6 .\fP
+.fi 
+Dodaje dowiązania w domyślnych poziomach, kiedy B zależy od A.
+.nf 
+\fBupdate\-rc.d skrypt_dla_A defaults 80 20\fP
+\fBupdate\-rc.d skrypt_dla_B defaults 90 10\fP
+.fi 
+Dodaje dowiązanie do usługi, od której (przypuszczalnie) nie zależą żadne
+inne usługi.
+.nf 
+\fBupdate\-rc.d aplikacja_najwyższego_poziomu defaults 98 02\fP
+.fi 
+Dodaje dowiązania do skryptu, który wymaga usług uruchamiających i
+zatrzymujących o numerze sekwencji równym 20.
+.nf 
+\fBupdate\-rc.d skrypt_zależący_od_usługi_poziomu20 defaults 21 19\fP
+.fi 
+Usuwa wszystkie dowiązania dla skryptu (zakładając, że blabla zostało już
+usunięte):
+.nf 
+\fBupdate\-rc.d blabla remove\fP
+.fi 
+Przykład wyłączania usługi:
+.nf 
+\fBupdate\-rc.d \-f blabla remove\fP
+\fBupdate\-rc.d blabla stop 20 2 3 4 5 .\fP
+.fi 
+Przykład polecenia instalującego systemowy skrypt inicjacji\-i\-zamykania:
+.nf 
+\fBupdate\-rc.d blabla start 45 S . stop 31 0 6 .\fP
+.fi 
+Przykład polecenia wyłączającego systemowy skrypt inicjacji\-i\-zamykania:
+.nf 
+\fBupdate\-rc.d \-f blabla remove\fP
+\fBupdate\-rc.d blabla stop 45 S .\fP
+.fi 
+
+.SH BŁĘDY
+Patrz http://bugs.debian.org/sysv\-rc.
+.SH PLIKI
+.TP  
+\fB/etc/init.d/\fP
+Katalog zawierający aktualne skrypty startowe.
+.TP  
+\fB/etc/rc?.d/\fP
+Katalog zawierający dowiązania używane przez \fBinit\fP i modyfikowane przez
+\fBupdate\-rc.d\fP.
+.TP  
+\fB/etc/init.d/skeleton\fP
+Przykładowy skrypt do wykorzystania przez programistę przy tworzeniu
+własnych skryptów \fBinit.d\fP.
+.SH "ZOBACZ TAKŻE"
+\fIDebian Policy Manual\fP,
+.br
+\fB/etc/init.d/skeleton\fP,
+.br
+\fBinsserv\fP(8), \fBsysv\-rc\-conf\fP(8), \fBbum\fP(8), \fBinit\fP(8).
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Piotr Roszatycki (PTM) <dexter@debian.org>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.88 \fPoryginału.

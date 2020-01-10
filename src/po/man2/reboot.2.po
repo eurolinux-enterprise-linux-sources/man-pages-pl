@@ -1,0 +1,371 @@
+# Polish translation of reboot.2 man page
+# This file is distributed under the same license as original manpage
+# Copyright of the original manpage:
+# Copyright © 1998 Andries Brouwer ("manpages-1")
+# Copyright © of Polish translation:
+# Robert Luberda <robert@debian.org>, 2005, 2006, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-pl\n"
+"POT-Creation-Date: 2012-05-13 19:06+0300\n"
+"PO-Revision-Date: 2012-04-16 22:50+0200\n"
+"Last-Translator: Robert Luberda <robert@debian.org>\n"
+"Language-Team: Polish <manpages-pl-list@lists.sourceforge.net>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+
+#. type: TH
+#, no-wrap
+msgid "REBOOT"
+msgstr "REBOOT"
+
+#. type: TH
+#, no-wrap
+msgid "2010-10-31"
+msgstr "2010-10-31"
+
+#. type: TH
+#, no-wrap
+msgid "Linux"
+msgstr "Linux"
+
+#. type: TH
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr "Podręcznik programisty Linuksa"
+
+#. type: SH
+#, no-wrap
+msgid "NAME"
+msgstr "NAZWA"
+
+#. type: Plain text
+msgid "reboot - reboot or enable/disable Ctrl-Alt-Del"
+msgstr "reboot - przeładowanie systemu lub włączenie/wyłączenie Ctrl-Alt-Del"
+
+#. type: SH
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "SKŁADNIA"
+
+#. type: Plain text
+#, no-wrap
+msgid ""
+"/* For libc4 and libc5 the library call and the system call\n"
+"   are identical, and since kernel version 2.1.30 there are\n"
+"   symbolic names LINUX_REBOOT_* for the constants and a\n"
+"   fourth argument to the call: */\n"
+msgstr ""
+"/* Wywołania systemowe pod biblioteką libc4 i libc5 są identyczne,\n"
+"    a od wersji jądra 2.1.30 istnieją symboliczne nazwy LINUX_REBOOT_*\n"
+"    dla stałych oraz czwarty parametr wywołania: */\n"
+
+#. type: Plain text
+msgid "B<#include E<lt>unistd.hE<gt>>"
+msgstr "B<#include E<lt>unistd.hE<gt>>"
+
+#. type: Plain text
+msgid "B<#include E<lt>linux/reboot.hE<gt>>"
+msgstr "B<#include E<lt>linux/reboot.hE<gt>>"
+
+#. type: Plain text
+msgid ""
+"B<int reboot(int >I<magic>B<, int >I<magic2>B<, int >I<cmd>B<, void "
+"*>I<arg>B<);>"
+msgstr ""
+"B<int reboot(int >I<magic>B<, int >I<magic2>B<, int >I<cmd>B<, void "
+"*>I<arg>B<);>"
+
+#. type: Plain text
+#, no-wrap
+msgid ""
+"/* Under glibc some of the constants involved have gotten\n"
+"   symbolic names RB_*, and the library call is a 1-argument\n"
+"   wrapper around the 3-argument system call: */\n"
+msgstr ""
+"/* Pod glibc niektóre stałe dostały nazwy RB_*, a wywołanie\n"
+"    biblioteczne jest jednoargumentową funkcją  opakowującą\n"
+"    trójargumentowe wywołanie systemowe: */\n"
+
+#. type: Plain text
+msgid "B<#include E<lt>sys/reboot.hE<gt>>"
+msgstr "B<#include E<lt>sys/reboot.hE<gt>>"
+
+#. type: Plain text
+msgid "B<int reboot(int >I<cmd>B<);>"
+msgstr "B<int reboot(int >I<cmd>B<);>"
+
+#. type: SH
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "OPIS"
+
+#. type: Plain text
+msgid ""
+"The B<reboot>()  call reboots the system, or enables/disables the reboot "
+"keystroke (abbreviated CAD, since the default is Ctrl-Alt-Delete; it can be "
+"changed using B<loadkeys>(1))."
+msgstr ""
+"Wywołanie B<reboot>() przeładowuje system albo włącza lub wyłącza kombinację "
+"klawiszy odpowiedzialną za przeładowanie systemu (nazywaną w skrócie CAD od "
+"domyślnej kombinacji Ctrl-Alt-Del, którą można zmienić przy pomocy "
+"B<loadkeys>(1))."
+
+#. type: Plain text
+msgid ""
+"This system call will fail (with B<EINVAL>)  unless I<magic> equals "
+"B<LINUX_REBOOT_MAGIC1> (that is, 0xfee1dead) and I<magic2> equals "
+"B<LINUX_REBOOT_MAGIC2> (that is, 672274793).  However, since 2.1.17 also "
+"B<LINUX_REBOOT_MAGIC2A> (that is, 85072278)  and since 2.1.97 also "
+"B<LINUX_REBOOT_MAGIC2B> (that is, 369367448)  and since 2.5.71 also "
+"B<LINUX_REBOOT_MAGIC2C> (that is, 537993216)  are permitted as value for "
+"I<magic2>.  (The hexadecimal values of these constants are meaningful.)  The "
+"I<cmd> argument can have the following values:"
+msgstr ""
+"To wywołanie systemowe się nie powiedzie (z kodem B<EINVAL>), chyba że "
+"I<magic> wynosi B<LINUX_REBOOT_MAGIC1> (czyli 0xfee1dead) i I<magic2> jest "
+"równe B<LINUX_REBOOT_MAGIC2> (czyli 672274793). Jednakże I<magic2> może "
+"przyjmować dodatkowe wartości: od wersji 2.1.17 - B<LINUX_REBOOT_MAGIC2A>  "
+"(czyli 85072278), od wersji 2.1.97 - B<LINUX_REBOOT_MAGIC2B>  (czyli "
+"369367448), a od wersji  2.5.71 również B<LINUX_REBOOT_MAGIC2C> (czyli "
+"537993216). (Szesnastkowe wartości powyższych stałych mają znaczenie). "
+"Parametr I<cmd> może przyjmować następujące wartości:"
+
+#. type: TP
+#, no-wrap
+msgid "B<LINUX_REBOOT_CMD_CAD_OFF>"
+msgstr "B<LINUX_REBOOT_CMD_CAD_OFF>"
+
+#. type: Plain text
+msgid ""
+"(RB_DISABLE_CAD, 0).  CAD is disabled.  This means that the CAD keystroke "
+"will cause a B<SIGINT> signal to be sent to init (process 1), whereupon this "
+"process may decide upon a proper action (maybe: kill all processes, sync, "
+"reboot)."
+msgstr ""
+"(RB_DISABLE_CAD, 0). CAD jest wyłączony, co oznacza, że naciśnięcie "
+"kombinacji klawiszy CAD wyśle procesowi init (procesowi nr 1) sygnał "
+"B<SIGINT> i ten proces zdecyduje, jaką akcję wykonać (być może: zabicie "
+"wszystkich procesów, sync, restart)."
+
+#. type: TP
+#, no-wrap
+msgid "B<LINUX_REBOOT_CMD_CAD_ON>"
+msgstr "B<LINUX_REBOOT_CMD_CAD_ON>"
+
+#. type: Plain text
+msgid ""
+"(RB_ENABLE_CAD, 0x89abcdef).  CAD is enabled.  This means that the CAD "
+"keystroke will immediately cause the action associated with "
+"B<LINUX_REBOOT_CMD_RESTART>."
+msgstr ""
+"(RB_ENABLE_CAD, 0x89abcdef). CAD jest włączony, co oznacza, że naciśnięcie "
+"klawiszy CAD wywoła od razu akcję skojarzoną z B<LINUX_REBOOT_CMD_RESTART>."
+
+#. type: TP
+#, no-wrap
+msgid "B<LINUX_REBOOT_CMD_HALT>"
+msgstr "B<LINUX_REBOOT_CMD_HALT>"
+
+#. type: Plain text
+msgid ""
+"(RB_HALT_SYSTEM, 0xcdef0123; since 1.1.76).  The message \"System halted.\" "
+"is printed, and the system is halted.  Control is given to the ROM monitor, "
+"if there is one.  If not preceded by a B<sync>(2), data will be lost."
+msgstr ""
+"(RB_HALT_SYSTEM, 0xcdef0123; od wersji 1.1.76). Wypisywany jest komunikat "
+"\"System halted.\", a system jest zatrzymywany. Kontrola jest przekazywana "
+"do monitora ROM, jeżeli istnieje. Jeżeli nie wywołano wcześniej B<sync>(2), "
+"niezapisane dane zostaną utracone."
+
+#. type: TP
+#, no-wrap
+msgid "B<LINUX_REBOOT_CMD_KEXEC> (since Linux 2.6.13)"
+msgstr "B<LINUX_REBOOT_CMD_KEXEC> (od wersji 2.6.13 systemu Linux)"
+
+#. type: Plain text
+msgid ""
+"Execute a kernel that has been loaded earlier with B<kexec_load>(2).  This "
+"option is only available if the kernel was configured with B<CONFIG_KEXEC>."
+msgstr ""
+"Uruchamia jądro załadowane wcześniej za pomocą B<kexec_load>(2). Opcja jest "
+"dostępna tylko wtedy, jeśli jądro zostało skonfigurowane z B<CONFIG_KEXEC>."
+
+#. type: TP
+#, no-wrap
+msgid "B<LINUX_REBOOT_CMD_POWER_OFF>"
+msgstr "B<LINUX_REBOOT_CMD_POWER_OFF>"
+
+#. type: Plain text
+msgid ""
+"(0x4321fedc; since 2.1.30).  The message \"Power down.\" is printed, the "
+"system is stopped, and all power is removed from the system, if possible.  "
+"If not preceded by a B<sync>(2), data will be lost."
+msgstr ""
+"(0x4321fedc; od wersji 2.1.30).  Wypisywany jest komunikat \"Power down.\", "
+"system jest zatrzymywany i jeżeli jest to możliwe, zasilanie jest "
+"odłączane.  Jeżeli nie wywołano wcześniej B<sync>(2), niezapisane dane "
+"zostaną utracone."
+
+#. type: TP
+#, no-wrap
+msgid "B<LINUX_REBOOT_CMD_RESTART>"
+msgstr "B<LINUX_REBOOT_CMD_RESTART>"
+
+#. type: Plain text
+msgid ""
+"(RB_AUTOBOOT, 0x1234567).  The message \"Restarting system.\" is printed, "
+"and a default restart is performed immediately.  If not preceded by a B<sync>"
+"(2), data will be lost."
+msgstr ""
+"(RB_AUTOBOOT, 0x1234567).  Wypisywany jest komunikat  \"Restarting system."
+"\", a natychmiast po tym następuje przeładowanie systemu. Jeżeli nie "
+"wywołano wcześniej B<sync>(2), niezapisane dane zostaną utracone."
+
+#. type: TP
+#, no-wrap
+msgid "B<LINUX_REBOOT_CMD_RESTART2>"
+msgstr "B<LINUX_REBOOT_CMD_RESTART2>"
+
+#. type: Plain text
+msgid ""
+"(0xa1b2c3d4; since 2.1.30).  The message \"Restarting system with command "
+"\\(aq%s\\(aq\" is printed, and a restart (using the command string given in "
+"I<arg>)  is performed immediately.  If not preceded by a B<sync>(2), data "
+"will be lost."
+msgstr ""
+"(0xa1b2c3d4; od wersji 2.1.30).  Wypisywany jest komunikat \"Restarting "
+"system with command \\(aq%s\\(aq\" i natychmiast po nim system jest "
+"przeładowywany  (używając polecenia podanego w argumencie I<arg>). Jeżeli "
+"nie wywołano wcześniej B<sync>(2), niezapisane dane zostaną utracone."
+
+#. type: Plain text
+msgid "Only the superuser may call B<reboot>()."
+msgstr "Tylko administrator może wywołać funkcję B<reboot>()."
+
+#. type: Plain text
+msgid ""
+"The precise effect of the above actions depends on the architecture.  For "
+"the i386 architecture, the additional argument does not do anything at "
+"present (2.1.122), but the type of reboot can be determined by kernel "
+"command-line arguments (\"reboot=...\") to be either warm or cold, and "
+"either hard or through the BIOS."
+msgstr ""
+"Dokładny wynik powyższych akcji zależy od architektury komputera. Obecnie "
+"(2.1.122) dodatkowy parametr nie ma żadnego znaczenia dla architektury i386, "
+"jednakże typ restartowania systemu może być określony w argumentach linii "
+"poleceń jądra (\"reboot=...\") jako restart albo ciepły, albo zimny oraz "
+"albo twardy, albo przez BIOS."
+
+#. type: SH
+#, no-wrap
+msgid "RETURN VALUE"
+msgstr "WARTOŚĆ ZWRACANA"
+
+#. type: Plain text
+msgid ""
+"For the values of I<cmd> that stop or restart the system, a successful call "
+"to B<reboot>()  does not return.  For the other I<cmd> values, zero is "
+"returned on success.  In all cases, -1 is returned on failure, and I<errno> "
+"is set appropriately."
+msgstr ""
+"Jeśli podano wartość I<cmd> powodującą zatrzymanie lub zrestartowanie "
+"systemu, to B<reboot>() nie powraca. W przypadku innych wartości parametru "
+"I<cmd> zwracane jest zero, jeśli funkcja zakończyła się powodzeniem. We "
+"wszystkich przypadkach (niezależnie od wartości I<cmd>) w razie wystąpienia "
+"błędu zwracane jest -1 i zmienna I<errno> jest ustawiana na odpowiednią "
+"wartość. "
+
+#. type: SH
+#, no-wrap
+msgid "ERRORS"
+msgstr "BŁĘDY"
+
+#. type: TP
+#, no-wrap
+msgid "B<EFAULT>"
+msgstr "B<EFAULT>"
+
+#. type: Plain text
+msgid "Problem with getting userspace data under B<LINUX_REBOOT_CMD_RESTART2>."
+msgstr ""
+"Problem pobierania danych z przestrzeni użytkownika w wypadku wywołania "
+"B<LINUX_REBOOT_CMD_RESTART2>."
+
+#. type: TP
+#, no-wrap
+msgid "B<EINVAL>"
+msgstr "B<EINVAL>"
+
+#. type: Plain text
+msgid "Bad magic numbers or I<cmd>."
+msgstr "Niepoprawne liczby magiczne lub I<cmd>."
+
+#. type: TP
+#, no-wrap
+msgid "B<EPERM>"
+msgstr "B<EPERM>"
+
+#. type: Plain text
+msgid ""
+"The calling process has insufficient privilege to call B<reboot>(); the "
+"B<CAP_SYS_BOOT> capability is required."
+msgstr ""
+"Proces wywołujący nie ma odpowiednich uprawnień, aby wywołać B<reboot>(); "
+"wymagane jest posiadanie przywileju B<CAP_SYS_BOOT>."
+
+#. type: SH
+#, no-wrap
+msgid "CONFORMING TO"
+msgstr "ZGODNE Z"
+
+#. type: Plain text
+msgid ""
+"B<reboot>()  is Linux-specific, and should not be used in programs intended "
+"to be portable."
+msgstr ""
+"Funkcja B<reboot>() jest specyficzna dla Linuksa i nie powinna być używana w "
+"programach, które mają działać pod różnymi systemami."
+
+#. type: SH
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "ZOBACZ TAKŻE"
+
+#. type: Plain text
+msgid ""
+"B<sync>(2), B<bootparam>(7), B<capabilities>(7), B<ctrlaltdel>(8), B<halt>"
+"(8), B<reboot>(8)"
+msgstr ""
+"B<sync>(2), B<bootparam>(7), B<capabilities>(7), B<ctrlaltdel>(8), B<halt>"
+"(8), B<reboot>(8)"
+
+#. type: SH
+#, no-wrap
+msgid "COLOPHON"
+msgstr "O STRONIE"
+
+#. type: Plain text
+msgid ""
+"This page is part of release 3.40 of the Linux I<man-pages> project.  A "
+"description of the project, and information about reporting bugs, can be "
+"found at http://www.kernel.org/doc/man-pages/."
+msgstr ""
+"Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux I<man-"
+"pages>. Opis projektu oraz informacje dotyczące zgłaszania błędów można "
+"znaleźć pod adresem http://www.kernel.org/doc/man-pages/."
+
+#~ msgid "2004-05-27"
+#~ msgstr "2004-05-27"
+
+#~ msgid ""
+#~ "On success, zero is returned.  On error, -1 is returned, and I<errno> is "
+#~ "set appropriately."
+#~ msgstr ""
+#~ "W przypadku powodzenia zwracane jest zero. W razie wystąpienia błędu "
+#~ "zwracane jest -1 i ustawiana jest odpowiednia wartość zmiennej I<errno>."

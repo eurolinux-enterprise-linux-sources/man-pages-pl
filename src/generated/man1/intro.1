@@ -1,0 +1,234 @@
+.\" Copyright (c) 2002 Andries Brouwer <aeb@cwi.nl>
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" 2007-10-23 mtk Added intro paragraph about section, plus a paragraph
+.\"     about exit status values.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2002 Andres Brouwer 
+.\" Copyright © of Polish translation:
+.\" Adam Byrtek (PTM) <alpha@irc.pl>, 1999.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH INTRO 1 2007\-11\-15 Linux "Podręcznik użytkownika Linuksa"
+.SH NAZWA
+intro \- Wprowadzenie do poleceń użytkownika
+.SH OPIS
+Sekcja 1. podręcznika ekranowego opisuje polecenia i narzędzia dostępne dla
+użytkowników, na przykład narzędzia obróbki teksów, powłoki, kompilatory,
+przeglądarki stron www, przeglądarki plików i obrazów, edytory itd.
+
+Wszystkie polecenia po swoim zakończeniu zwracają pewną wartość, której
+można użyć do sprawdzenia, czy polecenie zakończyło się sukcesem (np. w
+większości powłok zmienna \fI$?\fP zawiera kod zakończenia ostatnio
+wykonywanego polecenia). Kod wyjścia równy zero zwyczajowo oznacza sukces, a
+kod niezerowy oznacza błąd (więcej szczegółów można znaleźć w
+\fBwait\fP(2)). Kod niezerowy może zawierać się w przedziale od 1 do
+255. Niektóre polecenia używają różnych wartości niezerowych kodów wyjścia
+do wskazania powodu, dla którego polecenie zakończyło się niepowodzeniem.
+.SH UWAGI
+Linux jest odmianą systemu UNIX i w zasadzie wszystkie uniksowe polecenia
+użytkownika działają dokładnie tak samo pod Linuksem (oraz pod FreeBSD i na
+wielu innych systemach uniksopodobnych).
+.LP
+Pod Linuksem są dostępne różne graficzne środowiska użytkownika (GUI,
+graphical user interface), w których można używać myszki do wykonywania
+różnych operacji, co pozwala zacząć pracę bez wcześniejszego przebijania się
+przez tony dokumentacji. Jednakże tradycyjnym środowiskiem Uniksa jest
+interfejs linii poleceń (CLI,  command line interface), w którym wpisuje się
+polecenia, aby powiedzieć komputerowi, co ma zrobić. Jest to szybsze i ma
+większe możliwości, ale wymaga sprawdzenia, jakie te komendy są.  Poniżej
+przedstawiono podstawowe minimum, tak na początek.
+.SS Logowanie
+Aby zacząć pracę, najprawdopodobniej trzeba się zalogować do systemu, czyli
+wprowadzić nazwę użytkownika i hasło. Patrz także \fBlogin\fP(1). Program
+\fIlogin\fP uruchamia \fIpowłokę\fP (interpreter poleceń). W przypadku środowiska
+graficznego, wyświetlony zostanie ekran z menu lub ikonkami i powłokę będzie
+można uruchomić kliknięciem myszy. Patrz także \fBxterm\fP(1).
+.SS "Powłoka (shell)"
+Polecenia są wydawane \fIpowłoce\fP, czyli interpreterowi poleceń. Jest to
+zwykły program i można go zmienić. Każdy ma swoją ulubioną powłokę. Ta
+standardowa nazywa się \fIsh\fP. Patrz także: \fBash\fP(1), \fBbash\fP(1), \fBcsh\fP(1),
+\fBzsh\fP(1), \fBchsh\fP(1).
+.LP
+Przykładowa sesja może wyglądać tak:
+
+.RS
+.nf
+\fBknuth login: \fP\fIaeb\fP
+\fBPassword: \fP\fI********\fP
+\fB% \fP\fIdate\fP
+wto, 6 sie 2002, 23:50:44 CEST
+\fB% \fP\fIcal\fP
+   Sierpień 2002
+ni po wt śr cz pi so
+             1  2  3
+ 4  5  6  7  8  9 10
+11 12 13 14 15 16 17
+18 19 20 21 22 23 24
+25 26 27 28 29 30 31
+
+\fB% \fP\fIls\fP
+bin  tel
+\fB% \fP\fIls \-l\fP
+razem 2
+drwxrwxr\-x   2 aeb       1024 2002\-08\-06 23:51 bin
+\-rw\-rw\-r\-\-   1 aeb         37 2002\-08\-06 23:52 tel
+\fB% \fP\fIcat tel\fP
+maja    0501\-1136285
+peter   0136\-7399214
+\fB% \fP\fIcp tel tel2\fP
+\fB% \fP\fIls \-l\fP
+razem 3
+drwxr\-xr\-x   2 aeb       1024 2002\-08\-06 23:51 bin
+\-rw\-r\-\-r\-\-   1 aeb         37 2002\-08\-06 23:52 tel
+\-rw\-r\-\-r\-\-   1 aeb         37 2002\-08\-06 23:53 tel2
+\fB% \fP\fImv tel tel1\fP
+\fB% \fP\fIls \-l\fP
+razem 3
+drwxr\-xr\-x   2 aeb       1024 2002\-08\-06 23:51 bin
+\-rw\-r\-\-r\-\-   1 aeb         37 2002\-08\-06 23:52 tel1
+\-rw\-r\-\-r\-\-   1 aeb         37 2002\-08\-06 23:53 tel2
+\fB% \fP\fIdiff tel1 tel2\fP
+\fB% \fP\fIrm tel1\fP
+\fB% \fP\fIgrep maja tel2\fP
+maja    0501\-1136285
+\fB% \fP
+.fi
+.RE
+i tutaj wprowadzenie Control\-D zakończyło sesję.  Znak \fB% \fP był znakiem
+zachęty \(em jest to sposób oznajmiania przez powłokę, że jest gotowa na
+przyjęcie kolejnego polecenia. Znak zachęty może być skonfigurowany na wiele
+sposobów, można w nim umieścić takie rzeczy, jak nazwa użytkownika, nazwa
+komputera, bieżący katalog, czas, itd. Przypisanie PS1="Co dalej, mistrzu? "
+zmieni znak zachęty na właśnie taki, jak podano.
+.LP
+Widzieliśmy, że istnieją polecenia \fIdate\fP (wyświetla datę i czas) oraz
+\fIcal\fP (pokazuje kalendarz).
+.LP
+Polecenie \fIls\fP listuje zawartość bieżącego katalogu \(em mówi, jakie  pliki
+znajdują się w katalogu. Z opcją \fI\-l\fP wyświetla długą listę, która zawiera
+właściciela, rozmiar i datę pliku oraz uprawnienia do czytania i/lub
+zmieniania pliku. Na przykład plik "tel" ma 37 bajtów, jego właścicielem
+jest aeb i właściciel może czytać z pliku i do niego zapisywać, inni mogą
+tylko czytać.  Właściciela i uprawnienia można zmienić poleceniami \fIchown\fP
+i \fIchmod\fP.
+.LP
+Polecenie \fIcat\fP wyświetla zawartość pliku. (Nazwa pochodzi od "concatenate
+and print" ("scal i wydrukuj"): wszystkie pliki podane jako parametry są
+łączone a następnie wysyłane na "standardowe wyjście", w tym przypadku ekran
+terminalu).
+.LP
+Polecenie \fIcp\fP (od "copy" \(em "kopiuj") skopiuje plik. Z drugiej strony,
+polecenie \fImv\fP (od "move" \(em "przenieś") tylko zmieni mu nazwę.
+.LP
+Polecenie \fIdiff\fP wyświetla różnice między dwoma plikami. Tutaj nie było
+żadnego wyjścia, ponieważ nie było różnic.
+.LP
+Polecenie \fIrm\fP (od "remove" \(em "usuń") usuwa plik i \(em bądź ostrożny!
+\(em plik nieodwołalnie znika. Nie ma kosza ani nic w tym rodzaju. Usunięcie
+oznacza utracenie pliku.
+.LP
+Polecenie \fIgrep\fP (od "g/re/p") szuka wystąpień podanego łańcucha znaków w
+jednym lub więcej plikach.  Tutaj znalazło numer telefonu Mai.
+.SS "Ścieżki i katalog bieżący"
+Pliki znajdują się w rozległym drzewie, hierarchii plików.  Każda ma \fInazwę
+ścieżki\fP, opisującą ścieżkę z korzenia drzewa (który jest nazywany /) do
+pliku. Na przykład taką pełną ścieżką mogłoby być /home/aeb/tel. Ponieważ
+podawanie pełnych ścieżek za każdym razem nie byłoby zbyt wygodne, więc dla
+plików znajdujących się w bieżącym katalogu można podać tylko ostatni
+komponent ścieżki. To dlatego "/home/eb/tel" można skrócić do "tel", jeżeli
+bieżącym katalogiem jest "/home/aeb".
+.LP
+Polecenie \fIpwd\fP wyświetla nazwę bieżącego katalogu.
+.LP
+Polecenie \fIcd\fP zmienia bieżący katalog.  Wypróbuj: "cd /" i "pwd" oraz "cd"
+i "pwd".
+.SS Katalogi
+Polecenie \fImkdir\fP tworzy nowy katalog.
+.LP
+Polecenie \fIrmdir\fP usuwa katalog, jeżeli jest pusty, lub zgłasza błąd w
+przeciwnym wypadku.
+.LP
+Polecenie \fIfind\fP (z raczej rozbudowaną składnią) wyszuka pliki o danej
+nazwie lub innej właściwości. Na przykład "find . \-name tel" znalazłoby
+wszystkie pliki "tel", zaczynając wyszukiwanie od obecnego katalogu (który
+jest nazywany "."). A "find / \-name tel" zrobiłoby to samo, ale zaczęłoby
+wyszukiwanie od korzenia drzewa. Ponieważ przeszukiwanie wielogigabajtowego
+dysku może zająć sporo czasu, czasami lepszym pomysłem może być użycie
+polecenia \fBlocate\fP(1).
+.SS "Dyski i systemy plików"
+Polecenie \fImount\fP dołącza system plików znaleziony na jakimś dysku (lub
+dyskietce, CDROM\-ie itp.) do hierarchii systemu plików. A \fIumount\fP z
+powrotem go odłącza. Polecenie \fIdf\fP mówi, ile wolnego miejsca pozostało na
+dysku.
+.SS Procesy
+W systemach uniksowych może jednocześnie działać wiele procesów, zarówno
+uruchomionych przez użytkownika, jak i systemowych. Procesy uruchamiane z
+konsoli są \fIprocesami pierwszoplanowymi\fP, a pozostałe są \fIprocesami
+działającymi w tle\fP.  Polecenie \fIps\fP pokazuje, jakie procesy są aktywne i
+jakie numery zostały przypisane tym procesom. Polecenie \fIkill\fP pozwala na
+pozbycie się procesów. Bez żadnej opcji wysyła tylko przyjacielskie żądanie:
+proszę się zakończyć. A "kill \-9", po którym następuje numer procesu,
+natychmiast zabije proces. Procesy pierwszoplanowe mogą często zostać zabite
+przez naciśnięcie Control\-C.
+.SS "Wyszukiwanie informacji"
+Istnieją tysiące poleceń, każde mające wiele opcji. Tradycyjnie polecenia są
+udokumentowane w \fIstronach podręcznika ekranowego\fP (takich, jak ta), tak
+więc polecenie "man kill" dokumentuje sposób użycia polecenia "kill" (a "man
+man" wyświetla dokumentację programu "man").  Program \fIman\fP wyświetla tekst
+za pomocą \fIpager\fPa, którym zazwyczaj jest \fIless\fP.  Naciśnij klawisz
+spacji, aby wyświetlić kolejną stronę, naciśnij q, aby zakończyć.
+.LP
+Wszelka dokumentacja zwyczajowo odwołuje się do stron podręcznika ekranowego
+przez podanie nazwy i numeru sekcji, jak na przykład \fBman\fP(1). Strony
+podręcznika są zwięzłe i pozwalają na szybkie wyszukanie jakiegoś
+zapomnianego szczegółu. Dla nowych użytkowników użyteczny jest tekst
+wprowadzenia z większą liczbą przykładów i wyjaśnień.
+.LP
+Z wieloma programami GNU/FSF są dostarczane pliki info.  Polecenie "info
+info" wyświetli wprowadzenie na temat użycia programu "info".
+.LP
+.\"
+.\" Actual examples? Separate section for each of cat, cp, ...?
+.\" gzip, bzip2, tar, rpm
+Specjalne tematy są często omawiane w dokumentach HOWTO. Sprawdź zawartość
+katalogu \fI/usr/share/doc/howto/pl\fP lub \fI/usr/share/doc/howto/en\fP i użyj
+przeglądarki www, jeżeli znajdziesz tam pliki HTML.
+.SH "ZOBACZ TAKŻE"
+\fBstandards\fP(7)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Adam Byrtek (PTM) <alpha@irc.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

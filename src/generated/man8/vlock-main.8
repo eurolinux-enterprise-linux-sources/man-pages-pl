@@ -1,0 +1,86 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1994-1998 Michael K. Johnson,2007 Frank Benkstein (GPL-2)
+.\" Copyright © of Polish translation:
+.\" Paweł Sędrowski (ptm.berlios.de) <sedros@gmail.com>, 2006.
+.\" Robert Luberda <robert@debian.org>, 2012.
+.TH VLOCK\-MAIN 8 "28 lipca 2007" Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+vlock\-main \- blokowanie bieżącej konsoli wirtualnej
+.SH SKŁADNIA
+\fBvlock\-main [dodatki...]\fP
+.SH OPIS
+\fBvlock\-main\fP jest częścią programu \fBvlock\fP(1) służącego do blokowania
+konsoli wirtualnej pod Linuksem. Blokuje bieżącą sesję konsoli i zakończy
+się tylko w przypadku, gdy użytkownik wprowadzi poprawne
+hasło. Administrator systemu także może odblokować sesję, chyba że
+funkcjonalność ta została wyłączona podczas kompilacji programu. Argumenty
+linii poleceń określają dodatki (pluginy), które \fBvlock\-main\fP powinien
+załadować. Więcej informacji można znaleźć w \fBvlock\-plugins\fP(5).
+.PP
+Jeśli obsługa dodatków  została wyłączona podczas kompilacji, to jedynym
+obsługiwanym argumentem jest "\fIall\fP".
+.SH "ZMIENNE ŚRODOWISKA"
+Aby zmienić zachowanie programu \fBvlock\-main\fP, można ustawić następujące
+zmienne środowiska:
+.PP
+\fBUSER\fP
+.IP
+Jeśli jest ustawiona, kiedy \fBvlock\-main\fP działa jako administrator
+(identyfikator  użytkownika równy 0), to \fBvlock\fP blokuje ekran w imieniu
+tego użytkownika. Hasło administratora wciąż może zostać użyte do
+odblokowania sesji, chyba że zostało to wyłączone podczas kompilacji
+programu.
+.PP
+\fBVLOCK_ALL_MESSAGE\fP
+.IP
+Jeśli ustawiono tę zmienną i zablokowane są wszystkie konsole, to jej
+zawartość będzie wyświetlana zamiast domyślnego komunikatu o zablokowaniu
+konsoli.
+.PP
+\fBVLOCK_CURRENT_MESSAGE\fP
+.IP
+Jeśli ustawione tę zmienną i zablokowana jest tylko bieżąca konsola, to
+zawartość tej zmiennej będzie wyświetlana zamiast domyślnego komunikatu o
+zablokowaniu konsoli.
+.PP
+\fBVLOCK_MESSAGE\fP
+.IP
+Jeśli ustawiono tę zmienną, to jej zawartość będzie wyświetlana zamiast
+domyślnego komunikatu o zablokowaniu konsoli. Nadpisuje obie poprzednie
+zmienne.
+.PP
+\fBVLOCK_TIMEOUT\fP
+.IP
+Zmienna określa timeout (w sekundach), po którym zostaną uruchomione (jeśli
+są załadowane) dodatki wygaszacza ekranu. Jeśli zmienna nie jest ustawiona
+lub zawiera wartość niepoprawną albo 0, to timeout nie będzie użyty. Więcej
+informacji o dodatkach można znaleźć w \fBvlock\-plugins\fP(5).
+.PP
+\fBVLOCK_PROMPT_TIMEOUT\fP
+.IP
+Za pomocą tej zmiennej można ustawić czas (w sekundach) wymagany na
+wprowadzenie hasła, gdy jest to potrzebne. Jeśli zmienna nie jest ustawiona
+lub zawiera wartość niepoprawną albo 0, to timeout nie będzie
+użyty. \fBOstrzeżenie\fP: Nadanie tej zmiennej zbyt małej wartości może
+uniemożliwić odblokowanie sesji.
+.PP
+.SH SYGNAŁY
+Kilka sygnałów jest ignorowanych. Po otrzymaniu sygnału \fBSIGTERM\fP,
+\fBvlock\-main\fP spróbuje zakończyć swoje działanie.
+.SH "ZOBACZ TAKŻE"
+\fBvlock\fP(1), \fBvlock\-plugins\fP(5)
+.SH AUTORZY
+Frank Benkstein <frank\-vlock@benkstein.net>
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Paweł Sędrowski (ptm.berlios.de) <sedros@gmail.com>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.2.2 \fPoryginału.

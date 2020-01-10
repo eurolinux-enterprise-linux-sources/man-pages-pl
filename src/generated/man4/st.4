@@ -1,0 +1,746 @@
+.\" Copyright 1995 Robert K. Nichols (Robert.K.Nichols@att.com)
+.\" Copyright 1999-2005 Kai MÃ¤kisara (Kai.Makisara@kolumbus.fi)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1995 Robert K. Nichols, 1999-2005 Kai Mäkisara 
+.\" Copyright © of Polish translation:
+.\" Piotr Pogorzelski (PTM) <piotr.pogorzelski@ippt.gov.pl>, 1996.
+.\" Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>, 2002.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH ST 4 04\-09\-2010 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+st \- urządzenie taśmy SCSI
+.SH SKŁADNIA
+.nf
+\fB#include <sys/mtio.h>\fP
+.sp
+\fBint ioctl(int \fP\fIfd\fP\fB, int \fP\fIrequest\fP\fB [, (void *)\fP\fIarg3\fP\fB]);\fP
+\fBint ioctl(int \fP\fIfd\fP\fB, MTIOCTOP, (struct mtop *)\fP\fImt_cmd\fP\fB);\fP
+\fBint ioctl(int \fP\fIfd\fP\fB, MTIOCGET, (struct mtget *)\fP\fImt_status\fP\fB);\fP
+\fBint ioctl(int \fP\fIfd\fP\fB, MTIOCPOS, (struct mtpos *)\fP\fImt_pos\fP\fB);\fP
+.fi
+.SH OPIS
+Sterownik \fBst\fP udostępnia interfejs do różnego rodzaju napędów taśm
+magnetycznych SCSI.  Obecnie sterownik przejmuje kontrolę nad wszystkimi
+wykrytymi urządzeniami typu "sequential\-access" (dostępu
+sekwencyjnego). Sterownikowi \fBst\fP przydzielony został numer główny 9.
+.PP
+Każde urządzenie ma osiem numerów podrzędnych. Na pięciu najniższych bitach
+numeru podrzędnego reprezentowane są przydzielone kolejno numery urządzeń
+(kolejność detekcji). Numery podrzędne można pogrupować w dwóch zbiorach po
+cztery numery: główne numery podrzędne (urządzenia z przewijaniem), \fIn\fP,
+oraz numery urządzeń "bez przewijania", (\fIn\fP+ 128).  Urządzenie otwarte
+przy wykorzystaniu głównego numeru podrzędnego otrzyma polecenie \fBREWIND\fP
+podczas jego zamykania. Urządzenia otwierane przy wykorzystaniu numeru
+urządzenia "bez przewijania" nie otrzymają takiego rozkazu. (Trzeba
+zauważyć, że używanie urządzenia "bez przewijania" do pozycjonowania taśmy,
+na przykład za pomocą mt, nie prowadzi do pożądanego efektu: taśma jest
+przewijana po wydaniu polecenia mt i następne polecenie zaczyna od początku
+taśmy.)
+.PP
+W każdej grupie dostępne są cztery numery podrzędne, definiujące urządzenia
+o różnej charakterystyce (rozmiar bloku, kompresja, gęstość itp.).  Podczas
+startu systemu dostępne jest tylko pierwsze urządzenie. Aktywacja
+pozostałych trzech następuje po zdefiniowaniu ich domyślnych charakterystyk
+(patrz niżej). (Zmieniając wartości stałych podczas kompilacji, możliwa jest
+zmiana równowagi pomiędzy maksymalną liczbą napędów taśm a liczbą numerów
+podrzędnych dla każdego napędu. Domyślna alokacja powala na sterowanie 32
+napędami taśm. Na przykład, można sterować nie więcej niż 64 napędami taśm,
+posiadając po dwa numery podrzędne dla różnych opcji.)
+.PP
+Pliki urządzeń są zwykle tworzone za pomocą poleceń:
+.in +4n
+.nf
+
+mknod \-m 666 /dev/st0 c 9 0
+mknod \-m 666 /dev/st0l c 9 32
+mknod \-m 666 /dev/st0m c 9 64
+mknod \-m 666 /dev/st0a c 9 96
+mknod \-m 666 /dev/nst0 c 9 128
+mknod \-m 666 /dev/nst0l c 9 160
+mknod \-m 666 /dev/nst0m c 9 192
+mknod \-m 666 /dev/nst0a c 9 224
+.fi
+.in
+.PP
+Brak jest odpowiadających urządzeń blokowych.
+.PP
+Sterownik używa wewnętrznego bufora o rozmiarze dostatecznie dużym, by
+pomieścił co najmniej jeden blok taśmy. W jądrach wcześniejszych niż 2.1.121
+bufor ten jest przydzielany jako jeden ciągły blok pamięci. Ogranicza to
+rozmiar bloku na taśmie do największego ciągłego bloku pamięci, który może
+zostać przydzielony przez procedurę przydzielania pamięci w jądrze.  Obecnie
+ograniczenie to wynosi 128 kB dla architektur 32\-bitowych i 256 kB dla
+architektur 64\-bitowych. W nowszych jądrach sterownik przydziela, jeśli
+trzeba, pamięć dla bufora w kilku częściach. Domyślna maksymalna liczba
+fragmentów wynosi 16. Oznacza to, że maksymalny rozmiar bloku jest bardzo
+duży (2 MB, jeśli uda się przydzielić 16 bloków po 128 kB).
+.PP
+Rozmiar wewnętrznego bufora sterownika jest określony przez stałą czasu
+kompilacji, ale można go zmienić za pomocą opcji startowej jądra. Dodatkowo,
+sterownik próbuje przydzielać większy bufor tymczasowy, jeśli zajdzie taka
+potrzeba w trakcie pracy. Jednakże, przydzielanie podczas pracy dużych
+ciągłych bloków pamięci może się nie udać i zaleca się nie polegać za bardzo
+na przydzielaniu buforów dynamicznych w jądrach starszych niż 2.1.121
+(dotyczy to także ładowania na żądanie sterownika za pomocą kerneld lub
+kmod).
+.PP
+Ten sterownik nie zawiera żadnej specyficznej obsługi dla taśm wybranego
+producenta, czy modelu. Po starcie systemu opcje urządzenia taśmowego są
+określane na podstawie firmware napędu. Na przykład, jeśli firmware napędu
+wybiera tryb o stałej długości bloku, urządzenie taśmowe również używa trybu
+o stałej długości bloku. Opcje te można zmienić za pomocą jawnych wywołań
+\fBioctl\fP(2) i zmiany te pozostają aktywne, gdy urządzenie zostanie zamknięte
+i ponownie otwarte. Ustawione opcje dotyczą zarówno urządzeń z przewijaniem,
+jak i bez przewijania.
+.PP
+Można podawać różne opcje dla różnych urządzeń w ramach podgrupy czterech
+urządzeń. Opcje są ustawiane dla urządzenia, gdy jest otwierane. Na
+przykład, administrator systemu może zdefiniować jedno urządzenie zapisujące
+w trybie o stałej długości bloku i jedno zapisujące w trybie o zmiennej
+długości bloku (jeśli napęd obsługuje obydwa tryby).
+.PP
+Sterownik obsługuje \fBstrefy taśm\fP, jeśli są one obsługiwane przez
+napęd. (Trzeba tu zwrócić uwagę, że strefy taśm nie mają nic wspólnego z
+partycjami dysków [po angielsku w obu przypadkach "partitions" \-
+przyp. tłum.]. Taśma podzielona na strefy może być widziana jako kilka
+logicznych taśm na jednym nośniku). Obsługę stref trzeba włączyć za pomocą
+\fBioctl\fP(2). Przy zmianach stref zachowywane jest położenie na taśmie w
+obrębie każdej ze stref. Strefę, której mają dotyczyć następne operacje
+wybiera się za pomocą \fBioctl\fP(2). Przełączanie stref odbywa się łącznie z
+następną operacją na taśmie, aby uniknąć niepotrzebnego przewijania taśmy.
+Maksymalna liczba stref na taśmie określona jest przez stałą czasu
+kompilacji (pierwotnie: cztery). Sterownik zawiera \fBioctl\fP(2) pozwalający
+sformatować taśmę z jedną lub dwiema strefami.
+.PP
+Urządzenie \fI/dev/tape\fP jest zwykle dowiązaniem zwykłym lub symbolicznym do
+domyślnego urządzenia reprezentującego taśmę magnetyczną w danym systemie.
+.PP
+Od jądra 2.6.2, sterownik eksportuje do katalogu sysfs
+\fI/sys/class/scsi_tape\fP dołączone urządzenia i część parametrów przypisanych
+do urządzenia.
+.SS "Transfer danych"
+Sterownik może pracować zarówno w trybie o stałej, jak i o zmiennej długości
+bloku (jeśli napęd obsługuje oba tryby). W trybie o stałej długości bloku
+napęd zapisuje bloki określonej długości i rozmiar bloku nie zależy od
+liczby bajtów, która została podana systemowej funkcji zapisu. W trybie o
+zmiennej długości bloku zapisywany jest jeden blok przy każdym wywołaniu
+funkcji zapisu, a liczba bajtów podanych tej funkcji określa rozmiar
+odpowiedniego bloku na taśmie. Należy tu zwrócić uwagę, ze bloki na taśmie
+nie zawierają informacji o trybie zapisu: jedyną ważną rzeczą podczas
+odczytu jest używanie poleceń akceptujących rozmiary bloków znajdujących się
+na taśmie.
+.PP
+W trybie o zmiennej długości bloku ilość odczytywanych bajtów nie musi
+dokładnie odpowiadać długości bloku na taśmie. Jeśli liczba bajtów jest
+większa niż następny blok na taśmie, sterownik zwróci dane, a funkcja zwróci
+rozmiar bieżącego bloku. Jeśli długość bloku jest większa niż liczba bajtów,
+zwrócona zostanie żądana ilość danych, począwszy od początku bloku, a reszta
+bloku zostanie odrzucona.
+.PP
+W trybie o stałej długości bloku ilość odczytywanych bajtów może być
+dowolna, gdy włączone jest buforowanie. Musi natomiast być wielokrotnością
+długości bloku, gdy buforowanie jest wyłączone. Jądra wcześniejsze niż
+2.1.121 pozwalały na zapis dowolnej liczby bajtów przy włączonym
+buforowaniu.  Natomiast w pozostałych przypadkach (jądra wcześniejsze niż
+2.1.121 z wyłączonym buforowaniem oraz nowsze jądra) liczba zapisywanych
+bajtów musi być wielokrotnością długości bloku na taśmie.
+.PP
+W jądrze 2.6, sterownik stara się używać bezpośrednich transferów pomiędzy
+buforem użytkownika a urządzeniem. Jeśli nie jest to możliwe, używany jest
+wewnętrzny bufor sterownika. Powodem, dla którego transfer bezpośredni nie
+jest użyty, może być niepoprawne wyrównanie bufora użytkownika (domyślne
+wynosi 512 bajtów, ale może być zmienione w sterowniku HBA), niedostępność
+jednej lub więcej stron bufora użytkownika dla adaptera SCSI itp.
+.PP
+Znacznik pliku jest zapisywany na taśmie automatycznie, jeśli ostatnią
+operacją na tej taśmie przed jej zamknięciem był zapis.
+.PP
+Gdy podczas odczytu napotkany zostanie znacznik pliku, dzieje się co
+następuje. Jeśli w chwili natrafienia na znacznik pliku w buforze były dane,
+zostaną zwrócone dane z bufora. Następny odczyt zwróci zero bajtów. Kolejne
+odczyty zwrócą dane z następnego pliku. Koniec zapisanych danych jest
+sygnalizowany zwróceniem zerowej liczby bajtów przez dwa kolejne wywołania
+funkcji odczytu. Trzeci odczyt zwróci błąd.
+.SS Ioctl
+Sterownik obsługuje trzy wywołania funkcji \fBioctl\fP(2). Wywołania
+nierozpoznawane przez sterownik i \fBst\fP są przekazywane do sterownika
+\fBSCSI\fP.  Poniższe definicje pochodzą z pliku \fI/usr/include/linux/mtio.h\fP:
+.SS "MTIOCTOP \(em Wykonanie operacji na taśmie"
+.PP
+To wywołanie wymaga argumentu typu \fI(struct mtop *)\fP.  Nie wszystkie napędy
+obsługują wszystkie polecenia.  Jeśli napęd odrzuca polecenie, sterownik
+przekazuje wartość \fBEIO\fP.
+.PP
+.in +4n
+.nf
+/* Struktura dla polecenia MTIOCTOP dla taśmy magnetycznej: */
+struct mtop {
+    short   mt_op;       /* operacje zdefiniowane poniżej */
+    int     mt_count;    /* liczba powtórzeń operacji */
+};
+.fi
+.in
+.PP
+Operacje na taśmie magnetycznej:
+.TP  14
+\fBMTBSF\fP
+Przesunięcie do tyłu o \fImt_count\fP znaczników pliku.
+.TP 
+\fBMTBSFM\fP
+Przesunięcie do tyłu o \fImt_count\fP znaczników pliku. Ustawienie taśmy po
+stronie EOT (końca taśmy) ostatniego znacznika pliku.
+.TP 
+\fBMTBSR\fP
+Przesunięcie do tyłu o \fImt_count\fP rekordów (bloków taśmy).
+.TP 
+\fBMTBSS\fP
+Przesunięcie do tyłu o \fImt_count\fP znaczników (setmarks).
+.TP 
+\fBMTCOMPRESSION\fP
+Włączenie kompresji danych na taśmie dla danego napędu, gdy \fImt_count\fP jest
+niezerowe, wyłączenie kompresji, gdy \fImt_count\fP jest zerem. Polecenie to
+korzysta z MODE page 15 obsługiwanego przez większość urządzeń DAT.
+.TP 
+\fBMTEOM\fP
+Przesunięcie do końca zapisanej części nośnika (w celu dogrania plików).
+.TP 
+\fBMTERASE\fP
+Usunięcie zapisu z taśmy. W jądrach 2.6 szybkie usuwanie (oznaczenie taśmy
+jako pustej) jest wykonywane, gdy argumentem jest zero. W przeciwnym wypadku
+przeprowadzane jest długie usuwanie (usuwanie wszystkiego).
+.TP 
+\fBMTFSF\fP
+Przesunięcie do przodu o \fImt_count\fP znaczników pliku.
+.TP 
+\fBMTFSFM\fP
+Przesunięcie do przodu o \fImt_count\fP znaczników pliku. Ustawienie taśmy po
+stronie BOT (początku taśmy) ostatniego znacznika pliku.
+.TP 
+\fBMTFSR\fP
+Przesunięcie do przodu o \fImt_count\fP rekordów (bloków taśmy).
+.TP 
+\fBMTFSS\fP
+Przesunięcie do przodu o \fImt_count\fP znaczników (setmarks).
+.TP 
+\fBMTLOAD\fP
+Wykonanie polecenia SCSI "load" (załadowanie taśmy). Szczególny przypadek
+dotyczący wyłącznie niektórych automatycznie ładujących napędów HP: gdy
+\fImt_count\fP jest równe stałej \fBMT_ST_HPLOADER_OFFSET\fP powiększonej o pewną
+liczbę, to ta liczba jest przesyłana do napędu dla celów sterowania
+automatycznym załadowaniem.
+.TP 
+\fBMTLOCK\fP
+Zablokowanie kieszeni napędu taśm.
+.TP 
+\fBMTMKPART\fP
+Sformatowanie taśmy na jedną lub dwie strefy. Gdy \fImt_count\fP jest
+niezerowe, określa rozmiar pierwszej strefy, a druga strefa obejmuje resztę
+taśmy. Gdy \fImt_count\fP jest zerem, taśma jest formatowana jako jedna
+strefa.  Polecenie to nie jest dozwolone dla napędów, dla których nie
+włączono obsługi stref (zobacz \fBMT_ST_CAN_PARTITIONS\fP poniżej).
+.TP 
+\fBMTNOP\fP
+Brak operacji \(em jako efekt uboczny opróżnia bufor sterownika.  Powinno
+się tego używać przed odczytaniem stanu za pomocą \fBMTIOCGET\fP.
+.TP 
+\fBMTOFFL\fP
+Przewinięcie taśmy i odłączenie napędu.
+.TP 
+\fBMTRESET\fP
+Inicjalizacja napędu.
+.TP 
+\fBMTRETEN\fP
+Wyrównanie napięcia taśmy.
+.TP 
+\fBMTREW\fP
+Przewinięcie.
+.TP 
+\fBMTSEEK\fP
+Wyszukanie na taśmie bloku o numerze podanym w \fImt_count\fP.  Ta operacja
+wymaga albo sterownika SCSI\-2, który obsługuje polecenie \fBLOCATE\fP (adres
+specyficzny dla urządzenia) albo urządzenia SCSI\-1 zgodnego z Tandberg
+(Tandberg, Archive Viper, Wangtek, ... ).  Numer bloku powinien być równy
+zwróconemu poprzednio przez \fBMTIOCPOS\fP, gdy używany jest adres specyficzny
+dla urządzenia.
+.TP 
+\fBMTSETBLK\fP
+Ustawienie długości bloku sterownika równej wartości podanej w \fImt_count\fP.
+Długość równa 0 wprowadza napęd w tryb bloków o zmiennej długości.
+.TP 
+\fBMTSETDENSITY\fP
+Ustawienie gęstości zapisu taśmy zakodowanej w \fImt_count\fP.  Kody
+określające gęstość zapisu obsługiwane przez dany napęd można znaleźć w jego
+dokumentacji.
+.TP 
+\fBMTSETPART\fP
+Przełączenie aktywnej strefy na \fImt_count\fP. Strefy są numerowane od
+zera. Polecenie to nie jest dozwolone dla napędów, dla których nie włączono
+obsługi stref (zobacz \fBMT_ST_CAN_PARTITIONS\fP poniżej).
+.TP 
+\fBMTUNLOAD\fP
+Wykonanie polecenia SCSI "unload" (nie wysuwa taśmy).
+.TP 
+\fBMTUNLOCK\fP
+Odblokowanie kieszeni napędu taśm.
+.TP 
+\fBMTWEOF\fP
+Zapisanie \fImt_count\fP znaczników pliku.
+.TP 
+\fBMTWSM\fP
+Zapisanie \fImt_count\fP znaczników (setmarks).
+.PP
+Polecenia ustawiające opcje dla napędów taśm magnetycznych (mogą być
+wydawane tylko przez administratora):
+.TP  8
+\fBMTSETDRVBUFFER\fP
+Ustawienie różnych opcji napędu i sterownika, zgodnie z wartościami pól
+bitowych przekazanych w \fImt_count\fP.  Dotyczy to sposobu buforowania przez
+sterownik, zestawu logicznych parametrów sterownika oraz progu zapisu
+bufora, domyślnej długości bloku i gęstości oraz czasów przeterminowania
+(tylko w jądrach >= 2.1).  Pojedyncze działanie może zmienić ustawienia
+tylko dla jednej pozycji z powyższej listy (parametry logiczne są traktowane
+jako jedna całość).
+.IP
+Wartość, której 4 najwyższe bity są równe 0 zostanie wykorzystana do
+ustawienia trybu buforowania napędu. Do wyboru są następujące tryby:
+.RS 12
+.IP 0 4
+Napęd nie będzie sygnalizować stanu \fBGOOD\fP po poleceniach zapisu, dopóki
+dane nie zostaną zapisane fizycznie na nośniku.
+.IP 1
+Napęd może sygnalizować stan \fBGOOD\fP po poleceniach zapisu, gdy tylko
+wszystkie dane zostaną umieszczone w wewnętrznym buforze napędu.
+.IP 2
+Napęd może sygnalizować stan \fBGOOD\fP po poleceniach zapisu, gdy tylko (a)
+wszystkie dane zostaną przesłane do wewnętrznego bufora napędu i (b)
+wszystkie buforowane dane (z innych poleceń) zostaną pomyślnie zapisane na
+nośniku.
+.RE
+.IP
+Aby kontrolować próg zapisu, wartość \fImt_count\fP musi zawierać stałą
+\fBMT_ST_WRITE_THRESHOLD\fP dodaną za pomocą bitowego OR do liczby bloków w 28
+najniższych bitach. Liczba bloków odnosi się do 1024\-bajtowych bloków, a nie
+bloków o fizycznym rozmiarze bloku dla danego urządzenia.  Próg zapisu nie
+może przekroczyć rozmiaru wewnętrznego bufora napędu (patrz \fBOPIS\fP
+powyżej).
+.IP
+Aby ustawić lub usunąć opcje logiczne, wartość \fBmt_count\fP musi zawierać
+jedną ze stałych \fBMT_ST_BOOLEANS\fP, \fBMT_ST_SETBOOLEANS\fP,
+\fBMT_ST_CLEARBOOLEANS\fP lub \fBMT_ST_DEFBOOLEANS\fP dodaną za pomocą bitowego OR
+do dowolnej kombinacji poniższych opcji. Użycie \fBMT_ST_BOOLEANS\fP powoduje
+nadanie wszystkim opcjom wartości podanych na odpowiednich polach
+bitowych. Przy \fBMT_ST_SETBOOLEANS\fP ustawione zostaną tylko wybrane opcje,
+natomiast przy \fBMT_ST_DEFBOOLEANS\fP tylko wybrane opcje zostaną usunięte.
+.IP ""
+Za pomocą \fBMT_ST_DEFBOOLEANS\fP ustawiane są domyślne opcje dla urządzenia
+taśmowego. Nieaktywne urządzenia taśmowe (np. urządzenia o numerze
+podrzędnym 32 lub 160) są aktywowane po pierwszym ustawieniu dla nich
+domyślnych opcji. Aktywowane urządzenie dziedziczy od urządzenia
+aktywowanego podczas startu systemu opcje, które nie zostały jawnie podane.
+.IP ""
+Dostępne są następujące opcje logiczne:
+.RS
+.TP 
+\fBMT_ST_BUFFER_WRITES\fP (Domyślnie: włączona)
+Buforowanie wszystkich operacji zapisu w trybie o stałej długości
+bloku. Jeśli ta opcja jest wyłączona i napęd używa stałej długości bloku,
+wtedy wszystkie operacje zapisu muszą dotyczyć wielokrotności długości
+bloku.  Opcja ta powinna być wyłączona, jeśli chcemy w sposób pewny
+zapisywać archiwa składające się z wielu wolumenów.
+.TP 
+.TP 
+\fBMT_ST_ASYNC_WRITES\fP (Domyślnie: włączona)
+Gdy opcja ta jest włączona, wtedy operacje zapisu przekazują sterowanie
+natychmiast, bez oczekiwania na przesłanie informacji do napędu, jeśli tylko
+dane mieszczą się w buforze sterownika.  Stopień wypełnienia bufora, przy
+którym zostanie wydane polecenie zapisu SCSI, jest określony przez próg
+zapisu. Wszystkie błędy zgłoszone przez napęd będą wstrzymane aż do
+następnej operacji. Opcja ta powinna być wyłączona, jeśli chcemy w sposób
+pewny zapisywać archiwa składające się z wielu wolumenów.
+.TP 
+\fBMT_ST_READ_AHEAD\fP (Domyślnie: włączona)
+Opcja ta powoduje zapewnienie przez sterownik buforowania i odczytu
+wyprzedzającego w trybie o stałej długości bloku. Jeśli ta opcja jest
+wyłączona i napęd używa bloków o stałej długości, wtedy wszystkie operacje
+odczytu muszą dotyczyć wielokrotności długości bloku.
+.TP 
+\fBMT_ST_TWO_FM\fP (Domyślnie: wyłączona)
+Opcja ta zmienia zachowanie sterownika w momencie zamknięcia pliku.  Zwykle
+towarzyszy temu zapisanie pojedynczego znacznika końca pliku.  Jeśli opcja
+jest włączona, sterownik zapisze dwa znaczniki i cofnie się przed drugi.
+.IP
+Uwaga: Ta opcja nie powinna być włączona w przypadku napędów QIC, ponieważ
+nie są one w stanie nadpisać danych na znaczniku pliku. Napędy te wykrywają
+koniec zapisanych danych poprzez sprawdzenie, czy taśma jest pusta, zamiast
+stwierdzania dwóch kolejnych znaczników końca pliku. Większość innych
+współczesnych napędów również wykrywa koniec zapisanych danych, więc
+posługiwanie się dwoma znacznikami końca pliku jest niezbędne jedynie przy
+wymianie taśm z niektórymi innymi systemami.
+.TP 
+\fBMT_ST_DEBUGGING\fP (Domyślnie: wyłączona)
+Ta opcja włącza wypisywanie przez sterownik komunikatów diagnostycznych
+(skuteczne tylko gdy sterownik został skompilowany ze zdefiniowaną niezerową
+wartością \fBDEBUG\fP).
+.TP 
+\fBMT_ST_FAST_EOM\fP (Domyślnie: wyłączona)
+Włączenie tej opcji powoduje, że polecenia \fBMTEOM\fP są przesyłane
+bezpośrednio do napędu, potencjalnie przyspieszając operację, lecz
+jednocześnie powodując utratę przez sterownik informacji o aktualnym
+położeniu taśmy \- numerze pliku, zwykle przekazywanego jako wynik zapytania
+\fBMTIOCGET\fP.  Jeśli opcja \fBMT_ST_FAST_EOM\fP jest wyłączona, sterownik będzie
+odpowiadał na polecenie \fBMTEOM\fP przewijaniem taśmy plik po pliku.
+.TP 
+\fBMT_ST_AUTO_LOCK\fP (Domyślnie: wyłączona)
+Jeśli ta opcja jest włączona, to kieszeń napędu będzie blokowana po otwarciu
+urządzenia, a odblokowywana po jego zamknięciu.
+.TP 
+\fBMT_ST_DEF_WRITES\fP (Domyślnie: wyłączona)
+Opcje taśmy (długość bloku, tryb, kompresja itp.) mogą ulec zmianie przy
+przełączaniu z jednego urządzenia skojarzonego z napędem na inne urządzenia
+skojarzone z tym samym napędem, w zależności od definicji tych urządzeń.  Ta
+opcja określa, kiedy sterownik powinien wymusić zmiany wysyłając polecenia
+SCSI oraz kiedy należy polegać na właściwościach autodetekcyjnych
+urządzenia.  Jeśli opcja ta jest wyłączona, sterownik będzie wysyłać
+polecenia SCSI natychmiast po zmianie urządzenia. Jeśli jest ona włączona,
+polecenia SCSI nie zostaną wysłane dopóki nie pojawi się żądanie zapisu. W
+tym przypadku firmware napędu może dokonywać podczas odczytu autodetekcji
+struktury taśmy, a polecenia SCSI mają na celu jedynie zapewnienie, aby
+zapis na taśmie odbywał się zgodnie z właściwą specyfikacją.
+.TP 
+\fBMT_ST_CAN_BSR\fP (Domyślnie: wyłączona)
+Gdy wykorzystywany jest odczyt wyprzedzający, taśma musi być czasami
+cofnięta do właściwej pozycji. Dzieje się to, gdy urządzenie jest zamykane i
+wykorzystywane jest w tym celu polecenie SCSI cofania o zadaną ilość
+rekordów. Niektóre starsze napędy nie potrafią wykonać tego polecenia w
+sposób pewny i opcja ta służy to zabronienia napędowi używania tych
+poleceń. Końcowym efektem jest nieprawidłowe pozycjonowanie taśmy po
+zamknięciu urządzenia przy włączonym odczycie wyprzedzającym w trybie o
+stałej długości bloku.
+.TP 
+\fBMT_ST_NO_BLKLIMS\fP (Domyślnie: wyłączona)
+Niektóre napędy nie obsługują polecenia SCSI \fBREAD BLOCK LIMITS\fP. Jeśli
+opcja ta jest włączona, sterownik nie używa tego polecenia. Wadą jest brak
+możliwości sprawdzenia przez sterownik przed wysłaniem polecenia, czy zadana
+długość bloku jest akceptowana przez napęd.
+.TP 
+\fBMT_ST_CAN_PARTITIONS\fP (Domyślnie: wyłączona)
+Opcja ta włącza obsługę kilku stref na jednej taśmie. Dotyczy ona wszystkich
+urządzeń skojarzonych z napędem.
+.TP 
+\fBMT_ST_SCSI2LOGICAL\fP (Domyślnie: wyłączona)
+Ta opcja poleca sterownikowi używanie logicznych adresów bloków
+zdefiniowanych w standardzie SCSI\-2 podczas wykonywania operacji
+wyszukiwania (seek) oraz "tell" (dla poleceń \fBMTSEEK\fP i \fBMTIOCPOS\fP oraz
+przy zmianie strefy taśmy).  W przeciwnym razie używane są adresy
+specyficzne dla urządzenia. Włączenie tej opcji jest wysoce zalecane, jeśli
+napęd obsługuje adresy logiczne, gdyż zliczają one również znaczniki
+plików. Niektóre napędy obsługują wyłącznie logiczne adresy bloków.
+.TP 
+\fBMT_ST_SYSV\fP (Domyślnie: wyłączona)
+Gdy ta opcja jest włączona, urządzenia taśmowe używają semantyki Systemu V.
+W przeciwnym razie używana jest semantyka BSD. Najważniejsza różnica
+pomiędzy tymi semantykami polega na tym, co się dzieje, gdy urządzenie
+używane do odczytu jest zamykane: w semantyce SYSV taśma jest przewijana do
+przodu poza najbliższy znacznik pliku, jeśli nie stało się to wcześniej. W
+semantyce BSD pozycja taśmy nie jest zmieniana.
+.TP 
+\fBMT_NO_WAIT\fP (Domyślnie: wyłączona)
+Włącza tryb natychmiastowy niektórych poleceń, np. rewind \- nie czeka na
+zakończenie polecenia.
+.PP
+Przykład:
+.in +4n
+.nf
+
+struct mtop mt_cmd;
+mt_cmd.mt_op = MTSETDRVBUFFER;
+mt_cmd.mt_count = MT_ST_BOOLEANS |
+        MT_ST_BUFFER_WRITES | MT_ST_ASYNC_WRITES;
+ioctl(fd, MTIOCTOP, mt_cmd);
+.fi
+.in
+.RE
+.IP ""
+Domyślny rozmiar bloku dla urządzenia można ustawić przy użyciu
+\fBMT_ST_DEF_BLKSIZE\fP, a domyślny kod gęstości można ustawić przy użyciu
+\fBMT_ST_DEFDENSITY\fP. Wartości tych parametrów powinny być dodane za pomocą
+bitowej alternatywy (OR) kodu operacji.
+.IP ""
+W jądrach 2.1.x i późniejszych wartości czasu przeterminowania (timeout)
+można ustawić przy użyciu podpolecenia \fBMT_ST_SET_TIMEOUT\fP dodanego za
+pomocą bitowego OR do czasu przeterminowania w sekundach. Długie czasy
+przeterminowania (wykorzystywane przy poleceniach przewijania i niektórych
+innych trwających długo) można ustawić przy użyciu
+\fBMT_ST_SET_LONG_TIMEOUT\fP. Domyślne wartości jądra są bardzo długie, aby
+zapewnić, że pomyślnie wykonywane polecenie nie zostanie przeterminowane
+przez żaden napęd. Z tego powodu niniejszy sterownik może sprawiać wrażenie
+zawieszonego, nawet gdy jedynie czeka on na przeterminowanie
+operacji. Polecenia te mogą służyć do ustawienia bardziej praktycznych
+wartości dla konkretnego napędu. Czasy przeterminowania ustawione dla
+jednego urządzenia dotyczą wszystkich urządzeń skojarzonych z tym samym
+napędem.
+.IP ""
+Od jąder 2.4.19 i 2.5.43, sterownik obsługuje bit statusu, wskazujący czy
+sterownik żąda czyszczenia. Metoda używana przez napęd do zwrócenia
+informacji o czyszczeniu jest ustawiona za pomocą podpolecenia
+\fBMT_ST_SEL_CLN\fP. Jeśli wartość wynosi 0, to bit czyszczenia wynosi zawsze
+zero. Przy wartości jeden, używane są dane TapeAlert zdefiniowane w
+standardzie SCSI\-3 (jeszcze nie zaimplementowane). Wartości 2\-17 są
+zastrzeżone. Jeśli najniższe osiem bitów wynosi >=18, to używane są bity
+z rozszerzonych danych próbkowania. Bity 9\-16 określają maskę do wybrania
+bitów, które mają być wyszukiwane, a bity 17\-23 określają wzorzec bitowy do
+wyszukiwania. Jeśli wzorzec bitowy wynosi 0, to jeden lub więcej bitów pod
+maską oznacza żądanie czyszczenia. Jeśli wzorzec jest niezerowy, musi od
+pasować do maskowanego bajtu danych próbkowania.
+.SS "MTIOCGET \(em Odczytanie stanu"
+.PP
+To polecenie wykorzystuje argument typu \fI(struct mtget *)\fP.
+.PP
+.in +4n
+.nf
+/* struktura dla MTIOCGET \- odczytanie stanu taśmy magn. */
+struct mtget {
+    long     mt_type;
+    long     mt_resid;
+    /* Następne rejestry są specyficzne dla urządzenia */
+
+    long     mt_dsreg;
+    long     mt_gstat;
+    long     mt_erreg;
+    /* Kolejne dwa pola nie zawsze są używane */
+    daddr_t  mt_fileno;
+    daddr_t  mt_blkno;
+};
+.fi
+.in
+.IP \fImt_type\fP 11
+Plik nagłówkowy definiuje wiele możliwych wartości \fImt_type\fP, lecz bieżący
+sterownik raportuje jedynie typy podstawowe \fBMT_ISSCSI1\fP (Generic SCSI\-1
+tape) oraz \fBMT_ISSCSI2\fP (Generic SCSI\-2 tape).
+.IP \fImt_resid\fP
+zawiera numer strefy bieżącej taśmy.
+.IP \fImt_dsreg\fP
+raportuje bieżące ustawienia długości bloku (w najniższych 24 bitach) oraz
+gęstości zapisu (w 8 najwyższych bitach). Pola są zdefiniowane przez
+\fBMT_ST_BLKSIZE_SHIFT\fP, \fBMT_ST_BLKSIZE_MASK\fP, \fBMT_ST_DENSITY_SHIFT\fP i
+\fBMT_ST_DENSITY_MASK\fP.
+.IP \fImt_gstat\fP
+raportuje podstawowe (niezależne od urządzenia) informacje o stanie. Plik
+nagłówkowy zawiera definicje makrodefinicji do testowania przekazywanych
+bitów stanu:
+.RS
+.HP 4
+\fBGMT_EOF\fP(\fIx\fP): Taśma została ustawiona tuż za znacznikiem pliku (zawsze
+nieprawdziwe po poleceniu \fBMTSEEK\fP).
+.HP
+\fBGMT_BOT\fP(\fIx\fP): Taśma została ustawiona na początku pierwszego pliku
+(zawsze nieprawdziwe po poleceniu \fBMTSEEK\fP).
+.HP
+\fBGMT_EOT\fP(\fIx\fP): Wykonanie polecenia spowodowało osiągnięcie fizycznego
+końca nośnika.
+.HP
+\fBGMT_SM\fP(\fIx\fP): Taśma jest aktualnie ustawiona na znaczniku (setmark)
+(zawsze nieprawdziwe po poleceniu \fBMTSEEK\fP).
+.HP
+\fBGMT_EOD\fP(\fIx\fP): Taśma jest ustawiona na końcu zapisanych danych.
+.HP
+\fBGMT_WR_PROT\fP(\fIx\fP): Napęd jest chroniony przed zapisem. W przypadku
+niektórych urządzeń może to również oznaczać, że napęd nie obsługuje zapisu
+na bieżącym typie nośnika.
+.HP
+\fBGMT_ONLINE\fP(\fIx\fP): Ostatnie wykonanie funkcji \fBopen\fP(2) zastało napęd
+gotowy do działania z odpowiednio umiejscowionym nośnikiem.
+.HP
+\fBGMT_D_6250\fP(\fIx\fP), \fBGMT_D_1600\fP(\fIx\fP), \fBGMT_D_800\fP(\fIx\fP): Ta
+"podstawowa" informacja o stanie urządzenia zawiera również ustawienia
+gęstości zapisu, lecz jedynie dla 9\-ścieżkowych \(12" urządzeń.
+.HP
+\fBGMT_DR_OPEN\fP(\fIx\fP): Brak taśmy w napędzie.
+.HP
+\fBGMT_IM_REP_EN\fP(\fIx\fP): Tryb natychmiastowego raportowania. To pole bitowe
+jest ustawiane na 1, gdy nie ma gwarancji, że dane zostały fizycznie
+zapisane na taśmie do chwili zakończenia funkcji zapisu. Natomiast jest
+ustawiane na zero tylko wtedy, gdy sterownik nie buforuje danych i napęd
+został ustawiony na ich niebuforowanie.
+.HP
+\fBGMT_CLN\fP(\fIx\fP): Napęd zażądał czyszczenia. Zaimplementowane w jądrach od
+wersji 2.4.19 and 2.5.43.
+.RE
+.IP \fImt_erreg\fP
+Jedyne pole zdefiniowane w \fImt_erreg\fP to licznik naprawionych błędów, który
+znajduje sie w 16 niskich bitach (jak to zdefiniowano przez
+\fBMT_ST_SOFTERR_SHIFT\fP i \fBMT_ST_SOFTERR_MASK\fP).  Z powodu niezgodności w
+sposobie zgłaszania naprawionych błędów przez napędy, licznik ten często nie
+jest obsługiwany (większość napędów domyślnie nie zgłasza naprawionych
+błędów, ale można to zmienić poleceniem SCSI "MODE SELECT").
+.IP \fImt_fileno\fP
+podaje bieżący numer pliku (licząc od zera). W przypadku gdy  numer pliku
+nie jest znany (np. po \fBMTBSS\fP lub \fBMTSEEK\fP), przekazywana jest wartość
+\-1.
+.IP \fImt_blkno\fP
+raportuje numer bloku (licząc od zera) wewnątrz bieżącego pliku. Gdy numer
+bloku nie jest znany (np. po poleceniach \fBMTBSF\fP, \fBMTBSS\fP lub \fBMTSEEK\fP),
+przekazywana jest wartość \-1.
+.SS "MTIOCPOS \(em Odczytanie położenia taśmy"
+.PP
+To polecenie używa argumentu typu \fI(struct mtpos *)\fP i podaje bieżący numer
+bloku taśmy (w sensie, w jakim go rozumie napęd), co nie jest równoważne z
+\fImt_blkno\fP przekazywanym przez \fBMTIOCGET\fP. Musi to być urządzenie SCSI\-2,
+które obsługuje polecenie \fBREAD POSITION\fP (adres specyficzny dla
+urządzenia) lub urządzenie SCSI\-1 zgodne z Tandberg (Tandberg, Archive
+Viper, Wangtek, ...).
+.PP
+.in +4n
+.nf
+/* struktura dla MTIOCPOS \- odczytanie położenia taśmy magn. */
+struct mtpos {
+    long mt_blkno;    /* numer bieżącego bloku */
+};
+.fi
+.in
+.SH "WARTOŚĆ ZWRACANA"
+.TP  14
+.TP 
+\fBEACCES\fP
+Nastąpiła próba zapisu lub skasowania taśmy chronionej przed zapisem. (Ten
+błąd nie jest wykrywany podczas wykonywania funkcji \fBopen\fP(2)).
+.TP 
+\fBEBUSY\fP
+Urządzenie jest aktualnie w użyciu lub sterownikowi nie udało się
+przydzielić pamięci dla bufora.
+.TP 
+\fBEFAULT\fP
+Parametry polecenia wskazują na obszar pamięci nie należący do procesu
+wywołującego funkcję.
+.TP 
+\fBEINVAL\fP
+W wywołaniu \fBioctl\fP(2) podano niedozwolony argument lub podano niedozwolony
+rozmiar bloku.
+.TP 
+\fBEIO\fP
+Wydane polecenie nie może zostać zrealizowane.
+.TP 
+\fBENOMEM\fP
+Liczba bajtów w \fBread\fP(2) jest mniejsza od następnego bloku fizycznego na
+taśmie (przed jądrami 2.2.18 i 2.4.0\-test6 dodatkowe bajty były po cichu
+ignorowane).
+.TP 
+\fBENOSPC\fP
+Operacja zapisu nie może zostać zakończona ponieważ taśma osiągnęła koniec
+nośnika.
+.TP 
+\fBENOSYS\fP
+Nieznana funkcja \fBioctl\fP(2).
+.TP 
+\fBENXIO\fP
+Podczas otwierania, takie urządzenie nie istnieje.
+.TP 
+\fBEOVERFLOW\fP
+Nastąpiła próba odczytania lub zapisu bloku o zmiennej długości, który jest
+większy niż wewnętrzny bufor sterownika.
+.TP 
+\fBEROFS\fP
+Wystąpiła próba otwarcia z opcją \fBO_WRONLY\fP lub \fBO_RDWR\fP, podczas gdy
+taśma znajduje się w napędzie chronionym przed zapisem.
+.SH PLIKI
+.TP  12
+\fI/dev/st*\fP
+automatycznie przewijające urządzenia taśm SCSI
+.TP  12
+\fI/dev/nst*\fP
+.\" .SH AUTHOR
+.\" The driver has been written by Kai M\(:akisara (Kai.Makisara@metla.fi)
+.\" starting from a driver written by Dwayne Forsyth.
+.\" Several other
+.\" people have also contributed to the driver.
+nieprzewijające urządzenia taśm SCSI
+.SH UWAGI
+.IP 1. 4
+Podczas wymiany danych pomiędzy systemami, oba systemy muszą uzgodnić
+długość fizycznego bloku na taśmie. Parametry napędu po starcie systemu
+często różnią się od używanych dla danego urządzenia przez większość
+systemów operacyjnych. Większość systemów używa napędów w trybie o zmiennej
+długości bloku, o ile napęd ten tryb obsługuje. Dotyczy to większości
+współczesnych napędów, włączając w to napędy DAT, 8 mm napędy wybierania
+spiralnego, napędy DLT itp. Można doradzić używanie tych napędów w trybie o
+zmiennej długości bloku również w Linuksie (tzn. użycie \fBMTSETBLK\fP lub
+\fBMTSETDEFBLK\fP przy starcie systemu w celu ustawienia tego trybu),
+przynajmniej podczas wymiany danych z obcym systemem. Wadą tego jest
+konieczność użycia dość długiego bloku na taśmie, aby otrzymać akceptowalną
+wydajność transferu na magistrali SCSI.
+.IP 2.
+Wiele programów (np. \fBtar\fP(1)) pozwala użytkownikowi na określenie czynnika
+określającego rozmiar bloku w linii poleceń. Należy zauważyć, że określa to
+długość fizycznego bloku na taśmie jedynie w trybie o zmiennej długości
+bloku.
+.IP 3.
+Aby można było używać napędów taśm SCSI, to podstawowy sterownik SCSI,
+sterownik kontrolera SCSI oraz sterownik taśm SCSI muszą być wkompilowane w
+jądro lub załadowane jako moduły. Jeśli nie ma sterownika taśm SCSI, napęd
+zostanie rozpoznany, ale opisana na tej stronie obsługa taśm nie będzie
+dostępna.
+.IP 4.
+Sterownik zapisuje komunikaty o błędach na konsolę lub do logów. Kody SENSE
+zapisane w niektórych komunikatach są automatycznie tłumaczone na tekst,
+jeśli w konfiguracji jądra włączono opcję rozwlekłych komunikatów SCSI.
+.IP 5.
+.\" .SH COPYRIGHT
+.\" Copyright \(co 1995 Robert K. Nichols.
+.\" .br
+.\" Copyright \(co 1999-2005 Kai M\(:akisara.
+.\" .PP
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\" Additional permissions are contained in the header of the source file.
+Wewnętrzne buforowanie jądra pozwala na dobrą przepustowość w trybie o
+określonych blokach również przy niewielkiej liczbie bajtów odczytywanych
+(\fBread\fP(2)) i zapisywanych (\fBwrite\fP(2)). Przy transferach bezpośrednich
+nie jest to możliwe i może stanowić niemiłą niespodziankę przy przejściu na
+jądro 2.6. Rozwiązaniem jest nakazanie oprogramowaniu użycie większych
+transferów (często \- nakazanie użycia większych bloków). Jeśli nie jest to
+możliwe, transfery bezpośrednie mogą być wyłączone.
+.SH "ZOBACZ TAKŻE"
+\fBmt\fP(1)
+.PP
+Plik \fIdrivers/scsi/README.st\fP lub \fIDocumentation/scsi/st.txt\fP (jądra w
+wersji >= 2.6) w źródłach jądra zawierający najświeższe informacje
+dotyczące sterownika i jego możliwości konfiguracyjnych.
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Piotr Pogorzelski (PTM) <piotr.pogorzelski@ippt.gov.pl>,
+Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

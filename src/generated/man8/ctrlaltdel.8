@@ -1,0 +1,42 @@
+.\" Copyright 1992, 1993 Rickard E. Faith (faith@cs.unc.edu)
+.\" May be distributed under the GNU General Public License
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1992, 1993 Rickard E. Faith (GPL-1)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+.TH CTRLALTDEL 8 "październik 1993" util\-linux "Administracja systemem"
+.SH NAZWA
+ctrlaltdel \- ustawia działanie kombinacji Ctrl\-Alt\-Del
+.SH SKŁADNIA
+\fBctrlaltdel hard\fP|\fBsoft\fP
+.SH OPIS
+Po obejrzeniu kodu z \fIlinux/kernel/sys.c\fP, okazało się, że istnieją dwie
+funkcje, które mogą wykonać Ctrl\-Alt\-Del: \fItwardy\fP (hard) reset, który
+natychmiast przeładowuje komputer, nie wołając \fBsync (2)\fP i nie dokonując
+innych przygotowań; oraz \fImiękki\fP (soft) reset, który wysyła procesowi
+\fBinit\fP sygnał SIGINT (przerwania). Jeśli użyta jest ta opcja, program
+\fBinit (8)\fP musi obsługiwać tę właściwość. Ponieważ w chwili obecnej
+istnieje w środowisku linuksowym kilka programów \fBinit (8)\fP, konieczne jest
+sprawdzenie tego w dokumentacji swojej wersji.
+
+\fBctrlaltdel\fP jest zazwyczaj używany w pliku \fI/etc/rc.local\fP.
+.SH PLIKI
+\fI/etc/rc.local\fP
+.SH "ZOBACZ TAKŻE"
+\fBsimpleinit\fP(8), \fBinit\fP(8)
+.SH AUTOR
+Peter Orbaek (poe@daimi.aau.dk)
+.SH DOSTĘPNOŚĆ
+Polecenie ctrlaltdel jest częścią pakietu util\-linux i jest dostępne pod
+adresem ftp://ftp.kernel.org/pub/linux/utils/util\-linux/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Przemek Borys (PTM) <pborys@dione.ids.pl>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.20.1 \fPoryginału.

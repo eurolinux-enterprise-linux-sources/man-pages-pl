@@ -1,0 +1,122 @@
+.\" Hey, Emacs! This is an -*- nroff -*- source file.
+.\" Copyright (c) 2000 Manoj Srivastava <srivasta@debian.org>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139,
+.\" USA.
+.\"
+.\" Minor polishing, aeb
+.\" Modified, 2002-06-16, Mike Coleman
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2000 Manoj Srivastava (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2005, 2012.
+.TH HOSTS 5 2002\-06\-16 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+hosts \- statyczna tablica nazw komputerów
+.SH SKŁADNIA
+\fB/etc/hosts\fP
+.SH OPIS
+Ta strona podręcznika ekranowego opisuje format pliku \fI/etc/hosts\fP. Jest to
+prosty plik testowy, który przypisuje adresy IP nazwom komputerów, każdy
+adres w osobnej linii. Plik ten dla każdego komputera powinien zawierać
+osobną linię w następującym formacie:
+.RS
+.PP
+adres_IP kanoniczna_nazwa_komputera [aliasy...]
+.RE
+.PP
+Pola są oddzielone dowolną liczbą znaków spacji lub tabulacji. Wszystko od
+znaku "#" aż do końca linii jest traktowane jako komentarz i
+ignorowane. Nazwy komputerów mogą zawierać tylko znaki alfanumeryczne, znak
+minusa ("\-") i kropki ("."). Muszą zaczynać i kończyć się znakiem
+alfanumerycznym. Opcjonalne aliasy służą wpisywaniu nazw zmienionych,
+alternatywnych, skróconych lub ogólnych (jak na przykład \fIlocalhost\fP).
+.PP
+Serwer nazw domen internetowych BIND (Berkeley Internet Name Domain)
+implementuje serwer nazw dla systemów UNIX. Zwiększa możliwości lub
+zastępuje plik \fI/etc/hosts\fP lub wyszukiwane nazw komputerów i uwalnia
+system od polegania na aktualności i kompletności pliku \fI/etc/hosts\fP.
+.PP
+Mimo że tablica nazw komputerów została zastąpiona przez DNS, nowoczesne
+systemy wciąż jej używają w następujących sytuacjach:
+.TP 
+\fBuruchamianie systemu\fP
+Większość systemów ma małą tablicę nazw komputerów zawierającą nazwy i
+adresy najważniejszych komputerów z lokalnej sieci. Jest to użyteczne, gdy
+DNS nie działa, na przykład podczas uruchamiania systemu.
+.TP 
+\fBNIS\fP
+Organizacje, które używają systemu NIS, używają też tablicy nazw komputerów
+jako danych wejściowych bazy danych NIS. Chociaż NIS może być używany z
+DNS\-em, większość firm używających systemu NIS, wciąż używa tablicy z
+nazwami wszystkich lokalnych komputerów jako kopii bezpieczeństwa.
+.TP 
+\fBkomputery izolowane\fP
+Bardzo małe organizacje, izolowane od sieci, używają tablicy nazw komputerów
+zamiast DNS. Jeśli lokalne informacje zmieniają się rzadko, a sieć nie jest
+podpięta do Internetu, to DNS nie ma zbyt wiele do zaoferowania.
+.SH PLIKI
+\fI/etc/hosts\fP
+.SH UWAGI
+Wszelkie modyfikacje tego pliku zazwyczaj wywołują natychmiastowy efekt, z
+wyjątkiem sytuacji, gdy plik jest buforowany przez aplikacje.
+.SS Historia
+Oryginalny format tablicy nazw komputerów został opisany w RFC\ 952,
+jednakże od tego czasu się zmienił.
+
+Przed nastaniem DNS\-u, tablica nazwa komputerów była jedynym sposobem
+mapowania nazw komputerów na adresy w nowo powstałym Internecie. Ten plik
+mógł zostać utworzony na podstawie oficjalnej bazy komputerów zarządzanej
+przez Centrum Kontroli Informacji Sieciowych (Network Information Control
+Center \- NIC), chociaż lokalne zmiany były często wymagane do aktualizowania
+tego pliku w zakresie nieoficjalnych aliasów i/lub nieznanych
+komputerów. NIC nie zarządza już plikiem hosts.txt, chociaż w czasie pisania
+tej strony podręcznika (ok. 2000 r.) można było znaleźć historyczne pliki
+hosts.txt przez WWW. Właśnie znalazłem trzy \- z lat 92, 94 i 95.
+.SH PRZYKŁAD
+.nf
+127.0.0.1       localhost
+192.168.1.10    foo.mydomain.org       foo
+192.168.1.13    bar.mydomain.org       bar
+146.82.138.7    master.debian.org      master
+209.237.226.90  www.opensource.org
+.fi
+.SH "ZOBACZ TAKŻE"
+.\" .SH AUTHOR
+.\" This manual page was written by Manoj Srivastava <srivasta@debian.org>,
+.\" for the Debian GNU/Linux system.
+\fBhostname\fP(1), \fBresolver\fP(3), \fBresolver\fP(5), \fBhostname\fP(7), \fBnamed\fP(8),
+Internet RFC\ 952
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

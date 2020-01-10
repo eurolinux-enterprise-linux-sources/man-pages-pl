@@ -1,0 +1,275 @@
+.\" t
+.\"     Title: samba
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
+.\"      Date: 06/22/2012
+.\"    Manual: Miscellanea
+.\"    Source: Samba 3.6
+.\"  Language: English
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1992-2012 Andrew Tridgell and the Samba Team (GPL-3)
+.\" Copyright © of Polish translation:
+.\" Leszek Krupiński (PTM) <d@z.pl>, 1999.
+.\" Robert Luberda (PTM) <robert@debian.org>, 2004.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH SAMBA 7 06/22/2012 "Samba 3\&.6" Różne
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH NAZWA
+samba \- serwer plików Windows SMB/CIFS do UNIX\-a
+.SH SKŁADNIA
+.HP \w'\ 'u
+samba
+.SH OPIS
+.PP
+Pakiet Samba jest zestawem oprogramowania, które obsługuje protokół Server
+Message Block (ogólnie znany pod nazwą SMB)\&. Ten protokół jest też czasem
+nazywany Common Internet File System (CIFS). Gruntowniejszy opis można
+znaleźć pod adresem http://www\&.ubiqx\&.org/cifs/\&. Samba implementuje
+także protokół NetBIOS w demonie nmbd\&.
+.PP
+\fBsmbd\fP(8)
+.RS 4
+Demon \fBsmbd\fP umożliwia dostęp do plików i drukarek klientom usługi SMB,
+takim jak Windows 95/98, Windows NT, Windows for Workgroups lub
+LanManager\&. Plik konfiguracyjny dla tego demona jest opisany w
+\fBsmb\&.conf\fP(5)\&.
+.RE
+.PP
+\fBnmbd\fP(8)
+.RS 4
+Demon \fBnmbd\fP obsługuje serwowanie nazw NetBIOS i przeglądanie zasobów\&.
+Plik konfiguracyjny dla tego demona jest opisany w \fBsmb\&.conf\fP(5)\&.
+.RE
+.PP
+\fBsmbclient\fP(1)
+.RS 4
+Program \fBsmbclient\fP jest prostym narzędziem, podobnym do klienta ftp\&.
+Przydaje się do uzyskiwania dostępu do plików udostępnionych na innych
+kompatybilnych serwerach (takich jak Windows NT)\&. Umożliwia też systemom
+uniksowym wykorzystywanie wszystkich drukarek podłączonych do serwerów SMB
+(takich jak PC z uruchomionym Windows NT)\&.
+.RE
+.PP
+\fBtestparm\fP(1)
+.RS 4
+Narzędzie \fBtestparm\fP umożliwia sprawdzenie składni pliku konfiguracyjnego
+Samby \fBsmb\&.conf\fP(5)\&.
+.RE
+.PP
+\fBsmbstatus\fP(1)
+.RS 4
+Narzędzie \fBsmbstatus\fP umożliwia wyświetlenie informacji o wszystkich
+połączeniach do serwera \fBsmbd\fP\&.
+.RE
+.PP
+\fBnmblookup\fP(1)
+.RS 4
+Narzędzie \fBnmblookup\fP umożliwia wysyłanie zapytań o nazwy NetBIOS z maszyny
+uniksowej\&.
+.RE
+.PP
+\fBsmbpasswd\fP(8)
+.RS 4
+Narzędzie \fBsmbpasswd\fP umożliwia zmianę zakodowanych haseł LanMan lub
+Windows NT na Sambie lub serwerach Windows NT\&.
+.RE
+.PP
+\fBsmbcacls\fP(1)
+.RS 4
+Narzędzie \fBsmbcacls\fP ustawia ACL\-e na serwerach CIFS\&.
+.RE
+.PP
+\fBsmbsh\fP(1)
+.RS 4
+\fBsmbsh\fP pozwala uruchomić powłokę uniksową na przeładowanym wirtualnym
+systemie plików\&.
+.RE
+.PP
+\fBsmbtree\fP(1)
+.RS 4
+Polecenie \fBsmbtree\fP jest konsolowym narzędziem umożliwiającym przeglądanie
+otoczenia sieciowego\&.
+.RE
+.PP
+\fBsmbtar\fP(1)
+.RS 4
+Za pomocą \fBsmbtar\fP można utworzyć kopie zapasowe danych z serwerów
+CIFS/SMB\&.
+.RE
+.PP
+\fBsmbspool\fP(8)
+.RS 4
+\fBsmbspool\fP jest pomocniczym poleceniem umożliwiającym drukowanie na
+drukarkach podłączonych do serwerów CIFS\&.
+.RE
+.PP
+\fBsmbcontrol\fP(1)
+.RS 4
+\fBsmbcontrol\fP jest narzędziem, przy którego pomocy można zmienić zachowanie
+uruchomionych demonów samby\&.
+.RE
+.PP
+\fBrpcclient\fP(1)
+.RS 4
+Narzędzie \fBrpcclient\fP może być używane do wykonywania poleceń RPC na
+zdalnych serwerach CIFS\&.
+.RE
+.PP
+\fBpdbedit\fP(8)
+.RS 4
+Polecenia \fBpdbedit\fP można użyć do zarządzania lokalną bazą danych
+użytkowników na serwerze samby\&.
+.RE
+.PP
+\fBfindsmb\fP(1)
+.RS 4
+Polecenia \fBfindsmb\fP można użyć, aby znaleźć serwery SMB w sieci lokalnej\&.
+.RE
+.PP
+\fBnet\fP(8)
+.RS 4
+Polecenie \fBnet\fP działa podobnie jak polecenie NET\&.EXE systemów
+DOS/Windows\&.
+.RE
+.PP
+\fBswat\fP(8)
+.RS 4
+\fBswat\fP jest, opartym na www, interfejsie służącym do konfigurowania
+\fIsmb\&.conf\fP\&.
+.RE
+.PP
+\fBwinbindd\fP(8)
+.RS 4
+\fBwinbindd\fP jest demonem używanym do integrowania baz danych poświadczeń i
+użytkownika do UNIX\-a\&.
+.RE
+.PP
+\fBwbinfo\fP(1)
+.RS 4
+\fBwbinfo\fP jest narzędziem, które pobiera i przechowuje informacje związane z
+winbind\&.
+.RE
+.PP
+\fBprofiles\fP(1)
+.RS 4
+\fBprofiles\fP jest narzędziem linii poleceń, które może być użyte do
+zastąpienia wszystkich wystąpień pewnego SID\-a innym SID\-em\&.
+.RE
+.PP
+\fBlog2pcap\fP(1)
+.RS 4
+\fBlog2pcap\fP generuje pliki śledzenia pcap z plików logu Samby\&.
+.RE
+.PP
+\fBvfstest\fP(1)
+.RS 4
+\fBvfstest\fP jest narzędziem do testowania modułów vfs\&.
+.RE
+.PP
+\fBntlm_auth\fP(1)
+.RS 4
+\fBntlm_auth\fP jest pomocniczym narzędziem dla zewnętrznych programów,
+chcących przeprowadzać uwierzytelnianie NTML\&.
+.RE
+.PP
+\fBsmbmount\fP(8), \fBsmbumount\fP(8), \fBsmbmnt\fP(8)
+.RS 4
+\fBsmbmount\fP,\fBsmbumount\fP i \fBsmbmnt\fP to polecenia używane do montowania
+zasobów CIFS/SMB pod Linuksem\&.
+.RE
+.PP
+\fBsmbcquotas\fP(1)
+.RS 4
+\fBsmbcquotas\fP jest narzędziem ustawiania QUOTA na serwerze z NTFS 5\&.
+.RE
+.SH SKŁADNIKI
+.PP
+Pakiet Samba składa się z kilku komponentów\&. Każdy komponent ma swoją
+osobną stronę podręcznika systemowego\&. Zaleca się przeczytanie
+dokumentacji dostarczonej razem z pakietem Samba oraz strony podręcznika
+systemowego tych komponentów, z których się korzysta\&. Jeśli podręcznik
+systemowy i inne dokumenty nie są wystarczająco klarowne, prosimy zajrzeć na
+http://devel\&.samba\&.org, aby uzyskać informacje, jak wysłać zgłoszenie o
+błędzie lub podesłać łatę\&.
+.PP
+Aby uzyskać pomoc, prosimy odwiedzić stronę domową Samby pod adresem
+http://www\&.samba\&.org i skorzystać z wielu dostępnych tam opcji.
+.SH DOSTĘPNOŚĆ
+.PP
+Pakiet Samba jest licencjonowany na zasadach Publicznej Licencji GNU
+(GPL)\&.  Kopia tej licencji powinna być dostarczona razem z pakietem w
+pliku COPYING\&.  Można rozprowadzać kopie pakietu Samba, ale trzeba
+przestrzegać zasad tej licencji\&.
+.PP
+Najnowsza wersja pakietu Samba może być pozyskana przez anonimowy serwer ftp
+samba\&.org z katalogu pub/samba/\&. Jest także wiele kopii tego serwera na
+całym świecie\&.
+.PP
+Wiele informacji na temat pakietu Samba możesz również znaleźć na grupie
+dyskusyjnej comp\&.protocol\&.smb i liście dyskusyjnej pakietu Samba\&.
+Opis, jak dołączyć do listy dyskusyjnej, znajduje się w pliku README
+załączonym do pakietu\&.
+.PP
+Mając dostęp do przeglądarki WWW (takiej jak Mozilla lub Konqueror), pod
+adresem http://lists\&.samba\&.org\& możnaz znaleźć wiele przydatnych
+informacji, łącznie z dawnymi kwestiami poruszanymi na liście dyskusyjnej
+pakietu Samba\&.
+.SH WERSJA
+.PP
+Ta strona podręcznika systemowego obowiązuje dla wersji 3 pakietu Samba\&.
+.SH UDZIAŁ
+.PP
+Aby dołączyć do projektu Samba, na początek proponujemy zapisać się na listę
+dyskusyjną pakietu Samba pod adresem http://lists\&.samba\&.org
+.PP
+Pod adresem http://devel\&.samba\&.org/ można znaleźć informacje, jak
+poprawnie wysłać łatę lub zgłosić błąd. Preferujemy łaty w formacie \fBdiff
+\-u\fP\&.
+.SH WSPÓŁPRACOWNICY
+.PP
+Lista uczestników tego projektu jest tak wielka, że nie jesteśmy w stanie
+ich wszystkich tu wymienić, lecz wszyscy zasługują na wdzięczność wszystkich
+użytkowników pakietu Samba\&. Pełna lista twórców zmian przed zastosowaniem
+CVS znajduje się w pliku \fIchange\-log\fP w pakiecie źródłowym, a lista twórców
+zmian po wprowadzeniu CVS znajduje się pod adresem
+http://cvs\&.samba\&.org/\&.  CVS jest to system kontroli kodu używany przez
+Samba Team do rozwijania pakietu Samba\&. Bez tego projekt byłby nie do
+okiełznania.
+.SH AUTOR
+.PP
+Oryginalne oprogramowanie Samba i związane z nim narzędzia zostały stworzone
+przez Andrew Tridgella. Samba jest teraz rozwijana przez Samba Team jako
+projekt typu Open Source, w sposób podobny do sposobu rozwijania jądra
+Linuksa\&.
+.PP
+Oryginalne strony podręcznika systemowego pakietu Samba zostały napisane
+przez Karla Auera\&. Strony podręcznika systemowego zostały skonwertowane do
+formatu YODL (kolejne wspaniałe oprogramowanie Open Source, dostępne pod
+adresem \fBftp://ftp\&.icce\&.rug\&.nl/pub/unix/\fP) i zaktualizowane dla
+wersji 2\&.0 pakietu Samba przez Jeremy'ego Allisona\&. Do formatu DocBook
+dla Samby 2\&.2 skonwertował Gerald Carter\&. Konwersji do formatu DocBook
+XML 4\&.2 dla Samby 3\&.0 dokonał Alexander Bokovoy.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Leszek Krupiński (PTM) <d@z.pl>,
+Robert Luberda (PTM) <robert@debian.org>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.6.6 \fPoryginału.

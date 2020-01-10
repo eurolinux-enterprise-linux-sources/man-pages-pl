@@ -1,0 +1,443 @@
+.\" Copyright (c) 1993 by Thomas Koenig (ig25@rz.uni-karlsruhe.de)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" License.
+.\" Modified Sun Jul 25 11:05:58 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified Sat Feb 10 16:18:03 1996 by Urs Thuermann (urs@isnogud.escape.de)
+.\" Modified Mon Jun 16 20:02:00 1997 by Nicolás Lichtmaier <nick@debian.org>
+.\" Modified Mon Feb  6 16:41:00 1999 by Nicolás Lichtmaier <nick@debian.org>
+.\" Modified Tue Feb  8 16:46:45 2000 by Chris Pepper <pepper@tgg.com>
+.\" Modified Fri Sep  7 20:32:45 2001 by Tammy Fox <tfox@redhat.com>
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993 Thomas Koenig 
+.\" Copyright © of Polish translation:
+.\" Gwidon S. Naskrent (PTM) <naskrent@hoth.amu.edu.pl>, 1998.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH HIER 7 2009\-03\-30 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+hier \- Opis systemowej hierarchii plików
+.SH OPIS
+Typowy system linuksowy zawiera, między innymi, następujące katalogi:
+.TP 
+\fI/\fP
+Katalog nadrzędny. Od niego to zaczyna się całe drzewo.
+.TP 
+\fI/bin\fP
+Katalog zawierający programy wykonywalne potrzebne w trybie pojedynczego
+użytkownika oraz do podniesienia i naprawienia systemu.
+.TP 
+\fI/boot\fP
+Zawiera statyczne pliki dla boot loadera. Ten katalog zawiera tylko pliki
+potrzebne podczas procesu bootowania. Instalator mapowania i pliki
+konfiguracyjne powinny trafić do \fI/sbin\fP i \fI/etc\fP.
+.TP 
+\fI/dev\fP
+Pliki urządzeń albo specjalne, odnoszące się do urządzeń fizycznych. Zobacz
+\fBmknod\fP(1).
+.TP 
+\fI/etc\fP
+Zawiera pliki konfiguracyjne lokalne dla maszyny. Niektóre większe pakiety
+programów, jak X11, mogą mieć swoje własne katalogi poniżej \fIetc\fP. Pliki
+konfiguracyjne dla całego systemu można umieścić tu lub w
+\fI/usr/etc\fP. Niemniej jednak, programy powinny zawsze szukać tych plików w
+\fI/etc,\fP a Ty możesz umieścić linki do nich w \fI/usr/etc\fP.
+.TP 
+\fI/etc/opt\fP
+Pliki konfiguracyjne dodatkowych aplikacji instalowanych w \fI/opt\fP
+specyficzne dla maszyny.
+.TP 
+\fI/etc/sgml\fP
+Tan katalog zawiera pliki konfiguracyjne dla SGML\-a i XML\-a (opcjonalny).
+.TP 
+\fI/etc/skel\fP
+Gdy stworzone zostaje nowe konto użytkownika, pliki z tego katalogu są
+zwykle kopiowane do katalogu domowego użytkownika.
+.TP 
+\fI/etc/X11\fP
+Pliki konfiguracyjne dla systemu okienkowego X11 (opcjonalny).
+.TP 
+\fI/home\fP
+Na maszynach z katalogami domowymi dla użytkowników, katalogi te znajdują
+się zwykle poniżej tego katalogu, bezpośrednio lub nie. Struktura tego
+katalogu zależy od decyzji lokalnych administratorów.
+.TP 
+\fI/lib\fP
+Ten katalog powinien zawierać te biblioteki dynamiczne, które są konieczne
+do wystartowania systemu i uruchamiania komend z głównego systemu plików.
+.TP 
+\fI/media\fP
+Katalog ten zawiera punkty montowania usuwalnych dysków takich jak napędy CD
+i DVD lub dyski USB.
+.TP 
+\fI/mnt\fP
+Katalog ten jest punktem montowania dla tymczasowo zamontowanych systemów
+plików. Niektóre dystrybucje umieszczają w \fI/mnt\fP podkatalogi z
+przeznaczeniem, że będą używane jako punkty montowania dla kilku
+tymczasowych systemów plików.
+.TP 
+\fI/opt\fP
+Ten katalog powinien zawierać dodatkowe pakiety, które zawierają statyczne
+pliki.
+.TP 
+\fI/proc\fP
+Jest to punkt montowania systemu plików \fIproc\fP, który dostarcza informacji
+o bieżących procesach i jądrze. Ów pseudosystem plików opisano w szczegółach
+w \fBproc\fP(5).
+.TP 
+\fI/root\fP
+Tan katalog jest zwyczajowo katalogiem domowym użytkownika root
+(opcjonalny).
+.TP 
+\fI/sbin\fP
+Tak jak \fI/bin\fP, ten katalog zawiera komendy potrzebne do wystartowania
+systemu, ale których zwykle nie wykonują normalni użytkownicy.
+.TP 
+\fI/srv\fP
+Katalog ten zawiera dane specyficzne dla usług dostarczanych przez ten
+komputer.
+.TP 
+\fI/tmp\fP
+Katalog zawierający pliki tymczasowe, które może usunąć bez ostrzeżenia
+działające zadanie lub start systemu.
+.TP 
+\fI/usr\fP
+Ten katalog jest zwykle montowany z oddzielnej partycji. Powinien on
+zawierać dzielone dane tylko do odczytu, tak że można go zamontować na
+różnych maszynach z zainstalowanym Linuksem.
+.TP 
+\fI/usr/X11R6\fP
+System X\-Window, wersja 11, wydanie 6 (opcjonalny).
+.TP 
+\fI/usr/X11R6/bin\fP
+Binaria należące do systemu X\-Window; często jest to link symboliczny z
+bardziej tradycyjnego \fI/usr/bin/X11\fP.
+.TP 
+\fI/usr/X11R6/lib\fP
+Pliki danych skojarzone z systemem X\-Window.
+.TP 
+\fI/usr/X11R6/lib/X11\fP
+Zawiera różne pliki potrzebne do uruchamiania X; często jest to link
+symboliczny z \fI/usr/lib/X11\fP.
+.TP 
+\fI/usr/X11R6/include/X11\fP
+Zawiera pliki nagłówkowe potrzebne do kompilacji programów z użyciem systemu
+okienkowego X11. Często jest to link symboliczny z \fI/usr/include/X11\fP.
+.TP 
+\fI/usr/bin\fP
+Jest to główny katalog programów wykonywalnych. Większość programów
+wykonywanych przez zwykłych użytkowników, które nie są potrzebne przy
+starcie lub naprawie systemu i które nie są instalowane lokalnie, powinna
+być umieszczona w tym katalogu
+.TP 
+\fI/usr/bin/X11\fP
+Tradycyjne miejsce na pliki wykonywalne X11; w Linuksie zwykle jest to link
+symboliczny do \fI/usr/X11R6/bin\fP.
+.TP 
+\fI/usr/dict\fP
+Zastąpiony przez \fI/usr/share/dict\fP.
+.TP 
+\fI/usr/doc\fP
+Zastąpiony przez \fI/usr/share/doc\fP.
+.TP 
+\fI/usr/etc\fP
+Można tu umieścić całosystemowe pliki konfiguracyjne dzielone między kilkoma
+maszynami. Programy jednak powinny zawsze odwoływać się do tych plików
+używając katalogu \fI/etc.\fP Linki od plików w \fI/etc\fP powinny wskazywać na
+odpowiednie pliki w \fI/usr/etc\fP.
+.TP 
+\fI/usr/games\fP
+Binaria gier i programów edukacyjnych (opcjonalny).
+.TP 
+\fI/usr/include\fP
+Pliki nagłówkowe dla kompilatora C.
+.TP 
+\fI/usr/include/X11\fP
+Pliki nagłówkowe dla kompilatora C i systemu X\-Window.Jest to zwykle link
+symboliczny do \fI/usr/X11R6/include/X11\fP.
+.TP 
+\fI/usr/include/asm\fP
+Pliki nagłówkowe deklarujące niektóre funkcje asemblera. W przeszłości był
+to link symboliczny do \fI/usr/src/linux/include/asm\fP.
+.TP 
+\fI/usr/include/linux\fP
+Zawiera informacje, które mogą zmieniać się jednego wydania systemu na
+drugie i kiedyś był on linkiem symbolicznym do
+\fI/usr/src/linux/include/linux\fP, żeby otrzymywać informacje specyficzne dla
+systemu operacyjnego.
+
+(Uwaga: pliki nagłówkowe powinny działać poprawnie zarówno z bieżącą
+biblioteką libc jak i w przestrzeni użytkownika. Jednakże źródła jądra
+Linuksa nie są przeznaczone do użytku z programami użytkownika i nic nie
+wiedzą o libc, zainstalowanej w systemie. Jest bardzo prawdopodobne, że
+pewne rzeczy przestaną działać, jeżeli \fI/usr/include/asm\fP i
+\fI/usr/include/linux\fP będą prowadziły do losowego drzewa źródeł
+jądra. Systemy Debiana nie robią tego i używają nagłówków ze znanej, dobrej
+wersji jądra, dostarczonych przez pakiet libc*\-dev).
+.TP 
+\fI/usr/include/g++\fP
+Pliki nagłówkowe do użytku z kompilatorem GNU C++.
+.TP 
+\fI/usr/lib\fP
+Biblioteki obiektowe, w tym dynamiczne, plus parę plików wykonywalnych,
+zwykle niewywoływanych bezpośrednio. Bardziej skomplikowane programy mogą tu
+posiadać całe podkatalogi.
+.TP 
+\fI/usr/lib/X11\fP
+Zwykłe miejsce dla plików danych skojarzonych z programami X\-owymi, oraz
+pliki konfiguracyjne dla systemu X. W Linuksie, zwykle jest to link
+symboliczny do \fI/usr/X11R6/lib/X11\fP.
+.TP 
+\fI/usr/lib/gcc\-lib\fP
+Zawiera pliki wykonywalne i nagłówkowe dla kompilatora GNU C \fBgcc\fP(1).
+.TP 
+\fI/usr/lib/groff\fP
+Pliki dla systemu formatowania dokumentów GNU groff.
+.TP 
+\fI/usr/lib/uucp\fP
+Pliki dla \fBuucp\fP(1).
+.TP 
+\fI/usr/local\fP
+Tutaj zwykle trafiają programy instalowane lokalnie na maszynie.
+.TP 
+\fI/usr/local/bin\fP
+Trafiają tu binaria programów lokalnych.
+.TP 
+\fI/usr/local/doc\fP
+Lokalna dokumentacja.
+.TP 
+\fI/usr/local/etc\fP
+Pliki konfiguracyjne skojarzone z lokalnie zainstalowanymi programami.
+.TP 
+\fI/usr/local/games\fP
+Binaria lokalnie zainstalowanych gier.
+.TP 
+\fI/usr/local/lib\fP
+Pliki skojarzone z lokalnie zainstalowanymi programami.
+.TP 
+\fI/usr/local/include\fP
+Pliki nagłówkowe lokalnego kompilatora C.
+.TP 
+\fI/usr/local/info\fP
+Strony info skojarzone z lokalnie zainstalowanymi programami.
+.TP 
+\fI/usr/local/man\fP
+Strony podręcznika ekranowego skojarzone z lokalnie zainstalowanymi
+programami.
+.TP 
+\fI/usr/local/sbin\fP
+Lokalnie instalowane programy do administracji systemem.
+.TP 
+\fI/usr/local/share\fP
+Dane lokalnych aplikacji, które mogą być dzielona między różnymi
+architekturami tego samego systemu operacyjnego.
+.TP 
+\fI/usr/local/src\fP
+Kod źródłowy programów instalowanych lokalnie.
+.TP 
+\fI/usr/man\fP
+Zastąpiony przez \fI/usr/share/man\fP.
+.TP 
+\fI/usr/sbin\fP
+Katalog zawierający binaria programów do administracji systemem, które nie
+są potrzebne przy bootowaniu, montowaniu \fI/usr\fP lub naprawie systemu.
+.TP 
+\fI/usr/share\fP
+Katalog zawierający podkatalogi ze specyficznymi danymi aplikacji, które
+mogą być dzielone między różnymi architekturami tego samego systemu
+operacyjnego. Często można tu znaleźć rzeczy, które wcześniej znajdowały się
+w \fI/usr/doc\fP lub \fI/usr/lib\fP, lub \fI/usr/man\fP.
+.TP 
+\fI/usr/share/dict\fP
+Zawiera pliki z listami słów dla poprawiaczy pisowni.
+.TP 
+\fI/usr/share/doc\fP
+Dokumentacja zainstalowanych programów.
+.TP 
+\fI/usr/share/games\fP
+Pliki ze statycznymi danymi gier z \fI/usr/games\fP.
+.TP 
+\fI/usr/share/info\fP
+Strony info tutaj się znajdują.
+.TP 
+\fI/usr/share/locale\fP
+Tutaj znajdują się informacje związane ustawieniami regionalnymi.
+.TP 
+\fI/usr/share/man\fP
+Trafiają tu strony podręcznika ekranowego, do odpowiednich katalogów, według
+sekcji podręcznika.
+.TP 
+\fI/usr/share/man/<locale>/man[1\-9]\fP
+Te katalogi zawierają strony podręcznika w formacie źródłowym. Systemy,
+które używają jednego języka i zestawu znaków dla wszystkich stron
+podręcznika, mogą pominąć <locale>.
+.TP 
+\fI/usr/share/misc\fP
+Różnorodne dane, które mogą być dzielone między różnymi architekturami tego
+samego systemu operacyjnego.
+.TP 
+\fI/usr/share/nls\fP
+Katalogi wiadomości natywnego języka.
+.TP 
+\fI/usr/share/sgml\fP
+Pliki dla SGML\-a i XML\-a.
+.TP 
+\fI/usr/share/terminfo\fP
+Baza danych terminfo.
+.TP 
+\fI/usr/share/tmac\fP
+Makra troffa, które nie są dystrybuowane z groffem.
+.TP 
+\fI/usr/share/zoneinfo\fP
+Pliki informacji o strefach czasowych.
+.TP 
+\fI/usr/src\fP
+Pliki źródłowe różnych części systemu, dołączane do niektórych pakietów. Nie
+należy pracować tutaj nad swoimi własnymi projektami, ponieważ pliki w /usr
+powinny być tylko do odczytu z wyjątkiem sytuacji, gdy instalowane jest
+oprogramowanie.
+.TP 
+\fI/usr/src/linux\fP
+Zawiera źródła jądra samego systemu operacyjnego. Niektóre dystrybucje
+umieszczają tu źródła domyślnie instalowanego jądra. Najprawdopodobniej
+powinieneś użyć innego katalogu do budowania własnego jądra.
+.TP 
+\fI/usr/tmp\fP
+Przestarzałe. Powinno być linkiem do \fI/var/tmp\fP. Ten link jest obecny tylko
+w celu zachowania kompatybilności i nie powinien być używany.
+.TP 
+\fI/var\fP
+Katalog zawierający pliki, które mogą zmieniać wielkość, takie jak logi i
+spoole.
+.TP 
+\fI/var/adm\fP
+Ten katalog został zastąpiony przez \fI/var/log\fP i powinien być linkiem
+symbolicznym do \fI/var/log\fP.
+.TP 
+\fI/var/backups\fP
+Zarezerwowany z powodów historycznych.
+.TP 
+\fI/var/cache\fP
+Zbuforowane dane programów.
+.TP 
+\fI/var/catman/cat[1\-9]\fP lub \fI/var/cache/man/cat[1\-9]\fP
+Te katalogi przechowują preformatowane strony podręcznika ekranowego zgodnie
+z sekcją tego podręcznika. (Używanie preformatowanych stron podręcznika jest
+przestarzałe).
+.TP 
+\fI/var/cron\fP
+Zarezerwowany z powodów historycznych.
+.TP 
+\fI/var/lib\fP
+Zmienne informacje programów.
+.TP 
+\fI/var/local\fP
+Zmienne dane dla \fI/usr/local\fP.
+.TP 
+\fI/var/lock\fP
+Umieszczane są tu pliki blokad. Konwencja nazw plików blokad dla urządzeń to
+\fILCK..<urządzenie>\fP gdzie \fI<urządzenie>\fP, to nazwa
+urządzenia w systemie plików. Użyty format to format plików blokad protokołu
+HDU UUCP, tj. pliki blokad zawierają PID jako dziesięciobajtowy numer
+dziesiętny w ASCII, plus znak nowej linii.
+.TP 
+\fI/var/log\fP
+Różne logi.
+.TP 
+\fI/var/opt\fP
+Zmienne dane dla \fI/opt\fP.
+.TP 
+\fI/var/mail\fP
+Skrzynki pocztowe użytkowników. Zastępuje \fI/var/spool/mail\fP.
+.TP 
+\fI/var/msgs\fP
+Zarezerwowany z powodów historycznych.
+.TP 
+\fI/var/preserve\fP
+Zarezerwowany z powodów historycznych.
+.TP 
+\fI/var/run\fP
+Różne pliki bieżące, np. pliki zawierające identyfikatory procesów (PIDy) i
+informację o zalogowanych użytkownikach \fI(utmp)\fP. Pliki w tym katalogu są
+zwykle czyszczone przy starcie systemu.
+.TP 
+\fI/var/spool\fP
+Kolejkowane (spoolowane) pliki różnych programów.
+.TP 
+\fI/var/spool/at\fP
+Spoolowane zadania dla \fBat\fP(1).
+.TP 
+\fI/var/spool/cron\fP
+Spoolowane zadania dla \fBcron\fP(8).
+.TP 
+\fI/var/spool/lpd\fP
+Spoolowane pliki do drukowania.
+.TP 
+\fI/var/spool/mail\fP
+Zastąpione przez \fI/var/mail\fP.
+.TP 
+\fI/var/spool/mqueue\fP
+Zakolejkowana poczta wychodząca.
+.TP 
+\fI/var/spool/news\fP
+Katalog spool newsów.
+.TP 
+\fI/var/spool/rwho\fP
+Spoolowane pliki dla \fBrwhod\fP(8).
+.TP 
+\fI/var/spool/smail\fP
+Spoolowane pliki dla programu \fBsmail(1)\fP.
+.TP 
+\fI/var/spool/uucp\fP
+Spoolowane pliki dla \fBuucp\fP(1).
+.TP 
+\fI/var/tmp\fP
+Tak jak \fI/tmp\fP, ten katalog zawiera tymczasowe pliki przechowywane na czas
+nieokreślony.
+.TP 
+\fI/var/yp\fP
+Pliki bazy danych systemu NIS.
+.SH "ZGODNE Z"
+Standard hierarchii systemu plików (FHS), wersja 2.2
+<http://www.pathname.com/fhs/>.
+.SH BŁĘDY
+Lista ta nie jest wyczerpująca; różne systemy mogą być różnie
+skonfigurowane.
+.SH "ZOBACZ TAKŻE"
+\fBfind\fP(1), \fBln\fP(1), \fBproc\fP(5), \fBmount\fP(8)
+
+Standard hierarchii systemu plików
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Gwidon S. Naskrent (PTM) <naskrent@hoth.amu.edu.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

@@ -1,0 +1,124 @@
+.\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2004 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"{{{}}}
+.\"{{{  Title
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1997-2005 Miquel van Smoorenburg et al (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Wojtek Kotwica (PTM) <wkotwica@post.pl>, 1999.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH LAST,LASTB 1 "31 lipca 2004" "" "Podręcznik administratora systemu Linux"
+.\"}}}
+.\"{{{  Name
+.SH NAZWA
+.\"}}}
+.\"{{{  Synopsis
+last, lastb \- pokazuje listę ostatnio zalogowanych użytkowników
+.SH SKŁADNIA
+\fBlast\fP [\fB\-R\fP] [\fB\-\fP\fIliczba\fP] [ \-\fBn\fP \fIliczba\fP ] [\fB\-adFiowx\fP] [ \-\fBf\fP
+\fIplik\fP ] [ \-\fBt\fP \fIRRRRMMDDGGMMSS\fP ] [\fInazwa...\fP] [\fItty...\fP]
+.br
+.\"}}}
+.\"{{{  Description
+\fBlastb\fP [\fB\-R\fP] [\fB\-\fP\fIliczba\fP] [ \-\fBn\fP \fIliczba\fP ] [ \-\fBf\fP \fIplik\fP ]
+[\fB\-adFiowx\fP] [\fInazwa...\fP] [\fItty...\fP]
+.SH OPIS
+\fBLast\fP przeszukuje wstecz plik \fB/var/log/wtmp\fP (lub plik wskazany flagą
+\fB\-f\fP)  i wyświetla listę wszystkich zalogowanych (i wylogowanych) od czasu
+utworzenia pliku użytkowników. Mogą zostać podane nazwy użytkowników i
+terminali (tty); w tym przypadku \fBlast\fP pokaże jedynie zapisy pasujące do
+tych argumentów.  Nazwy terminali mogą być skracane, zatem \fBlast 0\fP, to to
+samo, co \fBlast tty0\fP.
+.PP
+Gdy \fBlast\fP przechwyci sygnał \s-2SIGINT\s0 (generowany przez klawisz
+przerwania, zwykle control\-C) lub sygnał \s-2SIGQUIT\s0 (generowany przez
+klawisz zakończenia, zwykle control\-\e), pokaże jak daleko przeszukał plik;
+następnie, w przypadku sygnału \s-2SIGINT\s0, \fBlast\fP przerwie pracę.
+.PP
+Pseudoużytkownik \fBreboot\fP rejestrowany jest przy każdorazowym przeładowaniu
+systemu. Zatem \fBlast reboot\fP pokaże rejestr (log) wszystkich przeładowań od
+utworzenia pliku rejestrującego.
+.PP
+.\"}}}
+.\"{{{  Options
+\fBLastb\fP jest tym samym, co \fBlast\fP, z wyjątkiem tego, że domyślnie pokazuje
+zapisy z pliku \fB/var/log/btmp\fP, zawierającego zakończone niepowodzeniem
+próby logowań.
+.SH OPCJE
+.IP "\fB\-f\fP \fIplik\fP"
+Program \fBlast\fP użyje podanego pliku zamiast \fB/var/log/wtmp\fP.
+.IP \fB\-\fP\fIliczba\fP
+Liczba mówiąca \fBlast\fP, ile wierszy ma pokazać.
+.IP "\fB\-n\fP \fIliczba\fP"
+To samo.
+.IP "\fB\-t\fP \fIRRRRMMDDGGMMSS\fP"
+Wyświetla stań logowań w podanym czasie. Jest to przydatne np. aby łatwo
+dowiedzieć się kto logował się w danym czasie \- należy podać czas za pomocą
+opcji \fB\-t\fP i wyszukać wpisy "still logged in".
+.IP \fB\-R\fP
+Nie wyświetla pola z nazwą hosta.
+.IP \fB\-a\fP
+Wyświetla nazwę hosta w ostatniej kolumnie. Przydatne w połączeniu z
+następną flagą.
+.IP \fB\-d\fP
+Dla logowań nie\-lokalnych Linux przechowuje nie tylko nazwę zdalnego hosta,
+ale i jego numer IP. Opcja ta przekłada numer IP z powrotem na nazwę hosta.
+.IP \fB\-F\fP
+Wypisuje pełne czasy zalogowania i wylogowania łącznie z datą.
+.IP \fB\-i\fP
+Opcja ta jest podobna do \fB\-d\fP, ponieważ wypisuje numery IP zdalnego hosta,
+ale robi to w notacji liczb z kropkami.
+.IP \fB\-o\fP
+Czyta plik wtmp starego typu (zapisany przez aplikacje linux\-libc5).
+.IP \fB\-w\fP
+Wyświetla pełne nazwy i domeny użytkowników na wyjście.
+.IP \fB\-x\fP
+.\"}}}
+Wyświetla zapisy o zamknięciach systemu i zmianach jego poziomów pracy.
+.SH UWAGI
+.\"{{{  Files
+Mogą nie zostać odnalezione pliki \fIwtmp\fP i \fIbtmp\fP. System rejestruje
+informacje w tych plikach tylko wtedy, gdy istnieją. Wynika to z lokalnej
+konfiguracji. Aby były one używane, można je utworzyć po prostu poleceniem
+\fBtouch\fP(1) (na przykład, \fItouch /var/log/wtmp\fP).
+.SH PLIKI
+/var/log/wtmp
+.br
+.\"}}}
+.\"{{{  Author
+/var/log/btmp
+.SH AUTOR
+.\"}}}
+.\"{{{  See also
+Miquel van Smoorenburg, miquels@cistron.nl
+.SH "ZOBACZ TAKŻE"
+\fBshutdown\fP(8), \fBlogin\fP(1), \fBinit\fP(8)
+.\"}}}
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Wojtek Kotwica (PTM) <wkotwica@post.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.88 \fPoryginału.

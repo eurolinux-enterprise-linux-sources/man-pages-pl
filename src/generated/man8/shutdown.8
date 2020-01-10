@@ -1,0 +1,229 @@
+.\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2003 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"{{{}}}
+.\"{{{  Title
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1997-2004 Miquel van Smoorenburg, Michael Haardt (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Wojtek Kotwica (PTM) <wkotwica@post.pl>, 1999.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH SHUTDOWN 8 "12 listopada 2003" "" "Podręcznik administratora systemu Linux"
+.\"}}}
+.\"{{{  Name
+.SH NAZWA
+.\"}}}
+.\"{{{  Synopsis
+shutdown \- wyłącza system
+.SH SKŁADNIA
+.\"}}}
+.\"{{{  Description
+\fB/sbin/shutdown\fP [\fB\-akrhPHfFnc\fP] [\fB\-t\fP \fIsek\fP] \fIczas\fP [\fIostrzeżenie\fP]
+.SH OPIS
+.\"}}}
+.\"{{{  Options
+\fBshutdown\fP w bezpieczny sposób wyłącza system. Wszyscy zalogowani
+użytkownicy powiadamiani są o rozpoczętym wyłączaniu, zaś rozpoczynanie
+nowych sesji pracy przez \fBlogin\fP(1) jest blokowane.  Możliwe jest
+zamknięcie i wyłączenie systemu natychmiastowe lub po zadanym czasie. W
+pierwszej kolejności wszystkie procesy powiadamiane są o wyłączaniu systemu
+sygnałem \s-2SIGTERM\s0. Daje to programom takim jak \fBvi\fP(1) czas na
+zachowanie edytowanego pliku, programom przetwarzającym pocztę i grupy
+dyskusyjne szansę na czyste zakończenie pracy itd.  \fBshutdown\fP wykonuje swe
+zadanie sygnalizując procesowi \fBinit\fP prośbę o zmianę poziomu pracy.
+Poziom pracy (runlevel) \fB0\fP używany jest do zatrzymywania systemu, zaś
+poziom \fB1\fP służy do przełączenia go w stan, w którym mogą być wykonywane
+zadania administracyjne i konserwacja systemu; jest to poziom domyślny
+jeżeli nie podano ani flagi \fB\-h\fP ani \fB\-r\fP polecenia \fBshutdown\fP.  Jakie
+czynności wykonywane są podczas zatrzymywania bądź przeładowywania systemu
+możesz zobaczyć przeglądając odpowiednie dla danych poziomów pracy wpisy w
+pliku \fI/etc/inittab\fP.
+.SH OPCJE
+.\"{{{  -a
+.IP \fB\-a\fP
+.\"}}}
+.\"{{{  -k
+Używa \fB/etc/shutdown.allow\fP.
+.IP \fB\-k\fP
+.\"}}}
+.\"{{{  -r
+Nie wykonuje faktycznego wyłączenia; wysyła tylko do wszystkich komunikaty
+ostrzegawcze.
+.IP \fB\-r\fP
+.\"}}}
+.\"{{{  -h
+Przeładowuje (ang. reboot) po wyłączeniu systemu.
+.IP \fB\-h\fP
+.\"}}}
+.\"{{{  -P
+Zatrzymuje lub wyłącza komputer po zamknięciu systemu.
+.IP \fB\-P\fP
+.\"}}}
+.\"{{{  -H
+Czynnością podejmowaną przy zatrzymaniu systemu jest wyłączenie komputera.
+.IP \fB\-H\fP
+.\"}}}
+.\"{{{  -f
+Modyfikator do opcji \fB\-h\fP. Komputer jest zatrzymywany lub przełącza się do
+programu monitorującego rozruch (ang. boot monitor), w systemach które to
+obsługują. Musi być użyte z opcją \fB\-h\fP.
+.IP \fB\-f\fP
+.\"}}}
+.\"{{{  -F
+Pomija fsck (sprawdzanie systemów plików) podczas przeładowania.
+.IP \fB\-F\fP
+.\"}}}
+.\"{{{  -n
+Wymusza fsck przy przeładowaniu.
+.IP \fB\-n\fP
+.\"}}}
+.\"{{{  -c
+[PRZESTARZAŁE] Nie wywołuje \fBinit\fP(8) do wykonania wyłączenia, ale robi to
+samodzielnie. Odradza się używania tej opcji, zaś jej wyniki nie zawsze są
+zgodne z oczekiwaniami.
+.IP \fB\-c\fP
+.\"}}}
+.\"{{{  -t sec
+Anuluje już rozpoczęte wyłączanie systemu (nie działa z "shutdown
+now"). Przy tej opcji nie jest, oczywiście, możliwe podanie argumentu
+\fIczas\fP, ale można wprowadzić w wierszu poleceń komunikat wyjaśniający,
+który zostanie przesłany do wszystkich użytkowników.
+.IP "\fB\-t\fP \fIsek\fP"
+.\"}}}
+.\"{{{  time
+Nakazuje programowi \fBinit\fP(8) odczekanie \fIsek\fP sekund pomiędzy wysłaniem
+procesom ostrzeżenia i sygnału kill a zmianą na inny poziom pracy.
+.IP \fIczas\fP
+.\"}}}
+.\"{{{  warning-message
+Kiedy wyłączyć system.
+.IP \fIostrzeżenie\fP
+.\"}}}
+Komunikat ostrzegawczy, jaki ma zostać wysłany do wszystkich użytkowników.
+.PP
+Argument \fIczas\fP może posiadać różne formaty. Po pierwsze, może to być czas
+absolutny (ustalona godzina) w formacie \fIgg:mm\fP, gdzie \fIgg\fP jest godziną
+(1 lub 2 cyfry)  a \fImm\fP minutami godziny (dwucyfrowo). Po drugie, może być
+w formacie \fB+\fP\fIm\fP, gdzie \fIm\fP jest liczbą minut do odczekania.  Słowo
+\fBnow\fP (teraz) jest równoważnikiem \fB+0\fP.
+.PP
+Jeśli shutdown wywoływany jest z czasem opóźnienia, to tworzy plik
+sygnalizacyjny (advisory file) \fI/etc/nologin\fP powodujący, że programy takie
+jak \fBlogin(1)\fP nie zezwalają na nowe logowania użytkowników. Plik jest
+tworzony pięć minut przed rozpoczęciem wyłączania systemu. Shutdown usuwa
+ten plik tylko wtedy, gdy zostanie zatrzymany przed wysłaniem sygnału do
+init (tj. zostanie anulowany lub coś się nie udało). Usuwa go również przed
+wywołaniem init do zmiany poziomu pracy.
+.PP
+Flaga \fB\-f\fP oznacza "reboot fast" (szybkie przeładowanie). Tworzy plik
+sygnalizacyjny \fI/fastboot\fP, który może być testowany przez system przy
+ponownym uruchamianiu. Plik startowy rc może sprawdzać, czy powyższy plik
+istnieje i decydować o zaniechaniu uruchamiania \fBfsck\fP(1), gdyż system
+został wyłączony prawidłowo. Następnie proces startowy powinien usunąć
+\fI/fastboot\fP.
+.PP
+Flaga \fB\-F\fP oznacza "force fsck" (wymuś fsck). Tworzy plik sygnalizacyjny
+\fI/forcefsck\fP, który może być testowany przez system przy ponownym
+uruchamianiu. Plik startowy rc może sprawdzać, czy powyższy plik istnieje i
+decydować o uruchomieniu \fBfsck\fP(1) ze specjalną flagą "force", tak by
+zostały sprawdzone nawet poprawnie odmontowane systemy plików.  Następnie
+proces startowy powinien usunąć \fI/forcefsck\fP.
+.PP
+.\"}}}
+.\"{{{  Files
+Flaga \fB\-n\fP powoduje, że \fBshutdown\fP nie będzie wywoływać \fBinit\fP, ale
+zabije samodzielnie wszystkie działające procesy.  \fBshutdown\fP wyłączy
+następnie obsługę udziałów (quota), rozliczeń i obszaru wymiany (swap) oraz
+odmontuje wszystkie systemy plików.
+.SH "KONTROLA DOSTĘPU"
+\fBshutdown\fP może być wywoływane z \fBinit\fP(8), gdy zostaną wciśnięte magiczne
+klawisze \fBCTRL\-ALT\-DEL\fP, przez utworzenie odpowiedniego wpisu w
+\fI/etc/inittab\fP. Oznacza to, że każdy, kto posiada fizyczny dostęp do
+klawiatury konsoli może wyłączyć system. By zapobiec takiej sytuacji,
+\fBshutdown\fP może sprawdzać, czy na jednej z wirtualnych konsoli zalogowany
+jest upoważniony użytkownik. Jeżeli \fBshutdown\fP zostanie wywołany z
+argumentem \fB\-a\fP (proszę dodać go do wywołania shutdown w /etc/inittab), to
+sprawdza czy istnieje plik \fI/etc/shutdown.allow\fP. Następnie porównuje nazwy
+użytkowników z tego pliku z listą osób zalogowanych na wirtualnej konsoli (z
+\fI/var/run/utmp\fP). Shutdown będzie kontynuować pracę tylko wtedy, gdy
+zalogowany jest jeden z upoważnionych użytkowników \fBlub root\fP.  W
+przeciwnym wypadku wyświetli komunikat
+.sp 1
+.nf
+\fBshutdown: no authorized users logged in\fP
+[shutdown: brak zalogowanych upoważnionych użytkowników]
+.fi
+.sp 1
+na (fizyczną) konsolę systemową. Plik \fI/etc/shutdown.allow\fP zawiera po
+jednej nazwie (loginname) użytkownika w wierszu. Dozwolone są wiersze puste
+i wiersze komentarzy (poprzedzone znakiem \fB#\fP).  Obecnie dla tego pliku
+istnieje ograniczenie do 32 użytkowników.
+.sp 1
+Proszę zauważyć, że jeśli plik \fI/etc/shutdown.allow\fP nie istnieje, to
+argument \fB\-a\fP jest ignorowany.
+.SH "ZATRZYMANIE CZY WYŁĄCZENIE"
+Opcja \fB\-H\fP ustawia jedynie zmienną środowiskową \fBINIT_HALT\fP programu
+\fBinit\fP na \fBHALT\fP, natomiast opcja \fB\-P\fP ustawia ją na \fBPOWEROFF\fP. Skrypt
+shutdown, który wywołuje \fBhalt\fP(8), jako ostatnią rzecz w sekwencji
+wyłączającej, powinien sprawdzić te zmienne środowiskowe i wywołać
+\fBhalt\fP(8) z prawidłowymi opcjami, aby miały one jakiekolwiek
+znaczenie. Debian 3.1 (sarge) obsługuje to.
+.SH PLIKI
+.nf
+/fastboot
+/etc/inittab
+/etc/init.d/halt
+/etc/init.d/reboot
+/etc/shutdown.allow
+.fi
+.\"}}}
+.SH BŁĘDY
+Wielu użytkowników zapomina o podaniu argumentu \fIczas\fP i jest zakłopotana
+komunikatem o błędzie dawanym przez \fBshutdown\fP. Argument \fIczas\fP jest
+obowiązkowy; w 90 procentach przypadków argumentem tym będzie słowo \fBnow\fP.
+.PP
+Init może przechwycić CTRL\-ALT\-DEL i rozpocząć wyłączenia jedynie w trybie
+konsolowym. Jeśli działa X Window System, to serwer X przetwarza wszystkie
+wciskane klawisze. Niektóre środowiska X11 umożliwiają przechwycenie
+kombinacji CTRL\-ALT\-DEL, ale to, co dokładnie stanie się po użyciu tej
+sekwencji, zależy od danego środowiska.
+.PP
+.\"{{{  Author
+Shutdown nie jest zaprojektowany do działania z setuid. Plik
+/etc/shutdown.allow nie jest używany w odniesieniu do osoby wykonującej
+shutdown, sprawdza on JEDYNIE kto jest aktualnie zalogowany na
+konsoli/jednej z konsol.
+.SH AUTOR
+.\"}}}
+.\"{{{  See also
+Miquel van Smoorenburg, miquels@cistron.nl
+.SH "ZOBACZ TAKŻE"
+\fBfsck\fP(8), \fBinit\fP(8), \fBhalt\fP(8), \fBpoweroff\fP(8), \fBreboot\fP(8)
+.\"}}}
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Wojtek Kotwica (PTM) <wkotwica@post.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.88 \fPoryginału.

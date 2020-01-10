@@ -1,0 +1,263 @@
+.\" t
+.\" This man page is Copyright (C) 1999 Matthew Wilcox <willy@bofh.ai>.
+.\" Permission is granted to distribute possibly modified copies
+.\" of this page provided the header is included verbatim,
+.\" and in case of nontrivial modification author and date
+.\" of the modification is added to the header.
+.\" Modified June 1999 Andi Kleen
+.\" $Id: arp.7,v 1.10 2000/04/27 19:31:38 ak Exp $
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1999 Matthew Wilcox 
+.\" Copyright © of Polish translation:
+.\" Andrzej M. Krzysztofowicz (PTM) <ankry@mif.pg.gda.pl>, 2003.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH ARP 7 2008\-11\-25 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+arp \- moduł ARP jądra Linuksa
+.SH OPIS
+Ten moduł protokołu w jądrze zawiera implementację protokołu rozpoznawania
+adresów (ang. Address Resolution Protocol) zdefiniowanego w RFC\ 826.  Służy
+do przekształcania adresów sprzętowych warstwy 2 na adresy protokołu IPv4 w
+sieciach o bezpośrednim połączeniu. Normalnie użytkownik nie korzysta
+bezpośrednio z tego modułu, z wyjątkiem konfigurowania go; służy on innym
+protokołom w jądrze.
+
+Proces użytkownika może odbierać pakiety ARP za pomocą gniazd \fBpacket\fP(7).
+Istnieje także mechanizm zarządzania pamięcią podręczną ARP w przestrzeni
+użytkownika za pomocą gniazd \fBnetlink\fP(7). Tabelą ARP można również
+zarządzać za pomocą \fBioctl\fP(2) lub dowolnego gniazda \fBAF_INET\fP.
+
+Moduł ARP zarządza pamięcią podręczną odwzorowań pomiędzy adresami
+sprzętowymi i adresami protokołu. Pamięć podręczna ma ograniczony rozmiar,
+więc stare i rzadko używane wpisy są usuwane. Wpisy oznaczone jako trwałe
+nie są nigdy usuwane podczas procesu czyszczenia. Można manipulować
+bezpośrednio tą pamięcią podręczną za pomocą kontrolek wejścia/wyjścia
+(ang. ioctls) a jej zachowanie można dostrajać za pomocą opisanych poniżej
+interfejsów \fI/proc\fP.
+
+Gdy dla istniejącego odwzorowania nie ma pozytywnych odpowiedzi, po pewnym
+czasie (patrz interfejsy \fI/proc\fP poniżej) wpis w pamięci podręcznej dla
+danego adresu jest uważany za przestarzały. Pozytywna odpowiedź może zostać
+odebrana od wyższej warstwy; na przykład jako pozytywne potwierdzenie TCP.
+Inne protokoły mogą sygnalizować postępy w połączeniu za pomocą znacznika
+\fBMSG_CONFIRM\fP w \fBsendmsg\fP(2). Gdy nie ma postępów w połączeniu, ARP
+próbuje próbkować ponownie. Najpierw próbuje odpytać o zaktualizowany adres
+MAC \fBapp_solicit\fP razy lokalnego demona ARP. Gdy to się nie powiedzie, a
+stary adres jest znany, to dokonywane jest \fBucast_solicit\fP razy próbkowanie
+pojedyncze. Gdy to się również nie powiedzie, wysyłane jest w sieć nowe
+zapytanie rozgłoszeniowe ARP. Zapytania są wysyłane jedynie wtedy, gdy w
+kolejce do wysłania czekają jakieś dane.
+
+Linux automatycznie dodaje nietrwałe wpisy proxy arp po otrzymaniu zapytania
+dotyczącego adresu, dla którego są przekazywane pakiety, o ile dla
+interfejsu odbierającego dany pakiet włączono proxy arp. Gdy dla danego celu
+ustawiona jest droga odrzucająca pakiety (ang. reject route), wpis proxy arp
+nie jest dodawany.
+.SS "Kontrolki systemowe (ioctl)"
+Dla wszystkich gniazd \fBAF_INET\fP dostępne są trzy kontrolki
+wejścia/wyjścia. Pobierają one jako argument wskaźnik do struktury \fIstruct
+arpreq\fP.
+
+.in +4n
+.nf
+struct arpreq {
+    struct sockaddr arp_pa;      /* adres protokołu */
+    struct sockaddr arp_ha;      /* addres sprzętowy */
+    int             arp_flags;   /* znaczniki */
+    struct sockaddr arp_netmask; /* maska sieciowa adresu protokołu */
+    char            arp_dev[16];
+};
+.fi
+.in
+
+\fBSIOCSARP\fP, \fBSIOCDARP\fP i \fBSIOCGARP\fP odpowiednio ustawiają, usuwają i
+pobierają odwzorowanie ARP. Ustawianie i usuwanie odwzorowań ARP jest
+operacją uprzywilejowaną i może zostać wykonane jedynie przez proces z
+ustawionym znacznikiem \fBCAP_NET_ADMIN\fP lub posiadający efektywny UID równy
+0.
+
+\fIarp_pa\fP musi być adresem \fBAF_INET\fP, a \fIarp_ha\fP musi być tego samego
+typu, co urządzenie podane w \fIarp_dev\fP. \fIarp_dev\fP jest zakończonym znakiem
+NULL łańcuchem stanowiącym nazwę urządzenia.
+.RS
+.TS
+tab(:) allbox;
+c s
+l l.
+\fIarp_flags\fP
+znacznik:znaczenie
+ATF_COM:Zapytanie zakończone
+ATF_PERM:Wpis trwały
+ATF_PUBL:Wpis publikacji
+ATF_USETRAILERS:Zażądano danych końcowych
+ATF_NETMASK:Używanie maski sieci
+ATF_DONTPUB:Nie odpowiadać
+.TE
+.RE
+
+.PP
+Gdy ustawiony jest znacznik \fBATF_NETMASK\fP, to \fIarp_netmask\fP powinno być
+prawidłowe. Linux 2.2 nie wspiera wpisów proxy ARP dla sieci, więc należy to
+ustawić na 0xffffffff lub 0, aby usunąć istniejący wpis ARP.
+\fBATF_USETRAILERS\fP jest przestarzałe i nie powinno być używane.
+.SS "Interfejsy /proc"
+ARP wspiera interfejsy \fI/proc\fP, pozwalające konfigurować parametry globalne
+lub lokalne \- dla podanego interfejsu. Dostęp do tych interfejsów można
+uzyskać odczytując i zapisując pliki \fI/proc/sys/net/ipv4/neigh/*/*\fP. Każdy
+interfejs w systemie ma swój własny katalog w
+\fI/proc/sys/net/ipv4/neigh/\fP. Ustawienia w katalogu "default" są używane dla
+wszystkich nowo tworzonych urządzeń. Jeśli nie podano inaczej, wszystkie
+wartości interfejsów związanych z czasem są podawane w sekundach.
+.TP 
+\fIanycast_delay\fP (od Linuksa 2.2)
+.\" Precisely: 2.1.79
+Maksymalna liczba jiffies oczekiwania przed odpowiedzeniem na komunikat
+zaproszenia sąsiada IPv6. Obsługa anycast nie jest jeszcze
+zaimplementowana. Domyślnie 1 sekunda.
+.TP 
+\fIapp_solicit\fP (od Linuksa 2.2)
+.\" Precisely: 2.1.79
+Maksymalna liczba prób wysyłania demonowi ARP przestrzeni użytkownika
+poprzez netlink przed przejściem do prób multicast (patrz
+\fImcast_solicit\fP). Domyślnie 0.
+.TP 
+\fIbase_reachable_time\fP (od Linuksa 2.2)
+.\" Precisely: 2.1.79
+Kiedy tylko sąsiad zostanie znaleziony, wpis jest uważany za ważny przez co
+najmniej losową wartość czasu pomiędzy \fIbase_reachable_time\fP/2 a
+3*\fIbase_reachable_time\fP/2. Ważność wpisu może być przedłużona, jeżeli
+otrzyma on takie wskazówki z protokołów wyższego poziomu. Domyślnie 30
+sekund. Plik jest obecnie przestarzały, zamiast niego prosimy używać
+\fIbase_reachable_time_ms\fP.
+.TP 
+\fIbase_reachable_time_ms\fP (od Linuksa 2.6.12)
+Tak jak \fIbase_reachable_time\fP, ale czas jest wyrażany w
+milisekundach. Domyślną wartością jest 30000 milisekund.
+.TP 
+\fIdelay_first_probe_time\fP (od Linuksa 2.2)
+.\" Precisely: 2.1.79
+Oczekiwanie przed pierwszą próbą po tym, jak sąsiad został uznany za
+niedostępny. Domyślnie 5 sekund.
+.TP 
+\fIgc_interval\fP (od Linuksa 2.2)
+.\" Precisely: 2.1.79
+Jak często powinien się uruchamiać proces oczyszczania śmieci z listy wpisów
+o sąsiadach. Domyślnie 30 sekund.
+.TP 
+\fIgc_stale_time\fP (od Linuksa 2.2)
+.\" Precisely: 2.1.79
+Określa, jak często należy sprawdzać wpisy o niedostępnych sąsiadach. Kiedy
+sąsiad zostanie uznany za niedostępnego, jest on ponownie sprawdzany przed
+próbą wysłania danych do niego. Domyślnie 60 sekund.
+.TP 
+\fIgc_thresh1\fP (od Linuksa 2.2)
+.\" Precisely: 2.1.79
+Minimalna liczba wpisów przechowywanych w buforze ARP. Proces czyszczenia
+starych wpisów nie uruchomi się, jeżeli bufor zawiera mniej wpisów niż
+podana tutaj wartość. Domyślnie 128.
+.TP 
+\fIgc_thresh2\fP (od Linuksa 2.2)
+.\" Precisely: 2.1.79
+Miękka maksymalna liczba wpisów trzymanych w buforze ARP. Proces czyszczenia
+śmieci pozwoli przekroczyć tę liczbę wpisów na 5 sekund przed rozpoczęciem
+czyszczenia. Domyślnie 512.
+.TP 
+\fIgc_thresh3\fP (od Linuksa 2.2)
+.\" Precisely: 2.1.79
+Twarda maksymalna liczba wpisów przechowywanych w buforze ARP. Proces
+czyszczenia śmieci zawsze się uruchomi, jeśli bufor zawiera więcej wpisów
+niż wynosi ta liczba. Domyślnie 1024.
+.TP 
+\fIlocktime\fP (od Linuksa 2.2)
+.\" Precisely: 2.1.79
+Minimalna liczba jiffies, przez którą wpis ARP będzie przechowywany w
+buforze. Zabezpiecza to bufor ARP przed zabiciem, jeżeli jest więcej niż
+jedno możliwe mapowanie (z powodu złej konfiguracji sieci). Domyślnie 1
+sekunda.
+.TP 
+\fImcast_solicit\fP (od Linuksa 2.2)
+.\" Precisely: 2.1.79
+Maksymalna liczba prób rozwiązywania adresu za pomocą multicast/broadcast
+przed zaznaczeniem wpisu jako niedostępny. Domyślnie 3.
+.TP 
+\fIproxy_delay\fP (od Linuksa 2.2)
+.\" Precisely: 2.1.79
+Kiedy otrzymano żądanie ATP dla znanego adresu proxy\-ARP, to poczekaj
+\fIproxy_delay\fP jiffies przed wysłaniem odpowiedzi. Jest to używane, aby
+zapobiec zalaniu sieci żądaniami w pewnych przypadkach. Domyślnie 0.8
+sekundy.
+.TP 
+\fIproxy_qlen\fP (od Linuksa 2.2)
+.\" Precisely: 2.1.79
+Maksymalna liczba pakietów, które mogą być zakolejkowane  w adresie
+proxy\-ARP. Wartość domyślna to 64.
+.TP 
+\fIretrans_time\fP (od Linuksa 2.2)
+.\" Precisely: 2.1.79
+Liczba jiffies oczekiwania przed ponowną transmisją żądania. Domyślnie 1
+sekunda. Plik jest obecnie przestarzały, zamiast niego prosimy używać
+\fIretrans_time_ms\fP.
+.TP 
+\fIretrans_time_ms\fP (od Linuksa 2.6.12)
+Liczba milisekund oczekiwania przed ponowną transmisją żądania. Domyślnie
+1000 milisekund.
+.TP 
+\fIucast_solicit\fP (od Linuksa 2.2)
+.\" Precisely: 2.1.79
+Maksymalna liczba prób wysłania żądań unicast przed zapytaniem demona ARP
+(patrz \fIapp_solicit\fP). Domyślnie 3.
+.TP 
+\fIunres_qlen\fP (od Linuksa 2.2)
+.\" Precisely: 2.1.79
+Maksymalna liczba pakietów, które mogą być kolejkowane przez inne warstwy
+sieci dla każdego nierozwiązanego adresu. Domyślnie 3.
+.SH WERSJE
+W Linuksie 2.0 zmieniono \fIstruct arpreq\fP, dodając pole \fIarp_dev\fP oraz
+jednocześnie zmieniono numery kontrolek wejścia/wyjścia. W Linuksie 2.2
+porzucono wsparcie dla starych kontrolek wejścia/wyjścia.
+
+W Linuksie 2.2 porzucono wsparcie dla wpisów proxy ARP dla sieci (maska
+sieci inna niż 0xffffffff). Zostało ono zastąpione przez automatyczną
+konfigurację proxy ARP w jądrze dla wszystkich komputerów osiągalnych na
+innych interfejsach (gdy dla danego interfejsu włączone są przekazywanie
+pakietów i proxy ARP).
+
+Interfejsy \fIneigh/*\fP nie istniały w Linuksie przed wersją 2.2.
+.SH BŁĘDY
+Niektóre ustawienia timera są podawane w jednostkach jiffy, które są zależne
+od architektury i wersji jądra; patrz także \fBtime\fP(7).
+
+Nie ma możliwości zasygnalizowania postępów w połączeniu z przestrzeni
+użytkownika. Oznacza to, że protokoły połączeniowe zaimplementowane w
+przestrzeni użytkownika będą generować nadmierny ruch ARP, gdyż ndisc będzie
+dokonywał regularnego próbkowania adresów MAC. Ten sam problem dotyczy
+niektórych protokołów jądra (np. NFS\-u po UDP).
+
+Ta strona podręcznika miesza ze sobą funkcje charakterystyczne dla IPv4 z
+funkcjami wspólnymi dla IPv4 i IPv6.
+.SH "ZOBACZ TAKŻE"
+\fBcapabilities\fP(7), \fBip\fP(7)
+.PP
+RFC\ 826 dla opisu ARP.
+.br
+RFC\ 2461 dla opisu znajdywania sąsiadów w IPv6 oraz podstawowych
+stosowanych w tym celu algorytmów.
+.LP
+ARP IPv4 w Linuksie 2.2+ korzysta z algorytmów IPv6, gdy jest to możliwe.
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Andrzej M. Krzysztofowicz (PTM) <ankry@mif.pg.gda.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

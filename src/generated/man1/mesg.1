@@ -1,0 +1,75 @@
+.\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2001 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"{{{}}}
+.\"{{{  Title
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1997-2005 Miquel van Smoorenburg et al (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH MESG 1 "26 lutego 2001" "" "Podręcznik użytkownika systemu Linux"
+.\"}}}
+.\"{{{  Name
+.SH NAZWA
+.\"}}}
+.\"{{{  Synopsis
+mesg \- kontroluje dostęp zapisu do terminala
+.SH SKŁADNIA
+.\"}}}
+.\"{{{  Description
+\fBmesg\fP [\fBy\fP|\fBn\fP]
+.SH OPIS
+.\"}}}
+.\"{{{  Options
+\fBMesg\fP kontroluje dostęp do terminala użytkownika przez inne
+osoby. Zazwyczaj jest używany do zezwalania/zabraniania innym osobom pisania
+(przy użyciu \fBwrite\fP(1)) na terminal.
+.SH OPCJE
+.IP \fBy\fP
+Zezwala na dostęp do terminala.
+.IP \fBn\fP
+Zabrania dostępu do terminala.
+.PP
+.\"}}}
+.\"{{{  Notes
+Bez opcji, \fBmesg\fP wypisuje bieżący stan terminala.
+.SH UWAGI
+\fBMesg\fP zakłada, że jego standardowe wejście jest podłączone do terminala
+użytkownika. Oznacza to również, że przy wielokrotnym zalogowaniu można
+ustawić/pobrać status mesg innych sesji, za pomocą przekierowania. Przykład:
+"mesg n < /dev/pts/46".
+.SH AUTOR
+.\"}}}
+.\"{{{  See also
+Miquel van Smoorenburg (miquels@cistron.nl)
+.SH "ZOBACZ TAKŻE"
+\fBtalk\fP(1), \fBwrite\fP(1), \fBwall\fP(1)
+.\"}}}
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.88 \fPoryginału.

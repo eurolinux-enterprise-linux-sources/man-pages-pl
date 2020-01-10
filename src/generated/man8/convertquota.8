@@ -1,0 +1,68 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1980-2008 Marco van Wieringen, Jan Kara et al (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>, 2002.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH CONVERTQUOTA 8 "piątek, 20 sierpnia 1999"  
+.UC 4
+.SH NAZWA
+convertquota \- konwersja starego formatu plików kwot na nowy
+.SH SKŁADNIA
+\fBconvertquota\fP [ \fB\-ug\fP ] [ \fB\-e\fP \fIsystem\-plików\fP
+.LP
+\fBconvertquota\fP [ \fB\-ug\fP ] \fB\-f\fP \fIstary\-format\fP,\fInowy\-format\fP
+\fIsystem\-plików\fP
+.SH OPIS
+\fBconvertquota\fP przetwarza na systemie plików \fIsystem\-plików\fP stare pliki
+kwot \fBquota.user\fP i \fBquota.group\fP na pliki \fBaquota.user\fP i
+\fBaquota.group\fP w nowym formacie, którego aktualnie używają jądra Linuksa
+2.4.0\-ac? i nowsze oraz jądra Linuksa 2.4 z dystrybucji Red Hat.
+.PP
+Nowy format plików umożliwia korzystanie z kwot dla 32\-bitowych
+identyfikatorów użytkowników / grup, ustawianie kwot dla roota, zliczanie
+używanej przestrzeni w bajtach (i wobec tego umożliwia korzystanie z kwot na
+ReiserFS) i jest niezależny od architektury. Format wprowadza drzewo
+podstawowe (Radix Tree \- prostą postać struktury drzewiastej) w pliku kwot.
+.SH OPCJE
+.TP 
+\fB\-u, \-\-user\fP
+Konwersja pliku kwot dyskowych użytkowników. Jest to zachowanie domyślne.
+.TP 
+\fB\-g, \-\-group\fP
+Konwersja pliku kwot dyskowych grup.
+.TP 
+\fB\-f, \-\-convert\-format \fP\fIstaryformat\fP,\fInowy\-format\fP
+Konwersja ze \fIstarego\-formatu\fP pliku na \fInowy\-format\fP.
+.TP 
+\fB\-e, \-\-convert\-endian\fP
+Konwersja nowego formatu pliku z grubokońcowego (big endian) do
+cieńkokońowego (little endian).
+.TP 
+\fB\-V, \-\-version\fP
+Wypisanie informacji o wersji.
+.SH PLIKI
+.TP  20
+\fBaquota.user\fP
+nowy plik kwot dyskowych użytkowników
+.TP 
+\fBaquota.group\fP
+nowy plik kwot dyskowych grup
+.SH "ZOBACZ TAKŻE"
+\fBquota\fP(1), \fBsetquota\fP(8), \fBedquota\fP(8), \fBquotacheck\fP(8), \fBquotaon\fP(8),
+\fBrepquota\fP(8)
+.SH AUTOR
+Jan Kara \<jack@suse.cz\>
+
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 4.00 \fPoryginału.

@@ -1,0 +1,77 @@
+.\" Copyright (c) 1993 Michael Haardt (michael@moria.de),
+.\"     Fri Apr  2 11:32:09 MET DST 1993
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" Modified 1993-07-24 by Rik Faith (faith@cs.unc.edu)
+.\" Modified 2003-04-07 by Michael Kerrisk
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993 Michael Haardt (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Paweł Olszewski (PTM) <alder@civic.amg.net.pl>, 1998.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH TTY 4 07\-04\-2003 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+tty \- bieżący terminal sterujący
+.SH OPIS
+Plik \fI/dev/tty\fP jest plikiem specjalnym urządzenia znakowego o numerze
+głównym 5 i pobocznym 0, najczęściej z prawami dostępu 0666 i należący do
+użytkownika root i grupy tty. Jest synonimem terminala sterującego danego
+procesu, jeśli taki istnieje.
+.LP
+Oprócz żądań \fBioctl\fP(2) obsługiwanych przez urządzenie, do którego odnosi
+się \fBtty\fP, obsługiwane jest żądanie \fBTIOCNOTTY\fP \fBioctl\fP(2).
+.SS TIOCNOTTY
+Odłącza bieżący proces z jego terminala sterującego.
+.sp
+Jeśli proces jest liderem sesji, to do grupy procesów pierwszoplanowych
+wysyłane są sygnały \fBSIGHUP\fP i \fBSIGCONT\fP, a wszystkie procesy w bieżącej
+sesji tracą swoje terminale sterujące tty.
+.sp
+Ta funkcja \fBioctl\fP(2) działa jedynie na deskryptorach plików podłączonych
+do \fI/dev/tty\fP. Jest używana przez procesy demonów, gdy są uruchamiane przez
+użytkownika na terminalu. Proces próbuje otworzyć \fI/dev/tty\fP. Jeśli
+operacja ta się powiedzie, proces odłącza się od terminala za pomocą
+\fBTIOCNOTTY\fP. Jeśli operacja ta się nie powiodła, wówczas oczywiście proces
+nie ma swojego terminala, więc nie potrzebuje się odłączać.
+.SH PLIKI
+/dev/tty
+.SH "ZOBACZ TAKŻE"
+\fBchown\fP(1), \fBmknod\fP(1), \fBioctl\fP(2), \fBtermios\fP(3), \fBconsole\fP(4),
+\fBtty_ioctl\fP(4), \fBttyS\fP(4), \fBagetty\fP(8), \fBmingetty\fP(8)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Paweł Olszewski (PTM) <alder@civic.amg.net.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

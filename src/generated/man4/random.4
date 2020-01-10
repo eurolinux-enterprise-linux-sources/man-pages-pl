@@ -1,0 +1,200 @@
+.\" Copyright (c) 1997 John S. Kallal (kallal@voicenet.com)
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" Some changes by tytso and aeb.
+.\"
+.\" 2004-12-16, John V. Belmonte/mtk, Updated init and quit scripts
+.\" 2004-04-08, AEB, Improved description of read from /dev/urandom
+.\" 2008-06-20, George Spelvin <linux@horizon.com>,
+.\"             Matt Mackall <mpm@selenic.com>
+.\"     Add a Usage subsection that recommends most users to use
+.\"     /dev/urandom, and emphasizes parsimonious usage of /dev/random.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1997 John S. Kallal (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Paweł Olszewski (PTM) <alder@civic.amg.net.pl>, 1998.
+.\" Robert Luberda (PTM) <robert@debian.org>, 2005.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH RANDOM 4 29\-08\-2010 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+random, urandom \- urządzenia źródłowe liczb losowych jądra
+.SH OPIS
+Specjalne urządzenia znakowe \fI/dev/random\fP i \fI/dev/urandom\fP (obecne w
+Linuksie od wersji 1.3.30) stanowią interfejs do wbudowanego w jądro
+generatora liczb losowych. Plik \fI/dev/random\fP ma numer główny urządzenia 1
+i numer poboczny 8. Plik \fI/dev/urandom\fP ma numer główny urządzenia 1 i
+numer poboczny 9.
+.LP
+Generator liczb losowych zbiera szum środowiskowy ze sterowników urządzeń i
+innych źródeł do puli losowej. Generator przechowuje również szacunkową
+liczbę bitów szumu w puli losowej. Z puli tej tworzone są liczby losowe.
+.LP
+W trakcie odczytu, urządzenie \fI/dev/random\fP zwraca losowe bajty, spośród
+oszacowanej liczby bitów szumu w puli. \fI/dev/random\fP nadaje się najlepiej
+do zastosowań, w których potrzebna jest losowość bardzo wysokiej jakości,
+jak np. jednorazowa maska lub generowanie kluczy. Jeśli pula losowa jest
+pusta, odczyt z \fI/dev/random\fP będzie wstrzymany do czasu zebrania
+dodatkowego szumu środowiskowego.
+.LP
+Odczyt z urządzenia \fI/dev/urandom\fP zwróci tyle bajtów, ile zażądano. W
+efekcie, jeśli nie ma wystarczającego chaosu w puli losowej, zwracane
+wartości są teoretycznie narażone na atak kryptograficzny w stosunku do
+algorytmów wykorzystywanych przez sterownik. Wiedza na ten temat nie jest
+dostępna w obecnych niezastrzeżonych publikacjach, ale istnieje teoretyczna
+możliwość przeprowadzenia takiego ataku. Jeśli jest to problemem w przypadku
+Twojego programu, użyj \fI/dev/random\fP.
+.SS Użycie
+Jeśli nie jest pewne, czy należy użyć \fI/dev/random\fP, czy \fIdev/urandom\fP, to
+najprawdopodobniej powinno się użyć tego ostatniego. Generalna zasada jest
+taka, że \fI/dev/urandom\fP powinno być używane do wszystkiego, z wyjątkiem
+długoterminowych kluczy GPG/SSL/SSH.
+
+Jeśli plik puli losowej jest przechowywany pomiędzy ponownymi
+uruchomieniami, zgodnie z poniższymi zaleceniami (czynią to wszystkie główne
+dystrybucje Linuksa od co najmniej 2000 roku), wyjście jest kryptograficznie
+bezpieczne w stosunku do atakujących bez dostępu do lokalnego roota, zaraz
+po przeładowaniu go w sekwencji rozruchowej i odnosi się w całości do
+sieciowych kluczy szyfrujących sesji. Ponieważ odczyt z \fI/dev/random\fP może
+nie być płynny, użytkownicy będą go z reguły chcieli otworzyć w trybie
+nieblokującym (lub przeprowadzać odczyt z czasem oczekiwania) i udostępniać
+jakiś typ powiadomienia dla użytkownika, jeśli oczekiwana losowość nie jest
+od razu dostępna.
+
+Generator liczb losowych jądra jest zaprojektowany do tworzenia niewielkiej
+ilości ziarna (ang. seed) o wysokiej jakości, do użycia z kryptograficznym
+generatorem liczb pseudolosowych (ang. cryptographic pseudo\-random number
+generator \- CPRNG). Głównym celem było bezpieczeństwo, nie szybkość, i jest
+on kiepsko przystosowany do tworzenia dużej ilości danych
+losowych. Użytkownicy powinni odczytywać niewielkie ilości ziarna z
+\fI/dev/urandom\fP (i \fI/dev/random\fP) \- niepotrzebne odczytywanie dużych ilości
+danych z tych urządzeń będzie miało negatywny wpływ na innych użytkowników
+urządzeń.
+
+Ilość ziarna potrzebna do wygenerowania klucza kryptograficznego zależy od
+efektywnego rozmiaru klucza. Na przykład, 3072\-bitowy klucz prywatny RSA lub
+Diffiego\-Hellmana ma efektywny rozmiar klucza 128\-bitów (wymaga około 2^128
+operacji do złamania), więc generator klucza potrzebuje jedynie 128 bitów
+(16 bajtów) ziarna z \fI/dev/random\fP.
+
+O ile niewielki margines bezpieczeństwa powyżej tego minimum jest
+zrozumiały, jako ochrona przed słabościami algorytmu CPRNG, nie istnieje
+aktualnie algorytm kryptograficzny zdolny zapewnić więcej niż 256 bitów
+bezpieczeństwa, więc jeśli jakiś program odczytuje więcej niż 256 bitów (32
+bajtów) z losowego ziarna jądra na pojedyncze wywołanie lub na rozsądny
+interwał ponownego tworzenia ziarna (co najmniej minuta), to jest to oznaka,
+że jego kryptografia \fInie\fP jest umiejętnie zaimplementowana.
+.SS Konfiguracja
+Jeśli w systemie nie ma plików \fI/dev/random\fP i \fI/dev/urandom\fP, można je
+utworzyć przy użyciu następujących poleceń:
+
+.nf
+    mknod \-m 644 /dev/random c 1 8
+    mknod \-m 644 /dev/urandom c 1 9
+    chown root:root /dev/random /dev/urandom
+.fi
+
+Gdy Linux uruchamiany jest przy niewielkim udziale operatora, pula losowa
+może być w dość przewidywalnym stanie. Faktyczna ilość szumu w puli losowej
+jest wówczas poniżej ilości szacowanej. Aby przeciwdziałać temu efektowi,
+pomocne jest zapamiętywanie informacji o puli losowej pomiędzy kolejnymi
+uruchomieniami systemu. Aby działo się to automatycznie, należy dodać
+następujące wiersze do stosownych skryptów startowych Linuksa:
+
+.nf
+    echo "Inicjowanie generatora liczb losowych..."
+    random_seed=/var/run/random\-seed
+    # Przechowanie wartości losowej od jednego startu systemu
+    # do kolejnego startu. Ładowanie oraz późniejsze zachowywanie
+    # całej puli losowej.    if [ \-f $random_seed ]; then
+        cat $random_seed >/dev/urandom
+    else
+        touch $random_seed
+    fi
+    chmod 600 $random_seed
+    poolfile=/proc/sys/kernel/random/poolsize
+    [ \-r $poolfile ] && bytes=\`cat $poolfile\` || bytes=512
+    dd if=/dev/urandom of=$random_seed count=1 bs=$bytes
+.fi
+
+Trzeba również dodać następujące wiersze do stosownego skryptu uruchamianego
+podczas zamykania systemu Linuksa:
+
+.nf
+    # Przechowanie losowych danych pomiędzy wyłączeniem a włączeniem
+    # komputera. Zachowywanie puli losowej generatora.
+    echo "Zachowywanie puli losowej..."
+    random_seed=/var/run/random\-seed
+    touch $random_seed
+    chmod 600 $random_seed
+    poolfile=/proc/sys/kernel/random/poolsize
+    [ \-r $poolfile ] && bytes=\`cat $poolfile\` || bytes=512
+    dd if=/dev/urandom of=$random_seed count=1 bs=$bytes
+.fi
+.SS "Interfejs /proc"
+Pliki w katalogu \fI/proc/sys/kernel/random\fP (obecnym od wersji 2.3.16) są
+dodatkowym interfejsem do urządzenia \fI/dev/random\fP.
+.LP
+Plik z prawami tylko do odczytu \fIentropy_avail\fP dostarcza dostępną pulę
+losową. Zazwyczaj będzie to 4096 (bitów), całość dostępnej puli.
+.LP
+Plik \fIpoolsize\fP zawiera rozmiar puli losowej. Format tego pliku zależy od
+wersji jądra.
+.RS
+.TP  12
+Linux 2.4:
+Plik podaje rozmiar puli losowej w \fIbajtach\fP. Zazwyczaj \- 512
+(bajtów). Plik jest zapisywalny i może być zmieniony na dowolną wartość, dla
+której dostępny jest algorytm. Obecnie możliwe wartości to: 32, 64, 128,
+256, 512, 1024 lub 2048.
+.TP 
+Linux 2.6:
+Plik jest dostępny tylko do odczytu i podaje rozmiar puli losowej w
+\fIbitach\fP. Zawiera wartość 4096.
+.RE
+.LP
+Plik \fIread_wakeup_threshold\fP zawiera liczbę bitów entropii potrzebnej do
+obudzenia procesu, który zasnął, czekając na entropię z pliku
+\fI/dev/random\fP.  Domyślnie \- 64.  Plik \fIwrite_wakeup_threshold\fP zawiera
+liczbę bitów entropii poniżej której zostanie uśpiony proces, który wykona
+\fBselect\fP(2) lub \fBpoll\fP(2), aby otworzyć do zapisu urządzenie
+\fI/dev/random\fP.  Wartości te mogą być zmienione przez zapis do tych plików.
+.LP
+Pliki tylko do odczytu \fIuuid\fP i \fIboot_id\fP zawierają losowe łańcuchy
+znaków, takie jak 6fd5a44b\-35f4\-4ad4\-a9b9\-6b9be13e1fe9.  Pierwszy z tych
+plików jest generowany na nowo przy każdym odczycie, a drugi jest generowany
+tylko raz.
+.SH PLIKI
+/dev/random
+.br
+.\" .SH AUTHOR
+.\" The kernel's random number generator was written by
+.\" Theodore Ts'o (tytso@athena.mit.edu).
+/dev/urandom
+.SH "ZOBACZ TAKŻE"
+\fBmknod\fP(1)
+.br
+RFC\ 1750, "Randomness Recommendations for Security" (Zalecenia dotyczące
+bezpieczeństwa losowości)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Paweł Olszewski (PTM) <alder@civic.amg.net.pl>,
+Robert Luberda (PTM) <robert@debian.org>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

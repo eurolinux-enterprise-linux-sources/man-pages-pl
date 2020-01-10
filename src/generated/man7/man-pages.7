@@ -1,0 +1,490 @@
+.\" (C) Copyright 1992-1999 Rickard E. Faith and David A. Wheeler
+.\" (faith@cs.unc.edu and dwheeler@ida.org)
+.\" and (C) Copyright 2007 Michael Kerrisk <mtk.manpages@gmail.com>
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" 2007-05-30 created by mtk, using text from old man.7 plus
+.\" rewrites and additional text.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1992-1999 Rickard E. Faith, David A. Wheeler, 2007 Michael Kerrisk 
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@p-soft.silesia.linux.org.pl>, 1998.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH MAN\-PAGES 7 2008\-10\-28 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+man\-pages \- konwencje pisania linuksowych stron podręcznika ekranowego
+.SH SKŁADNIA
+\fBman\fP [\fIsekcja\fP] \fItytuł\fP
+.SH OPIS
+Strona opisuje konwencje, do których powinno się stosować podczas pisania
+stron podręcznika ekranowego dla projektu Linux \fIman\-pages\fP, który zawiera
+sekcje 2, 3, 4, 5 i 7 stron linuksowego podręcznika. Konwencje opisane tutaj
+mogą się także przydać autorom podręczników z innych projektów.
+.SS "Sekcje stron podręcznika ekranowego"
+.PP
+Sekcje podręcznika man są tradycyjnie definiowane następująco:
+.TP  10
+\fB1 Komendy (programy)\fP
+Te komendy mogą być wykonywane przez użytkownika z powłoki.
+.TP 
+\fB2 Wywołania systemowe\fP
+Te funkcje muszą być obsługiwane przez jądro.
+.TP 
+\fB3 Wywołania biblioteczne\fP
+Większość funkcji \fIlibc\fP.
+.TP 
+\fB4 Pliki specjalne (urządzenia)\fP
+Pliki, które można znaleźć w \fI/dev\fP.
+.TP 
+\fB5 Formaty plików i konwencje\fP
+Format dla pliku \fI/etc/passwd\fP i innych nadających się do odczytu przez
+człowieka.
+.TP 
+\fB6 Gry\fP
+.TP 
+\fB7 Konwencje i różnorodne\fP
+Przegląd różnych tematów, konwencje, protokoły, standardy kodowania znaków i
+inne.
+.TP 
+\fB8 Polecenia do zarządzania systemem\fP
+.\" .TP
+.\" .B 9 Kernel routines
+.\" This is an obsolete manual section.
+.\" Once it was thought a good idea to document the Linux kernel here,
+.\" but in fact very little has been documented, and the documentation
+.\" that exists is outdated already.
+.\" There are better sources of
+.\" information for kernel developers.
+Komendy takie, jak \fBmount\fP(8), które wywoływać może tylko root .
+.SS "Pakiety makr"
+Nowe strony podręcznika powinny być pisane z użyciem pakietu makr \fBgroff
+an.tmac\fP opisanego w \fBman\fP(7). Wybór ten podyktowany jest zachowaniem
+spójności: przytłaczająca większość istniejących podręczników linuksowych
+używa tego pakietu makr.
+.SS "Konwencje wyglądu pliku źródłowego"
+Prosimy ograniczać długość linii kodu źródłowego do maksymalnie 75 znaków,
+jeśli jest to możliwe. Pomaga to unikać zawijania wierszy w niektórych
+programach pocztowych podczas przesyłania łat do podręczników ekranowych.
+
+Nowe zdania powinny zaczynać się w nowych liniach. Upraszcza to oglądanie
+efektów łat, które często operują na poziomie poszczególnych zdań.
+.SS "Linia tytułowa"
+Pierwszą komendą strony podręcznika powinno być polecenie \fBTH\fP:
+.RS
+.sp
+\fB\&.TH\fP \fItytuł sekcja data źródło podręcznik\fP
+.sp
+.RE
+gdzie:
+.RS
+.TP  10
+\fItytuł\fP
+Tytuł strony podręcznika, pisany w całości dużymi literami
+(np. \fIMAN\-PAGES\fP).
+.TP 
+\fIsekcja\fP
+Numer sekcji, w której strona powinna się znaleźć (np. \fI7\fP).
+.TP 
+\fIdata\fP
+Data ostatniej wersji strony \(em prosimy pamiętać o uaktualnianiu jej po
+każdej zmianie strony podręcznika, ponieważ jest to najpopularniejsza droga
+kontrolowania wersji. Daty powinny być zapisywane w postaci RRRR\-MM\-DD.
+.TP 
+\fIźródło\fP
+Źródło polecenia, funkcji lub wywołania systemowego.
+
+Dla tych kilku stron z pakietu \fIman\-pages\fP znajdujących się w sekcjach 1. i
+8., najprawdopodobniej należy podać \fIGNU\fP.
+
+Dla wywołań systemowych najodpowiedniejsze będzie \fILinux\fP. (Wcześniej
+praktykowano dodawanie numeru wersji jądra, dla której strona podręcznika
+została napisana lub zaktualizowana. Nigdy jednak nie zachowano spójności w
+robieniu tego, co było najprawdopodobniej gorsze niż niedołączanie numeru
+wersji. Dlatego też prosimy unikać dołączania numeru wersji).
+
+Dla wywołań bibliotecznych będących częścią biblioteki glibc lub innych
+powszechnie używanych bibliotek GNU, należy użyć \fIGNU C library\fP, \fIGNU\fP
+lub pustego łańcucha znaków.
+
+Dla stron w sekcji 4., należy użyć \fILinux\fP.
+
+W razie wątpliwości, prosimy użyć \fILinux\fP lub \fIGNU\fP.
+.TP 
+\fIpodręcznik\fP
+Tytuł podręcznika (np. w sekcjach 2. i 3. stron z pakietu \fIman\-pages\fP
+prosimy używać \fILinux Programmer's Manual\fP  (tj. \fIPodręcznik programisty
+Linuksa\fP)).
+.RE
+.SS "Rozdziały stron podręcznika"
+Poniższa lista pokazuje rozdziały konwencjonalne lub sugerowane. Większość
+stron podręcznika powinna zawierać przynajmniej \fIwyróżnione\fP
+rozdziały. Prosimy pisać nowe strony podręcznika w taki sposób, by rozdziały
+pojawiały się w takiej kolejności, w jakiej są podane na liście.
+.in +0.5i
+.nf
+
+.\" May 07: Few current man pages have an ERROR HANDLING section,,,
+.\" ERROR HANDLING,
+.\" May 07: Almost no current man pages have a USAGE section,,,
+.\" USAGE,
+.\" DIAGNOSTICS,
+.\" May 07: Almost no current man pages have a SECURITY section,,,
+.\" SECURITY,
+.\" AUTHORS sections are discouraged
+.\" AUTHORS             [Discouraged]
+\fBNAZWA\fP               (\fBNAME\fP)
+\fBSKŁADNIA\fP            (\fBSYNOPSIS\fP)
+KONFIGURACJA        (CONFIGURATION) [Normalnie tylko w sekcji 4.]
+\fBOPIS\fP                (\fBDESCRIPTION\fP)
+OPCJE               (OPTIONS)       [Normalnie tylko w sekcjach 1., 8.]
+KOD ZAKOŃCZENIA     (EXIT STATUS)   [Normalnie tylko w sekcjach 1., 8.]
+WARTOŚĆ ZWRACANA    (RETURN VALUE)  [Normalnie tylko w sekcjach 2., 3.]
+BŁĘDY               (ERRORS)        [Zazwyczaj tylko w sekcjach 2., 3.]
+ŚRODOWISKO          (ENVIRONMENT)
+PLIKI               (FILES)
+WERSJE              (VERSIONS)      [Normalnie tylko w sekcjach 2., 3.]
+ZGODNE Z            (CONFORMING TO)
+UWAGI               (NOTES)
+BŁĘDY [IMPLEMENTACJI] (BUGS)
+PRZYKŁAD            (EXAMPLE)
+\fBZOBACZ TAKŻE\fP        (\fBSEE ALSO\fP)
+
+.fi
+.in
+W celu zachowania spójności i dla lepszego zrozumienia przekazywanych
+informacji \fIprosimy używać zwyczajowych nagłówków wszędzie\fP, \fIgdzie mają
+zastosowanie\fP. Jeśli jest to konieczne, można użyć własnych nagłówków,
+zwłaszcza gdy sprawią, że tekst łatwiej będzie zrozumieć (może być to
+szczególnie użyteczne w sekcjach 4. i 5.). Jednakże zanim użyje się własnych
+nagłówków, prosimy rozważyć użycie nagłówków zwyczajowych i umieszczenie
+podrozdziałów (\fI.SS\fP) w rozdziałach opisanych tymi nagłówkami.
+
+Poniżej opisujemy zawartość każdej z powyższych sekcji.
+.TP  14
+\fBNAZWA\fP
+Nazwa tej strony podręcznika. Istotne informacje na temat zawartości i
+formatu linii następujących po \fB.SH NAZWA\fP można znaleźć w  \fBman\fP(7).
+.TP 
+\fBSKŁADNIA\fP
+Krótko opisuje interfejs polecenia lub funkcji. W przypadku poleceń pokazuje
+składnię polecenia i jego argumenty (łącznie z opcjami); pogrubienie jest
+używane dla tekstu wpisywanego dosłownie, a kursywa oznacza zastępowalne
+argumenty. Nawiasy kwadratowe ([]) otaczają argumenty opcjonalne, linie
+pionowe (|) rozdzielają możliwe wybory, a wielokropek (\&...) oznacza
+możliwość powtarzania. W wypadku funkcji pokazuje wszystkie wymagane
+deklaracje danych lub dyrektywy \fB#include\fP, po których następuje deklaracja
+funkcji.
+
+.\" FIXME . Say something here about compiler options
+Jeżeli do uzyskania deklaracji funkcji (lub zmiennej) z pliku nagłówkowego
+wymagane jest zdefiniowanie makra testującego, to informacja o tym powinna
+zostać umieszczona w rozdziale SKŁADNIA (SYNOPSIS), tak jak to opisano w
+\fBfeature_test_macros\fP(7).
+.TP 
+\fBKONFIGURACJA\fP
+Szczegóły konfiguracji urządzenia. Ta sekcja zazwyczaj występuje tylko w
+4. sekcji stron podręcznika ekranowego.
+.TP 
+\fBOPIS\fP
+.\" If there is some kind of input grammar or complex set of subcommands,
+.\" consider describing them in a separate
+.\" .B USAGE
+.\" section (and just place an overview in the
+.\" .B DESCRIPTION
+.\" section).
+opisuje, co robi dany program, funkcja lub format. Objaśnia interakcję z
+plikami i standardowym wejściem oraz wartości zwracane na standardowym
+wyjściu i standardowym wyjściu błędów. Pomijane są szczegóły dotyczące
+implementacji i rzeczy wewnętrzne programu, chyba że są istotne dla
+zrozumienia interfejsu programu. Opisuje normalne przypadki użycia;
+objaśnienie opcji powinno się znaleźć w rozdziale \fBOPCJE\fP.
+.TP 
+\fBOPCJE\fP
+.\" .TP
+.\" .B USAGE
+.\" describes the grammar of any sublanguage this implements.
+Opisuje opcje linii poleceń akceptowane przez program oraz sposób, w jaki
+wpływają na jego zachowanie. Rozdział powinien się pojawiać tylko w sekcjach
+1. i 8. stron podręcznika ekranowego.
+.TP 
+\fBKOD WYJŚCIA\fP
+Określa możliwe wartości kodów zakończenia programu oraz warunki, które
+powodują zwrócenie tych wartości. Rozdział powinien się pojawiać tylko w
+sekcjach 1. i 8. stron podręcznika ekranowego.
+.TP 
+\fBWARTOŚĆ ZWRACANA\fP
+W sekcjach 2. i 3. stron podręcznika, rozdział ten określa listę wartości,
+które opisywana funkcja biblioteczna zwróci funkcji ją wywołującej, oraz
+warunki, w których dana wartość będzie zwracana.
+.TP 
+\fBBŁĘDY\fP
+W sekcjach 2. i 3. stron podręcznika jest to lista wartości, które mogą być
+przypisane zmiennej \fIerrno\fP w razie wystąpienia błędu, łącznie z
+informacjami o przyczynach tego błędu. \fIElementy listy powinny być
+wymienione w porządku alfabetycznym\fP.
+.TP 
+\fBŚRODOWISKO\fP
+Zawiera opis wszystkich zmiennych środowiskowych, wpływających na program i
+opisuje ten wpływ.
+.TP 
+\fBPLIKI\fP
+.\" May 07: Almost no current man pages have a DIAGNOSTICS section;
+.\"         "RETURN VALUE" or "EXIT STATUS" is preferred.
+.\" .TP
+.\" .B DIAGNOSTICS
+.\" gives an overview of the most common error messages and how to
+.\" cope with them.
+.\" You don't need to explain system error messages
+.\" or fatal signals that can appear during execution of any program
+.\" unless they're special in some way to the program.
+.\"
+.\" May 07: Almost no current man pages have a SECURITY section.
+.\".TP
+.\".B SECURITY
+.\"discusses security issues and implications.
+.\"Warn about configurations or environments that should be avoided,
+.\"commands that may have security implications, and so on, especially
+.\"if they aren't obvious.
+.\"Discussing security in a separate section isn't necessary;
+.\"if it's easier to understand, place security information in the
+.\"other sections (such as the
+.\" .B DESCRIPTION
+.\" or
+.\" .B USAGE
+.\" section).
+.\" However, please include security information somewhere!
+Zawiera listę plików używanych przez  program lub funkcję, takich jak pliki
+konfiguracyjne, pliki uruchomieniowe oraz pliki używane w czasie działania
+programu. Należy podać pełną ścieżkę do pliku, w której podczas instalacji
+powinno się zmodyfikować katalogi, tak żeby odpowiadały preferencjom
+użytkownika. Wiele programów domyślnie instaluje się w \fI/usr/local\fP, tak że
+strona podręcznika powinna używać \fI/usr/local\fP jako podstawowego katalogu.
+.TP 
+\fBWERSJE\fP
+Krótkie podsumowanie wersji jądra Linuksa lub biblioteki glibc, w której to
+wersji opisywane wywołanie systemowe lub funkcja biblioteczna się pojawiły
+lub ich działanie zostało znacząco zmienione. Z zasady każda strona
+podręcznika opisująca nowy interfejs powinna zawierać rozdział WERSJE
+(VERSIONS). Niestety wiele istniejących stron nie dołącza tych informacji
+(gdyż nie było to wymagane w czasie pisania tych stron). Chętnie przyjmiemy
+łaty poprawiające ten problem, jednakże z perspektywy programisty informacje
+o wersji mają najprawdopodobniej znaczenie tylko w przypadku interfejsów
+jądra dodanych w Linuksie 2.4 lub kolejnych (tj. zmiany w stosunku do jądra
+2.2) oraz w przypadku funkcji bibliotecznych dołożonych do glibc od wersji
+2.1 (tj. zmiany w stosunku do wersji 2.0).
+
+Strona podręcznika \fBsyscalls\fP(2) także dostarcza informacji o wersjach
+jądra, w których pojawiły się różne wywołania systemowe.
+.TP 
+\fBZGODNE Z\fP
+Opisuje standardy lub konwencje związane z opisywaną w podręczniku funkcją
+lub opisywanym poleceniem. Strony w sekcjach 2. i 3. powinny wskazywać na
+wersje standardu POSIX.1, z którymi są zgodne opisywane w nich wywołania
+oraz informować o tym, czy wywołanie jest opisane w standardzie C99 (Prosimy
+nie przejmować się zbytnio innymi standardami jak SUS, SUSv2 i XPG  lub
+standardami implementacji SVr4 lub BSD 4.x, chyba że wywołanie jest opisane
+w tych standardach, ale nie w bieżącej wersji standardu POSIX.1) (Patrz
+także \fBstandards\fP(7)).
+
+Jeśli wywołanie nie jest zamieszczone w żadnym standardzie, ale zwyczajowo
+istnieje w innych systemach, prosimy wymienić te systemy. Jeśli wywołanie
+jest specyficzne dla Linuksa, również należy o tym poinformować.
+
+Jeśli rozdział zawiera tylko i wyłącznie listę standardów (a tak jest
+zazwyczaj), lista ta powinna być zakończona kropką (".").
+.TP 
+\fBUWAGI\fP
+Zawiera różnorodne uwagi. W sekcjach 2. i 3. stron podręcznika ekranowego
+może być użyteczne podzielenie tego rozdziału na podrozdziały (\fBSS\fP)
+nazywane \fIUwagi linuksowe\fP i \fIUwagi dotyczące biblioteki glibc\fP.
+.TP 
+\fBBŁĘDY\fP
+Opisuje ograniczenia, znane usterki lub niedogodności oraz inne
+problematyczne aktywności.
+.TP 
+\fBPRZYKŁAD\fP
+Dostarcza jednego lub więcej przykładów opisujących, jak funkcja, plik lub
+polecenie są używane. Szczegóły dotyczące pisania przykładowych programów
+opisano w sekcji \fIPrzykładowe programy\fP poniżej.
+.TP 
+\fBAUTORZY\fP
+Lista autorów dokumentacji lub programu. \fBUżywanie sekcji AUTORZY nie jest
+zalecane\fP. Ogólnie lepiej jest nie zaśmiecać każdej strony (z upływem czasu
+coraz większą) listą autorów. Podczas pisania lub znaczącego zmieniania
+strony podręcznika, należy umieścić informacje o prawach autorskich jako
+komentarz w stronie źródłowej. Autorzy sterowników urządzeń, którzy
+chcieliby podać adres, pod którym należy zgłaszać błędy, powinny umieścić go
+w rozdziale BŁĘDY (BUGS).
+.TP 
+\fBZOBACZ TAKŻE\fP
+Zawiera rozdzieloną przecinkami listę powiązanych stron podręcznika,
+posortowaną po numerze sekcji, a następnie alfabetycznie po nazwie. Po nich
+mogą występować inne powiązane strony lub dokumenty. Nie należy umieszczać
+kropki na końcu listy.
+.SS "Konwencje czcionek"
+.PP
+Dla funkcji, argumenty zawsze są podawane kursywą, \fInawet w rozdziale
+SKŁADNIA\fP, w którym reszta funkcji jest wydrukowana w pogrubieniu:
+.PP
+\fB int myfunction(int \fP\fIargc\fP\fB, char **\fP\fIargv\fP\fB);\fP
+.PP
+Nazwy zmiennych podobnie jak nazwy argumentów powinny być pisane kursywą.
+.PP
+Nazwy plików (niezależnie od tego, czy są pełnymi ścieżkami czy
+odniesieniami do plików w katalogu \fI/usr/include\fP) są zawsze pisane kursywą
+(np. \fI<stdio.h>\fP), z wyjątkiem nazw występujących w rozdziale
+SKŁADNIA (SYNOPSIS), w którym pliki dołączane są wyróżniane pogrubieniem
+(np. \fB#include <stdio.h>\fP). Odwołania do standardowych plików
+dołączanych znajdujących się w \fI/usr/include\fP powinny zawierać nazwę pliku
+nagłówkowego w nawiasach trójkątnych, tak jak to jest przyjęte w języku C
+(np. \fI<stdio.h>\fP).
+.PP
+Makra specjalne, które są zwykle pisane dużymi literami, są pogrubiane (np.
+\fBMAXINT\fP). Wyjątek: nie pogrubiamy słowa NULL.
+.PP
+Podczas wyliczania listy kodów błędów, kody są pogrubiane (taka lista zwykle
+używa makra \fB\&.TP).\fP
+.PP
+Pełne polecenia, jeśli są długie, powinny być zapisywane w nowych liniach
+odpowiednio wciętych, na przykład:
+.in +4n
+.nf
+
+man 7 man\-pages
+
+.fi
+.in
+Jeśli polecenie jest krótkie, to może być zawarte bezpośrednio w tekście
+zdania i napisane kursywą, na przykład \fIman 7 man\-pages\fP. W tym wypadku,
+można rozważyć użycie w odpowiednich miejscach polecenia spacji
+nierozdzielających ("\e\ "). Opcje polecenia powinny być zapisywane kursywą,
+np. \fI\-l\fP.
+.PP
+Wyrażenia, jeśli nie są zapisywane w osobnych, wciętych liniach, powinny być
+podawane kursywą. Ponownie, jeśli wyrażenie jest włączone do zwykłego
+tekstu, to właściwe może być używanie spacji nierozdzielających w tym
+wyrażeniu.
+.PP
+Każde odwołanie do programu, funkcji itp. będących tematem bieżącej strony
+podręcznika, powinno nazwę zapisaną czcionką pogrubioną. Jeśli tematem jest
+funkcja (tj. bieżąca strona  pochodzi z sekcji 2. lub 3.), to po nazwie
+powinna występować para nawiasów zapisanych czcionką roman (zwykłą). Na
+przykład w stronie podręcznika \fBfcntl\fP(2) odwołania do tematu tej strony
+będą zapisane jako \fBfcntl\fP(). Preferowanym sposobem zapisania tego w pliku
+źródłowym strony jest:
+.nf
+
+    .BR fcntl ()
+
+.fi
+(Używanie tego formatu zamiast "\efB...\efP()" upraszcza pisanie narzędzi
+przetwarzających pliki źródłowe stron podręcznika ekranowego).
+.PP
+Wszelkie odwołania do innych stron podręcznika powinny być pisane przy
+użyciu pogrubionej czcionki dla nazwy strony, po której \- bez rozdzielania
+spacjami \- \fIzawsze\fP powinien następować numer sekcji pisany czcionką zwykłą
+(niepogrubioną), np. \fBintro\fP(2). Preferowany sposób zapisania tego w kodzie
+źródłowym strony jest następujący:
+.nf
+
+    .BR intro (2)
+
+.fi
+(Dodawanie numerów sekcji w odwołaniach pozwala narzędziom takim jak
+\fBman2html\fP(1) na utworzenie stron zawierających poprawne odnośniki
+hipertekstowe).
+.SS Pisownia
+Od wersji 2.59 pakiet \fIman\-pages\fP używa pisowni amerykańskiej. Prosimy
+przestrzegać tej konwencji dotyczącej pisowni we wszystkich nowo pisanych
+stronach podręcznika ekranowego i podczas przesyłania nam łat do
+istniejących stron.
+.SS "Przykładowe programy i sesje powłoki"
+Strony podręcznika mogą zawierać przykładowe programy pokazujące, jak używać
+wywołania systemowego lub funkcji bibliotecznej. Jednakże proszę zauważyć,
+że:
+.TP  3
+*
+Przykładowe programy powinny być pisane w języku C.
+.TP 
+*
+Zamieszczenie programu przykładowego jest konieczne i użyteczne tylko wtedy,
+gdy program ten pokazuje coś, czego nie można w prosty sposób zawrzeć w
+tekstowym opisie demonstrowanego interfejsu. Program przykładowy nie robiący
+nic poza wywoływaniem funkcji interfejsu zazwyczaj nie ma większego sensu.
+.TP 
+*
+Przykładowy program powinien być raczej krótki (dobrze by było, gdyby miał
+mniej niż 100 linii, idealnie \- mniej niż 50 linii).
+.TP 
+*
+Przykładowe programy nie powinny sprawdzać błędów wywołań systemowych czy
+funkcji bibliotecznych.
+.TP 
+*
+Przykładowe programy powinny być kompletne i powinny się kompilować za
+pomocą \fIcc\ \-Wall\fP bez wypisywania żadnych ostrzeżeń.
+.TP 
+*
+Kiedy tylko to możliwe i właściwe, programy przykładowe powinny pozwalać na
+eksperymenty, różnicując swoje zachowanie zależnie od wejścia (idealnie
+pochodzącego z argumentów linii poleceń lub alternatywnie z wejścia
+czytanego przez program).
+.TP 
+*
+Przykładowe programy powinny być sformatowane w stylu "Kernighan & Ritchie"
+z wcięciami o rozmiarze czterech spacji. (Nie należy używać znaków tabulacji
+w kodzie źródłowym!)
+.PP
+Przykłady wyglądu przykładowych programów można znaleźć w \fBwait\fP(2) i
+\fBpipe\fP(2).
+
+Włączając sesję powłoki pokazującą użycie programu lub innej właściwości
+systemu, należy używać czcionki pogrubionej dla tekstu wprowadzanego przez
+użytkownika, tak aby odróżnić go od tekstu produkowanego przez system.
+.SS "Wcięcia definicji struktur, logów sesji powłoki itp."
+Definicje struktur, logi z sesji powłoki itp dołączane do tekstu powinny
+zawierać wcięcia o długości 4 spacji (tj. powinny być umieszczone w bloku
+otoczonym przez  \fI.in\ +4n\fP i \fI.in\fP).
+.SH PRZYKŁAD
+Wzorcowymi przykładami tego, jak powinny wyglądać strony podręczników z
+pakietu \fIman\-pages\fP, są strony \fBpipe\fP(2) i \fBfcntl\fP(2).
+.SH "ZOBACZ TAKŻE"
+\fBman\fP(1), \fBman2html\fP(1), \fBgroff\fP(7), \fBgroff_man\fP(7), \fBman\fP(7),
+\fBmdoc\fP(7)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP.  Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@p-soft.silesia.linux.org.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

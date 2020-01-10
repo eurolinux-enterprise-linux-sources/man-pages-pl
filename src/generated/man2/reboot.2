@@ -1,0 +1,151 @@
+.\" Copyright (c) 1998 Andries Brouwer (aeb@cwi.nl), 24 September 1998
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" Modified, 27 May 2004, Michael Kerrisk <mtk.manpages@gmail.com>
+.\"     Added notes on capability requirements
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1998 Andries Brouwer 
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2005, 2006, 2012.
+.TH REBOOT 2 2010\-10\-31 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+reboot \- przeładowanie systemu lub włączenie/wyłączenie Ctrl\-Alt\-Del
+.SH SKŁADNIA
+/* Wywołania systemowe pod biblioteką libc4 i libc5 są identyczne,
+    a od wersji jądra 2.1.30 istnieją symboliczne nazwy LINUX_REBOOT_*
+    dla stałych oraz czwarty parametr wywołania: */
+.sp
+\fB#include <unistd.h>\fP
+.br
+\fB#include <linux/reboot.h>\fP
+.sp
+\fBint reboot(int \fP\fImagic\fP\fB, int \fP\fImagic2\fP\fB, int \fP\fIcmd\fP\fB, void
+*\fP\fIarg\fP\fB);\fP
+.sp
+/* Pod glibc niektóre stałe dostały nazwy RB_*, a wywołanie
+    biblioteczne jest jednoargumentową funkcją  opakowującą
+    trójargumentowe wywołanie systemowe: */
+.sp
+\fB#include <unistd.h>\fP
+.br
+\fB#include <sys/reboot.h>\fP
+.sp
+\fBint reboot(int \fP\fIcmd\fP\fB);\fP
+.SH OPIS
+Wywołanie \fBreboot\fP() przeładowuje system albo włącza lub wyłącza kombinację
+klawiszy odpowiedzialną za przeładowanie systemu (nazywaną w skrócie CAD od
+domyślnej kombinacji Ctrl\-Alt\-Del, którą można zmienić przy pomocy
+\fBloadkeys\fP(1)).
+.PP
+To wywołanie systemowe się nie powiedzie (z kodem \fBEINVAL\fP), chyba że
+\fImagic\fP wynosi \fBLINUX_REBOOT_MAGIC1\fP (czyli 0xfee1dead) i \fImagic2\fP jest
+równe \fBLINUX_REBOOT_MAGIC2\fP (czyli 672274793). Jednakże \fImagic2\fP może
+przyjmować dodatkowe wartości: od wersji 2.1.17 \- \fBLINUX_REBOOT_MAGIC2A\fP
+(czyli 85072278), od wersji 2.1.97 \- \fBLINUX_REBOOT_MAGIC2B\fP  (czyli
+369367448), a od wersji  2.5.71 również \fBLINUX_REBOOT_MAGIC2C\fP (czyli
+537993216). (Szesnastkowe wartości powyższych stałych mają
+znaczenie). Parametr \fIcmd\fP może przyjmować następujące wartości:
+.TP 
+\fBLINUX_REBOOT_CMD_CAD_OFF\fP
+(RB_DISABLE_CAD, 0). CAD jest wyłączony, co oznacza, że naciśnięcie
+kombinacji klawiszy CAD wyśle procesowi init (procesowi nr 1) sygnał
+\fBSIGINT\fP i ten proces zdecyduje, jaką akcję wykonać (być może: zabicie
+wszystkich procesów, sync, restart).
+.TP 
+\fBLINUX_REBOOT_CMD_CAD_ON\fP
+(RB_ENABLE_CAD, 0x89abcdef). CAD jest włączony, co oznacza, że naciśnięcie
+klawiszy CAD wywoła od razu akcję skojarzoną z \fBLINUX_REBOOT_CMD_RESTART\fP.
+.TP 
+\fBLINUX_REBOOT_CMD_HALT\fP
+(RB_HALT_SYSTEM, 0xcdef0123; od wersji 1.1.76). Wypisywany jest komunikat
+"System halted.", a system jest zatrzymywany. Kontrola jest przekazywana do
+monitora ROM, jeżeli istnieje. Jeżeli nie wywołano wcześniej \fBsync\fP(2),
+niezapisane dane zostaną utracone.
+.TP 
+\fBLINUX_REBOOT_CMD_KEXEC\fP (od wersji 2.6.13 systemu Linux)
+Uruchamia jądro załadowane wcześniej za pomocą \fBkexec_load\fP(2). Opcja jest
+dostępna tylko wtedy, jeśli jądro zostało skonfigurowane z \fBCONFIG_KEXEC\fP.
+.TP 
+\fBLINUX_REBOOT_CMD_POWER_OFF\fP
+(0x4321fedc; od wersji 2.1.30).  Wypisywany jest komunikat "Power down.",
+system jest zatrzymywany i jeżeli jest to możliwe, zasilanie jest
+odłączane.  Jeżeli nie wywołano wcześniej \fBsync\fP(2), niezapisane dane
+zostaną utracone.
+.TP 
+\fBLINUX_REBOOT_CMD_RESTART\fP
+(RB_AUTOBOOT, 0x1234567).  Wypisywany jest komunikat  "Restarting system.",
+a natychmiast po tym następuje przeładowanie systemu. Jeżeli nie wywołano
+wcześniej \fBsync\fP(2), niezapisane dane zostaną utracone.
+.TP 
+\fBLINUX_REBOOT_CMD_RESTART2\fP
+(0xa1b2c3d4; od wersji 2.1.30).  Wypisywany jest komunikat "Restarting
+system with command \(aq%s\(aq" i natychmiast po nim system jest
+przeładowywany  (używając polecenia podanego w argumencie \fIarg\fP). Jeżeli
+nie wywołano wcześniej \fBsync\fP(2), niezapisane dane zostaną utracone.
+.LP
+Tylko administrator może wywołać funkcję \fBreboot\fP().
+.LP
+Dokładny wynik powyższych akcji zależy od architektury komputera. Obecnie
+(2.1.122) dodatkowy parametr nie ma żadnego znaczenia dla architektury i386,
+jednakże typ restartowania systemu może być określony w argumentach linii
+poleceń jądra ("reboot=...") jako restart albo ciepły, albo zimny oraz albo
+twardy, albo przez BIOS.
+.SH "WARTOŚĆ ZWRACANA"
+Jeśli podano wartość \fIcmd\fP powodującą zatrzymanie lub zrestartowanie
+systemu, to \fBreboot\fP() nie powraca. W przypadku innych wartości parametru
+\fIcmd\fP zwracane jest zero, jeśli funkcja zakończyła się powodzeniem. We
+wszystkich przypadkach (niezależnie od wartości \fIcmd\fP) w razie wystąpienia
+błędu zwracane jest \-1 i zmienna \fIerrno\fP jest ustawiana na odpowiednią
+wartość.
+.SH BŁĘDY
+.TP 
+\fBEFAULT\fP
+Problem pobierania danych z przestrzeni użytkownika w wypadku wywołania
+\fBLINUX_REBOOT_CMD_RESTART2\fP.
+.TP 
+\fBEINVAL\fP
+Niepoprawne liczby magiczne lub \fIcmd\fP.
+.TP 
+\fBEPERM\fP
+Proces wywołujący nie ma odpowiednich uprawnień, aby wywołać \fBreboot\fP();
+wymagane jest posiadanie przywileju \fBCAP_SYS_BOOT\fP.
+.SH "ZGODNE Z"
+Funkcja \fBreboot\fP() jest specyficzna dla Linuksa i nie powinna być używana w
+programach, które mają działać pod różnymi systemami.
+.SH "ZOBACZ TAKŻE"
+\fBsync\fP(2), \fBbootparam\fP(7), \fBcapabilities\fP(7), \fBctrlaltdel\fP(8),
+\fBhalt\fP(8), \fBreboot\fP(8)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

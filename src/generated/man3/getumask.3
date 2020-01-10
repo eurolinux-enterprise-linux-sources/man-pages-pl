@@ -1,0 +1,78 @@
+.\" Copyright (C) 2002 Andries Brouwer <aeb@cwi.nl>
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" This replaces an earlier man page written by Walter Harms
+.\" <walter.harms@informatik.uni-oldenburg.de>.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2002 Andries Brouwer 
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2005, 2012.
+.TH GETUMASK 3 2010\-09\-10 GNU "Podręcznik programisty Linuksa"
+.SH NAZWA
+getumask \- zwraca maskę tworzenia plików
+.SH SKŁADNIA
+\fB#define _GNU_SOURCE\fP /* Patrz feature_test_macros(7) */
+.br
+\fB#include <sys/types.h>\fP
+.br
+\fB#include <sys/stat.h>\fP
+.sp
+\fBmode_t getumask(void);\fP
+.SH OPIS
+Funkcja zwraca bieżącą maskę tworzenia plików. Jest to odpowiednik
+.in +4n
+.nf
+
+mode_t getumask(void)
+{
+    mode_t mask = umask( 0 );
+    umask(mask);
+    return mask;
+}
+
+.fi
+.in
+poza tym, że jest udokumentowana jako bezpieczna dla wątków (to jest
+współdzieli blokadę z wywołaniem bibliotecznym \fBumask\fP(2)).
+.SH "ZGODNE Z"
+Miało to być przyszłe (ang. vaporware) rozszerzenie GNU
+.SH UWAGI
+Funkcja jest udokumentowana, ale jeszcze niezaimplementowana w glibc (w
+każdym razie nie ma jej w wersji 2.9, ani wcześniejszych).
+.SH "ZOBACZ TAKŻE"
+\fBumask\fP(2)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

@@ -1,0 +1,141 @@
+.\" Copyright 1998 Andries E. Brouwer (aeb@cwi.nl)
+.\"
+.\" May be distributed under the GNU General Public License
+.\" Rewritten for 2.1.117, aeb, 981010.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1998 Andries E. Brouwer (GPL-1)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 2000.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH MKSWAP 8 "marzec 2009" util\-linux "Administracja systemem"
+.SH NAZWA
+mkswap \- konfiguruje linuksowy obszar wymiany
+.SH SKŁADNIA
+\fBmkswap\fP [\fIopcje\fP] \fIurządzenie\fP [\fIrozmiar\fP]
+.SH OPIS
+\fBmkswap\fP konfiguruje linuksowy obszar wymiany na urządzeniu lub w pliku.
+
+Argument \fIurządzenie\fP zwykle jest partycją dyskową (czymś w stylu
+\fI/dev/sdb7\fP), lecz może być również plikiem. Jądro Linux nie zważa na
+identyfikatory partycji, lecz wiele skryptów instalacyjnych zakłada, że
+partycje typu (szesnastkowo) 82 (LINUX_SWAP) są partycjami
+wymiany. (\fBUwaga: Solaris również używa tego typu. Proszę uważać, aby nie
+zniszczyć swoich partycji solarisowych.\fP)
+
+Parametr \fIrozmiar\fP jest niepotrzebny, lecz został zachowany w celu
+zgodności wstecznej. Określa on potrzebny rozmiar wymiany w blokach
+1024\-bajtowych. \fBmkswap\fP w przypadku pominięcia tego parametru używa całej
+partycji lub całego pliku. Podawanie tego parametru jest niemądre \-
+literówka może zniszczyć dysk.
+
+Po utworzeniu obszaru wymiany, konieczne jest użycie polecenia \fBswapon\fP,
+aby go aktywować. Obszary wymiany są zwykle uwzględniane w \fI/etc/fstab\fP,
+więc mogą być włączane do użytku podczas rozruchu poleceniem \fBswapon \-a\fP w
+jakimś skrypcie startowym.
+
+.SH OSTRZEŻENIE
+Nagłówek obszaru wymiany nie używa pierwszego bloku. Może znajdować się tam
+program rozruchowy lub etykieta partycji, ale nie jest to polecane
+ustawienie. Zalecaną konfiguracją linuksowej przestrzeni wymiany jest użycie
+oddzielnej partycji.
+
+\fBmkswap\fP, podobnie jak wiele innych narzędzi mkfs \fBusuwa pierwszy blok
+partycji aby ukryć istniejący wcześniej system plików\fP.
+
+\fBmkswap\fP odmówi jednak usunięcia pierwszego bloku urządzenia na urządzeniu
+z etykietą dysku (SUN, BSD, ... \- nie mylić z etykietą partycji) i na całym
+dysku (np. /dev/sda).
+
+.SH OPCJE
+.TP 
+\fB\-c\fP,\fB \-\-check\fP
+Sprawdza urządzenie (jeśli jest ono blokowe) w poszukiwaniu uszkodzonych
+bloków przed utworzeniem obszaru wymiany. Jeśli jakieś zostaną znalezione,
+to ich liczba zostanie wypisana.
+.TP 
+\fB\-f\fP,\fB \-\-force\fP
+Wymusza działanie, nawet jeśli polecenie jest idiotyczne. Umożliwia to
+utworzenie obszaru wymiany większego niż plik lub partycja, na którym się
+ono znajduje.
+
+Poza tym, bez tej opcji \fBmkswap\fP odmówi usunięcia pierwszego bloku
+urządzenia na urządzeniu z etykietą dysku (SUN, BSD, ... \- nie mylić z
+etykietą partycji) i na całym dysku (np. /dev/sda).
+.TP 
+\fB\-L\fP,\fB \-\-label \fP\fIetykieta\fP
+Określa \fIetykietę\fP urządzenia, pozwalając wykonać \fBswapon\fP podając
+etykietę.
+.TP 
+\fB\-p\fP,\fB \-\-pagesize \fP\fIrozmiar\fP
+Określa \fIrozmiar\fP (w bajtach) używanej strony. Podanie tej opcji jest
+zwykle niepotrzebne \- \fBmkswap\fP odczyta odpowiedni rozmiar z jądra.
+.TP 
+\fB\-U\fP,\fB \-\-uuid \fP\fIUUID\fP
+Podaje \fIUUID\fP do użycia. Domyślnie, UUID jest generowany.
+.TP 
+\fB\-v\fP,\fB \-\-swapversion 1\fP
+Podaje wersję przestrzeni wymiany. Opcja ta jest obecnie bezużyteczna, jako
+że stara opcja \fB\-v 0\fP stała się przestarzała i obecnie obsługiwana jest
+wyłącznie \fB\-v 1\fP. Jądro nie obsługuje przestrzeni wymiany w formacie v0 od
+wersji 2.5.22 (czerwiec 2002). Nowa wersja v1 jest obsługiwana od jądra
+2.1.117 (sierpień 1998).
+.TP 
+\fB\-h\fP,\fB \-\-help\fP
+Wyświetla ten tekst i kończy pracę.
+.TP 
+\fB\-V\fP,\fB \-\-version\fP
+Wyświetla informacje o wersji i wychodzi.
+
+.SH UWAGI
+Maksymalny, używalny rozmiar przestrzeni wymiany zależy od architektury i
+wersji jądra. Jest to około 2 GiB na i386, PPC, m68k i ARM; 1 GiB na sparc;
+512 na mips, 128 GiB na alpha i 3 TiB na sparc64. Jądra od wersji 2.3.3 (maj
+1999) nie posiadają takich ograniczeń.
+
+Proszę zauważyć, że przed wersją 2.1.117 jądra, alokowało ono po jednym
+bajcie na każdą stronę, natomiast obecnie alokowane są dwa bajty. Oznacza
+to, że przestrzeń wymiany 2 GiB może wymagać 2 MiB pamięci jądra.
+
+Aktualnie, Linux pozwala na 32 przestrzenie wymiany (8 przed Linuksem 2.4.10
+(wrzesień 2001). Używane przestrzenie można zobaczyć w pliku \fI/proc/swaps\fP
+(od jądra 2.1.25 \- sierpień 1997).
+
+\fBmkswap\fP odmówi działania w przypadku przestrzeni wymiany mniejszych niż 10
+stron.
+
+Jeśli używany rozmiar strony jest nieznany, można go znaleźć za pomocą "cat
+/proc/cpuinfo" (lub nie \- zawartość tego pliku zależy od architektury i
+wersji jądra).
+
+Aby skonfigurować plik wymiany, konieczne jest utworzenie tego pliku przed
+zainicjowaniem przy użyciu \fBmkswap\fP, np. korzystając z polecenia w stylu
+
+.nf
+.RS
+# dd if=/dev/zero of=plikswap bs=1024 count=65536
+.RE
+.fi
+
+Proszę zauważyć, że plik wymiany nie może zawierać żadnych dziur (więc
+użycie np. \fBcp\fP(1) do utworzenia go, nie jest możliwe).
+
+
+.SH "ZOBACZ TAKŻE"
+\fBfdisk\fP(8), \fBswapon\fP(8)
+.SH DOSTĘPNOŚĆ
+Polecenie mkswap jest częścią pakietu util\-linux i jest dostępne pod adresem
+ftp://ftp.kernel.org/pub/linux/utils/util\-linux/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.20.1 \fPoryginału.

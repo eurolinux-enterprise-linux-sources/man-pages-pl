@@ -1,0 +1,313 @@
+.\" -*- nroff -*-
+.\" Copyright 1993, 1994, 1995 by Theodore Ts'o.  All Rights Reserved.
+.\" This file may be copied under the terms of the GNU Public License.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993-1995 Theodore Ts'o (GPL-1)
+.\" Copyright © of Polish translation:
+.\" Wojtek Kotwica (PTM) <wkotwica@post.pl>, 1999.
+.\" Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>, 2002.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH FSCK 8 "luty 2009" util\-linux "Administracja systemem"
+.SH NAZWA
+fsck \- sprawdza i naprawia linuksowy system plików
+.SH SKŁADNIA
+\fBfsck\fP [\fB\-lsAVRTMNP\fP] [\fB\-C\fP [\fIfd\fP]] [\fB\-t\fP \fItyp\-systemu\-plików\fP]
+[\fIsyst\-pl\fP...] [\fB\-\-\fP] [\fIopcje\-zależne\-od\-syst\-pl\fP]
+.SH OPIS
+\fBfsck\fP służy do sprawdzania i, opcjonalnie, do naprawy jednego lub kilku
+linuksowych systemów plików.  \fISyst\-pl\fP może być nazwą urządzenia (np.
+\fI/dev/hdc1\fP, \fI/dev/sdb2\fP), punktem montowania (np.  \fI/\fP, \fI/usr\fP,
+\fI/home\fP), albo etykietą ext2 lub identyfikatorem UUID (np.
+UUID=8868abf6\-88c5\-4a83\-98b8\-bfc24057f7bd lub LABEL=root).  W celu skrócenia
+łącznego czasu potrzebnego do sprawdzenia wszystkich systemów plików,
+program \fBfsck\fP będzie usiłował sprawdzać równolegle systemy plików
+umieszczone na fizycznie różnych napędach dysków.
+.PP
+Jeśli nie określono systemu plików w wierszu poleceń, ani nie użyto opcji
+\fB\-A\fP, \fBfsck\fP domyślnie sprawdzi po kolei systemy plików z
+\fB/etc/fstab\fP. Jest to odpowiednik opcji \fB\-As\fP.
+.PP
+Kod zakończenia zwracany przez \fBfsck\fP jest sumą następujących warunków:
+.br
+	0	\- Bez błędów
+.br
+	1	\- Poprawiono błędy systemu plików
+.br
+	2	\- System powinien zostać przeładowany (reboot)
+.br
+	4	\- Pozostawiono nienaprawione błędy systemu plików
+.br
+	8	\- Błąd działania
+.br
+	16	\- Błąd użycia (składni)
+.br
+	32	\- Działanie fsck zostało przerwane przez użytkownika
+.br
+	128	\- Błąd biblioteki współdzielonej
+.br
+Kod zakończenia zwracany, gdy sprawdzane jest kilka systemów plików jest
+bitową alternatywą (OR) kodów zakończenia dla każdego ze sprawdzanych
+systemów plików.
+.PP
+W rzeczywistości \fBfsck\fP jest po prostu interfejsem dla różnych programów
+sprawdzających dostępne w Linuksie systemy plików
+(\fBfsck\fP.\fItyp\-systemu\-plików\fP). Poszukiwanie programu specyficznego dla
+danego systemu plików odbywa się w pierwszej kolejności w \fI/sbin\fP,
+następnie w \fI/etc/fs\fP i \fI/etc\fP, a ostatecznie w katalogach wymienionych w
+zmiennej środowiskowej PATH.  Więcej szczegółów można znaleźć na stronach
+podręcznika programów sprawdzających właściwych dla poszczególnych systemów
+plików.
+.SH OPCJE
+.TP 
+\fB\-l\fP
+Blokuje całe urządzenie dyskowe przez wyłączne \fBflock\fP(2). Opcja może być
+użyta wyłącznie z jednym urządzeniem (co oznacza, że opcje \fB\-A\fP i \fB\-l\fP
+wykluczają się wzajemnie. Zaleca się użycie tej opcji, gdy uruchomione jest
+kilka kopii \fBfsck (8)\fP w tym samym czasie. Opcja jest ignorowana, gdy
+zostanie użyta w stosunku do wielu urządzeń lub w odniesieniu do dysków
+nieobrotowych. Program \fBfsck\fP nie blokuje niższej warstwy urządzeń, gdy
+jest wykonywany na urządzeniach typu "stacked" (np. MD \-
+tzw. RAID\ programowy lub DM \- device mapper) \-\- ta funkcja nie została
+jeszcze zaimplementowana.
+.TP 
+\fB\-s\fP
+Wykonuje operacje \fBfsck\fP kolejno, szeregowo. Jest to dobre podejście, jeśli
+sprawdzanych jest wiele systemów plików, a programy sprawdzające działają w
+trybie interaktywnym. (Uwaga: \fBe2fsck\fP(8)  domyślnie działa w trybie
+interaktywnym. By uruchomić \fBe2fsck\fP(8)  w trybie nieinteraktywnym, trzeba
+podać opcję \fB\-p\fP lub \fB\-a\fP, gdy błędy mają być naprawiane automatycznie,
+albo opcję \fB\-n\fP, gdy nie mają być naprawiane).
+.TP 
+\fB\-t\fP\fI lista\-syst\-pl\fP
+Określa typ(y) sprawdzanego(ych) systemu(ów) plików. Jeśli podano opcję
+\fB\-A\fP, to sprawdzane będą tylko te systemy plików, które pasują do listy
+\fIlista\-syst\-pl\fP.  Parametr \fIlista\-syst\-pl\fP stanowi rozdzieloną przecinkami
+listę systemów plików oraz podanych opcji. Dowolny z systemów plików na tej
+liście może być poprzedzony operatorem negacji '\fBno\fP' lub '\fB!\fP', co
+oznacza sprawdzanie wyłącznie systemów plików nie występujących na liście
+\fIlista\-syst\-pl\fP.  Jeśli żaden z systemów plików w \fIlista\-syst\-pl\fP nie
+zostanie poprzedzony operatorem negacji, to sprawdzane będą wyłącznie
+systemy plików występujące na liście \fIlista\-syst\-pl\fP.
+.sp
+Na rozdzielonej przecinkami liście \fIlista\-syst\-pl\fP mogą również występować
+podane opcje. Muszą one mieć postać \fBopts=\fP\fIopcja\-syst\-pl\fP, i mogą być
+poprzedzone operatorem negacji. Jeśli na liście występuje podana opcja, to
+będą sprawdzane tylko te systemy plików, których wpis w \fB/etc/fstab\fP
+zawiera (lub nie zawiera, gdy podana opcja została poprzedzona operatorem
+negacji) opcję \fIopcja\-syst\-pl\fP w odpowiednim polu pliku \fB/etc/fstab\fP.
+.sp
+Na przykład, jeśli \fBopts=ro\fP pojawi się w \fIliscie\-syst\-pl\fP, to tylko
+systemy plików z pliku \fB/etc/fstab\fP, posiadające opcję \fBro\fP będą
+sprawdzone.
+.sp
+Dla zgodności z dystrybucją Mandrake, w której skrypty startowe uzależnione
+są od nieautoryzowanej zmiany interfejsu użytkownika programu \fBfsck\fP, gdy
+typem systemu plików jest \fBloop\fP, to jest to traktowane tak, jakby podano
+\fBopts=loop\fP jako argument opcji \fB\-t\fP.
+.sp
+Zwykle, typ systemu plików można określić wyszukując dany system plików
+\fIsyst\-pl\fP w pliku \fI/etc/fstab\fP i korzystając z odpowiedniego wpisu. Jeżeli
+nie da się go określić, a podano jako argument opcji \fB\-t\fP pojedynczy system
+plików, to \fBfsck\fP użyje typu wyznaczonego przez tę opcję.  Jeżeli typ ten
+nie jest dostępny, to używany jest typ domyślny (obecnie ext2).
+.TP 
+\fB\-A\fP
+Przechodzi przez plik \fI/etc/fstab\fP i próbuje sprawdzić wszystkie systemy
+plików w jednym przebiegu. Opcja ta jest najczęściej wykorzystywana przez
+plik startowy \fI/etc/rc\fP, zamiast wielu poleceń sprawdzających pojedyncze
+systemy plików.
+.sp
+Główny system plików (/) zostanie sprawdzony jako pierwszy, chyba że podano
+opcję \fB\-P\fP (patrz poniżej). Następnie będą sprawdzane systemy plików w
+kolejności określonej przez liczbę występującą w polu \fIfs_passno\fP (szóstym)
+pliku \fI/etc/fstab\fP.  Systemy plików z wartością \fIfs_passno\fP wynoszącą 0
+będą pomijane i w ogóle nie będą sprawdzane. Systemy plików z wartością
+\fIfs_passno\fP większą od zera będą sprawdzane w kolejności rosnącej,
+tzn. systemy plików z mniejszą wartością \fIfs_passno\fP będą sprawdzane
+wcześniej.  Jeżeli istnieje kilka systemów plików o tym samym numerze
+przejścia, to e2fsck będzie usiłował sprawdzić je równolegle, jednakże
+będzie unikał jednoczesnego sprawdzania wielu systemów plików na tym samym
+dysku fizycznym.
+.sp
+Program \fBfsck\fP nie sprawdza urządzeń typu "stacked" (RAID, dm\-crypt)
+równolegle z żadnym innym urządzeniem. Patrz też niżej ustawienie
+FSCK_FORCE_ALL_PARALLEL. System plików /sys jest używany do poznania
+zależności między urządzeniami.
+.sp
+Stąd też, bardzo powszechną konfiguracją w \fI/etc/fstab\fP jest ustawienie dla
+głównego systemu plików pola \fIfs_passno\fP o wartości 1, zaś dla wszystkich
+pozostałych systemów plików przypisanie \fIfs_passno\fP wartości 2. Pozwoli to
+\fBfsck\fP na automatyczne równoległe uruchamianie programów sprawdzających
+systemy plików, jeżeli tylko było by to korzystne. Administratorzy systemów
+mogą zrezygnować z używania takiej konfiguracji jeśli z jakiegoś powodu chcą
+uniknąć równoległego sprawdzania systemów plików \-\-\- na przykład, jeśli dany
+komputer niewiele pamięci, tak że problemem jest intensywne zastępowanie
+stron pamięci (paging).
+.sp
+Program \fBfsck\fP zwykle nie sprawdza, czy urządzenie rzeczywiście istnieje,
+przed wywołaniem właściwego programu sprawdzającego dany system plików. W
+związku z tym, nieistniejące urządzenia mogą spowodować wejście systemu w
+tryb naprawy systemu plików podczas uruchamiania systemu, jeśli jeden z
+właściwych danemu systemowi plików programów sprawdzających, zwróci błąd
+krytyczny. Opcja montowania \fBnofail\fP pliku \fB/etc/fstab\fP może zostać użyta,
+aby wymusić pomijanie nieistniejących urządzeń przez \fBfsck\fP. Program
+\fBfsck\fP pomija również nieistniejące urządzenia, które mają specjalny typ
+systemu plików \fBauto\fP.
+.
+.TP 
+\fB\-C\fP [ \fI fd \fP ]
+Wyświetla wskaźniki zakończenia/postępu dla systemów plików, które je
+wspierają (aktualnie tylko ext2 i ext3). Fsck będzie tak sterować programami
+sprawdzającymi systemy plików, aby tylko jeden z nich wyświetlał wskaźnik
+postępu w danej chwili. Interfejsy graficzne mogą podać deskryptor pliku
+\fIfd\fP i w takim przypadku informacje paska postępu zostaną wysłane do owego
+deskryptora.
+.TP 
+\fB\-M\fP
+Nie sprawdza zamontowanych systemów plików i zwraca dla nich kod zakończenia
+równy zero.
+.TP 
+\fB\-N\fP
+Nie wykonuje operacji, jedynie pokazuje co byłoby wykonane.
+.TP 
+\fB\-P\fP
+Jeśli włączona jest opcja \fB\-A\fP, to sprawdza główny system plików równolegle
+ze sprawdzaniem innych systemów.  Nie jest to najbezpieczniejsza czynność
+pod słońcem, jaką można wykonać, ponieważ jeśli główny system plików jest
+wątpliwy, to nawet plik binarny \fBe2fsck\fP(8)  może być uszkodzony! Opcja ta
+jest przeznaczona głównie dla tych administratorów systemów, którzy nie chcą
+partycjonować ponownie głównego systemu plików, tak by był mały i zwarty (co
+jest tak naprawdę poprawnym rozwiązaniem).
+.TP 
+\fB\-R\fP
+Podczas sprawdzania wszystkich systemów plików z opcją \fB\-A\fP, omija główny
+system plików (przydatne w przypadku, gdy jest on już zamontowany do
+odczytu/zapisu).
+.TP 
+\fB\-T\fP
+Nie pokazuje tytułu przy starcie.
+.TP 
+\fB\-V\fP
+Wyświetla informacje w trybie szczegółowym, łącznie ze wszystkimi
+wykonywanymi poleceniami specyficznymi dla poszczególnych systemów plików.
+.TP 
+\fBopcje\-zależne\-od\-syst\-pl\fP
+Opcje nie rozumiane przez \fBfsck\fP są przekazywane programowi sprawdzającemu,
+specyficznemu dla danego systemu plików. Parametry te \fBnie mogą\fP zawierać
+własnych argumentów, gdyż \fBfsck\fP nie ma możliwości rozpoznania, które z
+parametrów posiadają argumenty, a które nie.
+.IP
+Dowolne opcje występujące po \fB\-\-\fP są traktowane jako opcje specyficzne dla
+danego systemu plików, które mają zostać przekazane do odpowiedniego
+programu sprawdzającego ten system plików.
+.IP
+Proszę zauważyć, że fsck nie został zaprojektowany w celu przekazywania
+dowolnie skomplikowanych opcji do programów sprawdzających specyficznych dla
+poszczególnych systemów plików. Jeśli istnieje potrzeba zrobienia czegoś
+skomplikowanego, proszę po prostu bezpośrednio uruchomić właściwy dla danego
+systemu plików program sprawdzający. Jeśli programowi \fBfsck\fP zostanie
+przekazana niezmiernie skomplikowana opcja wraz z argumentami i program nie
+uczyni tego, czego się spodziewano, to \fBnie należy nikomu zawracać głowy
+zgłaszaniem tego jako błędu\fP. Prawie na pewno robi się wówczas coś, czego
+nie należy robić za pomocą \fBfsck\fP.
+.PP
+Opcje do odmian fsck specyficznych dla danego systemu plików nie są
+zestandaryzowane. W przypadku wątpliwości, proszę sprawdzić strony
+podręcznika man danego programu sprawdzającego. Mimo, że nie jest to
+zagwarantowane, większość programów sprawdzających systemy plików obsługuje
+poniższe opcje:
+.TP 
+\fB\-a\fP
+Automatycznie naprawia system plików bez zadawania pytań (należy używać tej
+opcji ostrożnie). Warto zauważyć, że \fBe2fsck\fP(8) obsługuje \fB\-a\fP tylko dla
+zgodności z wcześniejszymi wersjami. Opcja ta została przekształcona na
+opcję \fB\-p\fP polecenia \fBe2fsck\fP, która jest bezpieczna w użyciu, w
+przeciwieństwie do opcji \fB\-a\fP, obsługiwanej przez większość programów
+sprawdzających systemy plików.
+.TP 
+\fB\-n\fP
+Do niektórych programów, opcja \fB\-n\fP zapobiega danej odmianie fsck
+przeprowadzać próby naprawienia jakichkolwiek problemów, a pozwala jedynie
+na wyświetlenie informacji o nich na standardowe wyjście. Może nie działać
+to ze wszystkimi programami specyficznymi dla poszczególnych systemów
+plików. W\ szczególności, \fBfsck.reiserfs\fP(8) nie informuje o żadnych
+błędach, jeśli poda się mu się tę opcję. \fBfsck.minix\fP(8) w ogóle nie
+obsługuje opcji \fB\-n\fP.
+.TP 
+\fB\-r\fP
+Naprawa systemu plików w trybie interaktywnym (z pytaniami o
+potwierdzenia).  Uwaga: na ogół złym pomysłem jest używanie tej opcji
+podczas równoległego sprawdzania wielu systemów plików. Trzeba też zwrócić
+uwagę, że jest to domyślne zachowanie \fBe2fsck\fP; polecenie to obsługuje tę
+opcję tylko z powodu zgodności z wcześniejszymi wersjami.
+.TP 
+\fB\-y\fP
+Do niektórych programów, opcja \fB\-n\fP wymusza na danej odmianie fsck
+przeprowadzanie próby naprawienia jakichkolwiek wykrytych problemów w sposób
+automatyczny. Niekiedy eksperci są w stanie lepiej poinstruować fsck co
+należy zrobić. Proszę zauważyć, że \fBnie\fP wszystkie programy specyficzne dla
+poszczególnych systemów plików posiadają tę opcję
+zaimplementowaną. W\ szczególności, \fBfsck.minix\fP(8) i \fBfsck.cramfs\fP(8) w
+ogóle nie obsługują opcji \fB\-y\fP (na chwilę ostatniej aktualizacji oryginału
+tego podręcznika).
+.SH AUTOR
+Theodore Ts'o (tytso@mit.edu)
+.SH DOSTĘPNOŚĆ
+Polecenie fsck jest częścią pakietu util\-linux i jest dostępne pod adresem
+ftp://ftp.kernel.org/pub/linux/utils/util\-linux/.
+.SH PLIKI
+\fI/etc/fstab\fP.
+.SH "ZMIENNE ŚRODOWISKOWE"
+Na zachowanie programu \fBfsck\fP mają wpływ następujące zmienne środowiskowe:
+.TP 
+\fBFSCK_FORCE_ALL_PARALLEL\fP
+Jeśli ta zmienna jest ustawiona, \fBfsck\fP będzie próbował uruchomić
+równolegle programy sprawdzające wszystkie podane systemy plików,
+niezależnie od tego, czy systemy plików znajdują się na tym samym, czy na
+różnych urządzeniach. (Jest to przydatne w przypadku systemów RAID lub
+wysokiej klasy systemów pamięci masowej, jak np. sprzedawane przez firmy
+takie, jak IBM czy EMC). Proszę zauważyć, że wartość fs_passno jest wciąż
+używana.
+.TP 
+\fBFSCK_MAX_INST\fP
+Ta zmienna środowiskowa ogranicza maksymalną liczbę uruchamianych
+jednocześnie programów sprawdzających systemy plików. W przypadku
+konfiguracji zawierających dużą liczbę dysków, pozwala to uniknąć
+jednoczesnego uruchamiania przez \fBfsck\fP zbyt wielu programów
+sprawdzających, co mogłoby przeciążyć dostępne w systemie zasoby procesorów
+i pamięci. Wartość zero pozwala na nieograniczone mnożenie się
+procesów. Jest to aktualnie zachowanie domyślne, jednakże przyszłe wersje
+\fBfsck\fP mogą próbować automatycznie określać ilość jednoczesnych sprawdzań
+systemów plików na podstawie zgromadzonych przez system operacyjny danych
+ewidencyjnych.
+.TP 
+\fBPATH\fP
+Zmienna środowiskowa \fBPATH\fP służy do poszukiwania programów sprawdzających
+systemy plików. Pewne katalogi systemowe są przeszukiwane najpierw:
+\fB/sbin\fP, \fB/sbin/fs.d\fP, \fB/sbin/fs\fP, \fB/etc/fs\fP i \fB/etc\fP.  A następnie są
+przeszukiwane katalogi znajdujące się w zmiennej środowiskowej \fBPATH\fP.
+.TP 
+\fBFSTAB_FILE\fP
+Ta zmienna środowiskowa pozwala administratorowi systemu zmianę
+standardowego położenia pliku \fB/etc/fstab\fP.  Służy ona również osobom
+rozwijającym program, do testowania \fBfsck\fP.
+.SH "ZOBACZ TAKŻE"
+\fBfstab\fP(5), \fBmkfs\fP(8), \fBfsck.ext2\fP(8) lub \fBfsck.ext3\fP(8) lub
+\fBe2fsck\fP(8), \fBcramfsck\fP(8), \fBfsck.minix\fP(8), \fBfsck.msdos\fP(8),
+\fBfsck.jfs\fP(8), \fBfsck.nfs\fP(8), \fBfsck.vfat\fP(8), \fBfsck.xfs\fP(8),
+\fBfsck.xiafs\fP(8), \fBreiserfsck\fP(8).
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Wojtek Kotwica (PTM) <wkotwica@post.pl>,
+Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.20.1 \fPoryginału.

@@ -1,0 +1,169 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright (c) 1992 Drew Eckhardt (drew@cs.colorado.edu), March 28, 1992
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified by Michael Haardt (michael@moria.de)
+.\" Modified Sat Jul 24 14:29:17 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified 961203 and 001211 and 010326 by aeb@cwi.nl
+.\" Modified 001213 by Michael Haardt (michael@moria.de)
+.\" Modified 13 Jun 02, Michael Kerrisk <mtk.manpages@gmail.com>
+.\"	Added note on nonstandard behavior when SIGCHLD is ignored.
+.\" Modified 2004-11-16, mtk, Noted that the nonconformance when
+.\"	SIGCHLD is being ignored is fixed in 2.6.9; other minor changes
+.\" Modified 2004-12-08, mtk, in 2.6 times() return value changed
+.\" 2005-04-13, mtk
+.\"	Added notes on nonstandard behavior: Linux allows 'buf' to
+.\"	be NULL, but POSIX.1 doesn't specify this and it's nonportable.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1992 Drew Eckhardt 
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH TIMES 2 2012\-04\-16 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+times \- pobiera czasy procesów
+.SH SKŁADNIA
+\fB#include <sys/times.h>\fP
+.sp
+\fBclock_t times(struct tms *\fP\fIbuf\fP\fB);\fP
+.SH OPIS
+\fBtimes\fP() przechowuje bieżące czasy wykonywania procesu w \fIstruct tms\fP, do
+której prowadzi \fIbuf\fP. \fIstruct tms\fP jest zdefiniowana w
+\fI<sys/times.h>\fP następująco:
+.sp
+.in +4n
+.nf
+struct tms {
+  clock_t tms_utime;  /* czas w przestrzeni użytkownika */
+  clock_t tms_stime;  /* czas systemowy */
+  clock_t tms_cutime; /* czas w przestrzeni użytkownika dla dzieci*/
+  clock_t tms_cstime; /* czas systemowy dzieci */
+};
+.fi
+.in
+.LP
+Pole \fItms_utime\fP zawiera czas CPU spędzony na wykonywaniu instrukcji
+procesu wywołującego tę funkcję. Pole \fItms_stime\fP zawiera czas CPU spędzony
+w systemie podczas wykonywania zadań zleconych przez proces. Pole
+\fItms_cutime\fP zawiera sumę \fItms_utime\fP i \fItms_cutime\fP wartości dla
+wszystkich dzieci, na które proces czekał. Pole \fItms_cstime\fP zawiera sumę
+wartości \fItms_stime\fP i \fItms_cstime\fP dla wszystkich dzieci, na które proces
+czekał.
+.LP
+Czas zakończonych procesów\-dzieci (i ich potomków) jest dodawany w momencie,
+gdy \fBwait\fP(2) lub \fBwaitpid\fP(2) zwrócą ich identyfikatory procesu. W
+szczególności nigdy nie zostaną policzone czasy wnuków, na które dzieci nie
+poczekały.
+.LP
+Wszystkie raportowane czasy są wyrażone w tyknięciach zegara.
+.SH "WARTOŚĆ ZWRACANA"
+\fBtimes\fP() zwraca liczbę tyknięć zegara, które upłynęły od pewnego wybranego
+punktu przeszłości. Wartość zwracana może przekroczyć dopuszczalny zakres
+typu \fIclock_t\fP. W razie błędu zwracane jest \fI(clock_t)\ \-1\fP i odpowiednio
+jest ustawiana wartość zmiennej \fIerrno\fP.
+.SH BŁĘDY
+.TP 
+\fBEFAULT\fP
+\fItms\fP wskazuje na pamięć poza przestrzenią adresową procesu.
+.SH "ZGODNE Z"
+SVr4, BSD 4.3, POSIX.1\-2001.
+.SH UWAGI
+Liczbę tyknięć zegara na sekundę można uzyskać, używając:
+.in +4n
+
+sysconf(_SC_CLK_TCK);
+.in
+.PP
+W standardzie POSIX\-1996 symbol \fBCLK_TCK\fP (zdefiniowany w
+\fI<time.h>\fP) jest uznany za starzejący się. Obecnie jest
+przestarzały.
+.PP
+.\" See the description of times() in XSH, which says:
+.\"	The times of a terminated child process are included... when wait()
+.\"	or waitpid() returns the process ID of this terminated child.
+W wersjach Linuksa przed 2.6.9, jeżeli obsługa sygnału \fBSIGCHLD\fP jest
+ustawiona na \fBSIG_IGN\fP, to czasy zakończonych dzieci są automatycznie
+zawarte w polach \fItms_cstime\fP i \fItms_cutime\fP, mimo że POSIX.1\-2001
+określa, że tak się powinno się zdarzyć tylko wtedy, gdy proces czeka na
+swoje dzieci za pomocą wywołania systemowego \fBwait\fP(2). To niedostosowanie
+do standardu jest poprawione w Linuksie w wersji 2.6.9 i kolejnych.
+
+Pod Linuksem argument \fIbuf\fP może mieć wartość NULL, w czego wyniku
+\fBtimes\fP() tylko zwróci wynik funkcji. Jednakże POSIX nie określa takiego
+zachowania i większość innych implementacji uniksowych wymaga, aby parametr
+\fIbuf\fP nie był NULL\-em.
+.LP
+Proszę zauważyć, że \fBclock\fP(3) także zwraca wartości typu \fIclock_t\fP, które
+są wyrażone w jednostkach \fBCLOCKS_PER_SEC\fP, a nie w tyknięciach zegara,
+używanych przez \fBtimes\fP().
+
+.\" .PP
+.\" On older systems the number of clock ticks per second is given
+.\" by the variable HZ.
+Funkcja \fBtimes\fP() zwraca liczbę tyknięć zegara, które upłynęły od pewnego
+wybranego punktu przeszłości. Pod Linuksem ów "pewien wybrany punkt w
+przyszłości" jest różny w różnych wersjach jądra systemu. W Linuksie 2.4 i
+wcześniejszych tym punktem jest moment uruchomienia systemu. Od wersji 2.6
+Linuksa tym punktem jest \fI(2^32/HZ) \- 300\fP (tj. około 429 milionów) sekund
+przed momentem uruchomienia systemu. Ta wariantywność pomiędzy wersjami
+jądra (i pomiędzy różnymi implementacjami Uniksa) połączona z faktem, że
+wartość zwracana może przekroczyć dopuszczalny zakres typu \fIclock_t\fP,
+oznacza, że przenośne aplikacje powinny unikać używania tej wartości. Aby
+zmierzyć upływ czasu, lepiej używać \fBgettimeofday\fP(2).
+.SS Historia
+SVr1\-3 zwraca \fIlong\fP, a członkowie struktury są typu \fItime_t\fP, chociaż
+przechowują tyknięcia zegara, a nie sekundy od początku epoki. V7 używał
+typu \fIlong\fP dla członków struktury, ponieważ nie miał jeszcze wtedy typu
+\fItime_t\fP.
+.SH BŁĘDY
+.\" The problem is that a syscall return of -4095 to -1
+.\" is interpreted by glibc as an error, and the wrapper converts
+.\" the return value to -1.
+.\" http://marc.info/?l=linux-kernel&m=119447727031225&w=2
+.\" "compat_sys_times() bogus until jiffies >= 0"
+.\" November 2007
+Ograniczenie w konwencjach tego wywołania systemowego na niektórych
+architekturach systemowych (zwłaszcza i386) oznacza, że w Linuksie 2.6
+istnieje niewielkie okno czasowe (41 sekund) zaraz po uruchomieniu systemu,
+w którym \fBtimes\fP() może zwrócić \-1, niepoprawnie wskazując na wystąpienie
+błędu. Ten sam problem może wystąpić, kiedy wartość zwracana zostanie
+zawinięta, gdyż przekroczy maksymalną dopuszczalną wartość dla typu
+\fBclock_t\fP.
+.SH "ZOBACZ TAKŻE"
+\fBtime\fP(1), \fBgetrusage\fP(2), \fBwait\fP(2), \fBclock\fP(3), \fBsysconf\fP(3),
+\fBtime\fP(7)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

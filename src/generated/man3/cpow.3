@@ -1,0 +1,50 @@
+.\" Copyright 2002 Walter Harms (walter.harms@informatik.uni-oldenburg.de)
+.\" Distributed under GPL
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2002 Walter Harms (GPL-1)
+.\" Copyright © of Polish translation:
+.\" Paweł Sędrowski (ptm.berlios.de) <sedros@gmail.com>, 2006.
+.\" Robert Luberda <robert@debian.org>, 2012.
+.TH CPOW 3 2008\-08\-11 "" "Podręcznik programisty Linuksa"
+.SH NAZWA
+cpow, cpowf, cpowl \- funkcje potęgowania liczb zespolonych
+.SH SKŁADNIA
+.nf
+\fB#include <complex.h>\fP
+.sp
+\fBdouble complex cpow(double complex \fP\fIx\fP\fB, complex double \fP\fIz\fP\fB);\fP
+.br
+\fBfloat complex cpowf(float complex \fP\fIx\fP\fB, complex float \fP\fIz\fP\fB);\fP
+.br
+\fBlong double complex cpowl(long double complex \fP\fIx\fP\fB,\fP
+\fB                          complex long double \fP\fIz\fP\fB);\fP
+.sp
+Proszę linkować z \fI\-lm\fP.
+.fi
+.SH OPIS
+Funkcja wylicza liczbę \fIx\fP podniesioną do potęgi \fIz\fP (z odcięciem \fIx\fP\-ów
+leżących w ujemnej części osi rzeczywistej).
+.SH WERSJE
+Funkcje te pojawiły się po raz pierwszy w wersji 2.1 biblioteki glibc.
+.SH "ZGODNE Z"
+C99.
+.SH "ZOBACZ RÓWNIEŻ"
+\fBcabs\fP(3), \fBpow\fP(3), \fBcomplex\fP(7)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Paweł Sędrowski (ptm.berlios.de) <sedros@gmail.com>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

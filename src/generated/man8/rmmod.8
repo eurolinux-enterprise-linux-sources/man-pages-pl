@@ -1,0 +1,113 @@
+.\" t
+.\"     Title: rmmod
+.\"    Author: Jon Masters <jcm@jonmasters.org>
+.\" Generator: DocBook XSL Stylesheets v1.77.0 <http://docbook.sf.net/>
+.\"      Date: 06/19/2012
+.\"    Manual: rmmod
+.\"    Source: kmod
+.\"  Language: English
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2011 ProFUSION embedded systems (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>, 2001.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH RMMOD 8 06/19/2012 kmod rmmod
+.ie  \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH NAZWA
+rmmod \- prosty program do usuwania modułu z jądra Linux
+.SH SKŁADNIA
+.HP \w'\fBrmmod\fR\ 'u
+\fBrmmod\fP [\fB\-f\fP] [\fB\-w\fP] [\fB\-s\fP] [\fB\-v\fP] [\fInazwa\-modułu\fP]
+.SH OPIS
+.PP
+
+\fBrmmod\fP jest bardzo prostym programem do usuwania modułu (gdy obsługa
+usuwania załadowanego modułu jest dostępna) z jądra. Większość użytkowników
+będzie wolała użyć do tego celu \fBmodprobe\fP(8) z opcją \fB\-r\fP.
+.SH OPCJE
+.PP
+\fB\-v\fP \fB\-\-verbose\fP
+.RS 4
+Wypisuje informacje o czynnościach wykonywanych przez program. \fBrmmod\fP
+wypisuje zwykle komunikaty jedynie, gdy występują jakieś problemy.
+.RE
+.PP
+\fB\-f\fP \fB\-\-force\fP
+.RS 4
+Ta opcja może być ekstremalnie niebezpieczna: nie odnosi skutku, chyba że
+podczas kompilacji jądra ustawiono opcje CONFIG_MODULE_FORCE_UNLOAD. Przy
+użyciu tej opcji, można usunąć moduły, które są w użyciu lub takie, które
+nie zostały zaprojektowane do usuwania albo zostały oznaczone jako
+niebezpieczne (patrz \fBlsmod\fP(8)).
+.RE
+.PP
+\fB\-w\fP \fB\-\-wait\fP
+.RS 4
+\fBrmmod\fP zwykle odmówi usunięcia modułów, które są używane. Z tą opcją,
+\fBrmmod\fP może wyizolować moduł i poczekać, aż nie przestanie być on
+używany. W ten sposób nic nowego nie będzie mogło zacząć używać wskazanego
+modułu, ale do użytkownika należy sprawdzenie, czy aktualni użytkownicy
+zakończyli korzystanie z modułu. Podręcznik \fBlsmod\fP(8) zawiera informacje o
+przykładowych zastosowaniach.
+.RE
+.PP
+\fB\-s\fP \fB\-\-syslog\fP
+.RS 4
+Wysyła błędy do sysloga, zamiast na standardowe wyjście błędów.
+.RE
+.PP
+\fB\-V\fP \fB\-\-version\fP
+.RS 4
+Wyświetla informacje o wersji i kończy działanie.
+.RE
+.SH PRAWA\ AUTORSKIE
+.PP
+Pierwotnie: Copyright 2002, Rusty Russell, IBM Corporation\&. Strona
+podręcznika jest obecnie zarządzana przez Jona Mastersa i innych\&.
+.SH "ZOBACZ TAKŻE"
+.PP
+
+\fBmodprobe\fP(8), \fBinsmod\fP(8), \fBlsmod\fP(8)  \fBmodinfo\fP(8)
+.SH AUTORZY
+.PP
+\fBJon Masters\fP <\&jcm@jonmasters\&.org\&>
+.RS 4
+Deweloper
+.RE
+.PP
+\fBLucas De Marchi\fP <\&lucas\&.demarchi@profusion\&.mobi\&>
+.RS 4
+Deweloper
+.RE
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 9 \fPoryginału.

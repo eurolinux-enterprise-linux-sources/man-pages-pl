@@ -1,0 +1,65 @@
+.\" Copyright (C) 2004 Andries Brouwer (aeb@cwi.nl)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2004 Andries Brouwer 
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2005, 2006, 2012.
+.TH EXIT_GROUP 2 2008\-11\-27 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+exit_group \- kończy wszystkie wątki w procesie
+.SH SKŁADNIA
+.nf
+\fB#include <linux/unistd.h>\fP
+.sp
+\fBvoid exit_group(int \fP\fIstatus\fP\fB);\fP
+.fi
+.SH OPIS
+To wywołane systemowe jest równoważne z \fBexit\fP(2), poza tym, że kończy nie
+tylko obecny wątek, ale i wszystkie wątki w grupie wątków procesu
+wywołującego.
+.SH "WARTOŚĆ ZWRACANA"
+Ta funkcja nie powraca.
+.SH WERSJE
+Funkcja jest obecna od wersji 2.5.35 Linuksa.
+.SH "ZGODNE Z"
+Opisywane wywołanie występuje tylko w Linuksie.
+.SH UWAGI
+Począwszy od glibc 2.3, to wywołanie systemowe jest uruchamiane przez
+funkcję opakowującą \fBexit\fP(2).
+.SH "ZOBACZ TAKŻE"
+\fBexit\fP(2)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

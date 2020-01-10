@@ -1,0 +1,465 @@
+.\" t
+.\" @(#)lilo.8 1.0 950728 aeb
+.\" This page is based on the lilo docs, which carry the following
+.\" COPYING condition:
+.\"
+.\" LILO program code, documentation and auxiliary programs are
+.\" Copyright 1992-1998 Werner Almesberger.
+.\" Extensions to LILO, documentation and auxiliary programs are
+.\" Copyright 1999-2005 John Coffman.
+.\" All rights reserved by the respective copyright holders.
+.\" Redistribution and use is subject to the terms set forth in
+.\" the file COPYING in the source directory.
+.\"
+.\" Original version, Andries Brouwer (aeb@cwi.nl), 950728
+.\" Added t directive, as Daniel Quinlan asked, 950824
+.\" Added L switch, John Coffman, 991118
+.\" Added T switch, John Coffman, 001001
+.\" Added p switch, John Coffman, 010402
+.\" Added x switch, John Coffman, 010409
+.\" Added A switch, John Coffman, 010417
+.\" Added M switch, John Coffman, 010417
+.\" Added g switch, John Coffman, 010526
+.\" Added z switch, John Coffman, 010829
+.\" Added E switch, John Coffman, 020409
+.\" Added B,F & X switches, John Coffman, 020418
+.\" Added "k" option to I switch, John Coffman, 020609
+.\" Added Z switch, John Coffman, 030314
+.\" Added I switch options "D" and "a", John Coffman, 030513
+.\" Added I switch option "R", John Coffman, 041116
+.\" Added H switch, John Coffman, 050927
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2009-2012 Joachim Wiedorn, 1999-2007 John Coffman, 1992-1998, Werner Almesberger (BSD-3-clause)
+.\" Copyright © of Polish translation:
+.\" Adam Byrtek (PTM) <alpha@irc.pl>, 1999.
+.\" Grzegorz Goławski (PTM) <grzegol@pld.org.pl>, 2002.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH LILO 8 "7 października 2005"  
+.SH NAZWA
+lilo \- instaluje program rozruchowy
+.SH SKŁADNIA
+Podstawowe zastosowanie:
+.LP
+\fB/sbin/lilo\fP \- instaluje program rozruchowy
+.LP
+Dodatkowe zastosowania:
+.LP
+\fB/sbin/lilo \-A\fP \- aktywuje/pokazuje aktywną partycję
+.br
+\fB/sbin/lilo \-E\fP \- edytuje nagłówek lub aktualizuje plik mapy bitowej
+.br
+\fB/sbin/lilo \-I\fP \- wyświetla ścieżkę do bieżącego jądra
+.br
+\fB/sbin/lilo \-M \fP \- zapisuje Master Boot Record (główny sektor rozruchowy)
+na urządzeniu
+.br
+\fB/sbin/lilo \-q\fP \- wyświetla mapę
+.br
+\fB/sbin/lilo \-R\fP \- ustawia domyślny wiersz poleceń przy starcie systemu
+.br
+\fB/sbin/lilo \-T\fP \- mówi więcej o podanym zagadnieniu
+.br
+\fB/sbin/lilo \fP{\fB\-u\fP|\fB\-U\fP} \- dezinstaluje program rozruchowy LILO
+.SH OPIS
+.LP
+\fBlilo\fP instaluje program rozruchowy, który zostanie uaktywniony przy
+następnym uruchomieniu komputera.  Domyślny plik konfiguracyjny
+\fI/etc/lilo.conf\fP (patrz "man lilo.conf") zawiera większość opcji, lecz
+wiele, w tych te, które przesłaniają plik konfiguracyjny, może zostać
+podanych w wierszu polecenia.
+.LP
+.TP 
+\fB\-\^A \fP\fIgłówne\-urządzenie\fP [ \fIN\fP ]
+Użyte z pojedynczym argumentem, wyświetla aktywną partycję na urządzeniu
+\fIgłówne\-urządzenie\fP; np. \fI/dev/hda\fP. Z N=0, dezaktywuje wszystkie partycje
+na urządzeniu. Gdy N będzie w zakresie [1..n], aktywuje podaną partycje,
+dezaktywując wszystkie pozostałe. Zwykle tylko partycje podstawowe [1..4]
+mogą być aktywowane, lecz jeśli w głównym sektorze rozruchowym (MBR) obecny
+jest rozszerzony główny program rozruchowy (patrz opcja \fB\-M\fP), to
+uaktywniona może być dowolna partycja. To, czy dany system operacyjny będzie
+się w stanie uruchomić z partycji partycji logicznej, zależy od jego
+charakterystyki. Linuksowy sektor rozruchowy LILO może być uruchomiony z
+partycji logicznej.
+.TP 
+\fB\-\^b \fP\fIurządzenie\-rozruchowe\fP
+Ustala urządzenie rozruchowe; przykładowo, gdzie program rozruchowy będzie
+zainstalowany.  "\-b /dev/hda" ustala główny sektor rozruchowy (MBR); "\-b
+/dev/sdb5" ustala pierwszą partycję logiczną na drugim dysku SATA.
+.TP 
+\fB\-\^B \fP\fIplik\-mapy\-bitowej\fP
+Ustala plik mapy bitowej z graficznym ekranem wykorzystywanym w czasie
+uruchamiania systemu, najlepiej przygotowanym wcześniej za pomocą polecenia
+\fBlilo \-E\fP.
+.TP 
+\fB\-\^c\fP
+Włącza kompresję mapy. Ta opcja połączy żądania odczytu z sąsiednich
+sektorów. Przyspiesza to startowanie (szczególnie z dyskietki).
+.TP 
+\fB\-\^C \fP\fIplik\-konfiguracyjny\fP
+\fBlilo\fP odczytuje informacje o plikach do mapowania z pliku
+konfiguracyjnego, domyślnie \fI/etc/lilo.conf\fP.  Ta opcja wyznacza inny plik
+konfiguracyjny.
+.TP 
+\fB\-\^d \fP\fIopóźnienie\fP
+Ustala opóźnienie w dziesiętnych częściach sekundy (20 = 2 sek.) przed
+automatycznym uruchomieniem pierwszego obrazu. To daje czas na przerwanie
+automatycznego procesu startu klawiszem Shift, Alt, Ctrl, ScrollLock lub
+CapsLock. Po takim przerwaniu wyświetlona zostanie zachęta "boot:". Ta flaga
+zostanie nadpisana, gdy w pliku konfiguracyjnym znajduje się \fIprompt\fP.
+.TP 
+\fB\-\^D \fP\fIetykieta\fP
+Używa jądra o podanej etykiecie, zamiast pierwszego na liście, jako
+domyślnego jądra do wystartowania.
+.TP 
+\fB\-\^E \fP\fInazwa_pliku.roz\fP
+Gdy \fI.roz\fP to \fB.bmp\fP, zakłada się, że plik ten jest plikiem graficznym do
+użycia w konfiguracyjnej dyrektywie "bitmap=". Proszę uruchomić interaktywny
+edytor aby utworzyć lub zmienić kolor/informacje o położeniu nagłówku LILO
+pliku z mapą bitową (patrz "bmp\-colors", bmp\-table" i "bmp\-timer" na stronie
+podręcznika \fBlilo.conf\fP(5)).
+.sp
+Gdy \fI.roz\fP to \fB.dat\fP, zakłada się, że plik ten jest plikiem
+konfiguracyjnym z podanymi parametrami graficznej mapy bitowej, które
+zamieniane są na nagłówek LILO w pliku z mapą bitową o takiej samej nazwie.
+.sp
+Gdy plik \fB.bmp\fP będzie modyfikowany za pomocą edytora graficznego
+(np. GIMP\-a), to nagłówek LILO zostanie utracony. Można go odzyskać używając
+pliku \fB.dat\fP, który służy za tekstową kopię zapasową informacji
+nagłówkowych LILO.
+.TP 
+\fB\-\^f \fP\fItablica\-dysku\fP
+Ustala plik z parametrami geometrii dysku (domyślnym jest \fI/etc/disktab\fP).
+.TP 
+\fB\-\^F\fP
+Unieważnia sprawdzanie sektora startowego dla systemów plików (np. swap,
+XFS, ...), które mogą być zniszczone przez instalację sektora startowego
+LILO na pierwszym sektorze partycji. Te systemy plików używają pierwszego
+sektora jako superbloku.
+
+Proszę porównać z \fB\-P ignore\fP, które obchodzi sprawdzenie danej partycji.
+.TP 
+\fB\-\^g\fP
+Generuje adresy cylinder/głowica/sektor (geometryczny) dysku.  Jest to
+ograniczone do 1023 cylindrów. Wymusza kompatybilność ze starszymi wersjami
+LILO.
+.TP 
+\fB\-\^H\fP
+Obchodzi zatrzymanie krytyczne, gdy macierz RAID nie posiada wszystkich
+aktywnych dysków.
+.TP 
+\fB\-\^i \fP\fIprogram\-rozruchowy\fP
+Wyznacza plik używany jako nowy program rozruchowy (domyślnym jest
+\fI/boot/boot.b\fP).
+.TP 
+\fB\-\^I \fP\fIetykieta\fP [\fBD\fP|\fBa\fP|\fBi\fP|\fBk\fP|\fBr\fP|\fBR\fP]
+\fIEtykieta\fP jest brana z nazwy obrazu podanego w pliku konfiguracyjnym. To
+polecenie wyświetli odpowiadającą etykiecie nazwę pliku jądra, pliku tablicy
+klawiszy, początkowego pliku ramdysku, określeniu korzenia lub łańcucha
+"append=" (opcja "i", "k", "r", "R" lub "a"). Opcja "d" ignoruje parametr
+\fIetykieta\fP i wypisuje domyślną etykietę "image=" lub pierwszą etykietę
+"image=", jeśli nie podano domyślnego \fBimage\fP.
+.TP 
+\fB\-\^l\fP
+Generuje 24\-bitowe liniowe adresy sektorów, zamiast adresów
+cylindrów/głowic/sektorów.
+.TP 
+\fB\-\^L\fP
+Generuje 32\-bitowe Logiczne Adresy Bloków (Logical Block Addresses), zamiast
+adresów cylindrów/głowic/sektorów. Pozwala to na dostęp do wszystkich
+partycji na dyskach mających więcej niż 1024 cylindry.
+.TP 
+\fB\-\^m \fP\fIplik\-mapy\fP
+Używa podanego pliku mapy zamiast domyślnego.
+.TP 
+\fB\-\^M \fP\fIgłówne\-urządzenie\fP [\fBmbr\fP|\fBext\fP]
+Instaluje główny sektor rozruchowy (MBR) na urządzeniu podanym jako
+\fIgłówne\-urządzenie\fP, wybierając standardowy lub rozszerzony główny program
+ładujący, zgodnie z opcją.  Podstawowa tablica partycji na
+\fIgłówne\-urządzenie\fP pozostaje w nienaruszonym stanie. Gdy numer seryjny
+urządzenia nie jest obecny, generowany jest nowy i zapisywany w MBR. Jeśli
+poda się \fBmbr\fP, to standardowy główny program ładujący przeszuka partycje
+1\-4 szukając partycji z flagą active (aktywna) i uruchomi się z tej
+partycji. Dozwolona jest tylko jedna partycja oznaczona jako aktywna. Jeśli
+poda się \fBext\fP, przeszukiwanie obejmie również partycje
+rozszerzone. Obecność rozszerzonego głównego programu ładującego w głównym
+sektorze rozruchowym (MBR = sektor 0) dysku, wpływa na działanie opcji
+\fB\-A\fP.
+.TP 
+\fB\-\^p\fP
+Wymaga interaktywnego wpisania wszystkich haseł podanych w pliku
+konfiguracyjnym jako \fB""\fP.
+.TP 
+\fB\-\^P \fP{\fBfix\fP|\fBignore\fP|\fIopcja\-globalna\fP}
+Naprawienie lub zignorowanie błędnych tablic partycji, tzn. tablicy partycji
+z niepasującymi adresami sektora/głowicy/cylindra. Najpierw należy zawsze
+spróbować użyć \fB\-P ignore\fP gdyż \fB\-P fix\fP nadpisze tablicę partycji, być
+może niszcząc wszystkie partycje na dysku.
+
+\fB\-P ignore\fP jest używane także po to aby obejść sprawdzanie tablicy
+partycji w poszukiwaniu typów partycji, które mogą nie pozwalać na
+instalację sektora startowego LILO. Proszę porównać z flagą "\-F" flag, która
+unieważnia sprawdzanie bieżącego sektora rozruchowego.
+
+\fB\-P\fP \fIopcja globalna\fP pozwala na przekazanie dowolnej opcji, która może
+pojawić się w sekcji globalnej (u góry) pliku konfiguracyjnego
+(/etc/lilo.conf). Na przykład \fB\-P nowarn\fP przekaże opcję "nowarn", tak
+jakby "nowarn" pojawiło się pliku konfiguracyjnym (tak samo, jak przełącznik
+"\-w"). Podobnie, \fB\-P timeout=50\fP doda lub przesłoni wiersz "timeout=" w
+pliku konfiguracyjnym. Proszę zauważyć, że przełącznik \fB\-P\fP w
+rzeczywistości dubluje wiele przełączników wiersza polecenia. Jednak nie
+jest to dokładnie to samo, ponieważ niektóre przełączniki przesłaniają inne
+opcje, np. "\-g" (\-P geometric), "\-L" (\-P lba32).
+.TP 
+\fB\-\^q\fP
+Wyświetla aktualnie mapowane pliki.  \fBlilo\fP tworzy plik, domyślnie
+\fI/boot/map\fP, zawierający nazwę i lokalizację jąder startowych. Ta opcja
+wyświetli te nazwy. Proszę użyć wraz z opcją \fB\-v\fP aby uzyskać bardziej
+szczegółową informację na temat zainstalowanych programów rozruchowych.
+.TP 
+\fB\-\^r \fP\fIgłówny\-katalog\fP
+Wykonuje \fIchroot\fP do podanego katalogu przed podjęciem jakiegokolwiek
+działania. Nowy katalog główny musi zawierać katalog \fI/dev\fP i może
+potrzebować katalogu \fI/boot\fP.  Może być także potrzebny plik
+\fI/etc/lilo.conf\fP.
+.TP 
+\fB\-\^R \fP\fIwiersz poleceń\fP
+Ta opcja zmienia domyślną linię poleceń dla programu rozruchowego podczas
+jego następnego uruchomienia. Potem linia ta zostanie usunięta, jest ona
+tylko jednorazowa. Na ogół jest to wykorzystywane w skryptach zamykania
+systemu, zaraz przed wywołaniem `shutdown \-r'. Użyte bez żadnego argumentu
+anuluje \fIzablokowaną\fP lub \fIprzywróci\fP linię komend.
+.TP 
+\fB\-\^s \fP\fIplik\-zapisu\fP
+Gdy \fBlilo\fP nadpisuje sektor rozruchowy, zachowuje jego starą zawartość w
+pliku, domyślnie jest to \fI/boot/boot.NNNN\fP gdzie NNNN jest szesnastkowym
+przedstawieniem głównego i pobocznego numeru urządzenia dysku/partycji. Ta
+opcja wyznacza zapasowy plik zapisu na jeden z trzech sposobów: katalog
+zapisu (domyślnym jest "/boot") używając domyślnej nazwy pliku "boot.NNNN" w
+podanym katalogu; szablon ścieżki, do którego dopisywane jest ".NNNN"
+(domyślnym byłby "/boot/boot"); pełna nazwa ścieżki pliku, która musi
+zawierać poprawny przyrostek ".NNNN". Z opcją \fB\-u\fP konieczne jest podanie
+pełnej ścieżki pliku.
+.TP 
+\fB\-\^S \fP\fIplik\-zapisu\fP
+Normalnie \fBlilo\fP nie nadpisze istniejącego zapisanego pliku. Ta opcja mówi,
+że nadpisywanie jest wymuszone. Tak jak z \fB\-s\fP określeniem musi być katalog
+zapisu, szablon nazwy lub pełna ścieżka (zawierająca przyrostek ".NNNN").
+.TP 
+\fB\-\^t \fP
+Test. Nic nie jest zapisywane do sektora rozruchowego sektora ani do pliku
+mapy. Użyte razem z opcją \fB\-v\fP wyświetla co \fBlilo\fP ma zamiar robić.
+.TP 
+\fB\-\^T \fP\fIopcja\fP
+Wypisuje informacje systemową, z której część pochodzi z BIOS\-u. Jest to
+wygodniejsze od uruchamiania diagnostycznej dyskietki LILO.  \fIopcja\fP może
+być każdą z podanych:
+.IP
+.nf
+   help  \- wypisuje listę dostępnych diagnostyk
+   ChRul \- wypisuje typy partycji podlegające Zasadom\-Zmian
+           (Change\-Rules)
+   EBDA  \- wypisuje informacje o Rozszerzonym Obszarze Danych
+           BIOSU (Extended BIOS Data Area)
+   geom=<dysk> wypisuje geometrię dysku np. geom=0x80
+   geom  \- wypisuje geometrię dla wszystkich dysków
+   table=<dysk> wypisuje podstawową tablicę partycji;
+           np. table=/dev/sda
+   video \- wypisuje dostępne tryby graficzne programu rozruchowego
+.fi
+.TP 
+\fB\-\^u \fP[\fInazwa\-urządzenia\fP]
+Dezinstalacja \fIlilo\fP, poprzez powrotne skopiowanie zapisanego wcześniej
+sektora rozruchowego. Wraz z tą opcją użyte mogą być parametry '\-s' i
+\&'\-C'. \fINazwa\-urządzenia\fP jest opcjonalna. Sprawdzany jest czas i data
+pliku.
+.TP 
+\fB\-\^U \fP[\fInazwa\-urządzenia\fP]
+Tak jak powyżej, ale bez sprawdzenia czasu i daty.
+.TP 
+\fB\-\^v\fP
+Zwiększenie poziomu komunikatów. Podanie od jednej do pięciu opcji \fB\-v\fP
+sprawi, że lilo wyświetli więcej komunikatów. Można użyć także \fB\-v\fP \fIn\fP
+(n=1..5) aby ustawić poziom komunikatów na "\fIn\fP".
+.TP 
+\fB\-\^V\fP
+Wyświetla numer wersji.
+.TP 
+\fB\-\^w\fP
+Jako \fB\-w\fP lub \fB\-w\-\fP \- wyłącza ostrzeżenia. Użyte jako \fB\-w+\fP przesłania
+\fInowarn\fP z pliku konfiguracyjnego i pokazuje ostrzeżenia.
+.TP 
+\fB\-\^x \fP\fIopcja\fP
+Tylko dla instalacji RAID. Opcja może być każdym ze słów kluczowych \fBnone\fP,
+\fBauto\fP, \fBmbr\fP, \fBmbr\-only\fP, lub oddzieloną przecinkami listą dodatkowych
+urządzeń startowych (lista nie może zawierać spacji).
+.TP 
+\fB\-\^X\fP
+Zarezerwowane do wewnętrznego użycia przez LILO. Może dawać różne wyniki dla
+różnych wersji LILO. Linia zaczynająca się od "CFLAGS=" zawiera opcje
+kompilatora użyte do utworzenia tej wersji LILO.
+.TP 
+\fB\-\^z\fP
+Gdy użyte z opcją "\-M", usuwa numer seryjny urządzenia. Przeważnie opcja ta
+używana jest w następującej sekwencji do wygenerowania nowego numeru
+seryjnego urządzenia:
+.nf
+     lilo \-z \-M /dev/hda
+     lilo \-M /dev/hda
+.fi
+.br
+.TP 
+\fB\-\^Z \fP\fIopcja\fP
+Przekazuje programowi rozruchowego, że konieczna jest specjalna uwaga,
+ponieważ BIOS nie przekazuje poprawnego kodu urządzenia w DL (\-Z0). Lub daje
+informacje, że BIOS zawsze przekazuje poprawny kod (\-Z1). Odnosi się do, i
+przesłania, opcję pliku konfiguracyjnego "bios\-passes\-dl=".
+.LP
+Powyższe opcje linii poleceń odpowiadają podanym poniżej słowom kluczowym w
+pliku konfiguracyjnym.
+.IP
+.TS
+l l.
+\-b bootdev	boot=bootdev
+\-B plik.bmp	bitmap=plik.bmp
+\-c	compact
+\-d dsek	delay=dsek
+\-D etykieta	default=etykieta
+\-i boot\-loader	install=boot\-loader
+\-f plik	disktab=plik
+\-g	geometric
+\-l	linear
+\-L	lba32
+\-m plik\-mapy	map=plik\-mapy
+\-P fix	fix\-table
+\-P ignore	ignore\-table
+\-s plik	backup=plik
+\-S plik	force\-backup=plik
+\-v [N]	verbose=N
+\-w	nowarn
+\-x opcja	raid\-extra\-boot=opcja
+\-Z opcja	bios\-passes\-dl=opcja
+.TE
+.SH "OPCJE ROZRUCHOWE"
+Opcje podane tutaj mogą być podane z linii komend gdy ładowany jest obraz
+jądra. Opcje te są przetwarzane przez LILO i usuwane z linii komend
+przekazywanej do jądra, chyba że zaznaczono inaczej.
+.LP
+.TP 
+\fBlock\fP
+Blokuje linię komend, tak jakby "lock" było podane w pliku "lilo.conf".
+.TP 
+\fBmem=\fP\fI###\fP[,\fBK\fP,\fBM\fP,\fBG\fP]
+Ustala maksymalną ilość pamięci w systemie w bajtach, kilobajtach,
+megabajtach lub gigabajtach. Ta opcja nie jest usuwana z linii komend i jest
+zawsze przekazywana do jądra.
+.TP 
+\fBnobd\fP
+Wyłącza pobieranie danych z BIOS\-u. Opcja ta jest zarezerwowana do użytku z
+BIOS\-ami niekompatybilnymi z IBM, które zawieszają się na liniach:
+.sp
+.nf
+     Loading...............
+     BIOS data check
+.fi
+.TP 
+\fBvga=\fP[\fBASK\fP,\fBEXT\fP,\fBEXTENDED\fP,\fBNORMAL\fP,\fI###\fP,\fB0x\fP\fI###\fP]
+Pozwala unieważnić domyślny tryb wideo podczas startu jądra.
+.br
+.SH "BŁĘDY ŁADOWANIA SYSTEMU"
+Proces ładowania systemu dzieli się na dwa etapy. Program ładujący
+pierwszego stopnia jest pojedynczym sektorem i ładowany jest przez BIOS lub
+przez program ładujący do MBR. Ładuje on wielosektorowy program ładujący
+drugiego stopnia, lecz jest bardzo ograniczonej wielkości. Gdy program
+ładujący pierwszego stopnia przejmuje kontrolę, wypisuje literę "L"; gdy
+jest gotowy przekazać kontrolę programu ładującemu drugiego stopnia wypisuje
+literę "I". Gdy wystąpi jakikolwiek błąd, np. błąd odczytu z dysku, wypisany
+będzie szesnastkowy kod błędu i operacja zostanie powtórzona. Wszystkie
+szesnastkowe kody błędów są wartościami zwracanymi przez BIOS, z wyjątkiem
+wartości 40, 99 i 9A, które są generowane przez LILO. A oto częściowa lista
+kodów błędów:
+.br
+.IP
+.TS
+l l.
+00  brak błędu
+01  błędna komenda dyskowa (disc command)
+02  nie znaleziono oznaczenia adresu
+03  dysk zabezpieczony przed zapisem
+04  nie znaleziono sektora
+06  wysunięto dyskietkę
+08  przekroczenie (overrun) DMA
+0A  zła flaga sektora
+0B  zła flaga ścieżki (track flag)
+20  błąd kontrolera
+40  błąd szukania (seek failure) (BIOS)
+40  cylinder>1023 (LILO)
+99  błędny sektor indeksu drugiego stopnia (LILO)
+9A  brak sygnatury programu ładującego
+                          drugiego stopnia (LILO)
+AA  dysk nie jest gotowy
+FF  błąd operacji odczytu elektrycznego (sense operation)
+.TE
+.br
+.LP
+Kod błędu nr 40 jest generowany przez BIOS lub przez LILO podczas konwersji
+liniowego (24\-bitowego) adresu dyskowego na adres geometryczny (C:H:S). Błąd
+ten może być wywołany także na starszych systemach, które nie obsługują
+adresowania lba32 (32\-bitowego). Błędy 99 oraz 9A najczęściej oznaczają, że
+nie da się odczytać pliku mapy (\-m lub map=), np. gdy LILO nie zostało
+uruchomione po jakiejś zmianie systemowej, lub jest nieścisłość pomiędzy
+tym, czego użyło LILO (lilo \-v3 aby wyświetlić), a tym co jest aktualnie
+używane przez BIOS (do zdiagnozowania tego problemu może być potrzebna jedna
+z dyskietek diagnostycznych, dostępnych w źródłowej dystrybucji).
+
+Gdy program ładujący drugiego stopnia otrzyma kontrolę od tego pierwszego
+stopnia, wypisuje literę "L", a po zainicjowaniu się, włączając weryfikację
+"Tablicy Deskryptorów" \- listy jąder/innych do załadowania \- wypisze literę
+"O", formując całe słowo "LILO" pisane wielkimi literami.
+
+Wszystkie błędy programu ładującego drugiego stopnia są wiadomościami w
+języku angielskim i próbują wskazać, mniej lub bardziej udanie, istotę
+błędu.
+.br
+.SH NIEKOMPATYBILNOŚCI
+Znanym problemem \fBlilo\fP jest problem z \fIreiserfs\fP wprowadzonym w jądrach
+2.2.x, chyba że system jest montowany z opcją "notail". Ta niekompatybilność
+zastała rozwiązana w reiserfs 3.6.18 i w lilo 21.6. \fIreiser4\fP wprowadzony w
+jądrach 2.5.x wymaga lilo 22.5.2 lub późniejszego.
+.sp
+Zaczynając od wersji 22.0, instalacje RAID zapisują wpis rozruchowy na
+partycji RAID. Warunkowe zapisywanie MBR\-u może pomóc w ustawieniu RAID\-a
+jako ładujący (bootable) podczas odzyskiwania, lecz wszystkie domyślne
+działania mogą zostać unieważnione. Działanie podobne do poprzedniej wersji
+jest osiągnięte dzięki opcji "\-x mbr\-only".
+.SH BŁĘDY
+Opcje pliku konfiguracyjnego "backup" i "force\-backup" powinny określać
+katalog zapasowy lub szablon ścieżki pliku zapasowego na wszystkich
+instalacjach RAID. Użycie jawnej nazwy pliku może nie pozwolić na poprawne
+utworzenie wielu plików zapasowych. Najlepiej jest używać mechanizmu
+domyślnego, ponieważ działa on poprawnie we wszystkich przypadkach.
+.SH "ZOBACZ TAKŻE"
+fdisk(8), lilo.conf(5), mkrescue(8), mkinitrd(8).
+.sp
+Dystrybucja lilo posiada bardzo rozbudowaną dokumentację (wersja
+21). Tekstowy plik README znajdujący się w katalogu źródeł udostępnia
+aktualizacje nt. nowszych spraw. W systemach opartych na Debianie, można go
+znaleźć w /usr/share/doc/lilo\-doc/.
+.SH AUTORZY
+Werner Almesberger <almesber@lrc.epfl.ch> (wersje od 0 do 21)
+.br
+John Coffman <johninsd@san.rr.com> (21.2 do teraz)
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Adam Byrtek (PTM) <alpha@irc.pl>,
+Grzegorz Goławski (PTM) <grzegol@pld.org.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 23.2 \fPoryginału.

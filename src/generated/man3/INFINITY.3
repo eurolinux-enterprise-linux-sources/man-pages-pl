@@ -1,0 +1,84 @@
+.\" Copyright 2004 Andries Brouwer <aeb@cwi.nl>.
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2004 Andries Brouwer 
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2005, 2012.
+.TH INFINITY 3 2007\-07\-26 "" "Podręcznik programisty Linuksa"
+.SH NAZWA
+INFINITY, NAN, HUGE_VAL, HUGE_VALF, HUGE_VALL \- stałe zmiennoprzecinkowe
+.SH SKŁADNIA
+.nf
+\fB#define _ISOC99_SOURCE\fP      /* Patrz feature_test_macros(7) */
+.br
+\fB#include <math.h>\fP
+.sp
+\fBINFINITY\fP
+.sp
+\fBNAN\fP
+.sp
+\fBHUGE_VAL\fP
+.br
+\fBHUGE_VALF\fP
+.br
+\fBHUGE_VALL\fP
+.fi
+.SH OPIS
+Makro \fBINFINITY\fP rozszerza się do zmiennoprzecinkowej (czyli typu \fIfloat\fP)
+stałej reprezentującej dodatnią nieskończoność.
+
+Makro \fBNAN\fP rozszerza się do stałej zmiennoprzecinkowej (\fIfloat\fP)
+reprezentującej \fIcichą\fP  NaN (jeśli jest obsługiwana). \fICicha\fP NaN to NaN
+("not\-a\-number" \- "nie\-liczba"), która nie wywołuje wyjątku, jeśli jest
+używana w działaniach arytmetycznych. Jej przeciwieństwem jest
+\fIsygnalizująca\fP NaN. Patrz IEC 60559:1989.
+
+Makra \fBHUGE_VAL\fP, \fBHUGE_VALF\fP, \fBHUGE_VALL\fP oznaczają odpowiednio stałe
+typów \fIdouble\fP, \fIfloat\fP oraz  \fIlong double\fP, reprezentujących dużą
+wartość dodatnią, być może dodatnią nieskończoność.
+.SH "ZGODNE Z"
+C99.
+.SH DOSTĘPNOŚĆ
+W systemie glibc, makro \fBHUGE_VAL\fP jest zawsze dostępne. Dostępność makra
+\fBNAN\fPmoże być testowana przez \fB#ifdef NAN\fP, podobnie można testować
+\fBINFINITY\fP, \fBHUGE_VALF\fP, \fBHUGE_VALL\fP. Będą one zdefiniowane przez
+\fI<math.h>\fP, jeżeli zdefiniowano if \fB_ISOC99_SOURCE\fP lub
+\fB_GNU_SOURCE\fP albo gdy jest zdefiniowana \fB__STDC_VERSION__\fP  i jej wartość
+jest nie mniejsza niż 199901L.
+.SH "ZOBACZ TAKŻE"
+\fBfpclassify\fP(3), \fBmath_error\fP(7)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

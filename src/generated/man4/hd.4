@@ -1,0 +1,100 @@
+.\" Copyright (c) 1993 Michael Haardt (michael@moria.de),
+.\"     Fri Apr  2 11:32:09 MET DST 1993
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" Modified Sat Jul 24 16:56:20 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified Mon Oct 21 21:38:51 1996 by Eric S. Raymond <esr@thyrsus.com>
+.\" (and some more by aeb)
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993 Michael Haardt (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Paweł Olszewski (PTM) <alder@civic.amg.net.pl>, 1998.
+.TH HD 4 17\-12\-1992 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+hd \- urządzenia twardych dysków MFM/IDE
+.SH OPIS
+Urządzenia \fBhd*\fP to urządzenia blokowe umożliwiające dostęp do twardych
+dysków MFM/IDE w trybie surowym. Dysk master na pierwszym kontrolerze IDE
+(numer główny urządzenia jest równy 3) to \fBhda\fP; dysk slave to \fBhdb\fP. Dysk
+master drugiego kontrolera (numer główny urządzenia to 22) to \fBhdc\fP, a
+slave \- \fBhdd\fP.
+.LP
+Ogólne nazwy urządzeń blokowych IDE mają postać \fBhd\fP\fIX\fP, lub \fBhd\fP\fIXP\fP,
+gdzie \fIX\fP jest literą oznaczającą fizyczny dysk, natomiast \fIP\fP jest liczbą
+określającą partycję na tym fizycznym dysku. Pierwsza postać, \fBhd\fP\fIX\fP,
+używana jest do udostępniania całego dysku. Numery partycji są przypisywane
+w kolejności odnajdywania i tylko niepuste i nierozszerzone partycje
+otrzymują numer. Jednakże, numery partycji 1\-4 są przydzielane czterem
+partycjom opisanym w MBR (partycje "podstawowe"), nawet gdy są one
+nieużywane lub rozszerzone. Tym samym pierwszą partycją logiczną będzie
+\fBhd\fP\fIX\fP\fB5\fP\&. Obsługiwane jest zarówno partycjonowanie w trybie DOS, jak
+i BSD (etykieta dysku). Na dysku IDE można mieć co najwyżej 63 partycje.
+.LP
+Na przykład \fI/dev/hda\fP odnosi się do całości pierwszego dysku IDE w
+systemie; \fI/dev/hdb3\fP odnosi się do trzeciej partycji "podstawowej" DOS na
+drugim dysku.
+.LP
+Najczęściej tworzy się je poleceniami:
+.RS
+.sp
+mknod \-m 660 /dev/hda b 3 0
+.br
+mknod \-m 660 /dev/hda1 b 3 1
+.br
+mknod \-m 660 /dev/hda2 b 3 2
+.br
+\&...
+.br
+mknod \-m 660 /dev/hda8 b 3 8
+.br
+mknod \-m 660 /dev/hdb b 3 64
+.br
+mknod \-m 660 /dev/hdb1 b 3 65
+.br
+mknod \-m 660 /dev/hdb2 b 3 66
+.br
+\&...
+.br
+mknod \-m 660 /dev/hdb8 b 3 72
+.br
+chown root:disk /dev/hd*
+.RE
+.SH PLIKI
+/dev/hd*
+.SH "ZOBACZ TAKŻE"
+\fBchown\fP(1), \fBmknod\fP(1), \fBsd\fP(4), \fBmount\fP(8)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Paweł Olszewski (PTM) <alder@civic.amg.net.pl>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

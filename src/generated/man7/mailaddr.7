@@ -1,0 +1,132 @@
+.\"
+.\" Copyright (c) 1983, 1987 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms are permitted
+.\" provided that the above copyright notice and this paragraph are
+.\" duplicated in all such forms and that any documentation,
+.\" advertising materials, and other materials related to such
+.\" distribution and use acknowledge that the software was developed
+.\" by the University of California, Berkeley.  The name of the
+.\" University may not be used to endorse or promote products derived
+.\" from this software without specific prior written permission.
+.\" THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+.\"
+.\"	@(#)mailaddr.7	6.5 (Berkeley) 2/14/89
+.\"
+.\" Extensively rewritten by Arnt Gulbrandsen <agulbra@troll.no>.  My
+.\" changes are placed under the same copyright as the original BSD page.
+.\"
+.\" Adjusted by Arnt Gulbrandsen <arnt@gulbrandsen.priv.no> in 2004 to
+.\" account for changes since 1995. Route-addrs are now even less
+.\" common, etc. Some minor wording improvements. Same copyright.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1983, 1987 The Regents of the University of California, Arnt Gulbrandsen (Prior BSD)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1998.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH MAILADDR 7 15\-09\-2004 Linux "Podręcznik użytkownika Linuksa"
+.UC 5
+.SH NAZWA
+mailaddr \- opis adresowania poczty
+.SH OPIS
+.nh
+Ta strona daje krótkie wprowadzenie do adresów pocztowych SMTP, używanych w
+internecie. Adresy te mają ogólny format
+.PP
+  uzytkownik@domena
+.PP
+gdzie domena jest hierarchiczną, oddzieloną kropkami listą poddomen. Na
+przykład poniższe adresy są prawidłowymi formami tego samego adresu:
+.PP
+  eric@monet.berkeley.edu
+.br
+  Eric Allman <eric@monet.berkeley.edu>
+.br
+  eric@monet.berkeley.edu (Eric Allman)
+.PP
+Część domenowa ("monet.berkeley.edu") jest domeną akceptującą pocztę. Może
+być nazwą serwera, i w przeszłości często nią była, lecz nie musi. Część
+domenowa nie jest wrażliwa na wielkość liter.
+.PP
+Część lokalna ("eric") zwykle jest nazwą użytkownika, lecz jej znaczenie
+jest zdefiniowane przez lokalne oprogramowanie. Jest czasem wrażliwa na
+wielkość liter, lecz zwykle nie jest. Jeśli część lokalna wygląda jak
+śmieci, to zwykle jest tak z powodu bramkowania między wewnętrznymi
+systemami e\-mail sieci, oto przykłady:
+.PP
+  "nazwisko/admd=telemail/c=us/o=hp/prmd=hp"@gdzies.tam
+.br
+  UZYTKOWNIK%COS@gdzies.tam
+.br
+  komputer!komputer!nazwa@gdzies.tam
+.br
+  I2461572@gdzies.tam
+.PP
+Są to odpowiednio: bramka X.400, bramka do wewnętrznego systemu pocztowego,
+który nie ma właściwego wsparcia internetowego, bramka UUCP, a ostatnie jest
+tylko nudną polityką przydzielania nazw użytkownika.
+.PP
+Część imienia i nazwiska ("Eric Allman") może zostać albo umieszczona na
+początku, poza <>, lub na końcu w () (mówiąc konkretnie, te
+konwencje nie są identyczne, lecz różnica wykracza poza tę stronę). Nazwa
+może wymagać zacytowania przy pomocy "" jeśli zawiera określone znaki,
+np. ".":
+.PP
+  "Eric P. Allman" <eric@monet.berkeley.edu>
+.SS Skracanie.
+.PP
+Wiele systemów pocztowych umożliwia użytkownikom skracanie nazwy domeny. Na
+przykład, użytkownicy berkeley.edu mogą użyć "eric@monet" aby wysłać pocztę
+do Erica Allmana. \fITo zachowanie jest przestarzałe\fP. Czasem działa, lecz
+nie należy na nim polegać.
+.SS "Adresy trasowane."
+.PP
+Pod pewnymi warunkami, może być konieczne trasowanie wiadomości poprzez
+wiele serwerów, aby dostarczyć ją do miejsca przeznaczenia. Adresy
+pokazujące te trasy są nazywane "adresami trasowanymi"
+(route\-addrs). Używają składni:
+.PP
+  <@serwera,@serwerb:uzytkownik@serwerc>
+.PP
+Określa to, że wiadomość powinna być przesłana do serwera a, potem do
+serwera b, a na koniec do serwera c. Niektóre hosty ignorują adresy
+trasowane i wysyłają bezpośrednio do serwera c.
+.PP
+Adresy trasowane są obecnie bardzo rzadkie. Zdarzają się niekiedy w starych
+archiwach pocztowych. Generalnie można ignorować wszystko poza częścią
+"uzytkownik@serwerc" adresu, aby określić właściwego wysyłającego.
+.SS Postmaster.
+.PP
+Każdy serwer powinien mieć użytkownika, lub alias "postmaster", do którego
+zgłaszane są problemy pocztowe. Adres "postmaster" nie jest wrażliwy na
+wielkość liter.
+.SH PLIKI
+\fI/etc/aliases\fP
+.br
+\fI~/.forward\fP
+.SH "ZOBACZ TAKŻE"
+\fBbinmail\fP(1), \fBmail\fP(1), \fBmconnect\fP(1), \fBaliases\fP(5), \fBforward\fP(5),
+\fBsendmail\fP(8), \fBvrfy\fP(8)
+
+RFC\ 2822 (Internet Message Format)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

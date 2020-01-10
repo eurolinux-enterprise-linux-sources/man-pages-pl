@@ -1,0 +1,850 @@
+.de  Id
+.ds Rv \\$3
+.ds Dt \\$4
+..
+.\"if n .pl +(135i-\n(.pu)
+.Id $Id: procmail.man,v 1.91 2001/08/27 08:44:04 guenther Exp $
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1990-1999 S.R. van den Berg, 1999-2001 Philip Guenther (Artistic or GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH PROCMAIL 1 \*(Dt BuGless 
+.rn SH Sh
+.de  SH
+.br
+.ne 11
+.Sh "\\$1"
+..
+.rn SS Ss
+.de  SS
+.br
+.ne 10
+.Ss "\\$1"
+..
+.rn TP Tp
+.de  TP
+.br
+.ne 9
+.Tp \\$1
+..
+.rn RS Rs
+.de  RS
+.na
+.nf
+.Rs
+..
+.rn RE Re
+.de  RE
+.Re
+.fi
+.ad
+..
+.de  Sx
+.PP
+.ne \\$1
+.RS
+..
+.de  Ex
+.RE
+.PP
+..
+.na
+.SH NAZWA
+procmail \- autonomiczny procesor poczty
+.SH SKŁADNIA
+\fBprocmail\fP [\fB\-ptoY\fP] [\fB\-f \fP\fIod_kogo\fP]
+.if " n .ti +0.5i"
+[\fIparametr\fP\fB=\fP\fIwartość \fP|\fI plik_rc\fP] \&.\|.\|.
+.br
+\fBprocmail\fP [\fB\-toY\fP] [\fB\-f \fP\fIfromwhom\fP] [\fB\-a \fP\fIargument\fP] \&.\|.\|.
+.if " n .ti +0.5i"
+\fB\-d\fP \fIodbiorca\fP \&.\|.\|.
+.br
+\fBprocmail\fP [\fB\-ptY\fP] \fB\-m\fP [\fIparametr\fP\fB=\fP\fIwartość\fP] \&.\|.\|.  \fIrcfile\fP
+.if " n .ti +0.5i"
+[\fIargument\fP] \&.\|.\|.
+.br
+\fBprocmail\fP \fB\-v\fP
+.ad
+.SH OPIS
+Szybką orientację w temacie można uzyskać, czytając umieszczone na końcu
+\fBUWAGI\fP.
+.PP
+\fBProcmail\fP powinien być wywoływany automatycznie, korzystając z mechanizmu
+\&\fB.forward\fP w momencie przybycia listu. Alternatywnie, gdy jest
+zainstalowany przez administratora systemu, może być wywoływany bezpośrednio
+przez program pocztowy (mailer).  Po wywołaniu, najpierw ustawia na wartości
+domyślne pewne zmienne środowiskowe, odczytuje wiadomość pocztową ze stdin
+(do EOF), oddziela jej treść od nagłówka, a następnie, jeśli nie podano
+argumentów wiersza poleceń, zaczyna szukać pliku o nazwie
+\fI$HOME/.procmailrc\fP.  Stosownie do reguł przetwarzania zawartych w tym
+pliku świeżo otrzymana wiadomość pocztowa zostaje umieszczona we właściwym
+katalogu.  Jeśli nie istnieje plik rc, lub jego przetwarzanie dojdzie do
+końca, procmail zapisze wiadomość w domyślnej skrzynce pocztowej (mailbox)
+systemu.
+.PP
+Jeśli nie podano ani pliku rc, ani opcji \fB\-p\fP w wierszu poleceń, to program
+przed odczytaniem \fI$HOME/.procmailrc\fP zinterpretuje polecenia zawarte w
+\fI/etc/procmailrc\fP (o ile istnieją).  Podczas tworzenia \fI/etc/procmailrc\fP
+trzeba uważać, ponieważ jeśli warunki na to pozwolą, zostanie on uruchomiony
+z prawami administratora (w przeciwieństwie do pliku \fI$HOME/.procmailrc\fP).
+.PP
+Jeśli procmail zostanie uruchomiony z uprawnieniami roota lub jako suid
+root, to może pracować jako agent dostarczania poczty (mail delivery agent),
+z poszerzonymi możliwościami, wstecznie zgodny.
+.PP
+Można go też wykorzystywać jako uniwersalny filtr pocztowy, tzn. poczyniono
+pewne kroki, by procmail mógł być wywoływany w specjalnej regule programu
+\fBsendmail\fP(8).
+.PP
+Format pliku rc jest opisany szczegółowo na stronie podręcznika
+\fBprocmailrc\fP(5).
+.PP
+Technika punktowania ważonego jest szczegółowo opisana na stronie
+\fBprocmailsc\fP(5).
+.PP
+Przykłady plików rc można obejrzeć na stronie \fBprocmailex\fP(5).
+.SS Sygnały
+.TP  1.2i
+\fBTERMINATE\fP
+Kończy przedwcześnie i ponownie kolejkuje wiadomość.
+.TP 
+\fBHANGUP\fP
+Kończy przedwcześnie i odbija wiadomość do nadawcy.
+.TP 
+\fBINTERRUPT\fP
+Kończy przedwcześnie i odbija wiadomość do nadawcy.
+.TP 
+\fBQUIT\fP
+Kończy przedwcześnie i milcząco traci wiadomość.
+.TP 
+\fBALARM\fP
+Wymusza przekroczenie limitu czasu (zobacz \fBTIMEOUT\fP).
+.TP 
+\fBUSR1\fP
+Odpowiednik \fBVERBOSE\fP=off.
+.TP 
+\fBUSR2\fP
+Odpowiednik \fBVERBOSE\fP=on.
+.SH OPCJE
+.TP  0.5i
+\fB\-v\fP
+Procmail wypisuje swój numer wersji, wyświetla wkompilowaną konfigurację i
+kończy działanie.
+.TP 
+\fB\-p\fP
+Zachowuje stare środowisko. Normalnie procmail czyści środowisko podczas
+startu, poza wartością zmiennej \fITZ\fP. Jednak w każdym wypadku: wszelkie
+wartości domyślne przesłonią uprzednio istniejące zmienne środowiskowe,
+tzn. procmail nie będzie zwracał uwagi na żadne predefiniowane zmienne
+środowiskowe, lecz nadpisze je swoimi wartościami domyślnymi. Listę
+zmiennych środowiskowych procmaila można znaleźć na stronie podręcznika
+\fBprocmailrc\fP(5). Jeśli podano zarówno \fB\-p\fP, jak i \fB\-m\fP, lista ustawianych
+zmiennych ogranicza się do zaledwie: \fILOGNAME\fP, \fIHOME\fP, \fISHELL\fP,
+\fIORGMAIL\fP i \fIMAILDIR\fP.
+.TP 
+\fB\-t\fP
+Powoduje, że procmail zawodzi łagodnie, np. jeśli nie może dostarczyć
+przesyłki do żadnego z podanych mu celów, wiadomość nie zostanie odbita,
+lecz powróci do kolejki poczty. W przyszłości zostanie dokonana ponowna
+próba dostarczenia.
+.TP 
+\fB\-f\fP\fI fromwhom\fP
+Powoduje, że procmail ponownie generuje początkową linię "From " z wartością
+\fIfromwhom\fP jako wysyłającym (zamiast \fB\-f\fP można użyć alternatywnego i
+przedawnionego \fB\-r\fP).  Jeśli \fIfromwhom\fP składa się z pojedynczego "\-", to
+program tylko odświeży znacznik czasu w linii "From " (o ile jest obecny,
+jeśli nie, to utworzy nowy).
+.TP 
+\fB\-o\fP
+Zamiast pozwolić komukolwiek na generowanie linii "From ", po prostu
+przesłoni fałszywki.
+.TP 
+\fB\-Y\fP
+Zakłada, że do mamy czynienia z tradycyjnym Berkeley'owskim formatem
+mailboxa, ignoruje wszelkie pola \fBContent\-Length:\fP.
+.TP 
+\fB\-a\fP\fI argument\fP
+Ustawia \fI$1\fP na wartość \fIargumentu\fP. Każde następne \fB\-a\fP\fI argument\fP
+ustawią zmienną o kolejnym numerze (\fI$2\fP, \fI$3\fP itd.).  Może być używane do
+przekazywania metainformacji do procmaila. Zazwyczaj wykonuje się to przez
+przesyłanie informacji \fI$@x\fP z reguły programu \fBsendmail\fP(8).
+.TP 
+\fB\-d\fP\fI odbiorca .\|.\|.\fP
+Włącza jawny tryb dostarczania. Dostarczenie nastąpi do lokalnego odbiorcy,
+oznaczonego jako \fIodbiorca\fP.  Jest to oczywiście możliwe tylko, jeśli
+procmail ma prawa roota (lub efektywne prawa euid i egid odbiorcy). Procmail
+będzie się suidował do podanych odbiorców i dostarczał pocztę tak, jakby
+został wywołany przez danego odbiorcę bez argumentów (tzn. jeśli nie
+znaleziono pliku rc, dostarczanie zachodzi jak w zwyczajnej poczcie). Opcja
+ta jest niezgodna z \fB\-p\fP.
+.TP 
+\fB\-m\fP
+Zmienia procmail w filtr pocztowy ogólnego przeznaczenia. W tym trybie
+trzeba przekazać jeden plik rc w wierszu poleceń. Po pliku rc procmail
+przyjmie nieograniczoną liczbę argumentów. Jeśli plik rc jest nazwą ze
+ścieżką absolutną, zaczynającą się od \fI/etc/procmailrcs/\fP, bez odwołań
+wstecznych (np. katalog nadrzędny nie może być wymieniony), to procmail
+spróbuje, jeżeli nie napotka naruszeń bezpieczeństwa, zidentyfikować
+właściciela tego pliku (lub dowiązania symbolicznego). Zaawansowane
+zastosowania tej opcji można znaleźć w rozdziale \fBPRZYKŁADY\fP poniżej.
+.SH ARGUMENTY
+Wszelkie argumenty zawierające "=" są uważane za przypisania wartości
+zmiennym środowiskowym. \fIWszystkie\fP one zostaną obliczone po przypisaniu
+wartości domyślnych, a przed otwarciem pierwszego pliku rc.
+.PP
+Wszelkie inne argumenty są uważane za ścieżki pliku rc: albo absolutne, albo
+względne, w odniesieniu do bieżącego katalogu, jeśli zaczynają się od
+"./". \fBWszelkie inne ścieżki względne\fP są uważane za podane względem
+katalogu \fI$HOME\fP, chyba że użyto opcji \fB\-m\fP. Wówczas wszystkie ścieżki
+względne odnoszą się do bieżącego katalogu. Procmail zacznie od pierwszej
+ścieżki, którą znajdzie w wierszu poleceń. Następne zostaną przetworzone
+tylko wtedy, jeśli poprzednie nie mają odpowiadającego wpisu HOST\-directive,
+lub w wypadku, gdy nie istnieją.
+.PP
+Jeśli nie poda się plików rc, procmail zagląda do \fI$HOME/.procmailrc\fP.
+Jeśli nawet tego nie dało się znaleźć, przetwarzanie będzie kontynuowane
+zgodnie z domyślnymi ustawieniami zmiennych środowiskowych i zmiennych
+podanych w wierszu poleceń.
+.SH PRZYKŁADY
+Przykłady plików rc można obejrzeć na stronie \fBprocmailex\fP(5).  Mały
+fragment pliku rc można znaleźć w sekcji \fBUWAGI\fP, poniżej.
+.PP
+Pomiń resztę tej sekcji, chyba że jesteś administratorem, który ma jakieś
+pojęcie o składni \fIsendmail.cf\fP.
+.PP
+Opcja \fB\-m\fP jest zazwyczaj używana, gdy procmail jest wywoływany przez
+regułę pliku \fIsendmail.cf\fP. Aby móc tego dokonać, dobrze jest utworzyć
+dodatkowy wpis o programie dostarczającym pocztę "procmail" w pliku
+\fIsendmail.cf\fP (poza już obecnym mailerem "local", który uruchamia
+procmaila).  Aby utworzyć taki wpis, sugerujemy coś takiego:
+.Sx 2
+Mprocmail, P=/usr/bin/procmail, F=mSDFMhun, S=11, R=21,
+        A=procmail \-m $h $f $u
+.Ex
+Umożliwi to wykorzystanie do filtrowania poczty poprzez mailer procmail
+reguł podobnych do poniższej (prawdopodobnie w zestawie reguł (ruleset) 0).
+Prosimy zwrócić uwagę na początkową tabulację oznaczającą kontynuację reguły
+i tabulację służącą do oddzielenia komentarzy:
+.Sx 4
+R$*<@some.where>$*
+        $#procmail $@/etc/procmailrcs/some.rc $:$1@some.where.procmail$2
+R$*<@$*.procmail>$*
+        $1<@$2>$3       Już przefiltrowane, odwzoruj z powrotem
+.Ex
+A plik \fI/etc/procmailrcs/some.rc\fP może być taki:
+.Sx 9
+SENDER = "<$1>"                 # poprawienie pustego adresu nadawcy
+SHIFT = 1                       # usunięcie go z $@
+
+:0                              # Spuść do muszli całą pocztę śmieciową ;)
+* ^Subject:.*junk
+/dev/null
+
+:0 w                            # przekaż resztę przesyłek dalej
+! \-oi \-f "$SENDER" "$@"
+.Ex
+Należy uważać, gdy z wnętrza pliku \fI/etc/procmailrcs/some.rc\fP wysyłane będą
+listy: jeśli wyśle się je na adresy, które odpowiadają znowu pierwszej
+regule, można utworzyć nieskończoną pętlę.
+.SH PLIKI
+.TP  2.3i
+\fB/etc/passwd\fP
+do ustawiania domyślnych wartości zmiennych \fILOGNAME\fP, \fIHOME\fP i \fISHELL\fP
+odbiorcy
+.TP 
+\fB/var/mail/$LOGNAME\fP
+systemowa skrzynka pocztowa; zarówno skrzynka systemowa, jak i katalog, w
+którym się ona znajduje, będą tworzone za każdym razem, gdy procmail
+startuje, a któreś z nich nie istnieje
+.TP 
+\fB/etc/procmailrc\fP
+początkowy ogólnosystemowy plik rc
+.TP 
+\fB/etc/procmailrcs/\fP
+ścieżka specjalnych uprawnień do plików rc
+.TP 
+\fB$HOME/.procmailrc\fP
+domyślny plik rc
+.TP 
+\fB/var/mail/$LOGNAME.lock\fP
+plik blokujący systemowej skrzynki pocztowej (nie jest automatycznie używany
+przez procmail, chyba że \fI$DEFAULT\fP jest równe \fI/var/mail/$LOGNAME\fP, a
+procmail dostarcza coś do \fI$DEFAULT\fP)
+.TP 
+\fB/usr/sbin/sendmail\fP
+domyślny program ekspedycji poczty (forwarder)
+.TP 
+\fB_????`hostname`\fP
+tymczasowe "unikatowe" pliki zerowej długości tworzone przez procmail
+.SH "ZOBACZ TAKŻE"
+.na
+.nh
+\fBprocmailrc\fP(5), \fBprocmailsc\fP(5), \fBprocmailex\fP(5), \fBsh\fP(1), \fBcsh\fP(1),
+\fBmail\fP(1), \fBmailx\fP(1), \fBuucp\fP(1), \fBaliases\fP(5), \fBsendmail\fP(8),
+\fBegrep\fP(1), \fBgrep\fP(1), \fBbiff\fP(1), \fBcomsat\fP(8), \fBlockfile\fP(1),
+\fBformail\fP(1), \fBcron\fP(1)
+.hy
+.ad
+.SH DIAGNOSTYKA
+.TP  2.3i
+Autoforwarding mailbox found (Znaleziono skrzynkę auto\-przekazującą)
+Skrzynka systemowa miała ustawiony bit suid lub sgid, procmail kończy z
+błędem \fIEX_NOUSER\fP, zakładając że do tej skrzynki nie wolno dostarczać
+poczty.
+.TP 
+Bad substitution of "x" (Złe podstawienie "x")
+Nie podano prawidłowej nazwy zmiennej środowiskowej.
+.TP 
+Closing brace unexpected (Niespodziewane zamknięcie nawiasu)
+Nie było odpowiadającego nawiasu otwierającego (zagnieżdżenie bloku).
+.TP 
+Conflicting options (Kolidujące opcje)
+Nie wszystkie kombinacje opcji są użyteczne
+.TP 
+Conflicting x suppressed (Zlikwidowane kolidujące x)
+Flaga x nie da się pogodzić z innymi flagami tej reguły.
+.TP 
+Couldn't create "x" (Nieudane utworzenie "x")
+Brakowało skrzynki systemowej i nie dało się jej było utworzyć.
+.TP 
+Couldn't create maildir part "x" (Nieudane utworzenie części "x" katalogu poczty)
+W katalogu pocztowym "x" brakuje jednego lub więcej koniecznych
+podkatalogów, a procmail nie mógł ich utworzyć.
+.TP 
+Couldn't create or rename temp file "x" (Nieudane utworzenie lub przemianowanie tymczasowego pliku "x")
+Wystąpił błąd w mechanizmie dostarczania wiadomości do katalogu pocztowego
+"x".
+.TP 
+Couldn't determine implicit lockfile from "x" (Nie można określić jawnego pliku blokady z "x")
+Nie znaleziono przekierowań ">>", używanie pliku o nazwie
+"\fI$LOCKEXT\fP" jako lokalnego pliku blokującego (locallockfile).
+.TP 
+Couldn't read "x" (Nieudany odczyt "x")
+Procmail nie był w stanie otworzyć pliku rc albo nie był to zwyczajny plik
+lub też program nie mógł otworzyć katalogu MH, by znaleźć plik o najwyższym
+numerze.
+.TP 
+Couldn't unlock "x" (Nieudane odblokowanie "x")
+Plik blokujący już zniknął lub odebrano prawa zapisu do jego katalogu.
+.TP 
+Deadlock attempted on "x" (Próba zakleszczenia na "x")
+Lokalny plik blokujący (locallockfile) podany w tej regule jest równy nadal
+aktywnemu \fI$LOCKFILE\fP.
+.TP 
+Denying special privileges for "x" (Odmowa specjalnych uprawnień dla "x")
+Procmail nie przybierze tożsamości narzucanej mu plikiem rc, ponieważ
+wykryto pogwałcenie bezpieczeństwa (np.  \fB\-p\fP lub przypisania zmiennych w
+wierszu poleceń) albo program miał zbyt małe uprawnienia by móc to zrobić.
+.TP 
+Descriptor "x" was not open (Deskryptor "x" nie był otwarty)
+Podczas startu procmaila nie były przyłączone stdin, stdout lub stderr
+(prawdopodobnie próba złamania bezpieczeństwa).
+.TP 
+Enforcing stricter permissions on "x" (Wymuszenie bardziej restrykcyjnych uprawnień do "x")
+Systemowa skrzynka pocztowa odbiorcy była niezabezpieczona, procmail ją
+zabezpieczył.
+.TP 
+Error while writing to "x" (Błąd podczas zapisu do "x")
+Nieistniejący katalog, brak praw zapisu, padł potok lub przepełniony dysk.
+.TP 
+Exceeded LINEBUF (Przekroczone LINEBUF)
+Wykryto przepełnienie bufora, LINEBUF był zbyt mały, ustawiono zmienną
+\fIPROCMAIL_OVERFLOW\fP.
+.TP 
+MAILDIR is not an absolute path (MAILDIR  nie jest ścieżką absolutną)
+.TP 
+MAILDIR path too long (Ścieżka MAILDIR zbyt długa)
+.TP 
+ORGMAIL is not an absolute path (ORGMAIL nie jest ścieżką absolutną)
+.TP 
+ORGMAIL path too long (Ścieżka ORGMAIL zbyt długa)
+.TP 
+default rcfile is not an absolute path (domyślny plik rc nie jest ścieżką absolutną)
+.TP 
+default rcfile path too long (zbyt długa ścieżka do domyślnego pliku rc)
+Pełna ścieżka do podanego elementu, po rozwinięciu wszystkich linków, ma
+długość większą niż \fILINEBUF\fP lub nie zaczyna się od znaku separatora
+plików.
+.TP 
+Excessive output quenched from "x" (Stłumiono nadmierne wyjście z "x")
+Program lub filtr "x" próbował wyprodukować zbyt wiele wyjścia dla bieżącego
+bufora \fILINEBUF\fP, reszta została pominięta i ustawiono zmienną
+\fIPROCMAIL_OVERFLOW\fP.
+.TP 
+Extraneous x ignored (Nie związane x zignorowane)
+Linia akcji lub inne flagi tej reguły odbierają fladze x znaczenie.
+.TP 
+Failed forking "x" (Nieudane rozwidlenie "x")
+Tabela procesów jest pełna (i wykorzystano RORESRETRY).
+.TP 
+Failed to execute "x" (Nieudane wykonanie "x")
+Program nie znajduje się w ścieżce lub nie jest wykonywalny.
+.TP 
+Forced unlock denied on "x"
+Brak praw zapisu do katalogu, w którym znajduje się plik blokujący
+\fBlockfile\fP "x", albo w tym samym czasie próbuje wymusić blokowanie więcej
+niż jeden procmail.
+.TP 
+Forcing lock on "x"
+Plik \fBlockfile\fP "x" zostanie usunięty siłą, ponieważ nastąpiło
+przekroczenie limitu czasu (zobacz także: \fBLOCKTIMEOUT\fP).
+.TP 
+Incomplete recipe
+Znaleziono początek reguły, lecz nie została zakończona przed napotkaniem
+końca pliku.
+.TP 
+Insufficient privileges
+Procmail wymaga uprawnień roota lub musi mieć określony (e)udi, (e)gid w
+trybie dostarczania. Wiadomości będą odbijane (zwracane nadawcy).
+.TP 
+Invalid regexp "x" (Niepoprawne wyraż. regularne "x")
+Wyrażenie regularne "x" zawiera błędy (najprawdopodobniej brakujące lub
+nadmiarowe nawiasy).
+.TP 
+Kernel\-lock failed (Błąd blokowania za pośrednictwem funkcji jądra)
+Podczas próby użycia obsługiwanych przez jądro wywołań blokujących, któreś z
+nich nie powiodło się (zwykle wskazuje to na błąd systemu), procmail
+ignoruje ten błąd i działa dalej.
+.TP 
+Kernel\-unlock failed (Błąd odblokowania za pośrednictwem funkcji jądra)
+Zobacz wyżej.
+.TP 
+Lock failure on "x" (Błąd blokowania "x")
+Może się pojawić tylko jeśli podasz jakieś naprawdę dziwne (i niedozwolone)
+nazwy plików blokujących, lub jeśli nie można było utworzyć pliku
+\fBlockfile\fP z powodu braku uprawnień lub nieistniejących podkatalogów.
+.TP 
+Lost "x" (Zgubiono "x")
+Procmail próbował sklonować się, lecz nie mógł znaleźć pliku rc "x" (został
+przeniesiony lub był ścieżką względną, a zmieniłeś katalog od ostatniego
+otwarcia go przez procmaila).
+.TP 
+Missing action (Brak akcji)
+Bieżąca reguła nie jest kompletna.
+.TP 
+Missing closing brace (Brak nawiasu zamykającego)
+Rozpoczęto zagnieżdżony blok, ale go nie zakończono.
+.TP 
+Missing name (Brak nazwy)
+Opcja \fB\-f\fP wymaga dodatkowego argumentu.
+.TP 
+Missing argument (Brak argumentu)
+Podano opcję \fB\-a\fP, lecz zapomniano o argumencie.
+.TP 
+Missing rcfile (Brak pliku rc)
+Podano opcję \fB\-m\fP, procmail oczekuje nazwy pliku rc jako argumentu.
+.TP 
+Missing recipient (Brak odbiorcy)
+Podano opcję \fB\-d\fP lub wywołano procmail pod inną nazwą, program oczekuje
+przynajmniej jednego odbiorcy jako argumentu.
+.TP 
+No space left to finish writing "x" (Brak miejsca na dokończenie zapisu "x")
+System plików zawierający "x" nie ma dość wolnego miejsca, aby umożliwić
+dostarczenie wiadomości do pliku.
+.TP 
+Out of memory (Brak pamięci)
+Systemowi brakuje pamięci w przestrzeni wymiany (swap) (i wyczerpano
+\fINORESRETRY\fP).
+.TP 
+Processing continued (Kontynuowanie przetwarzania)
+Nierozpoznane opcje wierszu poleceń są ignorowane, kontynuowanie jak zwykle.
+.TP 
+Program failure (nnn) of "x" (Błąd programu (nnn) na "x")
+Program uruchomiony przez procmaila zwrócił kod \fInnn\fP zamiast
+\fIEXIT_SUCCESS\fP (=0); Jeśli \fInnn\fP jest ujemne, to jest to sygnałem, że
+program umarł.
+.TP 
+Quota exceeded while writing "x" (Podczas zapisu "x" przekroczono ograniczenie udziału dyskowego)
+Ograniczenie wielkości pliku (quota) w systemie plików odbiorcy zawierającym
+"x" nie pozwala na dostarczenie danej wiadomości do pliku.
+.TP 
+Renaming bogus "x" into "x"
+Systemowa skrzynka pocztowa odbiorcy okazała się być zmyślona, procmail
+wykonał działania wymijające.
+.TP 
+Rescue of unfiltered data succeeded/failed (Ratowanie nieprzefiltrowanych danych pomyślne/nieudane)
+Filtr zakończył pracę niepomyślnie, procmail próbował odzyskać oryginalny
+tekst.
+.TP 
+Skipped: "x" (Pominięto: "x")
+Program nie mógł nic zrobić z "x" w pliku rc (błąd składni), ignoruje to.
+.TP 
+Suspicious rcfile "x" (Podejrzany plik rc "x")
+Właściciel pliku rc nie był odbiorcą ani rootem, plik był dostępny do zapisu
+dla wszystkich, lub zawierający go katalog był zapisywalny dla wszystkich,
+lub był to domyślny plik rc (\fI$HOME/.procmailrc\fP) i albo ten plik, albo
+zawierający go katalog były zapisywalne przez grupę (plik rc nie został
+użyty).
+.TP 
+Terminating prematurely whilst waiting for .\|.\|. (Przedwczesne zakończenie podczas oczekiwania na .\|.\|.)
+Procmail otrzymał sygnał podczas oczekiwania na .\|.\|.
+.TP 
+Timeout, terminating "x"
+W filtrze lub programie "x" nastąpiło przekroczenie limitu czasu.
+.TP 
+Timeout, was waiting for "x"
+W programie, filtrze lub pliku "x" nastąpiło przekroczenie limitu czasu.
+Jeśli był to program lub filtr, to wygląda na to, że już nie działa.
+.TP 
+Truncated file to former size
+Plik nie mógł być szczęśliwie dostarczony, więc został skrócony do
+poprzedniej wielkości.
+.TP 
+Truncating "x" and retrying lock
+"x" nie wydaje się być prawidłową nazwą pliku lub plik nie jest pusty.
+.TP 
+Unable to treat as directory "x" (Niemożliwe traktowanie jako katalogu "x")
+Albo przyrostek katalogu "x" wskazuje na to, że powinien to być MH lub
+katalog wiadomości pocztowych (maildir), albo został on wymieniony jako
+drugi katalog, do którego należy wykonać dowiązanie, ale już istnieje i nie
+jest to katalog.
+.TP 
+Unexpected EOL (Niespodziewany EOL)
+Brak zamykającego cytatu lub próba ucieczki EOF.
+.TP 
+Unknown user "x" (Nieznany użytkownik "x")
+Podany odbiorca nie ma odpowiadającego mu uid.
+.SH "ROZSZERZONA DIAGNOSTYKA"
+Rozszerzoną diagnostykę można włączać i wyłączać ustawieniem zmiennej
+\fIVERBOSE\fP.
+.TP  2.3i
+[pid] time & date
+Pid i timestamp procmaila. Generowane za każdym razem gdy procmail loguje
+diagnostykę, gdy upłynęła chociaż sekunda od ostatniego timestampu.
+.TP 
+Acquiring kernel\-lock
+Procmail próbuje zablokować przez jądro ostatnio otwarty plik (deskryptor).
+.TP 
+Assigning "x"
+Przyznanie wartości zmiennej środowiskowej.
+.TP 
+Assuming identity of the recipient, VERBOSE=off
+Porzucenie wszystkich uprawnień (jeśli jakieś były), bezwarunkowo wyłącza
+rozszerzoną diagnostykę.
+.TP 
+Bypassed locking "x"
+Katalog spool poczty nie był dostępny procmailowi, bazował wyłącznie na
+blokadach jądra.
+.TP 
+Executing "x"
+Uruchamianie programu "x"; jeśli jest on uruchamiany bezpośrednio przez
+procmaila (bez pośredniej powłoki), procmail pokaże gdzie oddzielił
+argumenty poprzez wstawienie przecinków.
+.TP 
+HOST mismatched "x"
+Ten komputer był nazwany "x", a zmienna \fIHOST\fP zawierała coś innego.
+.TP 
+Locking "x"
+Tworzenie pliku blokującego "x".
+.TP 
+Linking to "x"
+Tworzenie dowiązania twardego pomiędzy folderami katalogów.
+.TP 
+Match on "x"
+Trafiony warunek.
+.TP 
+Matched "x"
+Przyznano "x" wartość \fIMATCH\fP.
+.TP 
+No match on "x"
+Warunek nie pasował, reguła pominięta.
+.TP 
+Non\-zero exitcode (nnn) by "x" (Niezerowy (nn) kod zakończenia "x")
+Program uruchomiony przez procmaila jako warunek lub akcja przepisu z flagą
+"W" zwrócił \fInnn\fP zamiast \fIEXIT_SUCCESS\fP (=0); sposób użycia wskazuje na
+to, że nie jest to niespodziewana okoliczność.
+.TP 
+Notified comsat: "$LOGNAME@offset:file"
+Wysłano informację do \fBcomsat\fP(1)/\fBbiff\fP(1), że pojawiła się poczta dla
+użytkownika \fI$LOGNAME\fP pod "offsetem" w pliku "file".
+.TP 
+Opening "x"
+Otwieranie pliku "x" dla dopisywania.
+.TP 
+Rcfile: "x"
+Plik rc zmieniony na "x".
+.TP 
+Reiterating kernel\-lock
+Podczas próbowania różnych metod blokowania, jedna z nich się nie
+powiodła. Procmail będzie iterował od nowa, aż wszystkie się nie powiodą.
+.TP 
+Score: added newtotal "x"
+Ten warunek dołożył "dodatkowe" punkty, co dało w wyniku "nową sumę"
+punktacji.
+.TP 
+Unlocking "x"
+Ponowne usuwanie pliku blokującego (lockfile) "x".
+.SH OSTRZEŻENIA
+Powinieneś utworzyć skrypt powłoki, który używa \fBlockfile\fP(1) zanim
+wywołasz swoją powłokę pocztową na którymkolwiek pliku skrzynki pocztowej,
+innym niż skrzynka systemowa (chyba że Twoja powłoka pocztowa używa tych
+samych plików blokujących (lokalnych lub globalnych), które podałeś w pliku
+rc).
+.PP
+W rzadkich przypadkach, gdy trzeba zabić procmaila zanim zakończy działanie,
+należy użyć zwykłego polecenia \fBkill\fP(1) (a \fInie\fP "kill \-9", zobacz
+rozdział \fISygnały\fP dla sugestii), inaczej niektóre pliki blokujące
+(lockfiles) mogą nie zostać usunięte.
+.PP
+Należy być ostrożnym podczas używania opcji \fB\-t\fP, jeśli procmail jest
+ciągle niezdolny do dostarczenia poczty (np. przez nieprawidłowy plik rc),
+kolejka poczty systemu może się przepełnić. Może to zgorszyć zarówno
+postmastera, jak i innych użytkowników.
+.PP
+Plik \fI/etc/procmailrc\fP może być uruchamiany z prawami roota, więc należy
+być bardzo ostrożnym z tym, co się tam wstawia. \fBSHELL\fP będzie zgodny z
+powłoką bieżącego odbiorcy, więc jeśli procmail ma wywoływać powłokę,
+najlepiej ustawić tę zmienną wpierw na bezpieczną wartość. Zobacz
+także\h'-\w' 'u' : \fBDROPPRIVS\fP.
+.PP
+Trzeba pamiętać, że jeśli na plikach w \fB/etc/procmailrcs/\fP dozwolony jest
+\fBchown\fP(1), to mogą one być chown\-owane na roota (lub kogokolwiek innego)
+przez ich obecnych właścicieli. Dla maksymalnego bezpieczeństwa należy się
+upewnić, że katalog ten jest \fIwykonywalny\fP tylko dla roota.
+.PP
+Procmail nie jest właściwym narzędziem do wspólnego użytkowania jednej
+skrzynki pocztowej przez wielu użytkowników, jak to występuje w przypadku,
+gdy jest tylko jedno konto POP dla całej poczty w całej domenie. Da się to
+zrobić, jeśli uda się skonfigurować MTA tak, by dodawał nagłówki z danymi
+odbiorcy kopertowego, dzięki którym procmail będzie wiedział, dla kogo jest
+dana wiadomość. Jednak zwykle nie jest to dobre rozwiązanie. Być może lepiej
+zbadać, czy używany MTA oferuje "tabele użytkowników wirtualnych" ("virtual
+user tables") lub sprawdzić np. funkcję "multidrop" (wielopunktowości)
+programu \fBfetchmail\fP(1).
+.SH BŁĘDY
+Po usunięciu siłą pliku blokującego, procmail czeka \fB$SUSPEND\fP sekund zanim
+utworzy nowy plik blokujący, tak by inny proces, który chce usunąć stary
+plik blokujący nie usunął przypadkiem nowego.
+.PP
+Procmail używa zwykłego sygnału \fITERMINATE\fP do zakończenia filtrów, które
+uciekły, lecz nie sprawdza, czy filtr odpowiada na sygnał. Poza tym wysyła
+sygnał tylko do filtra, nie do jego dzieci.
+.PP
+Kontynuowane pole \fBContent\-Length:\fP nie jest prawidłowo obsługiwane.
+.PP
+Nowe linie osadzone w kontynuowanym nagłówku powinny być pomijane podczas
+dopasowywania zamiast być traktowane jako pojedyncza spacja, jak to się
+dzieje obecnie.
+.SH RÓŻNE
+Jeśli w nagłówku istnieje pole \fBContent\-Length:\fP a nie podano flagi \fB\-Y\fP,
+procmail wykorzysta to pole do zgłoszenia właściwego rozmiaru. Procmail nie
+zmienia szerokości pola.
+.PP
+Jeśli nie ma pola \fBContent\-Length:\fP lub jeśli podano flagę \fB\-Y\fP, a
+procmail dopisuje do zwykłych folderów pocztowych, to wszelkie linie ciała
+wiadomości, które wyglądają jak znaki pocztowe, są poprzedzane ">"
+(rozbraja nieprawdziwe nagłówki pocztowe). Wyrażenie regularne używane do
+wyszukiwania tych znaków pocztowych to:
+.RS
+"\enFrom "
+.RE
+.PP
+Jeśli nazwa celu użyta w jawnym trybie dostarczania nie figuruje w
+\fI/etc/passwd\fP, procmail zadziała tak, jakby tryb ten nie był
+włączony. Jeśli nie jest w jawnym trybie dostarczania, a uid, pod którym
+działa nie ma odpowiadającego wpisu \fI/etc/passwd\fP, to \fBHOME\fP będzie miało
+wartość \fI/\fP, \fBLOGNAME\fP będzie ustawione na #uid, \fBSHELL\fP będzie równy
+\fI/bin/sh\fP, a \fBORGMAIL\fP będzie ustawione na \fI/tmp/dead.leather\fP.
+.PP
+Gdy procmail jest w jawnym trybie dostarczania, to będzie generował
+początkowe linie "From ", jeśli brak takowych. Jeśli linia taka już
+istnieje, procmail pozostawi ją bez zmian. Jeśli procmail nie jest wywołany
+z jednym z następujących id użytkownika lub grupy\h'-\w' 'u' : "root",
+"daemon", "uucp", "mail", "x400", "network", "list", "lists" lub "news",
+lecz wciąż musi generować lub przyjmować nową linię "From ", to będzie
+generował dodatkową linię ">From ", pomagającą odróżnić fałszywe listy.
+.PP
+Ze względów bezpieczeństwa, w wypadkach gdy właścicielem pliku rc jest
+odbiorca lub root, a plik nie jest ogólnie zapisywalny, lub gdy katalog, w
+którym on się znajduje nie jest ogólnie zapisywalny, procmail będzie używał
+tylko plików rc o nazwach bezwzględnych lub wyznaczonych względem \fB$HOME\fP.
+Plik \fI$HOME/.procmailrc\fP ma dodatkowe ograniczenie: ani on, ani katalog, w
+którym się znajduje, nie mogą być zapisywalne przez grupę.
+.PP
+Jeśli \fI/var/mail/$LOGNAME\fP jest zmyśloną skrzynką (np. nie należy do
+odbiorcy, jest niezapisywalny, jest dowiązaniem symbolicznym lub twardym),
+procmail podczas startu spróbuje zmienić jego nazwę na zaczynającą się od
+"BOGUS.$LOGNAME." i kończącą się numerem sekwencyjnym i\-węzła. Jeśli okaże
+się to niemożliwe, \fBORGMAIL\fP \fInie\fP będzie mieć wartości początkowej i
+wskutek tego będzie zakazywać dostarczania bez należytego pliku rc.
+.PP
+Jeśli \fI/var/mail/$LOGNAME\fP jest już prawidłową skrzynką, lecz ma zbyt słabe
+prawa, procmail to poprawi. Aby zapobiec temu, ustaw bity u+x.
+.PP
+Podczas dostarczania do katalogów (lub folderów MH), \fBnie\fP trzeba używać
+plików blokujących w celu zapobieżenia zamieszaniu powodowanemu przez kilka
+pracujących naraz procmaili.
+.PP
+Dostarczanie do folderów MH jest trochę bardziej czasochłonne niż
+dostarczanie do normalnych katalogów lub mailboxów, ponieważ procmail musi
+poszukać następnego dostępnego numeru (zamiast korzystania od razu z gotowej
+nazwy pliku).
+.PP
+Przy ogólnym niepowodzeniu, procmail zwróci \fIEX_CANTCREAT\fP, chyba że podana
+zostanie opcja \fB\-t\fP \(em wówczas zwróci \fIEX_TEMPFAIL\fP.
+.PP
+Procmail skleja wszystkie kontynuowane pola nagłówkowe, żeby można było w
+spójniejszy sposób je "egrepować". Robi to jednak tylko wewnętrznie \(em
+podczas dostarczania poczty, łamania linii pojawią się w postaci pierwotnej.
+.PP
+Jeśli procmail jest wywoływany pod nazwą nie zaczynającą się od "procmail"
+(np. jeśli jest dowiązany do innej nazwy i wywołany pod tamtą nazwą), to
+włącza się w jawnym trybie dostarczania i oczekuje nazw odbiorców jako
+argumentów wiersza poleceń (tak, jakby było podane \fB\-d\fP).
+.PP
+Powiadomienia \fBcomstat\fP(1)/\fBbiff\fP(1) są dokonywane za pomocą UDP. Są one
+wysyłane, gdy procmail generuje wpis pliku z logiem. Komunikaty
+powiadamiania mają następujący rozszerzony format (lub tak zbliżony, jaki
+tylko można uzyskać, gdy ostateczne dostarczenie nie było do pliku):
+.RS
+$LOGNAME@offset_wiadomości_w_mailboksie\h'-\w' 'u'
+:absolutna_ścieżka_do_mboxa
+.RE
+.PP
+Kiedy tylko procmail otwiera plik, do którego dostarcza, używa konsekwentnie
+następujących, dostarczanych przez jądro, strategii blokowania\h'-\w' 'u' :
+\fBfcntl\fP(2).
+.PP
+Procmail jest odporny na NFS i czysty na ósmym bicie.
+.br
+.ne 11
+.SH UWAGI
+Wywoływanie procmaila z opcją \fB\-h\fP lub \fB\-?\fP spowoduje wyświetlenie pomocy
+wiersza poleceń oraz strony skróconej instrukcji flag reguł.
+.PP
+Istnieje doskonałe FAQ dla początkujących dotyczące filtrów pocztowych (w
+szczególności procmaila). Jest prowadzone przez Nancy McGough
+<nancym@ii.com>, a można je otrzymać wysyłając na adres
+mail\-server@rtfm.mit.edu list z treścią:
+.RS
+send usenet/news.answers/mail/filtering\-faq
+.RE
+.PP
+Jeśli procmail \fBnie\fP jest zainstalowany w systemie jako domyślny program
+dostarczania poczty (zapytaj administratora), musisz się upewnić, że jest
+wywoływany, gdy przybywa poczta. W tym wypadku Twój plik \fI$HOME/.forward\fP
+(uwaga, \fBmusi\fP być dostępny do odczytu dla wszystkich) powinien zawierać
+poniższą linię. Upewnij się, że wstawiłeś pojedyncze i podwójne znaki
+cytowania i \- o ile w Twoim systemie nie działa \fBsmrsh\fP(8) (SendMail
+Restricted Shell) \- \fImusi\fP to być \fIabsolutna\fP ścieżka.
+.PP
+.na
+.nf
+"\h'-\w' 'u' |exec /usr/bin/procmail"
+.fi
+.ad
+.PP
+Niektóre serwery pocztowe (np. \fBexim\fP(8)) nie akceptują powyższej
+składni. W tym przypadku należy użyć:
+.PP
+.na
+.nf
+|/usr/bin/procmail
+.fi
+.ad
+.PP
+Procmail może być też wywoływany do przetworzenia już wypełnionej skrzynki
+systemowej. Może to być użyteczne jeśli nie chcesz lub nie możesz używać
+pliku \fI$HOME/.forward\fP (wówczas można by wywoływać poniższy skrypt albo
+periodycznie z usługi \fBcron\fP(8), albo każdorazowo, gdy zaczynasz czytać
+pocztę):
+.Sx 17
+#!/bin/sh
+
+ORGMAIL=/var/mail/$LOGNAME
+
+if cd $HOME &&
+ test \-s $ORGMAIL &&
+ lockfile \-r0 \-l3600 .newmail.lock 2>/dev/null
+then
+  trap "rm \-f .newmail.lock" 1 2 3 15
+  umask 077
+  lockfile \-l3600 \-ml
+  cat $ORGMAIL >>.newmail &&
+   cat /dev/null >$ORGMAIL
+  lockfile \-mu
+  formail \-s procmail <.newmail &&
+   rm \-f .newmail
+  rm \-f .newmail.lock
+fi
+exit 0
+.Ex
+.ne 14
+.SS "Przykładowy mały $HOME/.procmailrc:"
+.na
+.nf
+PATH=/usr/local/bin:/usr/bin:/bin
+MAILDIR=$HOME/Mail      # upewnij się, że istnieje
+DEFAULT=$MAILDIR/mbox   # kompletnie opcjonalne
+LOGFILE=$MAILDIR/from   # zalecane
+
+:0:
+* ^From.*berg
+from_me
+
+:0
+* ^Subject:.*Flame
+/dev/null
+.fi
+.ad
+.PP
+Inne przykłady reguł plików rc można obejrzeć na stronie \fBprocmailex\fP(5).
+.Sh ŹRÓDŁO
+Program jest częścią \fIpakietu przetwarzania poczty procmail\fP (v3.22),
+dostępnego pod adresem http://www.procmail.org/ lub ftp.procmail.org w
+\fBpub/procmail/\fP.
+.Sh "LISTA DYSKUSYJNA"
+Istnieje lista dyskusyjna dla pytań związanych z programami pakietu
+procmail:
+.RS
+<procmail\-users@procmail.org>
+.RS
+do wysyłania pytań/odpowiedzi.
+.RE
+<procmail\-users\-request@procmail.org>
+.RS
+do zażądania zapisania się.
+.RE
+.PP
+.RE
+Aby być informowanym o nowych wersjach i oficjalnych łatach, należy wysłać
+zgłoszenie zapisania się do
+.RS
+procmail\-announce\-request@procmail.org
+.RE
+(jest to lista tylko do odczytu).
+.SH AUTORZY
+Stephen R. van den Berg
+.RS
+<srb@cuci.nl>
+.RE
+Philip A. Guenther
+.RS
+<guenther@sendmail.com>
+.RE
+.\".if n .pl -(\n(.tu-1i)
+.rm SH
+.rn Sh SH
+.rm SS
+.rn Ss SS
+.rm TP
+.rn Tp TP
+.rm RS
+.rn Rs RS
+.rm RE
+.rn Re RE
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.22 \fPoryginału.

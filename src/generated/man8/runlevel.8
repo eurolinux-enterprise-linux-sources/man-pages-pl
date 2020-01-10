@@ -1,0 +1,61 @@
+.\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1997 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1997-2004 Miquel van Smoorenburg, Michael Haardt (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Wojtek Kotwica (PTM) <wkotwica@post.pl>, 2000.
+.TH RUNLEVEL 8 "27 maja 1997" "" "Podręcznik administratora systemu Linux"
+.SH NAZWA
+runlevel \- odnajduje bieżący i poprzedni poziom pracy systemu
+.SH SKŁADNIA
+\fBrunlevel\fP [\fIutmp\fP]
+.SH OPIS
+\fBRunlevel\fP odczytuje systemowy plik \fIutmp\fP (typowo \fI/var/run/utmp\fP)  by
+znaleźć zapis o poziomie pracy, a następnie wypisuje poprzedni i bieżący
+poziom pracy systemu na swym standardowym wyjściu, rozdzielając je
+pojedynczą spacją. Jeżeli nie było poprzedniego poziomu pracy, to zamiast
+niego zostanie wyświetlona litera \fBN\fP.
+.PP
+Jeżeli nie istnieje plik \fIutmpx\fP lub nie można w nim znaleźć zapisu o
+poziomie pracy, \fBrunlevel\fP wypisuje słowo \fBunknown\fP (nieznany) i kończy
+pracę z błędem.
+.PP
+\fBRunlevel\fP może być wykorzystywany w skryptach \fIrc\fP jako substytut
+polecenia \fBwho \-r\fP Systemu\-V.  Jednak w nowszych wersjach \fBinit\fP(8)
+informacja ta jest też dostępna w zmiennych środowiska \fBRUNLEVEL\fP i
+\fBPREVLEVEL\fP.
+.SH OPCJE
+.\"{{{ utmp
+.IP \fIutmp\fP
+.\"}}}
+nazwa pliku \fIutmp\fP, jaki ma zostać odczytany.
+.SH "ZOBACZ TAKŻE"
+\fBinit\fP(8), \fButmp\fP(5)
+.SH AUTOR
+Miquel van Smoorenburg, miquels@cistron.nl
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Wojtek Kotwica (PTM) <wkotwica@post.pl>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.88 \fPoryginału.

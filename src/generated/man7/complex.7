@@ -1,0 +1,75 @@
+.\" Copyright 2002 Walter Harms (walter.harms@informatik.uni-oldenburg.de)
+.\" Distributed under GPL
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2002 Walter Harms (GPL-1)
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2005, 2012.
+.TH COMPLEX 7 2011\-09\-16 "" "Podręcznik programisty Linuksa"
+.SH NAZWA
+complex \- podstawy arytmetyki liczb zespolonych
+.SH SKŁADNIA
+\fB#include <complex.h>\fP
+.SH OPIS
+Liczb zespolone to liczby w postaci z = a+b*i, gdzie a oraz b są liczbami
+rzeczywistymi, a  i = sqrt(\-1),  tak że i*i = \-1.
+.br
+Istnieją inne sposoby reprezentowania tych liczb. Para (a,b) liczb
+rzeczywistych może być potraktowana jako punkt przestrzeni, określony przez
+współrzędne X i Y. Ten sam punkt może być opisany przez podanie pary liczb
+rzeczywistych (r, phi), gdzie r jest odległością od środka O, a phi jest
+kątem między linią współrzędnych X i linią Oz. Wtedy z = r*exp(i*phi) =
+r*(cos(phi)+i*sin(phi)).
+.PP
+Podstawowymi operacjami zdefiniowanymi na liczbach z = a+b*i oraz w = c+d*i
+są:
+.TP 
+\fBdodawanie: z+w = (a+c) + (b+d)*i\fP
+.TP 
+\fBmnożenie: z*w = (a*c \- b*d) + (a*d + b*c)*i\fP
+.TP 
+\fBdzielenie: z/w = ((a*c + b*d)/(c*c + d*d)) + ((b*c \- a*d)/(c*c + d*d))*i\fP
+.PP
+Prawie wszystkie funkcje matematyczne mają odpowiedniki dla liczb
+zespolonych, jednakże istnieje parę funkcji przeznaczonych tylko dla liczb
+zespolonych.
+.SH PRZYKŁAD
+Kompilator języka C może pracować z liczbami zespolonymi, jeżeli tylko
+obsługuje standard C99. Proszę linkować z \fI\-lm\fP. Część urojona jest
+reprezentowana przez I.
+.sp
+.nf
+/* sprawdza, że exp(i * pi) == \-1 */
+#include <math.h>        /* dla atan */
+#include <stdio.h>
+#include <complex.h>
+
+int
+main(void)
+{
+    double pi = 4 * atan(1.0);
+    double complex z = cexp(I * pi);
+    printf("%f + %f * i\en", creal(z), cimag(z));
+}
+.fi
+.SH "ZOBACZ TAKŻE"
+\fBcabs\fP(3), \fBcacos\fP(3), \fBcacosh\fP(3), \fBcarg\fP(3), \fBcasin\fP(3),
+\fBcasinh\fP(3), \fBcatan\fP(3), \fBcatanh\fP(3), \fBccos\fP(3), \fBccosh\fP(3),
+\fBcerf\fP(3), \fBcexp\fP(3), \fBcexp2\fP(3), \fBcimag\fP(3), \fBclog\fP(3), \fBclog10\fP(3),
+\fBclog2\fP(3), \fBconj\fP(3), \fBcpow\fP(3), \fBcproj\fP(3), \fBcreal\fP(3), \fBcsin\fP(3),
+\fBcsinh\fP(3), \fBcsqrt\fP(3), \fBctan\fP(3), \fBctanh\fP(3)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

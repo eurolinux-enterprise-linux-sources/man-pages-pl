@@ -1,0 +1,244 @@
+.\" This page is in the public domain.
+.\" Almost all details are from RFC 2553.
+.\"
+.\" 2004-12-14, mtk, Added EAI_OVERFLOW error
+.\" 2004-12-14 Fixed description of error return
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2005, 2006, 2012.
+.TH GETNAMEINFO 3 2009\-12\-03 GNU "Podręcznik programisty Linuksa"
+.SH NAZWA
+getnameinfo \- tłumaczenie adresu na nazwę w sposób niezależny od protokołu
+.SH SKŁADNIA
+.nf
+\fB#include <sys/socket.h>\fP
+\fB#include <netdb.h>\fP
+.sp
+\fBint getnameinfo(const struct sockaddr *\fP\fIsa\fP\fB, socklen_t \fP\fIsalen\fP\fB,\fP
+\fB                char *\fP\fIhost\fP\fB, size_t \fP\fIhostlen\fP\fB,\fP
+\fB                char *\fP\fIserv\fP\fB, size_t \fP\fIservlen\fP\fB, int \fP\fIflags\fP\fB);\fP
+.fi
+.sp
+.in -4n
+Wymagane ustawienia makr biblioteki glibc (patrz \fBfeature_test_macros\fP(7)):
+.ad l
+.in
+.sp
+\fBgetnameinfo\fP(): _POSIX_C_SOURCE\ >=\ 1 || _XOPEN_SOURCE ||
+_POSIX_SOURCE
+.ad b
+.SH OPIS
+Funkcja \fBgetnameinfo\fP() jest odwrotnością funkcji \fBgetaddrinfo\fP(3):
+tłumaczy, w sposób niezależny od protokołu, adres gniazda na odpowiadające
+mu nazwę komputera i usługi. Łączy w sobie funkcjonalność funkcji
+\fBgethostbyaddr\fP(3) oraz \fBgetservbyport\fP(3), ale w przeciwieństwie do nich
+jest bezpieczna dla wątków i pozwala programowi wyeliminować zależności od
+IPv4\-kontra\-IPv6.
+
+Argument \fIsa\fP jest wskaźnikiem do ogólnej struktury adresu gniazda (typu
+\fIsockaddr_in\fP lub \fIsockaddr_in6\fP) o rozmiarze \fIsalen\fP, która przechowuje
+wejściowy adres IP i numer portu. Argumenty \fIhost\fP i \fIport\fP są wskaźnikami
+do zaalokowanych przez program wywołujący tę funkcję buforów (odpowiednio o
+rozmiarach \fIhostlen\fP i \fIservlen\fP), w których \fBgetnameinfo\fP() umieści
+zakończone NULL\-em łańcuchy znaków zawierające odpowiednio nazwę komputera i
+nazwy usług.
+
+Funkcja wywołująca może określić, że nazwa komputera (lub nazwa serwisu) nie
+jest potrzebna, przez przekazanie wartości NULL w argumencie \fIhost\fP (lub
+\fIserv\fP) albo przez podanie 0 w parametrze \fIhostlen\fP (lub
+\fIservlen\fP). Jednakże co najmniej jeden z podanych parametrów (nazwa
+komputera lub nazwa serwisu) musi być ustawiony.
+
+Argument \fIflags\fP zmienia zachowanie \fBgetnameinfo\fP() w następujący sposób:
+.TP 
+\fBNI_NAMEREQD\fP
+Jeśli ustawiono, to w razie nieznalezienia nazwy komputera zwracany jest
+błąd.
+.TP 
+\fBNI_DGRAM\fP
+Jeżeli ustawiono, to serwis jest oparty raczej na datagramach (UDP) niż na
+strumieniach (TCP). Jest to wymagane dla kilku portów (512\-514), które mają
+przypisane inne serwisy dla UDP niż dla TCP.
+.TP 
+\fBNI_NOFQDN\fP
+Jeżeli ustawiono, to zwracana jest tylko lokalna część nazwy komputera, a
+nie jego pełną domenowa nazwa sieciowa.
+.TP 
+\fBNI_NUMERICHOST\fP
+.\" For example, by calling
+.\" .BR inet_ntop ()
+.\" instead of
+.\" .BR gethostbyaddr ().
+.\" POSIX.1-2003 has NI_NUMERICSCOPE, but glibc doesn't have it.
+Jeśli ustawiono, to nazwa komputera jest zwracana w formie
+numerycznej. (Może się to również zdarzyć wtedy, gdy nie ustawiono tej flagi
+i nie można znaleźć nazwy komputera).
+.TP 
+\fBNI_NUMERICSERV\fP
+Jeśli ustawiono, to nazwa komputera jest zwracana w formie
+numerycznej. (Może się to również zdarzyć wtedy, gdy nie ustawiono tej flagi
+i nie można znaleźć nazwy komputera).
+.SS "Rozszerzenia getaddrinfo() dotyczące międzynarodowych nazw domen"
+.PP
+Począwszy do wersji 2.3.4 biblioteki glibc, \fBgetnameinfo\fP() został
+rozszerzony i pozwala na przezroczystą konwersję nazw komputerów do i z
+formatu międzynarodowych nazw domenowych (Internationalized Domain Name \(em
+IDN; patrz RFC\ 3490, \fIInternationalizing Domain Names in Applications
+(IDNA)\fP). Zostały zdefiniowane trzy nowe flagi:
+.TP 
+\fBNI_IDN\fP
+Jeśli użyto tego znacznika, to nazwa znaleziona przez proces wyszukiwania
+jest konwertowana z formatu IDN na kodowanie zgodne z bieżącymi ustawieniami
+językowymi. Nazwy składające się wyłącznie ze znaków ASCII nie są zmieniane,
+co pozwala na bezproblemowe używanie tego znacznika w istniejących
+programach i środowiskach.
+.TP 
+\fBNI_IDN_ALLOW_UNASSIGNED\fP, \fBNI_IDN_USE_STD3_ASCII_RULES\fP
+Ustawienie tych znaczników włączy odpowiednio znaczniki
+IDNA_ALLOW_UNASSIGNED (zezwala na używanie nieprzypisanych znaków Unikodu) i
+IDNA_USE_STD3_ASCII_RULES (upewnia się, że zwracana nazwa komputera jest
+zgodna ze standardem STD3), które będą używane podczas obsługi IDNA.
+.SH "WARTOŚĆ ZWRACANA"
+.\" FIXME glibc defines the following additional errors, some which
+.\" can probably be returned by getnameinfo(); they need to
+.\" be documented.
+.\" #ifdef __USE_GNU
+.\" #define EAI_INPROGRESS  -100  /* Processing request in progress.  */
+.\" #define EAI_CANCELED    -101  /* Request canceled.  */
+.\" #define EAI_NOTCANCELED -102  /* Request not canceled.  */
+.\" #define EAI_ALLDONE     -103  /* All requests done.  */
+.\" #define EAI_INTR        -104  /* Interrupted by a signal.  */
+.\" #define EAI_IDN_ENCODE  -105  /* IDN encoding failed.  */
+.\" #endif
+W przypadku powodzenia zwracane jest 0, a nazwy komputera i usług, jeśli ich
+zażądano, są wypełniane łańcuchami znaków zakończonymi NULL\-em. Nazwy te
+mogą zostać obcięte, tak aby zmieściły się w podanych długościach bufora. W
+razie błędu zwracany jest jeden z poniższych niezerowych kodów błędu:
+.TP 
+\fBEAI_AGAIN\fP
+Obecnie nie można znaleźć nazwy. Proszę spróbować później.
+.TP 
+\fBEAI_BADFLAGS\fP
+Argument \fIflags\fP ma niepoprawną wartość.
+.TP 
+\fBEAI_FAIL\fP
+Wystąpił błąd krytyczny.
+.TP 
+\fBEAI_FAMILY\fP
+Nieznana rodzina adresów lub długość adresu nie jest odpowiednia dla podanej
+rodziny.
+.TP 
+\fBEAI_MEMORY\fP
+Brak pamięci.
+.TP 
+\fBEAI_NONAME\fP
+Nie można rozwinąć nazwy dla podanych parametrów. Ustawiono \fBNI_NAMEREQD\fP,
+a nie można znaleźć nazwy komputera albo nie zażądano ani nazwy komputera,
+ani nazwy serwisu.
+.TP 
+\fBEAI_OVERFLOW\fP
+Bufor, na który wskazywał parametr \fIhost\fP lub \fIserv\fP, był za mały.
+.TP 
+\fBEAI_SYSTEM\fP
+Wystąpił błąd systemowy. Numer błędu można znaleźć w zmiennej \fIerrno\fP.
+.PP
+Funkcja \fBgai_strerror\fP(3) przekształca te kody błędów w komunikat
+zrozumiały dla człowieka, więc jest odpowiednia do raportowania błędów.
+.SH PLIKI
+/etc/hosts
+.br
+/etc/nsswitch.conf
+.br
+/etc/resolv.conf
+.SH WERSJE
+\fBgetnameinfo\fP() jest dostarczane przez glibc od wersji 2.1.
+.SH "ZGODNE Z"
+RFC\ 2553, POSIX.1\-2001.
+.SH UWAGI
+Aby pomóc programiście w wyborze odpowiedniego rozmiaru buforów, w
+\fI<netdb.h>\fP zdefiniowano stałe
+.in +4n
+.nf
+
+#define NI_MAXHOST      1025
+#define NI_MAXSERV      32
+.fi
+.in
+
+Od glibc 2.8 powyższe definicje są dostępne, jeśli zdefinowano jedno z
+następujących makr:  \fB_BSD_SOURCE\fP, \fB_SVID_SOURCE\fP lub \fB_GNU_SOURCE\fP.
+.PP
+Pierwsza z nich jest stałą \fBMAXDNAME\fP zdefiniowaną w pliku nagłówkowym
+\fI<arpa/nameser.h>\fP z nowszych wersji BIND\-a. Druga jest zgadywaniem
+opartym na liście serwisów w bieżącym RFC dotyczącym przypisanych numerów
+(Assigned Numbers RFC).
+.SH PRZYKŁAD
+Następujący kod próbuje pobrać numeryczną nazwę komputera i nazwę usługi dla
+podanego adresu gniazda. Proszę zauważyć, że nie ustawiono na sztywno żadnej
+rodziny adresów.
+
+.in +4n
+.nf
+struct sockaddr *sa;    /* wejście */
+socklen_t len;         /* wejście */
+char hbuf[NI_MAXHOST], sbuf[NI_MAXSERV];
+
+if (getnameinfo(sa, len, hbuf, sizeof(hbuf), sbuf,
+            sizeof(sbuf), NI_NUMERICHOST | NI_NUMERICSERV) == 0)
+    printf("komputer=%s, serwis=%s\en", hbuf, sbuf);
+.fi
+.in
+
+Następująca wersja sprawdza, czy adres gniazda ma odwrotne mapowanie adresu.
+
+.in +4n
+.nf
+struct sockaddr *sa;    /* wejście */
+socklen_t len;         /* wejście */
+char hbuf[NI_MAXHOST];
+
+if (getnameinfo(sa, len, hbuf, sizeof(hbuf),
+            NULL, 0, NI_NAMEREQD))
+    printf("nie można znaleźć nazwy komputera");
+else
+    printf("komputer=%s\en", hbuf);
+.fi
+.in
+.PP
+Przykładowy program używający \fBgetnameinfo\fP() można znaleźć w
+\fBgetaddrinfo\fP(3).
+.SH "ZOBACZ TAKŻE"
+\fBaccept\fP(2), \fBgetpeername\fP(2), \fBgetsockname\fP(2), \fBrecvfrom\fP(2),
+\fBsocket\fP(2), \fBgetaddrinfo\fP(3), \fBgethostbyaddr\fP(3), \fBgetservbyname\fP(3),
+\fBgetservbyport\fP(3), \fBinet_ntop\fP(3), \fBhosts\fP(5), \fBservices\fP(5),
+\fBhostname\fP(7), \fBnamed\fP(8)
+.LP
+R. Gilligan, S. Thomson, J. Bound i W. Stevens, \fIBasic Socket Interface
+Extensions for IPv6\fP, RFC\ 2553, marzec 1999.
+.LP
+Tatsuya Jinmei i Atsushi Onoe, \fIAn Extension of Format for IPv6 Scoped
+Addresses\fP, szkic internetowy, prace
+trwają.
+ftp://ftp.ietf.org/internet\-drafts/draft\-ietf\-ipngwg\-scopedaddr\-format\-02.txt
+.LP
+Craig Metz, \fIProtocol Independence Using the Sockets API\fP, Proceedings of
+the freenix track:  Coroczna techniczna konferencja USENIX 2000, czerwiec
+2000.
+http://www.usenix.org/publications/library/proceedings/usenix2000/freenix/metzprotocol.html
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

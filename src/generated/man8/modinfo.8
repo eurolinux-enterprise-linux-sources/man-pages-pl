@@ -1,0 +1,131 @@
+.\" t
+.\"     Title: modinfo
+.\"    Author: Jon Masters <jcm@jonmasters.org>
+.\" Generator: DocBook XSL Stylesheets v1.77.0 <http://docbook.sf.net/>
+.\"      Date: 06/19/2012
+.\"    Manual: modinfo
+.\"    Source: kmod
+.\"  Language: English
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2011 ProFUSION embedded systems (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>, 2001.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH MODINFO 8 19/06/2012 kmod modinfo
+.ie  \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH NAZWA
+modinfo \- wypisuje informacje o module jądra Linux
+.SH SKŁADNIA
+.HP \w'\fBmodinfo\fR\ 'u
+\fBmodinfo\fP [\fB\-0\fP] [\fB\-F\ \fP\fIpole\fP] [\fB\-k\ \fP\fIjądro\fP]
+[\fInazwa\-modułu\fP|\fInazwa\-pliku\fP...]
+.HP \w'\fBmodinfo\ \-V\fR\ 'u
+\fBmodinfo \-V\fP
+.HP \w'\fBmodinfo\ \-h\fR\ 'u
+\fBmodinfo \-h\fP
+.SH OPIS
+.PP
+
+\fBmodinfo\fP pobiera informacje o modułach jądra Linux, podanych w wierszu
+polecenia. Jeśli nazwa modułu nie jest nazwą pliku, to przeszukiwany jest
+katalog /lib/modules/\fIwersja\fP, co czynione jest również przez
+\fBmodprobe\fP(8), gdy ładuje ono moduły jądra.
+.PP
+
+\fBmodinfo\fP domyślnie wypisuje listę wszystkich atrybutów modułu w postaci
+\fInazwa\-pola\fP : \fIwartość\fP, co umożliwia łatwe odczytanie. Nazwa pliku jest
+wypisana w ten sam sposób (choć nie jest ona w rzeczywistości atrybutem).
+.PP
+Ta wersja \fBmodinfo\fP potrafi zrozumieć moduły z dowolnej architektury jądra
+Linux.
+.SH OPCJE
+.PP
+\fB\-V\fP \fB\-\-version\fP
+.RS 4
+Wypisuje wersję modinfo.
+.RE
+.PP
+\fB\-F\fP \fB\-\-field\fP
+.RS 4
+Wypisuje jedynie daną wartość pola, po jednej na wiersz. Przydatne w
+skryptach. Nazwy pól są niewrażliwe na wielkość znaków. Częstymi polami
+(które nie muszą być obecne w każdym module) są: author (autor), description
+(opis), license (licencja), parm (parametry), depends (wymagane zależności)
+i alias. Często spotyka się wiele pól parm, alias i depends. Specjalne pole
+filename zawiera nazwę pliku modułu.
+.RE
+.PP
+\fB\-k \fP\fIjądro\fP
+.RS 4
+Udostępnia informacje o innym jądrze niż aktualnie działające. Przydatne
+szczególnie dla dystrybucji, które muszą pozyskać informacje z nowo
+zainstalowanego (ale jeszcze nieuruchomionego) zestawu modułów jądra. Na
+przykład można chcieć znaleźć pliki firmware, które są wymagane przez różne
+moduły w nowym jądrze, do których trzeba przygotować obraz initrd/initramfs
+przed ponownym uruchomieniem komputera.
+.RE
+.PP
+\fB\-0\fP \fB\-\-null\fP
+.RS 4
+Używa znaku zera ASCII do oddzielenia wartości pól, zamiast znaku nowego
+wiersza. Przydatne w skryptach, ponieważ znak nowego wiersza może
+teoretycznie pojawić się wewnątrz pola.
+.RE
+.PP
+\fB\-a\fP \fB\-d\fP \fB\-l\fP \fB\-p\fP \fB\-n\fP
+.RS 4
+Są to skróty odpowiednio do pól: author (autor), description (opis), license
+(licencja), parm (parametry) i filename (nazwa pliku), w celu łatwego
+przejścia ze starego programu \fBmodinfo\fP z modutils.
+.RE
+.SH PRAWA\ AUTORSKIE
+.PP
+Pierwotnie: Copyright 2003, Rusty Russell, IBM Corporation\&. Strona
+podręcznika jest obecnie zarządzana przez Jona Mastersa i innych\&.
+.SH "ZOBACZ TAKŻE"
+.PP
+
+\fBmodprobe\fP(8)
+.SH AUTORZY
+.PP
+\fBJon Masters\fP <\&jcm@jonmasters\&.org\&>
+.RS 4
+Deweloper
+.RE
+.PP
+\fBLucas De Marchi\fP <\&lucas\&.demarchi@profusion\&.mobi\&>
+.RS 4
+Deweloper
+.RE
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 9 \fPoryginału.

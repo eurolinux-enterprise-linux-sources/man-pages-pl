@@ -1,0 +1,396 @@
+# Polish translation of environ.7 man page
+# This file is distributed under the same license as original manpage
+# Copyright of the original manpage:
+# Copyright © 1993 Michael Haardt, 1997 Andries Brouwer (GPL-2+)
+# Copyright © of Polish translation:
+# Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+# Robert Luberda <robert@debian.org>, 2006, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-pl\n"
+"POT-Creation-Date: 2012-05-13 19:07+0300\n"
+"PO-Revision-Date: 2012-04-05 20:10+0200\n"
+"Last-Translator: Robert Luberda <robert@debian.org>\n"
+"Language-Team: Polish <manpages-pl-list@lists.sourceforge.net>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+
+#. type: TH
+#, no-wrap
+msgid "ENVIRON"
+msgstr "ENVIRON"
+
+#. type: TH
+#, no-wrap
+msgid "2009-07-25"
+msgstr "2009-07-25"
+
+#. type: TH
+#, no-wrap
+msgid "Linux"
+msgstr "Linux"
+
+#. type: TH
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr "Podręcznik programisty Linuksa"
+
+#. type: SH
+#, no-wrap
+msgid "NAME"
+msgstr "NAZWA"
+
+#. type: Plain text
+msgid "environ - user environment"
+msgstr "environ - środowisko użytkownika"
+
+#. type: SH
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "SKŁADNIA"
+
+#. type: Plain text
+#, no-wrap
+msgid "B<extern char **>I<environ>B<;>\n"
+msgstr "B<extern char **>I<environ>B<;>\n"
+
+#. type: SH
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "OPIS"
+
+#. type: Plain text
+msgid ""
+"The variable I<environ> points to an array of pointers to strings called the "
+"\"environment\".  The last pointer in this array has the value NULL.  (This "
+"variable must be declared in the user program, but is declared in the header "
+"file I<E<lt>unistd.hE<gt>> in case the header files came from libc4 or "
+"libc5, and in case they came from glibc and B<_GNU_SOURCE> was defined.)  "
+"This array of strings is made available to the process by the B<exec>(3)  "
+"call that started the process."
+msgstr ""
+"Zmienna I<environ> wskazuje na tablicę łańcuchów zwaną \"środowiskiem\". "
+"Ostatni wskaźnik w tej tablicy musi mieć wartość NULL. (Zmienna ta musi być "
+"zadeklarowana w programie użytkownika, jednakże jest ona zadeklarowana w "
+"pliku nagłówkowym I<unistd.h>, w przypadku gdy plik ten pochodzi z libc4 lub "
+"libc5 oraz w przypadku gdy pochodzi on z glibc i zdefiniowano "
+"B<_GNU_SOURCE>. Ta tablica łańcuchów udostępniana jest procesowi przez "
+"funkcję B<exec>(3) podczas jego uruchamiania. "
+
+#. type: Plain text
+msgid ""
+"By convention the strings in I<environ> have the form \"I<name>B<=>I<value>"
+"\".  Common examples are:"
+msgstr ""
+"Zgodnie z konwencją łańcuchy znaków w tablicy I<environ> mają postać "
+"\"I<nazwa>B<=>I<wartość>\". Typowe przykłady to:"
+
+#. type: TP
+#, no-wrap
+msgid "B<USER>"
+msgstr "B<USER>"
+
+#. type: Plain text
+msgid "The name of the logged-in user (used by some BSD-derived programs)."
+msgstr ""
+"Nazwa zalogowanego użytkownika (wykorzystywana przez niektóre programy "
+"wywodzące się z BSD)."
+
+#. type: TP
+#, no-wrap
+msgid "B<LOGNAME>"
+msgstr "B<LOGNAME>"
+
+#. type: Plain text
+msgid ""
+"The name of the logged-in user (used by some System-V derived programs)."
+msgstr ""
+"Nazwa zalogowanego użytkownika (wykorzystywana przez niektóre programy "
+"wywodzące się z Systemu V)."
+
+#. type: TP
+#, no-wrap
+msgid "B<HOME>"
+msgstr "B<HOME>"
+
+#. type: Plain text
+msgid ""
+"A user's login directory, set by B<login>(1)  from the password file "
+"B<passwd>(5)."
+msgstr ""
+"Katalog domowy użytkownika, zmienna ustawiana przez program B<login>(1) na "
+"podstawie informacji z pliku B<passwd>(5)."
+
+#. type: TP
+#, no-wrap
+msgid "B<LANG>"
+msgstr "B<LANG>"
+
+#. type: Plain text
+msgid ""
+"The name of a locale to use for locale categories when not overridden by "
+"B<LC_ALL> or more specific environment variables like B<LC_COLLATE>, "
+"B<LC_CTYPE>, B<LC_MESSAGES>, B<LC_MONETARY>, B<LC_NUMERIC>, B<LC_TIME>, cf.  "
+"B<locale>(5)."
+msgstr ""
+"Nazwa ustawień językowych, jaka ma być stosowana dla wszystkich kategorii "
+"ustawień, jeśli nie zostały narzucone przez zmienną B<LC_ALL> lub inne "
+"bardziej szczegółowe zmienne, jak B<LC_COLLATE>, B<LC_CTYPE>, "
+"B<LC_MESSAGES>, B<LC_MONETARY>, B<LC_NUMERIC>, B<LC_TIME>, por.  B<locale>"
+"(5)."
+
+#. type: TP
+#, no-wrap
+msgid "B<PATH>"
+msgstr "B<PATH>"
+
+#. type: Plain text
+msgid ""
+"The sequence of directory prefixes that B<sh>(1)  and many other programs "
+"apply in searching for a file known by an incomplete pathname.  The prefixes "
+"are separated by \\(aqB<:>\\(aq.  (Similarly one has B<CDPATH> used by some "
+"shells to find the target of a change directory command, B<MANPATH> used by "
+"B<man>(1)  to find manual pages, etc.)"
+msgstr ""
+"Sekwencja katalogów, które B<sh>(1) oraz wiele innych programów przeszukuje "
+"w poszukiwaniu plików, których nazwa nie zawiera pełnej ścieżki dostępu.  "
+"Poszczególne katalogi są rozdzielane znakiem \"B<:>\". (Podobnie, B<CDPATH> "
+"jest używane przez niektóre powłoki do poszukiwania katalogu docelowego dla "
+"polecenia zmiany katalogu, a B<MANPATH> jest używane przez B<man>(1) do "
+"poszukiwania stron podręcznika itd.)"
+
+#. type: TP
+#, no-wrap
+msgid "B<PWD>"
+msgstr "B<PWD>"
+
+#. type: Plain text
+msgid "The current working directory.  Set by some shells."
+msgstr "Bieżący katalog roboczy. Ustawiane przez niektóre powłoki."
+
+#. type: TP
+#, no-wrap
+msgid "B<SHELL>"
+msgstr "B<SHELL>"
+
+#. type: Plain text
+msgid "The pathname of the user's login shell."
+msgstr "Nazwa powłoki zgłoszeniowej użytkownika."
+
+#. type: TP
+#, no-wrap
+msgid "B<TERM>"
+msgstr "B<TERM>"
+
+#. type: Plain text
+msgid "The terminal type for which output is to be prepared."
+msgstr "Rodzaj terminala, dla którego system ma przygotowywać wyjście."
+
+#. type: TP
+#, no-wrap
+msgid "B<PAGER>"
+msgstr "B<PAGER>"
+
+#. type: Plain text
+msgid "The user's preferred utility to display text files."
+msgstr "Wybrane przez użytkownika narzędzie do wyświetlania plików tekstowych."
+
+#. type: TP
+#, no-wrap
+msgid "B<EDITOR>/B<VISUAL>"
+msgstr "B<EDITOR>/B<VISUAL>"
+
+#.  .TP
+#.  .B BROWSER
+#.  The user's preferred utility to browse URLs. Sequence of colon-separated
+#.  browser commands. See http://www.catb.org/~esr/BROWSER/ .
+#. type: Plain text
+msgid "The user's preferred utility to edit text files."
+msgstr "Wybrane przez użytkownika narzędzie do edycji plików tekstowych."
+
+#. type: Plain text
+msgid ""
+"Further names may be placed in the environment by the I<export> command and "
+"\"name=value\" in B<sh>(1), or by the I<setenv> command if you use B<csh>"
+"(1).  Arguments may also be placed in the environment at the point of an "
+"B<exec>(3).  A C program can manipulate its environment using the functions "
+"B<getenv>(3), B<putenv>(3), B<setenv>(3), and B<unsetenv>(3)."
+msgstr ""
+"Dalsze nazwy mogą być umieszczane w środowisku za pomocą polecenia I<export> "
+"i \"nazwa=wartość\" w przypadku stosowania powłoki typu B<sh>(1) lub "
+"polecenia I<setenv> w przypadku powłoki typu B<csh>(1). W środowisku mogą "
+"być również umieszczane argumenty w momencie wykonywania funkcji B<exec>(3). "
+"Program napisany w C może manipulować środowiskiem za pomocą funkcji "
+"B<getenv>(3), B<putenv>(3), B<setenv>(3) i B<unsetenv>(3)."
+
+#. type: Plain text
+msgid ""
+"Note that the behavior of many programs and library routines is influenced "
+"by the presence or value of certain environment variables.  A random "
+"collection:"
+msgstr ""
+"Trzeba zauważyć, że obecność lub wartości pewnych zmiennych środowiska mają "
+"wpływ na zachowanie wielu programów i funkcji bibliotecznych. Przypadkowy "
+"zbiór:"
+
+#. type: Plain text
+msgid ""
+"The variables B<LANG>, B<LANGUAGE>, B<NLSPATH>, B<LOCPATH>, B<LC_ALL>, "
+"B<LC_MESSAGES>, etc. influence locale handling, cf.  B<locale>(5)."
+msgstr ""
+"Zmienne B<LANG>, B<LANGUAGE>, B<NLSPATH>, B<LOCPATH>, B<LC_ALL>, "
+"B<LC_MESSAGES>, itd. wpływają na obsługę ustawień językowych, por. B<locale>"
+"(5)."
+
+#. type: Plain text
+msgid ""
+"B<TMPDIR> influences the path prefix of names created by B<tmpnam>(3)  and "
+"other routines, the temporary directory used by B<sort>(1)  and other "
+"programs, etc."
+msgstr ""
+"B<TMPDIR> wpływa na prefiks ścieżki w nazwach tworzonych przez B<tmpnam>(3) "
+"i inne funkcje, katalog tymczasowy wykorzystywany przez B<sort>(1) i inne "
+"programy itd."
+
+#. type: Plain text
+msgid ""
+"B<LD_LIBRARY_PATH>, B<LD_PRELOAD> and other LD_* variables influence the "
+"behavior of the dynamic loader/linker."
+msgstr ""
+"B<LD_LIBRARY_PATH>, B<LD_PRELOAD> i inne zmienne B<LD_*> wpływają na "
+"zachowanie programu ładującego/konsolidatora bibliotek dynamicznych."
+
+#. type: Plain text
+msgid ""
+"B<POSIXLY_CORRECT> makes certain programs and library routines follow the "
+"prescriptions of POSIX."
+msgstr ""
+"B<POSIXLY_CORRECT> powoduje, że niektóre programy i funkcje biblioteczne "
+"przestrzegają zaleceń POSIX."
+
+#. type: Plain text
+msgid "The behavior of B<malloc>(3)  is influenced by B<MALLOC_*> variables."
+msgstr "Na zachowanie B<malloc>(3) wpływają zmienne B<MALLOC_*>."
+
+#. type: Plain text
+msgid ""
+"The variable B<HOSTALIASES> gives the name of a file containing aliases to "
+"be used with B<gethostbyname>(3)."
+msgstr ""
+"Zmienna B<HOSTALIASES> określa nazwę pliku zawierającego aliasy, z których "
+"ma korzystać B<gethostbyname>(3)."
+
+#. type: Plain text
+msgid ""
+"B<TZ> and B<TZDIR> give timezone information used by B<tzset>(3)  and "
+"through that by functions like B<ctime>(3), B<localtime>(3), B<mktime>(3), "
+"B<strftime>(3).  See also B<tzselect>(8)."
+msgstr ""
+"B<TZ> i B<TZDIR> podają informacje o strefie czasowej wykorzystywaną przez "
+"B<tzset>(3) i przez funkcje takie jak I<ctime>(3), I<localtime>(3), I<mktime>"
+"(3), I<strftime>(3).  Zobacz także B<tzselect>(8)."
+
+#. type: Plain text
+msgid ""
+"B<TERMCAP> gives information on how to address a given terminal (or gives "
+"the name of a file containing such information)."
+msgstr ""
+"B<TERMCAP> podaje informacje o tym, jak adresować określony terminal (lub "
+"podaje nazwę pliku zawierającego te informacje)."
+
+#. type: Plain text
+msgid ""
+"B<COLUMNS> and B<LINES> tell applications about the window size, possibly "
+"overriding the actual size."
+msgstr ""
+"B<COLUMNS> i B<LINES> mówią aplikacjom o rozmiarze okna, ewentualnie "
+"narzucając wartości inne niż rzeczywiste rozmiary."
+
+#. type: Plain text
+msgid ""
+"B<PRINTER> or B<LPDEST> may specify the desired printer to use.  See B<lpr>"
+"(1)."
+msgstr ""
+"B<PRINTER> lub B<LPDEST> mogą określać drukarkę, która powinna być używana. "
+"Zobacz B<lpr>(1)."
+
+#. type: Plain text
+msgid "Etc."
+msgstr "I tak dalej."
+
+#. type: SH
+#, no-wrap
+msgid "BUGS"
+msgstr "BŁĘDY"
+
+#. type: Plain text
+msgid ""
+"Clearly there is a security risk here.  Many a system command has been "
+"tricked into mischief by a user who specified unusual values for B<IFS> or "
+"B<LD_LIBRARY_PATH>."
+msgstr ""
+"Oczywiście istnieje tu ryzyko naruszenia bezpieczeństwa. Wiele poleceń "
+"systemowych zostało oszukanych w celu wyrządzenia szkody przez użytkownika, "
+"który nadał nietypowe wartości zmiennym B<IFS> lub B<LD_LIBRARY_PATH>."
+
+#. type: Plain text
+msgid ""
+"There is also the risk of name space pollution.  Programs like I<make> and "
+"I<autoconf> allow overriding of default utility names from the environment "
+"with similarly named variables in all caps.  Thus one uses B<CC> to select "
+"the desired C compiler (and similarly B<MAKE>, B<AR>, B<AS>, B<FC>, B<LD>, "
+"B<LEX>, B<RM>, B<YACC>, etc.).  However, in some traditional uses such an "
+"environment variable gives options for the program instead of a pathname.  "
+"Thus, one has B<MORE>, B<LESS>, and B<GZIP>.  Such usage is considered "
+"mistaken, and to be avoided in new programs.  The authors of I<gzip> should "
+"consider renaming their option to B<GZIP_OPT>."
+msgstr ""
+"Istnieje również ryzyko skażenia przestrzeni nazw. Programy takie jak "
+"I<make> i I<autoconf> pozwalają na nadpisywanie domyślnych nazw programów "
+"narzędziowych poprzez środowisko zawierające zmienne o nazwach podobnych do "
+"nazw tych programów, ale składających się wyłącznie z wielkich liter.  Zatem "
+"używa się B<CC> do określenia pożądanego kompilatora C (i podobnie B<MAKE>, "
+"B<AR>, B<AS>, B<FC>, B<LD>, B<LEX>, B<RM>, B<YACC> itd.).  Jednakże, w "
+"niektórych tradycyjnych zastosowaniach takie zmienne środowiskowe podają "
+"opcje dla programów zamiast ścieżki. Zatem mamy B<MORE>, B<LESS> i B<GZIP>. "
+"Takie zastosowanie jest traktowane jako błędne i należy go unikać w nowych "
+"programach. Autorzy programu I<gzip> powinni rozważyć zmianę nazwy swojej "
+"opcji na B<GZIP_OPT>."
+
+#. type: SH
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "ZOBACZ TAKŻE"
+
+#. type: Plain text
+msgid ""
+"B<bash>(1), B<csh>(1), B<login>(1), B<sh>(1), B<tcsh>(1), B<execve>(2), "
+"B<clearenv>(3), B<exec>(3), B<getenv>(3), B<putenv>(3), B<setenv>(3), "
+"B<unsetenv>(3), B<locale>(5)"
+msgstr ""
+"B<bash>(1), B<csh>(1), B<login>(1), B<sh>(1), B<tcsh>(1), B<execve>(2), "
+"B<clearenv>(3), B<exec>(3), B<getenv>(3), B<putenv>(3), B<setenv>(3), "
+"B<unsetenv>(3), B<locale>(5)"
+
+#. type: SH
+#, no-wrap
+msgid "COLOPHON"
+msgstr "O STRONIE"
+
+#. type: Plain text
+msgid ""
+"This page is part of release 3.40 of the Linux I<man-pages> project.  A "
+"description of the project, and information about reporting bugs, can be "
+"found at http://www.kernel.org/doc/man-pages/."
+msgstr ""
+"Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux I<man-"
+"pages>. Opis projektu oraz informacje dotyczące zgłaszania błędów można "
+"znaleźć pod adresem http://www.kernel.org/doc/man-pages/."
+
+#~ msgid "2001-12-14"
+#~ msgstr "2001-12-14"

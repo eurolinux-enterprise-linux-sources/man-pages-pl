@@ -1,0 +1,106 @@
+.\" Copyright (C) 2007 Michael Kerrisk <mtk.manpages@gmail.com>
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" 2007-10-23 mtk: moved the _syscallN specific material to the
+.\"     new _syscall(2) page, and substantially enhanced and rewrote
+.\"     the remaining material on this page.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2007 Michael Kerrisk 
+.\" Copyright © of Polish translation:
+.\" Adam Byrtek (PTM) <alpha@irc.pl>, 1999.
+.\" Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>, 2002.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH INTRO 2 11\-11\-2010 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+intro \- wprowadzenie do wywołań systemowych
+.SH OPIS
+Dział 2. podręcznika opisuje wywołania systemowe Linuksa. Wywołanie
+systemowe jest punktem dostępu do jądra Linux. Nie są one zwykle wywoływane
+bezpośrednio: większość wywołań systemowych posiada odpowiednie funkcje
+obudowujące biblioteki C, które przeprowadzają wymagane kroki (np. przejście
+do trybu jądra), aby je wywołać. Dlatego wykonanie wywołania systemowego
+wygląda tak samo, jak wywołanie zwykłej funkcji bibliotecznej.
+
+Lista wywołań systemowych Linuksa jest dostępna w podręczniku
+\fBsyscalls\fP(2).
+.SH "WARTOŚĆ ZWRACANA"
+W przypadku błędu, większość wywołań zwraca ujemną liczbę błędu (tzn. ujemną
+wartość jednej ze stałych opisanych w \fBerrno\fP(3)). Opakowania biblioteki C
+ukrywają te detale przed wywołującym: gdy wywołanie systemowe zwróci wartość
+ujemną, opakowanie kopiuje wartość absolutną do zmiennej \fIerrno\fP i zwraca
+\-1 jako wartość zwracaną przez opakowanie.
+
+Wartość zwracana przez udane wywołanie systemowe zależy od niego. Wiele
+wywołań zwraca przy powodzeniu 0, lecz niektóre zwracają również wartości
+niezerowe przy pomyślnym wywołaniu systemowym. Detale są opisane w
+poszczególnych stronach podręcznika.
+
+W niektórych przypadkach, programista musi zdefiniować testowe makro funkcji
+aby pozyskać deklarację wywołania systemowego z pliku nagłówkowego opisanego
+w rozdziale SKŁADNIA strony podręcznika systemowego (gdy jest to wymagane,
+takie makra muszą być zdefiniowane przez dołączeniem \fIjakichkolwiek\fP plików
+nagłówkowych). W takich sytuacjach, wymagane makro jest opisane w
+odpowiednim podręczniku systemowym. Więcej informacji o testowych makrach
+funkcji można znaleźć w \fBfeature_test_macros\fP(7).
+.SH "ZGODNE Z"
+Poszczególne zwroty i skróty używane do określenia wariantów Uniksa i
+standardów, do których wywołania w tym dziale się stosują. Patrz
+\fBstandards\fP(7).
+.SH UWAGI
+.SS "Bezpośrednie wywoływanie"
+W większości przypadków nie ma potrzeby bezpośredniego wywoływania wywołań
+systemowych, lecz czasem zdarza się, że jakaś przydatna funkcja systemowa
+nie ma zaimplementowanego przydatnej funkcji opakowującej w standardowej
+bibliotece C. Programista musi wówczas wywołać wywołanie systemowe ręcznie,
+za pomocą \fBsyscall\fP(2). Dawniej można było użyć również jednego z makr
+_syscall, opisanych w \fB_syscall\fP(2).
+.SS "Autorzy i prawa autorskie"
+Nagłówek źródeł każdej strony podręcznika systemowego zawiera informacje o
+autorach i warunkach wykorzystania. Mogą się one różnić, w zależności od
+strony.
+.SH "ZOBACZ TAKŻE"
+.ad l
+.nh
+\fB_syscall\fP(2), \fBsyscall\fP(2), \fBsyscalls\fP(2), \fBerrno\fP(3), \fBintro\fP(3),
+\fBcapabilities\fP(7), \fBcredentials\fP(7), \fBfeature_test_macros\fP(7),
+\fBmq_overview\fP(7), \fBpath_resolution\fP(7), \fBpipe\fP(7), \fBpty\fP(7),
+\fBsem_overview\fP(7), \fBshm_overview\fP(7), \fBsignal\fP(7), \fBsocket\fP(7),
+\fBstandards\fP(7), \fBsvipc\fP(7), \fBsymlink\fP(7), \fBtime\fP(7)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Adam Byrtek (PTM) <alpha@irc.pl>,
+Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

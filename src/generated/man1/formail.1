@@ -1,0 +1,484 @@
+.de  Id
+.ds Rv \\$3
+.ds Dt \\$4
+..
+.\"if n .pl +(135i-\n(.pu)
+.Id $Id: formail.man,v 1.46 2001/08/04 06:08:17 guenther Exp $
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1990-1999 S.R. van den Berg, 1999-2001 Philip Guenther (Artistic or GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Jarek Woloszyn (PTM) <yossa@dione.ids.pl>, 1998.
+.\" Robert Luberda <robert@debian.org>, 2004, 2012.
+.TH FORMAIL 1 \*(Dt BuGless 
+.rn SH Sh
+.de  SH
+.br
+.ne 11
+.Sh "\\$1"
+..
+.rn SS Ss
+.de  SS
+.br
+.ne 10
+.Ss "\\$1"
+..
+.rn TP Tp
+.de  TP
+.br
+.ne 9
+.Tp \\$1
+..
+.rn RS Rs
+.de  RS
+.na
+.nf
+.Rs
+..
+.rn RE Re
+.de  RE
+.Re
+.fi
+.ad
+..
+.de  Sx
+.PP
+.ne \\$1
+.RS
+..
+.de  Ex
+.RE
+.PP
+..
+.SH NAZWA
+formail \- program do zmiany formatu listów (e\-mail)
+.SH SKŁADNIA
+.na
+\fBformail\fP [\fB\+\fP\fIskip\fP] [\fB\-\fP\fItotal\fP] [\fB\-bczfrktedqBY\fP] [\fB\-p\fP
+\fIprefiks\fP]
+.if " n .ti +0.5i"
+[\fB\-D\fP \fImax_dług idcache\fP]
+.if " n .ti +0.5i"
+[\fB\-l\fP \fIfolder\fP]
+.if " n .ti +0.5i"
+[\fB\-x\fP \fIpole_nagłówka\fP] [\fB\-X\fP \fIpole_nagłówka\fP]
+.if " n .ti +0.5i"
+[\fB\-a\fP \fIpole_nagłówka\fP] [\fB\-A\fP \fIpole_nagłówka\fP]
+.if " n .ti +0.5i"
+[\fB\-i\fP \fIpole_nagłówka\fP] [\fB\-I\fP \fIpole_nagłówka\fP]
+.if " n .ti +0.5i"
+[\fB\-u\fP \fIpole_nagłówka\fP] [\fB\-U\fP \fIpole_nagłówka\fP]
+.if " n .ti +0.5i"
+[\fB\-R\fP \fIstare_pole\fP \fInowe_pole\fP]
+.if " n .ti +0.5i"
+[\fB\-n\fP [\fImax_proc\fP ]] [\fB\-m\fP \fImin_pól\fP] [\fB\-s\fP [\fIpolecenie\fP [\fIarg\fP
+\&.\|.\|.\|]]]
+.br
+\fBformail\fP \fB\-v\fP
+.ad
+.SH OPIS
+\fBformail\fP jest filtrem, który może być użyty do zmiany listu do formatu
+skrzynki pocztowej, komentowania "From ", generowania nagłówków
+automatycznej odpowiedzi, robienia prostego włączania i wyłączania pól
+nagłówka, dzielenia pliku z listami lub artykułami. Streszczenie
+(ang. digest)/skrzynka pocztowa/artykuł pobierane są ze standardowego
+wejścia.
+.PP
+Jeśli oczekiwane jest, że formail określi nadawcę listu, a nie może tego
+zrobić, to użyje "foo@bar".
+.PP
+Jeśli formail zostanie uruchomiony bez żadnych opcji, zmieni format listu
+pobranego ze standardowego wejścia na format skrzynki pocztowej i poprzedzi
+\fBwszystkie\fP niepotrzebne pola "From " znakiem ">".
+.SH OPCJE
+.TP  0.5i
+\fB\-v\fP
+Formail wypisze informacje o wersji i zakończy działanie
+.TP 
+\fB\-b\fP
+Nie usuwa pól nagłówka uważanych za niepotrzebne (np. linii zaczynających
+się od "From ").
+.TP 
+\fB\-p\fP\fI prefiks\fP
+Zmiana znaku komentarza na \fIprefiks\fP. Jeżeli nie podano, formail używa
+">".
+.TP 
+\fB\-Y\fP
+Przyjmuje tradycyjny (Berkeley) format skrzynki, ignorując wszelkie pola
+\fBContent\-Length:\fP.
+.TP 
+\fB\-c\fP
+Łączy podzielone w nagłówku pola. Może być wygodne przy późniejszej edycji
+listu standardowym (zorientowanym liniowo) narzędziem tekstowym.
+.TP 
+\fB\-z\fP
+Zapewnia odstęp pomiędzy nazwą i zawartością pola. Usuwa pola zawierające
+tylko pojedynczy biały znak. Usuwa początkową i końcową twardą spację w
+polach wyciągniętych przy użyciu \fB\-x\fP.
+.TP 
+\fB\-f\fP
+Zmusza formail do pominięcia formatu innego niż skrzynka pocztowa (np. nie
+generuje "From " jako pierwszej linii).
+.TP 
+\fB\-r\fP
+Generuje nagłówek automatycznej odpowiedzi. Polega to zwykle na odrzuceniu
+wszystkich istniejących pól z oryginalnej wiadomości (oprócz X\-Loop:). Pola,
+które mają być zachowane, muszą zostać podane w opcji \fB\-i\fP. Jeśli zostanie
+użyte w połączeniu z \fB\-k\fP, można zapobiec komentowaniu treści przez użycie
+\fB\-b\fP.
+.TP 
+\fB\-k\fP
+W czasie tworzenia nagłówka automatycznej odpowiedzi lub wyciągania pól,
+zachowuje treść listu.
+.TP 
+\fB\-t\fP
+Ufa nadawcy, że podał właściwy adres zwrotny. Ta opcja powoduje, że formail
+wybierze do odpowiedzi \fInadawcę z nagłówka maila\fP (tj. nagłówka określonego
+przez nadawcę)  zamiast \fInadawcę z koperty maila\fP (tj. nagłówka utworzonego
+automatycznie przez serwer pocztowy). Opcja powinna być używana podczas
+tworzenia nagłówków automatycznej odpowiedzi na artykuły z grup dyskusyjnych
+(news) albo gdy nadawca wiadomości spodziewa się odpowiedzi.
+.TP 
+\fB\-s\fP
+Treść na wejściu programu zostanie podzielona na oddzielne listy, a potem
+przekazana pojedynczo potokiem do programu (dla każdej części zostanie
+uruchomiony nowy program). \fB\-s\fP musi być ostatnią podaną opcją. Pierwszy
+argument po tej opcji powinien być nazwą programu. Każdy następny zostanie
+przekazany programowi jako opcja. Jeśli pominie się nazwę programu, formail
+połączy wszystkie listy w stdout. Zobacz także \fBFILENO\fP.
+.TP 
+\fB\-n\fP\fI [max_proc]\fP
+Mówi formailowi, aby nie czekał na zakończenie każdego programu przed
+uruchomieniem następnego (sprawia, że poszczególne części są obrabiane
+równolegle). Opcjonalny parametr \fImax_proc\fP określa górny limit liczby
+jednocześnie uruchomionych procesów,
+.TP 
+\fB\-e\fP
+Nie wymaga pustych linii przed początkiem nagłówka kolejnego listu (np. list
+może zaczynać się w każdej linii).
+.TP 
+\fB\-d\fP
+Mówi formailowi, że wiadomości, które mają być podzielone, nie muszą być w
+sztywnym formacie skrzynki pocztowej (pozwala to na dzielenie
+artykułów/streszczeń lub skrzynek w niestandardowych formatach). Ta opcja
+wyłącza rozpoznawanie pola \fBContent\-Length:\fP
+.TP 
+\fB\-l folder\fP
+Tworzy plik z logiem w takim samym formacie jak procmail. Zawiera on całą
+linię "From ", nagłówek "Subject:", nazwę folderu poczty oraz rozmiar
+wiadomości w bajtach. Poleceniem \fBmailstat\fP(1) można wyświetlić
+podsumowanie logów w tym formacie.
+.TP 
+\fB\-B\fP
+Sprawia, że formail przyjmuje, że będzie dzielił plik w formacie "BABYL
+rmail".
+.TP 
+\fB\-m\fP\fI min_pól\fP
+Pozwala na podanie minimalnej liczby pól nagłówka przed stwierdzeniem, że
+może szukać początku kolejnej wiadomości. Standardowo ustawione na 2.
+.TP 
+\fB\-q\fP
+Formail nie będzie wypisywał (ale nadal będzie wykrywał) błędów zapisu,
+takich samych wiadomości, błędnych pól \fBContent\-Length:\fP.  Ta opcja jest
+standardowo włączona. Aby wyświetlać te informacje należy użyć \fB\-q\-\fP.
+.TP 
+\fB\-D\fP\fI max_dług idcache\fP
+Formail będzie sprawdzał, czy Message\-ID aktualnej wiadomości był już
+widziany \- używając pliku \fIidcache\fP o maksymalnej długości \fImax_dług\fP
+bajtów.Jeżeli nie dzieli wiadomości, zwróci wartość oznaczającą powodzenie
+operacji po znalezieniu duplikatu. Jeżeli dzieli, nie wypisze wiadomości,
+które już wystąpiły. Jeżeli zostanie użyte w połączeniu z opcją \fB\-r\fP,
+formail popatrzy na \fIadres pocztowy\fP nadawcy \fIzamiast\fP na Message\-ID
+wiadomości.
+.TP 
+\fB\-x\fP\fI pole_nagłówka\fP
+Wyciąga z nagłówka zawartość pola \fIpole_nagłówka\fP. Kontynuowane linie
+nagłówka nie będą łączone; aby wartość z pola nagłówka została wyświetlona w
+jednej linii, należy użyć opcji \fB\-c\fP.
+.TP 
+\fB\-X\fP\fI pole_nagłówka\fP
+Takie samo jak \fB\-x\fP, ale zostawia także nazwę pola.
+.TP 
+\fB\-a\fP\fI pole_nagłówka\fP
+Dodaje pole \fIpole_nagłówka\fP do nagłówka; ale tylko wtedy, gdy podobne pole
+jeszcze nie istnieje.  Jeżeli jako nazwę pola zostanie podane \fBMessage\-ID:\fP
+lub \fBResent\-Message\-ID:\fP bez zawartości, wtedy formail utworzy
+niepowtarzalny message\-ID.
+.TP 
+\fB\-A\fP\fI pole_nagłówka\fP
+Dodaje pole \fIpole_nagłówka\fP do nagłówka bez względu na już istniejące.
+.TP 
+\fB\-i\fP\fI pole_nagłówka\fP
+Takie jak \fB\-A\fP, poza tym, że we wszystkich podobnych, istniejących polach
+zostanie dodane "Old\-" na początku. Jeśli \fIpole_nagłówka\fP składa się tylko
+z nazwy pola, nie zostanie dodane.
+.TP 
+\fB\-I\fP\fI pole_nagłówka\fP
+Takie jak \fB\-i\fP, poza tym, że wszystkie podobne pola zostaną usunięte. Jeśli
+\fIpole_nagłówka\fP składa się tylko z nazwy pola, pole to zostanie całkowicie
+usunięte.
+.TP 
+\fB\-u\fP\fI pole_nagłówka\fP
+Robi pierwsze wystąpienie tego pola niepowtarzalnym, usuwając wszystkie jego
+kolejne wystąpienia.
+.TP 
+\fB\-U\fP\fI pole_nagłówka\fP
+Robi ostatnie wystąpienie tego pola niepowtarzalnym, usuwając wszystkie jego
+poprzednie wystąpienia.
+.TP 
+\fB\-R\fP\fI stare_pole nowe_pole\fP
+Zmienia wszystkie nazwy pola \fIstare_pole\fP na \fInowe_pole\fP.
+.TP 
+\fB\+\fP\fIskip\fP
+Pomija pierwszych \fIskip\fP wiadomości w czasie dzielenia.
+.TP 
+\fB\-\fP\fItotal\fP
+Wypisuje co najwyżej \fItotal\fP podzielonych wiadomości.
+.SH UWAGI
+Podczas zmieniania nazwy, usuwania lub wyciągania pól można użyć częściowych
+nazw pól, aby dopasować wszystkie pola, których nazwy zaczynają się od
+podanego łańcucha znaków.
+.PP
+Domyślnie, podczas generowania nagłówka automatycznej odpowiedzi, procmail
+wybiera nadawcę z koperty wiadomości. Jest to zachowanie poprawne w wypadku
+wysyłania informacji o przebywaniu odbiorcy na wakacjach i innych
+automatycznych odpowiedzi dotyczących drogi przesłania lub dostarczenia
+oryginalnej wiadomości. Jeżeli nadawca oczekuje odpowiedzi lub jeśli
+odpowiedź jest generowana na podstawie zawartości oryginalnej wiadomości, to
+powinno się użyć opcji \fB\-t\fP.
+.PP
+\fBRFC\ 822\fP, oryginalny standard dotyczący formatu internetowych wiadomości,
+nie określał, czy nagłówki Resent (te, które zaczynają się od "Resent\-",
+np. "Resent\-From:") powinny być brane pod uwagę podczas generowania
+odpowiedzi. Od tego czasu rekomendowane użycie nagłówków Resent ewoluowało i
+obecnie mają one znaczenie tylko informacyjne i nie są używane do generowana
+odpowiedzi. Zostało to opisane w \fBRFC\ 2822\fP, nowym standardzie formatu
+wiadomości internetowych, który zawiera m.in. tę informację:
+.IP
+Pola Resent identyfikują, jak wiadomość została powtórnie wprowadzona do
+systemu transportującego przez użytkownika.  Celem używania nagłówków Resent
+jest, aby wiadomość, która dotarła do odbiorcy, była taka sama, jakby
+została bezpośrednio wysłana przez oryginalnego nadawcę, z niezmienionymi
+wszystkimi oryginalnymi polami nagłówka.\|\|.\|.\|.\|\| Pola te NIE MOGĄ być
+używane podczas zwykłego odpowiadania lub innych podobnych automatycznych
+akcji na wiadomościach.
+.PP
+Obecnie formail ignoruje nagłówki Resent przy generowaniu nagłówków
+odpowiedzi, jednakże wersje formaila wcześniejsze niż 3.14 dawały takim
+nagłówkom większy priorytet. Jeżeli pewna aplikacja wymaga starego
+zachowania formaila, można je zasymulować przez wywołanie formaila z opcją
+"\-a Resent\-" dodaną do opcji \fB\-r\fP i \fB\-t\fP. To użycie jest przestarzałe i
+nie powinno być stosowane w nowych aplikacjach.
+.SH "ZMIENNE ŚRODOWISKOWE"
+.TP  .5i
+\fBFILENO\fP
+W czasie dzielenia, formail dodaje numer wiadomości do tej zmiennej.
+Ustawiając FILENO, można zmienić numer pierwszej wiadomości oraz szerokość
+danych wyjściowych (dopełnianych zerami). Jeśli FILENO nie jest ustawione,
+przyjmie standardowo wartość 000. Jeśli FILENO nie jest puste i nie zawiera
+liczby, tworzenie FILENO zostanie wyłączone.
+.SH PRZYKŁADY
+Aby podzielić pierwsze streszczenie zwykle można użyć:
+.RS
+formail +1 \-ds >> twoja_skrzynka_pocztowa
+.RE
+lub
+.RS
+formail +1 \-ds procmail
+.RE
+.PP
+Aby usunąć z nagłówka wszystkie pola Received:
+.RS
+formail \-I Received:
+.RE
+.PP
+Aby usunąć z nagłówka wszystkie pola oprócz From: i Subject:
+.RS
+formail \-k \-X From: \-X Subject:
+.RE
+.PP
+Aby zastąpić wszystkie pola Reply\-To:
+.RS
+formail \-i "Reply\-To: foo@bar"
+.RE
+.PP
+Aby zmienić niestandardową skrzynkę pocztową na standardową można użyć:
+.RS
+formail \-ds <stara_skrzynka >>nowa_skrzynka
+.RE
+.PP
+Lub jeśli korzysta się z bardzo tolerancyjnego programu pocztowego:
+.RS
+formail \-a Date: \-ds <stara_skrzynka >>nowa_skrzynka
+.RE
+.PP
+Aby wyciągnąć nagłówek z wiadomości:
+.RS
+formail \-X ""
+.RE
+lub
+.RS
+sed \-e '/^$/ q'
+.RE
+.PP
+Aby wyciągnąć treść wiadomości:
+.RS
+formail \-I ""
+.RE
+lub
+.RS
+sed \-e '1,/^$/ d'
+.RE
+.SH "ZOBACZ TAKŻE"
+.na
+.nh
+\fBmail\fP(1), \fBsendmail\fP(8), \fBprocmail\fP(1), \fBsed\fP(1), \fBsh\fP(1), \fBRFC\ 822\fP, \fBRFC\ 2822\fP, \fBRFC\ 1123\fP
+.hy
+.ad
+.SH DIAGNOSTYKA
+.TP  2.3i
+Can't fork
+Zbyt wiele procesów na tym komputerze.
+.TP 
+Content\-Length: field exceeds actual length by nnn bytes
+Pole Content\-Length: w nagłówku jest ustawione na długość większą niż
+właściwa treść. To sprawia, że wiadomość wchłania następne wiadomości w tej
+samej skrzynce pocztowej.
+.TP 
+Couldn't write to stdout
+Program, do którego formail przekazywał dane używając potoku, nie przyjął
+wszystkich wysłanych danych: tę wiadomość można zlikwidować opcją \fB\-q\fP.
+.TP 
+Duplicate key found: x
+Message\-ID lub nadawca x tej wiadomości został znaleziony w idcache; tę
+wiadomość można zlikwidować opcją \fB\-q\fP.
+.TP 
+Failed to execute "x"
+Program nie znajduje się w katalogach podanych w \fI$PATH\fP lub nie jest
+wykonywalny.
+.TP 
+File table full
+Zbyt wiele otwartych plików.
+.TP 
+Invalid field\-name: "x"
+Nazwa pola "x" zawiera znaki sterujące lub nie może być częściowym polem dla
+tej opcji.
+.SH OSTRZEŻENIA
+Możesz zaoszczędzić nerwów sobie i innym jeżeli postarasz się unikać
+używania automatycznych odpowiedzi na listy przychodzące z list
+dyskusyjnych.  Zależnie od formatu przychodzących listów (który zależy od
+programu pocztowego nadawcy i konfiguracji listy) formail może zdecydować o
+tworzeniu nagłówka automatycznej odpowiedzi skierowanego na listę.
+.PP
+Zgodnie z tradycją narzędzi UN*X\-owych, formail zrobi dokładnie to o co go
+poprosisz, nawet jeżeli wynikowa wiadomość nie będzie zgodna ze standardem
+opisanym w \fBRFC\ 822\fP.  W szczególności formail pozwoli wygenerować pola
+nagłówka, które kończą się spacją zamiast dwukropkiem. Chociaż jest to
+poprawne dla początkowej linii "From ", jednak ta linia nie jest polem
+nagłówka, ale bardziej separatorem wiadomości w pliku o formacie mbox.
+Wielokrotne wystąpienia tej linii bądź jakiegokolwiek innego pola nagłówka
+pozbawionego dwukropka, będą uważane przez wiele programów pocztowych, w tym
+również przez formail, za początki nowych wiadomości. Inne programy mogą
+uważać takie wiadomości za uszkodzone. Z tego powodu nie powinieneś używać
+opcji \fB\-i\fP z linią "From ", gdyż powstałe w wyniku tej opcji pole "Old\-From
+" nie jest prawdopodobnie tym, o co chodzi. Aby zachować oryginalną linię
+"From ", należy użyć opcji \fB\-R\fP do zmienienia jej nazwy na poprawne pole
+nagłówka, takie jak "X\-From_:".
+.SH BŁĘDY
+Kiedy formail tworzy poprzedzającą linię z "From ", zwykle będzie ona
+zawierała datę. Jeżeli formail dostanie opcję "\-a Date:", użyje daty z pola
+"Date:" nagłówka (jeżeli będzie istniało). Jednak, ponieważ formail kopiuje
+zawartość tego pola, jego format będzie się różnił od tego, który jest
+oczekiwany przez większość programów pocztowych.
+.PP
+Jeśli formail zostanie poinformowany, aby kasować lub zmieniać nazwę linii
+"From ", nie odtworzy jej jak zwykle automatycznie. Aby zmusić go do tego w
+tym wypadku, należy dodać \fB\-a 'From '\fP.
+.PP
+Jeśli formail nie jest wywoływany jako pierwszy program w potoku i każe mu
+się dzielić wejście na kilka wiadomości, to nie zakończy działania dopóki
+program, od którego otrzymuje dane, nie zamknie potoku.
+.PP
+Jeśli formail ma wygenerować automatyczną odpowiedź, to \fBnigdy\fP nie umieści
+więcej niż jednego adresu w polu "To:".
+.SH RÓŻNE
+Formail przekazuje czyste 8 bitów.
+.PP
+Kiedy formail musi stwierdzić adres nadawcy, dozwolony jest każdy adres
+zgodny z \fBRFC\ 822\fP. Formail będzie zawsze obcinał adres do jego
+najkrótszej formy (usuwając komentarze i spacje).
+.PP
+Wyrażenie, które jest używane, aby znaleźć znaczniki początku wiadomości ma
+postać:
+.RS
+"\en\enFrom [\et ]*[^\et\en ]+[\et ]+[^\en\et ]"
+.RE
+.PP
+Jeśli pole \fBContent\-Length:\fP zostanie znalezione w nagłówku, formail
+skopiuje określoną liczbę bajtów, przed ponownym zaczęciem szukania
+początków wiadomości (poza dzieleniem streszczeń lub skrzynek Berkeley,
+kiedy format jest przybrany).
+.PP
+Jakiekolwiek linie nagłówka bezpośrednio następujące po początkowej linii
+"From ", które zaczynają się od ">From " są uważane za kontynuację linii
+"From ". Jeżeli formail miałby zmienić nazwę linii "From ", to zmieni
+również każde początkowe ">" na spację, transformując tym samym te linie
+w normalne kontynuacje określone w \fBRFC\ 822\fP.
+.SH UWAGI
+Wywołanie formaila z opcjami \fB\-h\fP lub \fB\-?\fP spowoduje wyświetlenie stron
+pomocy.
+.Sh ŹRÓDŁO
+Ten program jest częścią \fIprocmaila \- pakietu do przetwarzania listów\fP
+(v3.22) dostępnego na http://www.procmail.org/ lub na ftp.procmail.org w
+katalogu \fBpub/procmail/\fP.
+.Sh "LISTA DYSKUSYJNA"
+Istnieje lista dyskusyjna poświęcona pytaniom związanym z dowolnym programem
+pakietu procmail:
+.RS
+<procmail\-users@procmail.org>
+.RS
+w celu zadania pytań i uzyskania odpowiedzi.
+.RE
+<procmail\-users\-request@procmail.org>
+.RS
+w celu zapisania się.
+.RE
+.PP
+.RE
+Aby być informowanym o nowych wersjach i oficjalnych łatach, wyślij mail do
+.RS
+procmail\-announce\-request@procmail.org
+.RE
+(jest to lista tylko do odczytu).
+.SH AUTORZY
+Stephen R. van den Berg
+.RS
+<srb@cuci.nl>
+.RE
+Philip A. Guenther
+.RS
+<guenther@sendmail.com>
+.RE
+.\".if n .pl -(\n(.tu-1i)
+.rm SH
+.rn Sh SH
+.rm SS
+.rn Ss SS
+.rm TP
+.rn Tp TP
+.rm RS
+.rn Rs RS
+.rm RE
+.rn Re RE
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Jarek Woloszyn (PTM) <yossa@dione.ids.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.22 \fPoryginału.

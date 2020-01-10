@@ -1,0 +1,468 @@
+# Polish translation of groff_me.7 man page
+# This file is distributed under the same license as original manpage
+# Copyright of the original manpage:
+# Copyright © 1980 The Regents of the University of California (Prior BSD)
+# Copyright © of Polish translation:
+# Marcin Mazurek (PTM) <mazek@capella.ae.poznan.pl>, 1998.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-pl\n"
+"POT-Creation-Date: 2012-06-30 14:39+0300\n"
+"PO-Revision-Date: 2012-06-30 14:45+0200\n"
+"Last-Translator: Michał Kułach <michal.kulach@gmail.com>\n"
+"Language-Team: Polish <manpages-pl-list@lists.sourceforge.net>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+
+#. type: TH
+#, no-wrap
+msgid "GROFF_ME"
+msgstr "GROFF_ME"
+
+#. type: TH
+#, no-wrap
+msgid "31 December 2010"
+msgstr "31 grudnia 2010"
+
+#. type: TH
+#, no-wrap
+msgid "Groff Version 1.21"
+msgstr "Groff wersja 1.21"
+
+#. type: SH
+#, no-wrap
+msgid "NAME"
+msgstr "NAZWA"
+
+#. type: Plain text
+msgid "groff_me - troff macros for formatting papers"
+msgstr "groff_me - makra troff do formatowania dokumentów"
+
+#. type: SH
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "SKŁADNIA"
+
+#. type: Plain text
+msgid "B<groff -me> [ options ] file ..."
+msgstr "B<groff -me> [ I<opcje> ] I<plik> ..."
+
+#. type: Plain text
+msgid "B<groff -m\\ me> [ options ] file ..."
+msgstr "B<troff -me> [ I<opcje> ] I<plik> ..."
+
+#. type: SH
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "OPIS"
+
+#. type: Plain text
+msgid ""
+"This manual page describes the GNU version of the -me macros, which is part "
+"of the groff document formatting system.  This version can be used with both "
+"GNU troff and Unix troff.  This package of I<troff> macro definitions "
+"provides a canned formatting facility for tech%nical papers in various "
+"formats."
+msgstr ""
+"Ten podręcznik opisuje wersję GNU makra -me, które jest częścią groffa - "
+"systemu formatowania dokumentów. Ta wersja może być używana zarówno z GNU "
+"troff jak i Unix troff.  Pakiet makrodefinicji I<troff> dostarcza zbioru "
+"narzędzi do formatowania dokumentów technicznych w różnorodnych formatach."
+
+#. type: Plain text
+msgid ""
+"The macro requests are defined below.  Many I<troff> requests are unsafe in "
+"conjunction with this package, however, these requests may be used with "
+"impunity after the first .pp:"
+msgstr ""
+"Żądania makro zostały zdefiniowane poniżej.  Wiele z żądań I<troff> nie jest "
+"bezpiecznych w połączeniu z tym pakietem, jakkolwiek, żądania te mogą być "
+"używane bez problemu po wystąpieniu pierwszego .pp:"
+
+#. type: ta
+#, no-wrap
+msgid "\\w'.sz +n  'u"
+msgstr "\\w'.sz +n  'u"
+
+#. type: Plain text
+#, no-wrap
+msgid ""
+"\\&.bp\tbegin new page\n"
+"\\&.br\tbreak output line here\n"
+"\\&.sp n\tinsert n spacing lines\n"
+"\\&.ls n\t(line spacing) n=1 single, n=2 double space\n"
+"\\&.na\tno alignment of right margin\n"
+"\\&.ce n\tcenter next n lines\n"
+"\\&.ul n\tunderline next n lines\n"
+msgstr ""
+"\\&.bp\tzacznij nową stronę\n"
+"\\&.br\tzłam linię\n"
+"\\&.sp n\twstaw n oddzielających linii\n"
+"\\&.ls n\t(oddzielenie liniami) n=1 pojedyncze, n=2 podwójne\n"
+"\\&.na\tbez wyrównania do prawego marginesu\n"
+"\\&.ce n\twyśrodkuj n następnych linii\n"
+"\\&.ul n\tpodkreśl n następnych linii\n"
+
+#. type: Plain text
+msgid ""
+"Output of the I<pic,> I<eqn,> I<refer,> and I<tbl> preprocessors is "
+"acceptable as input."
+msgstr ""
+"Wyjście preprocesorów I<pic,> I<eqn,> I<refer,> oraz I<tbl> jest akceptowane "
+"jako wejście."
+
+#. type: SH
+#, no-wrap
+msgid "FILES"
+msgstr "PLIKI"
+
+#. type: Plain text
+msgid "/usr/share/groff/1.21/tmac/me.tmac (a wrapper file for e.tmac)"
+msgstr "/usr/share/groff/1.21/tmac/me.tmac (opakowanie wokół e.tmac)"
+
+#. type: Plain text
+msgid "/usr/share/groff/1.21/tmac/e.tmac"
+msgstr "/usr/share/groff/1.21/tmac/e.tmac"
+
+#. type: SH
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "ZOBACZ TAKŻE"
+
+#. type: Plain text
+msgid "B<groff>(1), B<troff>(1)"
+msgstr "B<groff>(1), B<troff>(1)"
+
+#. type: Plain text
+msgid "-me Reference Manual, Eric P. Allman"
+msgstr "-me Reference Manual, Eric P. Allman"
+
+#. type: Plain text
+msgid "Writing Papers with Groff Using -me"
+msgstr "Writing Papers with Groff Using -me"
+
+#. type: SH
+#, no-wrap
+msgid "REQUESTS"
+msgstr "ŻĄDANIA"
+
+#. type: Plain text
+msgid ""
+"This list is incomplete; see I<The -me Reference Manual> for interesting "
+"details."
+msgstr ""
+"Ta lista jest niekompletna; należy zapoznać się z I<The -me Reference Manual> "
+"aby poznać "
+"inne, ciekawe szczegóły."
+
+#. type: ta
+#, no-wrap
+msgid "\\w'.eh \\'x\\'y\\'z\\'  'u +\\w'Initial 'u +\\w'Cause 'u"
+msgstr "\\w'.eh \\'x\\'y\\'z\\'  'u +\\w'Initial 'u +\\w'Cause 'u"
+
+#. type: Plain text
+msgid "  \\ka"
+msgstr "  \\ka"
+
+#. type: Plain text
+msgid "Request\tInitial\tCause\tExplanation"
+msgstr "Żądanie\tWartość\tTworzy Wyjaśnienie"
+
+#. type: Plain text
+msgid "  Value\tBreak"
+msgstr "  Począt.\tOdstęp"
+
+#. type: Plain text
+msgid "\\&.(c\t-\tyes\tBegin centered block"
+msgstr "\\&.(c\t-\ttak\tZacznij wyśrodkowany blok"
+
+#. type: Plain text
+msgid "\\&.(d\t-\tno\tBegin delayed text"
+msgstr "\\&.(d\t-\tnie\tZacznij opóźniony tekst"
+
+#. type: Plain text
+msgid "\\&.(f\t-\tno\tBegin footnote"
+msgstr "\\&.(f\t-\tnie\tZacznij stopkę"
+
+#. type: Plain text
+msgid "\\&.(l\t-\tyes\tBegin list"
+msgstr "\\&.(l\t-\ttak\tZacznij listę"
+
+#. type: Plain text
+msgid "\\&.(q\t-\tyes\tBegin major quote"
+msgstr "\\&.(q\t-\ttak\tZacznij główny cytat"
+
+#. type: Plain text
+msgid "\\&.(x I<x>\t-\tno\tBegin indexed item in index I<x>"
+msgstr "\\&.(x I<x>\t-\tnie\tZacznij punkt z indeksu I<x>"
+
+#. type: Plain text
+msgid "\\&.(z\t-\tno\tBegin floating keep"
+msgstr "\\&.(z\t-\tnie\tZacznij wysuniętą klauzulę"
+
+#. type: Plain text
+msgid "\\&.)c\t-\tyes\tEnd centered block"
+msgstr "\\&.)c\t-\ttak\tZakończ wyśrodkowany blok"
+
+#. type: Plain text
+msgid "\\&.)d\t-\tyes\tEnd delayed text"
+msgstr "\\&.)d\t-\ttak\tZakończ opóźniony tekst"
+
+#. type: Plain text
+msgid "\\&.)f\t-\tyes\tEnd footnote"
+msgstr "\\&.)f\t-\ttak\tZakończ stopkę"
+
+#. type: Plain text
+msgid "\\&.)l\t-\tyes\tEnd list"
+msgstr "\\&.)l\t-\ttak\tZakończ listę"
+
+#. type: Plain text
+msgid "\\&.)q\t-\tyes\tEnd major quote"
+msgstr "\\&.)q\t-\ttak\tZakończ główny cytat"
+
+#. type: Plain text
+msgid "\\&.)x\t-\tyes\tEnd index item"
+msgstr "\\&.)x\t-\ttak\tZakończ element indeksu"
+
+#. type: Plain text
+msgid "\\&.)z\t-\tyes\tEnd floating keep"
+msgstr "\\&.)z\t-\ttak\tZakończ wysuniętą klauzulę"
+
+#. type: Plain text
+msgid ""
+"\\&.++ I<m H>\t-\tno\tDefine paper section.  I<m> defines the part of the "
+"paper, and can be B<C> (chapter), B<A> (appendix), B<P> (preliminary, e.g., "
+"abstract, table of contents, etc.), B<B> (bibliography), B<RC> (chapters "
+"renumbered from page one each chapter), or B<RA> (appendix renumbered from "
+"page one)."
+msgstr ""
+"\\&.++ I<m H>\t-\tnie\tZdefiniuj sekcję dokumentu.  I<m> definiuje sekcję "
+"dokumentu, i może ona być B<C> (rozdziałem), B<A> (dodatkiem), B<P> (sekcją "
+"wstępną, np., streszczenie, spis treści, itp.), B<B> (bibliografią), B<RC> "
+"(rozdziały przenumerowane od strony pierwszej, każdy rozdział), lub B<RA> "
+"(dodatek przenumerowany od strony pierwszej)."
+
+#. type: Plain text
+msgid ""
+"\\&.+c I<T>\t-\tyes\tBegin chapter (or appendix, etc., as set by .++).  I<T> "
+"is the chapter title."
+msgstr ""
+"\\&.+c I<T>\t-\ttak\tZacznij rozdział (lub dodatek, itd., jak zostało to "
+"zdefiniowane przez .++).  I<T> jest nazwą rozdziału."
+
+#. type: Plain text
+msgid "\\&.1c\t1\tyes\tOne column format on a new page."
+msgstr "\\&.1c\t1\ttak\tFormat jednokolumnowy na nowej stronie."
+
+#. type: Plain text
+msgid "\\&.2c\t1\tyes\tTwo column format."
+msgstr "\\&.2c\t1\ttak\tFormat dwukolumnowy."
+
+#. type: Plain text
+msgid "\\&.EN\t-\tyes\tSpace after equation produced by I<eqn> or I<neqn>."
+msgstr ""
+"\\&.EN\t-\ttak\tOdstęp po równaniu stworzonym przez I<eqn> lub I<neqn>."
+
+#. type: Plain text
+msgid ""
+"\\&.EQ I<x y>\t-\tyes\tPrecede equation; break out and add space.  Equation "
+"number is I<y>.  The optional argument I<x> may be I<I> to indent equation "
+"(default), I<L> to left-adjust the equation, or I<C> to center the equation."
+msgstr ""
+"\\&.EQ I<x y>\t-\ttak\tPoprzedź równaniem; złam i dodaj miejsce.  Numer "
+"równania to I<y>.  Opcjonalny argument I<x> może być ustawiony na I<I> aby "
+"wciąć równanie (ustawienie standardowe), I<L> aby dorównać do lewej równanie "
+"lub I<C> aby wyśrodkować równanie."
+
+#. type: Plain text
+msgid "\\&.GE\t-\tyes\tEnd I<gremlin> picture."
+msgstr "\\&.GE\t-\ttak\tPoczątek obrazka I<gremlin>."
+
+#. type: Plain text
+msgid "\\&.GS\t-\tyes\tBegin I<gremlin> picture."
+msgstr "\\&.GS\t-\ttak\tKoniec obrazka I<gremlin>."
+
+#. type: Plain text
+msgid "\\&.PE\t-\tyes\tEnd I<pic> picture."
+msgstr "\\&.PE\t-\ttak\tPoczątek I<pic>."
+
+#. type: Plain text
+msgid "\\&.PS\t-\tyes\tBegin I<pic> picture."
+msgstr "\\&.PS\t-\ttak\tKoniec obrazka I<pic>."
+
+#. type: Plain text
+msgid "\\&.TE\t-\tyes\tEnd table."
+msgstr "\\&.TE\t-\ttak\tKoniec tabeli."
+
+#. type: Plain text
+msgid "\\&.TH\t-\tyes\tEnd heading section of table."
+msgstr "\\&.TH\t-\ttak\tKoniec sekcji nagłówka tabeli."
+
+#. type: Plain text
+msgid ""
+"\\&.TS I<x>\t-\tyes\tBegin table; if I<x> is I<H> table has repeated heading."
+msgstr ""
+"\\&.TS I<x>\t-\ttak\tZacznij tabelę; jeśli I<x> ma wartość I<H> tabela ma "
+"powtórzony nagłówek."
+
+#. type: Plain text
+msgid ""
+"\\&.b I<x>\tno\tno\tPrint I<x> in boldface; if no argument switch to "
+"boldface."
+msgstr ""
+"\\&.b I<x>\tnie\tnie\tWypisz tekst I<x> pogrubioną czcionką; jeśli brak jest "
+"argumentów przełącz się w tryb pisania grubą czcionką."
+
+#. type: Plain text
+msgid ""
+"\\&.ba I<+n>\t0\tyes\tAugments the base indent by I<n.> This indent is used "
+"to set the indent on regular text (like paragraphs)."
+msgstr ""
+"\\&.ba I<+n>\t0\ttak\tZwiększa podstawowe wcięcie o I<n.> To wcięcie jest "
+"używane przy ustawianiu wcięcia w regularnym tekście (takim jak w akapicie)."
+
+#. type: Plain text
+msgid "\\&.bc\tno\tyes\tBegin new column"
+msgstr "\\&.bc\tnie\ttak\tZacznij nową kolumnę"
+
+#. type: Plain text
+msgid "\\&.bi I<x>\tno\tno\tPrint I<x> in bold italics (nofill only)"
+msgstr ""
+"\\&.bi I<x>\tnie\tnie\tWypisz tekst I<x> pogrubioną, pochyłą czcionką "
+"(jedynie nofill)"
+
+#. type: Plain text
+msgid "\\&.bu\t-\tyes\tBegin bulleted paragraph"
+msgstr "\\&.bu\t-\ttak\tZacznij paragraf wypunktowany"
+
+#. type: Plain text
+msgid "\\&.bx I<x>\tno\tno\tPrint I<x> in a box (nofill only)."
+msgstr "\\&.bx I<x>\tnie\tnie\tWypisz I<x> w ramce (jedynie nofill)."
+
+#. type: Plain text
+msgid "\\&.ef I<\\'x\\'y\\'z\\'>\t\\'\\'\\'\\'\tno\tSet even footer to x y z"
+msgstr ""
+"\\&.ef I<\\'x\\'y\\'z\\'>\t\\'\\'\\'\\'\tnie\tUstaw parzystą stopkę na x y z"
+
+#. type: Plain text
+msgid "\\&.eh I<\\'x\\'y\\'z\\'>\t\\'\\'\\'\\'\tno\tSet even header to x y z"
+msgstr ""
+"\\&.eh I<\\'x\\'y\\'z\\'>\t\\'\\'\\'\\'\tnie\tUstaw parzysty nagłówek na x y "
+"z"
+
+#. type: Plain text
+msgid "\\&.fo I<\\'x\\'y\\'z\\'>\t\\'\\'\\'\\'\tno\tSet footer to x y z"
+msgstr "\\&.fo I<\\'x\\'y\\'z\\'>\t\\'\\'\\'\\'\tnie\tUstaw stopkę na x y z"
+
+#. type: Plain text
+msgid "\\&.hx\t-\tno\tSuppress headers and footers on next page."
+msgstr "\\&.hx\t-\tnie\tWyłącz nagłówki i stopki na następnej stronie"
+
+#. type: Plain text
+msgid "\\&.he I<\\'x\\'y\\'z\\'>\t\\'\\'\\'\\'\tno\tSet header to x y z"
+msgstr ""
+"\\&.he I<\\'x\\'y\\'z\\'>\t\\'\\'\\'\\'\tnie\tUstaw nagłówek na to x y z"
+
+#. type: Plain text
+msgid "\\&.hl\t-\tyes\tDraw a horizontal line"
+msgstr "\\&.hl\t-\ttak\tWstaw poziomą linię"
+
+#. type: Plain text
+msgid ""
+"\\&.i I<x>\tno\tno\tItalicize I<x;> if I<x> missing, italic text follows."
+msgstr ""
+"\\&.i I<x>\tnie\tnie\tWypisz tekst I<x> pochyłą czcionką; jeśli brakuje "
+"I<x> , następujący tekst pisany jest czcionką pochyłą.."
+
+#. type: Plain text
+msgid ""
+"\\&.ip I<x y>\tno\tyes\tStart indented paragraph, with hanging tag I<x>.  "
+"Indentation is I<y> ens (default 5)."
+msgstr ""
+"\\&.ip I<x y>\tnie\ttak\tRozpocznij wcięty akapit, z wiszącym tagiem I<x>.  "
+"Wcięcie wynosi I<y> en-spacji (standardowo 5)."
+
+#. type: Plain text
+msgid "\\&.lp\tyes\tyes\tStart left-blocked paragraph."
+msgstr "\\&.lp\ttak\ttak\tZacznij wyblokowany w lewo akapit."
+
+#. type: Plain text
+msgid "\\&.np\t1\tyes\tStart numbered paragraph."
+msgstr "\\&.np\t1\ttak\tZacznij numerowany akapit."
+
+#. type: Plain text
+msgid "\\&.of I<\\'x\\'y\\'z\\'>\t\\'\\'\\'\\'\tno\tSet odd footer to x y z"
+msgstr ""
+"\\&.of I<\\'x\\'y\\'z\\'>\t\\'\\'\\'\\'\tnie\tUstaw nieparzystą stopkę na x "
+"y z"
+
+#. type: Plain text
+msgid "\\&.oh I<\\'x\\'y\\'z\\'>\t\\'\\'\\'\\'\tno\tSet odd header to x y z"
+msgstr ""
+"\\&.oh I<\\'x\\'y\\'z\\'>\t\\'\\'\\'\\'\tnie\tUstaw nieparzysty nagłówek na "
+"x y z"
+
+#. type: Plain text
+msgid "\\&.pd\t-\tyes\tPrint delayed text."
+msgstr "\\&.pd\t-\ttak\tWypisz opóźniony tekst."
+
+#. type: Plain text
+msgid "\\&.pp\tno\tyes\tBegin paragraph.  First line indented."
+msgstr "\\&.pp\tnie\ttak\tZacznij akapit.  Pierwsza linia ma wcięcie."
+
+#. type: Plain text
+msgid "\\&.r\tyes\tno\tRoman text follows."
+msgstr "\\&.r\ttak\tnie\tWłącz czcionkę standardową (rzymską)."
+
+#. type: Plain text
+msgid "\\&.re\t-\tno\tReset tabs to default values."
+msgstr "\\&.re\t-\tnie\tUstaw tabulatory na standardowe wartości."
+
+#. type: Plain text
+msgid ""
+"\\&.sh I<n x>\t-\tyes\tSection head follows, font automatically bold.  I<n> "
+"is level of section, I<x> is title of section."
+msgstr ""
+"\\&.sh I<n x>\t-\ttak\tDalej następuje sekcja nagłówka, czcionka "
+"automatycznie ustawiana jest na pogrubioną.  I<n> jest numerem sekcji, I<x> "
+"jest tytułem sekcji."
+
+#. type: Plain text
+msgid ""
+"\\&.sk\tno\tno\tLeave the next page blank.  Only one page is remembered "
+"ahead."
+msgstr ""
+"\\&.sk\tnie\tnie\tZostaw następną stronę pustą.  Jedynie jedna strona jest "
+"pamiętana w przód."
+
+#. type: Plain text
+msgid "\\&.sm I<x>\t-\tno\tSet I<x> in a smaller pointsize."
+msgstr "\\&.sm I<x>\t-\tnie\tWstaw I<x> wyświetlane w mniejszej czcionce."
+
+#. type: Plain text
+msgid "\\&.sz I<+n>\t10p\tno\tAugment the point size by I<n> points."
+msgstr "\\&.sz I<+n>\t10p\tnie\tZwiększ wielkość czcionki o I<n> punktów."
+
+#. type: Plain text
+msgid "\\&.tp\tno\tyes\tBegin title page."
+msgstr "\\&.tp\tnie\ttak\tZacznij stronę tytułową."
+
+#. type: Plain text
+msgid ""
+"\\&.u I<x>\t-\tno\tUnderline argument (even in I<troff>).  (Nofill only)."
+msgstr ""
+"\\&.u I<x>\t-\tnie\tPodkreśl argument (nawet w I<troff>).  (jedynie Nofill)."
+
+#. type: Plain text
+msgid "\\&.uh\t-\tyes\tLike .sh but unnumbered."
+msgstr "\\&.uh\t-\ttak\tDziałanie jak .sh ale nienumerowane."
+
+#. type: Plain text
+msgid "\\&.xp I<x>\t-\tno\tPrint index I<x.>"
+msgstr "\\&.xp I<x>\t-\tnie\tWypisz indeks I<x.>"
+

@@ -1,0 +1,863 @@
+.de  Id
+.ds Rv \\$3
+.ds Dt \\$4
+..
+.\"if n .pl +(135i-\n(.pu)
+.Id $Id: procmailrc.man,v 1.85 2001/08/04 06:08:21 guenther Exp $
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1990-1999 S.R. van den Berg, 1999-2001 Philip Guenther (Artistic or GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+.\" Robert Luberda <robert@debian.org>, 2012.
+.TH PROCMAILRC 5 \*(Dt BuGless 
+.rn SH Sh
+.de  SH
+.br
+.ne 11
+.Sh "\\$1"
+..
+.rn SS Ss
+.de  SS
+.br
+.ne 10
+.Ss "\\$1"
+..
+.rn TP Tp
+.de  TP
+.br
+.ne 9
+.Tp \\$1
+..
+.rn RS Rs
+.de  RS
+.na
+.nf
+.Rs
+..
+.rn RE Re
+.de  RE
+.Re
+.fi
+.ad
+..
+.de  Sx
+.PP
+.ne \\$1
+.RS
+..
+.de  Ex
+.RE
+.PP
+..
+.na
+.SH NAZWA
+procmailrc \- plik rc procmaila
+.SH SKŁADNIA
+\fB$HOME/.procmailrc\fP
+.ad
+.SH OPIS
+Szybką orientację w temacie można uzyskać, czytając \fBUWAGI\fP umieszczone na
+końcu strony podręcznika \fBprocmail\fP(1).
+.PP
+Plik rc składa się z przypisań zmiennych środowiskowych (niektóre z nich
+mają specjalne znaczenie dla procmaila) i reguł. W najprostszej postaci,
+reguły są po prostu jednoliniowymi wyrażeniami regularnymi, które są
+poszukiwane w nagłówkach przychodzącej poczty. Pierwsza reguła, która
+zostanie dopasowana, jest używana do określenia, gdzie dany list ma pójść
+(zwykle do pliku). Jeśli przetwarzanie dojdzie do końca pliku rc, procmail
+dostarczy pocztę do \fB$DEFAULT\fP.
+.PP
+Istnieją dwa rodzaje reguł: dostarczające i niedostarczające. Jeśli
+dopasowana zostanie \fIreguła dostarczająca\fP, procmail zakłada, że poczta
+(jak się można domyślić) jest dostarczona i \fIzakończy przetwarzanie\fP pliku
+rc po wykonaniu linii akcji reguły. Jeśli dopasowana zostanie \fIreguła
+niedostarczająca\fP, to przetwarzanie pliku rc będzie \fIkontynuowane\fP nawet po
+wykonaniu akcji tej reguły.
+.PP
+Reguły dostarczające są tymi, które powodują zapis nagłówka lub ciała listu
+do pliku, jego zaabsorbowanie przez program lub przekazanie (forwardowanie)
+do innego adresu pocztowego.
+.PP
+Reguły niedostarczające to te, które łapią wyjście programu lub filtru z
+powrotem do procmaila, lub te, które rozpoczynają zagnieżdżony blok.
+.PP
+Można powiedzieć procmailowi, by traktował \fIregułę dostarczającą\fP jako
+niedostarczającą poprzez przekazanie takiej regule flagi "c". Spowoduje to,
+że procmail wygeneruje kopię listu (\fIcarbon copy\fP), dostarczając go regule
+i kontynuując przetwarzanie pliku rc.
+.PP
+Używając dowolnej liczby reguł, można posortować pocztę wprost do
+określonych folderów pocztowych. Należy pamiętać jednak, że poczta może
+wpływać do tych folderów w tym samym momencie (jeśli kilka procmaili działa
+naraz, co nie jest nieprawdopodobne przy dużej ilości poczty). Aby upewnić
+się, że nie narobi to bałaganu, zalecane jest robienie właściwego użytku z
+plików blokujących.
+.PP
+\fBInicjacje\fP zmiennych środowiskowych i \fBreguły\fP mogą być swobodnie
+przeplatane w pliku rc. Jeśli zmienna środowiskowa ma dla procmaila
+specjalne znaczenie, zostanie użyta odpowiednio w momencie
+przetwarzania. (np. można zmienić katalog bieżący, kiedy tylko jest taka
+potrzeba, przez podanie nowego \fBMAILDIR\fP, zamienić pliki blokujące przez
+podanie nowego \fBLOCKFILE\fP, zmienić umask, itd., możliwości jest
+nieskończenie wiele :\-).
+.PP
+Inicjacje i podstawienia tych zmiennych środowiskowych są obsługiwane
+dokładnie jak w \fBsh\fP(1) (włączając w to wszystkie możliwe cytowania i
+sekwencje specjalne) i dodatkowo: spacje dookoła znaku "=" są ignorowane, a
+każda zmienna nie zawierająca końcowego "=" zostanie usunięta ze
+środowiska. Każdy program w odwrotnych apostrofach, uruchomiony przez
+procmail, będzie miał przekazany cały list na swoim wejściu (stdin).
+.PP
+.SS Komentarze
+Słowo zaczynające się od # wraz z wszystkimi znakami występującymi po nim aż
+do znaku nowej linii jest ignorowane. Nie dotyczy to linii warunkowych,
+które nie mogą być komentowane.
+.SS Reguły
+.PP
+Linia zaczynająca się od ":" oznacza początek reguły. Ma następujący format:
+.Sx 3
+:0 [\fIflagi\fP] [ : [\fIlokalnyplikblokujący\fP] ]
+<zero lub więcej warunków (jeden na linię)>
+<dokładnie jedna linia akcji>
+.Ex
+Warunki zaczynają się od "*" i wszystko, co następuje po tym znaku, jest
+przekazywane \fIniezmienione\fP wewnętrznemu egrepowi, z wyjątkiem początkowych
+i końcowych białych spacji. Wyrażenia regularne są \fBcałkowicie\fP
+kompatybilne  z normalnymi wyrażeniami regularnymi \fBegrep\fP(1). Zobacz także
+\fBRozszerzone wyrażenia regularne\fP.
+.PP
+Warunki są logicznie koniugowane; jeżeli nie ma warunków, wynik jest
+domyślnie prawdziwy.
+.PP
+\fIFlagi\fP mogą być dowolnymi z następujących:
+.TP  0.5i
+\fBH\fP
+Egrepuj nagłówek (domyślnie).
+.TP 
+\fBB\fP
+Egrepuj ciało.
+.TP 
+\fBD\fP
+Powiedz wewnętrznemu egrepowi, aby rozróżniał duże i małe litery
+(zachowaniem domyślnym jest ignorowanie wielkości liter).
+.TP 
+\fBA\fP
+Ta reguła będzie zależeć od ostatniej poprzedzającej reguły (na bieżącym
+poziomie zagnieżdżenia) bez flagi "A" lub "a". Umożliwia to wiązanie akcji
+zależących od wspólnego warunku.
+.TP 
+\fBa\fP
+Ma takie samo znaczenie jak flaga "A" z dodatkowym warunkiem mówiącym, że
+bezpośrednio poprzedzająca reguła musi się  \fIpomyślnie\fP zakończyć przed
+uruchomieniem bieżącej reguły.
+.TP 
+\fBE\fP
+Ta reguła jest wykonywana tylko, jeśli bezpośrednio poprzedzająca reguła nie
+była wykonana. Wykonanie tej reguły wyłącza także wszelkie bezpośrednio
+następujące reguły z flagą "E". Umożliwia to definiowanie akcji typu "else
+if".
+.TP 
+\fBe\fP
+Ta reguła jest wykonywana tylko, jeśli bezpośrednio poprzedzająca reguła się
+\fInie\fP powiodła (tj. podjęto próbę wykonania akcji, ale skończyła się ona
+błędem).
+.TP 
+\fBh\fP
+Przesyła nagłówek listu do potoku, pliku lub innego miejsca docelowego
+(domyślne).
+.TP 
+\fBb\fP
+Przesyła ciało listu do potoku, pliku lub innego miejsca docelowego
+(domyślne).
+.TP 
+\fBf\fP
+Zakłada, że potok jest filtrem.
+.TP 
+\fBc\fP
+Generuje kopię \fBcarbon copy\fP tego listu. Ma to tylko sens dla reguł
+\fIdostarczających\fP. Jedyną niedostarczającą regułą, dla której flaga ta ma
+jakiś skutek jest wypadek zagnieżdżonego bloku \(em w celu wygenerowania
+kopii proces procmaila zostanie \fBsklonowany\fP (pliki blokujące nie zostaną
+odziedziczone); podczas gdy klon będzie pracować jak zwykle, rodzic
+przeskoczy blok.
+.TP 
+\fBw\fP
+Czeka na zakończenie filtru lub programu i sprawdza kod wyjścia (normalnie
+ignorowany); jeśli filtr zwrócił błąd, tekst nie był filtrowany.
+.TP 
+\fBW\fP
+Ma takie samo znaczenie jak flaga "w", lecz powstrzyma wszelkie informacje
+typu "Program failure".
+.TP 
+\fBi\fP
+Ignoruje wszelkie błędy zapisu na tej regule (np. zwykle przez wcześnie
+zamknięty potok).
+.TP 
+\fBr\fP
+Tryb surowy: nie próbuje zapewnić, że list kończy się pustą linią i zapisuje
+go  takim, jakim jest.
+.PP
+Istnieją pewne warunki specjalne, których można użyć, a które nie są w pełni
+wyrażeniami regularnymi. Aby je wybrać, warunek musi zaczynać się od:
+.TP  0.5i
+\fB!\fP
+Odwraca warunek.
+.TP 
+\fB$\fP
+Oszacowuje resztę warunku według reguł podstawiania \fBsh\fP(1)  wewnątrz
+podwójnych cudzysłowów, pomija początkowe białe spacje i ponownie przetwarza
+regułę.
+.TP 
+\fB?\fP
+Używa kodu wyjścia podanego programu.
+.TP 
+\fB<\fP
+Sprawdza, czy całkowita długość listu jest krótsza niż podana (dziesiętnie)
+liczba bajtów.
+.TP 
+\fB>\fP
+Analogiczne do "<".
+.TP 
+\fBzmienna \fP\fI??\fP
+Porównuje resztę warunku z wartością tej zmiennej środowiskowej (nie może to
+być pseudozmienna). Specjalnymi wypadkami są zmienne "B", "H", "HB" i "BH",
+które zwyczajnie przeciążają domyślny obszar przeszukiwania nagłówka/ciała
+(header/body) zdefiniowanego na początku dla tej reguły.
+.TP 
+\fB\e\fP
+Aby zacytować dowolny z powyższych znaków na początku linii.
+.SS "Lokalny plik blokujący"
+.PP
+Jeśli umieści się drugi (kończący) ":" w pierwszej linii reguły, to procmail
+użyje \fIlokalnego pliku blokującego\fP (locallockfile; tylko dla tej
+reguły). Opcjonalnie można podać nazwę pliku, który będzie użyty; jednak
+jeśli się tego nie zrobi,  procmail użyje nazwy pliku celu (lub nazwy pliku
+następującej po pierwszym ">>") i dopisze do niej \fB$LOCKEXT\fP.
+.SS "Linia akcji reguły"
+.PP
+Linia akcji może zaczynać się od następujących znaków:
+.TP 
+\fB!\fP
+Przekazuje (forwarduje) e\-mail do wszystkich podanych adresów pocztowych.
+.TP 
+\fB|\fP
+Uruchamia określony program, prawdopodobnie w \fB$SHELL\fP\-u, jeśli wykryto
+któryś  ze znaków \fB$SHELLMETAS\fP. Można opcjonalnie poprzedzić ten symbol
+potoku wyrażeniem \fIzmienna=\fP, co spowoduje, że standardowe wyjście (stdout)
+programu zostanie przechwycone do zmiennej środowiskowej \fIzmienna\fP
+(procmail \fInie\fP zakończy przetwarzania pliku rc w tym momencie). Jeśli
+podany zostanie tylko symbol potoku, bez żadnego programu, to procmail
+wypisze list na stdout.
+.TP 
+\fB{\fP
+Jeśli następuje za tym przynajmniej jedna spacja, tabulacja lub nowa linia,
+to oznacza to początek zagnieżdżonego bloku. Wszystko, aż do następnego
+nawiasu zamykającego, będzie zależeć od warunków podanych dla tej
+reguły. Dozwolone jest nieograniczone zagnieżdżanie. Nawias zamykający
+istnieje zwyczajnie po to, by oddzielić blok; w żadnym wypadku \fInie\fP wywoła
+zakończenia procmaila w żaden sposób. Po dotarciu do końca bloku,
+przetwarzanie będzie kontynuowane, jak zwykle, po tym bloku.  W bloku
+zagnieżdżonym flagi "H" i "B" dotyczą tylko warunków prowadzących do tego
+bloku, flagi "h" i "b"  w ogóle nie działają.
+.PP
+Wszystko inne będzie uznawane za nazwę skrzynki pocztowej (zarówno nazwę
+pliku lub katalogu, bezwzględną lub względną w stosunku do bieżącego
+katalogu (zobacz opis zmiennej \fBMAILDIR\fP)). Jeśli jest to (możliwe że
+jeszcze nieistniejąca) nazwa pliku, poczta zostanie do niego doklejona.
+.PP
+Jeśli jest to katalog, poczta zostanie dostarczona do nowo utworzonego,
+unikatowego pliku o nazwie \fI$MSGPREFIX*\fP w podanym katalogu. Jeśli nazwa
+skrzynki pocztowej kończy się "/.", to katalog ten jest uznawany za folder
+MH, tj. procmail użyje następnego numeru, który będzie dostępny.  Jeśli
+nazwa skrzynki pocztowej kończy się znakiem "/", to ten katalog jest
+uznawany za folder maildir, tj. procmail zapisze pocztę w pliku w
+podkatalogu o nazwie "tmp", a następnie przeniesie go do podkatalogu o
+nazwie "new". Jeśli skrzynka pocztowa jest podana jako folder MH lub
+maildir, procmail utworzy wymagane katalogi, jeśli nie istnieją, zamiast
+traktować skrzynkę pocztową jako nieistniejącą. Gdy procmail dostarcza do
+katalogów, można podać wiele katalogów, do których należy dostarczyć
+(procmail dostarczy pocztę, używając twardych dowiązań).
+.SS "Domyślne wartości zmiennych środowiskowych"
+.TP  2.2i
+\fBLOGNAME, HOME i SHELL\fP
+Twoje (odbiorcy) wartości domyślne
+.TP 
+\fBPATH\fP
+.na
+\&$HOME/bin\h'-\w' 'u' :/usr/local/bin\h'-\w' 'u' :/usr/bin\h'-\w' 'u' :/bin
+(z wyjątkiem
+.ad
+przetwarzania pliku \fI/etc/procmailrc\fP, w którego czasie zostanie ustawione
+na
+.na
+"\&/usr/local/bin\h'-\w' 'u' :/usr/bin\h'-\w' 'u' :/bin".)
+.ad
+.TP 
+\fBSHELLMETAS\fP
+\&&\h'-\w' 'u' |<>~;?*[
+.TP 
+\fBSHELLFLAGS\fP
+\&\-c
+.TP 
+\fBORGMAIL\fP
+\&/var/mail/$LOGNAME
+.br
+(Chyba że podano \fB\-m\fP, wtedy opcja ta jest nieustawiona)
+.TP 
+\fBMAILDIR\fP
+\&$HOME
+.br
+(Chyba że nazwa pierwszego pomyślnie otwartego pliku rc zaczyna się od "./",
+w którym wypadku wartością domyślną jest ".")
+.TP 
+\fBDEFAULT\fP
+\&$ORGMAIL
+.TP 
+\fBMSGPREFIX\fP
+\&msg.
+.TP 
+\fBSENDMAIL\fP
+\&/usr/sbin/sendmail
+.TP 
+\fBSENDMAILFLAGS\fP
+\&\-oi
+.TP 
+\fBHOST\fP
+Nazwa bieżącego komputera
+.TP 
+\fBCOMSAT\fP
+\&no
+.br
+(Jeśli plik rc jest podany w linii komend)
+.TP 
+\fBPROCMAIL_VERSION\fP
+\&3.22
+.TP 
+\fBLOCKEXT\fP
+\&.lock
+.na
+.PP
+Inne czyszczone lub preustawiane zmienne środowiskowe to IFS, ENV i PWD.
+.ad
+.PP
+Z powodów bezpieczeństwa podczas startu procmail wyrzuci wszystkie zmienne
+środowiskowe, co do których ma podejrzenia, że mogą wpływać na działanie
+dynamicznego konsolidatora (\fBld.so\fP(8)).
+.SS Środowisko
+.PP
+Zanim zgubisz się w mętliku zmiennych środowiskowych, pamiętaj że wszystkie
+one mają sensowne wartości domyślne.
+.TP  1.2i
+\fBMAILDIR\fP
+Bieżący katalog w momencie, gdy procmail jest uruchomiany (znaczy to, że
+wszystkie ścieżki są relatywne do \fB$MAILDIR\fP).
+.TP 
+\fBDEFAULT\fP
+Domyślny plik \fBmailbox\fP (jeśli nie powiedziano inaczej, procmail wrzuci
+pocztę do tego pliku). Procmail automatycznie użyje \fB$DEFAULT$LOCKEXT\fP jako
+pliku blokującego przed zapisaniem czegoś do tej skrzynki pocztowej. Nie
+trzeba ustawiać tej zmiennej, ponieważ standardowo wskazuje ona na
+standardową skrzynkę pocztową systemu.
+.TP 
+\fBLOGFILE\fP
+Plik ten będzie zawierał wszelkie komunikaty diagnostyczne i komunikaty o
+błędach od procmaila (zazwyczaj żadne) lub od innych programów uruchomionych
+przez procmaila.  Jeśli plik ten nie jest podany, komunikaty będą przesyłane
+e\-mailem z powrotem do nadawcy. Zobacz także \fBLOGABSTRACT\fP.
+.TP 
+\fBVERBOSE\fP
+Ustawiając tę zmienną na "yes" lub "on", można włączyć \fIrozszerzoną
+diagnostykę\fP, wyłączyć zaś można ją przez ustawienie zmiennej na "no" lub
+"off".
+.TP 
+\fBLOGABSTRACT\fP
+Zanim procmail zakończy, raportuje dostarczoną wiadomość w \fB$LOGFILE\fP,
+pokazując pola "From " i "Subject: " nagłówka, folder, w którym  wiadomość
+została zapisana, oraz jej długość (w bajtach). Ustawienie tej zmiennej na
+"no" powstrzymuje generowanie tych informacji. Po ustawieniu jej na "all",
+procmail będzie logował każdą pomyślnie zakończoną \fIregułę dostarczenia\fP,
+którą przetworzy.
+.TP 
+\fBLOG\fP
+Wartość przypisana tej zmiennej będzie dopisana do pliku \fB$LOGFILE\fP.
+.TP 
+\fBORGMAIL\fP
+Zazwyczaj mailbox systemowy (\fBOR\fPi\fBG\fPinal \fBMAIL\fPbox).  Jeśli z jakiegoś
+powodu (jak \fBprzepełnienie systemu plików\fP), list nie mógł być dostarczony
+do tego mailboxa, to procmail dostarczy go tutaj. Jeśli jednak nie będzie
+mógł nawet tego uczynić, to list zostanie odbity do nadawcy.
+.TP 
+\fBLOCKFILE\fP
+Globalny plik blokujący. Jeśli plik ten już istnieje, procmail będzie czekał
+aż zniknie i utworzy go samodzielnie (i wyczyści gdy skończy). Jeśli podano
+więcej niż jeden \fIplik blokujący\fP, to poprzedni zostanie usunięty przed
+próbą utworzenia nowego. Używanie globalnego pliku blokującego jest złą
+praktyką, lepiej używać lokalnych (zależnych od reguły).
+.TP 
+\fBLOCKEXT\fP
+Domyślne rozszerzenie, które jest dodawane do plików docelowych, aby
+określić, którego z lokalnych \fIplików blokujących\fP użyć (tylko jeśli
+używanie tych plików jest włączone dla danej reguły).
+.TP 
+\fBLOCKSLEEP\fP
+Liczba sekund, które procmail ma odespać przed każdą kolejną próbą użycia
+pliku blokującego (jeśli taki już istniał); jeśli liczby nie podano, to
+wynosi ona 8 sekund.
+.TP 
+\fBLOCKTIMEOUT\fP
+Liczba sekund, które muszą minąć od utworzenia lub ostatniej modyfikacji
+\fIpliku blokującego\fP, zanim procmail zdecyduje, że jest to plik blokujący
+pozostawiony w wyniku błędu i że trzeba go usunąć na siłę. Wartość zero
+mówi, że timeout nie jest ustawiony i że procmail ma czekać do skutku. Jeśli
+nie jest podany, to odpowiada 1024 sekundom. Wartość ta jest przydatna w
+zapobieganiu niezdefiniowanym zawieszeniom programów \fBsendmail\fP(8) lub
+procmail. Procmail jest odporny na różnice w czasie lokalnym na różnych
+komputerach.
+.TP 
+\fBTIMEOUT\fP
+Liczba sekund, które muszą minąć zanim procmail zdecyduje, że dziecko, które
+uruchomił, musiało się zawiesić. Program odbierze od procmaila sygnał
+\fITERMINATE\fP, a przetwarzanie pliku rc pójdzie dalej. Jeśli podano zero, to
+nie będzie tu używany czas oczekiwania i procmail będzie czekać do skutku;
+jeśli zmienna nie jest podana, wartość domyślna odpowiada 960 sekundom.
+.TP 
+\fBMSGPREFIX\fP
+Przedrostek nazwy pliku, który jest używany w wypadku dostarczania do
+katalogu (nie używany w katalogach maildir lub MH).
+.TP 
+\fBHOST\fP
+Jeśli nie jest to \fInazwa bieżącego komputera\fP, to przetwarzanie bieżącego
+\fIpliku rc\fP zostaje natychmiast przerywane. Jeśli w linii komend podano inne
+pliki rc, to przetwarzanie będzie kontynuowane z następnym z nich. Jeśli
+wykorzystane zostaną wszystkie pliki rc, program zakończy pracę, lecz nie
+wygeneruje błędu (np. mailer będzie sądził, że wiadomość została
+dostarczona).
+.TP 
+\fBUMASK\fP
+Nazwa mówi za siebie (jeśli nie, zapomnij o tym :\-).  Cokolwiek zostanie
+przypisane do zmiennej \fBUMASK\fP jest interpretowane jako wartość
+\fBósemkowa\fP. Jeśli nie jest podana, to domyślna wartość maski wynosi
+077. Jeśli maska zezwala na ustawienie o+x, to owo o+x zostanie dodane do
+praw dostępu wszystkich skrzynek pocztowych, do których procmail dostarcza
+pocztę bezpośrednio. Może to być używane do sprawdzania, czy przybyła nowa
+poczta.
+.TP 
+\fBSHELLMETAS\fP
+Jeśli jakikolwiek ze znaków wymienionych w \fBSHELLMETAS\fP pojawi się w linii
+określającej filtr lub program, to linia zostanie przekazana powłoce
+\fB$SHELL\fP, a nie zostanie wywołana bezpośrednio.
+.TP 
+\fBSHELLFLAGS\fP
+Każde wywołanie powłoki \fB$SHELL\fP będzie następujące:
+.br
+"$SHELL" "$SHELLFLAGS" "$*";
+.TP 
+\fBSENDMAIL\fP
+Jeśli nie używa się właściwości \fIforwardowania\fP, nie należy się tym
+przejmować. Określa to program wzywany do forwardowania poczty.
+.br
+Jest wywoływany jako: "$SENDMAIL" $SENDMAILFLAGS "$@";
+.TP 
+\fBNORESRETRY\fP
+Liczba powtórek, które mają być dokonane po wystąpieniu jednego z błędów
+"\fBprocess table full\fP", "\fBfile table full\fP", "\fBout of memory\fP" lub "\fBout
+of swap space\fP". Jeśli liczba ta jest ujemna, procmail będzie próbował
+wiecznie; jeśli nie jest podana, odpowiada wartości 4. Powtórki zachodzą co
+każde \fB$SUSPEND\fP sekund. Idea, która się za tym kryje, jest taka, że jeśli
+np. całkowicie wykorzystane zostały \fIobszar\fP \fIpamięci wymiany\fP lub
+\fItablica\fP \fIprocesów\fP, to wiele innych programów wykryje to także i
+przerwie działanie lub "padnie", zwalniając cenne \fIzasoby\fP procmailowi.
+.TP 
+\fBSUSPEND\fP
+Liczba sekund, podczas których procmail będzie czekał, jeśli musi, na coś,
+co obecnie jest niedostępne (pamięć, fork, itd.); jeśli nie podano, to
+wartością domyślną jest 16 sekund. Zobacz także: \fBLOCKSLEEP\fP.
+.TP 
+\fBLINEBUF\fP
+Długość wewnętrznych buforów liniowych, nie może być mniejsza niż 128.
+Wszystkie linie odczytywane z \fIpliku rc\fP nie powinny mieć więcej niż
+\fB$LINEBUF\fP znaków przed i po rozszerzeniu. Jeśli wartość nie jest podana,
+odpowiada 2048. Limitu tego oczywiście \fInie\fP stosuje się do samego listu,
+który może mieć dowolne długości linii lub może być plikiem binarnym. Patrz
+także opis \fBPROCMAIL_OVERFLOW\fP.
+.TP 
+\fBDELIVERED\fP
+Jeśli ustawione na "yes", to procmail będzie udawał przed agentem pocztowym,
+że poczta została dostarczona. Jeśli poczta nie mogła być dostarczona po
+napotkaniu tego ustawienia, zostanie utracona (tj. nie będzie zwrócona do
+nadawcy).
+.TP 
+\fBTRAP\fP
+Gdy procmail będzie kończył działanie, ale nie z powodu otrzymania sygnału,
+to wywoła zawartość tej zmiennej. Kopia listu może być odczytana ze
+stdin. Wszelkie wyjście wyprodukowane przez tę komendę będzie dodane do
+pliku \fB$LOGFILE\fP. Przykładowe zastosowania \fBTRAP\fP to: usuwanie plików
+tymczasowych, logowanie własnych uzupełnień, itp. Zobacz także \fBEXITCODE\fP i
+\fBLOGABSTRACT\fP.
+.TP 
+\fBEXITCODE\fP
+Domyślne procmail zwraca zerowy kod błędu (oznaczający powodzenie), jeśli
+udało mu się poprawnie dostarczyć list lub gdy zmienna \fBHOST\fP nie była
+ustawiona na nazwę bieżącego komputera, a w linii poleceń nie podano
+kolejnych plików rc. W przeciwnym wypadku zwracany jest błąd. Przed
+zakończeniem jednakże procmail sprawdza wartość tej zmiennej. Jeśli została
+ustawiona na dodatnią wartość numeryczną, procmail użyje jej jako kodu
+wyjścia. Jeśli zmienna ta jest ustawiona, lecz pusta, procmail ustawi kod
+wyjścia na wartość zwracaną przez program \fBTRAP\fP. Jeśli zmienna ta nie
+została ustawiona, procmail ustawi ją na krótko przed wywołaniem programu
+\fBTRAP\fP.
+.TP 
+\fBLASTFOLDER\fP
+Zmienna ta jest inicjowana przez procmail za każdym razem, gdy dostarcza coś
+jakiemuś folderowi lub programowi. Zawsze zawiera  nazwę ostatniego foldera
+(lub programu), do którego coś dostarczano. Jeśli ostatnie dostarczenie
+obejmowało łącznie kilka folderów, to \fB$LASTFOLDER\fP będzie zawierał nazwy
+wszystkich plików (będących de facto dowiązaniami twardymi) jako listę
+rozdzieloną spacjami.
+.TP 
+\fBMATCH\fP
+Zmienna ta jest inicjowana przez procmail za każdym razem, gdy ma wyciągnąć
+tekst z wyrażenia regularnego. Będzie zawierać cały tekst odpowiadającego
+wyrażenia regularnego występującego po żetonie "\fB\e/\fP".
+.TP 
+\fBSHIFT\fP
+Przypisanie dodatniej wartości tej zmiennej daje taki sam rezultat, jak
+komenda "shift" w \fBsh\fP(1). Komenda ta jest najbardziej użyteczna do
+wyciągania dodatkowych argumentów podanych procmailowi działającemu jako
+filtr pocztowy.
+.TP 
+\fBINCLUDERC\fP
+Nazywa plik rc (względny w stosunku do bieżącego katalogu), który powinien
+być włączony jako część bieżącego pliku rc. Dozwolone jest nieograniczone
+zagnieżdżanie (limitowane tylko przez zasoby systemowe takie jak pamięć czy
+liczba dostępnych deskryptorów plików). Ponieważ nie są są sprawdzane ani
+uprawnienia, ani właściciel pliku rc, użytkownicy \fBINCLUDERC\fP powinni się
+upewnić, że tylko zaufani użytkownicy mają prawa do zapisu włączanego pliku
+rc i do katalogu, w którym się ten plik znajduje. Przypisanie zmiennej
+\fBINCLUDERC\fP wartości w linii poleceń nie ma żadnego efektu.
+.TP 
+\fBSWITCHRC\fP
+Nazywa plik rc (względny w stosunku do bieżącego katalogu), na który powinno
+się przełączyć przetwarzanie. Jeśli podany plik rc nie istnieje, nie jest
+zwykłym plikiem ani plikiem \fI/dev/null\fP, to zostanie wypisany błąd i będzie
+kontynuowane przetwarzanie bieżącego pliku rc. W przeciwnym razie
+przetwarzanie bieżącego pliku rc zostanie przerwane i rozpocznie się
+przetwarzanie pliku podanego jako wartość tej zmiennej. Jeśli zmienna
+\fBSWITCHRC\fP zostanie usunięta, to procmail przerywa przetwarzanie bieżącego
+pliku, tak jakby plik ten się kończył na linii usuwającej tę
+zmienną. Podobnie jak w przypadku \fBINCLUDERC\fP nie są są sprawdzane ani
+uprawnienia, ani właściciel pliku rc, a przypisanie tej zmiennej wartości w
+linii poleceń nie ma żadnego efektu.
+.TP 
+\fBPROCMAIL_VERSION\fP
+Numer wersji działającego procmaila.
+.TP 
+\fBPROCMAIL_OVERFLOW\fP
+Zmienna ta zostanie ustawiona na niepustą wartość, jeśli procmail wykryje
+przepełnienie bufora. Patrz rozdział \fBBŁĘDY\fP poniżej po opis innych działań
+podejmowanych po wykryciu przepełnienia bufora.
+.TP 
+\fBCOMSAT\fP
+Notyfikacja \fBcomsat\fP(8)/\fBbiff\fP(1) domyślnie jest włączona, lecz można ją
+wyłączyć przez ustawienie tej zmiennej na "no". Alternatywnie, usługę biff
+można dokonfigurować przez ustawienie zmiennej na "service@", "@hostname"
+lub "sevice@hostname". Wartością domyślną jest biff@localhost.
+.TP 
+\fBDROPPRIVS\fP
+Jeśli jest to ustawione na "yes", procmail porzuci wszelkie uprawnienia
+(suid lub sgid), jakie może mieć. Opcja ta jest użyteczna, aby
+zagwarantować, że dolna część pliku \fI/etc/procmailrc\fP jest wywoływana w
+imieniu odbiorcy.
+.SS "Rozszerzone wyrażenia regularne"
+Następujące żetony rozpoznawane są zarówno przez wewnętrzny egrep procmaila,
+jak i przez standardowy \fBegrep\fP(1) (proszę być świadomym tego, że niektóre
+implementacje egrepa zawierają niestandardowe rozszerzenia, w szczególności
+operator powtarzania \fB{\fP nie jest obsługiwany przez wewnętrznego egrepa
+procmaila):
+.TP  1.0i
+\fB^\fP
+Początek linii.
+.TP 
+\fB$\fP
+Koniec linii.
+.TP 
+\&\fB.\fP
+Dowolny znak poza znakiem nowej linii.
+.TP 
+\fBa*\fP
+Dowolna sekwencja składająca się z zera lub więcej znaków "a".
+.TP 
+\fBa+\fP
+Dowolna sekwencja składająca się z jednego lub więcej znaków "a".
+.TP 
+\fBa?\fP
+Ciąg pusty albo jeden znak "a".
+.TP 
+\fB[^\-a\-d]\fP
+Dowolny znak, który \fBnie\fP jest kreską, znakiem "a", "b", "c" lub "d", lub
+znakiem nowej linii.
+.TP 
+\fBde|abc\fP
+Albo sekwencja "de", albo "abc".
+.TP 
+\fB(abc)*\fP
+Zero lub więcej sekwencji "abc".
+.TP 
+\fB\e.\fP
+Dopasowuje pojedynczą kropkę; należy użyć \fB\e\fP przed którymkolwiek ze
+znaków specjalnych, aby pozbyć się jego specjalnego znaczenia. Patrz także
+opis podstawień zmiennych \fI$\enazwa\fP w rozdziale \fBBŁĘDY\fP.
+.PP
+Były to tylko przykłady, oczywiście można używać również bardziej złożonych
+kombinacji.
+.PP
+Następujące znaczenia żetonów są rozszerzeniami procmaila:
+.TP  1.0i
+\fB^\fP lub \fB$\fP
+Pasuje do znaku nowej linii (dla trafień wieloliniowych).
+.TP 
+\fB^^\fP
+Zakotwicza wyrażenie na samym początku obszaru przeszukiwania lub jeśli
+napotkane na końcu wyrażenia, na samym końcu obszaru przeszukiwań.
+.TP 
+\fB\e<\fP lub \fB\e>\fP
+Dopasowuje znak przed słowem lub po nim. Są to ogólnie skróty dla
+"[^a\-zA\-Z0\-9_]", lecz mogą także dopasowywać znaki nowej linii. Ponieważ
+odpowiadają rzeczywistym znakom, nadają się tylko do oddzielania słów, nie
+do oddzielania przestrzeni między słowami.
+.TP 
+\fB\e/\fP
+Dzieli wyrażenie na dwie części. Wszystko odpowiadające prawej stronie
+będzie przypisane do zmiennej środowiskowej \fBMATCH\fP.
+.SH PRZYKŁADY
+Patrz strona podręcznika \fBprocmailex\fP(5).
+.SH ZASTRZEŻENIA
+Kontynuowane linie w linii akcji, która określa program, muszą zawsze
+kończyć się odwrotnym ukośnikiem, nawet jeśli używana powłoka nie potrzebuje
+lub nie chce odwrotnego ukośnika do wskazania kontynuacji. Jest tak z powodu
+dwustopniowego procesu przetwarzania (najpierw procmail, potem powłoka (lub
+nie, zależnie od \fBSHELLMETAS\fP)).
+.PP
+Nie wstawia komentarzy w regule w liniach warunkowych wyrażeń regularnych,
+linie te są przekazywane wewnętrznemu egrepowi \fIwprost\fP (z wyjątkiem
+odwrotnych ukośników kontynuacji znajdujących się na końcu linii).
+.PP
+Początkowe białe spacje w kontynuowanych wyrażeniach regularnych są
+zazwyczaj ignorowane (więc linie mogą być wcięte), lecz \fBnie\fP jest tak w
+kontynuowanych wyrażeniach warunkowych, które są odczytywane według reguł
+podstawiania \fBsh\fP(1) wewnątrz podwójnych cudzysłowów.
+.PP
+Uwaga na deadlocki podczas wykonywania niezdrowych rzeczy jak przekazywanie
+poczty na swoje własne konto. Deadlocki można złamać przez właściwe użycie
+\fBLOCKTIMEOUT\fP.
+.PP
+Wszelkie domyślne wartości, których procmail używa dla zmiennych
+środowiskowych \fBzawsze\fP przeciążą te, które były wcześniej
+zdefiniowane. Aby naprawdę przeciążyć wartości domyślne, należy je albo
+wstawić do pliku rc, albo wypisać w linii poleceń jako argumenty.
+.PP
+Plik \fI/etc/procmailrc\fP nie może zmienić ustawienia zmiennej \fIPATH\fP
+widzianej później przez pliki rc użytkowników \(em wartość tej zmiennej jest
+przywracana, gdy procmail kończy przetwarzanie pliku \fI/etc/procmailrc\fP. W
+przyszłości należy się spodziewać ulepszenia tego zachowania, jednakże
+obecnie jedynym rozwiązaniem jest przekompilowanie procmaila z żądaną
+wartością tej zmiennej.
+.PP
+Zmienne środowiskowe, ustawiane \fBwewnątrz\fP interpretowanej przez powłokę
+części akcji reguły "|", \fBnie\fP zachowają swoich wartości po zakończeniu
+reguły, gdyż są ustawiane w podpowłoce procmaila. Aby upewnić się, że
+wartość zostanie zachowana, należy dokonać przypisania przed początkowym
+znakiem "|" reguły, tak że może przechwycić stdout programu.
+.PP
+Jeśli w regule dostarczającej podana zostanie tylko flaga "h" lub "b" i
+reguła ta zostanie dopasowana, to jeżeli nie użyto flagi "c", ciało listu
+lub (odpowiednio) jego nagłówek zostaną utracone.
+.SH "ZOBACZ TAKŻE"
+.na
+.nh
+\fBprocmail\fP(1), \fBprocmailsc\fP(5), \fBprocmailex\fP(5), \fBsh\fP(1), \fBcsh\fP(1),
+\fBmail\fP(1), \fBmailx\fP(1), \fBuucp\fP(1), \fBaliases\fP(5), \fBsendmail\fP(8),
+\fBegrep\fP(1), \fBregexp\fP(5), \fBgrep\fP(1), \fBbiff\fP(1), \fBcomsat\fP(8),
+\fBlockfile\fP(1), \fBformail\fP(1)
+.hy
+.ad
+.SH BŁĘDY
+Jedyne podstawienia zmiennych środowiskowych, które mogą być obsługiwane
+przez samego procmaila są typu \fI$nazwa\fP, \fI${nazwa}\fP, \fI${nazwa:\-tekst}\fP,
+\fI${nazwa:+tekst}\fP, \fI${nazwa\-tekst}\fP, \fI${nazwa+tekst}\fP, \fI$\enazwa\fP,
+\fI$#\fP, \fI$n\fP, \fI$$\fP, \fI$?\fP, \fI$_\fP, \fI$\-\fP i \fI$=\fP; gdzie \fI$\enazwa\fP zostanie
+zastąpione przez \fInazwa\fP z zacytowanymi wszystkimi znakami mającymi
+specjalne znaczenie w wyrażeniach regularnych; \fI$_\fP będzie zastąpione nazwą
+bieżącego pliku rc, \fI$\-\fP przez \fB$LASTFOLDER\fP, a \fI$=\fP będzie zawierać
+punktację (score) ostatniej reguły. Co więcej znaki spacji nigdy nie będą
+rozdzielać wyniku podstawiania \fI$\enazwa\fP. Gdy użyte są opcje \fB\-a\fP lub
+\fB\-m\fP to \fI"$@"\fP (cudzysłowy są wymagane) rozwinie się do podanych
+argumentów. Jednakże \fI"$@"\fP będzie rozwijany tylko wtedy, gdy jest używany
+na liście  argumentów programu, i tylko jedno wystąpienie tej zmiennej
+będzie rozwijane.
+.PP
+Niecytowanie ekspansje zmiennych przeprowadzane przez procmail są zawsze
+dzielone na spacjach, tabulatorach i znakach nowej linii; zmienna IFS nie
+jest wewnętrznie używana.
+.PP
+Procmail nie wspiera rozwijania "~".
+.PP
+Bufor linii o długości \fB$LINEBUF\fP jest używany podczas przetwarzania
+\fIpliku rc\fP; wszystkie ekspansje, które nie mieszczą się w tym limicie
+długości są obcinane i ustawiana jest zmienna \fBPROCMAIL_OVERFLOW\fP. Jeśli
+zbyt długa linia jest linią warunku lub akcji, to reguła zawierająca taki
+warunek lub akcję jest uznawana za zakończoną niepowodzeniem, a procmail
+kontynuować będzie przetwarzanie kolejnych reguł. Jeśli linia taka występuje
+w przypisaniu zmiennej lub linii rozpoczynającej, to procmail przerwie
+przetwarzanie \fIpliku rc\fP.
+.PP
+Jeśli globalny plik blokujący ma ścieżkę \fIrelatywną\fP, a bieżący katalog nie
+jest taki sam, jak wtedy, gdy globalny plik blokujący został utworzony, to
+ten globalny plik blokujący nie zostanie usunięty, jeśli procmail zakończy w
+tym momencie działanie (tak więc: należy używać ścieżek \fIabsolutnych\fP dla
+globalnych plików blokujących).
+.PP
+Jeśli plik rc ma ścieżkę \fIwzględną\fP, to kiedy ten plik jest otwierany po
+raz pierwszy, to \fBMAILDIR\fP zawiera ścieżkę względną. Jeśli w którymś
+momencie procmail zostanie poinstruowany, żeby się sklonował, a bieżący
+katalog roboczy się zmienił od czasu otwarcia pliku rc, to procmail nie
+będzie w stanie się sklonować (lekarstwo: używanie ścieżek \fIbezwzględnych\fP
+do odwołań do plików rc lub upewnienie się, że \fBMAILDIR\fP zawiera ścieżkę
+bezwzględną przed otwarciem pliku rc).
+.PP
+Lokalny plik blokujący reguły, który zaznacza początek zagnieżdżonego bloku,
+nie działa tak, jak by się tego oczekiwało.
+.PP
+Gdy przechwytuje się standardowe wejście z reguły do zmiennej środowiskowej,
+to zostanie obcięty dokładnie jeden, kończący znak nowej linii.
+.PP
+Niektóre nieoptymalne i nieoczywiste wyrażenia regularne ustawiają
+niepoprawną wartość zmiennej \fBMATCH\fP. Takie wyrażenie regularne można
+poprawić, usuwając jeden lub więcej niepotrzebnych operatorów \&"*", "+" lub
+"?" znajdujących się po lewej stronie tokena \e/.
+.SH RÓŻNE
+Jeśli wyrażenie regularne zawiera "\fB^TO_\fP", to zostanie zastąpione przez
+.na
+.nh
+"\fB(^((Original\-)?(Resent\-)?(To\h'-\w' 'u' |Cc\h'-\w' 'u' |Bcc)\h'-\w' 'u'
+|(X\-Envelope\h'-\w' 'u' |Apparently(\-Resent)?)\-To)\h'-\w' 'u'
+:(.*[^\-a\-zA\-Z0\-9_.])?)\fP", co powinno złapać wszystkie specyfikacje celu
+zawierające określony \fIadres\fP.
+.hy
+.ad
+.PP
+Jeśli wyrażenie regularne zawiera "\fB^TO\fP", to zostanie zastąpione przez
+.na
+.nh
+"\fB(^((Original\-)?(Resent\-)?(To\h'-\w' 'u' |Cc\h'-\w' 'u' |Bcc)\h'-\w' 'u'
+|(X\-Envelope\h'-\w' 'u' |Apparently(\-Resent)?)\-To)\h'-\w' 'u'
+:(.*[^a\-zA\-Z])?)\fP", co powinno złapać wszystkie specyfikacje celu
+zawierające określone \fIsłowo\fP.
+.hy
+.ad
+.PP
+Jeśli wyrażenie regularne zawiera "\fB^FROM_DAEMON\fP", to zostanie zastąpione
+przez
+.na
+.nh
+"\fB(^(Mailing\-List\h'-\w' 'u' :\h'-\w' 'u' |Precedence\h'-\w' 'u'
+:.*(junk\h'-\w' 'u' |bulk\h'-\w' 'u' |list)\h'-\w' 'u' |To\h'-\w' 'u' :
+Multiple recipients of |(((Resent\-)?(From\h'-\w' 'u' |Sender)\h'-\w' 'u'
+|X\-Envelope\-From)\h'-\w' 'u' :\h'-\w' 'u' |>?From
+)([^>]*[^(.%@a\-z0\-9])?(Post(ma?(st(e?r)?\h'-\w' 'u' |n)\h'-\w' 'u'
+|office)\h'-\w' 'u' |(send)?Mail(er)?\h'-\w' 'u' |daemon\h'-\w' 'u'
+|m(mdf\h'-\w' 'u' |ajordomo)\h'-\w' 'u' |n?uucp\h'-\w' 'u' |LIST(SERV\h'-\w'
+\&'u' |proc)\h'-\w' 'u' |NETSERV\h'-\w' 'u' |o(wner\h'-\w' 'u' |ps)\h'-\w' 'u'
+|r(e(quest\h'-\w' 'u' |sponse)\h'-\w' 'u' |oot)\h'-\w' 'u' |b(ounce\h'-\w'
+\&'u' |bs\e.smtp)\h'-\w' 'u' |echo\h'-\w' 'u' |mirror\h'-\w' 'u'
+|s(erv(ices?\h'-\w' 'u' |er)\h'-\w' 'u' |mtp(error)?\h'-\w' 'u'
+|ystem)\h'-\w' 'u' |A(dmin(istrator)?\h'-\w' 'u' |MMGR\h'-\w' 'u'
+|utoanswer))(([^).!\h'-\w' 'u' :a\-z0\-9][\-_a\-z0\-9]*)?[%@>\et
+][^<)]*(\e(.*\e).*)?)?$([^>]\h'-\w' 'u' |$)))\fP", co powinno złapać
+maile pochodzące od większości demonów (jak się podoba to wyrażenie
+regularne? :\-)
+.hy
+.ad
+.PP
+Jeśli wyrażenie regularne zawiera "\fB^FROM_MAILER\fP", to zostanie zastąpione
+przez
+.na
+.nh
+"\fB(^(((Resent\-)?(From\h'-\w' 'u' |Sender)\h'-\w' 'u'
+|X\-Envelope\-From)\h'-\w' 'u' :\h'-\w' 'u' |>?From
+)([^>]*[^(.%@a\-z0\-9])?(Post(ma(st(er)?\h'-\w' 'u' |n)\h'-\w' 'u'
+|office)\h'-\w' 'u' |(send)?Mail(er)?\h'-\w' 'u' |daemon\h'-\w' 'u'
+|mmdf\h'-\w' 'u' |n?uucp\h'-\w' 'u' |ops\h'-\w' 'u' |r(esponse\h'-\w' 'u'
+|oot)\h'-\w' 'u' |(bbs\e.)?smtp(error)?\h'-\w' 'u' |s(erv(ices?\h'-\w' 'u'
+|er)\h'-\w' 'u' |ystem)\h'-\w' 'u' |A(dmin(istrator)?\h'-\w' 'u'
+|MMGR))(([^).!\h'-\w' 'u' :a\-z0\-9][\-_a\-z0\-9]*)?[%@>\et
+][^<)]*(\e(.*\e).*)?)?$([^>]\h'-\w' 'u' |$))\fP" (uproszczona wersja
+"\fB^FROM_DAEMON\fP"), co powinno złapać maile pochodzące od większości demonów
+pocztowych.
+.hy
+.ad
+.PP
+Podczas przypisywania wartości logicznych zmiennym takim jak \fBVERBOSE\fP,
+\fBDELIVERED\fP czy \fBCOMSAT\fP, procmail przyjmuje jako prawdziwy napis
+zaczynający się od: cyfry różnej od zera, "on", "y", "t" lub "e". Fałsz jest
+każdym napisem zaczynającym się od: cyfry zero, "off", "n", "f" lub "d".
+.PP
+Jeśli linia akcji reguły określa program, to pojedyncza para znaków
+odwrotny\-ukośnik+nowa\-linia w niej występująca zostanie przekształcona w
+nową linię, pod warunkiem, że linia nie zawiera innych żadnych znaków.
+.PP
+Silnik wyrażeń regularnych wbudowany w procmaila nie obsługuje nazwanych
+klas znaków (np. [:alnum:]).
+.SH UWAGI
+Ponieważ niecytowane początkowe białe spacje są ogólnie ignorowane w plikach
+rc, można zastosować takie wcięcia linii, jakie nam odpowiadają.
+.PP
+Początkowy znak "|" w linii akcji wskazującej program lub filtr, jest
+obcinane przed sprawdzeniem \fB$SHELLMETAS\fP.
+.PP
+Pliki włączane dyrektywą \fBINCLUDERC\fP zawierające tylko przypisania wartości
+zmiennym środowiskowym mogą być dzielone z \fBsh\fP(1).
+.PP
+Nie ma żadnych gwarancji, że bieżące zachowanie przypisań zmiennych
+\fBINCLUDERC\fP i \fBSWITCHRC\fP w linii poleceń nie zostanie zmienione. Zostało
+już raz zmienione w przeszłości i może być zmienione ponownie lub nawet
+usunięte w przyszłych wersjach.
+.PP
+W celu \fInaprawdę\fP skomplikowanego przetwarzania można nawet rozważyć
+rekurencyjne wywoływanie procmaila.
+.PP
+W bardzo starych wersjach procmaila zamiast ":0" rozpoczynającego regułę
+trzeba było używać ":n", gdzie n oznaczało liczbę warunków w regule.
+.SH AUTORZY
+Stephen R. van den Berg
+.RS
+<srb@cuci.nl>
+.RE
+Philip A. Guenther
+.RS
+<guenther@sendmail.com>
+.RE
+.\".if n .pl -(\n(.tu-1i)
+.rm SH
+.rn Sh SH
+.rm SS
+.rn Ss SS
+.rm TP
+.rn Tp TP
+.rm RS
+.rn Rs RS
+.rm RE
+.rn Re RE
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.22 \fPoryginału.

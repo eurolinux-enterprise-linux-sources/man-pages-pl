@@ -1,0 +1,244 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright (C) Markus Kuhn, 1995, 2001
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" 1995-11-26  Markus Kuhn <mskuhn@cip.informatik.uni-erlangen.de>
+.\"      First version written
+.\" 2001-05-11  Markus Kuhn <mgk25@cl.cam.ac.uk>
+.\"      Update
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1995, 2001 Markus Kuhn (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Gwidon S. Naskrent (PTM) <naskrent@hoth.amu.edu.pl>
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH UNICODE 7 11\-05\-2001 GNU "Podręcznik Programisty Linuksa"
+.SH NAZWA
+Unicode \- zunifikowany zestaw znaków
+.SH OPIS
+Międzynarodowy standard \fBISO 10646\fP definiuje \fBUniversal Character Set
+(UCS)\fP. UCS zawiera wszelkie znaki wszelkich innych zestawów
+znaków. Gwarantuje on również \fBkompatybilność na okrągło\fP, tj. budowanie
+takich tablic konwersji, że podczas konwersji łańcucha z jednego kodowania
+na \fBUCS\fP i z powrotem nie jest tracona żadna informacja.
+
+UCS zawiera znaki wymagane do przedstawienia praktycznie wszystkich znanych
+języków. Obejmuje to nie tylko pismo łacińskie, greckie, hebrajskie,
+arabskie, armeńskie, gruzińskie i cyrylicę, lecz także ideogramy chińskie,
+japońskie oraz koreańskie Han, jak również następujące: hiragana, katakana,
+hangul, dewanagari, bengalskie, gurmukji, gujarati, oriya, tamil, telugu,
+kannada, malajlamski, tajski, lao, kmerski, bopomofo, tybetański, runiczne,
+etiopskie, kanadyjskie sylabiczne, cherokee, mongolskie, oghamskie, myanmar,
+sinhala, thaana, yi i inne. Nad pismami, które nie zostały jeszcze
+uwzględnione, trwają prace nad najlepszym ich zakodowaniem do użytku
+komputerowego i ostatecznie zostaną one dodane. Ujęte mogą zostać w końcu
+nie tylko hieroglify i różne, historyczne języki indoeuropejskie, lecz także
+wybrane pisma artystyczne, jak tengwar, cirth i klingoński. UCS obejmuje
+również wiele symboli graficznych, typograficznych, matematycznych i
+naukowych, dostarczanych z TeX\-em, PostScriptem, APL\-em, MS\-DOS\-em,
+Macintoshem oraz fontami OCR i  wieloma innymi systemami przetwarzania
+tekstów, a wciąż dodawane są nowe.
+
+Standard UCS (ISO 10646) opisuje \fIzestaw znaków o architekturze 31\-bitowej\fP
+składający się ze 128 24\-bitowych \fIgrup\fP, z których każda dzieli się na 256
+16\-bitowych \fIpłaszczyzn\fP złożonych z 256 8\-bitowych \fIwierszy\fP z 256
+\fIkolumnami\fP, po jednej na każdy znak. Pierwsza część standardu (\fBISO
+10646\-1\fP) definiuje pierwsze 65534 pozycji (0x0000 do 0xfffd), która składa
+się na \fIpodstawową płaszczyznę wielojęzyczną (BMP)\fP \- ang. Basic
+Multilingual Plane, która jest 0. płaszczyzną w grupie 0. Druga część
+standardu (\fBISO 10646\-2\fP) dodaje znaki do grupy zerowej poza BMP w wielu
+\fIpłaszczyznach uzupełniających\fP, w zakresie od 0x10000 do 0x10ffff. Nie
+istnieją plany dodawania znaków poza  0x10ffff do standardu, zatem z całej
+przestrzeni kodu jedynie niewielka część grupy 0. może być kiedykolwiek
+faktycznie użyta w przewidywalnej przeszłości. BMP zawiera wszystkie znaki,
+które można znaleźć powszechnie w innych zestawach znaków. Płaszczyzny
+uzupełniające, dodane w ISO 10646\-2 obejmują jedynie bardziej egzotyczne
+znaki o specjalnym zastosowaniu naukowym, do wydruku słowników, wydawnictw,
+wysokopoziomowych protokołów i potrzeb entuzjastów.
+.PP
+Reprezentacja każdego znaku UCS jako 2\-bajtowe słowo jest nazywana postacią
+\fBUCS\-2\fP (tylko znaki BMP), podczas gdy \fBUCS\-4\fP jest reprezentacją każdego
+znaku jako słowo 4\-bajtowe. Dodatkowo, istnieją dwie postacie kodowania:
+\fBUTF\-8\fP w celu kompatybilności wstecznej z programami przetwarzającymi
+ASCII i \fBUTF\-16\fP, w celu kompatybilnej obsługi znaków spoza BMP \- aż do
+0x10ffff, przez programy UCS\-2.
+.PP
+Znaki \fBUCS\fP 0x0000 do 0x007f są identyczne z tymi w klasycznym zestawie
+znaków \fBUS\-ASCII\fP, a znaki w zakresie 0x000 do 0x00ff są identyczne z tymi
+w zestawie znaków \fBISO 8859\-1 Latin\-1\fP.
+.SS "Znaki składające"
+Niektóre punkty kodowe w \fBUCS\fP zostały przypisane do \fBznaków
+składających\fP.  Podobne są one do niespacyjnych klawiszy akcentów na
+maszynie do pisania. Znak składający dodaje akcent do poprzedniego
+znaku. Najważniejsze znaki akcentowane mają osobne kody w UCS, jednak
+mechanizm znaków składających pozwala dodawać akcenty i inne znaki
+diakrytyczne do każdego znaku.  Znaki składające zawsze następują po znaku,
+który modyfikują.  Dla przykładu, niemiecki znak A\-umlaut ("Latin capital
+letter A with diaeresis") może być przedstawiony za pomocą bądź to
+istniejącego już złożonego znaku \fBUCS\fP o kodzie 0x00c4, bądź alternatywnie
+jako kombinacja zwykłych znaków "Latin capital letter A" i "combining
+diaeresis": 0x0041 0x0308.
+.PP
+Znaki składające są istotne na przykład do kodowania pisma tajskiego lub do
+składu zapisu matematycznego oraz użytkowników międzynarodowego alfabetu
+fonetycznego (IPA).
+.SS "Poziomy implementacji"
+Ponieważ należy się spodziewać, że nie wszystkie systemy będą obsługiwać
+zaawansowane mechanizmy w rodzaju składania znaków, ISO 10646\-1 określa
+następujące trzy \fIpoziomy implementacji\fP UCS:
+.TP  0.9i
+Poziom 1
+Nieobsługiwane są znaki składane i \fBHangul Jamo\fP (specjalne, bardziej
+skomplikowane kodowanie pisma koreańskiego, w którym sylaby Hangul są
+kodowane jako dwa lub trzy podznaki).
+.TP 
+Poziom 2
+Oprócz zastrzeżeń poziomu 1, obsługiwane są znaki składające w przypadku
+języków, dla których są one istotne (np. tajski, lao, hebrajski, arabski,
+dewanagari, malajski itp.).
+.TP 
+Poziom 3
+Obsługiwane są wszystkie znaki \fBUCS\fP.
+.PP
+\fBUnicode 3.0 Standard\fP opublikowany przez \fBUnicode Consortium\fP zawiera
+dokładnie \fBUCS Basic Multilingual Plane\fP (płaszczyznę podstawową) w
+poziomie implementacji 3, zgodnie z ISO 10646\-1:2000. \fBUnicode 3.1\fP dodaje
+płaszczyzny uzupełniające z ISO 10646\-2. Standard Unikodu i dokumenty
+techniczne opublikowane przez Unicode Consortium zawierają wiele dodatkowych
+informacji o semantyce i zalecanym użyciu różnych znaków. Dostarczają
+wskazania i algorytmy do edytowania, sortowania, porównywania,
+normalizowania, konwertowania i wyświetlania łańcuchów Unikodu.
+.SS "Unikod w systemie Linux"
+W systemie GNU/Linux, typ C \fIwchar_t\fP jest 32\-bitową liczbą typu integer ze
+znakiem. Jej wartość są interpretowane przez bibliotekę C, zawsze jako
+wartości kodu \fBUCS\fP (we wszystkich ustawieniach locale), a ta konwencja
+jest sygnalizowana przez bibliotekę GNU C w stosunku do aplikacji, przez
+zdefiniowane stałej \fB__STDC_ISO_10646__\fP, zgodnie ze standardem ISO C99.
+
+UCS/Unikod może być używany identycznie jak ASCII w łańcuchach
+wejścia/wyjścia, komunikacji terminalowej, plikach tekstowych, nazwach
+plików i zmiennych środowiskowych w wielobajtowym kodowaniu \fBUTF\-8\fP
+kompatybilnym z ASCII. Aby zasygnalizować używanie kodowania znaków UTF\-8
+wszystkim aplikacjom, należy wybrać odpowiednie \fIlocale\fP za pomocą
+zmiennych środowiskowych (np. "LANG=pl_PL.UTF\-8").
+.PP
+Funkcja \fBnl_langinfo(CODESET)\fP zwraca nazwę wybranego kodowania. Funkcje
+biblioteczne, takie jak \fBwctomb\fP(3) i \fBmbsrtowcs\fP(3) mogą być używane do
+przekształcenia wewnętrznych znaków i łańcuchów \fIwchar_t\fP na kodowanie
+znaków systemowych i z powrotem, a \fBwcwidth\fP(3) informuje, jak wiele
+pozycji (0\(en2) kursor przesunął się przez wyświetlenie znaku.
+.PP
+Generalnie, w systemie Linux powinien być używany jedynie poziom 1
+implementacji BMP. Część emulatorów terminala UTF\-8 i fontów ISO 10646
+obsługuje również do dwóch znaków składających na znak w przypadku
+określonych pism, w szczególności: tajskiego (poziom 2), ale ogólnie rzecz
+biorąc powinno się używać gotowych znaków, tam gdzie są tylko dostępne
+(Unikod nazywa to \fBNormalization Form C\fP).
+.SS "Obszar prywatny"
+W \fBBMP\fP, kodom z zakresu 0xe000 do 0xf8ff nigdy nie zostaną przypisane
+znaki; są one zarezerwowane do użytku prywatnego.  Dla społeczności
+Linuksowej ów obszar prywatny został dalej podzielony na zakres od 0xe000 do
+0xefff, którego może używać indywidualnie każdy użytkownik, oraz strefę
+linuksową w zakresie 0xf000 do 0xf8ff, której rozszerzanie podlega
+koordynacji pomiędzy wszystkimi użytkownikami Linuksa. Rejestr znaków
+przypisanych do strefy Linuksowej utrzymuje obecnie H. Peter Anvin
+<Peter.Anvin@linux.org>
+.SS Literatura
+.TP  0.2i
+*
+Information technology \- Universal Multiple\-Octet Coded Character Set (UCS)
+\- Part 1: Architecture and Basic Multilingual Plane.  International Standard
+ISO/IEC 10646\-1, International Organization for Standardization, Genewa,
+2000.
+
+Jest to oficjalna specyfikacja \fBUCS\fP. Dostępna jako plik PDF na CD\-ROM\-ie
+ze strony http://www.iso.ch.
+.TP 
+*
+The Unicode Standard, Version 3.0.  The Unicode Consortium, Addison\-Wesley,
+Reading, MA, 2000, ISBN 0\-201\-61633\-5.
+.TP 
+*
+S. Harbison, G. Steele. C \- A Reference Manual. Fourth edition, Prentice
+Hall, Englewood Cliffs, 1995, ISBN 0\-13\-326224\-3.
+
+Dobra książka\-informator języka programowania C.  Czwarte wydanie obejmuje
+także 1 Poprawkę do standardu ISO C90, która dodaje znaczną liczbę nowych
+funkcji bibliotecznych C do obsługi szerokich i  wielobajtowych zestawów
+znaków, ale nie opisuje ISO C99, jeszcze bardziej poprawiającej obsługę
+znaków szerokich i wielobajtowych.
+.TP 
+*
+Unicode Technical Reports.
+.RS
+http://www.unicode.org/unicode/reports/
+.RE
+.TP 
+*
+Markus Kuhn: UTF\-8 and Unicode FAQ for UNIX/Linux.
+.RS
+http://www.cl.cam.ac.uk/~mgk25/unicode.html
+
+Zawiera informacje o subskrypcji listy dyskusyjnej \fIlinux\-utf8\fP, która jest
+najlepszym miejscem do szukania porad na temat używania Unikodu w systemie
+Linux.
+.RE
+.TP 
+*
+Bruno Haible: Unicode HOWTO.
+.RS
+ftp://ftp.ilog.fr/pub/Users/haible/utf8/Unicode\-HOWTO.html
+.RE
+.SH BŁĘDY
+.\" .SH AUTHOR
+.\" Markus Kuhn <mgk25@cl.cam.ac.uk>
+Gdy ta strona podręcznika była aktualizowana po raz ostatni, obsługa locale
+\fBUTF\-8\fP w bibliotece GNU C była już dojrzała, podobnie jak obsługa XFree86,
+która również była zaawansowana, ale wciąż trwały prace nad programami
+(głównie edytorami), aby umożliwić im używanie locale \fBUTF\-8\fP. Obecnie,
+obsługa \fBUCS\fP w systemie Linux obejmuje zwykle znaki CJK o podwójnej
+szerokości, a niekiedy nawet proste nakładanie znaków składających, lecz nie
+obejmuje najczęściej obsługi pism pisanych od prawej do lewej lub wymaganych
+podstawień ligatur, w pismach takich jak hebrajskie, arabskie lub
+indyjskie. Pisma te są obecnie obsługiwane jedynie w określonych programach
+z interfejsem graficznym (przeglądarki internetowe, edytory tekstu) z
+zaawansowanymi silnikami renderowania tekstu.
+.SH "ZOBACZ TAKŻE"
+\fBsetlocale\fP(3), \fBcharsets\fP(7), \fButf\-8\fP(7)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Gwidon S. Naskrent (PTM) <naskrent@hoth.amu.edu.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

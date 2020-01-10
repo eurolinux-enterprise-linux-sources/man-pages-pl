@@ -1,0 +1,73 @@
+.\" -*- nroff -*-
+.\"
+.\" This man-page is Copyright (C) 1997 John S. Kallal
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" correction, aeb, 970825
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1997 John S. Kallal 
+.\" Copyright © of Polish translation:
+.\" Paweł Olszewski (PTM) <alder@amg.net.pl>, 1998.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH FULL 4 2007\-11\-24 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+full \- urządzenie zawsze pełne
+.SH KONFIGURACJA
+Jeśli w systemie nie ma jeszcze pliku \fI/dev/full\fP, można go utworzyć za
+pomocą następujących poleceń:
+.nf
+
+        mknod \-m 666 /dev/full c 1 7
+        chown root:root /dev/full
+.fi
+.SH OPIS
+Plik \fI/dev/full\fP ma numer główny urządzenia 1 i numer poboczny 7.
+.LP
+Zapis do urządzenia \fI/dev/full\fP skończy się niepowodzeniem, zwracając błąd
+\fBENOSPC\fP. Można tego użyć do przetestowania programu pod kątem obsługi
+błędów spowodowanych brakiem miejsca na dysku.
+
+Odczyt z urządzenia \fI/dev/full\fP zwróci znaki \e0.
+
+Zmiany bieżącej pozycji pliku na urządzeniu \fI/dev/full\fP zawsze kończą się
+pomyślnie.
+.SH PLIKI
+/dev/full
+.SH "ZOBACZ TAKŻE"
+\fBmknod\fP(1), \fBnull\fP(4), \fBzero\fP(4)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Paweł Olszewski (PTM) <alder@amg.net.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

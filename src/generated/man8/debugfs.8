@@ -1,0 +1,390 @@
+.\" -*- nroff -*-
+.\" Copyright 1993, 1994, 1995 by Theodore Ts'o.  All Rights Reserved.
+.\" This file may be copied under the terms of the GNU Public License.
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993-2008 Theodore Ts'o (GPL-2)
+.\" Copyright © of Polish translation:
+.\" Wojtek Kotwica (PTM) <wkotwica@post.pl>, 2000.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH DEBUGFS 8 "kwiecień 2012" "E2fsprogs wersja 1.42.2" 
+.SH NAZWA
+debugfs \- debugger systemu plików ext2/ext3/ext4
+.SH SKŁADNIA
+\fBdebugfs\fP [ \fB\-DVwci\fP ] [ \fB\-b\fP \fIrozmiar\-bloku\fP ] [ \fB\-s\fP \fIsuperblok\fP ] [
+\fB\-f\fP \fIplik\-komend\fP ] [ \fB\-R\fP \fIkomenda\fP ] [ \fB\-d\fP
+\fIurządzenie\-źródła\-danych\fP ] [ \fIurządzenie\fP ]
+.SH OPIS
+Program \fBdebugfs\fP jest debuggerem systemów plików. Można go używać do
+sprawdzenia i zmiany stanu systemu plików typu ext2, ext3 lub ext4.
+.br
+\fIUrządzenie\fP jest plikiem specjalnym odpowiadającym urządzeniu
+zawierającemu system plików (np. /dev/hdXX).
+.SH OPCJE
+.TP 
+\fB\-w\fP
+Określa, że system plików powinien być otwarty w trybie odczyt\-zapis
+(read\-write). Bez tej opcji system plików otwierany jest w trybie
+tylko\-do\-odczytu (read\-only).
+.TP 
+\fB\-c\fP
+Powoduje, że system plików powinien być otwarty w trybie katastrofalnym
+(catastrophic mode), gdzie i\-węzeł oraz mapy bitowe grup nie są początkowo
+odczytywane. Ta opcja może być przydatna dla znacznie uszkodzonych systemów
+plików, lecz powoduje ona ich otwarcie w trybie tylko do odczytu.
+.TP 
+\fB\-i\fP
+Powoduje, że \fIurządzenie\fP reprezentuje obraz ext2 utworzony przez program
+\fBe2image\fP. Ponieważ obraz ext2 zawiera jedynie superblok, deskryptor grupy
+bloków, blok i mapy bitowe alokacji i\-węzłów oraz tablicę i\-węzłów, wiele
+komend \fBdebugfs\fP nie będzie działało poprawnie.  \fBOstrzeżenie:\fP nie ma
+żadnych bezpiecznych sprawdzeń, dlatego \fBdebugfs\fP może zawieść podczas prób
+wykonania takich komend jak \fBls\fP, \fBdump\fP, itd.  \fBdebugfs\fP jest
+debuggerem. Posiada szorstkie krawędzie!
+.TP 
+\fB\-d\fP \fIdata_source_device\fP
+W użyciu z opcją \fB\-i\fP, określa \fIurządzenie\-źródła\-danych\fP, które powinno
+być użyte do odczytu bloków nieodnalezionych w pliku obrazu ext2. Obejmuje
+to dane, katalogi i bloki niebezpośrednie.
+.TP 
+\fB\-b\fP \fIrozmiar\-bloku\fP
+Powoduje użycie podanego rozmiaru bloku dla systemu plików zamiast, tak jak
+normalnie, wykrywać odpowiedni rozmiar.
+.TP 
+\fB\-s\fP \fIsuperblok\fP
+Powoduje odczytanie superbloku z podanego numeru bloku zamiast z domyślnego
+(położonego w odstępie 1024 bajtów od początku systemu plików). Jeżeli poda
+się opcję \fB\-s\fP, konieczne jest również podanie rozmiaru bloku systemu
+plików, przy użyciu opcji \fB\-b\fP.
+.TP 
+\fB\-f\fP \fIplik_komend\fP
+Powoduje, że \fBdebugfs\fP odczytuje komendy z \fIpliku komend\fP i wykonuje
+je. Po zakończeniu wykonywania tych komend \fBdebugfs\fP kończy pracę.
+.TP 
+\fB\-D\fP
+Powoduje, że \fBdebugfs\fP otwiera urządzenie używając bezpośredniego
+wejścia/wyjścia, pomijając bufory. Proszę zauważyć, że niektóre linuksowe
+urządzenia, przede wszystkim szkielet mapujący urządzenia (device mapper)
+nie obsługują bezpośredniego wejścia/wyjścia (w chwili pisania tego tekstu).
+.TP 
+\fB\-R\fP \fIkomenda\fP
+Powoduje wykonanie pojedynczej \fIkomendy\fP (żądania \- request), i zakończenie
+pracy.
+.TP 
+\fB\-V\fP
+Wyświetla wersję programu \fBdebugfs\fP i kończy pracę.
+.SH "OKREŚLANIE PLIKÓW"
+.\"
+.\"
+Wiele komend \fBdebugfs\fP pobiera \fIokreśl\-pliku\fP jako argument określający
+i\-węzeł (w przeciwieństwie do nazwy ścieżkowej) systemu plików, aktualnie
+otwartego przez \fBdebugfs\fP.  Argument \fIokreśl\-pliku\fP może być podany w dwu
+postaciach. Pierwszą jest numer i\-węzła ujęty w nawiasy trójkątne, np.
+\fI<2>\fP.  Drugą postać stanowi nazwa ścieżkowa; jeśli jest ona
+poprzedzona ukośnikiem ('/'), to będzie interpretowana względem katalogu
+głównego (root) systemu plików aktualnie otwartego przez \fBdebugfs\fP.  Jeśli
+nie, to interpretowana będzie względem bieżącego katalogu roboczego, jaki
+jest w ustawiony w danym momencie w \fBdebugfs\fP.  Można go zmienić posługując
+się komendą \fBdebugfs\fP o nazwie \fBcd\fP.
+.SH KOMENDY
+\fBdebugfs\fP jest debuggerem interaktywnym. Rozumie sporo komend.
+.TP 
+\fBblocks\fP \fIokreśl\-pliku\fP
+Wypisuje bloki używane przez i\-węzeł \fIokreśl\-pliku\fP na standardowe wyjście.
+.TP 
+\fBbmap\fP \fIokreśl\-pliku blok\-logiczny\fP
+Wypisuje numer fizycznego bloku, odnoszącego się do logicznego bloku o
+numerze \fIblok\-logiczny\fP w i\-węźle \fIokreśl\-pliku\fP.
+.TP 
+\fBcat\fP \fIokreśl\-pliku\fP
+Zrzuca zawartość i\-węzła \fIokreśl\-pliku\fP na standardowe wyjście.
+.TP 
+\fBcd\fP \fIokreśl\-pliku\fP
+Zmienia bieżący katalog roboczy na \fIokreśl\-pliku\fP.
+.TP 
+\fBchroot\fP \fIokreśl\-pliku\fP
+Zmień katalog główny (root) na katalog \fIokreśl\-pliku\fP.
+.TP 
+\fBclose\fP [\fB\-a\fP]
+Zamyka aktualnie otwarty system plików. Jeżeli poda się opcję \fB\-a\fP, to
+wypisywane są wszystkie zmiany i deskryptory grup bloków w odniesieniu do
+wszystkich zapasowych superbloków, a nie tylko w stosunku do głównego.
+.TP 
+\fBclri\fP \fIplik\fP
+Czyści zawartość i\-węzła \fIplik\fP.
+.TP 
+\fBdirsearch\fP \fIokreśl\-pliku nazwa\-pliku\fP
+Przeszukuje katalog \fIokreśl\-pliku\fP szukając \fInazwy\-pliku\fP.
+.TP 
+\fBdump\fP [\fB\-p\fP] \fIokreśl\-pliku plik\-wyjściowy\fP
+Zrzuca zawartość i\-węzła \fIokreśl\-pliku\fP do pliku wyjściowego
+\fIplik\-wyjściowy\fP.  Jeśli podano opcję \fB\-p\fP, to ustawia informację o
+właścicielu, grupie i prawach \fIplik\-wyjściowy\fP, tak jak dla
+\fIokreśl\-pliku\fP.
+.TP 
+\fBdump_mmp\fP
+Wyświetla wartości pola zabezpieczającego przed wielokrotnymi montowaniami
+(ang. multiple\-mount protection \- mmp).
+.TP 
+\fBdx_hash\fP [\fB\-h\fP \fIalgorytm\-hasz\fP] [\fB\-s\fP \fIziarno\-hasz\fP] \fInazwa\-pliku\fP
+Oblicza hasz katalogu \fInazwa\-pliku\fP. Algorytmem haszowania podanym z \fB\-h\fP
+może być: "legacy", "half_md4" lub "tea". Ziarno haszowania podane z \fB\-s\fP
+musi być w formacie UUID.
+.TP 
+\fBdump_extents\fP [\fB\-n\fP] [\fB\-l\fP] \fIokreśl\-pliku\fP
+Zrzuca drzewo ekstentów i\-węzła \fIokreśl\-pliku\fP. Flaga \fB\-n\fP spowoduje, że
+\fBdump_extents\fP wyświetli jedynie wewnętrzne węzły w drzewie
+ekstentów. Flaga \fB\-l\fP spowoduje, że opcja wyświetli jedynie liście drzewa
+ekstentów.
+.IP
+Proszę zauważyć, że długość i zakres bloków do ostatniego ekstenta w węźle
+wewnętrznym są przybliżone przez funkcje biblioteki ekstentów i nie są
+przechowywane w strukturze danych systemu plików. Wyświetlane wartości nie
+muszą być więc dokładne i nie oznaczają wystąpienia problemu lub uszkodzenia
+w systemie plików.
+.TP 
+\fBexpand_dir\fP \fIokreśl\-pliku\fP
+Rozwija katalog \fIokreśl\-pliku\fP.
+.TP 
+\fBfeature\fP [\fIcecha\fP] [\fB\-\fP\fIcecha\fP] ...
+Ustawia (lub czyści \- z minusem) różne cechy systemu plików w superbloku, a
+następnie wyświetla aktualny stan cech systemu plików.
+.TP 
+\fBfilefrag\fP [\fB\-dvr\fP] \fIokreśl\-pliku\fP
+Wypisuje liczbę ciągłych ekstentów w \fIokreśl\-pliku\fP. Jeśli \fIokreśl\-pliku\fP
+jest katalogiem, a nie podano opcji \fB\-d\fP, to \fBfilefrag\fP wypisze liczbę
+ciągłych ekstentów każdego pliku w katalogu. Opcja \fB\-v\fP spowoduje, że
+\fBfilefrag\fP wypisze tabelaryczną listę ciągłych ekstentów pliku. Opcja \fB\-r\fP
+oznacza rekurencyjne wypisanie katalogu.
+.TP 
+\fBfind_free_block\fP [\fIliczba\fP [\fIcel\fP]]
+Znajduje pierwsze \fIliczba\fP wolnych bloków, poczynając od \fIcel\fP i alokuje
+je.
+.TP 
+\fBfind_free_inode\fP [\fIkatalog\fP [\fItryb\fP]]
+Znajduje wolny i\-węzeł i alokuje go. Jeśli go podano, to argument \fIkatalog\fP
+określa numer i\-węzła katalogu, w którym ma zostać umieszczony
+i\-węzeł. Drugi opcjonalny argument \fItryb\fP określa prawa nowego i\-węzła
+(jeżeli w trybie mode ustawiony jest bit katalogu, to procedura alokacji
+będzie działać odmiennie).
+.TP 
+\fBfreeb\fP \fIblok\fP [\fIliczba\fP]
+Zaznacza blok o numerze \fIblok\fP jako niezaalokowany. Jeżeli podany zostanie
+opcjonalny argument \fIliczba\fP, to \fIliczba\fP bloków zaczynając od bloku o
+numerze \fIblok\fP zostanie zaznaczona jako niezaalokowana.
+.TP 
+\fBfreefrag\fP [\fB\-c\fP \fIczęść_kb\fP ]
+Wypisuje fragmentację wolnej przestrzeni w aktualnie otwartym systemie
+plików. Jeśli poda się opcję \fB\-c\fP, to polecenie \fBfreefrag\fP wypisze liczbę
+wolnych części o rozmiarze \fIczęść_kb\fP. Rozmiar części musi być potęgą
+dwójki i musi być większy od rozmiaru bloku systemu plików.
+.TP 
+\fBfreei\fP \fIokreśl\-pliku\fP [\fInumer\fP]
+Zwalnia i\-węzeł podany przez \fIokreśl\-pliku\fP. Jeśli poda się \fInumer\fP, to
+czyści również numer\-1 i\-węzłów po podanym i\-węźle.
+.TP 
+\fBhelp\fP
+Pokazuje listę poleceń rozumianych przez \fBdebugfs\fP.
+.TP 
+\fBhtree_dump\fP \fIokreśl\-pliku\fP
+Zrzuca indeksowany za pomocą haszy katalog \fIokreśl\-pliku\fP, pokazując jego
+strukturę drzewa.
+.TP 
+\fBicheck\fP \fIblok ...\fP
+Pokazuje zestawienie i\-węzłów używających jednego lub więcej bloków
+określonych w wierszu poleceń.
+.TP 
+\fBimap\fP \fIokreśl\-pliku\fP
+Wypisuje położenie struktury danych i\-węzła (w tabeli i\-węzłów)
+\fIokreśl\-pliku\fP.
+.TP 
+\fBinit_filesys\fP \fIurządzenie rozmiar\-bloku\fP
+Tworzy system plików ext2 na urządzeniu \fIurządzenie\fP z rozmiarem urządzenia
+\fIrozmiar\-bloku\fP. Proszę zauważyć, że nie inicjuje to w pełni wszystkich
+struktur danych; aby to zrobić, proszę wykorzystać program \fBmke2fs\fP(8). Ta
+komenda jest tylko wywołaniem funkcji z biblioteki niskopoziomowej, która
+ustawia superblok i deskryptory bloków.
+.TP 
+\fBkill_file\fP \fIokreśl\-pliku\fP
+Zwalnia (dealokuje) i\-węzeł \fIokreśl\-pliku\fP i jego bloki. Proszę zauważyć,
+że nie usuwa to żadnych wpisów katalogu (jeśli istnieją) dotyczących tego
+i\-węzła.  Aby usunąć (ang. unlink) plik, proszę zapoznać się z poleceniem
+\fBrm\fP(1).
+.TP 
+\fBlcd\fP \fIkatalog\fP
+Zmienia bieżący katalog roboczy \fBdebugfs\fP na \fIkatalog\fP na pierwotnym
+(native) systemie plików.
+.TP 
+\fBln\fP \fIokreśl\-pliku plik\-docelowy\fP
+Tworzy dowiązanie o nazwie \fIplik\-docelowy\fP, do pliku
+\fIokreśl\-pliku\fP. Proszę zauważyć, że nie dostosowuje to odpowiednio licznika
+odwołań w i\-węźle.
+.TP 
+\fBlogdump\fP [\fB\-ac\fP] [\fB\-b\fP\fIblok\fP] [\fB\-i\fP\fIi\-węzeł\fP] [\fB\-f\fP\fIdziennik\fP] [\fIplik\-wyjściowy\fP]
+Zrzuca zawartość dziennika ext3. Domyślnie, i\-węzeł dziennika jest brany z
+superbloku. Można przesłonić ten wybór za pomocą opcji \fB\-i\fP, która używa
+podanego i\-węzła jako położenia dziennika. Plik zawierający dane dziennika
+można podać za pomocą opcji \fB\-f\fP. Opcja \fB\-s\fP wykorzystuje informacje
+zapasowe z superbloku, do zlokalizowania dziennika.
+.IP
+Opcja \fB\-a\fP powoduje, że \fBlogdump\fP wypisuje zawartość wszystkich bloków
+deskryptora. Z opcją \fB\-b\fP \fBlogdump\fP wypisuje wszystkie rekordy dziennika,
+które odnoszą się do podanego bloku. Opcja \fB\-c\fP wypisuje zawartość
+wszystkich bloków z danymi, wybranymi przez opcje \fB\-a\fP i \fB\-b\fP.
+.TP 
+\fBls\fP [\fB\-l\fP] [\fB\-d\fP] [\fB\-p\fP] \fIokreśl\-pliku\fP
+Wypisuje listę plików w katalogu \fIokreśl\-pliku\fP. Flaga \fB\-l\fP wypisuje pliki
+za pomocą bardziej szczegółowego formatu. Flaga \fB\-d\fP wypisuje usunięte
+wpisy w katalogu. Opcja \fB\-p\fP wypisze pliki w formacie, który jest
+łatwiejszy do przetworzenia przez skrypty oraz łatwiej jest rozpoznać
+ewentualne spacje i inne znaki niedrukowalne na końcu nazw plików.
+.TP 
+\fBmodify_inode\fP \fIokreśl\-pliku\fP
+Zmienia zawartość struktury i\-węzła o nazwie \fIokreśl\-pliku\fP.
+.TP 
+\fBmkdir\fP \fIokreśl\-pliku\fP
+Tworzy katalog.
+.TP 
+\fBmknod\fP \fIokreśl\-pliku\fP [\fBp\fP|[[\fBc\fP|\fBb\fP] \fIgłówny poboczny\fP]]
+Tworzy plik specjalny urządzenia (potoku nazwanego, urządzenia znakowego lub
+blokowego). Jeżeli tworzone ma być urządzenie znakowe lub blokowe, to musi
+zostać podany \fIgłówny\fP (major) i \fIpoboczny\fP (minor) numer urządzenia.
+.TP 
+\fBncheck\fP [\fB\-c\fP] \fInumer\-i\-węzła ...\fP
+Za pomocą żądanej listy numerów i\-węzłów wypisuje listę nazw ścieżek do tych
+i\-węzłów. Flaga \fB\-c\fP włącza sprawdzania informacji o typie pliku we wpisie
+katalogu, upewniając się, że pasuje on do typu i\-węzła.
+.TP 
+\fBopen\fP [\fB\-w\fP] [\fB\-e\fP] [\fB\-f\fP] [\fB\-i\fP] [\fB\-c\fP] [\fB\-D\fP] [\fB\-b\fP \fIrozmiar_bloku\fP] [\fB\-s\fP \fIsuperblok\fP] \fIurządzenie\fP
+Otwiera system plików do edycji. Flaga \fB\-f\fP wymusza otwarcie systemu plików
+nawet wtedy gdy posiada on nieznane lub niekompatybilne cechy, które
+normalnie zapobiegły by otwarciu.  Opcja \fB\-e\fP powoduje, że system plików
+jest otwarty w trybie wyłączności. Opcje \fB\-b\fP \fB\-c\fP, \fB\-i\fP, \fB\-s\fP, \fB\-w\fP i
+\fB\-D\fP zachowują się tak samo jak te z \fBdebugfs\fP.
+.TP 
+\fBpunch\fP \fIokreśl\-pliku\fP \fIblok\-początkowy\fP [\fIblok\-końcowy\fP]
+Usuwa bloki w i\-węźle, poczynając od \fIbloku\-początkowego\fP do
+\fIbloku\-końcowego\fP. Jeśli nie poda się \fIbloku\-końcowego\fP, to ta komenda
+zadziała jak polecenie obcięcia (ang. truncate), tzn. dealokowane będą
+wszystkie bloki od \fIbloku\-początkowego\fP, aż do końca pliku.
+.TP 
+\fBpwd\fP
+Pokazuje bieżący katalog roboczy.
+.TP 
+\fBquit\fP
+Kończy pracę \fBdebugfs\fP.
+.TP 
+\fBrdump\fP \fIkatalog miejsce\-docelowe\fP
+Zrzuca rekurencyjnie \fIkatalog\fP wraz z zawartością (włączając plik,
+dowiązania symboliczne i inne katalogi) w \fImiejsce_docelowe,\fP które powinno
+być istniejącym katalogiem na pierwotnym systemie plików.
+.TP 
+\fBrm\fP \fIścieżka\fP
+Usuwa (ang. unlink) \fIścieżkę\fP. Jeśli spowoduje to, że i\-węzeł wskazywany
+przez \fIścieżka\fP nie będzie posiadał innych odwołań, to dealokuje
+plik. Komenda ta działa jak funkcja systemowa unlink().
+.TP 
+\fBrmdir\fP \fIokreśl\-pliku\fP
+Usuwa katalog \fIokreśl\-pliku\fP.
+.TP 
+\fBsetb\fP \fIblok\fP [\fIliczba\fP]
+Zaznacza blok o numerze \fIblok\fP jako zaalokowany. Jeżeli podany zostanie
+opcjonalny argument \fIliczba\fP, to wtedy \fIliczba\fP bloków zaczynając od bloku
+o numerze \fIblok\fP zostanie zaznaczona jako zaalokowana.
+.TP 
+\fBset_super_value\fP \fInum\-dgb pole wartość\fP
+Modyfikuje deskryptor grupy bloków określony przez \fInum\-dgb\fP tak, że pole
+deskryptora \fIpole\fP będzie miało wartość \fIwartość\fP.
+.TP 
+\fBseti\fP \fIokreśl\-pliku\fP [\fIliczba\fP]
+Oznacza i\-węzeł \fIokreśl\-pliku\fP, jako użyty w mapie bitów i\-węzła. Jeśli
+poda się \fIliczbę\fP, to oznaczanych jest również liczba\-1 i\-węzłów po podanym
+i\-węźle.
+.TP 
+\fBset_inode_field\fP \fIokreśl\-pliku pole wartość\fP
+Modyfikuje i\-węzeł określony przez \fIokreśl\-pliku\fP tak, że pole \fIpole\fP na
+wartość \fIwartość\fP. Lista prawidłowych pól i\-węzła, które mogą być ustawione
+tą komendą, może zostać wyświetlona za pomocą: \fBset_inode_field \-l\fP.
+.TP 
+\fBset_mmp_value\fP \fIpole wartość\fP
+Modyfikuje dane ochrony przed wielokrotnym montowaniem (ang. multiple\-mount
+protection \- mmp) tak, że pole mmp \fIpole\fP, ma wartość \fIwartość\fP. Lista
+poprawnych pól mmp, które mogą być ustawione tą komendą, może zostać
+wyświetlona za pomocą: \fBset_mmp_value \-l\fP.
+.TP 
+\fBset_super_value\fP \fIpole wartość\fP
+Ustawia pole superbloku \fIpole\fP na wartość \fIwartość\fP. Wszystkie prawidłowe
+pola superbloku, które mogą być ustawione tą komendą, mogą zostać
+wyświetlone za pomocą: \fBset_super_value \-l\fP
+.TP 
+\fBshow_super_stats\fP [\fB\-h\fP]
+Wyświetla zawartość superbloku i deskryptorów grup bloków. Jeżeli podana
+jest flaga \fI\-h\fP, wypisywana jest tylko zawartość superbloku.
+.TP 
+\fBstat\fP \fIokreśl\-pliku\fP
+Wyświetla zawartość struktury i\-węzła o nazwie \fIokreśl\-pliku\fP.
+.TP 
+\fBtestb\fP \fIblok\fP [\fIliczba\fP]
+Sprawdza, czy blok o numerze \fIblok\fP jest zaznaczony jako zaalokowany w
+mapie bitowej bloku.  Jeżeli podany jest opcjonalny argument \fIliczba\fP,
+wtedy zostanie sprawdzona \fIliczba\fP bloków zaczynając od bloku o numerze
+\fIblok\fP.
+.TP 
+\fBtesti\fP \fIokresl\-pliku\fP
+Sprawdza, czy i\-węzeł \fIokreśl\-pliku\fP jest zaznaczony jako zaalokowany w
+mapie bitowej bloku.
+.TP 
+\fBundel\fP \fB<\fP\fInumer\-i\-węzła\fP\fB>\fP [\fIścieżka\fP]
+Odwołuje usunięcie podanego numeru i\-węzła (który musi być ujęty w nawiasy
+trójkątne), dzięki czemu jego bloki są oznaczane jako w użyciu i opcjonalnie
+dowiązuje odzyskany i\-węzeł do podanej ścieżki. Po użyciu komendy \fBundel\fP
+powinno się zawsze uruchomić \fBe2fsck\fP, w celu odzyskania usuniętych plików.
+.IP
+Proszę zauważyć, że jeśli odzyskuje się dużą liczbę usuniętych plików, to
+dowiązywanie i\-węzła do katalogu może wymagać rozwinięcia katalogu, co może
+spowodować alokację bloku, który był wcześniej użyty przez jeden z plików do
+odzyskania. Jest więc bezpieczniej odzyskać wszystkie i\-węzły bez podawania
+ścieżki docelowej, a następnie, w kolejnym przebiegu, użyć komendy \fBlink\fP,
+która dowiązuje i\-węzeł do ścieżki docelowej, lub użyć \fBe2fsck\fP do
+sprawdzenia systemu plików i dowiązania wszystkich odzyskanych i\-węzłów do
+katalogu lost+found.
+.TP 
+\fBunlink\fP \fIścieżka\fP
+Usuwa dowiązanie do i\-węzła, określone przez \fIścieżkę\fP. Proszę zauważyć, że
+nie dostosowuje to odpowiednio licznika odwołań w i\-węźle.
+.TP 
+\fBwrite\fP \fIplik\-źródłowy plik\-wyjściowy\fP
+Tworzy w systemie plików plik o nazwie \fIplik\-wyjściowy\fP, i kopiuje do niego
+zawartość pliku \fIplik\-źródłowy\fP.
+.SH "ZMIENNE ŚRODOWISKA"
+.TP 
+\fBDEBUGFS_PAGER\fP, \fBPAGER\fP
+Program \fBdebugfs\fP zawsze przesyła w potoku wyjście niektórych komend przez
+program stronicujący. Są to następujące komendy: \fBshow_super_stats\fP,
+\fBlist_directory\fP, \fBshow_inode_info\fP, \fBlist_deleted_inodes\fP i
+\fBhtree_dump\fP. Można podać określony program stronicujący za pomocą zmiennej
+środowiskowej \fBDEBUGFS_PAGER\fP lub, jeśli nie jest ustawiona, \fBPAGER\fP.
+.IP
+Proszę zauważyć, że ponieważ program stronicujący jest używany zawsze, to
+\fBless\fP(1) nie jest szczególnie dobry, ponieważ czyści ekran przed
+wyświetleniem wyjścia komendy i czyści ekran, po wyjściu programu
+stronicującego. Wielu użytkowników preferuje używanie \fBless\fP(1) do
+większości zastosowań i jest to powód, dla którego dostępna jest zmienna
+środowiskowa \fBDEBUGFS_PAGER\fP, która przesłania ogólniejszą zmienną
+środowiskową \fBPAGER\fP.
+.SH AUTOR
+\fBdebugfs\fP zostało napisane przez Theodore Ts'o <tytso@mit.edu>.
+.SH "ZOBACZ TAKŻE"
+\fBdumpe2fs\fP(8), \fBtune2fs\fP(8), \fBe2fsck\fP(8), \fBmke2fs\fP(8)
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Wojtek Kotwica (PTM) <wkotwica@post.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 1.42.4 \fPoryginału.

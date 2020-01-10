@@ -1,0 +1,81 @@
+.\" Copyright 2003 Walter Harms, Andries Brouwer
+.\" and Copyright 2008, Linux Foundation, written by Michael Kerrisk
+.\"     <mtk.manpages@gmail.com>
+.\" Distributed under GPL.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2003 Walter Harms, Andries Brouwer, 2008 Linux Foundation (GPL-1)
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2005, 2012.
+.TH FDIM 3 2010\-09\-20 "" "Podręcznik programisty Linuksa"
+.SH NAZWA
+fdim, fdimf, fdiml \- dodatnia różnica
+.SH SKŁADNIA
+\fB#include <math.h>\fP
+.sp
+\fBdouble fdim(double \fP\fIx\fP\fB, double \fP\fIy\fP\fB);\fP
+.br
+\fBfloat fdimf(float \fP\fIx\fP\fB, float \fP\fIy\fP\fB);\fP
+.br
+\fBlong double fdiml(long double \fP\fIx\fP\fB, long double \fP\fIy\fP\fB);\fP
+.sp
+Proszę linkować z \fI\-lm\fP.
+.sp
+.in -4n
+Wymagane ustawienia makr biblioteki glibc (patrz \fBfeature_test_macros\fP(7)):
+.in
+.sp
+.ad l
+\fBfdimf\fP(), \fBfdiml\fP():
+.RS 4
+_XOPEN_SOURCE\ >=\ 600 || _ISOC99_SOURCE || _POSIX_C_SOURCE\ >=\ 200112L;
+.br
+lub \fIcc\ \-std=c99\fP
+.RE
+.ad
+.SH OPIS
+Funkcje zwracają dodatnią różnicę swoich argumentów, zdefiniowaną jako
+max(\fIx\fP\-\fIy\fP,0).
+.SH "WARTOŚĆ ZWRACANA"
+Jeśli zakończą się pomyślnie, funkcje zwracają dodatnią różnicę.
+
+Jeśli \fIx\fP lub \fIy\fP jest NaN, to zwracane jest NaN.
+
+W przypadku przepełnienia wyniku operacji, występuje błąd zakresu i funkcje
+zwracają odpowiednio \fBHUGE_VAL\fP, \fBHUGE_VALF\fP lub \fBHUGE_VALL\fP.
+.SH BŁĘDY
+Szczegółowe informacje o tym, jak określić, czy wywołanie tych funkcji
+zwróciło błąd, można znaleźć w podręczniku \fBmath_error\fP(7).
+.PP
+Mogą wystąpić następujące błędy:
+.TP 
+Błąd zakresu: przepełnienie wyniku
+.\" .I errno
+.\" is set to
+.\" .BR ERANGE .
+Jest rzucany wyjątek przepełnienia zmiennoprzecinkowego (\fBFE_OVERFLOW\fP).
+.PP
+.\" FIXME . Is it intentional that these functions do not set errno?
+.\" Bug raised: http://sources.redhat.com/bugzilla/show_bug.cgi?id=6796
+Funkcje te nie ustawiają zmiennej \fIerrno\fP.
+.SH WERSJE
+Funkcje te pojawiły się po raz pierwszy w wersji 2.1 biblioteki glibc.
+.SH "ZGODNE Z"
+C99, POSIX.1\-2001.
+.SH "ZOBACZ TAKŻE"
+\fBfmax\fP(3)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

@@ -1,0 +1,158 @@
+.\" Copyright (c) 1995 James R. Van Zandt <jrv@vanzandt.mv.com>
+.\" Sat Feb 18 09:11:07 EST 1995
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" Modified, Sun Feb 26 15:08:05 1995, faith@cs.unc.edu
+.\" 2007-12-17, Samuel Thibault <samuel.thibault@ens-lyon.org>:
+.\"     document the VT_GETHIFONTMASK ioctl
+.\" "
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1995 James R. Van Zandt (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Paweł Olszewski (PTM) <alder@amg.net.pl>, 1998.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH VCS 4 2007\-12\-17 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+vcs, vcsa \- pamięć konsoli wirtualnej
+.SH OPIS
+\fI/dev/vcs0\fP jest urządzeniem znakowym o numerze głównym 7 i numerze
+pobocznym 0, najczęściej z prawami dostępu 0644 i właścicielem
+root.tty. Odnosi się do pamięci obecnie widocznego terminala wirtualnej
+konsoli.
+.LP
+\fI/dev/vcs[1\-63]\fP to urządzenia znakowe terminali wirtualnych konsoli,
+mające numer główny 7 i numery poboczne od 1 do 63, najczęściej z prawami
+dostępu 0644 i będące własnością root.tty. \fI/dev/vcsa[0\-63]\fP są tym samym,
+ale używają liczb typu \fIunsigned short\fP zawierających atrybuty oraz
+poprzedzonych czterema bajtami, zwracającymi rozmiary ekranu i pozycję
+kursora: \fIwiersze\fP, \fIkolumny\fP, \fIx\fP, \fIy\fP.  (\fIx\fP = \fIy\fP = 0 w lewym
+górnym rogu ekranu).
+
+Kiedy ładowana jest czcionka 512\-znakowa, pozycję dziewiątego bitu można
+pobrać za pomocą operacji \fBioctl\fP(2) \fBVT_GETHIFONTMASK\fP (dostępnej od
+wersji 2.6.18 jądra Linuksa) zastosowanej na \fI/dev/tty[1\-63]\fP. Wartość
+zwracana jest we wskaźniku do typu \fIunsigned short\fP przekazywanym jako
+trzeci argument wywołania systemowego \fBioctl\fP(2).
+.PP
+Opisywane urządzenia zastępują operacje \fIioctl\fP(2) zrzucające zawartość
+ekranu z \fBconsole\fP(4), więc administrator systemu może kontrolować
+uprawnienia przy użyciu praw dostępu do plików.
+.PP
+Urządzenia dla pierwszych ośmiu konsoli wirtualnych można stworzyć
+poleceniami:
+
+.nf
+    for x in 0 1 2 3 4 5 6 7 8; do
+        mknod \-m 644 /dev/vcs$x c 7 $x;
+        mknod \-m 644 /dev/vcsa$x c 7 $[$x+128];
+    done
+    chown root:tty /dev/vcs*
+.fi
+
+Nie są wspierane żadne odwołania \fBioctl\fP(2).
+.SH PLIKI
+/dev/vcs[0\-63]
+.br
+.\" .SH AUTHOR
+.\" Andries Brouwer <aeb@cwi.nl>
+/dev/vcsa[0\-63]
+.SH WERSJE
+Wprowadzone wraz z wersją 1.1.92 jądra Linuksa.
+.SH PRZYKŁAD
+Można zrobić "zrzut" z ekranu vt3, przełączając się na vt1 i pisząc \fIcat
+/dev/vcs3 >foo\fP. Trzeba zauważyć, że wynik nie zawiera znaków końca
+wiersza, więc może być konieczne jakieś przetwarzanie, np.  \fIfold \-w 81
+/dev/vcs3 | lpr\fP lub (straszne)  \fIsetterm \-dump 3 \-file /proc/self/fd/1\fP.
+.LP
+Urządzenie \fI/dev/vcsa0\fP jest wykorzystywane przy wsparciu dla alfabetu
+Braille'a.
+
+Poniższy program wyświetla aktualne atrybuty znaków i ekranu w miejscu
+kursora na drugiej wirtualnej konsoli, a następnie zmienia tam kolor tła:
+
+.nf
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <linux/vt.h>
+
+int
+main(void)
+{
+    int fd;
+    char *device = "/dev/vcsa2";
+    char *console = "/dev/tty2";
+    struct {unsigned char lines, cols, x, y;} scrn;
+    unsigned short s;
+    unsigned short mask;
+    unsigned char ch, attrib;
+
+    fd = open(console, O_RDWR);
+    if (fd < 0) {
+        perror(console);
+        exit(EXIT_FAILURE);
+    }
+    if (ioctl(fd, VT_GETHIFONTMASK, &mask) < 0) {
+        perror("VT_GETHIFONTMASK");
+        exit(EXIT_FAILURE);
+    }
+    (void) close(fd);
+    fd = open(device, O_RDWR);
+    if (fd < 0) {
+        perror(device);
+        exit(EXIT_FAILURE);
+    }
+    (void) read(fd, &scrn, 4);
+    (void) lseek(fd, 4 + 2*(scrn.y*scrn.cols + scrn.x), 0);
+    (void) read(fd, &s, 2);
+    ch = s & 0xff;
+    if (attrib & mask)
+        ch |= 0x100;
+    attrib = ((s & ~mask) >> 8);
+    printf("ch=\(aq%c\(aq attrib=0x%02x\en", ch, attrib);
+    attrib ^= 0x10;
+    (void) lseek(fd, \-1, 1);
+    (void) write(fd, &attrib, 1);
+    exit(EXIT_SUCCESS);
+}
+.fi
+.SH "ZOBACZ TAKŻE"
+\fBconsole\fP(4), \fBtty\fP(4), \fBttyS\fP(4), \fBgpm\fP(8)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Paweł Olszewski (PTM) <alder@amg.net.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

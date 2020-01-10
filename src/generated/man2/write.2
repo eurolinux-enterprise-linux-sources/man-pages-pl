@@ -1,0 +1,169 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" This manpage is Copyright (C) 1992 Drew Eckhardt;
+.\"                               1993 Michael Haardt, Ian Jackson.
+.\" and Copyright (C) 2007 Michael Kerrisk <mtk.manpages@gmail.com>
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Sat Jul 24 13:35:59 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified Sun Nov 28 17:19:01 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified Sat Jan 13 12:58:08 1996 by Michael Haardt
+.\"   <michael@cantor.informatik.rwth-aachen.de>
+.\" Modified Sun Jul 21 18:59:33 1996 by Andries Brouwer <aeb@cwi.nl>
+.\" 2001-12-13 added remark by Zack Weinberg
+.\" 2007-06-18 mtk:
+.\"    	Added details about seekable files and file offset.
+.\"	Noted that write() may write less than 'count' bytes, and
+.\"	gave some examples of why this might occur.
+.\"	Noted what happens if write() is interrupted by a signal.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1992 Drew Eckhardt, 1993 Michael Haardt, Ian Jackson, 2007 Michael Kerrisk 
+.\" Copyright © of Polish translation:
+.\" Artur Kruszewski <mazdac@gmail.com>, 2012.
+.TH WRITE 2 2010\-08\-29 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+write \- zapisuje do deskryptora pliku
+.SH SKŁADNIA
+\fB#include <unistd.h>\fP
+.sp
+\fBssize_t write(int \fP\fIfd\fP\fB, const void *\fP\fIbuf\fP\fB, size_t \fP\fIliczba\fP\fB);\fP
+.SH OPIS
+\fBwrite\fP() zapisuje do \fIliczba\fP bajtów z bufora wskazanego przez \fIbuf\fP do
+pliku określonego przez deskryptor pliku \fIfd\fP.
+
+Liczba bajtów zapisanych może być mniejsza niż \fIliczba\fP jeżeli, na przykład
+nie ma wystarczającej ilości wolnej przestrzeni na urządzeniu fizycznym, lub
+zasoby \fBRLIMIT_FSIZE\fP zostały wyczerpane (patrz \fBsetrlimit\fP(2)), wywołanie
+zostało przerwane przez obsługę sygnału po zapisaniu mniej niż \fIliczba\fP
+bajtów (spójrz również na \fBpipe\fP(7)).
+
+Dla przeszukiwalnych plików (np. takie na których można użyć \fBlseek\fP(2), na
+przykład, pliki zwykłe (regular)) zapis ma miejsce w danym przesunięciu
+pliku (offsecie), i to przesunięcie jest zwiększane o ilość aktualnie
+zapisanych danych. Jeżeli plik został otwarty (\fBopen\fP(2)) z \fBO_APPEND\fP,
+wtedy przesunięciem (offsetem) jest koniec pliku przed zapisem. Dostosowanie
+przesunięcia pliku i operacja zapisu są wykonywane jako nierozdzielne
+(atomowe).
+
+Standard POSIX wymaga aby  \fBread\fP które mogą nastąpić po \fBwrite\fP()
+zwrócił nowe dane. Pamiętaj, że nie wszystkie systemy plików są zgodne z
+POSIX.
+.SH "ZWRACANA WARTOŚĆ"
+Po pomyślnym wykonaniu, zwracana jest liczba zapisanych bajtów (zero
+informuje, że nic nie zostało zapisane). Przy błędzie zwracane jest \-1 i
+ustawiana jest odpowiednia wartość zmiennej  \fIerrno\fP.
+
+Jeżeli \fIliczba\fP jest zerem a \fIfd\fP wskazuje na zwykły (regular) plik, wtedy
+\fBwrite\fP()  może zwrócić status niepowodzenia jeżeli zostanie wykryty jeden
+z poniższych błędów. Jeżeli nie wykryto błędów, 0 zostanie zwrócone bez
+żadnych innych skutków. Jeżeli \fIliczba\fP jest zerem a  \fIfd\fP odwołuje się do
+pliku innego typu niż zwykły (regular), skutki nie są sprecyzowane.
+.SH BŁĘDY
+.TP 
+\fBEAGAIN\fP
+Deskryptor pliku \fIfd\fP odwołuje się do gniazda i został oznaczony jako
+nieblokujący (\fBO_NONBLOCK\fP), a zapis go zablokuje.
+.TP 
+\fBEAGAIN\fP lub \fBEWOULDBLOCK\fP
+.\" Actually EAGAIN on Linux
+Deskryptor pliku \fIfd\fP odwołuje się do gniazda i został oznaczony jako
+nieblokujący (\fBO_NONBLOCK\fP), a zapis go zablokuje. POSIX.1\-2001 pozwala w
+tej sytuacji na zwrócenie błędu ale nie wymaga aby ta stała miała taką samą
+wartość, portowalna aplikacja powinna sprawdzać obie możliwości.
+.TP 
+\fBEBADF\fP
+\fIfd\fP nie jest prawidłowym deskryptorem pliku lub nie jest otwarty do zapisu
+.TP 
+\fBEDESTADDRREQ\fP
+\fIfd\fP odwołuje się do gniazda datagramowego dla którego adres nie został
+ustalony przy użyciu \fBconnect\fP(2).
+.TP 
+\fBEFAULT\fP
+\fIbuf\fP jest poza dostępną przestrzenią adresową.
+.TP 
+\fBEFBIG\fP
+Dokonano próby zapisu pliku który przekracza zdefiniowane w implementacji
+maksymalne rozmiary pliku, rozmiary pliku procesu lub zapis na pozycję
+wykraczającą poza maksymalne dozwolone przesunięcie (offset).
+.TP 
+\fBEINTR\fP
+Wywołanie zostało przerwane przez sygnał przed zapisaniem jakichkolwiek
+danych, patrz \fBsignal\fP(7).
+.TP 
+\fBEINVAL\fP
+\fIfd\fP jest dołączony do obiektu nieodpowiedniego do zapisu, plik został
+otwarty z flagą \fBO_DIRECT\fP i adres podany w \fIbuf\fP bądź wartość \fIliczba\fP
+lub przesunięcie (offset) nie zostały odpowiednio dopasowane.
+.TP 
+\fBEIO\fP
+Podczas modyfikacji i\-węzła nastąpił niskopoziomowy błąd wejścia/wyjścia.
+.TP 
+\fBENOSPC\fP
+Urządzenie zawierające plik wskazany przez \fIfd\fP nie ma miejsca na dane.
+.TP 
+\fBEPIPE\fP
+\fIfd\fP jest podłączony do potoku (pipe) lub gniazda (socket) którego końcówka
+odczytująca jest zamknięta. Gdy taka sytuacja następuje, proces zapisujący
+również otrzyma sygnał  \fBSIGPIPE\fP. (Więc wartość zwracana przez \fBwrite()\fP
+jest widziana tylko wówczas gdy program obsługuje, blokuje lub ignoruje ten
+sygnał).
+.PP
+Zależnie od obiektu podłączonego do \fIfd\fP, mogą także zajść inne
+(nieopisane) błędy.
+.SH ZGODNOŚĆ
+.\" SVr4 documents additional error
+.\" conditions EDEADLK, ENOLCK, ENOLNK, ENOSR, ENXIO, or ERANGE.
+SVr4, 4.3BSD, POSIX.1\-2001.
+
+Pod SVr4 \fBEINTR\fP jest zwracane zarówno gdy po przerwaniu wywołania, dane
+zostały zapisane częściowo lub przed jakimkolwiek zapisem.
+.SH UWAGI
+Pomyślny powrót z \fBwrite\fP() nie daje gwarancji, że dane zostały faktycznie
+zapisane na urządzeniu. W rzeczywistości, w niektórych wadliwych
+implementacjach, nie ma nawet pewności, że przestrzeń potrzebna do zapisu
+została pomyślnie zarezerwowana. Jedynym sposobem aby mieć pewność, że dane
+zostały zapisane jest wywołanie  \fBfsync\fP(2)  po skończeniu zapisywania
+wszystkich danych przez \fBwrite\fP().
+
+Jeżeli \fBwrite\fP() zostanie przerwany przez obsługe sygnału przed zapisaniem
+jakichkolwiek danych, wtedy wywołanie nie powiedzie się i zwracany jest błąd
+\fBEINTR\fP; jeżeli przerwanie nastąpi po zapisaniu co najmniej jednego bajtu
+danych, wywołanie powiedzie się i zwróci ilość zapisanych bajtów danych.
+.SH "ZOBACZ TAKŻE"
+\fBclose\fP(2), \fBfcntl\fP(2), \fBfsync\fP(2), \fBioctl\fP(2), \fBlseek\fP(2), \fBopen\fP(2),
+\fBpwrite\fP(2), \fBread\fP(2), \fBselect\fP(2), \fBwritev\fP(2), \fBfwrite\fP(3)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Artur Kruszewski <mazdac@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

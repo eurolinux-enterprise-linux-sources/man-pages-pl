@@ -1,0 +1,61 @@
+.\" Copyright (c) 1995 Dirk Eddelbuettel (Dirk.Eddelbuettel@qed.econ.queensu.ca)
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" Translation: Andrzej M. Krzysztofowicz <ankry@mif.pg.gda.pl>, Mar 2002,
+.\"              manpages 1.48
+.\"
+.TH ACCT 5 1995-10-31 "Debian GNU/Linux"
+.SH NAZWA
+acct \- plik ewidencji uruchomień
+.SH SKŁADNIA
+.B #include <sys/acct.h>
+.SH OPIS
+\fI Uwaga! To tłumaczenie może być nieaktualne!\fP
+.PP
+Jeśli jądro zostało zbudowane z włączoną opcją ewidencjonowania procesów
+.RB ( CONFIG_BSD_PROCESS_ACCT ),
+to wywołanie funkcji systemowej
+.BR acct (2)
+włącza to ewidencjonowanie, na przykład:
+
+.in +4n
+acct("/var/log/pacct");
+.in
+
+Jeżeli ewidencjonowanie procesów jest włączone, to gdy tylko pewien proces się zakończy, jądro
+dopisze do pliku ewidencji uruchomień rekord dla procesu. Rekord ten zawiera informacje o zakończonym procesie, a jego struktura jest opisana w pliku
+.IR <sys/acct.h> .
+.SH "ZOBACZ TAKŻE"
+.BR lastcomm (1),
+.BR acct (2),
+.BR accton (8),
+.BR sa (8)
+.SH "INFORMACJE O TŁUMACZENIU"
+Powyższe tłumaczenie pochodzi z nieistniejącego już Projektu Tłumaczenia Manuali i 
+\fImoże nie być aktualne\fR. W razie zauważenia różnic między powyższym opisem
+a rzeczywistym zachowaniem opisywanego programu lub funkcji, prosimy o zapoznanie 
+się z oryginalną (angielską) wersją strony podręcznika za pomocą polecenia:
+.IP
+man \-\-locale=C 5 acct
+.PP
+Prosimy o pomoc w aktualizacji stron man \- więcej informacji można znaleźć pod
+adresem http://sourceforge.net/projects/manpages\-pl/.

@@ -1,0 +1,209 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1988-1994 MicroWalt Corporation, 1995-1996 Bernd Eckenfels, 1997-2000 Andi Kleen, 1997-2000 Donald Becker (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1998-1999.
+.\" Robert Luberda (PTM) <robert@debian.org>, 2001.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH IFCONFIG 8 02\-12\-2007 net\-tools "Podręcznik programisty Linuksa"
+.SH NAZWA
+ifconfig \- konfiguruje interfejs sieciowy
+.SH SKŁADNIA
+\fBifconfig\fP [\fB\-v\fP] [\fB\-a\fP] [\fB\-s\fP] [\fIinterfejs\fP]
+.br
+\fBifconfig\fP [\fB\-v\fP] \fIinterfejs\fP [\fItyp\-rodz\-adr\fP] \fIopcje\fP | \fIadres\fP ...
+.SH OPIS
+\fBIfconfig\fP jest używany do konfigurowania rezydujących w jądrze interfejsów
+sieciowych. Jest używany podczas rozruchu, do skonfigurowania większości z
+nich do stanu pracy. Później jest zwykle potrzebny tylko przy debugowaniu
+lub tuningowaniu systemu.
+.LP
+Jeśli nie poda się argumentów, \fBifconfig\fP po prostu wyświetli status
+aktywnych interfejsów. Jeśli podany jest pojedynczy argument \fIinterfejs\fP,
+to wyświetla on status podanego interfejsu. Jeżeli użyto pojedynczego
+argumentu \fB\-a\fP, to wyświetlony zostanie status wszystkich interfejsów,
+nawet tych, które są nieaktywne.  W przeciwnym wypadku zakłada, że trzeba
+coś skonfigurować.
+
+.SH "Rodziny adresów"
+Jeśli pierwszy argument po nazwie interfejsu jest rozpoznany jako nazwa
+obsługiwanej rodziny adresów, to ta rodzina adresów jest używana do
+dekodowania i wyświetlania wszystkich adresów protokołowych. Obecnie,
+obsługiwane są następujące rodziny adresów: \fBinet\fP (TCP/IP, domyślne),
+\fBinet6\fP (IPv6), \fBax25\fP (AMPR Packet Radio), \fBddp\fP (Appletalk Phase 2),
+\fBipx\fP (Novell IPX) i \fBnetrom\fP (AMPR Packet radio).
+.SH OPCJE
+.TP 
+\fB\-a\fP
+wyświetla wszystkie aktualnie dostępne interfejsy, nawet jeśli nie są
+aktywne
+.TP 
+\fB\-s\fP
+wyświetla krótką listę (jak netstat \-i)
+.TP 
+\fB\-v\fP
+więcej szczegółów w przypadku niektórych błędów
+.TP 
+\fIinterfejs\fP
+Nazwa interfejsu sieciowego. Jest to zwykle nazwa sterownika, za którą
+następuje numer jednostki, na przykład \fBeth0\fP oznacza pierwszy interfejs
+ethernetowy. Jeśli jądro obsługuje również aliasy interfejsów, to można
+podać \fBeth0:0\fP, w celu określenia pierwszego aliasu eth0. Można użyć ich do
+przypisania drugiego adresu. Aby usunąć alias interfejsu należy użyć
+\fBifconfig eth0:0 down\fP. Uwaga: w każdym przypadku (tzn. ta sama sieć z
+połączeniem adresu/maski sieciowej) usuwane są wszystkie aliasy, jeśli
+usunie się pierwszy (główny).
+.TP 
+\fBup\fP
+Flaga ta powoduje aktywację interfejsu. Jest pośrednio włączana, gdy
+interfejsowi nadano nowy adres.
+.TP 
+\fBdown\fP
+Flaga ta powoduje wyłączenie sterownika tego interfejsu.
+.TP 
+[\fB\-\fP]\fBarp\fP
+Włącza lub wyłącza używanie protokołu ARP na tym interfejsie.
+.TP 
+[\fB\-\fP]\fBpromisc\fP
+Włącza lub wyłącza tryb \fBpromiscous\fP na tym interfejsie. Jeżeli włączony,
+to wszystkie pakiety w sieci będą przechwytywane przez ten interfejs.
+.TP 
+[\fB\-\fP]\fBallmulti\fP
+Włącza lub wyłącza tryb \fBall\-multicast\fP.  Jeżeli włączony, to wszystkie
+pakiety multicast w sieci będą odbierane przez interfejs.
+.TP 
+\fBmetric\fP \fIN\fP
+Parametr ten ustawia metrykę interfejsu.
+.TP 
+\fBmtu\fP \fIN\fP
+Parametr ten ustawia maksymalną jednostkę transferu (Maximum Transfer Unit)
+interfejsu.
+.TP 
+\fBdstaddr\fP \fIadres\fP
+Ustawia adres IP "drugiego końca" w przypadku połączenia point\-to\-point
+(takiego jak PPP). Słowo to jest przedawnione, gdyż istnieje nowe słowo,
+\fBpointopoint\fP
+.TP 
+\fBnetmask\fP \fIadres\fP
+Ustawia maskę sieciową IP dla tego interfejsu. Wartość domyślnie przybiera
+wartość zwykłej maski sieciowej klasy A, B lub C (jak to wynika z adresu IP
+interfejsu), lecz może być ustawiona na dowolną wartość.
+.TP 
+\fBadd\fP \fIadres\fP/\fIdł.prefiksu\fP
+Dodaje adres IPv6 do interfejsu.
+.TP 
+\fBdel\fP \fIadres\fP/\fIdł.prefiksu\fP
+Usuwa adres IPv6 z interfejsu.
+.TP 
+\fBtunnel\fP \fIaa.bb.cc.dd\fP
+Tworzy nowe urządzenie SIT (IPv6\-in\-IPv4), tworząc tunel do podanego adresu
+docelowego.
+.TP 
+\fBirq\fP \fIadres\fP
+Ustawia linię przerwań używaną przez to urządzenie. Nie wszystkie urządzenia
+obsługują dynamiczne ustawianie IRQ.
+.TP 
+\fBio_addr\fP \fIadres\fP
+Ustawia początkowy adres w przestrzeni adresowej I/O używany przez to
+urządzenie.
+.TP 
+\fBmem_start\fP \fIadres\fP
+Ustawia początkowy adres pamięci dzielonej używany przez to urządzenie.
+Tylko kilka urządzeń potrzebuje tej opcji.
+.TP 
+\fBmedia\fP \fItyp\fP
+Ustawia fizyczny port lub typ nośnika, który ma być używany przez
+urządzenie. Nie wszystkie urządzenia mogą zmienić to ustawianie, a te które
+mogą, różnią się wartościami, które obsługują. Typowe wartości parametru
+\fItyp\fP są następujące: \fB10base2\fP (cienki Ethernet), \fB10baseT\fP (oparty na
+skrętce 10Mbps Ethernet), \fBAUI\fP (external transceiver)  i tak
+dalej. Specjalny typ \fBauto\fP może być użyty do automatycznego ustawienia
+nośnika. Jednakże nie wszystkie urządzenia to potrafią.
+.TP 
+[\fB\-\fP]\fBbroadcast\fP [\fIadres\fP]
+Jeśli podano także argument adresu, ustawia adres rozgłoszeniowy protokołu
+na ten interfejs. W przeciwnym wypadku ustawia to tylko flagę
+\fBIFF_BROADCAST\fP na interfejsie.
+.TP 
+[\fB\-\fP]\fBpointopoint\fP [\fIadres\fP]
+To słowo kluczowe włącza tryb \fBpoint\-to\-point\fP interfejsu, który oznacza,
+że jest to bezpośrednie połączenie między dwoma maszynami, których nikt inny
+nie podsłuchuje.
+.br
+Jeśli podano także argument adresu, ustaw adres protokołowy drugiej strony
+połączenia, tak jak w przedawnionym \fBdstaddr\fP. W przeciwnym wypadku ustawia
+lub usuwa to tylko flagę \fBIFF_POINTOPOINT\fP interfejsu.
+.TP 
+\fBhw\fP \fIklasa adres\fP
+Ustawia adres sprzętowy interfejsu, jeśli sterownik obsługuję taką
+operację.  Za słowem tym musi występować nazwa klasy sprzętowej i
+odczytywalnym w ASCII ekwiwalentem adresu sprzętowego. Obsługiwane obecnie
+klasy sprzętowe to \fBether\fP (Ethernet), \fBax25\fP (AMPR AX.25), \fBARCnet\fP i
+\fBnetrom\fP (AMPR NET/ROM).przypisania
+.TP 
+\fBmulticast\fP
+Włącza flagę multicast na interfejsie. Normalnie nie powinno być to
+potrzebne, gdyż sterowniki ustawiają tę flagę same.
+.TP 
+\fIadres\fP
+Adres IP przypisany do interfejsu.
+.TP 
+\fBtxqueuelen\fP \fIdługość\fP
+Ustawia długość kolejki transmisji dla danego urządzenia. Użyteczne jest
+ustawienie tego parametru na małą wartość dla wolniejszych urządzeń o dużych
+opóźnieniach (połączenia modemowe, ISDN), aby zapobiec szybkim masowym
+transferom generowanym przez na przykład telnet.
+.SH UWAGI
+Od wersji jądra 2.2 nie są prowadzone statystyki dla aliasów interfejsów.
+Statystyki wyświetlane dla oryginalnego adresu są dzielone ze wszystkimi
+aliasami adresów na tym samym urządzeniu. Aby włączyć statystyki dla każdego
+adresu, należy wyraźnie określić reguły zliczania dla tego adresu za pomocą
+polecenia \fBipchains\fP(8) lub \fBiptables\fP(8).
+.LP
+Od net\-tools 1.60\-4 ifconfig wypisuje liczbę bajtów i jednostki czytelne dla
+człowieka w jednostkach IEC 60027\-2. Tak więc 1 KiB to 2^10 bajtów. Proszę
+zauważyć, że liczby są zaokrąglone do jednego miejsca po przecinku (co może
+okazać się znacznym błędem, jeśli weźmie się pod uwagę, że 0.1 PiB to
+112.589.990.684.262 bajtów :).
+.LP
+Problemy przerwań sterowników urządzeń Ethernet objawiające się błędem
+EAGAIN \fI(SIOCSIIFLAGS: Resource temporarily unavailable)\fP wynikają
+najprawdopodobniej z konfliktów przerwań. Więcej informacji można znaleźć na
+stronie \fIhttp://www.scyld.com/expert/irq\-conflict.html\fP.
+.SH PLIKI
+\fI/proc/net/socket\fP
+.br
+\fI/proc/net/dev\fP
+.br
+\fI/proc/net/if_inet6\fP
+.SH BŁĘDY
+Podczas wyświetlania adresów appletalk DDP i IPX, nie można ich poprawiać tą
+komendą.
+.SH "ZOBACZ TAKŻE"
+route(8), netstat(8), arp(8), rarp(8), ipchains(8), iptables(8), ifup(8),
+interfaces(5).
+.br
+http://physics.nist.gov/cuu/Units/binary.html \- przedrostki binarne
+.SH AUTORZY
+Fred N. van Kempen, <waltje@uwalt.nl.mugnet.org>
+.br
+Alan Cox, <Alan.Cox@linux.org>
+.br
+Phil Blundell, <Philip.Blundell@pobox.com>
+.br
+Andi Kleen
+.br
+Bernd Eckenfels, <net\-tools@lina.inka.de>
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>,
+Robert Luberda (PTM) <robert@debian.org>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 1.60 \fPoryginału.

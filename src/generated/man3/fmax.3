@@ -1,0 +1,66 @@
+.\" Copyright 2002 Walter Harms (walter.harms@informatik.uni-oldenburg.de)
+.\" and Copyright 2008, Linux Foundation, written by Michael Kerrisk
+.\"     <mtk.manpages@gmail.com>
+.\" Distributed under GPL
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2002 Walter Harms, 2008 Linux Foundation (GPL-1)
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2005, 2012.
+.TH FMAX 3 2010\-09\-20 "" "Podręcznik programisty Linuksa"
+.SH NAZWA
+fmax, fmaxf, fmaxl \- wyznaczają maksimum z dwóch liczb zmiennoprzecinkowych
+.SH SKŁADNIA
+\fB#include <math.h>\fP
+.sp
+\fBdouble fmax(double \fP\fIx\fP\fB, double \fP\fIy\fP\fB);\fP
+.br
+\fBfloat fmaxf(float \fP\fIx\fP\fB, float \fP\fIy\fP\fB);\fP
+.br
+\fBlong double fmaxl(long double \fP\fIx\fP\fB, long double \fP\fIy\fP\fB);\fP
+.sp
+Proszę linkować z \fI\-lm\fP.
+.sp
+.in -4n
+Wymagane ustawienia makr biblioteki glibc (patrz \fBfeature_test_macros\fP(7)):
+.in
+.sp
+.ad l
+\fBfmax\fP(), \fBfmaxf\fP(), \fBfmaxl\fP():
+.RS 4
+_XOPEN_SOURCE\ >=\ 600 || _ISOC99_SOURCE || _POSIX_C_SOURCE\ >=\ 200112L;
+.br
+lub \fIcc\ \-std=c99\fP
+.RE
+.ad
+.SH OPIS
+Funkcje te zwracają większą spośród wartości liczb  \fIx\fP i \fIy\fP.
+.SH "WARTOŚĆ ZWRACANA"
+Funkcje te zwracają maksimum z liczb  \fIx\fP i \fIy\fP.
+
+Jeśli jednym z argumentów jest NaN, to zwracany jest drugi argument.
+
+Jeśli oba argumenty są NaN, to zwracane jest NaN.
+.SH BŁĘDY
+Nie występują.
+.SH WERSJE
+Funkcje te pojawiły się po raz pierwszy w wersji 2.1 biblioteki glibc.
+.SH "ZGODNE Z"
+C99, POSIX.1\-2001.
+.SH "ZOBACZ TAKŻE"
+\fBfmin\fP(3)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

@@ -1,0 +1,145 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1980-2008 Marco van Wieringen, Jan Kara et al (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+.\" Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>, 2002.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH EDQUOTA 8   
+.SH NAZWA
+edquota \- edycja kwot dla użytkowników
+.SH SKŁADNIA
+\fBedquota\fP [ \fB\-p\fP \fIwzorcowy\-użytkownik\fP ] [ \fB\-u\fP\ | \fB\-g\fP ] [ \fB\-rm\fP ] [
+\fB\-F\fP \fInazwa\-formatu\fP ] [ \fB\-f\fP \fIsystem\-plików\fP ] \fIużytkownik\fP.\|.\|.
+.LP
+\fBedquota\fP [ \fB\-u\fP\ | \fB\-g\fP ] [ \fB\-F\fP \fInazwa\-formatu\fP ] [ \fB\-f\fP
+\fIsystem\-plików\fP ] \fB\-t\fP
+.LP
+\fBedquota\fP [ \fB\-u\fP\ | \fB\-g\fP ] [ \fB\-F\fP \fInazwa\-formatu\fP ] [ \fB\-f\fP
+\fIsystem\-plików\fP ] \fB\-T\fP \fInazwa\-użytkownika\fP | \fInazwa\-grupy\fP...
+.SH OPIS
+.IX "edquota command" "" "\fLedquota\fR \(em edit user quotas"
+.IX edit "user quotas \(em \fLedquota\fR"
+.IX "user quotas" "edquota command" "" "\fLedquota\fR \(em edit user quotas"
+.IX "disk quotas" "edquota command" "" "\fLedquota\fR \(em edit user quotas"
+.IX quotas "edquota command" "" "\fLedquota\fR \(em edit user quotas"
+.IX filesystem "edquota command" "" "\fLedquota\fR \(em edit user quotas"
+\fBedquota\fP jest edytorem kwot. W wierszu polecenia można podać jednego lub
+więcej użytkowników lub grup. Dla każdego użytkownika lub grupy tworzony
+jest plik tymczasowy z określonymi w postaci
+.SM ASCII
+obecnymi
+ograniczeniami kwot dyskowych użytkownika lub grupy. Po jego utworzeniu
+uruchamiany jest edytor. Można wówczas zmieniać kwoty, dodawać nowe,
+itd. Ustawienie wartości zerowej kwoty oznacza, że nie zostanie narzucona
+żadna kwota.
+.PP
+Użytkownikom wolno przekraczać ograniczenie miękkie na określony dla danego
+systemu plików czas ulgi. Po upłynięciu czasu ulgi, miękkie ograniczenie
+staje się twardym ograniczeniem.
+.PP
+Informacje o aktualnym zużyciu znajdujące się w pliku pełnią rolę
+informacyjną. Zmienić można jedynie ograniczenia twarde i miękkie.
+.PP
+Po wyjściu z edytora, \fBedquota\fP odczytuje plik tymczasowy i modyfikuje
+binarne pliki kwot, aby odzwierciedlić wprowadzone zmiany.
+.LP
+Wywoływanym edytorem jest \fBeditor\fP(1), chyba że zdefiniowano zmienną
+środowiskową
+.SB EDITOR
+lub
+.SB VISUAL
+, które wskazują na coś innego.
+.LP
+Zmiany kwot może dokonywać tylko superużytkownik.
+.SH OPCJE
+.TP 
+\fB\-r, \-\-remote\fP
+Zmiana również kwot zdalnych za pomocą rpc.rquotad na zdalnym serwerze.
+Opcja ta dostępna jest jedynie, jeśli narzędzia quota zostały skompilowane z
+włączoną obsługą ustawiania udziałów poprzez RPC. Opcja \fB\-n\fP jest jej
+równoważna i wspierana jedynie dla zachowania zgodności z wcześniejszymi
+wersjami.
+.TP 
+\fB\-m, \-\-no\-mixed\-pathnames\fP
+Obecnie, nazwy ścieżkowe punktów montowania NFSv4 są wysyłane bez
+początkowego ukośnika w ścieżce. \fBrpc.rquotad\fP używa tego do rozpoznawania
+montowań NFSv4 i prawidłowo poprzedza ścieżkę pseudokorzeniem systemu plików
+NFS. Jeśli poda się tę opcję, \fBedquota\fP będzie zawsze wysyłać ścieżki z
+początkowym ukośnikiem. Jest to przydatne w celach kompatybilności, lecz
+proszę pamiętać, że udziały poprzez RPC przestaną działać po tym, jak
+zacznie się używać nowego \fBrpc.rquotad\fP.
+.TP 
+\fB\-u, \-\-user\fP
+Edycja kwot użytkowników. Jest to zachowanie domyślne.
+.TP 
+\fB\-g, \-\-group\fP
+Edycja kwot grup.
+.TP 
+\fB\-p, \-\-prototype=\fP\fIwzorcowy\-użytkownik\fP
+Powiela ustawienia kwot użytkownika wzorcowego dla wszystkich podanych
+użytkowników. Jest to normalny mechanizm inicjowania udziałów dla grup
+użytkowników.
+.TP 
+\fB\-\-always\-resolve\fP
+Zawsze stara się tłumaczyć nazwę użytkownika lub grupy na UID lub GID, nawet
+jeśli nazwa składa się z samych cyfr.
+.TP 
+\fB\-F, \-\-format=\fP\fInazwa\-formatu\fP
+Zmienia kwoty według podanego formatu (tzn. nie jest wykonywana automatyczne
+wykrywanie formatu). Dozwolone są następujące nazwy formatów: \fBvfsold\fP \-
+pierwotny format udziałów z 16\-bitowymi UID\-ami/GID\-ami, \fBvfsv0\fP \- format
+udziałów z 32\-bitowymi UID\-ami/GID\-ami, 64\-bitowe użycie przestrzeni,
+32\-bitowe użycie i\-węzłów oraz limity, \fBvfsv1\fP \- format udziałów z
+64\-bitowymi limitami i użyciem, \fBrpc\fP \- udziały poprzez NFS, \fBxfs\fP \-
+udziały w systemie plików XFS.
+.TP 
+\fB\-f, \-\-filesystem \fP\fIsystem\-plików\fP
+Przeprowadza zadane operacje wyłącznie na podanym systemie plików (domyślnym
+zachowaniem jest przeprowadzenie ich na wszystkich systemach plików
+obsługujących kwoty).
+.TP 
+\fB\-t, \-\-edit\-period\fP
+Zmiana czasów ważności miękkich ograniczeń dla poszczególnych systemów
+plików.  W starym formacie kwot, jeśli czasy ważności wynoszą zero, używane
+są domyślne ograniczenia z \fB<linux/quota.h>\fP.  W nowym formacie
+kwot, wartości muszą zostać podane (nie ma wartości domyślnych, ustawianych
+przez jądro). Rozumiane są następujące jednostki czasu: seconds (sekundy),
+minutes (minuty), hours (godziny) i days (dni). Czasy ważności są wypisywane
+w możliwie największych jednostkach takich, że wyrażona w nich wartość jest
+większa lub równa jedności.
+.TP 
+\fB\-T, \-\-edit\-times\fP
+Edytuje czasy użytkownika/grupy, gdy wymuszony jest miękki limit. Prawidłowe
+wartości to: "unset" lub liczba i jednostka. Jednostki są takie same jak
+przy opcji \fB\-t\fP.
+.SH PLIKI
+.PD 0
+.TP  20
+\fBaquota.user\fP lub \fBaquota.group\fP
+pliki kwot dyskowych umieszczone w głównym katalogu systemu plików (wersja 2
+kwot, systemy plików inne niż XFS)
+.TP 
+\fBquota.user\fP lub \fBquota.group\fP
+pliki kwot dyskowych umieszczone w głównym katalogu systemu plików (wersja 1
+kwot, systemy plików inne niż XFS)
+.TP 
+\fB/etc/mtab\fP
+domyślne systemy plików
+.PD
+.SH "ZOBACZ TAKŻE"
+\fBquota\fP(1), \fBeditor\fP(1), \fBquotactl\fP(2), \fBquotacheck\fP(8), \fBquotaon\fP(8),
+\fBrepquota\fP(8), \fBsetquota\fP(8)
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>,
+Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 4.00 \fPoryginału.

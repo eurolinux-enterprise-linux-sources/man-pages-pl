@@ -1,0 +1,95 @@
+.\" Hey, Emacs!  This is an -*- nroff -*- source file.
+.\"
+.\" Copyright (C) 1996 Erick Branderhorst <branderh@debian.org>
+.\"
+.\" This is free software; you can redistribute it and/or modify it under
+.\" the terms of the GNU General Public License as published by the Free
+.\" Software Foundation; either version 2, or (at your option) any later
+.\" version.
+.\" This is distributed in the hope that it will be useful, but WITHOUT
+.\" ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+.\" FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+.\" for more details.
+.\" You should have received a copy of the GNU General Public License with
+.\" your Debian GNU/Linux system, in /usr/share/common-licenses/GPL, or with
+.\" the dpkg source package as the file COPYING.  If not, write to the Free
+.\" Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+.\"
+.\" This manpage is created thanks to:
+.\" Kai Henningsen <kai@khms.westfalen.de>,
+.\" Ian Jackson <iwj10@cus.cam.ac.uk>,
+.\" David H. Silber <dhs@firefly.com>,
+.\" Carl Streeter <streeter@cae.wisc.edu>,
+.\" Martin Michlmayr <tbm@cyrius.com>.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright ©  1996 Erick Branderhorst 
+.\" Copyright © of Polish translation:
+.\" Piotr Roszatycki (PTM) <dexter@debian.org>, 1999.
+.\" Robert Luberda <robert@debian.org>, 2004, 2012.
+.TH UNDOCUMENTED 7 "24 sierpnia 2003" "Debian GNU/Linux" "Podręcznik programisty linuksowego"
+.SH NAZWA
+undocumented \- Brak podręcznika dla programu, użytku lub funkcji
+.SH OPIS
+Ten \fBprogram\fP, \fBużytek\fP lub \fBfunkcja\fP nie ma użytecznego
+podręcznika. Przed zgłoszeniem tego jako błędu, prosimy o sprawdzenie w
+"Systemie rejestracji błędów Debiana" (BTS) pod adresem
+<\fIhttp://bugs.debian.org/\fP>, czy nie zostało to już wcześniej
+zgłoszone. Jeżeli nie, to można to zgłosić jako błąd\-życzenie (wishlist).
+
+Jeżeli masz do tego predyspozycje i potrafiłbyś poświęcić swój czas na
+przeanalizowanie kodu źródłowego, zachęcamy Cię do napisania
+podręcznika. Prosimy o \fBkontakt\fP z \fBopiekunem pakietu\fP, kopię maila
+prosimy wysłać do \fIman\-pages@qa.debian.org\fP, aby uniknąć ryzyka, że kilka
+osób pracuje nad tym samym podręcznikiem.
+
+Nawet jeżeli nie czujesz się dobrym pisarzem, Twój wkład może być pomocny.
+Pisanie stron podręcznika jest całkiem proste, format stron jest opisany w
+\fBman\fP(7). Najważniejszym i najbardziej czasochłonnym zadaniem jest zebranie
+informacji, które powinny zostać umieszczone w nowej stronie podręcznika.
+
+.SH DIAGNOSTYKA
+.PP
+Jest możliwe, że strona podręcznika dla podanego polecenia jest
+zainstalowana, ale indeks stron podręczników w Twoim systemie nie jest
+aktualny. W takim przypadku należy spróbować uruchomić \fBmandb\fP(8).
+.PP
+Aby dowiedzieć się czegoś o tym pakiecie, można spróbować poniższych opcji:
+.PP
+\fIbla\fP \fB\-\-help\fP, \fIbla\fP \fB\-h\fP, \fIbla\fP\fB \-?\fP
+.PP
+\fBinfo\fP\fI bla\fP
+.PP
+\fBwhatis\fP \fIbla\fP, \fBapropos\fP\fI bla\fP
+.PP
+\fBdpkg \-\-listfiles\fP \fIbla\fP, \fBdpkg \-\-search \fP\fIbla\fP
+.PP
+\fBlocate '*\fP\fIbla\fP\fB*'\fP
+.PP
+\fBfind / \-name '*\fP\fIbla\fP\fB*'\fP
+.PP
+Dodatkowo można sprawdzić katalogi \fI/usr/share/doc/bla\fP, \fI/usr/lib/bla\fP.
+.PP
+Dokumentacja może być również w pakiecie o nazwie zaczynającej się tak samo,
+jak nazwa pakietu, w którym znajduje się szukany program, ale kończącej się
+na "\-doc" lub "\-docs".
+.PP
+Jeśli wciąż nie możesz odnaleźć interesujących Cię informacji, spróbuj
+zwrócić się o pomoc do \fIdebian\-user@lists.debian.org\fP.
+.SH "ZOBACZ TAKŻE"
+\fBinfo\fP(1), \fBwhatis\fP(1), \fBapropos\fP(1), \fBdpkg\fP(8), \fBlocate\fP(1),
+\fBfind\fP(1), \fBupdatedb\fP(1), \fBundocumented\fP(3), \fBman\fP(7), \fBmandb\fP(8),
+\fBmissing\fP(7).
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Piotr Roszatycki (PTM) <dexter@debian.org>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

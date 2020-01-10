@@ -1,0 +1,503 @@
+.\" Revision 1.0 93/06/3 23:00  chk
+.\" Initial revision
+.\"
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993-2008 Theodore Ts'o (GPL-2)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+.\" Robert Luberda (PTM) <robert@debian.org>, 2005.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH TUNE2FS 8 "kwiecień 2012" "E2fsprogs wersja 1.42.2" 
+.SH NAZWA
+tune2fs \- modyfikacja konfigurowalnych parametrów systemów plików
+ext2/ext3/ext4
+.SH SKŁADNIA
+\fBtune2fs\fP [ \fB\-l\fP ] [ \fB\-c\fP \fImax\-liczba\-montowań\fP ] [ \fB\-e\fP
+\fIzachowanie\-w\-razie\-błędu\fP ] [ \fB\-f\fP ] [ \fB\-i\fP
+\fIprzerwa\-między\-sprawdzeniami\fP ] [ \fB\-j\fP ] [ \fB\-J\fP \fIopcje\-dziennika\fP ] [
+\fB\-m\fP \fIprocent\-zarezerwowanych\-bloków\fP ] [ \fB\-o\fP
+[^]\fIopcje\-montowania\fP[,...] ] [ [ \fB\-r\fP \fIliczba\-zarezerwowanych\-bloków\fP ]
+[ \fB\-s\fP \fIflaga\-sparse\-super\fP ] [ \fB\-u\fP \fIużytkownik\fP ] [ \fB\-g\fP \fIgrupa\fP ] [
+\fB\-C\fP \fIliczba\-montowań\fP ] [ \fB\-E\fP \fIopcje\-rozszerzone\fP ] [ \fB\-L\fP
+\fIetykieta\fP ] [ \fB\-M\fP \fIostatnio\-montowany\-katalog\fP ] [ \fB\-O\fP
+[^]\fIcecha\fP[,...] ] [ \fB\-Q\fP \fIopcje\-przydziałów\-dyskowych\fP ] [ \fB\-T\fP
+\fIczas\-ostatniego\-sprawdzenia\fP ] [ \fB\-U\fP \fIUUID\fP ] urządzenie
+.SH OPIS
+\fBtune2fs\fP modyfikuje konfigurowalne parametry linuksowych systemów plików
+ext2, ext3 lub ext4. Bieżąca wartość tych opcji może zostać wyświetlona
+dzięki opcji \fB\-l\fP programu \fBtune2fs\fP(8) lub za pomocą programu
+\fBdumpe2fs\fP(8).
+.PP
+\fIUrządzenie\fP może zostać podane według nazwy pliku (np. /dev/sda1) albo
+LABEL (etykiety) lub UUID: "\fBLABEL=\fP\fInazwa\-woluminu\fP" lub
+"\fBUUID=\fP\fIuuid\fP" (np. LABEL=home or
+UUID=e40486c6\-84d5\-4f2f\-b99c\-032281799c9d).
+.SH OPCJE
+.TP 
+\fB\-c\fP\fI max\-liczba\-montowań\fP
+Zmiana maksymalnej liczby montowań między dwoma sprawdzeniami systemu
+plików. Jeżeli \fImax\-liczba\-montowań\fP jest równa 0 lub \-1, wtedy liczba
+montowań będzie ignorowana przez \fBe2fsck\fP(8)  i jądro.
+.sp
+Ustawienie liczby montowań, po których system plików będzie bezwzględnie
+sprawdzany, przemiennie spowoduje, że systemy plików z księgowaniem nie będą
+sprawdzane w tym samym czasie.
+.sp
+Należy uważnie rozważyć konsekwencje całkowitego wyłączenia tej opcji.
+Uszkodzone dyski, kable czy błędy w jądrze mogą uszkodzić system plików bez
+zaznaczania systemu plików jako błędny. Jeżeli używa się systemu plików z
+księgowaniem, to system plików \fBnigdy\fP nie zostanie zaznaczony jako błędny,
+dlatego nie będzie normalnie sprawdzany.  Błąd systemu plików wykryty przez
+jądro wymusi użycie fsck przy następnym restarcie, lecz wtedy może być już
+za późno, aby zapobiec utracie danych.
+.sp
+Informacje o sprawdzaniu w zależności od czasu można znaleźć w opisie opcji
+\fB\-i\fP.
+.TP 
+\fB\-C\fP\fI liczba\-montowań\fP
+Ustawia licznik montowań systemu plików. Jeśli jest on ustawiony na wartość
+większą niż max\-liczba\-montowań ustawioną przez opcję \fB\-c\fP, to \fBe2fsck\fP(8)
+sprawdzi system plików po następnym restarcie.
+.TP 
+\fB\-e\fP\fI zachowanie\-w\-razie\-błędu\fP
+Zmienia zachowanie jądra, gdy wykryty zostanie błąd. We wszystkich
+przypadkach błąd systemu plików powoduje uruchomienie \fBe2fsck\fP(8)  podczas
+następnego restartu w celu sprawdzenia systemu plików.
+\fIzachowanie\-w\-razie\-błędu\fP może przyjmować następujące wartości:
+.RS 1.2i
+.TP  1.2i
+\fBcontinue\fP
+Kontynuuje normalną pracę.
+.TP 
+\fBremount\-ro\fP
+Powoduje przejście systemu plików w tryb tylko do odczytu.
+.TP 
+\fBpanic\fP
+Wywołuje panikę jądra.
+.RE
+.TP 
+\fB\-E\fP\fI opcje rozszerzone\fP
+Ustawia rozszerzone opcje systemu plików. Opcje rozszerzone są oddzielone
+przecinkami i mogą zawierać argument podany po znaku równości
+("="). Obsługiwane są następujące opcje:
+.RS 1.2i
+.TP 
+\fBclear_mmp\fP
+Resetuje blok MMP (jeśli występuje) z powrotem do stanu czystego. Może być
+użyte tylko w przypadku absolutnej pewności, że urządzenie nie jest obecnie
+zamontowane lub sprawdzane za pomocą fsck, ponieważ może wówczas wystąpić
+poważne uszkodzenie systemu plików. Wymaga opcji "\-f".
+.TP 
+\fBmmp_update_interval=\fP\fIinterwał\fP
+Dostosowuje pierwotny interwał aktualizacji MMP do \fIinterwał\fP
+sekund. Podanie wartości 0 spowoduje użycia domyślnego interwału. Podany
+interwał musi być mniejszy niż 300 sekund. Wymaga włączonej funkcji \fBmmp\fP.
+.TP 
+\fBstride=\fP\fIrozmiar\-części\fP
+Konfiguruje system plików do macierzy RAID z \fIrozmiarem\-części\fP
+(ang. stride size) bloków systemu plików. Jest to liczba bloków
+odczytywanych lub zapisywanych na dysk przed przejściem na następny dysk. To
+ustawienie wpływa głównie na położenie metadanych systemu plików, takich jak
+mapy bitów podczas wykonywania \fBmke2fs\fP(2), aby zapobiec umieszczeniu ich
+na jednym dysku, co mogłoby negatywnie wpłynąć na wydajność. Może być
+również użyte przez alokator bloków.
+.TP 
+\fBstripe_width=\fP\fIszerokość\-paska\fP
+Konfiguruje system plików do macierzy RAID z \fIrozmiarem\-paska\fP (ang. stripe
+width) bloków systemu plików na pasek. Zazwyczaj jest to rozmiar\-części * N,
+gdzie N jest liczbą dysków z danymi w macierzy RAID (np. RAID 5 N+1, RAID 6
+N+2). Pozwala to alokatorowi bloków na przeciwdziałanie cyklowi
+odczytu\-modyfikacji\-zapisu w pasku RAID, jeśli to możliwe, przy zapisie
+danych.
+.TP 
+\fBhash_alg=\fP\fIdopasowanie\-hash\fP
+Ustawia domyślny algorytm haszujący używany do systemów plików z haszowanymi
+katalogami b\-drzew. Poprawnymi algorytmami są: \fIlegacy\fP, \fIhalf_md4\fP i
+\fItea\fP.
+.TP 
+\fBmount_opts=\fP\fIłańcuch\-opcji\-montowania\fP
+Ustawia domyślne opcje montowania używane przy montowaniu systemu plików. W
+przeciwieństwie do domyślnych opcji montowania, bazujących na mapach bitów,
+które mogą być podane przy użyciu opcji \fB\-o\fP, \fIłańcuch\-opcji\-montowania\fP
+jest dowolnym łańcuchem o maksymalnej długości 63 bajtów, który jest
+przechowywany w superbloku.
+.IP
+Sterownik systemu plików ext4 zastosuje najpierw domyślne opcje oparte na
+mapach bitów, a następnie przeanalizuje \fIłańcuch\-opcji\-montowania\fP, przed
+przetworzeniem opcji podanych programowi \fBmount\fP(8).
+.IP
+Ustawienia supebloku są przestrzegane wyłącznie przez jądra 2.6.35, i
+nowsze; są ignorowane przez sterowniki systemów plików ext2 i ext3.
+.TP 
+\fBtest_fs\fP
+Ustawia flagę superbloku systemu plików, oznaczającą, że może być on
+montowany przy użyciu eksperymentalnego kodu jądra, np. kodu systemu plików
+ext4dev.
+.TP 
+\fB^test_fs\fP
+Usuwa flagę test_fs, wskazując, że system plików powinien być montowany
+wyłącznie przy użyciu kodu produkcyjnego systemu plików.
+.RE
+.TP 
+\fB\-f\fP
+Wymusza kończenie operacji tune2fs nawet w przypadku wystąpienia błędów.  Ta
+opcja jest przydatna podczas wyłączania cechy \fBhas_journal\fP w systemie
+plików posiadającym zewnętrzny dziennik (lub tak uszkodzonym, że sprawia
+wrażenie posiadającego zewnętrzny dziennik), który nie jest dostępny.
+.sp
+\fBOSTRZEŻENIE:\fP Usuwanie zewnętrznego dziennika z systemu plików, który nie
+został prawidłowo odmontowany, bez wcześniejszego zabezpieczenia tego
+dziennika, może prowadzić do utraty danych i poważnych uszkodzeń systemu
+plików.
+.TP 
+\fB\-g\fP\fI grupa\fP
+Ustawia grupę użytkownika, który może używać zarezerwowanych bloków.
+Parametr \fIgrupa\fP może być numerycznym gid\-em lub nazwą grupy. Jeżeli podana
+jest nazwa grupy, jest ona zamieniana na numeryczny gid przed zachowaniem
+danych w superbloku.
+.TP 
+\fB\-i\fP  \fIprzerwa\-między\-sprawdzeniami\fP[\fBd\fP|\fBm\fP|\fBw\fP]
+Dostraja maksymalny okres czasu między dwoma sprawdzeniami systemu plików.
+Brak przedrostka lub \fBd\fP oznacza dni, \fBm\fP miesiące, a \fBw\fP tygodnie. Zero
+wyłączy sprawdzanie w zależności od upływu czasu.
+.sp
+Zalecane jest włączenie sprawdzania \fB\-c\fP (w zależności od liczby montowań)
+albo \fB\-i\fP (w zależności od upływu czasu) w celu wymuszenia okresowego,
+pełnego sprawdzania systemu plików przez \fBe2fsck\fP(8).  Pominięcie tego może
+prowadzić do uszkodzenia systemu plików gdy uszkodzone są dyski, kable,
+pamięć lub wystąpią niezauważone błędy jądra prowadzące do utraty danych lub
+awarii.
+.TP 
+\fB\-j\fP
+Dodaje dziennik ext3 do systemu plików. Jeżeli opcja \fB\-J\fP nie została
+podana, do utworzenia dziennika o odpowiedniej wielkości (dla podanego
+systemu plików), przechowywanego w systemie plików, zostaną użyte domyślne
+parametry. Należy zauważyć, że aby móc używać księgowania, jądro musi
+obsługiwać ext3.
+.IP
+Jeżeli ta opcja jest użyta do utworzenia dziennika na już zamontowanym
+systemie plików, to w głównym katalogu tego systemu plików zostanie
+utworzony niemodyfikowalny plik \fB.journal\fP, ponieważ jest to jedyna
+bezpieczna metoda utworzenia i\-węzła dla dziennika w zamontowanym systemie
+plików. W czasie gdy plik dziennika ext3 jest widoczny, nie jest bezpieczne
+usuwanie lub modyfikowanie go; z tego powodu plik ten jest zaznaczony jako
+niemodyfikowalny (immutable).  Podczas sprawdzania odmontowanych systemów
+plików \fBe2fsck\fP(8)  automatycznie przeniesie pliki \fB.journal\fP do
+niewidocznego, zarezerwowanego węzła dziennika. Dla wszystkich systemów
+plików, poza głównym (root), powinno się to stać automatycznie podczas
+następnego restartu systemu. Ponieważ główny system plików jest zamontowany
+w trybie tylko do odczytu, w celu dokonania tej przemiany \fBe2fsck\fP(8)  musi
+zostać uruchomiony z dyskietki ratunkowej.
+.IP
+Aby uniknąć używania dyskietki ratunkowej do dodania dziennika ext3 do
+głównego systemu plików, skrypty initrd niektórych dystrybucji, np. Debiana,
+automatycznie skonwertują główny system plików ext2 do ext3, jeżeli używany
+jest początkowy ramdisk oraz gdy plik \fB/etc/fstab\fP określa typ ext3 dla
+głównego systemu plików.
+.TP 
+\fB\-J\fP opcje\-dziennika
+Zmienia domyślne parametry dziennika ext3. Opcje dziennika są oddzielone
+przecinkami i mogą zawierać argument podany po znaku równości
+("="). Obsługiwane są następujące opcje dziennika:
+.RS 1.2i
+.TP 
+\fBsize=\fP\fIrozmiar\-dziennika\fP
+Tworzy przechowywany w systemie plików dziennik, o wielkości
+\fIrozmiar\-dziennika\fP megabajtów. Rozmiar dziennika musi wynosić co najmniej
+1024 bloki (np. 1MB jeżeli używane są bloki o rozmiarze 1k, 4MB jeżeli 4k,
+itd.), ale nie może przekraczać 102 400 bloków. System plików musi zawierać
+ilość wolnego miejsca wystarczającą do utworzenia dziennika.
+.TP 
+\fBdevice=\fP\fIzewnętrzny\-dziennik\fP
+Przyłącza system plików do urządzenia z dziennikiem (journal block device)
+umieszczonego na \fIzewnętrzny\-dziennik\fP.  Zewnętrzny dziennik musi być
+utworzony przez wywołanie
+.IP
+\fBmke2fs \-O journal_dev\fP \fIzewnętrzny\-dziennik\fP
+.IP
+Proszę zauważyć, że \fIzewnętrzny\-dziennik\fP musi zostać sformatowany z tą
+samą wielkością bloku jak system plików, który będzie go używał. Dodatkowo,
+o ile obsługa dołączania wielu systemów plików do pojedynczego dziennika
+zewnętrznego jest obecna, jądro Linux i \fBe2fsck\fP(8) nie obsługuje na razie
+dzielonych dzienników zewnętrznych.
+.IP
+Zamiast podawać nazwę urządzenia bezpośrednio, \fIzewnętrzny\-dziennik\fP może
+być określony przez \fBLABEL=\fP\fIetykieta\fP lub \fBUUID=\fP\fIUUID\fP, aby znaleźć
+zewnętrzny dziennik na podstawie etykiety woluminu lub UUID przechowywanego
+w superbloku ext2 na początku dziennika. Do wypisania etykiety i UUID
+urządzenia z dziennikiem można posłużyć się \fBdumpe2fs\fP(8).  Zobacz także
+opis opcji \fB\-L\fP programu \fBtune2fs\fP(8).
+.RE
+.IP
+Dla danego systemu plików można podać tylko jedną z opcji \fBsize\fP lub
+\fBdevice\fP.
+.TP 
+\fB\-l\fP
+Wypisuje zawartość superbloku systemu plików, w tym aktualne wartości
+parametrów, które mogą zostać ustawione tym programem.
+.TP 
+\fB\-L\fP\fI etykieta\-woluminu\fP
+Ustawia etykietę systemu plików. Etykiety systemu plików ext2 mogą zawierać
+co najwyżej 16 znaków; jeżeli \fIetykieta\fP jest dłuższa niż 16 znaków,
+\fBtune2fs\fP skróci ją i wypisze ostrzeżenie. Etykieta może być używana przez
+\fBmount\fP(8), \fBfsck\fP(8)  i w \fB/etc/fstab\fP(5)  (i pewnie też w innych
+sytuacjach) poprzez podanie \fBLABEL=\fP\fIetykieta\fP zamiast nazwy urządzenia
+blokowego, jak np.  \fB/dev/hda5\fP.
+.TP 
+\fB\-m\fP\fI procent\-zarezerwowanych\-bloków\fP
+Ustawia procent systemu plików, który może zostać zaalokowany jedynie przez
+procesy uprzywilejowane. Rezerwacja pewnej liczby bloków systemu plików do
+użytku przez procesy uprzywilejowane jest wykonywana w celu przeciwdziałania
+fragmentacji systemu plików i aby pozwolić na poprawne działanie demonom
+systemowym, takim jak \fBsyslogd\fP(8), w sytuacji, gdy procesy
+nieuprzywilejowane nie mogą zapisać na system plików. Domyślny procent
+zarezerwowanych bloków wynosi zwykle 5%.
+.TP 
+\fB\-M\fP\fI ostatnio\-montowany\-katalog\fP
+Ustawia katalog, w którym system plików był ostatnio zamontowany.
+.TP 
+\fB\-o\fP [^]\fIopcja\-monotwania\fP[,...]
+Ustawia lub usuwa wskazane opcje montowania w systemie plików.  Domyślne
+opcje montowania mogą zostać nadpisane przez opcje określone albo w
+\fB/etc/fstab\fP(5), albo przez argumenty linii poleceń przekazane do
+\fBmount\fP(8).  Starsze jądra mogą nie obsługiwać tej cechy; w szczególności
+jądra starsze od 2.4.20 najprawdopodobniej zignorują pole domyślnych opcji w
+superbloku.
+.IP
+Można podać więcej niż jedną opcję montowania do usunięcia lub ustawienia
+rozdzielając je przecinkami. Opcje montowania poprzedzone znakiem karety
+("^") będą usuwane w superbloku systemu plików; opcje bez podanego
+przedrostka lub poprzedzone znakiem plusa ("+") będą dodane do systemu
+plików.
+.IP
+Następujące opcje montowania mogą być ustawione lub wyczyszczone za pomocą
+\fBtune2fs\fP:
+.RS 1.2i
+.TP 
+\fBdebug\fP
+Włącza tryb debugowania na tym systemie plików.
+.TP 
+\fBbsdgroups\fP
+Emuluje zachowanie BSD przy tworzeniu nowych plików: będą one brały
+identyfikator grupy katalogu, w którym zostały utworzone. Domyślne jest
+standardowe zachowanie Systemu V, polegające na tym, że nowo tworzone pliki
+biorą fsgid bieżącego procesu, chyba że katalog ma ustawiony bit setgid, w
+którym to przypadku bierze gid z katalogu nadrzędnego i także ustawia bit
+setgid, jeżeli nowo utworzonym plikiem jest katalog.
+.TP 
+\fBuser_xattr\fP
+Włącza rozszerzone atrybuty podane przez użytkownika.
+.TP 
+\fBacl\fP
+Włącza listy kontroli dostępu POSIX (Posix Access Control Lists).
+.TP 
+\fBuid16\fP
+Wyłącza 32\-bitowe UID\-y i GID\-y. Umożliwia to współdziałanie ze starszymi
+jądrami, które zachowują wartości 16\-bitowych i ich oczekują.
+.TP 
+\fBjournal_data\fP
+Kiedy system plików jest zamontowany z włączonym dziennikiem, wszystkie dane
+(nie tylko metadane) są zapisywane do dziennika przed zapisaniem ich go
+systemu plików.
+.TP 
+\fBjournal_data_ordered\fP
+Kiedy system plików jest zamontowany z włączonym dziennikiem, wymuszane jest
+zapisywanie danych bezpośrednio do systemu plików przed zapisaniem ich
+metadanych do dziennika.
+.TP 
+\fBjournal_data_writeback\fP
+Kiedy system plików jest zamontowany z włączonym dziennikiem, dane mogą być
+zapisane do systemu plików, po tym jak ich metadane zostały zapisane do
+dziennika. Może to zwiększyć przepustowość, jednakże, może to spowodować, że
+w plikach pojawią się stare dane po załamaniu systemu i odtworzeniu
+dziennika.
+.TP 
+\fBnobarrier\fP
+System plików będzie zamontowany z wyłączonymi operacjami barier w dzienniku
+(opcja jest obsługiwana obecnie jedynie przez sterownik systemu plików ext4
+w jądrach 2.6.35 i nowszych).
+.TP 
+\fBblock_validity\fP
+System plików zostanie zamontowany z włączoną opcją block_validity, która
+sprawia, że po odczycie lub zapisie do systemu plików zostaną wykonane
+dodatkowe sprawdzenia. Zapobiega się w ten sposób uszkodzeniu systemu plików
+przez naruszone bloki metadanych, w wyniku nadpisania części tabeli i\-węzłów
+lub deskryptorów grupy bloków. Kosztem jest zwiększone użycie pamięci i
+procesora, więc służy to tylko debugowaniu (opcja jest obsługiwana obecnie
+jedynie przez sterownik systemu plików ext4, w jądrach 2.6.35 i nowszych).
+.TP 
+\fBdiscard\fP
+System plików zostanie zamontowany z opcją montowania discard. W ten sposób
+sterownik systemu plików będzie starał się używać funkcji trim/discard
+niektórych urządzeń (np. SSD lub dysków dynamicznie alokowanych, obecnych w
+niektórych zaawansowanych macierzach dyskowych) do poinformowania urządzenia
+dyskowego o możliwości ponownego użycia do innych celów, bloków należących
+do usuniętych plików (opcja jest obsługiwana obecnie jedynie przez sterownik
+systemu plików ext4, w jądrach 2.6.35 i nowszych).
+.TP 
+\fBnodelalloc\fP
+System plików zostanie zamontowany z opcją nodelalloc. W ten sposób
+wyłączona zostanie funkcja odłożonego alokowania (opcja jest obsługiwana
+obecnie jedynie przez sterownik systemu plików ext4, w jądrach 2.6.35 i
+nowszych).
+.RE
+.TP 
+\fB\-O\fP [^]\fIcecha\fP[,...]
+Włącza lub wyłącza wskazane cechy (opcje) systemu plików. Można włączyć bądź
+wyłączyć wiele cech jednocześnie. Muszą one wtedy być oddzielone
+przecinkami.  Cechy poprzedzone przedrostkiem karetki ("^") będą wyłączone w
+superbloku; cechy bez przedrostka lub z przedrostkiem plus ("+") zostaną
+dodane do systemu plików.
+.IP
+Następujące cechy mogą być zmienione przez \fBtune2fs\fP:
+.RS 1.2i
+.TP 
+\fBdir_index\fP
+Używa haszowanych B\-drzew, aby przyspieszyć przeszukiwanie dużych katalogów.
+.TP 
+\fBdir_nlink\fP
+Pozwala na więcej niż 65 tysięcy podkatalogów w katalogu.
+.TP 
+\fBfiletype\fP
+Przechowywanie informacji na temat typu pliku we wpisach do katalogów.
+.TP 
+\fBflex_bg\fP
+Pozwala mapom bitów i tabelom i\-węzłów na przechowywanie grup bloków w
+dowolnym miejscu nośnika. \fBTune2fs\fP nie będzie reorganizował położenia
+tablic i\-węzłów ani map bitowych alokowania w sposób, jaki \fBmke2fs\fP(8)
+zrobiłby to podczas tworzenia nowo formatowanego systemu plików z włączoną
+opcją \fBflex_bg\fP.
+.TP 
+\fBhas_journal\fP
+Używa dziennika w celu zapewnienia spójności systemu plików nawet pomiędzy
+nieprawidłowymi zamknięciami systemu. Ustawienie tej funkcji systemu plików
+jest odpowiednikiem użycia opcji \fB\-j\fP.
+.TP 
+\fBlarge_file\fP
+System plików może zawierać pliki większe niż 2 GB (obecne jądra ustawiają
+tę funkcję automatycznie, gdy tylko tworzony jest plik większy niż 2 GB).
+.TP 
+\fBresize_inode\fP
+Rezerwuje przestrzeń, dzięki której tablica deskryptora grupy bloków może
+się powiększyć w przyszłości. \fBTune2fs\fP obsługuje wyłącznie usunięcie tej
+funkcji systemu plików.
+.TP 
+\fBmmp\fP
+Włącza lub wyłącza funkcję ochrony przed wielokrotnym montowaniem (ang. MMP
+\- multiple mount protection). MMP jest przydatne w dzielonych środowiskach
+przechowywania danych.
+.TP 
+\fBsparse_super\fP
+Ograniczenie liczbę kopii bezpieczeństwa superbloków dla zaoszczędzenia
+miejsca na dużych systemach plików.
+.TP 
+\fBuninit_bg\fP
+Pozwala jądru na inicjalizację map bitów i tablic i\-węzłów, oraz
+przechowywanie najwyższej wartości nieużywanych i\-węzłów systemu plików, w
+celu zredukowania czasu działania \fBe2fsck\fP(8). Pierwsze uruchomienie e2fsck
+po włączeniu tej funkcji będzie trwało przez pełen czas, ale kolejne zajmą
+jedynie ułamek pierwotnego czasu trwania, w zależności od zapełnienia
+systemu plików.
+.RE
+.IP
+Po zmianie cech \fBsparse_super\fP, \fBuninit_bg\fP, \fBfiletype\fP lub
+\fBresize_inode\fP, trzeba uruchomić na danym systemie plików \fBe2fsck\fP(8), aby
+przywrócić go do porządku. Jeśli będzie to potrzebne, \fBtune2fs\fP wypisze
+prośbę, aby administrator uruchomił \fBe2fsck\fP(8).  Po ustawieniu cechy
+\fBdir_index\fP może zostać uruchomiony \fBe2fsck \-D \fP, aby skonwertować
+istniejące katalogi do formatu zhaszowanych B\-drzew. Włączenie określonych
+funkcji systemu plików może uniemożliwić zamontowanie go przez jądro
+nieobsługujące takich cech. W szczególności: funkcje \fBuninit_bg\fP i
+\fBflex_bg\fP są obsługiwane tylko przez system plików ext4.
+.TP 
+\fB\-p\fP\fI interwał_sprawdzenia_mmp\fP
+Ustawia określony interwał sprawdzenia MMP, w sekundach. Domyślnie: 5
+sekund.
+.TP 
+\fB\-r\fP\fI liczba\-zarezerwowanych\-bloków\fP
+Ustawia liczbę zarezerwowanych bloków na podanym urządzeniu.
+.TP 
+\fB\-Q\fP\fI opcje\-udziału\fP
+Ustawia funkcję "quota" systemu plików i działa na plikach udziałów danego
+typu udziałów. Opcje udziałów mogą być jedną lub kilkoma z poniższych:
+.RS 1.2i
+.TP 
+[\fB^\fP]\fBusrquota\fP
+Ustawia/usuwa udziały i\-węzłów użytkownika w superbloku.
+.TP 
+[\fB^\fP]\fBgrpquota\fP
+Ustawia/usuwa udziały i\-węzłów grupy w superbloku.
+.TP 
+\fB\-T\fP\fI czas\-ostatniego\-sprawdzenia\fP
+Ustawia czas kiedy system plików był ostatnio sprawdzany przez \fBe2fsck\fP.
+Może to być przydatne w skryptach używających Zarządcy Woluminów Logicznych
+(Logical Volume Manager) do tworzenia zrzutu (snapshot) systemu plików i
+późniejszego jego sprawdzenia. Jeśli system plików nie był uszkodzony, ta
+opcja może służyć do ustawienia czasu ostatniego sprawdzenia oryginalnego
+systemu pików. Format \fIczas\-ostatniego\-sprawdzania\fP jest zgodny z
+międzynarodowym formatem daty, z opcjonalnie podaną godziną,
+np. RRRRMMDD[GG[MM[SS]]]. Słowo kluczowe \fBnow\fP jest także akceptowane, czas
+ostatniego sprawdzenia będzie wówczas ustawiony na aktualny.
+.TP 
+\fB\-u\fP\fI użytkownik\fP
+Ustawia użytkownika, który może korzystać z zarezerwowanych bloków.
+\fIużytkownik\fP może być wartością numeryczną lub nazwą użytkownika. Jeżeli
+podana jest nazwa użytkownika, jest ona zamieniana na numeryczny uid przed
+zapisem do superbloku.
+.TP 
+\fB\-U\fP\fI UUID\fP
+Ustawia uniwersalny, unikatowy identyfikator (universally unique identifier
+\- UUID) systemu plików na \fIUUID\fP.  UUID składa się z serii cyfr w systemie
+szesnastkowym oddzielonych myślnikami, jak np.:
+"c1b9d5a2\-f162\-11cf\-9ece\-0020afc76f16".  Parametr \fIUUID\fP może przyjmować
+też następujące wartości:
+.RS 1.2i
+.TP 
+\fIclear\fP
+usuwa UUID systemu plików
+.TP 
+\fIrandom\fP
+generuje nowy, przypadkowy UUID
+.TP 
+\fItime\fP
+generuje nowy UUID, oparty na czasie
+.RE
+.IP
+UUID może być używany przez \fBmount\fP(8), \fBfsck\fP(8)  i w \fB/etc/fstab\fP(5)
+(i pewnie też w innych sytuacjach) poprzez podanie \fBUUID=\fP\fIuuid\fP zamiast
+nazwy urządzenia blokowego, jak np.  \fB/dev/hda1\fP.
+.IP
+Więcej informacji można znaleźć w \fBuuidgen\fP(8).  Jeżeli system nie posiada
+dobrego generatora liczb losowych, takiego jak \fI/dev/random\fP lub
+\fI/dev/urandom\fP, \fBtune2fs\fP automatycznie posłuży się generatorem opartym na
+czasie.
+.SH BŁĘDY
+Nie znaleźliśmy jeszcze żadnych błędów, co nie oznacza, że ich tu nie ma...
+.SH AUTOR
+\fBtune2fs\fP został napisany przez Remy'ego Carda
+<card@masi.ibp.fr>. Obecnie opiekuje się nim Theodore Ts'o
+<tytso@alum.mit.edu>.  \fBtune2fs\fP korzysta z biblioteki ext2fs,
+napisanej przez Theodore'a Ts'o <tytso@mit.edu>.  Ta strona
+podręcznika została napisana przez Christiana Kuhtza
+<chk@data\-hh.Hanse.DE>.  Sprawdzanie zależne od upływu czasu zostało
+dodane przez Uwe Ohse <uwe@tirka.gun.de>.
+.SH DOSTĘPNOŚĆ
+\fBtune2fs\fP jest częścią pakietu e2fsprogs i jest dostępny na stronie
+http://e2fsprogs.sourceforge.net.
+.SH "ZOBACZ TAKŻE"
+\fBdebugfs\fP(8), \fBdumpe2fs\fP(8), \fBe2fsck\fP(8), \fBmke2fs\fP(8)
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>,
+Robert Luberda (PTM) <robert@debian.org>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 1.42.4 \fPoryginału.

@@ -1,0 +1,63 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2006,2007 Free Software Foundation, Inc., 1992,1993 Jean-loup Gailly 
+.\" Copyright © of Polish translation:
+.\" Robert Luberda (PTM) <robert@debian.org>, 2003.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH ZLESS 1   
+.SH NAZWA
+zless \- pełnoekranowy filtr do przeglądania skompresowanych plików
+tekstowych
+.SH SKŁADNIA
+\fBzless\fP [ \fInazwa ...\fP  ]
+.SH OPIS
+\fIZless\fP jest filtrem pozwalającym na przeglądanie na ekranie terminala
+plików tekstowych skompresowanych bądź nieskompresowanych. Taki sam efekt
+można uzyskać ustawiając zmienną środowiskową LESSOPEN na "|gzip \-cdfq \-\-
+%s", zmienną środowiskową LESSMETACHARS na
+\&"<spacja><tabulacja><nowy\-wiersz>;*?"()<>[|&^`#\e$%=~"
+i uruchamiając \fIless\fP.  Jednakże wystarczająco dużo ludzi uznaje dostępność
+polecenia \fIzless\fP za ważną, żeby to polecenie dostarczać.
+.SH "ZOBACZ TAKŻE"
+zmore(1), less(1)
+.SH BŁĘDY
+\fIZless\fP nie działa ze skompresowanymi danymi przesłanymi w potoku na jego
+standardowe wejście; wymaga podania plików wejściowych jako argumenty. Aby
+odczytać skompresowane dane z potoku, można użyć .\|.\|.\fB|gunzip|less\fP
+zamiast .\|.\|.\fB|zless\fP.
+.SH PRAWA\ AUTORSKIE
+Copyright \(co 2006, 2007 Free Software Foundation, Inc.
+.br
+Copyright \(co 1992, 1993 Jean\-loup Gailly
+.PP
+Permission is granted to make and distribute verbatim copies of this manual
+provided the copyright notice and this permission notice are preserved on
+all copies.
+.ig
+Permission is granted to process this file through troff and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+..
+.PP
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission notice
+identical to this one.
+.PP
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Robert Luberda (PTM) <robert@debian.org>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 1.5 \fPoryginału.

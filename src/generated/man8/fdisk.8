@@ -1,0 +1,262 @@
+.\" Copyright 1992, 1993 Rickard E. Faith (faith@cs.unc.edu)
+.\" Copyright 1998 Andries E. Brouwer (aeb@cwi.nl)
+.\" May be distributed under the GNU General Public License
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1992,1993 Rickard E. Faith, 1998 Andries E. Brouwer (GPL-1)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@p-soft.silesia.linux.org.pl>, 1999.
+.\" Robert Luberda (PTM) <robert@debian.org>, 2002.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH FDISK 8 "czerwiec 2010" util\-linux "Administracja systemem"
+.SH NAZWA
+fdisk \- obsługa dyskowej tablicy partycji
+.SH SKŁADNIA
+\fBfdisk\fP [\fB\-uc\fP] [\fB\-b\fP \fIrozmiar\-sektora\fP] [\fB\-C\fP \fIcylindry\fP] [\fB\-H\fP
+\fIgłowice\fP] [\fB\-S\fP \fIsektory\fP] \fIurządzenie\fP
+.sp
+\fBfdisk \-l\fP [\fB\-u\fP] [\fIurządzenie\fP...]
+.sp
+\fBfdisk \-s\fP \fIpartycja\fP...
+.sp
+\fBfdisk \-v\fP
+.sp
+\fBfdisk \-h\fP
+.SH OPIS
+\fBfdisk\fP (w pierwszej wersji jego wywołania) to obsługiwany z pomocą menu
+program do tworzenia i zmieniania tablicy partycji dysku twardego. Rozumie
+partycje DOS\-owe oraz etykiety dysków typu BSD lub SUN\-a.
+
+\fBfdisk\fP nie potrafi obsłużyć tablic partycji GUID (GPT) i nie jest
+przeznaczony do obsługi dużych partycji. W tych przypadkach, proszę użyć
+bardziej zaawansowanego GNU \fBparted\fP(8).
+
+\fBfdisk\fP nie używa trybu kompatybilnego z DOS\-em i wyświetlania cylindrów
+jako jednostek domyślnych. To przestarzałe zachowanie DOS\-a można włączyć
+opcją wiersza poleceń "\-c=dos \-u=cylinders".
+
+Dyski twarde mogą być podzielone na jeden lub więcej logicznych dysków
+zwanych \fIpartycjami\fP.  Podział ten jest zapisany w \fItablicy partycji\fP
+znajdującej się w sektorze 0 dysku (w świecie BSD mówi się o tzw. plastrach
+dyskowych "disk slice" i etykietach dysku "disklabel).
+
+Linux potrzebuje przynajmniej jednej partycji \(em mianowicie partycji
+przeznaczonej na główny system plików.  Może używać plików i/lub partycji
+wymiany, ale te drugie są bardziej wydajne. Tak więc, zazwyczaj używana jest
+druga partycja linuksowa przeznaczona na partycję wymiany (tzw. swap).  Na
+komputerach o architekturze zgodnej z Intelem, BIOS, używany do uruchamiania
+systemu, często ma dostęp tylko do pierwszych 1024 cylindrów dysku. Z tego
+powodu osoby mające duże dyski często tworzą trzecią partycję o rozmiarze
+kilku MB, zazwyczaj montowaną w katalogu \fI/boot\fP, która przechowuje obraz
+jądra i kilka dodatkowych plików potrzebnych w czasie uruchamiania systemu,
+żeby mieć pewność, że te rzeczy są dostępne dla BIOS\-u.  Mogą być różne
+przyczyny, związane z bezpieczeństwem, ułatwieniem administrowania i
+tworzenia kopii zapasowych lub testowaniem, żeby używać większej liczby
+partycji niż to minimum.
+
+.SH URZĄDZENIA
+\fIUrządzenie\fP jest to z reguły /dev/sda, /dev/sdb itp. Nazwy urządzeń
+odnoszą się do całego dysku. Stare systemy bez libata (biblioteki używanej
+wewnątrz jądra Linux do obsługi kontrolerów i urządzeń ATA) rozróżniają
+dyski IDE i SCSI. W takich przypadkach nazwami urządzeń będą /dev/hd* (IDE)
+lub /dev/sd* (SCSI).
+
+\fIPartycja\fP to nazwa urządzenia, za którą następuje numer partycji. Na
+przykład, /dev/sda1 jest pierwszą partycją pierwszego dysku twardego w
+systemie. Proszę również zapoznać się z dokumentacją jądra Linux (plik
+Documentation/devices.txt).
+
+.SH ETYKIETY\ DYSKU
+Etykieta dysku typu BSD/SUN może opisywać 8 partycji, z których trzecia
+powinna być specjalną partycją oznaczającą cały dysk. Partycji, która używa
+swojego pierwszego sektora (jak na przykład partycja wymiany) nie należy
+umieszczać w cylindrze 0, ponieważ zniszczy to etykietę dysku.
+
+Etykieta dysku typu IRIX/SGI może opisywać 16 partycji, z których jedenasta
+powinna być partycją całego "woluminu", natomiast dziewiąta powinna być
+tzw. "nagłówkiem woluminu".  Nagłówek woluminu także pokrywa całą tablicę
+partycji, tzn.  zaczyna się w bloku zerowym i domyślnie ciągnie się przez
+pięć cylindrów.  Pozostałe miejsce w nagłówku woluminu może być użyte przez
+wpisy głównych katalogów. Żadna partycja nie może nachodzić na nagłówek
+woluminu.  Także, nie należy zmieniać typu nagłówka woluminu, ani tworzyć na
+nim systemu plików, ponieważ spowoduje to utratę tablicy partycji. Proszę
+używać tego typu etykiety dysku tylko podczas pracy z Linuksem na
+komputerach IRIX/SGI lub podczas pracy z dyskami IRIX/SGI pod Linuksem.
+
+Tablica partycji typu DOS może opisać nieograniczoną liczbę partycji. W
+sektorze 0 jest miejsce na opis 4 partycji (zwanych podstawowymi \(em
+`primary'). Jedna z nich może być partycją rozszerzoną; jest ona jakby
+pudełkiem zawierającym partycje logiczne, których deskryptory można znaleźć
+w wiązanej liście sektorów, z których każdy poprzedza odpowiadającą partycję
+logiczną.  Cztery podstawowe partycje, niezależnie od tego czy są obecne,
+czy nie, otrzymują numery od 1 do 4. Numery partycji logicznych zaczynają
+się od 5.
+
+W tablicy partycji typu DOS początkowe przesunięcie (`offset')  i rozmiar
+każdej partycji przechowywany jest na dwa sposoby: jako bezwzględna liczba
+sektorów (zapisywana na 32 bitach)  i jako trójka Cylindry/Głowice/Sektory
+(Cylinders/Heads/Sectors)  (zapisywana na 10+8+6 bitach). Pierwszy zapis
+jest w porządku \- przy 512\-bajtowych sektorach będzie działał aż do 2 TB. W
+przypadku drugiego zapisu występują dwa małe problemy. Przede wszystkim pola
+C/H/S mogą być wypełnione tylko wtedy, gdy znana jest liczba głowic oraz
+liczba sektorów na ścieżce. Po drugie, nawet jeżeli te liczby są znane, to
+te 24 bity, które są dostępne, nie wystarczają.  DOS używa tylko C/H/S,
+Windows \(em obu, a Linux nigdy nie używa C/H/S.
+
+Jeśli jest to możliwe, \fBfdisk\fP automatycznie uzyska informacje o geometrii
+dysku.  Niekoniecznie musi to być fizyczna geometria dysku (co więcej,
+nowoczesne dyski w rzeczywistości nie mają czegoś takiego jak fizyczna
+geometria, a w każdym razie nie mają niczego, co mogłoby być opisane w
+prostej postaci cylindry/głowice/sektory), lecz geometria, której używa
+MS\-DOS dla tablicy partycji.
+
+Zazwyczaj wszystko idzie dobrze i nie ma żadnych problemów, jeżeli Linux
+jest jedynym systemem na dysku. Jednakże, jeśli dysk będzie dzielony z
+innymi systemami operacyjnymi, to dobrym pomysłem jest utworzenie co
+najmniej jednej partycji fdiskiem pochodzącym z innego systemu
+operacyjnego. Linux, podczas uruchamiania, przegląda tablicę partycji i
+stara się wywnioskować, jaka (fałszywa) geometria dysku jest wymagana, żeby
+mógł dobrze współpracować z innymi systemami.
+
+Gdy wypisywana jest tablica partycji, dokonywane jest sprawdzenie
+konsystencji wpisów tablicy. Sprawdzane jest, czy fizyczne i logiczne punkty
+startowe i końcowe są takie same, oraz czy partycja rozpoczyna się i kończy
+w granicach cylindrów (poza pierwszą partycją).
+
+Niektóre wersje MS\-DOS tworzą pierwszą partycję, która nie rozpoczyna się na
+granicy cylindra, lecz na 2 sektorze pierwszego cylindra. Partycje
+rozpoczynające się na cylindrze 1 nie mogą rozpoczynać się na granicy
+cylindra, lecz raczej nie powinno to sprawiać problemów, chyba że używany
+jest OS/2.
+
+Funkcje sync() i ioctl(BLKRRPART) są wywoływane (o ile zmieniono tablicę
+partycji) przed wyjściem, kiedy tablica partycji zostanie już
+zaktualizowana.  Dawno temu było konieczne przeładowanie systemu (reboot) po
+użyciu fdiska.  Teraz nie powinno być takiej potrzeby; co więcej, zbyt
+szybkie przeładowanie systemu może spowodować utratę jeszcze nie zapisanych
+danych. Proszę zauważyć, że zarówno jądro, jak i dysk mogą buforować dane.
+
+.SH "OSTRZEŻENIE DOS 6.x"
+
+Komenda FORMAT z DOS 6.x szuka informacji w pierwszym sektorze obszaru
+danych partycji i traktuje je jako godniejsze zaufania niż informacje z
+tablicy partycji.  Dosowy FORMAT oczekuje od dosowego FDISK\-a, że ten
+wyczyści pierwsze 512 bajtów obszarów danych przy każdej zmianie
+rozmiarów. Dosowy FORMAT zajrzy do tych dodatkowych danych nawet z flagą /U
+\-\- uważamy to za błąd tych programów.
+
+Tak więc używając cfdiska lub fdiska do zmiany rozmiaru partycji dosowej,
+należy też użyć \fBdd\fP do wyzerowania pierwszych 512 bajtów tej partycji
+przed użyciem dosowego FORMAT. Na przykład, po utworzeniu dosowej partycji
+/dev/sda1programem cfdisk (po wyjściu z fdiska lub cfdiska i przeładowaniu
+Linuksa, dzięki czemu informacje o tablicy partycji będą poprawne), powinno
+się wykonać polecenie "dd if=/dev/zero of=/dev/hda1 bs=512 count=1", które
+zeruje pierwszych 512 bajtów partycji.
+
+\fBBĄDŹ NIEWYOBRAŻALNIE OSTROŻNY\fP przy używaniu komendy \fBdd\fP, gdyż mała
+pomyłka może spowodować zniszczenie wszystkich danych z dysku.
+
+Dla najlepszych wyników, zawsze powinno się używać fdiska specyficznego dla
+danego systemowi operacyjnemu. Na przykład, partycje dosowe powinno się
+tworzyć dosowym FDISK\-iem, a linuksowe \(em linuksowym fdiskiem lub
+cfdiskiem.
+
+.SH OPCJE
+.TP 
+\fB\-b \fP\fIrozmiar\-sektora\fP
+Określa rozmiar sektora dysku. Możliwe wartości są następująca: 512, 1024,
+2048 lub 4096. (Ostatnie jądra znają rozmiar sektora. Proszę używać tej
+opcji tylko dla starych jąder lub w celu nadpisania wartości podanej przez
+jądro). Od util\-linux\-2.17 fdisk rozróżnia logiczny i fizyczny rozmiar
+sektora. Ta opcja zmienia obie wartości rozmiarów sektora na
+\fIrozmiar\-sektora\fP.
+.TP 
+\fB\-c\fP[\fI=tryb\fP]
+Określa tryb kompatybilności, "dos" lub "nondos". Domyślnym trybem jest
+niedosowy. Aby zachować kompatybilność wsteczną, możliwe jest użycie tej
+opcji bez argumentu <tryb> \- używana jest wówczas wartość
+domyślna. Proszę zauważyć, że opcjonalny argument <tryb> nie może
+być oddzielony od opcji \-c spacją, poprawną formą jest np. "\-c=dos".
+.TP 
+\fB\-C \fP\fIcylindry\fP
+Określa liczbę cylindrów dysku. Prawdopodobnie nie ma osoby, która miałaby
+powód aby używać tej opcji.
+.TP 
+\fB\-H \fP\fIgłowice\fP
+Określa liczbę głowic dysku (oczywiście nie ich fizyczną liczbę, lecz liczbę
+używaną do tablic partycji). Rozsądnymi wartościami są 255 i 16.
+.TP 
+\fB\-S \fP\fIsektory\fP
+Określa liczbę sektorów dysku na ścieżkę (oczywiście nie ich fizyczną
+liczbę, lecz liczbę używaną do tablic partycji). Rozsądną wartością jest 63.
+.TP 
+\fB\-h\fP
+Wyświetla pomoc i kończy pracę.
+.TP 
+\fB\-l\fP
+Wypisuje tablice partycji dla podanych urządzeń i kończy działanie.  Jeżeli
+nie podano żadnych urządzeń, to używane są urządzenia wymienione w pliku
+\fI/proc/partitions\fP (o ile taki istnieje).
+.TP 
+\fB\-s \fP\fIpartycja\fP...
+Wypisuje rozmiar każdej podanej partycji (w blokach).
+.TP 
+\fB\-u\fP[\fI=jednostka\fP]
+Podczas wypisywania tablic partycji pokazuje rozmiary w "sectors"
+(sektorach) lub w "cylinders" (cylindrach). Domyślnie używane są sektory. Ze
+względu na kompatybilność wsteczną, możliwe jest użycie tej opcji bez
+argumentu <jednostki> \- używana jest wówczas wartość
+domyślna. Proszę zauważyć, że opcjonalny argument <jednostki> nie
+może być oddzielony od opcji \-u spacją, poprawną formą jest
+np. "\-u=cylinders".
+.TP 
+\fB\-v\fP
+Wypisuje numer wersji \fBfdiska\fP i kończy działanie.
+.SH BŁĘDY
+Istnieje kilka różnych programów *fdisk.  Każdy z nich ma swoje problemy i
+zalety.  Prosimy wypróbować ich w następującej kolejności: \fBcfdisk\fP,
+\fBfdisk\fP, \fBsfdisk\fP.  (Istotnie, \fBcfdisk\fP jest pięknym programem, mającym
+surowe wymagania co do tablic partycji, które akceptuje, tworzącym tablice
+partycji wysokiej jakości.  Należy go używać, jeżeli tylko jest taka
+możliwość.  \fBfdisk\fP jest programem mającym wiele błędów, robiącym mętne
+rzeczy \(em zazwyczaj zdarza mu się dać sensowne wyniki. Jego pojedynczą
+zaletą jest obsługa etykiet dysków typu BSD i innych nie\-DOS\-owych tablic
+partycji.  Należy go unikać, jeżeli tylko jest taka możliwość.  \fBsfdisk\fP
+jest programem tylko dla hakerów \(em interfejs użytkownika jest okropny,
+ale program jest poprawniejszy od fdiska i potężniejszy od zarówno fdiska,
+jak i cfdiska. Co więcej, może być używany nieinteraktywnie).
+.PP
+Obecnie istnieje także program \fBparted\fP. Interfejs użytkownika cfdisk jest
+lepszy, ale parted potrafi o wiele więcej: nie tylko zmieniać wielkość
+partycji, ale również systemów plików, które się na nich znajdują.
+.PP
+Etykiety dysku typu IRIX/SGI nie są obecnie obsługiwane przez jądro. Co
+więcej, katalogi główkowe (header directories) IRIX/SGI nie są jeszcze w
+pełni obsługiwane.
+.PP
+.\" .SH AUTHORS
+.\" A. V. Le Blanc (LeBlanc@mcc.ac.uk)
+.\" Bernhard Fastenrath (fasten@informatik.uni-bonn.de)
+.\" Jakub Jelinek (jj@sunsite.mff.cuni.cz)
+.\" Andreas Neuper (ANeuper@GUUG.de)
+.\" and many others.
+Brak opcji "zapisz tablicę partycji do pliku".
+.SH "ZOBACZ TAKŻE"
+\fBcfdisk\fP(8), \fBsfdisk\fP(8), \fBmkfs\fP(8), \fBparted\fP(8), \fBpartprobe\fP(8),
+\fBkpartx\fP(8)
+.SH DOSTĘPNOŚĆ
+Polecenie fdisk jest częścią pakietu util\-linux i jest dostępne pod adresem
+ftp://ftp.kernel.org/pub/linux/utils/util\-linux/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@p-soft.silesia.linux.org.pl>,
+Robert Luberda (PTM) <robert@debian.org>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.20.1 \fPoryginału.

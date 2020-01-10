@@ -1,0 +1,145 @@
+.\" Copyright (c) 2001 John Levon <moz@compsoc.man.ac.uk>
+.\" Based in part on GNU libc documentation
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" License.
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2001 John Levon 
+.\" Copyright © of Polish translation:
+.\" Andrzej Krzysztofowicz (PTM) <ankry@mif.pg.gda.pl>, 2001.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH GETLINE 3 2010\-06\-12 GNU "Podręcznik programisty Linuksa"
+.SH NAZWA
+getline, getdelim \- wprowadzanie łańcuchów rozgraniczonych
+.SH SKŁADNIA
+.nf
+\fB#include <stdio.h>\fP
+.sp
+\fBssize_t getline(char **\fP\fIlineptr\fP\fB, size_t *\fP\fIn\fP\fB, FILE *\fP\fIstream\fP\fB);\fP
+
+\fBssize_t getdelim(char **\fP\fIlineptr\fP\fB, size_t *\fP\fIn\fP\fB, int \fP\fIdelim\fP\fB, FILE *\fP\fIstream\fP\fB);\fP
+.fi
+.sp
+.in -4n
+Wymagane ustawienia makr biblioteki glibc (patrz \fBfeature_test_macros\fP(7)):
+.in
+.sp
+.ad l
+\fBgetline\fP(), \fBgetdelim\fP():
+.PD 0
+.RS 4
+.TP  4
+Od glibc 2.10:
+_POSIX_C_SOURCE\ >=\ 200809L || _XOPEN_SOURCE\ >=\ 700
+.TP 
+Przed glibc 2.10:
+_GNU_SOURCE
+.RE
+.PD
+.ad
+.SH OPIS
+\fBgetline\fP() odczytuje całą linię ze strumienia \fIstream\fP, przechowując
+adres bufora zawierającego tekst w \fI*lineptr\fP. Bufor jest zakończony
+znakiem NULL i zawiera znak nowej linii, jeśli go napotkano.
+
+Gdy \fI*lineptr\fP jest równe NULL, to funkcja \fBgetline\fP() przydziela bufor
+dla umieszczenia w nim zawartości linii, który to bufor musi zostać
+zwolniony przez program użytkownika (w takim przypadku wartość \fI*n\fP jest
+ignorowana).
+
+ Alternatywnie, przed wywołaniem \fBgetline\fP() \fI*lineptr\fP może zawierać
+wskaźnik do bufora przydzielonego za pomocą \fBmalloc\fP() o rozmiarze \fI*n\fP
+bajtów. Gdy rozmiar bufora nie jest wystarczający do umieszczenia w nim
+odczytanej linii, \fBgetline\fP() rozszerzy go do odpowiedniego rozmiaru za
+pomocą \fBrealloc\fP(), modyfikując \fI*lineptr\fP i \fI*n\fP, jeśli będzie to
+potrzebne.
+
+W każdym razie, po pomyślnym wywołaniu \fI*lineptr\fP i \fI*n\fP będą
+zaktualizowane tak, aby odzwierciedlić, odpowiednio, adres i rozmiar bufora.
+
+\fBgetdelim\fP() działa jak \fBgetline\fP(), z tym wyjątkiem że jako argument
+\fIdelimiter\fP można podać ogranicznik linii inny niż znak nowej
+linii. Podobnie jak dla \fBgetline\fP(), znak ogranicznika nie jest dodawany,
+gdy nie występował w danych wejściowych przed osiągnięciem końca pliku.
+.SH "WARTOŚĆ ZWRACANA"
+Po pomyślnym zakończeniu, \fBgetline\fP() i \fBgetdelim\fP() zwracają liczbę
+odczytanych znaków, łącznie ze znakiem ogranicznika, ale nie włączając
+kończącego bajtu null. Wartość ta może służyć to wychwycenia znaków null
+zawartych w odczytanej linii.
+
+Obie funkcje zwracają \-1, gdy nie uda się odczytać linii (włączając w to
+próbę czytania na końcu pliku).
+.SH BŁĘDY
+.TP 
+\fBEINVAL\fP
+Błędne wartości parametrów (\fIn\fP lub \fIlineptr\fP równe NULL lub nieprawidłowy
+\fIstream\fP).
+.SH WERSJE
+Powyższe funkcje są dostępne od libc 4.6.27.
+.SH "ZGODNE Z"
+Zarówno \fBgetline\fP(), jak i \fBgetdelim\fP() są rozszerzeniami GNU. Zostały
+dołączone do standardu POSIX.1\-2008.
+.SH PRZYKŁAD
+.nf
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+
+int
+main(void)
+{
+    FILE *fp;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
+    fp = fopen("/etc/motd", "r");
+    if (fp == NULL)
+        exit(EXIT_FAILURE);
+
+    while ((read = getline(&line, &len, fp)) != \-1) {
+        printf("Pobrano linię o długości %zu :\en", read);
+        printf("%s", line);
+    }
+
+    free(line);
+    exit(EXIT_SUCCESS);
+}
+.fi
+.SH "ZOBACZ TAKŻE"
+\fBread\fP(2), \fBfgets\fP(3), \fBfopen\fP(3), \fBfread\fP(3), \fBgets\fP(3), \fBscanf\fP(3)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Andrzej Krzysztofowicz (PTM) <ankry@mif.pg.gda.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

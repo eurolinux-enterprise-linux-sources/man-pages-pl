@@ -1,0 +1,176 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1998 Itai Tzur <itzur@actcom.co.il>, 1999 Sean 'Shaleh' Perry <shaleh@debian.org> (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH ANACRON 8 11\-07\-2004 "Pascal Hakim" "Podręcznik użytkowników Anacron"
+.SH NAZWA
+anacron \- okresowo wykonuje polecenia
+.SH SKŁADNIA
+\fBanacron \fP[\fB\-s\fP] [\fB\-f\fP] [\fB\-n\fP] [\fB\-d\fP] [\fB\-q\fP] [\fB\-t\fP \fIanacrontab\fP]
+[\fB\-S\fP \fIkatalog spool\fP] [\fIzadanie\fP] ...
+.br
+\fBanacron\fP [\fB\-S\fP \fIkatalog spool\fP] \fB\-u\fP [\fB\-t\fP \fIanacrontab\fP] [\fIzadanie\fP]
+\&...
+.br
+\fBanacron \fP[\fB\-V\fP|\fB\-h\fP]
+.br
+\fBanacron \-T\fP [\fB\-t\fP \fIanacrontab\fP]
+.SH OPIS
+Anacron może być użyty to okresowego wykonywania poleceń, z częstotliwością
+określoną w dniach. W przeciwieństwie do \fBcron(8)\fP, nie zakłada się, że
+komputer jest przez cały czas uruchomiony. Dlatego można z niego korzystać
+na komputerach, które nie działają przez 24 godziny na dobę, aby kontrolować
+codzienne, cotygodniowe i comiesięczne zadanie, zwykle działające pod
+kontrolą \fBcron\fPa.
+.PP
+Gdy Anacron jest wykonywany, odczytuje listę zadań z pliku konfiguracyjnego,
+zwykle \fI/etc/anacrontab\fP (patrz \fBanacrontab(5)\fP). Plik ten zawiera listę
+zadań, które kontroluje Anacron. Każde zadanie ma określony okres w dniach,
+zwłokę w minutach, unikalny identyfikator zadania i polecenie powłoki.
+.PP
+Przy każdym zadaniu Anacron sprawdza, czy nie zostało ono wykonane w ciągu
+ostatnich n dni, gdzie n jest okresem podanym do tego zadania. Jeśli nie,
+Anacron wykonuje polecenie powłoki zadania, po odczekaniu liczby minut
+podanej jak parametr zwłoki.
+.PP
+Po zakończeniu polecenia, Anacron zapisuje datę w specjalnym pliku znacznika
+czasowego do danego zadania, dzięki czemu wie, kiedy wykonać je ponownie. Do
+obliczeń czasu używana jest tylko data, bez godzin.
+.PP
+Gdy nie ma już więcej zadań do wykonania, Anacron kończy pracę.
+.PP
+Anacron uwzględnia tylko zadania z identyfikatorem podanym w \fIanacrontab\fP,
+który pasuje do argumentów wiersza polecenia \fIzadania\fP. Argumentami
+\fIzadania\fP mogą być wzorce maski (wildcard) powłoki (proszę upewnić się, że
+są one chronione, czyli odpowiednio cytowane, przed interpretacją przez
+powłokę). Jeśli nie poda się argumentów \fIzadania\fP, jest to równoważne
+podaniu "*" (czyli uwzględniane są wszystkie zadania).
+.PP
+Jeśli nie poda się opcji \fB\-d\fP (patrz niżej), to Anacron mnoży się i
+przechodzi w tło podczas uruchomienia, a proces macierzysty natychmiast się
+kończy.
+.PP
+Jeśli nie podano opcji \fB\-s\fP lub \fB\-n\fP, to Anacron uruchamia zadania zaraz
+po minięciu czasu odstępu. Wykonywanie różnych zadań jest całkowicie
+niezależne.
+.PP
+Jeśli zadanie wysyła komunikaty na swoje standardowe wyjście lub standardowe
+wyjście błędów, to są one wysyłane pocztą elektroniczną do użytkownika
+uruchamiającego Anacron (zwykle roota) lub na adres znajdujący się w
+zmiennej środowiskowej MAILTO w crontab, jeśli taka istnieje. Jeśli
+ustawiono zmienną środowiskową LOGNAME, będzie ona użyta w polu Od: (From:).
+.PP
+Komunikaty informujące o tym co wykonuje Anacron są wysyłane do
+\fBsyslogd(8)\fP, jako obiekt \fBcron\fP, o priorytecie \fBnotice\fP. Wiadomości o
+błędach są wysyłane z priorytetem \fBerror\fP.
+.PP
+Zadania "aktywne" (tzn. zadania, które Anacron zdecydował się już uruchomić
+i obecnie czekają na minięcie czasu odstępu oraz zadania wykonywane właśnie
+przez Anacrona) są "zablokowane", dzięki czemu inne kopie Anacrona nie
+uruchomią ich w tym samym czasie.
+.SH OPCJE
+.TP 
+\fB\-f\fP
+Wymusza wykonanie zadań, ignorując znaczniki czasowe.
+.TP 
+\fB\-u\fP
+Tylko aktualizuje do bieżącej daty znaczniki czasowe, ale niczego nie
+uruchamia.
+.TP 
+\fB\-s\fP
+Sekwencyjne wykonywanie zadań. Anacron nie uruchomi nowego zadanie przed
+zakończeniem poprzedniego.
+.TP 
+\fB\-n\fP
+Uruchamia zadania teraz. Ignoruje odstępy podane w pliku
+\fI/etc/anacrontab\fP. Ta opcja implikuje \fB\-s\fP.
+.TP 
+\fB\-d\fP
+Nie mnoży się i nie przechodzi w tło. W tym trybie Anacron wysyła wiadomości
+informacyjne zarówno na standardowe wyjście, jak i do sysloga. Wyjście z
+zadań jest wysyłane pocztą elektroniczną, jak zazwyczaj.
+.TP 
+\fB\-q\fP
+Nie wypisuje komunikatów na standardowe wyjście błędów. Stosowane wyłącznie
+z opcją \fB\-d\fP.
+.TP 
+\fB\-t\fP \fIanacrontab\fP
+Używa podanego pliku anacrontab, zamiast domyślnego.
+.TP 
+\fB\-T\fP
+Test Anacrontab. Plik konfiguracyjny zostanie przetestowany pod kątem
+poprawności. Jeśli w pliku znajduje się błąd, zostanie on wypisany, a
+anacron zakończy się kodem 1. Poprawny plik anacrontab zwróci 0.
+.TP 
+\fB\-S\fP \fIkatalog spool\fP
+Używa podanego katalogu spool do przechowywania znaczników czasowych. Opcja
+jest wymagana w przypadku użytkowników, którzy chcą samodzielnie uruchamiać
+anacron.
+.TP 
+\fB\-V\fP
+Wyświetla informacje o wersji i wychodzi.
+.TP 
+\fB\-h\fP
+Wypisuje krótką informację o użyciu i wychodzi.
+.SH SYGNAŁY
+Po otrzymaniu sygnału \fBSIGUSR1\fP, Anacron czeka na zakończenia działających
+zadań (jeśli istnieją) i wychodzi. Sygnał może być użyty do prawidłowego
+zakończenia Anacrona.
+.SH UWAGI
+Proszę upewnić się, że strefa czasowa jest ustawiona poprawnie, przed
+uruchomieniem Anacrona (strefa czasowa wpływa na datę). Z reguły oznacza to
+ustawienie zmiennej środowiskowej TZ lub zainstalowanie pliku
+\fI/usr/lib/zoneinfo/localtime\fP. Strona podręcznika \fBtzset(3)\fP zawiera
+więcej informacji.
+
+Pliki znaczników czasowych są tworzone w katalogu spool do każdego zadania w
+anacrontab. Nie zostaną nigdy usunięte automatycznie przez anacron i jeśli
+nie są dłużej potrzebne konieczne jest ich ręczne usunięcie.
+.SH PLIKI
+.TP 
+\fI/etc/anacrontab\fP
+Zawiera wykaz zadań. Szczegółowy opis zawiera strona podręcznika
+\fBanacrontab(5)\fP.
+.TP 
+\fI/var/spool/anacron\fP
+Katalog jest używany przez Anacron do przechowywania plików znaczników
+czasowych.
+.SH "ZOBACZ TAKŻE"
+\fBanacrontab\fP(5), \fBcron\fP(8), \fBtzset\fP(3)
+.PP
+Plik \fIREADME\fP Anacrona.
+.SH BŁĘDY
+Anacron nigdy nie usuwa plików znaczników czasowych. Konieczne jest ręczne
+usunięcie niepotrzebnych.
+.PP
+Anacron używa do dwóch deskryptorów plików do każdego aktywnego
+zadania. Może mu ich zabraknąć, jeśli jest więcej niż 125 aktywnych zadań
+(na zwykłych jądrach).
+.PP
+Komentarze, sugestie i zgłoszenia błędów proszę wysyłać pocztą elektroniczną
+do Seana "Shaleha" Perry'ego <shaleh@(debian.org|valinux.com)> (w
+języku angielskim).
+.SH AUTOR
+Anacron został wymyślony i zaimplementowany przez Christiana Schwarza
+<schwarz@monet.m.isar.de>.
+.PP
+Obecne implementacja to całkowicie przepisany kod przez Itaia Tzura
+<itzur@actcom.co.il>.
+.PP
+Ten kod był zarządzany przez Seana "Shaleha" Perry'ego
+<shaleh@(debian.org|valinux.com)>.
+.PP
+Od roku 2004 jest zarządzany przez Pascala Hakima
+<pasc@(debian.org|redellipse.net)>.
+
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.3 \fPoryginału.

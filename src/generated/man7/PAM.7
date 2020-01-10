@@ -1,0 +1,135 @@
+.\" t
+.\"     Title: pam
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
+.\"      Date: 06/04/2011
+.\"    Manual: Linux-PAM Manual
+.\"    Source: Linux-PAM Manual
+.\"  Language: English
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © Unknown-someone from PAM team: see ftp://ftp.kernel.org/pub/linux/libs/pam/pre/ (GPL-1)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 2000.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH PAM 7 06/04/2011 "Podręcznik Linux\-PAM" "Podręcznik Linux\-PAM"
+.ie  \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH NAZWA
+PAM, pam \- dołączalne moduły uwierzytelniania do Linuksa (ang. Pluggable
+Authentication Modules)
+.SH OPIS
+.PP
+Podręcznik ten ma na celu danie krótkiego wprowadzenia do \fBLinux\-PAM\fP. W
+celu uzyskania dalszych informacji, czytelnik jest odsyłany do \fBLinux\-PAM
+system administrators' guide\fP.
+.PP
+
+\fBLinux\-PAM\fP jest systemem bibliotek, które zajmują się zadaniami
+uwierzytelniania aplikacji (usług) systemu. Biblioteka daje stabilny i
+ogólny interfejs (API), któremu podlegają w zadaniach uwierzytelniania
+programy dające przywileje (takie jak \fBlogin\fP(1)  i \fBsu\fP(1)).
+.PP
+Podstawową właściwością podejścia PAM jest to, że natura uwierzytelniania
+jest dynamicznie konfigurowalna. Innymi słowy, administrator systemu ma
+pełne pole do popisu w wybieraniu sposobu uwierzytelniania poszczególnych
+aplikacji.  Ta dynamiczna konfiguracja jest ustawiana zawartością
+pojedynczego pliku konfiguracyjnego \fBLinux\-PAM\fP czyli \fB/etc/pam.conf\fP.
+Alternatywnie, można wszystko konfigurować pojedynczymi plikami
+konfiguracyjnymi, zlokalizowanymi w katalogu \fB/etc/pam.d/\fP. Obecność tego
+katalogu spowoduje, że \fBLinux\-PAM\fP \fIzignoruje\fP /etc/pam.conf.
+.PP
+Z punktu widzenia administratora systemu, dla którego przeznaczony jest ten
+podręcznik, nie jest ważne zrozumienie wewnętrznego działania biblioteki
+\fBLinux\-PAM\fP.  Ważną rzeczą jest natomiast rozumienie, że plik(i)
+konfiguracyjne \fIdefiniują\fP połączenia między aplikacjami (\fBusługami\fP)  a
+dołączalnymi modułami uwierzytelniania (\fBPAM\fP\-ami), które dokonują
+rzeczywistych zadań uwierzytelniania.
+.PP
+\fBLinux\-PAM\fP rozdziela zadania \fIuwierzytelniania\fP na cztery niezależne
+grupy zarządzania: zarządzanie kontem (\fBaccount\fP); zarządzanie
+uwierzytelnianiem (\fBauth\fPentication); zarządzanie hasłami (\fBpassword\fP); i
+zarządzanie sesją (\fBsession\fP).  (podświetlamy skróty używane dla tych grup
+w pliku konfiguracyjnym.)
+.PP
+Po ustawieniu, grupy te będą się zajmowały różnymi aspektami typowego
+żądania zastrzeżonej usługi przez użytkownika:
+.PP
+\fBaccount\fP \- daj usłudze możliwość weryfikacji konta: czy hasło użytkownika
+jest przedawnione?; czy użytkownik ma prawo dostępu do żądanej usługi?
+.PP
+\fBauth\fPentication \- ustal czy użytkownik jest tym, za którego się
+podaje. Zazwyczaj robi się to poprzez zapytanie użytkownika o pewną
+odpowiedź, której musi udzielić: jeśli jesteś tym, za kogo się podajesz,
+podaj proszę swoje hasło. Nie wszystkie uwierzytelnienia są tego rodzaju,
+istnieją też sprzętowe schematy uwierzytelniania (takie jak używanie
+urządzeń biometrycznych), które mają odpowiednie moduły, nadające się do
+bezproblemowego podstawienia za standardowe modele uwierzytelniania \- oto
+elastyczność \fBLinux\-PAM\fP.
+.PP
+\fBpassword\fP \- zadaniem tej grupy jest odświeżanie mechanizmów
+uwierzytelniania. Zazwyczaj usługi takie są ściśle związane z tymi z
+\fBauth\fP.  Niektóre mechanizmy uwierzytelniania dobrze nadają się do
+odświeżania tą funkcją. Oczywistym przykładem jest standardowy UN*X\-owy
+dostęp oparty o hasło: proszę wstawić hasło zamienne.
+.PP
+\fBsession\fP \- zadania tej grupy obejmują rzeczy, które powinny być dokonane
+przed daniem usługi oraz po jej wycofaniu. Zadania takie to m.in obsługa
+śladów rewizyjnych i montowanie katalogu domowego użytkownika.  Grupa
+obsługi sesji jest ważna, gdyż udostępnia zarówno hak otwierający, jak i
+zamykający modułów.
+.SH PLIKI
+.PP
+/etc/pam\&.conf
+.RS 4
+plik konfiguracyjny
+.RE
+.PP
+/etc/pam\&.d
+.RS 4
+Katalog konfiguracji \fBLinux\-PAM\fP. Generalnie, jeśli katalog ten jest
+obecny, to plik /etc/pam.conf jest ignorowany.
+.RE
+.SH BŁĘDY
+.PP
+Typowe błędy generowane przez system \fBLinux\-PAM\fP są zapisywane do
+\fBsyslog\fP(3).
+.SH "ZGODNE Z"
+.PP
+DCE\-RFC 86.0, Październik 1995. Zawiera dodatkowe właściwości, ale jest
+wstecznie kompatybilny z tym RFC.
+.SH "ZOBACZ TAKŻE"
+.PP
+
+\fBpam\fP(3), \fBpam_authenticate\fP(3), \fBpam_sm_setcred\fP(3), \fBpam_strerror\fP(3),
+\fBPAM\fP(7)
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 1.1.3 \fPoryginału.

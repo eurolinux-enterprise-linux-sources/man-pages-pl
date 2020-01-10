@@ -1,0 +1,159 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1994-1998 Michael K. Johnson,2007 Frank Benkstein (GPL-2)
+.\" Copyright © of Polish translation:
+.\" Paweł Sędrowski (ptm.berlios.de) <sedros@gmail.com>, 2006.
+.\" Robert Luberda <robert@debian.org>, 2012.
+.TH VLOCK 1 "28 lipca 2007" Linux "Podręcznik użytkownika Linuksa"
+.SH NAZWA
+vlock \- program do blokowania wirtualnej konsoli
+.SH SKŁADNIA
+\fBvlock [ \-hv ]\fP
+.PP
+\fBvlock [ \-acns ] [ \-t <timeout> ] [ dodatki... ]\fP
+.SH OPIS
+\fBvlock\fP jest programem służącym do blokowania jednej lub wielu sesji w
+konsoli Linuksa. Jest szczególnie przydatny na linuksowych komputerach, do
+których konsoli dostęp ma wielu użytkowników. Użytkownik może zablokować
+tylko swoje sesje, pozwalając innym użytkownikom systemu na normalne
+użytkowanie innych wirtualnych konsol. Jeśli zaistnieje potrzeba, można
+zablokować całą konsolę i uniemożliwić przełączanie się pomiędzy wirtualnymi
+terminalami.
+.PP
+Domyślnie blokowana jest tylko bieżąca konsola wirtualna. Z opcjami \fB\-a,
+\-\-all\fP blokowane są wszystkie konsole wirtualne. Zablokowane konsole nie
+mogą zostać otwarte bez użycia hasła użytkownika lub administratora. Hasło
+administratora  zawsze będzie mogło odblokować jedną lub wiele sesji, chyba
+że funkcjonalność ta została wyłączona podczas kompilacji.
+.PP
+Proszę zauważyć, że możliwe jest całkowite odcięcie się od konsoli przy
+użyciu opcji \fB\-a, \-\-all\fP, jeżeli zapomni się hasła! Jeśli nie ma możliwości
+zabicia procesu \fBvlock\fP po zalogowaniu się zdalnie przez terminal szeregowy
+lub sieć, to twardy restart systemu jest jedyną metodą "odblokowania"
+ekranu.
+.PP
+Podczas blokowanie wszystkich konsoli ekranu, czasami jest możliwe zabicie
+programu \fBvlock\fP używając do tego klawisza SAK (Secure Access Key,
+kombinacja SysRq+K) lub innych poleceń dostępnych przez mechanizm
+SysRq. Podanie opcji \fB\-s, \-\-disable\-sysrq\fP i \fB\-a, \-\-all\fP spowoduje
+wyłączenie mechanizmu SysRq na czas działania programu \fBvlock\fP. Więcej
+szczegółów można znaleźć w pliku /usr/src/linux/Documentation/sysrq.txt.
+.PP
+\fBvlock\fP działa głównie na sesję konsoli. Aby zablokować całą konsolę spod
+sesji X Window, należy użyć opcji \fB\-n, \-\-new\fP: \fBvlock\fP przełączy się na
+pustą konsolę wirtualną i zablokuje ekran.
+.PP
+Opcje \fB\-n, \-\-new\fP, \fB\-s, \-\-disable\-sysrq\fP oraz \fB\-t, \-\-timeout\fP działają
+tylko wtedy, gdy \fBvlock\fP został skompilowany ze wsparciem dla dodatków
+(pluginów). Więcej informacji można znaleźć w pliku PLUGINS w katalogu z
+dokumentacją programu \fBvlock\fP.
+.SH OPCJE
+\fB\-a, \-\-all\fP
+.IP
+Zamyka wszystkie sesje konsoli i wyłącza możliwość przełączania się pomiędzy
+VC.
+.PP
+\fB\-c, \-\-current\fP
+.IP
+Zamyka bieżącą sesję (domyślne).
+.PP
+\fB\-n, \-\-new\fP
+.IP
+Przed zablokowaniem wszystkich konsoli, przełącza się na nową konsolę
+wirtualną.
+.PP
+\fB\-s, \-\-disable\-sysrq\fP
+.IP
+Wyłącza klawisz sysrq na czas blokowania konsoli. Opcja ta działa tylko w
+połączeniu z opcją \fB\-a, \-\-all\fP.
+.PP
+\fB\-t, \-\-timeout\fP \fI<sekundy>\fP
+.IP
+Określa timeout dla dodatków wygaszacza ekranu. Więcej informacji można
+znaleźć w podręczniku \fBvlock\-plugins\fP(5).
+.PP
+\fB\-h, \-\-help\fP
+.IP
+Wyświetla krótki komunikat pomocy.
+.PP
+\fB\-v, \-\-version\fP
+.IP
+Wyświetla numer wersji programu.
+.PP
+.SH "ZMIENNE ŚRODOWISKA"
+Aby zmienić zachowanie \fBvlock\fPa, można ustawić następujące zmienne
+środowiska:
+.PP
+\fBUSER\fP
+.IP
+Jeśli jest ustawiona, kiedy \fBvlock\fP działa jako administrator
+(identyfikator  użytkownika równy 0), to \fBvlock\fP blokuje ekran w imieniu
+tego użytkownika. Hasło administratora wciąż może zostać użyte do
+odblokowania sesji, chyba że zostało to wyłączone podczas kompilacji
+programu.
+.PP
+\fBVLOCK_ALL_MESSAGE\fP
+.IP
+Jeśli ustawiono tę zmienną i zablokowane są wszystkie konsole, to jej
+zawartość będzie wyświetlana zamiast domyślnego komunikatu o zablokowaniu
+konsoli.
+.PP
+\fBVLOCK_CURRENT_MESSAGE\fP
+.IP
+Jeśli ustawione tę zmienną i zablokowana jest tylko bieżąca konsola, to
+zawartość tej zmiennej będzie wyświetlana zamiast domyślnego komunikatu o
+zablokowaniu konsoli.
+.PP
+\fBVLOCK_MESSAGE\fP
+.IP
+Jeśli ustawiono tę zmienną, to jej zawartość będzie wyświetlana zamiast
+domyślnego komunikatu o zablokowaniu konsoli. Nadpisuje obie poprzednie
+zmienne.
+.PP
+\fBVLOCK_PLUGINS\fP
+.IP
+Zmienna, jeśli zostanie ustawiona, jest interpretowana jako rozdzielona
+spacjami lista dodatków ładowanych podczas startu programu \fBvlock\fP jako
+uzupełnienie dodatków podanych w linii poleceń.
+.PP
+\fBVLOCK_TIMEOUT\fP
+.IP
+Zmienna określa timeout (w sekundach), po którym zostaną uruchomione (jeśli
+są załadowane) dodatki wygaszacza ekranu. Jeśli zmienna nie jest ustawiona
+lub zawiera wartość niepoprawną albo 0, to timeout nie będzie użyty. Więcej
+informacji o dodatkach można znaleźć w \fBvlock\-plugins\fP(5).
+.PP
+\fBVLOCK_PROMPT_TIMEOUT\fP
+.IP
+Za pomocą tej zmiennej można ustawić czas (w sekundach) wymagany na
+wprowadzenie hasła, gdy jest to potrzebne. Jeśli zmienna nie jest ustawiona
+lub zawiera wartość niepoprawną albo 0, to timeout nie będzie
+użyty. \fBOstrzeżenie\fP: Nadanie tej zmiennej zbyt małej wartości może
+uniemożliwić odblokowanie sesji.
+.PP
+.SH PLIKI
+\fB~/.vlockrc\fP
+.IP
+Jeśli istnieje, to jest czytany podczas startu programu \fBvlock\fP. Można w
+nim ustawić wartości wszystkich wyżej wymienionych zmiennych.
+.SH BEZPIECZEŃSTWO
+Patrz plik SECURITY w katalogu dokumentacji programu \fBvlock\fP.
+.PP
+.SH "ZOBACZ TAKŻE"
+\fBvlock\-main\fP(8), \fBvlock\-plugins\fP(5)
+.SH AUTORZY
+Michael K. Johnson <http://danlj.org/mkj/>
+.PP
+Frank Benkstein <frank\-vlock@benkstein.net>
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Paweł Sędrowski (ptm.berlios.de) <sedros@gmail.com>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.2.2 \fPoryginału.

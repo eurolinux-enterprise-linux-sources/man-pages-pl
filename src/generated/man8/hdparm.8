@@ -1,0 +1,766 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1994-2008 Mark Lord 
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@p-soft.silesia.linux.org.pl>, 1999, 2000.
+.\" Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>, 2001.
+.\" Grzegorz Goławski (PTM) <grzegol@pld.org.pl>, 2002.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH HDPARM 8 "styczeń 2012" "wersja 9.39" 
+
+.SH NAZWA
+hdparm \- pobiera/ustawia parametry dysku SATA/IDE
+.SH SKŁADNIA
+\fBhdparm\fP [\fIopcje\fP] [\fIurządzenie\fP ...]
+.SH OPIS
+Program \fBhdparm\fP udostępnia interfejs wiersza poleceń do różnych
+interfejsów jądra, obsługiwanych przed linuksowy podsystem SATA/PATA/SAS
+"libata" i starszy podsystem sterownika IDE. Wiele nowszych (z roku 2008 i
+nowszych) urządzeń USB obsługuje również "SAT" (SCSI\-ATA Command
+Translation) i dlatego może również działać z hdparm. Dotyczy to na przykład
+nowszych modeli dysków zewnętrznych WD "Passport" i NexStar\-3. Część opcji
+może działać poprawnie tylko z najnowszymi jądrami.
+.SH OPCJE
+Gdy nie podano opcji, zakłada się \fBacdgkmur\fP. W przypadku opcji
+"pobiera/ustawia", odpytanie bez opcjonalnego parametru (np. \-d) odpyta
+(pobierze) stan urządzenia, a z parametrem (np. \-d0) ustawi stan urządzenia.
+.TP 
+\fI\-a\fP
+Pobiera/ustawia wskaźnik odczytu z wyprzedzeniem (read\-ahead) systemu
+plików.  Jest to używane do zwiększania wydajności w sekwencyjnych odczytach
+dużych plików poprzez pobieranie dodatkowych bloków, w nadziei, że będą
+potrzebne danemu zadaniu. Wiele sterowników IDE ma także wbudowane oddzielne
+funkcje tego typu, które w wielu sytuacjach niwelują potrzebę odczytu z
+wyprzedzeniem przez system plików.
+.TP 
+\fI\-A\fP
+Pobiera/ustawia właściwość odczytu wyprzedzającego (read\-lookahead)  napędu
+IDE (zwykle domyślnie ON \-\- włączoną). Użycie: \fB\-A0\fP (wyłącza) lub \fB\-A1\fP
+(włącza).
+.TP 
+\fI\-b\fP
+Pobiera/ustawia stan magistrali.
+.TP 
+\fI\-B\fP
+Pobiera/ustawia właściwości zaawansowanego zarządzania energią (APM), o ile
+napęd ją obsługuje. Mała wartość oznacza agresywne zarządzanie energią, a
+duża \- wyższą wydajność. Możliwe wartości obejmują zakres od 1 do 127 (która
+pozwala na zatrzymanie talerzy \- "spin\-down") i wartości od 128 do 254
+(która na to nie pozwala). Najwyższy stopień zarządzania energią jest
+ustawiany wartością 1, a najwyższa wydajność wejścia/wyjścia wartością
+254. Wartość 255 nakazuje hdparm wyłączyć zaawansowane zarządzenia energią
+(nie wszystkie dyski potrafią ją wyłączyć, ale większość tak).
+.TP 
+\fI\-c\fP
+Pobiera/ustawia obsługę 32\-bitowego wejścia/wyjścia w (E)IDE. Można użyć
+numerycznego parametru włączającego/wyłączającego obsługę. Obecnie
+obsługiwane wartości obejmują \fB0\fP dla wyłączenia obsługi 32\-bitowego I/O,
+\fB1\fP dla włączenia 32\-bitowej transmisji danych, \fB3\fP dla włączenia
+32\-bitowej transmisji danych ze specjalną sekwencją \fBsync\fP wymaganą przez
+wiele chipsetów. Wartość \fB3\fP działa z prawie wszystkimi 32\-bitowymi
+chipsetami IDE, lecz naraża na dodatkowe koszty. Zauważ, że "32\-bit" odnosi
+się do transmisji poprzez magistralę PCI lub VLB, ale tylko do karty
+interfejsu; wszystkie napędy (E)IDE mają wciąż tylko 16\-bitowe połączenie z
+kartą interfejsu.
+.TP 
+\fI\-C\fP
+Sprawdza obecny stan trybu zasilania IDE. Jest on zawsze jednym z:
+\fBunknown\fP (dysk nie obsługuje tego polecenia), \fBactive/idle\fP (normalne
+działanie), \fBstandby\fP (tryb oszczędzania energii, dysk się zatrzymał), lub
+\fBsleeping\fP (najniższy tryb oszczędzania energii, dysk jest całkowicie
+wyłączony).  Za pomocą opcji \fB\-S\fP, \fB\-y\fP, \fB\-Y\fP, i \fB\-Z\fP można manipulować
+trybami zasilania IDE.
+.TP 
+\fI\-d\fP
+Pobiera/ustawia flagę "using_dma" (używający DMA) dla tego napędu. Opcja ta
+działa tylko z kilkoma kombinacjami napędów i interfejsów, które obsługują
+DMA, i które są znane sterownikowi IDE.  Dobrym pomysłem jest również użycie
+odpowiedniej opcji \fB\-X\fP w połączeniu z \fB\-d1\fP aby zapewnić, że sam napęd
+jest zaprogramowany odpowiedni tryb DMA, choć wiele BIOS\-ów powinno zrobić
+to za użytkownika podczas uruchamiania komputera.  Używanie DMA prawie
+zawsze powoduje zwiększenie wydajności i przepustowości oraz zmniejsza
+zużycie procesora. Lecz jest co najmniej kilka zestawień chipsetów i dysków,
+dla których użycie DMA nie zrobi większej różnicy, lub nawet spowolni dysk
+(na naprawdę spapranym sprzęcie). Ale to zależy.
+.TP 
+\fI\-\-dco\-freeze\fP
+DCO to skrót od Device Configuration Overlay (nakładka konfiguracji
+urządzeń), sposobu, w jaki dostawcy selektywnie wyłączają określone funkcje
+napędu. Opcja \fB\-\-dco\-freeze\fP zamraża/blokuje bieżącą konfigurację napędu,
+uniemożliwiając w ten sposób oprogramowaniu (lub malware), zmieniać
+ustawienia DCO po następnym ponownym uruchomieniu urządzenia.
+.TP 
+\fI\-\-dco\-identify\fP
+Odpytuje i zrzuca informacje na temat ustawień konfiguracji urządzenia,
+które mogą być wyłączone przez dostawcę lub instalatora OEM. Te ustawienia
+pokazują możliwości napędu, które mogły zostać wyłączone przez dostawcę, w
+celu "rozszerzonej kompatybilności". Gdy są wyłączone, są one ukryte  nie
+będą pokazywane w wyniku polecenia \fB\-I\fP. Na przykład, dostawcy systemu
+czasami wyłączają 48\-bitowe adresowanie na dużych napędach, z powodów
+kompatybilności (lub jej utraty) z określonym BIOS\-em. W takich przypadkach
+\fB\-\-dco\-identyfy\fP pokaże, że napęd posiada opcję 48_bit, ale \fB\-I\fP nie
+pokaże jej, ani napęd nie będzie akceptować poleceń 48_bit.
+.TP 
+\fI\-\-dco\-restore\fP
+Resetuje wszystkie ustawienia, funkcje i dostępne możliwości napędu do
+wartości fabrycznych i pełnych możliwości. Polecenie zawiedzie, jeśli DCO
+zostało zamrożone/zablokowane, lub gdy ustawiono również maksymalne
+ograniczenie rozmiaru \fB\-Np\fP. Jest to \fBNIEZWYKLE NIEBEZPIECZNE\fP i
+prawdopodobnie spowoduje poważną utratę danych. Proszę \fBNIE UŻYWAĆ TEGO
+POLECENIA\fP.
+.TP 
+\fI\-\-direct\fP
+Używa flagi "O_DIRECT" jądra podczas przeprowadzania pomiarów czasów
+\fB\-t\fP. W ten sposób ominięta jest pamięć podręczna strony, powodując
+bezpośredni odczyt z napędu do buforów hdparm, używając tzw. "surowego"
+wejścia/wyjścia. W wielu przypadkach może to dać znacznie szybsze odczyty
+niż zwykła metoda stronicowanej pamięci podręcznej, dając lepszy wskaźnik
+surowej wydajności urządzenia i sterownika.
+.TP 
+\fI\-\-drq\-hsm\-error\fP
+\fBBARDZO NIEBEZPIECZNE, PROSZĘ NAWET NIE MYŚLEĆ O UŻYWANIU TEJ OPCJI\fP. Opcja
+powoduje wydanie przez hdparm do jądra, niepoprawnie oznaczonego jako
+"non\-data", polecenia IDENTIFY. Powoduje to pozostawienie sterownika z jego
+wierszem dataReQuest(DRQ) w stanie "utknięcia". Dezorientuje to sterowniki
+jądra i może spowodować natychmiastową awarię systemu łącznie z poważną
+utratą danych. Opcja istnieje w celu pomocy w testowaniu i zabezpieczaniu
+jądra przed rzeczywistymi błędami napędów. \fBBARDZO NIEBEZPIECZNE, NIE
+UŻYWAĆ!\fP
+.TP 
+\fI\-D\fP
+Włącza/wyłącza wbudowaną w napęd właściwość zarządzania uszkodzeniami, za
+pomocą której jego firmware próbuje automatycznie zarządzać uszkodzonymi
+sektorami, przenosząc je na sektory "zapasowe", zarezerwowane fabrycznie do
+tego celu. Kontrolowanie tej funkcji za pomocą opcji \fB\-D\fP nie jest
+obsługiwane przez większość współczesnych napędów od ATA\-4; w związku z tym,
+to polecenie może się nie powieść.
+.TP 
+\fI\-E\fP
+Ustawia szybkość napędu CD/DVD. NIE jest to konieczne do normalnego
+działania, gdyż napęd automatycznie sam przełącza prędkości. Jednak jeśli
+chcesz się nim bawić, podaj po tej opcji wartość szybkości, zwykle liczbę
+taką jak 2 lub 4. Może być to niekiedy przydatne, np. aby odtwarzanie filmów
+z DVD stało się płynniejsze.
+.TP 
+\fI\-f\fP
+Synchronizuje (sync) i opróżnia (flush) bufory podręczne urządzenia przy
+wyjściu.  Operacja ta jest również wykonywana jako część pomiarów \fB\-t\fP,
+\fB\-T\fP i innych opcji.
+.TP 
+\fI\-\-fallocate\fP
+Opcja działa obecnie jedynie w systemach plików ext4 i xfs. Gdy zostanie
+użyta, musi być jedyną podaną opcją. Wymaga dwóch parametrów: oczekiwanej
+wielkości pliku w kilobajtach (liczba bajtów podzielona przez 1024), a po
+niej ścieżki nowego pliku. Utworzy ona nowy plik o określonym rozmiarze, bez
+zapisywania jakichkolwiek danych do pliku. Jest to zwykle bardzo szybkie i
+nie obciąża urządzenia dyskowego.
+.IP
+Przykładowo: utworzenie pliku o rozmiarze 10 kB: \fBhdparm \-\-fallocate 10
+plik_tymczas\fP
+.TP 
+\fI\-\-fibmap\fP
+Gdy zostanie użyta, musi być jedyną podaną opcją. Wymaga ścieżki pliku jako
+parametru i powoduje wypisanie listy ekstentów (zakresów sektorów) bloków
+zajętych przez plik na dysku. Numery sektorów są podane jako absolutne
+numery LBA, odnoszące się do sektora 0 fizycznego urządzenia, a nie do
+partycji czy systemu plików. Ta informacja może być następnie użyta do wielu
+celów, takich jak sprawdzanie stopnia fragmentacji większych plików, czy
+określanie poprawnych sektorów w celu rozmyślnego uszkodzenia podczas
+procedur testowych wstrzykiwania błędów.
+.IP
+Opcja używa nowej FIEMAP (file extent map \- mapy ekstentów pliku) ioctl(),
+jeśli jest dostępna lub wykorzystuje starszą FIBMAP (file block map \- mapa
+bloków pliku) ioctl() w przeciwnym wypadku. Proszę zauważyć, że z powodu
+wykorzystywania 32\-bitowego interfejsu liczb bloków, FIBMAP nie działa
+powyżej 8 TB lub 16 TB.  FIBMAP jest również bardzo wolna i nie działa
+dobrze z zaalokowanymi wstępnie ekstentami w systemach plików ext4/xfs,
+chyba że wykonano sync() przed użyciej tej opcji.
+.TP 
+\fI\-\-fwdownload\fP
+Gdy zostanie użyta, powinna być jedyną podaną opcją. Wymaga podania
+bezpośrednio po opcji ścieżki pliku, z której powinno być odczytane nowe
+firmware napędu. Zawartość pliku zostanie wysłana do napędu przy użyciu
+polecenia \fBDOWNLOAD MICROCODE\fP (S)ATA, używając albo protokołu transferu 7
+(cały plik na raz), albo, jeśli napęd to obsługuje, protokołu transferu 3
+(pobieranie we fragmentach). Polecenie to jest \fBNIEZWYKLE NIEBEZPIECZNE\fP i
+może zniszczyć zarówno napęd, jak i jego wszystkie dane. Proszę \fBNIE UŻYWAĆ
+TEGO POLECENIA\fP. Odmiany \fB\-\-fwdownload\-mode3\fP , \fB\-\-fwdownload\-mode3\-max\fP i
+\fB\-\-fwdownload\-mode7\fP pozwalają na przesłonięcie automatycznie wykrytego
+protokołu, wymuszając na hdparm użycie określonego protokołu transferu
+(jedynie do celów testowych).
+.TP 
+\fI\-F\fP
+Opróżnia bufory zapisu dysku (starsze napędy mogą nie implementować tej
+funkcji).
+.TP 
+\fI\-g\fP
+Pokazuje geometrię dysku (cylindry, głowice, sektory), rozmiar (w
+sektorach), a także przesunięcie (w sektorach) początku urządzenia,
+poczynając od początku napędu.
+.TP 
+\fI\-h\fP
+Pokazuje krótką informację o użyciu (pomoc).
+.TP 
+\fI\-H\fP
+Odczytuje temperaturę niektórych dysków (głównie Hitachi). Informuje
+również, czy temperatura znajduje się w zalecanym przedziale wartości (może
+nie być to wiarygodne). Nie powoduje to rozkręcenia talerzy napędu, jeśli
+znajduje się w stanie bezczynności.
+.TP 
+\fI\-i\fP
+Pokazuje informacje identyfikacyjne, które sterowniki jądra (IDE, libata)
+pobrały z napędu podczas startu/konfiguracji, o ile są one
+dostępne. Rezultaty mogą się różnić od bieżących informacji pozyskiwanych
+bezpośrednio ze sterownika opcją \fB\-I\fP. Zwracane dane mogą nie być aktualne,
+zależnie od czynności wykonanych po uruchomieniu systemu. Dla dokładniejszej
+interpretacji informacji identyfikacyjnych, odsyłamy do \fIAT Attachment
+Interface for Disk Drives\fP (ANSI ASC X3T9.2 working draft, revision 4a,
+April 19/93 i późniejsze edycje).
+.TP 
+\fI\-\-idle\-immediate\fP
+Wykonuje polecenie ATA IDLE_IMMEDIATE, powodując przejście napędu w niższy
+stan zasilania. Z reguły talerze napędu nie ulegają zatrzymaniu.
+.TP 
+\fI\-\-idle\-unload\fP
+Wykonuje polecenie ATA IDLE_IMMEDIATE_WITH_UNLOAD, powodując odłączenie lub
+zaparkowanie głowic i przejście napędu w niższy stan zasilania. Z reguły
+talerze napędu nie ulegają zatrzymaniu.
+.TP 
+\fI\-I\fP
+Żąda informacji identyfikacji bezpośrednio od napędu. Informacja jest
+wyświetlana w nowym, rozszerzonym formacie z większą ilością szczegółów, niż
+przy starszej opcji \fI\-i\fP.
+.TP 
+\fI\-\-Istdin\fP
+Jest to specjalna odmiana opcji \fB\-I\fP, która akceptuje blok identyfikacyjny
+dysku jako standardowe wejście zamiast używania parametru /dev/hd*. Format
+tego bloku musi być \fBdokładnie\fP taki sam jak w "plikach"
+/proc/ide/*/hd*/identify lub utworzony za pomocą opcji \fB\-\-Istdout\fP opisanej
+poniżej.  Ta odmiana jest przeznaczona do użytku z "bibliotekami" informacji
+identyfikacyjnych dysku, oraz z dyskami ATAPI, dla których standardowe
+mechanizmy mogą działać błędnie. Gdy używana jest opcja \fB\-\-Istdin\fP, musi
+być ona *jedynym* podanym parametrem.
+.TP 
+\fI\-\-Istdout\fP
+Opcja zrzuca informacje identyfikacyjne dysku w zapisie szesnastkowym na
+standardowe wyjście, w formacie podobnym do /proc/ide/*/identify i
+odpowiednim do późniejszego użycia z opcją \fB\-\-Istdin\fP.
+.TP 
+\fI\-J\fP
+Pobiera/ustawia wartość czasu oczekiwania "idle3" dysków Western Digital
+(WD) Green Drive. Czas ten kontroluje częstość parkowania głowic dysku i
+przejścia w niższy stan zasilania. Ustawieniem fabrycznym jest osiem (8)
+sekund, co jest bardzo kiepskim wyborem do systemu Linux. Pozostawienie
+wartości domyślnej, powoduje setki lub tysiące cykli ładowania/odłączenia
+głowic w bardzo krótkim czasie. Mechanizm dysku został zaprojektowany na
+300\ 000 do 1\ 000\ 000 cykli, tak więc pozostawienie wartości domyślnej może
+spowodować przedwczesne zużycie dysku, nie wspominając o wpływie na
+wydajność, gdy napęd często musi się wybudzić przed wykonaniem operacji
+wejścia/wyjścia.
+.IP
+Firma WD dostarcza DOS\-owe narzędzie WDIDLE3.EXE do zmiany tego ustawienia i
+powinno się go użyć zamiast hdparm, gdy tylko to możliwe. Implementacja w
+hdparm, uzyskana za pomocą inżynierii wstecznej nie jest tak kompletna jak
+oryginalny i oficjalny program, nawet jeśli wygląda na działającą na
+przynajmniej kilku sztukach tych dysków. Aby zmiana w ustawieniach
+zadziałała, potrzebny jest pełny cykl zasilania (włączenie i wyłączenie),
+niezależnie od tego, który program zostanie użyty do zmiany ustawień.
+.IP
+Zaleca się ustawienie wartości 30 sekund do użycia z Linuksem. Dozwolonymi
+wartościami jest 8 do 12 sekund, a następnie 30 do 300 sekund w 30
+sekundowych odstępach. Podanie wartości zero (0) wyłączy całkowicie czas
+idle3 dysków WD (NIE\ ZALECANE!).
+.TP 
+\fI\-k\fP
+Pobiera/ustawia flagę "keep_settings_over_reset" (zachowaj ustawienia po
+resecie). Gdy ta flaga jest ustawiona, sterownik będzie chronił opcje
+\fI\-dmu\fP po miękkim resecie (wykonanym np. podczas sekwencji odzyskiwania po
+błędzie).  Flaga ta domyślnie jest wyłączona, aby uchronić napęd przed
+pętlami resetowań, które mogłyby być spowodowane kommbinacjami ustawień
+\fB\-dmu\fP Opcja \fB\-k\fP powinna więc być ustawiana tylko gdy jesteś przekonany,
+że to co robisz jest dobre. Praktycznie, wszystko co trzeba zrobić aby
+przetestować konfigurację (przed użyciem \-k) to sprawdzenie czy napęd daje
+się odczytać/zapisać i czy proces nie generuje błędów w logach (komunikaty
+jądra) (w większości systemów zajrzyj do /var/adm/messages).
+.TP 
+\fI\-K\fP
+Ustawia flagę "keep_features_over_reset" (zachowaj właściwości po resecie).
+Jej ustawienie powoduje, że napęd odzyskuje po miękkim resecie ustawienia
+dla \fB\-APSWXZ\fP.  Nie wszystkie napędy obsługują tę właściwość.
+.TP 
+\fI\-L\fP
+Ustawia flagę blokowania drzwiczek (doorlock flag). Wartość \fB1\fP spowoduje
+zablokowanie drzwiczek niektórych wymiennych dysków twardych (np. Syquest,
+ZIP, Jazz...). Z kolei wartość \fB0\fP spowoduje odblokowanie
+drzwiczek. Normalnie Linux automatycznie zarządza mechanizmem blokowania
+drzwiczek, w zależności od eksploatacji dysku (zablokowane, gdy system
+plików jest zamontowany). Lecz podczas zamykania systemu może być to
+uciążliwe, gdy główna partycja znajduje się na dysku wymiennym, gdyż
+partycja ta pozostaje zamontowana (w trybie tylko\-do\-odczytu) po zamknięciu
+systemu. Dzięki użyciu tej opcji \fBpo\fP przemontowaniu głównego systemu
+plików w trybie tylko\-do\-odczytu możliwe jest wyjęcie kasety ze stacji po
+zamknięciu systemu.
+.TP 
+\fI\-m\fP
+Pobiera/ustawia licznik sektorów dla wielosektorowego I/O w napędzie.
+Ustawienie \fB0\fP wyłącza tę właściwość. Tryb ten (inaczej znany jako IDE
+Block Mode) jest właściwością większości nowoczesnych dysków twardych IDE,
+zezwalającą na transfer wielu sektorów na przerwanie I/O, w przeciwieństwie
+do tradycyjnego jednego sektora. Gdy włączona jest ta właściwość, zazwyczaj
+obciążenie I/O przez system zmniejsza się o 30\-50%. W wielu systemach
+powoduje to także zwiększenie przepływu danych o 5% do 50%. Mimo to,
+niektóre napędy (najbardziej zauważalnie seria WD Caviar), wydają się
+działać wolniej w tym trybie. Różnie to jednak bywa.  Większość napędów
+wspiera minimalny zestaw ustawień obejmujący 2, 4, 8 i 16 (sektorów). Dla
+niektórych dysków możliwe są także większe wartości.  Ustawienie 16 lub 32
+wydaje się optymalnym dla wielu systemów.  Western Digital zaleca niższe
+ustawienia od 4 do 8 na wielu z ich dysków, a to z powodu małych (32KB)
+buforów w napędach i niezoptymalizowanych algorytmów buforowania.  Opcja
+\fB\-i\fP może służyć do znajdywania maksymalnej wspieranej wartości
+zainstalowanego napędu (szukaj MaxMultSect na wyjściu).  Niektóre napędy
+twierdzą, że wspierają ten tryb, lecz tracą dane przy niektórych
+ustawieniach. W rzadkich wypadkach, takie błędy mogą spowodować \fBpoważne
+uszkodzenie systemu plików\fP.
+.TP 
+\fI\-\-make\-bad\-sector\fP
+Celowo tworzy uszkodzony sektor (bad sector, media error) na
+dysku. \fBNIEZWYKLE NIEBEZPIECZNE, NIE UŻYWAĆ TEJ OPCJI!\fP. Może być to
+przydatne przy testowaniu mechanizmów odzyskiwania błędów
+urządzenia/RAID. Numer sektora jest podany jako (dziesiątkowy) parametr po
+opcji. W zależności od urządzenia, hdparm wybierze jedno z dwóch dostępnych
+poleceń ATA do uszkodzenia sektora. WRITE_LONG działa w przypadku większości
+urządzeń, lecz jedynie do granicy 28\-bitów. Część najnowszych napędów (2008)
+może obsługiwać nowe polecenie WRITE_UNCORRECTABLE_EXT, które działa na
+wszystkich sektorach LBA48. Jeśli jest ono dostępne, hdparm użyje go zamiast
+WRITE_LONG. Samo polecenie WRITE_UNCORRECTABLE_EXT prezentuje wybór jak nowy
+uszkodzony sektor powinien się zachowywać. Domyślnie, wygląda on jak każdy
+inny uszkodzony sektor i napędowi może zająć nieco czasu aby wykonać kolejne
+ponowne i nieudane próby odczytu (READ) sektora. Jeśli jednak poda się
+pojedynczą literę \fBf\fP bezpośrednio przed pierwszą cyfrą parametru numeru
+sektora, to hdparm wykona "flagowane" WRITE_UNCORRECTABLE_EXT, które
+powoduje, że napęd oznacza sektor jako uszkodzony (zamiast rzeczywiście go
+uszkadzać), dzięki czemu próby odczytu (READ) sektora natychmiast się nie
+powiodą (zamiast po kilku kolejnych próbach). Proszę zauważyć, że opcja
+\fB\-\-repair\-sector\fP może być użyta aby odzyskać (każdy) uszkodzony sektor,
+gdy nie jest on dłużej potrzebny, włączając w to również sektory
+rzeczywiście uszkodzone (napęd prawdopodobnie przemapuje je do przestrzeni
+zapasowej dysku).
+.TP 
+\fI\-M\fP
+Pobiera/ustawia wartość Automatycznego Zarządzania Głośnością (Automatic
+Acoustic Management \- AAM). Większość nowych dysków ma możliwość zwolnienia
+obrotów głowicy aby zredukować poziom hałasu. Wartości mogą być z przedziału
+od 0 do 254. 128 jest najcichszym (a zatem najwolniejszym) ustawieniem, a
+254 najszybszym (i najgłośniejszym). Niektóre dyski mają tylko dwa poziomy
+(cichy / szybki), a inne mogą przyjmować wszystkie wartości od 128 do 254.
+W tej chwili, większość napędów obsługuje jedynie 3 opcje: wyłączone, cichy
+i szybki. Można im przypisać obecnie, odpowiednio, wartości 0, 128 i 254,
+ale pozostałe wartości zostały przeznaczone do przyszłych rozszerzeń, więc
+może to ulec zmianie.
+.TP 
+\fI\-n\fP
+Pobiera lub ustawia flagę "ignore_write_errors" (ignoruj błędy zapisu) w
+sterowniku. NIE baw się tym bez uprzedniego zapoznania się z kodem źródłowym
+sterownika.
+.TP 
+\fI\-N\fP
+Pobiera/ustawia maksymalną widzialną liczbę sektorów, znaną również jako
+ustawienie \fBHost Protected Area\fP. Bez parametru, \fB\-N\fP wyświetla bieżące
+ustawienie, które jest wyświetlane jako dwie wartości: pierwsza określa
+bieżące maksymalne ustawienie sektorów, druga pokazuje natywny (rzeczywisty)
+limit sprzętowy dysku. Różnica pomiędzy tymi dwiema wartościami wskazuje na
+liczbę sektorów, które są aktualnie ukryte dla systemu operacyjnego w formie
+\fBHost Protected Area (HPA)\fP. Obszar ten jest często używany przez osoby
+składające komputer do przechowania oprogramowania diagnostycznego i/lub
+kopii oryginalnego systemu operacyjnego w celach odzyskiwania. Innymi
+możliwymi powodami mogą być ukrycie rzeczywistej pojemności bardzo dużego
+dysku dla BIOS\-u/systemu, który nie może normalnie funkcjonować z dyskami
+tego rozmiaru (np. obecnie (2010) BIOS\-y nie potrafią poradzić sobie z
+dyskami o rozmiarze przekraczającym 2 TB, a HPA może być użyte do
+raportowania przez dysk o pojemności 3 TB, że ma 2 TB). Aby zmienić bieżące
+maksimum (BARDZO NIEBEZPIECZNE, UTRATA DANYCH JEST NIEZWYKLE PRAWDOPODOBNA),
+nowa wartość powinna być dostarczona (dziesiątkowo) zaraz po opcji
+\fB\-N\fP. Wartość ta jest określona jako liczba sektorów, zamiast "maksymalny
+adres sektora" dysku. Napędy korzystają z pomysłu tymczasowych (ulotnych)
+ustawień, które są tracone przy następnym resecie sprzętowym oraz bardziej
+stałej (nieulotnej) wartości, która nie jest zmieniana w czasie resetów i
+kolejnych cykli zasilania. Domyślnie, \fB\-N\fP zmienia jedynie ustawienie
+tymczasowe (ulotne). Aby zmienić wartość stałą (nieulotną), proszę
+poprzedzić pierwszą cyfrę wartości początkowym znakiem \fBp\fP. Napędy są
+zaprojektowane na pozwolenie na tylko jedną zmianę wartości stałem w
+sesji. Przed kolejną, permanentną operacją \fB\-N\fP konieczny jest reset
+sprzętowy (lub wyłączenie i włączenie). Proszę zauważyć, że każda próba
+zmienienia tej wartości może zawieść, jeśli dysk jest dostępny dla innego
+programu w tym samym czasie. Jest tak, ponieważ ustawienie wartości wymaga
+wymiany pary poleceń dyskowych, ale nie ma sposobu na zapobiegnięcie
+wstawienia pomiędzy nie innych poleceń przez jądro. Jeśli więc zmiana
+początkowo się nie powiedzie, proszę po prostu spróbować ponownie. Obsługa
+opcji \fB\-N\fP przez jądro jest błędna dla wielu typów adapterów przez w wielu
+wersjach jądra. Raportowana jest wówczas niekiedy nieprawidłowa (zbyt mała)
+wartość maksymalnego rozmiaru. Obecnie (jądro 2.6.27) wygląda na to, że w
+końcu działanie powinno być poprawne w przypadku większości sprzętu.
+.TP 
+\fI\-\-offset\fP
+Przesuwa (offset) do podanego numeru GiB (1024*1024*1024), podczas
+przeprowadzania pomiarów czasu \fB\-t\fP odczytu urządzenia. Szybkość zmienia
+się (około dwukrotnie) w przypadku wielu dysków mechanicznych. Z reguły,
+choć nie zawsze, największa jest na początku dysku. Napędy solid\-state drive
+(SSD) powinny wykazywać podobne czasy niezależnie od przesunięcia.
+.TP 
+\fI\-p\fP
+Próbuje przeprogramować chipset interfejsu IDE na określony tryb PIO, lub
+próbuje automatycznie dostosować się do "najlepszego" trybu PIO
+obsługiwanego przez napęd. Właściwość ta jest obsługiwana w jądrze tylko dla
+kilku "znanych" chipsetów i nawet ta obsługa jest co najwyżej
+niepewna. Niektóre chipsety IDE nie są w stanie zmienić trybu PIO dla
+pojedynczego napędu; wówczas opcja ta może spowodować ustawienie trybu PIO
+dla \fIobydwu\fP napędów. Wiele chipsetów IDE wspiera albo mniej, albo więcej
+niż standardowe 6 (od 0 do 5) trybów PIO, więc dokładne ustawienie
+szybkości, które właściwie jest zaimplementowane, będzie różnić się zależnie
+od wyrafinowania chipsetu/sterownika.  \fIUżywaj z wielką ostrożnością!\fP
+Właściwość ta nie chroni przed nierozwagą, a niepomyślne działanie może
+spowodować \fIpoważne uszkodzenie systemu plików!\fP
+.TP 
+\fI\-P\fP
+Ustawia maksymalny licznik sektorów dla wewnętrznych mechanizmów preodczytu
+napędu. Nie wszystkie napędy obsługują tę właściwość i została ona usunięta
+z oficjalnej specyfikacji od ATA\-4.
+.TP 
+\fI\-\-prefer\-ata12\fP
+W czasie używania protokołu SAT\ (SCSI ATA\ Translation), hdparm zwykle
+preferuje użycie poleceń 16\-bajtowych gdzie to tylko możliwe. Część napędów
+zewnętrznych USB nie działa poprawnie z poleceniami 16\-bajtowymi. Opcja może
+zostać użyta do wymuszenia mniejszego, 12\-bajtowego formatu poleceń do
+takich napędów. Program hdparm wciąć będzie używał poleceń 16\-bajtowym do
+rzeczy, które nie mogą być wykonane przy użyciu formatu 12\-bajtowego
+(np. sektory wykraczające poza format 28\-bajtowy).
+.TP 
+\fI\-q\fP
+Obsługuje następną opcję cicho, nie wydając zwykłych komunikatów (nie
+dotyczy do komunikatów o błędach) na wyjście. Jest to przydatne do
+zmniejszenia zamieszania na ekranie w wypadku uruchamiania ze skryptów
+startowych. Nie można stosować do opcji \fB\-i\fP, \fB\-v\fP, \fB\-t\fP, oraz \fB\-T\fP.
+.TP 
+\fI\-Q\fP
+Pobiera lub ustawia queue_depth poleceń urządzenia, jeśli jest to
+obsługiwane przez sprzęt. Opcja działa tylko z jądrami 2.6.xx (i nowszymi) i
+jedynie z kombinacją urządzeń i sterownika, która obsługuje zmianę
+queue_depth. W przypadku dysków SATA jest to głębokość kolejki Native
+Command Queuing (NCQ).
+.TP 
+\fI\-r\fP
+Pobiera/ustawia flagę read\-only (tylko do odczytu) urządzenia. Gdy jest
+ustawiona, Linux nie pozwala na operacje zapisu na tym urządzeniu.
+.TP 
+\fI\-R\fP
+Pobiera/ustawia funkcję Write\-Read\-Verify, jeśli napęd ją obsługuje. Użycie:
+\fB\-R0\fP (wyłączone) lub \fB\-R1\fP (włączone). Funkcja przeznaczona jest do
+automatycznego ponownego odczytania przez firmware dysku danych, które
+zostały zapisane przez oprogramowanie, w celu weryfikacji, czy zapis odbył
+się poprawnie. Ogólnie rzecz biorąc jest to zachowanie przesadne, które może
+spowolnić zapis na dysk dwukrotnie (lub jeszcze bardziej).
+.TP 
+\fI\-\-read\-sector\fP
+Odczytuje z określonego numera sektora i zrzuca jego zawartość w zapisie
+szesnastkowym na standardowe wyjście. Sektor wiersza musi być podany
+(dziesiętnie) po opcji. Program hdparm wykona niskopoziomowy odczyt
+(kompletnie omijając zwykłą warstwę blokową mechanizmów odczytu/zapisu)
+podanego sektora. Można użyć tej opcji do definitywnego rozstrzygnięcia czy
+dany sektor jest uszkodzony (bad sector, media error) czy też nie
+(uczynienie tego za pomocą zwykłych mechanizmów może niekiedy dać fałszywe
+alarmy).
+.TP 
+\fI\-\-repair\-sector\fP
+Jest to alias BARDZO\ NIEBEZPIECZNEJ opcji \fB\-\-write\-sector\fP.
+.TP 
+\fI\-s\fP
+Włącza/wyłącza funkcję zasilania w trybie gotowości, jeśli jest obsługiwana
+przez napęd. \fBBARDZO\ NIEBEZPIECZNE\fP. Proszę jej nie używać, chyba że jest
+się absolutnie pewnym, że zarówno systemowy BIOS (lub firmware) jak i jądro
+systemu operacyjnego (Linux >=2.6.22) obsługuje próbkowanie urządzenia w
+celu użycia tej funkcji. Gdy jest włączona, napęd jest zasilany w trybie
+\fBstandby\fP (gotowości), pozwalając kontrolerowi na uruchomienie urządzeń po
+kolei, redukując chwilowy pobór energii, gdy wiele napędów jest podłączonych
+do tego samego zasilacza. Przydatne głównie do dużych zestawów RAID. Funkcja
+jest zwykle wyłączona, a napęd jest zasilany, gdy jest w trybie \fBactive\fP \-
+aktywnym (patrz powyżej, opcja \-C). Proszę zauważyć, że napęd może również
+pozwalać na włączenie tej opcji za pomocą zworki. Część dysków SATA
+obsługuje kontrolę tej funkcji za pomocą pinu 11. w złączu zasilania SATA. W
+takich przypadkach, polecenie może nie być obsługiwane, lub może być
+ignorowane.
+.TP 
+\fI\-S\fP
+Ustawia napęd w trybie idle (niższego niskiego poboru energii), ustawia
+również czas oczekiwania standby (zatrzymania dysku). Wartość ta jest
+używana przez napęd w celu uzyskania informacji o tym, jak długo oczekiwać
+(bez aktywności dyskowych) przed wyłączeniem silnika w celach oszczędności
+mocy. W takich warunkach, dysk może potrzebować do 30 sekund aby
+odpowiedzieć na nagłe odwołanie, choć większość napędów robi to znacznie
+szybciej. Odczytanie wartości czasu oczekiwania jest nieco osobliwe. Wartość
+0 oznacza "czasy oczekiwania są wyłączone": napęd nie przejdzie do trybu
+standby w sposób automatyczny. Wartości od 1 do 240 określają wielokrotności
+5 sekund, czyli dają czasy oczekiwania od 5 sekund do 20 minut. Wartości od
+241 do 251 określają od 1. do 11. jednostki po 30 minut dla czasów od 30
+minut do 5,5 godzin. Wartość 252 oznacza czas oczekiwania 21 minut, 253
+ustawia czas oczekiwania zdefiniowany przez dostawcę, zamykający się między
+8 a 12 godzinami, a wartość 254 jest zarezerwowana. 255 jest interpretowane
+jako 21 minut plus 15 sekund. Proszę zauważyć, że część starszych napędów
+może intepretować te wartości w całkowicie inny sposób.
+.TP 
+\fI\-t\fP
+Dokonuje pomiarów czasu odczytów z urządzenia dla celów porównawczych i
+testów wydajnościowych. Aby uzyskać miarodajne wyniki, operacja ta powinna
+być powtarzana 2\-3 razy na nieaktywnym pod innymi względami systemie (bez
+innych aktywnych procesów) z przynajmniej kilkoma megabajtami wolnej
+pamięci. Wyświetlana jest szybkość odczytu poprzez bufory cache z dysku, bez
+wcześniejszego cache'owania danych. Wartość ta jest miarą szybkości, z jaką
+napęd jest w stanie obsługiwać liniowe odczyty danych pod Linuksem bez
+obciążenia związanego z systemem plików. Aby zapewnić dokładne pomiary,
+cache jest opróżniany za pomocą ioctl BLKFLSBUF.
+.TP 
+\fI\-T\fP
+Dokonuje pomiarów czasu odczytów z cache dla celów porównawczych i testów
+wydajnościowych. Aby uzyskać miarodajne wyniki, operacja ta powinna być
+powtarzana 2\-3 razy na nieaktywnym pod innymi względami systemie (bez innych
+aktywnych procesów) z przynajmniej kilkoma megabajtami wolnej pamięci.
+Wyświetlana jest szybkość odczytu bezpośrednio z linuksowych buforów cache,
+bez dostępu do dysku. Wartość ta jest wskaźnikiem przepływu danych między
+procesorem, cache i pamięcią systemu.
+.TP 
+\fI\-\-trim\-sector\-ranges\fP
+Do napędów Solid State Drive (SSD). \fBNIEZWYKLE NIEBEZPIECZNE. NIE UŻYWAĆ
+TEJ OPCJI!\fP Nakazuje firmware dysku odrzucać niepotrzebne sektory danych,
+niszcząc wszelkie dane, które mogą one zawierać. W tej sposób sektory te są
+dostępne do natychmiastowego użycia przez mechanizm odśmiecania pamięci
+(garbage collection) firmware, w celu poprawy równomiernego poziomu zużycia
+komórek flash. Opcja oczekuje podania jednego lub więcej par zakresów zaraz
+po niej w formie: początek adresu LBA, dwukropek i liczba sektorów
+(maksymalnie 65535) bez spacji w pojedynczym zapisie. \fBNIEZWYKLE
+NIEBEZPIECZNE. NIE UŻYWAĆ TEJ OPCJI!\fP
+.IP
+Przykład:   \fBhdparm \-\-trim\-sector\-ranges 1000:4 7894:16 /dev/sdz\fP
+.TP 
+\fI\-\-trim\-sector\-ranges\-stdin\fP
+Identyczne do \fB\-\-trim\-sector\-ranges\fP powyżej, z wyjątkiem tego, że lista
+par lba:liczba jest czytana ze standardowego wejścia, zamiast być podaną w
+wierszu poleceń. Można wykorzystać tę opcję do uniknięcia problemów z
+wyjątkowo długimi wierszami polecenia. Pozwala to również na skumulowanie
+wielu więcej zakresów sektorów w jedno polecenie, aż do aktualnie
+skonfigurowanego limitu transferu (max_sectors_kb).
+.TP 
+\fI\-u\fP
+Pobiera/ustawia flagę interrupt\-unmask napędu. Ustawienie \fB1\fP zezwala
+sterownikowi na niemaskowanie innych przerwań podczas przetwarzania
+przerwania dyskowego, co w znaczącym stopniu zmniejsza czas reakcji na
+Linuksa na polecenia użytkownika i eliminuje błędy "serial port overrun".
+\fBUżywając tej opcji nleży zachować ostrożność:\fP niektóre kombinacje
+napędu/kontrolera nie radzą sobie dobrze z tą właściwością, co może
+spowodować \fBpoważne uszkodzenie systemu plików\fP.  W szczególności,
+interfejsy \fBCMD\-640B\fP i \fBRZ1000\fP (E)IDE mogą być \fBniestabilne\fP (z powodu
+usterek sprzętowych) gdy opcja ta jest używana z wersjami jądra
+wcześniejszymi niż 2.0.13. Wyłączenie właściwości \fBIDE prefetch\fP tych
+interfejsów (zwykle ustawienie BIOS/CMOS) daje bezpieczne rozwiązanie tego
+problemu dla wcześniejszych jąder.
+.TP 
+\fI\-v\fP
+Wypisuje niektóre podstawowe ustawienia, tak jak \-acdgkmnru dla IDE. Jest to
+też domyślne zachowanie, kiedy nie poda się żadnych opcji.
+.TP 
+\fI\-\-verbose\fP
+Wyświetla dodatkowe informacje diagnostyczne w przypadku niektórych poleceń.
+.TP 
+\fI\-w\fP
+Resetuje urządzenie (\fBNIEBEZPIECZNE\fP). NIE używaj tej opcji. Jest ona tylko
+do użytku w nieoczekiwanych sytuacjach, gdy dla przywrócenia dysku do stanu
+używalności i tak może być konieczne przeładowanie systemu.
+.TP 
+\fI\-\-write\-sector\fP
+Zapisuje zera do podanego numeru sektora. BARDZO\ NIEBEZPIECZNE. Numer
+sektora musi zostać podany (dziesiątkowo) po opcji. Program hdparm wykona
+niskopoziomowy zapis (całkowicie omijając zwykłą warstwę blokową mechanizmów
+odczytu/zapisu) do określonego sektora. Może to zostać wykorzystane do
+wymuszenia na napędzie naprawę uszkodzonego sektora (bad sector, media
+error).
+.TP 
+\fI\-W\fP
+Pobiera/ustawia funkcję pamięci podręcznej zapisu (write\-caching) napędów
+IDE/SATA.
+.TP 
+\fI\-X\fP
+Ustaw tryb transferu IDE dla nowszych napędów (E)IDE/ATA.  Jest to zazwyczaj
+używane łącznie z \fB\-d1\fP gdy włącza się DMA do/z napędu na wspieranym
+chipsecie interfejsu, przy czym \fB\-X mdma2\fP służy do wyboru trybu transferów
+multiword DMA mode2 a \fB\-X sdma1\fP do wyboru prostego trybu mode1 transferów
+DMA.  Na systemach, które wspierają UltraDMA użycie \fB\-X udma2\fP służy do
+ustawiania trybu transferów UltraDMA mode2 (będziesz musiał przygotować
+wcześniej chipset do użycia UltraDMA). Poza tym, użycie tej opcji jest
+\fBrzadko potrzebne\fP gdyż większość/wszystkie nowoczesne napędy IDE domyślnie
+ustawiają się w najszybszym ze swoich trybów PIO przy
+włączaniu. Manipulowanie tym może być bezcelowe i ryzykowne. Na dyskach,
+które wspierają alternatywne tryby transferu, \fB\-X\fP może służyć do
+przełączania \fBtylko\fP trybu napędu.  Przed zmianą trybu transferu, interfejs
+IDE powinien być ustawiony za pomocą zworek lub zaprogramowany (zobacz opcję
+\fB\-p\fP)  do nowego trybu, aby zapobiec utracie i/lub zniszczeniu danych.
+\fIUżywaj tego ze szczególną uwagą!\fP Dla trybów transferu PIO (Programmed
+Input/Output), używanych przez Linuksa, wartość ta jest zwyczajnie
+oczekiwanym numerem trybu PIO plus 8. Dlatego wartość 09 ustawia tryb PIO
+mode1, 10 PIO mode2, a 11 wybiera PIO mode3.  Ustawienie 00 odtwarza
+"domyślny" tryb PIO dysku, a 01 wyłącza IORDY. W przypadku trybu multiword
+DMA, używaną wartością jest oczekiwany tryb DMA plus 32. Dla UltraDMA
+wartością jest oczekiwany numer trybu UltraDMA plus 64.
+.TP 
+\fI\-y\fP
+Zmusza napęd IDE do natychmiastowego przejścia w tryb mniejszego zużycia
+energii: \fBstandby\fP. To najczęściej powoduje zwolnienie pracy
+dysku. aktualny tryb może być sprawdzony dzięki opcji \fB\-C\fP.
+.TP 
+\fI\-Y\fP
+Zmusza napęd IDE do natychmiastowego przejścia w tryb najmniejszego zużycia
+energii: \fBsleep\fP. To kompletnie wyłącza napęd. Aby napęd był dostępny
+ponownie potrzebny jest twardy lub miękki reset (sterownik IDE Linuksa
+automatycznie wykona reset gdy będzie potrzebny).  Aktualny tryb może być
+sprawdzony dzięki opcji \fB\-C\fP.
+.TP 
+\fI\-z\fP
+Zmusza jądro do ponownego odczytu tablicy partycji podanych urządzeń.
+.TP 
+\fI\-Z\fP
+Wyłącza automatyczne funkcje oszczędzania energii w niektórych napędach
+Seagate (modelach ST3xx?), aby uchronić je od wyłączania się w
+nieoczekiwanych momentach.
+.TP 
+.SH "Zestaw funkcji bezpieczeństwa ATA"
+.PP
+Eksperymenty z poniższymi przełącznikami są \fBNIEBEZPIECZNE\fP i mogą nie
+działać z niektórymi jądrami. \fBUŻYCIE NA WŁASNE RYZYKO\fP.
+.TP 
+\fI\-\-security\-help\fP
+Wyświetla krótką informację o użyciu na temat wszystkich opcji \-\-security\-*.
+.TP 
+\fI\-\-security\-freeze\fP
+Zamraża ustawienia bezpieczeństwa napędu. Napęd nie akceptuje żadnych
+poleceń bezpieczeństwa do kolejnego resetu przy podłączeniu
+zasilania. Proszę użyć tę funkcję w kombinacji z \-\-security\-unlock do
+zabezpieczenia dysku przed jakimikolwiek próbami ustawienia nowego
+hasła. Może również zostać użyta samodzielnie. Z tą opcją nie można podać w
+wierszu poleceń żadnych innych opcji.
+.TP 
+\fI\-\-security\-unlock HASLO\fP
+Odblokowuje napęd, używając hasła HASLO. Hasło jest podane jako łańcuch
+ASCII i jest uzupełniane znakami NUL do wielkości 32 bajtów. Odpowiednie
+hasło napędu jest wybierane przełącznikiem \-\-user\-master (domyślnie jest to
+hasło użytkownika \- "user"). Z tą opcją w wierszu poleceń nie można podać
+żadnych innych.
+.TP 
+\fI\-\-security\-set\-pass HASLO\fP
+Blokuje napęd, używając hasła HASLO (ustawia hasło)
+\fB(NIEBEZPIECZNE)\fP. Hasło jest podane jako łańcuch ASCII i jest wyrównany
+znakami NUL do wielkości 32 bajtów. Użycie hasła specjalnego \fBNULL\fP ustawia
+puste hasło. Odpowiednie hasło napędu jest wybierane przełącznikiem
+\-\-user\-master (domyślnie jest to hasło użytkownika \- "user"), a odpowiedni
+tryb bezpieczeństwa jest wybierany przełącznikiem \-\-security\-mode. Z tą
+opcją w wierszu poleceń nie można podać żadnych innych.
+.TP 
+\fI\-\-security\-disable HASLO\fP
+Wyłącza blokowanie napędu, używając hasła HASLO. Hasło jest podane jako
+łańcuch ASCII i jest uzupełniane znakami NUL do wielkości 32
+bajtów. Odpowiednie hasło napędu jest wybierane przełącznikiem \-\-user\-master
+(domyślnie jest to hasło użytkownika \- "user"). Z tą opcją w wierszu poleceń
+nie można podać żadnych innych.
+.TP 
+\fI\-\-security\-erase HASLO\fP
+Wykasowuje (zablokowany) napęd, używając hasła HASLO
+\fB(NIEBEZPIECZNE)\fP. Hasło jest podane jako łańcuch ASCII i jest wyrównany
+znakami NUL do wielkości 32 bajtów. Użycie hasła specjalnego \fBNULL\fP
+reprezentuje puste hasło. Odpowiednie hasło napędu jest wybierane
+przełącznikiem \-\-user\-master (domyślnie jest to hasło użytkownika \-
+"user"). Z tą opcją w wierszu poleceń nie można podać żadnych innych.
+.TP 
+\fI\-\-security\-erase\-enhanced HASLO\fP
+Wykonuje rozszerzone kasowanie (zablokowanego) napędu, używając hasła HASLO
+\fB(NIEBEZPIECZNE)\fP. Hasło jest podane jako łańcuch ASCII i jest uzupełniane
+znakami NUL do wielkości 32 bajtów. Odpowiednie hasło napędu jest wybierane
+przełącznikiem \-\-user\-master (domyślnie jest to hasło użytkownika \-
+"user"). Z tą opcją w wierszu poleceń nie można podać żadnych innych.
+.TP 
+\fI\-\-user\-master UŻYTKOWNIK\fP
+Określa które hasło wybrać (użytkownika \- user lub główne \- master). \fBDomyślnym wyborem jest hasło użytkownika\fP. Użyteczne jedynie w połączeniu z \-\-security\-unlock, \-\-security\-set\-pass, \-\-security\-disable, \-\-security\-erase lub \-\-security\-erase\-enhanced.
+        u       hasło użytkownika \- user
+        m       hasło główne \- master
+
+.TP 
+\fI\-\-security\-mode TRYB\fP
+Określa który tryb bezpieczeństwa (wysoki \- high lub maksymalny \- maximum) ustawić. \fBDomyślnym wyborem jest wysoki\fP. Użyteczne tylko w połączeniu z \-\-security\-set\-pass.
+        h       wysokie (high) bezpieczeństwo
+        m       maksymalne (maximum) bezpieczeństwo
+
+\fBTA FUNKCJA JEST EKSPERYMENTALNA I NIEZBYT DOBRZE PRZETESTOWANA. UŻYCIE NA
+WŁASNE RYZYKO.\fP
+.SH PLIKI
+/etc/hdparm.conf
+.SH BŁĘDY
+Jak zauważono powyżej, opcje \fB\-m sectcount\fP i \fB\-u 1\fP powinny być używane z
+ostrożnością, najlepiej na systemie plików tylko dla odczytu. Większość
+napędów pracuje z tymi właściwościami dobrze, lecz zdarzają się
+wyjątki. System plików może wtedy ulec zniszczeniu. Pamiętaj o backupie
+przed takimi eksperymentami!
+.PP
+Niektóre opcje (np. \-r do SCSI) mogą nie działać ze starszymi jądrami, w
+których potrzebne ioctl()'e nie były obsługiwane.
+.PP
+Chociaż to narzędzie jest skierowane przede wszystkim do użytku z napędami
+dysków twardych SATA/IDE, to część opcji jest również prawidłowa (i
+dozwolona) w użyciu z dyskami twardymi SCSI oraz z dyskami MFT/RLL z
+interfejsem XT.
+.PP
+Jądro Linux aż do wersji 2.6.12 (i prawdopodobnie późniejszych) nie
+obsługuje prawidłowo odblokowania opcji bezpieczeństwa i wyłączania poleceń,
+co może powodować naruszenie ochrony pamięci, a w niektórych przypadkach
+nawet panikę jądra. Polecenia bezpieczeństwa mogą być jednak wykonane przez
+napęd. To nieprawidłowe zachowanie jądra czyni w tej chwili polecenia
+bezpieczeństwa związane z danymi PIO raczej bezużyteczne.
+.PP
+Proszę zauważyć, że polecenia "security erase" i "security disable" zostały
+zaimplementowane jako dwa kolejne polecenia danych PIO i nie powiodą się na
+zablokowanym napędzie, ponieważ drugie polecenie nie zostanie wydane po
+naruszeniu ochrony pamięci. Proszę zapoznać się z kodem, aby uzyskać
+wskazówki jak je załatać, aby ominąć ten problem. Niezależnie od naruszenie
+ochrony pamięci, zawsze możliwe jest uruchomienie dwóch kopii hdparm
+jednocześnie i wydanie dwóch potrzebnych poleceń w ten sposób.
+.SH AUTOR
+\fBhdparm\fP został napisany przez Marka Lorda <mlord@pobox.com>,
+głównego twórcę i opiekuna sterownika (E)IDE do Linuksa, obecnie zajmującego
+się podsystemem libata; wraz z uwzględnieniem sugestii i łatek od wielu
+innych osób.
+.PP
+Kod wyłączający automatyczne oszczędzanie energii w Seagate został napisany
+przez Tomiego Leppikangasa <tomilepp@paju.oulu.fi>.
+.PP
+Polecenie zamrażania ustawień bezpieczeństwa dodał Benjamin Benz w roku
+2005.
+.PP
+Polecenia bezpieczeństwa związane z pozyskaniem danych PIO napisał Leonard
+den Ottolander w roku 2005. Niektóre inne części \- Benjamin Benz i inni.
+.SH "ZOBACZ TAKŻE"
+\fBhttp://www.t13.org/\fP Technical Committee T13 AT Attachment (ATA/ATAPI)
+Interface.
+.PP
+\fBhttp://www.serialata.org/\fP Serial ATA International Organization.
+.PP
+\fBhttp://www.compactflash.org/\fP CompactFlash Association.
+.SH TŁUMACZENIE
+Ze względu na specyfikę tego programu, proszę korzystać z \fBoryginalnej\fP, angielskojęzycznej dokumentacji, dostępnej po wydaniu polecenia \fIman \-\-locale=C 8 hdparm\fP, aby uniknąć konsekwencji wynikających z możliwych błędów w tłumaczeniu. Jeśli to niemożliwe, proszę upewnić się, że podręcznik jest \fBaktualny\fP i dotyczy używanej wersji programu.
+.PP
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@p-soft.silesia.linux.org.pl>,
+Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>,
+Grzegorz Goławski (PTM) <grzegol@pld.org.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 9.39 \fPoryginału.

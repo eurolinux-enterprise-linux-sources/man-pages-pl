@@ -1,0 +1,351 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1997-2006 Martin Mares <mj@ucw.cz> (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH lspci 8 "14 stycznie 2012" pciutils\-3.1.9 "Narzędzia PCI"
+.IX lspci
+.SH NAZWA
+lspci \- wypisuje wszystkie urządzenia PCI
+.SH SKŁADNIA
+\fBlspci\fP [\fBopcje\fP]
+.SH OPIS
+\fBlspci\fP jest narzędziem do wyświetlania informacji o wszystkich szynach PCI
+systemu i podłączonych do nich urządzeniach.
+
+Domyślnie, pokazuje zwięzłą listę urządzeń. Używając opcji opisanych
+poniżej, można uzyskać bardziej szczegółowy wynik lub wyjście odpowiednie do
+przetworzenia przez inne programy.
+
+Aby zgłaszać błędy w sterownikach PCI lub w samym \fBlspci\fP, proszę dołączyć
+wynik wywołania "lspci \-vvx", a jeszcze lepiej "lspci \-vvxxx" (uwzględniając
+poniższe, ewentualne zastrzeżenia).
+
+Niektóre części wyniku, szczególnie w bardzo szczegółowych trybach, są
+zrozumiałe prawdopodobnie jedynie dla doświadczonych hakerów PCI. Aby poznać
+dokładne definicje pól, proszę zapoznać się ze specyfikacjami PCI lub
+plikami \fBheader.h\fP i \fB/usr/include/linux/pci.h\fP.
+
+Dostęp do niektórych części przestrzeni konfiguracyjnej PCI, w wielu
+systemach operacyjnych jest ograniczony do roota, zatem funkcje \fIlspci\fP
+dostępne zwykłym użytkownikom są ograniczone. Program stara się jednak
+wyświetlić tak dużo informacji, jak tylko jest to możliwe oraz oznaczyć
+pozostałe informacje tekstem \fI<access denied>\fP (dostęp
+zastrzeżony).
+
+.SH OPCJE
+
+.SS "Podstawowe tryby wyświetlania"
+.TP 
+\fB\-m\fP
+Zrzuca dane urządzenia PCI w kompatybilnej wstecznie postaci czytelnej
+maszynowo. Patrz niżej.
+.TP 
+\fB\-mm\fP
+Zrzuca dane urządzenia PCI w postaci czytelnej maszynowo, do łatwego
+przetwarzania przez skrypty. Patrz niżej.
+.TP 
+\fB\-t\fP
+Pokazuje drzewiasty diagram zawierający wszystkie szyny, mosty, urządzenia i
+połączenia między nimi.
+
+.SS "Opcje wyświetlania"
+.TP 
+\fB\-v\fP
+Wyświetla szczegółowe informacje o wszystkich urządzeniach.
+.TP 
+\fB\-vv\fP
+Wyświetla jeszcze więcej szczegółów. Ten poziom obejmuje wszystko co może
+okazać się przydatne.
+.TP 
+\fB\-vvv\fP
+Poziom najbardziej szczegółowy \- wyświetlane jest wszystko co program jest w
+stanie przetworzyć, nawet jeśli wygląda na to całkowicie nieprzydatne
+(np. niezdefiniowane obszary pamięci).
+.TP 
+\fB\-k\fP
+Pokazuje sterowniki jądra obsługujące każde z urządzeń oraz moduły jądra
+zdolne je obsłużyć. Włączone domyślnie, gdy podana jest opcja \fB\-v\fP w
+normalnym trybie wyniku (obecnie działa wyłącznie z jądrem Linux 2.6 i
+nowszym).
+.TP 
+\fB\-x\fP
+Pokazuje szesnastkowy zrzut standardowej części standardowej przestrzeni
+konfiguracyjnej (pierwsze 64 bajty lub 128 bajtów w przypadku mostków
+CardBus).
+.TP 
+\fB\-xxx\fP
+Pokazuje szesnastkowy zrzut całej przestrzeni konfiguracyjnej PCI. Dostępne
+tylko dla roota, gdyż część urządzeń PCI \fBzałamuje się\fP gdy próbuje się
+odczytać niezdefiniowane obszary przestrzeni konfiguracyjnej (zachowanie to
+prawdopodobnie nie narusza standardu PCI, lecz jest co najmniej bardzo
+głupie). Ponieważ jednak takie urządzenia są rzadkością, nie należy się tym
+zbytnio przejmować.
+.TP 
+\fB\-xxxx\fP
+Pokazuje szesnastkowy zrzut rozszerzonej (4096\-bajtowej) przestrzeni
+konfiguracyjnej PCI dostępnej w szynach PCI\-X 2.0 i PCI Express.
+.TP 
+\fB\-b\fP
+Widok szynocentryczny. Pokazuje wszystkie numery IRQ i adresy widziane przez
+karty na szynie PCI, zamiast punktu widzenia jądra.
+.TP 
+\fB\-D\fP
+Zawsze wyświetla liczby domen PCI. Domyślnie, lspci nie czyni tego w
+przypadku komputerów posiadających wyłącznie domenę 0.
+
+.SS "Opcje do kontroli przetwarzania identyfikatorów na nazwy"
+.TP 
+\fB\-n\fP
+Pokazuje dystrybutora PCI oraz kody urządzenia jako numery, bez rozwijania
+ich w bazie danych ID PCI.
+.TP 
+\fB\-nn\fP
+Pokazuje dystrybutora PCI oraz kody urządzenia jako numery oraz nazwy.
+.TP 
+\fB\-q\fP
+Używa DNS do odpytania głównej bazy identyfikatorów PCI, jeśli urządzenie
+nie zostanie znalezione w lokalnym pliku \fBpci.ids\fP. Jeśli się to powiedzie,
+wynik jest buforowany w \fB~/.pciids\-cache\fP i jest rozpoznawany w kolejnych
+uruchomieniach programu nawet, jeśli nie poda się opcji \fB\-q\fP
+ponownie. Proszę rozważnie używać tego przełącznika w automatycznych
+skryptach, aby zapobiec przeciążeniu serwerów z bazą danych.
+.TP 
+\fB\-qq\fP
+To samo co \fB\-q\fP, ale lokalny bufor podręczny jest resetowany.
+.TP 
+\fB\-Q\fP
+Odpytuje centralną bazę danych nawet, jeśli wpisy są rozpoznawane
+lokalnie. Proszę użyć tej opcji, w przypadku podejrzenia, że wyświetlany
+wpis jest nieprawidłowy.
+
+.SS "Opcje do wybierania urządzeń"
+.TP 
+\fB\-s \fP[[[[\fI<domena>\fP]\fB:\fP]\fI<szyna>\fP]\fB:\fP][\fI<slot>\fP][\fB.\fP[\fI<funkcja>\fP]]
+Pokazuje urządzenia tylko w określonej domenie (w przypadku jeśli ten
+komputer posiada kilka mostków głównych, mogą one albo współdzielić wspólną
+przestrzeń numerów szyn, albo każdy z nich może adresować swoją domenę PCI;
+domeny są numerowane od 0 do ffff), szynie (0 do ff), slocie (0 do 1f) i
+funkcji (0 do 7). Każdy komponent adresu urządzenia można pominąć lub
+oznaczyć gwiazdką, co oznacza dowolną wartość. Wszystkie numery są
+szesnastkowe. Np. "0:" oznacza wszystkie urządzenia na szynie 0, "0" oznacza
+wszystkie funkcje urządzenia 0 na dowolnej szynie, "0.3" wybiera trzecią
+funkcję urządzenia 0 na wszystkich szynach, a ".4" pokazuje czwartą funkcję
+każdego urządzenia.
+.TP 
+\fB\-d \fP[\fI<dostawca>\fP]\fB:\fP[\fI<urządzenie>\fP]
+Pokazuje tylko urządzenia o określonym ID urządzenia i dystrybutora. Obydwa
+ID są podawane szesnastkowo i mogą być pominięte lub określone jako "*" (w
+obu przypadkach oznacza to "dowolne").
+
+.SS "Inne opcje"
+.TP 
+\fB\-i\fP \fI<plik>\fP
+Używa \fI<pliku>\fP jako listy identyfikatorów PCI, zamiast pliku
+/usr/share/misc/pci.ids.
+.TP 
+\fB\-p\fP \fI<plik>\fP
+Używa \fI<pliku>\fP jako mapy identyfikatorów PCI obsługiwanych przez
+moduły jądra. Domyślnie, lspci używa
+/lib/modules/\fIwersja_jądra\fP/modules.pcimap. Dotyczy tylko systemów Linux z
+odpowiednio nowymi narzędziami modułów.
+.TP 
+\fB\-M\fP
+Przywołuje tryb mapowania szyny, który przeprowadza dokładne skanowanie
+wszystkich urządzeń PCI, w tym źle skonfigurowanych mostków itp. Ta opcja
+daje przydatne rezultaty wyłącznie w trybie bezpośredniego dostępu do
+sprzętu, który zazwyczaj wymaga uprawnień roota. Proszę zauważyć, że
+skanowana jest tylko domena 0 PCI.
+.TP 
+\fB\-\-version\fP
+Wyświetla wersję \fBlspci\fP.  Opcja ta powinna być używana samodzielnie.
+
+.SS "Opcje dostępu do PCI"
+.PP
+Narzędzia PCI używają biblioteki PCI do porozumiewania się z urządzeniami
+PCI (patrz \fBpcilib\fP(7), aby dowiedzieć się więcej). Aby wpłynąć na jej
+zachowanie można użyć następujących opcji:
+.TP 
+\fB\-A\fP \fI<metoda>\fP
+Biblioteka obsługuje wiele metod dostępu do sprzętu PCI. Domyślnie używa
+pierwszej dostępnej metody, ale można użyć tej opcji, aby przesłonić tę
+decyzję. Dostępne metody wraz z ich opisami można uzyskać za pomocą opcji
+\fB\-A help\fP.
+.TP 
+\fB\-O\fP \fI<parametr>\fP\fB=\fP\fI<wartość>\fP
+Zachowanie biblioteki jest kontrolowane przez kilka nazwanych
+parametrów. Opcja pozwala ustawić wartość dowolnych z nich. Aby poznać
+rozpoznawane parametry i ich domyślne wartości proszę użyć opcji \fB\-O help\fP.
+.TP 
+\fB\-H1\fP
+Używa bezpośredniego dostępu do sprzętu poprzez mechanizm 1 konfiguracji
+Intela (jest to skrócona postać \fB\-A intel\-conf1\fP).
+.TP 
+\fB\-H2\fP
+Używa bezpośredniego dostępu do sprzętu poprzez mechanizm 2 konfiguracji
+Intela (jest to skrócona postać \fB\-A intel\-conf2\fP).
+.TP 
+\fB\-F\fP \fI<plik>\fP
+Zamiast uzyskiwać dostęp do rzeczywistego sprzętu, odczytuje listę urządzeń
+i wartości ich rejestrów konfiguracyjnych z podanego pliku, uzyskanego
+wcześniej poleceniem lspci \-x. Jest to przydatne do analizowania
+przekazanych przez użytkowników raportów o błędach, gdyż można wyświetlić
+konfigurację sprzętową w dowolnym stylu bez męczenia użytkownika o nowe
+zrzuty.
+.TP 
+\fB\-G\fP
+Zwiększa poziom debugowania w bibliotece.
+
+.SH "WYNIK ODCZYTYWALNY MASZYNOWO"
+Jeśli zamiarem użytkownika jest automatyczne przetworzenie wyjścia lspci,
+należy użyć jednego z formatów wyniku odczytywalnego maszynowo (\fB\-m\fP,
+\fB\-vm\fP, \fB\-vmm\fP) opisanego w tym rozdziale. Wszystkie inne formaty mogą się
+zmienić pomiędzy wersjami lspci.
+
+.P
+Wszystkie liczby są wyświetlane zawsze w postaci szesnastkowej. Aby
+przetworzyć identyfikatory numeryczne zamiast nazw, proszę dodać przełącznik
+\fB\-n\fP.
+
+.SS "Format prosty (\-m)"
+
+W formacie prostym, każde urządzenie jest opisane w pojedynczym wierszu,
+który jest sformatowany jako parametry odpowiednie do podania do skryptu
+powłoki tzn. wartości są oddzielone białymi znakami, jeśli to konieczne
+zastosowane jest cytowanie. Część argumentów jest pozycyjna: slot, klasa,
+nazwa dostawcy, nazwa urządzenia, nazwa dostawcy podsystemu i nazwa
+podsystemu (dwie ostatnie są puste, jeśli urządzenie nie ma podsystemu);
+pozostałe argumenty wyglądają jak opcje:
+
+.TP 
+\fB\-r\fP\fIrew\fP
+Numer rewizji.
+
+.TP 
+\fB\-p\fP\fIintprog\fP
+Interfejs programistyczny.
+
+.P
+Względna kolejność argumentów pozycyjnych i opcji jest niezdefiniowana. W
+przyszłych wersjach mogą zostać dodane nowe opcje, ale będą one zawsze
+posiadały pojedynczy argument, nieoddzielony od opcji spacjami \- dzięki
+czemu mogą być łatwo zignorowane, jeśli nie zostaną rozpoznane.
+
+.SS "Format szczegółowy (\-vmm)"
+
+Format szczegółowy jest sekwencją rekordów oddzielonych pustymi
+wierszami. Każdy rekord opisuje pojedyncze urządzenie za pomocą sekwencji
+wierszy, a każdy wiersz zawiera pojedynczą parę "\fIznacznik\fP:
+\fIwartość\fP". \fIZnacznik\fP i \fIwartość\fP są oddzielone pojedynczym znakiem
+tabulacji. Rekordy ani wiersze wewnątrz rekordów nie posiadają określonej
+kolejności. W znacznikach istotna jest wielkość liter.
+
+.P
+Zdefiniowano następujące znaczniki:
+
+.TP 
+\fBSlot\fP
+Nazwa slotu, w którym istnieje urządzenie
+([\fIdomena\fP:]\fIszyna\fP:\fIurządzenie\fP.\fIfunkcja\fP). Ten znacznik jest zawsze
+pierwszy w rekordzie.
+
+.TP 
+\fBClass\fP
+Nazwa klasy.
+
+.TP 
+\fBVendor\fP
+Nazwa dostawcy.
+
+.TP 
+\fBDevice\fP
+Nazwa urządzenia.
+
+.TP 
+\fBSVendor\fP
+Nazwa dostawcy podsystemu (opcjonalna).
+
+.TP 
+\fBSDevice\fP
+Nazwa podsystemu (opcjonalna).
+
+.TP 
+\fBPhySlot\fP
+Fizyczne gniazdo, w którym znajduje się urządzenie (opcjonalne, tylko
+Linux).
+
+.TP 
+\fBRev\fP
+Numer rewizji (opcjonalny).
+
+.TP 
+\fBProgIf\fP
+Interfejs programistyczny (opcjonalny).
+
+.TP 
+\fBDriver\fP
+Sterownik jądra, który aktualnie obsługuje urządzenie (opcjonalny, tylko
+Linux).
+
+.TP 
+\fBModule\fP
+Moduł jądra, który wskazuje że jest zdolny obsłużyć to urządzenie
+(opcjonalny, tylko Linux).
+
+.P
+W kolejnych wersjach mogą zostać dodane nowe znaczniki, dlatego należy po
+cichu ignorować te, które nie zostaną rozpoznane.
+
+.SS "Wstecznie kompatybilny format szczegółowy (\-vm)"
+
+W tym trybie, lspci stara się być dokładnie kompatybilnym ze starszymi
+wersjami programu. Jest to prawie ten sam format co zwykły format
+szczegółowy, jednak znacznik \fBDevice\fP jest używany zarówno jako nazwa
+slotu, jak i nazwa urządzenia, tak więc pojawia się dwukrotnie w pojedynczym
+rekordzie. Proszę nie używać tego formatu w nowo tworzonym kodzie.
+
+.SH PLIKI
+.TP 
+\fB/usr/share/misc/pci.ids\fP
+Lista wszystkich znanych identyfikatorów PCI\ (dostawcy, urządzenia, klasy i
+podklasy). Zarządzana na stronie http://pciids.sourceforge.net/, proszę użyć
+narzędzia \fBupdate\-pciids\fP aby pobrać najnowszą wersję.
+.TP 
+\fB/usr/share/misc/pci.ids.gz\fP
+Jeśli lspci jest skompilowane z obsługą kompresji, to ten plik jest
+wypróbowywany przed pci.ids.
+.TP 
+\fB~/.pciids\-cache\fP
+Wszystkie identyfikatory znalezione w trybie odpytywania DNS są
+przechowywane w tym pliku.
+
+.SH BŁĘDY
+
+Czasami lspci nie jest w stanie całkowicie zdekodować rejestrów
+konfiguracyjnych. Zdarza się to zwykle gdy autorzy nie posiadali
+wystarczającej dokumentacji. W takich przypadkach wyświetlane jest
+przynajmniej \fB<?>\fP, aby zasygnalizować, że być może da się wydobyć
+więcej informacji. Autorzy chętnie przyjmą łatki, jeśli ktoś zechce
+uzupełnić te braki.
+
+Dostęp do rozszerzonej przestrzeni konfiguracyjnej jest obecnie obsługiwany
+wyłącznie przez backend \fBlinux\-sysfs\fP.
+
+.SH "ZOBACZ TAKŻE"
+\fBsetpci\fP(8), \fBupdate\-pciids\fP(8), \fBpcilib\fP(7)
+
+.SH AUTOR
+Narzędziami PCI opiekuje się Martin Mares <mj@ucw.cz>.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.1.9 \fPoryginału.

@@ -1,0 +1,80 @@
+.\" -*- nroff -*-
+.\" Copyright 1993, 1994, 1995 by Theodore Ts'o.  All Rights Reserved.
+.\" This file may be copied under the terms of the GNU Public License.
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993-2008 Theodore Ts'o (GPL-2)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 2002.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH DUMPE2FS 8 "kwiecień 2012" "E2fsprogs wersja 1.42.2" 
+.SH NAZWA
+dumpe2fs \- zrzuca dane o systemie plików ext2/ext3/ext4
+.SH SKŁADNIA
+\fBdumpe2fs\fP [ \fB\-bfhixV\fP ] [ \fB\-o superblock=\fP\fIsuperblok\fP ] [ \fB\-o
+blocksize=\fP\fIrozmiar\-bloku\fP ] \fIurządzenie\fP
+.SH OPIS
+\fBdumpe2fs\fP wypisuje superblok i informacje grupy bloków systemu plików
+znajdującego się na urządzeniu \fIurządzenie\fP.
+.PP
+\fBUwaga:\fP Gdy program jest używany na zamontowanym systemie plików, to
+wypisane informacje mogą być nieaktualne lub niespójne.
+.SH OPCJE
+.TP 
+\fB\-b\fP
+Wypisuje bloki, które są zaznaczone jako uszkodzone.
+.TP 
+\fB\-o superblock=\fP\fIsuperblok\fP
+Używa bloku \fIsuperblok\fP podczas badania systemu plików. Ta opcja zwykle nie
+jest potrzebna z wyjątkiem eksperta systemu plików, który bada resztki po
+mocno zniszczonym systemie plików.
+.TP 
+\fB\-o bloksize=\fP\fI rozmiar\-bloku\fP
+Używa bloków o rozmiarze \fIblocksize\fP bajtów podczas badania systemu
+plików. Ta opcja zwykle nie jest potrzebna z wyjątkiem eksperta systemu
+plików, który bada resztki po mocno zniszczonym systemie plików.
+.TP 
+\fB\-f\fP
+Zmusza dumpe2fs aby wyświetlał system plików nawet wtedy, gdy może on mieć
+ustawione flagi, których dumpe2fs nie rozumie (i które mogą powodować to, że
+dumpe2fs nie chce ich wyświetlać).
+.TP  
+\fB\-h\fP
+Wyświetla tylko informacje na temat superbloku bez szczegółów o
+deskryptorach grup bloków.
+.TP 
+\fB\-i\fP
+Wyświetla dane systemu plików z obrazu znajdującego się w pliku, utworzonego
+przez \fBe2image\fP, używając \fIurządzenie\fP jako ścieżkę do pliku z obrazem.
+.TP 
+\fB\-x\fP
+Wyświetla szczegółowe informacje na temat grupy bloków w formie
+szesnastkowej.
+.TP 
+\fB\-V\fP
+Wypisuje numer wersji \fBdumpe2fs\fP i kończy działanie.
+.SH BŁĘDY
+Konieczna jest znajomość fizycznej struktury systemu plików, aby zrozumieć
+wyjście.
+.SH AUTOR
+\fBdumpe2fs\fP został napisany przez Remy'ego Carda
+<Remy.Card@linux.org>. Obecnie opiekuje się nim Theodore Ts'o
+<tytso@alum.mit.edu>.
+.SH DOSTĘPNOŚĆ
+\fBdumpe2fs\fP jest częścią pakietu e2fsprogs i jest dostępny na stronie
+http://e2fsprogs.sourceforge.net.
+.SH "ZOBACZ TAKŻE"
+\fBe2fsck\fP(8), \fBmke2fs\fP(8), \fBtune2fs\fP(8)
+
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 1.42.4 \fPoryginału.

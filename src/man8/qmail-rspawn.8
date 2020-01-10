@@ -1,0 +1,35 @@
+.\" Translation (C) 1999 Pawel Wilk <siefca@pl.qmail.org>
+.\" {PTM/PW/0.1/5-12-1999/"odkłada pocztę do zdalnego dostarczenia"}
+.TH qmail-rspawn 8
+.SH NAZWA
+qmail-rspawn \- odłóż pocztę do zdalnego dostarczenia
+.SH SKŁADNIA
+.B qmail-rspawn
+.SH OPIS
+\fI Uwaga! To tłumaczenie może być nieaktualne!\fP
+.PP
+.B qmail-rspawn
+czyta serię komend dotyczących zdalnego dostarczenia z deskryptora 0,
+wywołuje
+.B qmail-remote
+by przeprowadzić doręczanie,
+a potem wypisuje rezultaty do deskryptora 1.
+
+.B qmail-rspawn
+wywołuje
+.B qmail-remote
+asynchronicznie,
+więc rezultaty mogą być uporządkowane w innej kolejności co komendy.
+.SH "ZOBACZ TAKŻE"
+qmail-send(8),
+qmail-remote(8)
+.SH "INFORMACJE O TŁUMACZENIU"
+Powyższe tłumaczenie pochodzi z nieistniejącego już Projektu Tłumaczenia Manuali i 
+\fImoże nie być aktualne\fR. W razie zauważenia różnic między powyższym opisem
+a rzeczywistym zachowaniem opisywanego programu lub funkcji, prosimy o zapoznanie 
+się z oryginalną (angielską) wersją strony podręcznika za pomocą polecenia:
+.IP
+man \-\-locale=C 8 qmail-rspawn
+.PP
+Prosimy o pomoc w aktualizacji stron man \- więcej informacji można znaleźć pod
+adresem http://sourceforge.net/projects/manpages\-pl/.

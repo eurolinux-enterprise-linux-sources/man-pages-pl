@@ -1,0 +1,47 @@
+.\" Copyright 2002 Walter Harms (walter.harms@informatik.uni-oldenburg.de)
+.\" Distributed under GPL
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2002 Walter Harms (GPL-1)
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2005, 2006, 2012.
+.TH CTANH 3 2008\-08\-11 "" "Podręcznik programisty Linuksa"
+.SH NAZWA
+ctanh, ctanhf, ctanhl \- tangens hiperboliczny liczb zespolonych
+.SH SKŁADNIA
+\fB#include <complex.h>\fP
+.sp
+\fBdouble complex ctanh(double complex \fP\fIz\fP\fB);\fP
+.br
+\fBfloat complex ctanhf(float complex \fP\fIz\fP\fB);\fP
+.br
+\fBlong double complex ctanhl(long double complex \fP\fIz\fP\fB);\fP
+.sp
+Proszę linkować z \fI\-lm\fP.
+.SH OPIS
+Funkcja tangensa hiperbolicznego liczb zespolonych jest zdefiniowana jako:
+.nf
+
+    ctanh(z) = csinh(z) / ccosh(z)
+.fi
+.SH WERSJE
+Funkcje te pojawiły się po raz pierwszy w wersji 2.1 biblioteki glibc.
+.SH "ZGODNE Z"
+C99.
+.SH "ZOBACZ TAKŻE"
+\fBcabs\fP(3), \fBcatanh\fP(3), \fBccosh\fP(3), \fBcsinh\fP(3), \fBcomplex\fP(7)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

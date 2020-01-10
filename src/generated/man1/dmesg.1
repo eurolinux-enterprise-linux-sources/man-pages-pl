@@ -1,0 +1,125 @@
+.\" Copyright 1993 Rickard E. Faith (faith@cs.unc.edu)
+.\" May be distributed under the GNU General Public License
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993 Rickard E. Faith (GPL-1)
+.\" Copyright © of Polish translation:
+.\" Wojtek Kotwica (PTM) <wkotwica@post.pl>, 1999.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH DMESG 1 "lipiec 2011" util\-linux "Polecenia użytkownika"
+.SH NAZWA
+dmesg \- wypisuje lub steruje buforem warstwy jądra
+.SH SKŁADNIA
+\fBdmesg\fP [\fIopcje\fP]
+.sp
+\fBdmesg \-\-clear\fP
+.sp
+\fBdmesg \-\-read\-clear\fP [\fIopcje\fP]
+.sp
+\fBdmesg \-\-console\-level\fP \fIpoziom\fP
+.sp
+\fBdmesg \-\-console\-on\fP
+.sp
+\fBdmesg \-\-console\-off\fP
+.SH OPIS
+\fBdmesg\fP służy do sprawdzenia bufora warstwy jądra (kernel ring buffer) lub
+sterowania nim.
+
+Domyślnym działaniem jest odczytanie wszystkich wiadomości z bufora warstwy
+jądra.
+
+.SH OPCJE
+Żadna z opcji \fB\-\-clear\fP, \fB\-\-read\-clear\fP, \fB\-\-console\-on\fP, \fB\-\-console\-off\fP
+i \fB\-\-console\-level\fP nie wystąpić równocześnie.
+
+.IP "\fB\-C, \-\-clear\fP"
+Czyści zawartość bufora.
+.IP "\fB\-c, \-\-read\-clear\fP"
+Czyści zawartość bufora po wyświetleniu.
+.IP "\fB\-D, \-\-console\-off\fP"
+Wyłącza wypisywanie wiadomości na konsolę.
+.IP "\fB\-d, \-\-show\-delta\fP"
+Wyświetla znacznik czas oraz różnicę czasu pomiędzy komunikatami. Jeśli
+opcja ta jest używana razem z \fB\-\-notime\fP, to wypisywana jest tylko różnica
+czasu.
+.IP "\fB\-E, \-\-console\-on\fP"
+Włącza wyświetlanie wiadomości na konsolę.
+.IP "\fB\-f, \-\-facility \fP\fIlista\fP"
+Ogranicza wyjście do zdefiniowanej listy (z elementami oddzielonymi
+przecinkami) zagadnień. Na przykład
+.sp
+  dmesg \-\-facility=daemon
+.sp
+wypisze wiadomości pochodzące wyłączenie od demonów systemowych. Aby
+zapoznać się z listą obsługiwanych zagadnień, należy wykonać \fBdmesg
+\-\-help\fP.
+.IP "\fB\-h, \-\-help\fP"
+Wyświetla pomoc i wychodzi.
+.IP "\fB\-k, \-\-kernel\fP"
+Wyświetla wiadomości jądra.
+.IP "\fB\-l, \-\-level \fP\fIlista\fP"
+Ogranicza wyjście do zdefiniowanej listy (z elementami oddzielonymi
+przecinkami) poziomów. Na przykład
+.sp
+  dmesg \-\-level=err,warn
+.sp
+wypisze jedynie błędy i ostrzeżenia. Aby zapoznać się z listą obsługiwanych
+poziomów, należy wykonać \fBdmesg \-\-help\fP.
+.IP "\fB\-n, \-\-console\-level \fP\fIpoziom\fP"
+Ustawia \fIpoziom\fP na którym odbywa się rejestrowanie komunikatów na
+konsoli. Za \fIpoziom\fP należy podstawić numer poziomu lub skróconą nazwę
+poziomu. Aby zapoznać się z listą obsługiwanych poziomów, należy wykonać
+\fBdmesg \-\-help\fP.
+.sp
+Na przykład, \fB\-n 1\fP lub \fB\-n alert\fP zapobiega pojawianiu się na konsoli
+wszelkich komunikatów poza awaryjnymi (panic). Wszystkie poziomy komunikatów
+są nadal zapisywane do \fI/proc/kmsg\fP, zatem wciąż można posługiwać się
+\fBsyslogd\fP(8) do dokładnej kontroli, gdzie pojawiają się komunikaty
+jądra. Gdy używana jest opcja \fB\-n\fP, to \fBdmesg\fP \fInie\fP wyświetla ani nie
+czyści bufora warstwy jądra.
+.IP "\fB\-r, \-\-raw\fP"
+Wyświetla surowy bufor wiadomości np. nie przycina przedrostków poziomu
+dziennika.
+.IP "\fB\-s, \-\-buffer\-size \fP\fIrozmiar\fP"
+Do odpytania bufora jądra używa bufora o podanej \fIwielkości\fP Domyślnie jest
+to 16392 (domyślny rozmiar bufora syslog jądra wynosił początkowo 4096, 8192
+od wersji 1.3.54 i 16384 od wersji 2.1.113). Jeśli użytkownik ustawił bufor
+jądra większy od domyślnego, to można posłużyć się tą opcją do
+przeglądnięcia całego bufora.
+.IP "\fB\-T, \-\-ctime\fP"
+Wypisuje znaczniki czasu w formie czytelnej dla człowieka. Mogą one być
+niedokładne!
+
+\fBŹródło czasu używane do dzienników nie jest aktualizowane po
+uśpieniu/wznowieniu systemu.\fP
+.IP "\fB\-t, \-\-notime\fP"
+Nie wypisuje znaczników czasu jądra.
+.IP "\fB\-u, \-\-userspace\fP"
+Wypisuje wiadomości z przestrzeni użytkownika.
+.IP "\fB\-V, \-\-version\fP"
+Wyświetla informacje o wersji i wychodzi.
+.IP "\fB\-x, \-\-decode\fP"
+Dekoduje numer zagadnienia (ang. facility) i poziomu (priorytetu) do
+przedrostków czytelnych dla człowieka.
+.SH "ZOBACZ TAKŻE"
+\fBsyslogd\fP(8)
+.SH AUTORZY
+.nf
+Karel Zak <kzak@redhat.com>
+Theodore Ts'o <tytso@athena.mit.edu>
+.fi
+.SH DOSTĘPNOŚĆ
+Polecenie dmesg jest częścią pakietu util\-linux i jest dostępne pod adresem
+ftp://ftp.kernel.org/pub/linux/utils/util\-linux/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Wojtek Kotwica (PTM) <wkotwica@post.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.20.1 \fPoryginału.

@@ -1,0 +1,2015 @@
+# Polish translation of man-pages.7 man page
+# This file is distributed under the same license as original manpage
+# Copyright of the original manpage:
+# Copyright © 1992-1999 Rickard E. Faith, David A. Wheeler, 2007 Michael Kerrisk ("manpages-1")
+# Copyright © of Polish translation:
+# Przemek Borys (PTM) <pborys@p-soft.silesia.linux.org.pl>, 1998.
+# Robert Luberda <robert@debian.org>, 2006, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-pl\n"
+"POT-Creation-Date: 2012-05-13 19:07+0300\n"
+"PO-Revision-Date: 2012-04-25 23:07+0200\n"
+"Last-Translator: Robert Luberda <robert@debian.org>\n"
+"Language-Team: Polish <manpages-pl-list@lists.sourceforge.net>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+
+#. type: TH
+#, no-wrap
+msgid "MAN-PAGES"
+msgstr "MAN-PAGES"
+
+#. type: TH
+#, no-wrap
+msgid "2008-10-28"
+msgstr "2008-10-28"
+
+#. type: TH
+#, no-wrap
+msgid "Linux"
+msgstr "Linux"
+
+#. type: TH
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr "Podręcznik programisty Linuksa"
+
+#. type: SH
+#, no-wrap
+msgid "NAME"
+msgstr "NAZWA"
+
+#. type: Plain text
+msgid "man-pages - conventions for writing Linux man pages"
+msgstr "man-pages - konwencje pisania linuksowych stron podręcznika ekranowego"
+
+#. type: SH
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "SKŁADNIA"
+
+#. type: Plain text
+msgid "B<man> [I<section>] I<title>"
+msgstr "B<man> [I<sekcja>] I<tytuł>"
+
+#. type: SH
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "OPIS"
+
+#. type: Plain text
+msgid ""
+"This page describes the conventions that should be employed when writing man "
+"pages for the Linux I<man-pages> project, which comprises Sections 2, 3, 4, "
+"5, and 7 of the Linux manual pages.  The conventions described on this page "
+"may also be useful for authors writing man pages for other projects."
+msgstr ""
+"Strona opisuje konwencje, do których powinno się stosować podczas pisania "
+"stron podręcznika ekranowego dla projektu Linux I<man-pages>, który zawiera "
+"sekcje 2, 3, 4, 5 i 7 stron linuksowego podręcznika. Konwencje opisane tutaj "
+"mogą się także przydać autorom podręczników z innych projektów."
+
+#. type: SS
+#, no-wrap
+msgid "Sections of the Manual Pages"
+msgstr "Sekcje stron podręcznika ekranowego"
+
+#. type: Plain text
+msgid "The manual Sections are traditionally defined as follows:"
+msgstr "Sekcje podręcznika man są tradycyjnie definiowane następująco:"
+
+#. type: TP
+#, no-wrap
+msgid "B<1 Commands (Programs)>"
+msgstr "B<1 Komendy (programy)>"
+
+#. type: Plain text
+msgid "Those commands that can be executed by the user from within a shell."
+msgstr "Te komendy mogą być wykonywane przez użytkownika z powłoki."
+
+#. type: TP
+#, no-wrap
+msgid "B<2 System calls>"
+msgstr "B<2 Wywołania systemowe>"
+
+#. type: Plain text
+msgid "Those functions which must be performed by the kernel."
+msgstr "Te funkcje muszą być obsługiwane przez jądro."
+
+#. type: TP
+#, no-wrap
+msgid "B<3 Library calls>"
+msgstr "B<3 Wywołania biblioteczne>"
+
+#. type: Plain text
+msgid "Most of the I<libc> functions."
+msgstr "Większość funkcji I<libc>."
+
+#. type: TP
+#, no-wrap
+msgid "B<4 Special files (devices)>"
+msgstr "B<4 Pliki specjalne (urządzenia)>"
+
+#. type: Plain text
+msgid "Files found in I</dev>."
+msgstr "Pliki, które można znaleźć w I</dev>."
+
+#. type: TP
+#, no-wrap
+msgid "B<5 File formats and conventions>"
+msgstr "B<5 Formaty plików i konwencje>"
+
+#. type: Plain text
+msgid "The format for I</etc/passwd> and other human-readable files."
+msgstr ""
+"Format dla pliku I</etc/passwd> i innych nadających się do odczytu przez "
+"człowieka."
+
+#. type: TP
+#, no-wrap
+msgid "B<6 Games>"
+msgstr "B<6 Gry>"
+
+#. type: TP
+#, no-wrap
+msgid "B<7 Conventions and miscellaneous>"
+msgstr "B<7 Konwencje i różnorodne>"
+
+#. type: Plain text
+msgid ""
+"Overviews of various topics, conventions and protocols, character set "
+"standards, and miscellaneous other things."
+msgstr ""
+"Przegląd różnych tematów, konwencje, protokoły, standardy kodowania znaków i "
+"inne."
+
+#. type: TP
+#, no-wrap
+msgid "B<8 System management commands>"
+msgstr "B<8 Polecenia do zarządzania systemem>"
+
+#.  .TP
+#.  .B 9 Kernel routines
+#.  This is an obsolete manual section.
+#.  Once it was thought a good idea to document the Linux kernel here,
+#.  but in fact very little has been documented, and the documentation
+#.  that exists is outdated already.
+#.  There are better sources of
+#.  information for kernel developers.
+#. type: Plain text
+msgid "Commands like B<mount>(8), many of which only root can execute."
+msgstr "Komendy takie, jak B<mount>(8), które wywoływać może tylko root ."
+
+#. type: SS
+#, no-wrap
+msgid "Macro package"
+msgstr "Pakiety makr"
+
+#. type: Plain text
+msgid ""
+"New manual pages should be marked up using the B<groff an.tmac> package "
+"described in B<man>(7).  This choice is mainly for consistency: the vast "
+"majority of existing Linux manual pages are marked up using these macros."
+msgstr ""
+"Nowe strony podręcznika powinny być pisane z użyciem pakietu makr B<groff an."
+"tmac> opisanego w B<man>(7). Wybór ten podyktowany jest zachowaniem "
+"spójności: przytłaczająca większość istniejących podręczników linuksowych "
+"używa tego pakietu makr."
+
+#. type: SS
+#, no-wrap
+msgid "Conventions for source file layout"
+msgstr "Konwencje wyglądu pliku źródłowego"
+
+#. type: Plain text
+msgid ""
+"Please limit source code line length to no more than about 75 characters "
+"wherever possible.  This helps avoid line-wrapping in some mail clients when "
+"patches are submitted inline."
+msgstr ""
+"Prosimy ograniczać długość linii kodu źródłowego do maksymalnie 75 znaków, "
+"jeśli jest to możliwe. Pomaga to unikać zawijania wierszy w niektórych "
+"programach pocztowych podczas przesyłania łat do podręczników ekranowych."
+
+#. type: Plain text
+msgid ""
+"New sentences should be started on new lines.  This makes it easier to see "
+"the effect of patches, which often operate at the level of individual "
+"sentences."
+msgstr ""
+"Nowe zdania powinny zaczynać się w nowych liniach. Upraszcza to oglądanie "
+"efektów łat, które często operują na poziomie poszczególnych zdań."
+
+#. type: SS
+#, no-wrap
+msgid "Title line"
+msgstr "Linia tytułowa"
+
+#. type: Plain text
+msgid "The first command in a man page should be a B<TH> command:"
+msgstr "Pierwszą komendą strony podręcznika powinno być polecenie B<TH>:"
+
+#. type: Plain text
+msgid "B<\\&.TH> I<title section date source manual>"
+msgstr "B<\\&.TH> I<tytuł sekcja data źródło podręcznik>"
+
+#. type: Plain text
+msgid "where:"
+msgstr "gdzie:"
+
+#. type: TP
+#, no-wrap
+msgid "I<title>"
+msgstr "I<tytuł>"
+
+#. type: Plain text
+msgid "The title of the man page, written in all caps (e.g., I<MAN-PAGES>)."
+msgstr ""
+"Tytuł strony podręcznika, pisany w całości dużymi literami (np. I<MAN-"
+"PAGES>)."
+
+#. type: TP
+#, no-wrap
+msgid "I<section>"
+msgstr "I<sekcja>"
+
+#. type: Plain text
+msgid "The section number in which the man page should be placed (e.g., I<7>)."
+msgstr "Numer sekcji, w której strona powinna się znaleźć (np. I<7>)."
+
+#. type: TP
+#, no-wrap
+msgid "I<date>"
+msgstr "I<data>"
+
+#. type: Plain text
+msgid ""
+"The date of the last revision\\(emremember to change this every time a "
+"change is made to the man page, since this is the most general way of doing "
+"version control.  Dates should be written in the form YYYY-MM-DD."
+msgstr ""
+"Data ostatniej wersji strony \\(em prosimy pamiętać o uaktualnianiu jej po "
+"każdej zmianie strony podręcznika, ponieważ jest to najpopularniejsza droga "
+"kontrolowania wersji. Daty powinny być zapisywane w postaci RRRR-MM-DD."
+
+#. type: TP
+#, no-wrap
+msgid "I<source>"
+msgstr "I<źródło>"
+
+#. type: Plain text
+msgid "The source of the command, function, or system call."
+msgstr "Źródło polecenia, funkcji lub wywołania systemowego."
+
+#. type: Plain text
+msgid ""
+"For those few I<man-pages> pages in Sections 1 and 8, probably you just want "
+"to write I<GNU>."
+msgstr ""
+"Dla tych kilku stron z pakietu I<man-pages> znajdujących się w sekcjach 1. i "
+"8., najprawdopodobniej należy podać I<GNU>. "
+
+#. type: Plain text
+msgid ""
+"For system calls, just write I<Linux>.  (An earlier practice was to write "
+"the version number of the kernel from which the manual page was being "
+"written/checked.  However, this was never done consistently, and so was "
+"probably worse than including no version number.  Henceforth, avoid "
+"including a version number.)"
+msgstr ""
+"Dla wywołań systemowych najodpowiedniejsze będzie I<Linux>. (Wcześniej "
+"praktykowano dodawanie numeru wersji jądra, dla której strona podręcznika "
+"została napisana lub zaktualizowana. Nigdy jednak nie zachowano spójności w "
+"robieniu tego, co było najprawdopodobniej gorsze niż niedołączanie numeru "
+"wersji. Dlatego też prosimy unikać dołączania numeru wersji)."
+
+#. type: Plain text
+msgid ""
+"For library calls that are part of glibc or one of the other common GNU "
+"libraries, just use I<GNU C Library>, I<GNU>, or an empty string."
+msgstr ""
+"Dla wywołań bibliotecznych będących częścią biblioteki glibc lub innych "
+"powszechnie używanych bibliotek GNU, należy użyć I<GNU C library>, I<GNU> "
+"lub pustego łańcucha znaków."
+
+#. type: Plain text
+msgid "For Section 4 pages, use I<Linux>."
+msgstr "Dla stron w sekcji 4., należy użyć I<Linux>."
+
+#. type: Plain text
+msgid "In cases of doubt, just write I<Linux>, or I<GNU>."
+msgstr "W razie wątpliwości, prosimy użyć I<Linux> lub I<GNU>."
+
+#. type: TP
+#, no-wrap
+msgid "I<manual>"
+msgstr "I<podręcznik>"
+
+#. type: Plain text
+msgid ""
+"The title of the manual (e.g., for Section 2 and 3 pages in the I<man-pages> "
+"package, use I<Linux Programmer's Manual>)."
+msgstr ""
+"Tytuł podręcznika (np. w sekcjach 2. i 3. stron z pakietu I<man-pages> "
+"prosimy używać I<Linux Programmer's Manual>  (tj. I<Podręcznik programisty "
+"Linuksa>))."
+
+#. type: SS
+#, no-wrap
+msgid "Sections within a manual page"
+msgstr "Rozdziały stron podręcznika"
+
+#. type: Plain text
+msgid ""
+"The list below shows conventional or suggested sections.  Most manual pages "
+"should include at least the B<highlighted> sections.  Arrange a new manual "
+"page so that sections are placed in the order shown in the list."
+msgstr ""
+"Poniższa lista pokazuje rozdziały konwencjonalne lub sugerowane. Większość "
+"stron podręcznika powinna zawierać przynajmniej I<wyróżnione> rozdziały. "
+"Prosimy pisać nowe strony podręcznika w taki sposób, by rozdziały pojawiały "
+"się w takiej kolejności, w jakiej są podane na liście."
+
+#.  May 07: Few current man pages have an ERROR HANDLING section,,,
+#.  ERROR HANDLING,
+#.  May 07: Almost no current man pages have a USAGE section,,,
+#.  USAGE,
+#.  DIAGNOSTICS,
+#.  May 07: Almost no current man pages have a SECURITY section,,,
+#.  SECURITY,
+#.  AUTHORS sections are discouraged
+#.  AUTHORS             [Discouraged]
+#. type: Plain text
+#, no-wrap
+msgid ""
+"B<NAME>\n"
+"B<SYNOPSIS>\n"
+"CONFIGURATION      [Normally only in Section 4]\n"
+"B<DESCRIPTION>\n"
+"OPTIONS            [Normally only in Sections 1, 8]\n"
+"EXIT STATUS        [Normally only in Sections 1, 8]\n"
+"RETURN VALUE       [Normally only in Sections 2, 3]\n"
+"ERRORS             [Typically only in Sections 2, 3]\n"
+"ENVIRONMENT\n"
+"FILES\n"
+"VERSIONS           [Normally only in Sections 2, 3]\n"
+"CONFORMING TO\n"
+"NOTES\n"
+"BUGS\n"
+"EXAMPLE\n"
+"B<SEE ALSO>\n"
+msgstr ""
+"B<NAZWA>               (B<NAME>)\n"
+"B<SKŁADNIA>            (B<SYNOPSIS>)\n"
+"KONFIGURACJA        (CONFIGURATION) [Normalnie tylko w sekcji 4.]\n"
+"B<OPIS>                (B<DESCRIPTION>)\n"
+"OPCJE               (OPTIONS)       [Normalnie tylko w sekcjach 1., 8.]\n"
+"KOD ZAKOŃCZENIA     (EXIT STATUS)   [Normalnie tylko w sekcjach 1., 8.]\n"
+"WARTOŚĆ ZWRACANA    (RETURN VALUE)  [Normalnie tylko w sekcjach 2., 3.]\n"
+"BŁĘDY               (ERRORS)        [Zazwyczaj tylko w sekcjach 2., 3.]\n"
+"ŚRODOWISKO          (ENVIRONMENT)\n"
+"PLIKI               (FILES)\n"
+"WERSJE              (VERSIONS)      [Normalnie tylko w sekcjach 2., 3.]\n"
+"ZGODNE Z            (CONFORMING TO)\n"
+"UWAGI               (NOTES)\n"
+"BŁĘDY [IMPLEMENTACJI] (BUGS)\n"
+"PRZYKŁAD            (EXAMPLE)\n"
+"B<ZOBACZ TAKŻE>        (B<SEE ALSO>)\n"
+
+#. type: Plain text
+msgid ""
+"I<Where a traditional heading would apply>, I<please use it>; this kind of "
+"consistency can make the information easier to understand.  If you must, you "
+"can create your own headings if they make things easier to understand (this "
+"can be especially useful for pages in Sections 4 and 5).  However, before "
+"doing this, consider whether you could use the traditional headings, with "
+"some subsections (I<.SS>) within those sections."
+msgstr ""
+"W celu zachowania spójności i dla lepszego zrozumienia przekazywanych "
+"informacji I<prosimy używać zwyczajowych nagłówków wszędzie>, I<gdzie mają "
+"zastosowanie>. Jeśli jest to konieczne, można użyć własnych nagłówków, "
+"zwłaszcza gdy sprawią, że tekst łatwiej będzie zrozumieć (może być to "
+"szczególnie użyteczne w sekcjach 4. i 5.). Jednakże zanim użyje się własnych "
+"nagłówków, prosimy rozważyć użycie nagłówków zwyczajowych i umieszczenie "
+"podrozdziałów (I<.SS>) w rozdziałach opisanych tymi nagłówkami."
+
+#. type: Plain text
+msgid ""
+"The following list elaborates on the contents of each of the above sections."
+msgstr "Poniżej opisujemy zawartość każdej z powyższych sekcji."
+
+#. type: TP
+#, no-wrap
+msgid "B<NAME>"
+msgstr "B<NAZWA>"
+
+#. type: Plain text
+msgid ""
+"The name of this manual page.  See B<man>(7)  for important details of the "
+"line(s) that should follow the B<.SH NAME> command."
+msgstr ""
+"Nazwa tej strony podręcznika. Istotne informacje na temat zawartości i "
+"formatu linii następujących po B<.SH NAZWA> można znaleźć w  B<man>(7)."
+
+#. type: TP
+#, no-wrap
+msgid "B<SYNOPSIS>"
+msgstr "B<SKŁADNIA>"
+
+#. type: Plain text
+msgid ""
+"briefly describes the command or function's interface.  For commands, this "
+"shows the syntax of the command and its arguments (including options); "
+"boldface is used for as-is text and italics are used to indicate replaceable "
+"arguments.  Brackets ([]) surround optional arguments, vertical bars (|)  "
+"separate choices, and ellipses (\\&...) can be repeated.  For functions, it "
+"shows any required data declarations or B<#include> directives, followed by "
+"the function declaration."
+msgstr ""
+"Krótko opisuje interfejs polecenia lub funkcji. W przypadku poleceń pokazuje "
+"składnię polecenia i jego argumenty (łącznie z opcjami); pogrubienie jest "
+"używane dla tekstu wpisywanego dosłownie, a kursywa oznacza zastępowalne "
+"argumenty. Nawiasy kwadratowe ([]) otaczają argumenty opcjonalne, linie "
+"pionowe (|) rozdzielają możliwe wybory, a wielokropek (\\&...) oznacza "
+"możliwość powtarzania. W wypadku funkcji pokazuje wszystkie wymagane "
+"deklaracje danych lub dyrektywy B<#include>, po których następuje deklaracja "
+"funkcji."
+
+#.  FIXME . Say something here about compiler options
+#. type: Plain text
+msgid ""
+"Where a feature test macro must be defined in order to obtain the "
+"declaration of a function (or a variable) from a header file, then the "
+"SYNOPSIS should indicate this, as described in B<feature_test_macros>(7)."
+msgstr ""
+"Jeżeli do uzyskania deklaracji funkcji (lub zmiennej) z pliku nagłówkowego "
+"wymagane jest zdefiniowanie makra testującego, to informacja o tym powinna "
+"zostać umieszczona w rozdziale SKŁADNIA (SYNOPSIS), tak jak to opisano w "
+"B<feature_test_macros>(7)."
+
+#. type: TP
+#, no-wrap
+msgid "B<CONFIGURATION>"
+msgstr "B<KONFIGURACJA>"
+
+#. type: Plain text
+msgid ""
+"Configuration details for a device.  This section normally only appears in "
+"Section 4 pages."
+msgstr ""
+"Szczegóły konfiguracji urządzenia. Ta sekcja zazwyczaj występuje tylko w 4. "
+"sekcji stron podręcznika ekranowego."
+
+#. type: TP
+#, no-wrap
+msgid "B<DESCRIPTION>"
+msgstr "B<OPIS>"
+
+#.  If there is some kind of input grammar or complex set of subcommands,
+#.  consider describing them in a separate
+#.  .B USAGE
+#.  section (and just place an overview in the
+#.  .B DESCRIPTION
+#.  section).
+#. type: Plain text
+msgid ""
+"gives an explanation of what the program, function, or format does.  Discuss "
+"how it interacts with files and standard input, and what it produces on "
+"standard output or standard error.  Omit internals and implementation "
+"details unless they're critical for understanding the interface.  Describe "
+"the usual case; for information on command-line options of a program use the "
+"B<OPTIONS> section."
+msgstr ""
+"opisuje, co robi dany program, funkcja lub format. Objaśnia interakcję z "
+"plikami i standardowym wejściem oraz wartości zwracane na standardowym "
+"wyjściu i standardowym wyjściu błędów. Pomijane są szczegóły dotyczące "
+"implementacji i rzeczy wewnętrzne programu, chyba że są istotne dla "
+"zrozumienia interfejsu programu. Opisuje normalne przypadki użycia; "
+"objaśnienie opcji powinno się znaleźć w rozdziale B<OPCJE>. "
+
+#. type: TP
+#, no-wrap
+msgid "B<OPTIONS>"
+msgstr "B<OPCJE>"
+
+#.  .TP
+#.  .B USAGE
+#.  describes the grammar of any sublanguage this implements.
+#. type: Plain text
+msgid ""
+"describes the command-line options accepted by a program and how they change "
+"its behavior.  This section should only appear for Section 1 and 8 manual "
+"pages."
+msgstr ""
+"Opisuje opcje linii poleceń akceptowane przez program oraz sposób, w jaki "
+"wpływają na jego zachowanie. Rozdział powinien się pojawiać tylko w sekcjach "
+"1. i 8. stron podręcznika ekranowego."
+
+#. type: TP
+#, no-wrap
+msgid "B<EXIT STATUS>"
+msgstr "B<KOD WYJŚCIA>"
+
+#. type: Plain text
+msgid ""
+"lists the possible exit status values of a program and the conditions that "
+"cause these values to be returned.  This section should only appear for "
+"Section 1 and 8 manual pages."
+msgstr ""
+"Określa możliwe wartości kodów zakończenia programu oraz warunki, które "
+"powodują zwrócenie tych wartości. Rozdział powinien się pojawiać tylko w "
+"sekcjach 1. i 8. stron podręcznika ekranowego."
+
+#. type: TP
+#, no-wrap
+msgid "B<RETURN VALUE>"
+msgstr "B<WARTOŚĆ ZWRACANA>"
+
+#. type: Plain text
+msgid ""
+"For Section 2 and 3 pages, this section gives a list of the values the "
+"library routine will return to the caller and the conditions that cause "
+"these values to be returned."
+msgstr ""
+"W sekcjach 2. i 3. stron podręcznika, rozdział ten określa listę wartości, "
+"które opisywana funkcja biblioteczna zwróci funkcji ją wywołującej, oraz "
+"warunki, w których dana wartość będzie zwracana."
+
+#. type: TP
+#, no-wrap
+msgid "B<ERRORS>"
+msgstr "B<BŁĘDY>"
+
+#. type: Plain text
+msgid ""
+"For Section 2 and 3 manual pages, this is a list of the values that may be "
+"placed in I<errno> in the event of an error, along with information about "
+"the cause of the errors.  I<The error list should be in alphabetical order>."
+msgstr ""
+"W sekcjach 2. i 3. stron podręcznika jest to lista wartości, które mogą być "
+"przypisane zmiennej I<errno> w razie wystąpienia błędu, łącznie z "
+"informacjami o przyczynach tego błędu. I<Elementy listy powinny być "
+"wymienione w porządku alfabetycznym>."
+
+#. type: TP
+#, no-wrap
+msgid "B<ENVIRONMENT>"
+msgstr "B<ŚRODOWISKO>"
+
+#. type: Plain text
+msgid ""
+"lists all environment variables that affect the program or function and how "
+"they affect it."
+msgstr ""
+"Zawiera opis wszystkich zmiennych środowiskowych, wpływających na program i "
+"opisuje ten wpływ."
+
+#. type: TP
+#, no-wrap
+msgid "B<FILES>"
+msgstr "B<PLIKI>"
+
+#.  May 07: Almost no current man pages have a DIAGNOSTICS section;
+#.          "RETURN VALUE" or "EXIT STATUS" is preferred.
+#.  .TP
+#.  .B DIAGNOSTICS
+#.  gives an overview of the most common error messages and how to
+#.  cope with them.
+#.  You don't need to explain system error messages
+#.  or fatal signals that can appear during execution of any program
+#.  unless they're special in some way to the program.
+#.  May 07: Almost no current man pages have a SECURITY section.
+#. .TP
+#. .B SECURITY
+#. discusses security issues and implications.
+#. Warn about configurations or environments that should be avoided,
+#. commands that may have security implications, and so on, especially
+#. if they aren't obvious.
+#. Discussing security in a separate section isn't necessary;
+#. if it's easier to understand, place security information in the
+#. other sections (such as the
+#.  .B DESCRIPTION
+#.  or
+#.  .B USAGE
+#.  section).
+#.  However, please include security information somewhere!
+#. type: Plain text
+msgid ""
+"lists the files the program or function uses, such as configuration files, "
+"startup files, and files the program directly operates on.  Give the full "
+"pathname of these files, and use the installation process to modify the "
+"directory part to match user preferences.  For many programs, the default "
+"installation location is in I</usr/local>, so your base manual page should "
+"use I</usr/local> as the base."
+msgstr ""
+"Zawiera listę plików używanych przez  program lub funkcję, takich jak pliki "
+"konfiguracyjne, pliki uruchomieniowe oraz pliki używane w czasie działania "
+"programu. Należy podać pełną ścieżkę do pliku, w której podczas instalacji "
+"powinno się zmodyfikować katalogi, tak żeby odpowiadały preferencjom "
+"użytkownika. Wiele programów domyślnie instaluje się w I</usr/local>, tak że "
+"strona podręcznika powinna używać I</usr/local> jako podstawowego katalogu."
+
+#. type: TP
+#, no-wrap
+msgid "B<VERSIONS>"
+msgstr "B<WERSJE>"
+
+#. type: Plain text
+msgid ""
+"A brief summary of the Linux kernel or glibc versions where a system call or "
+"library function appeared, or changed significantly in its operation.  As a "
+"general rule, every new interface should include a VERSIONS section in its "
+"manual page.  Unfortunately, many existing manual pages don't include this "
+"information (since there was no policy to do so when they were written).  "
+"Patches to remedy this are welcome, but, from the perspective of programmers "
+"writing new code, this information probably only matters in the case of "
+"kernel interfaces that have been added in Linux 2.4 or later (i.e., changes "
+"since kernel 2.2), and library functions that have been added to glibc since "
+"version 2.1 (i.e., changes since glibc 2.0)."
+msgstr ""
+"Krótkie podsumowanie wersji jądra Linuksa lub biblioteki glibc, w której to "
+"wersji opisywane wywołanie systemowe lub funkcja biblioteczna się pojawiły "
+"lub ich działanie zostało znacząco zmienione. Z zasady każda strona "
+"podręcznika opisująca nowy interfejs powinna zawierać rozdział WERSJE "
+"(VERSIONS). Niestety wiele istniejących stron nie dołącza tych informacji "
+"(gdyż nie było to wymagane w czasie pisania tych stron). Chętnie przyjmiemy "
+"łaty poprawiające ten problem, jednakże z perspektywy programisty informacje "
+"o wersji mają najprawdopodobniej znaczenie tylko w przypadku interfejsów "
+"jądra dodanych w Linuksie 2.4 lub kolejnych (tj. zmiany w stosunku do jądra "
+"2.2) oraz w przypadku funkcji bibliotecznych dołożonych do glibc od wersji "
+"2.1 (tj. zmiany w stosunku do wersji 2.0)."
+
+#. type: Plain text
+msgid ""
+"The B<syscalls>(2)  manual page also provides information about kernel "
+"versions in which various system calls first appeared."
+msgstr ""
+"Strona podręcznika B<syscalls>(2) także dostarcza informacji o wersjach "
+"jądra, w których pojawiły się różne wywołania systemowe."
+
+#. type: TP
+#, no-wrap
+msgid "B<CONFORMING TO>"
+msgstr "B<ZGODNE Z>"
+
+#. type: Plain text
+msgid ""
+"describes any standards or conventions that relate to the function or "
+"command described by the manual page.  For a page in Section 2 or 3, this "
+"section should note the POSIX.1 version(s) that the call conforms to, and "
+"also whether the call is specified in C99.  (Don't worry too much about "
+"other standards like SUS, SUSv2, and XPG, or the SVr4 and 4.xBSD "
+"implementation standards, unless the call was specified in those standards, "
+"but isn't in the current version of POSIX.1.)  (See B<standards>(7).)"
+msgstr ""
+"Opisuje standardy lub konwencje związane z opisywaną w podręczniku funkcją "
+"lub opisywanym poleceniem. Strony w sekcjach 2. i 3. powinny wskazywać na "
+"wersje standardu POSIX.1, z którymi są zgodne opisywane w nich wywołania "
+"oraz informować o tym, czy wywołanie jest opisane w standardzie C99 (Prosimy "
+"nie przejmować się zbytnio innymi standardami jak SUS, SUSv2 i XPG  lub "
+"standardami implementacji SVr4 lub BSD 4.x, chyba że wywołanie jest opisane "
+"w tych standardach, ale nie w bieżącej wersji standardu POSIX.1) (Patrz "
+"także B<standards>(7))."
+
+#. type: Plain text
+msgid ""
+"If the call is not governed by any standards but commonly exists on other "
+"systems, note them.  If the call is Linux-specific, note this."
+msgstr ""
+"Jeśli wywołanie nie jest zamieszczone w żadnym standardzie, ale zwyczajowo "
+"istnieje w innych systemach, prosimy wymienić te systemy. Jeśli wywołanie "
+"jest specyficzne dla Linuksa, również należy o tym poinformować."
+
+#. type: Plain text
+msgid ""
+"If this section consists of just a list of standards (which it commonly "
+"does), terminate the list with a period (\\(aq.\\(aq)."
+msgstr ""
+"Jeśli rozdział zawiera tylko i wyłącznie listę standardów (a tak jest "
+"zazwyczaj), lista ta powinna być zakończona kropką (\".\")."
+
+#. type: TP
+#, no-wrap
+msgid "B<NOTES>"
+msgstr "B<UWAGI>"
+
+#. type: Plain text
+msgid ""
+"provides miscellaneous notes.  For Section 2 and 3 man pages you may find it "
+"useful to include subsections (B<SS>) named I<Linux Notes> and I<Glibc "
+"Notes>."
+msgstr ""
+"Zawiera różnorodne uwagi. W sekcjach 2. i 3. stron podręcznika ekranowego "
+"może być użyteczne podzielenie tego rozdziału na podrozdziały (B<SS>) "
+"nazywane I<Uwagi linuksowe> i I<Uwagi dotyczące biblioteki glibc>."
+
+#. type: TP
+#, no-wrap
+msgid "B<BUGS>"
+msgstr "B<BŁĘDY>"
+
+#. type: Plain text
+msgid ""
+"lists limitations, known defects or inconveniences, and other questionable "
+"activities."
+msgstr ""
+"Opisuje ograniczenia, znane usterki lub niedogodności oraz inne "
+"problematyczne aktywności."
+
+#. type: TP
+#, no-wrap
+msgid "B<EXAMPLE>"
+msgstr "B<PRZYKŁAD>"
+
+#. type: Plain text
+msgid ""
+"provides one or more examples describing how this function, file or command "
+"is used.  For details on writing example programs, see I<Example Programs> "
+"below."
+msgstr ""
+"Dostarcza jednego lub więcej przykładów opisujących, jak funkcja, plik lub "
+"polecenie są używane. Szczegóły dotyczące pisania przykładowych programów "
+"opisano w sekcji I<Przykładowe programy> poniżej."
+
+#. type: TP
+#, no-wrap
+msgid "B<AUTHORS>"
+msgstr "B<AUTORZY>"
+
+#. type: Plain text
+msgid ""
+"lists authors of the documentation or program.  B<Use of an AUTHORS section "
+"is strongly discouraged>.  Generally, it is better not to clutter every page "
+"with a list of (over time potentially numerous) authors; if you write or "
+"significantly amend a page, add a copyright notice as a comment in the "
+"source file.  If you are the author of a device driver and want to include "
+"an address for reporting bugs, place this under the BUGS section."
+msgstr ""
+"Lista autorów dokumentacji lub programu. B<Używanie sekcji AUTORZY nie jest "
+"zalecane>. Ogólnie lepiej jest nie zaśmiecać każdej strony (z upływem czasu "
+"coraz większą) listą autorów. Podczas pisania lub znaczącego zmieniania "
+"strony podręcznika, należy umieścić informacje o prawach autorskich jako "
+"komentarz w stronie źródłowej. Autorzy sterowników urządzeń, którzy "
+"chcieliby podać adres, pod którym należy zgłaszać błędy, powinny umieścić go "
+"w rozdziale BŁĘDY (BUGS)."
+
+#. type: TP
+#, no-wrap
+msgid "B<SEE ALSO>"
+msgstr "B<ZOBACZ TAKŻE>"
+
+#. type: Plain text
+msgid ""
+"provides a comma-separated list of related man pages, ordered by section "
+"number and then alphabetically by name, possibly followed by other related "
+"pages or documents.  Do not terminate this with a period."
+msgstr ""
+"Zawiera rozdzieloną przecinkami listę powiązanych stron podręcznika, "
+"posortowaną po numerze sekcji, a następnie alfabetycznie po nazwie. Po nich "
+"mogą występować inne powiązane strony lub dokumenty. Nie należy umieszczać "
+"kropki na końcu listy."
+
+#. type: SS
+#, no-wrap
+msgid "Font conventions"
+msgstr "Konwencje czcionek"
+
+#. type: Plain text
+msgid ""
+"For functions, the arguments are always specified using italics, I<even in "
+"the SYNOPSIS section>, where the rest of the function is specified in bold:"
+msgstr ""
+"Dla funkcji, argumenty zawsze są podawane kursywą, I<nawet w rozdziale "
+"SKŁADNIA>, w którym reszta funkcji jest wydrukowana w pogrubieniu:"
+
+#. type: Plain text
+msgid "B< int myfunction(int >I<argc>B<, char **>I<argv>B<);>"
+msgstr "B< int myfunction(int >I<argc>B<, char **>I<argv>B<);>"
+
+#. type: Plain text
+msgid "Variable names should, like argument names, be specified in italics."
+msgstr ""
+"Nazwy zmiennych podobnie jak nazwy argumentów powinny być pisane kursywą."
+
+#. type: Plain text
+msgid ""
+"Filenames (whether pathnames, or references to files in the I</usr/include> "
+"directory)  are always in italics (e.g., I<E<lt>stdio.hE<gt>>), except in "
+"the SYNOPSIS section, where included files are in bold (e.g., B<#include "
+"E<lt>stdio.hE<gt>>).  When referring to a standard include file under I</usr/"
+"include>, specify the header file surrounded by angle brackets, in the usual "
+"C way (e.g., I<E<lt>stdio.hE<gt>>)."
+msgstr ""
+"Nazwy plików (niezależnie od tego, czy są pełnymi ścieżkami czy "
+"odniesieniami do plików w katalogu I</usr/include>) są zawsze pisane kursywą "
+"(np. I<E<lt>stdio.hE<gt>>), z wyjątkiem nazw występujących w rozdziale "
+"SKŁADNIA (SYNOPSIS), w którym pliki dołączane są wyróżniane pogrubieniem "
+"(np. B<#include E<lt>stdio.hE<gt>>). Odwołania do standardowych plików "
+"dołączanych znajdujących się w I</usr/include> powinny zawierać nazwę pliku "
+"nagłówkowego w nawiasach trójkątnych, tak jak to jest przyjęte w języku C "
+"(np. I<E<lt>stdio.hE<gt>>)."
+
+#. type: Plain text
+msgid ""
+"Special macros, which are usually in upper case, are in bold (e.g., "
+"B<MAXINT>).  Exception: don't boldface NULL."
+msgstr ""
+"Makra specjalne, które są zwykle pisane dużymi literami, są pogrubiane (np.  "
+"B<MAXINT>). Wyjątek: nie pogrubiamy słowa NULL."
+
+#. type: Plain text
+msgid ""
+"When enumerating a list of error codes, the codes are in bold (this list "
+"usually uses the B<\\&.TP> macro)."
+msgstr ""
+"Podczas wyliczania listy kodów błędów, kody są pogrubiane (taka lista zwykle "
+"używa makra B<\\&.TP).>"
+
+#. type: Plain text
+msgid ""
+"Complete commands should, if long, be written as in an indented line on "
+"their own, for example"
+msgstr ""
+"Pełne polecenia, jeśli są długie, powinny być zapisywane w nowych liniach "
+"odpowiednio wciętych, na przykład:"
+
+#. type: Plain text
+#, no-wrap
+msgid "man 7 man-pages\n"
+msgstr "man 7 man-pages\n"
+
+#. type: Plain text
+msgid ""
+"If the command is short, then it can be included inline in the text, in "
+"italic format, for example, I<man 7 man-pages>.  In this case, it may be "
+"worth using nonbreaking spaces (\"\\e\\ \") at suitable places in the "
+"command.  Command options should be written in italics, e.g., I<-l>."
+msgstr ""
+"Jeśli polecenie jest krótkie, to może być zawarte bezpośrednio w tekście "
+"zdania i napisane kursywą, na przykład I<man 7 man-pages>. W tym wypadku, "
+"można rozważyć użycie w odpowiednich miejscach polecenia spacji "
+"nierozdzielających (\"\\e\\ \"). Opcje polecenia powinny być zapisywane "
+"kursywą, np. I<-l>."
+
+#. type: Plain text
+msgid ""
+"Expressions, if not written on a separate indented line, should be specified "
+"in italics.  Again, the use of nonbreaking spaces may be appropriate if the "
+"expression is inlined with normal text."
+msgstr ""
+"Wyrażenia, jeśli nie są zapisywane w osobnych, wciętych liniach, powinny być "
+"podawane kursywą. Ponownie, jeśli wyrażenie jest włączone do zwykłego "
+"tekstu, to właściwe może być używanie spacji nierozdzielających w tym "
+"wyrażeniu."
+
+#. type: Plain text
+msgid ""
+"Any reference to the subject of the current manual page should be written "
+"with the name in bold.  If the subject is a function (i.e., this is a "
+"Section 2 or 3 page), then the name should be followed by a pair of "
+"parentheses in Roman (normal) font.  For example, in the B<fcntl>(2)  man "
+"page, references to the subject of the page would be written as: B<fcntl>"
+"().  The preferred way to write this in the source file is:"
+msgstr ""
+"Każde odwołanie do programu, funkcji itp. będących tematem bieżącej strony "
+"podręcznika, powinno nazwę zapisaną czcionką pogrubioną. Jeśli tematem jest "
+"funkcja (tj. bieżąca strona  pochodzi z sekcji 2. lub 3.), to po nazwie "
+"powinna występować para nawiasów zapisanych czcionką roman (zwykłą). Na "
+"przykład w stronie podręcznika B<fcntl>(2) odwołania do tematu tej strony "
+"będą zapisane jako B<fcntl>(). Preferowanym sposobem zapisania tego w pliku "
+"źródłowym strony jest:"
+
+#. type: Plain text
+#, no-wrap
+msgid "    .BR fcntl ()\n"
+msgstr "    .BR fcntl ()\n"
+
+#. type: Plain text
+msgid ""
+"(Using this format, rather than the use of \"\\efB...\\efP()\" makes it "
+"easier to write tools that parse man page source files.)"
+msgstr ""
+"(Używanie tego formatu zamiast \"\\efB...\\efP()\" upraszcza pisanie "
+"narzędzi przetwarzających pliki źródłowe stron podręcznika ekranowego)."
+
+#. type: Plain text
+msgid ""
+"Any reference to another man page should be written with the name in bold, "
+"I<always> followed by the section number, formatted in Roman (normal) font, "
+"without any separating spaces (e.g., B<intro>(2)).  The preferred way to "
+"write this in the source file is:"
+msgstr ""
+"Wszelkie odwołania do innych stron podręcznika powinny być pisane przy "
+"użyciu pogrubionej czcionki dla nazwy strony, po której - bez rozdzielania "
+"spacjami - I<zawsze> powinien następować numer sekcji pisany czcionką zwykłą "
+"(niepogrubioną), np. B<intro>(2). Preferowany sposób zapisania tego w kodzie "
+"źródłowym strony jest następujący:"
+
+#. type: Plain text
+#, no-wrap
+msgid "    .BR intro (2)\n"
+msgstr "    .BR intro (2)\n"
+
+#. type: Plain text
+msgid ""
+"(Including the section number in cross references lets tools like B<man2html>"
+"(1)  create properly hyperlinked pages.)"
+msgstr ""
+"(Dodawanie numerów sekcji w odwołaniach pozwala narzędziom takim jak "
+"B<man2html>(1) na utworzenie stron zawierających poprawne odnośniki "
+"hipertekstowe)."
+
+#. type: SS
+#, no-wrap
+msgid "Spelling"
+msgstr "Pisownia"
+
+#. type: Plain text
+msgid ""
+"Starting with release 2.59, I<man-pages> follows American spelling "
+"conventions; please write all new pages and patches according to these "
+"conventions."
+msgstr ""
+"Od wersji 2.59 pakiet I<man-pages> używa pisowni amerykańskiej. Prosimy "
+"przestrzegać tej konwencji dotyczącej pisowni we wszystkich nowo pisanych "
+"stronach podręcznika ekranowego i podczas przesyłania nam łat do "
+"istniejących stron."
+
+#. type: SS
+#, no-wrap
+msgid "Example Programs and Shell Sessions"
+msgstr "Przykładowe programy i sesje powłoki"
+
+#. type: Plain text
+msgid ""
+"Manual pages can include example programs demonstrating how to use a system "
+"call or library function.  However, note the following:"
+msgstr ""
+"Strony podręcznika mogą zawierać przykładowe programy pokazujące, jak używać "
+"wywołania systemowego lub funkcji bibliotecznej. Jednakże proszę zauważyć, "
+"że:"
+
+#. type: TP
+#, no-wrap
+msgid "*"
+msgstr "*"
+
+#. type: Plain text
+msgid "Example programs should be written in C."
+msgstr "Przykładowe programy powinny być pisane w języku C."
+
+#. type: Plain text
+msgid ""
+"An example program is only necessary and useful if it demonstrates something "
+"beyond what can easily be provided in a textual description of the "
+"interface.  An example program that does nothing other than call an "
+"interface usually serves little purpose."
+msgstr ""
+"Zamieszczenie programu przykładowego jest konieczne i użyteczne tylko wtedy, "
+"gdy program ten pokazuje coś, czego nie można w prosty sposób zawrzeć w "
+"tekstowym opisie demonstrowanego interfejsu. Program przykładowy nie robiący "
+"nic poza wywoływaniem funkcji interfejsu zazwyczaj nie ma większego sensu."
+
+#. type: Plain text
+msgid ""
+"Example programs should be fairly short (preferably less than 100 lines; "
+"ideally less than 50 lines)."
+msgstr ""
+"Przykładowy program powinien być raczej krótki (dobrze by było, gdyby miał "
+"mniej niż 100 linii, idealnie - mniej niż 50 linii)."
+
+#. type: Plain text
+msgid ""
+"Example programs should do error checking after system calls and library "
+"function calls."
+msgstr ""
+"Przykładowe programy nie powinny sprawdzać błędów wywołań systemowych czy "
+"funkcji bibliotecznych."
+
+#. type: Plain text
+msgid ""
+"Example programs should be complete, and compile without warnings when "
+"compiled with I<cc\\ -Wall>."
+msgstr ""
+"Przykładowe programy powinny być kompletne i powinny się kompilować za "
+"pomocą I<cc\\ -Wall> bez wypisywania żadnych ostrzeżeń."
+
+#. type: Plain text
+msgid ""
+"Where possible and appropriate, example programs should allow "
+"experimentation, by varying their behavior based on inputs (ideally from "
+"command-line arguments, or alternatively, via input read by the program)."
+msgstr ""
+"Kiedy tylko to możliwe i właściwe, programy przykładowe powinny pozwalać na "
+"eksperymenty, różnicując swoje zachowanie zależnie od wejścia (idealnie "
+"pochodzącego z argumentów linii poleceń lub alternatywnie z wejścia "
+"czytanego przez program)."
+
+#. type: Plain text
+msgid ""
+"Example programs should be laid out according to Kernighan and Ritchie "
+"style, with 4-space indents.  (Avoid the use of TAB characters in source "
+"code!)"
+msgstr ""
+"Przykładowe programy powinny być sformatowane w stylu \"Kernighan & Ritchie"
+"\" z wcięciami o rozmiarze czterech spacji. (Nie należy używać znaków "
+"tabulacji w kodzie źródłowym!)"
+
+#. type: Plain text
+msgid ""
+"For some examples of what example programs should look like, see B<wait>(2)  "
+"and B<pipe>(2)."
+msgstr ""
+"Przykłady wyglądu przykładowych programów można znaleźć w B<wait>(2) i "
+"B<pipe>(2)."
+
+#. type: Plain text
+msgid ""
+"If you include a shell session demonstrating the use of a program or other "
+"system feature, boldface the user input text, to distinguish it from output "
+"produced by the system."
+msgstr ""
+"Włączając sesję powłoki pokazującą użycie programu lub innej właściwości "
+"systemu, należy używać czcionki pogrubionej dla tekstu wprowadzanego przez "
+"użytkownika, tak aby odróżnić go od tekstu produkowanego przez system."
+
+#. type: SS
+#, no-wrap
+msgid "Indentation of structure definitions, shell session logs, etc."
+msgstr "Wcięcia definicji struktur, logów sesji powłoki itp."
+
+#. type: Plain text
+msgid ""
+"When structure definitions, shell session logs, etc. are included in running "
+"text, indent them by 4 spaces (i.e., a block enclosed by I<.in\\ +4n> and I<."
+"in>)."
+msgstr ""
+"Definicje struktur, logi z sesji powłoki itp dołączane do tekstu powinny "
+"zawierać wcięcia o długości 4 spacji (tj. powinny być umieszczone w bloku "
+"otoczonym przez  I<.in\\ +4n> i I<.in>)."
+
+#. type: SH
+#, no-wrap
+msgid "EXAMPLE"
+msgstr "PRZYKŁAD"
+
+#. type: Plain text
+msgid ""
+"For canonical examples of how man pages in the I<man-pages> package should "
+"look, see B<pipe>(2)  and B<fcntl>(2)."
+msgstr ""
+"Wzorcowymi przykładami tego, jak powinny wyglądać strony podręczników z "
+"pakietu I<man-pages>, są strony B<pipe>(2) i B<fcntl>(2)."
+
+#. type: SH
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "ZOBACZ TAKŻE"
+
+#. type: Plain text
+msgid ""
+"B<man>(1), B<man2html>(1), B<groff>(7), B<groff_man>(7), B<man>(7), B<mdoc>"
+"(7)"
+msgstr ""
+"B<man>(1), B<man2html>(1), B<groff>(7), B<groff_man>(7), B<man>(7), B<mdoc>"
+"(7)"
+
+#. type: SH
+#, no-wrap
+msgid "COLOPHON"
+msgstr "O STRONIE"
+
+#. type: Plain text
+msgid ""
+"This page is part of release 3.40 of the Linux I<man-pages> project.  A "
+"description of the project, and information about reporting bugs, can be "
+"found at http://www.kernel.org/doc/man-pages/."
+msgstr ""
+"Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux I<man-"
+"pages>.  Opis projektu oraz informacje dotyczące zgłaszania błędów można "
+"znaleźć pod adresem http://www.kernel.org/doc/man-pages/."
+
+#~ msgid "MAN"
+#~ msgstr "MAN"
+
+#~ msgid "2007-05-30"
+#~ msgstr "2007-05-30"
+
+#~ msgid "B<groff -Tascii -man> I<file> \\&..."
+#~ msgstr "B<groff -Tascii -man> I<plik> \\&..."
+
+#~ msgid "B<groff -Tps -man> I<file> \\&..."
+#~ msgstr "B<groff -Tps -man> I<plik> \\&..."
+
+#, fuzzy
+#~| msgid ""
+#~| "This manual page explains the B<groff tmac.an> macro package (often "
+#~| "called the B<man> macro package) and related conventions for creating "
+#~| "manual (man) pages.  This macro package should be used by developers "
+#~| "when writing or porting man pages for Linux.  It is fairly compatible "
+#~| "with other versions of this macro package, so porting man pages should "
+#~| "not be a major problem (exceptions include the NET-2 BSD release, which "
+#~| "uses a totally different macro package called mdoc; see B<mdoc>(7))."
+#~ msgid ""
+#~ "This manual page explains the B<groff an.tmac> macro package (often "
+#~ "called the B<man> macro package).  This macro package should be used by "
+#~ "developers when writing or porting man pages for Linux.  It is fairly "
+#~ "compatible with other versions of this macro package, so porting man "
+#~ "pages should not be a major problem (exceptions include the NET-2 BSD "
+#~ "release, which uses a totally different macro package called mdoc; see "
+#~ "B<mdoc>(7))."
+#~ msgstr ""
+#~ "Ta strona podręcznika opisuje pakiet makr B<groff tmac.an> (często "
+#~ "nazywany pakietem makr B<man>) oraz odpowiadające mu konwencje tworzenia "
+#~ "stron podręcznika (man). Pakiet tych makr powinien być używany przez "
+#~ "deweloperów, kiedy piszą lub przenoszą strony man dla Linuksa. Jest on w "
+#~ "pełni kompatybilny z innymi wersjami tego pakietu, więc przenoszenie "
+#~ "stron nie powinno być głównym problemem (wyjątki włączają NET-2 BSD, "
+#~ "które używa całkiem innego pakietu makr zwanego mdoc; patrz B<mdoc>(7))."
+
+#~ msgid ""
+#~ "Note that NET-2 BSD mdoc man pages can be used with B<groff> simply by "
+#~ "specifying the B<-mdoc> option instead of the B<-man> option.  Using the "
+#~ "B<-mandoc> option is, however, recommended, since this will automatically "
+#~ "detect which macro package is in use."
+#~ msgstr ""
+#~ "Proszę zauważyć, że strony NET-2 BSD mogą być użyte z B<groff>em przez "
+#~ "proste podanie opcji B<-mdoc> zamiast zwykłej B<-man>. Jednakże bardziej "
+#~ "zalecane jest używanie opcji B<-mandoc>, ponieważ wybierze ona "
+#~ "automatycznie odpowiedni zestaw makr."
+
+#, fuzzy
+#~| msgid "The first command in a man page (after comment lines) should be"
+#~ msgid ""
+#~ "The first command in a man page (after comment lines, that is, lines that "
+#~ "start with B<.\\e\">) should be"
+#~ msgstr "Pierwszą komendą na stronie man (po liniach komentarza) powinna być"
+
+#~ msgid ""
+#~ "Note that BSD mdoc-formatted pages begin with the B<Dd> command, not the "
+#~ "B<TH> command."
+#~ msgstr ""
+#~ "Proszę zauważyć, że strony formatowane za pomocą makr BSD mdoc "
+#~ "rozpoczynają się od polecenia B<Dd>, a nie B<TH>."
+
+#~ msgid "\\&.SH NAME"
+#~ msgstr "\\&.SH NAZWA"
+
+#~ msgid ""
+#~ "It is extremely important that this format is followed, and that there is "
+#~ "a backslash before the single dash which follows the command name.  This "
+#~ "syntax is used by the B<makewhatis>(8)  program to create a database of "
+#~ "short command descriptions for the B<whatis>(1)  and B<apropos>(1)  "
+#~ "commands."
+#~ msgstr ""
+#~ "Jest niesamowicie ważne, aby używać tego formatu, oraz że występuje "
+#~ "odwrotny ukośnik przed kreską po nazwie komendy. Ta składnia (angielska, "
+#~ "gdzie NAZWA to NAME)  jest wykorzystywana przez program B<makewhatis>(8) "
+#~ "do tworzenia bazy krótkich opisów komend dla programu B<whatis>(1) i "
+#~ "B<apropos>(1)."
+
+#~ msgid "Fonts"
+#~ msgstr "Czcionki"
+
+#~ msgid "The commands to select the type face are:"
+#~ msgstr "Komendy do wyboru czcionki są następujące:"
+
+#~ msgid "B<\\&.B>"
+#~ msgstr "B<\\&.B>"
+
+#~ msgid "Bold"
+#~ msgstr "Pogrubienie"
+
+#~ msgid "B<\\&.BI>"
+#~ msgstr "B<\\&.BI>"
+
+#~ msgid ""
+#~ "Bold alternating with italics (especially useful for function "
+#~ "specifications)"
+#~ msgstr ""
+#~ "Pogrubienie na przemian z kursywą (szczególnie użytecznie w specyfikacji "
+#~ "funkcji)"
+
+#~ msgid "B<\\&.BR>"
+#~ msgstr "B<\\&.BR>"
+
+#~ msgid ""
+#~ "Bold alternating with Roman (especially useful for referring to other "
+#~ "manual pages)"
+#~ msgstr ""
+#~ "Pogrubienie na przemian z czcionką Roman (szczególnie użyteczne w "
+#~ "odnośnikach do innych stron podręcznika)"
+
+#~ msgid "B<\\&.I>"
+#~ msgstr "B<\\&.I>"
+
+#~ msgid "Italics"
+#~ msgstr "Kursywa"
+
+#~ msgid "B<\\&.IB>"
+#~ msgstr "B<\\&.IB>"
+
+#~ msgid "Italics alternating with bold"
+#~ msgstr "Kursywa naprzemiennie z pogrubieniem"
+
+#~ msgid "B<\\&.IR>"
+#~ msgstr "B<\\&.IR>"
+
+#~ msgid "Italics alternating with Roman"
+#~ msgstr "Kursywa naprzemiennie z fontem roman"
+
+#~ msgid "B<\\&.RB>"
+#~ msgstr "B<\\&.RB>"
+
+#~ msgid "Roman alternating with bold"
+#~ msgstr "Font roman naprzemiennie z pogrubieniem"
+
+#~ msgid "B<\\&.RI>"
+#~ msgstr "B<\\&.RI>"
+
+#~ msgid "Roman alternating with italics"
+#~ msgstr "Czcionka roman naprzemiennie z kursywą"
+
+#~ msgid "B<\\&.SB>"
+#~ msgstr "B<\\&.SB>"
+
+#~ msgid "Small alternating with bold"
+#~ msgstr "Mały font naprzemiennie z pogrubieniem"
+
+#~ msgid "B<\\&.SM>"
+#~ msgstr "B<\\&.SM>"
+
+#~ msgid "Small (useful for acronyms)"
+#~ msgstr "Mała (użyteczne dla akronimów)"
+
+#~ msgid ""
+#~ "Traditionally, each command can have up to six arguments, but the GNU "
+#~ "implementation removes this limitation (you might still want to limit "
+#~ "yourself to 6 arguments for portability's sake).  Arguments are delimited "
+#~ "by spaces.  Double quotes can be used to specify an argument which "
+#~ "contains spaces.  All of the arguments will be printed next to each other "
+#~ "without intervening spaces, so that the B<\\&.BR> command can be used to "
+#~ "specify a word in bold followed by a mark of punctuation in Roman.  If no "
+#~ "arguments are given, the command is applied to the following line of text."
+#~ msgstr ""
+#~ "Tradycyjnie, każda komenda może mieć do sześciu argumentów, lecz wersja "
+#~ "GNU wydaje się znosić to ograniczenie (wciąż jednak można rozważyć "
+#~ "wprowadzenie limitu 6 argumentów w celu zachowania kompatybilności). "
+#~ "Argumenty są oddzielane spacjami.  Podwójne cudzysłowy mogą być używane "
+#~ "do określania argumentów ze spacjami. Wszystkie argumenty zostaną "
+#~ "wydrukowane obok siebie, bez wtrąconych spacji, tak że komenda B<\\&.BR> "
+#~ "może zostać użyta do podania słowa pogrubionego, po którym następuje znak "
+#~ "interpunkcyjny w foncie Roman. Jeżeli nie podano żadnych argumentów, "
+#~ "polecenie stosuje się do linii tekstu następującej po nim."
+
+#~ msgid "Other Macros and Strings"
+#~ msgstr "Inne makra i łańcuchy znaków"
+
+#, fuzzy
+#~| msgid ""
+#~| "Below are other relevant macros and predefined strings.  Unless noted "
+#~| "otherwise, all macros cause a break (end the current line of text).  "
+#~| "Many of these macros set or use the \"prevailing indent.\" The "
+#~| "\"prevailing indent\" value is set by any macro with the parameter I<i> "
+#~| "below; macros may omit I<i> in which case the current prevailing indent "
+#~| "will be used.  As a result, successive indented paragraphs can use the "
+#~| "same indent without re-specifying the indent value.  A normal (non-"
+#~| "indented) paragraph resets the prevailing indent value to its default "
+#~| "value (0.5 inches).  By default a given indent is measured in ens; try "
+#~| "to use ens or ems as units for indents, since these will automatically "
+#~| "adjust to font size changes.  The other key macro definitions are:"
+#~ msgid ""
+#~ "Below are other relevant macros and predefined strings.  Unless noted "
+#~ "otherwise, all macros cause a break (end the current line of text).  Many "
+#~ "of these macros set or use the \"prevailing indent.\" The \"prevailing "
+#~ "indent\" value is set by any macro with the parameter I<i> below; macros "
+#~ "may omit I<i> in which case the current prevailing indent will be used.  "
+#~ "As a result, successive indented paragraphs can use the same indent "
+#~ "without respecifying the indent value.  A normal (nonindented) paragraph "
+#~ "resets the prevailing indent value to its default value (0.5 inches).  By "
+#~ "default a given indent is measured in ens; try to use ens or ems as units "
+#~ "for indents, since these will automatically adjust to font size changes.  "
+#~ "The other key macro definitions are:"
+#~ msgstr ""
+#~ "Poniżej przedstawiono inne makra i predefiniowane łańcuchy znaków. Jeżeli "
+#~ "nie podano inaczej, wszystkie makra powodują przerwę (zakończenie "
+#~ "bieżącej linii tekstu). Wiele z tych makr ustawia lub używa wartości "
+#~ "\"powszechnego wcięcia\". Wartość ta jest ustawiana przez każde makro "
+#~ "przyjmujące parametr I<i>; makra mogą pomijać I<i>, co oznacza, że będzie "
+#~ "używana bieżąca wartość \"powszechnego wcięcia\". W wyniku tego kolejne "
+#~ "wcięte akapity mogą używać tej samej wartości wcięcia bez jej "
+#~ "każdorazowego podawania. Zwykły (niewcięty) akapit ustawia wcięcie na "
+#~ "jego domyślną wartość (0.5 cala). Domyślnie wcięcie jest wyrażone w ens "
+#~ "[szerokość litery \"n\"]; zaleca się używanie ens lub ems jako jednostek "
+#~ "wcięcia, ponieważ automatycznie dostosują się do zmian rozmiaru czcionki. "
+#~ "Inne kluczowe definicje makr są następujące:"
+
+#~ msgid "Normal Paragraphs"
+#~ msgstr "Zwykłe akapity"
+
+#~ msgid "B<\\&.LP>"
+#~ msgstr "B<\\&.LP>"
+
+#~ msgid "Same as B<\\&.PP> (begin a new paragraph)."
+#~ msgstr "To samo, co B<\\&.PP> (rozpoczęcie nowego akapitu)."
+
+#~ msgid "B<\\&.P>"
+#~ msgstr "B<\\&.P>"
+
+#~ msgid "B<\\&.PP>"
+#~ msgstr "B<\\&.PP>"
+
+#~ msgid "Begin a new paragraph and reset prevailing indent."
+#~ msgstr "Rozpoczęcie nowego akapitu i usunięcie bieżącego wcięcia."
+
+#~ msgid "Relative Margin Indent"
+#~ msgstr "Początek wiszącego wcięcia"
+
+#~ msgid "B<\\&.RS>I< i>"
+#~ msgstr "B<\\&.RS>I< i>"
+
+#~ msgid ""
+#~ "Start relative margin indent: moves the left margin I<i> to the right (if "
+#~ "I<i> is omitted, the prevailing indent value is used).  A new prevailing "
+#~ "indent is set to 0.5 inches.  As a result, all following paragraph(s) "
+#~ "will be indented until the corresponding B<\\&.RE>."
+#~ msgstr ""
+#~ "Rozpoczyna relatywne wcięcie marginesu: przesuwa lewy margines o I<i> w "
+#~ "prawo (jeżeli pominięto I<i>, to używana jest wartość \"powszechnego "
+#~ "wcięcia\"). Wartość \"powszechnego wcięcia\" ustawiana na 0.5 cala. W "
+#~ "wyniku wcinane będą wszystkie kolejne akapity, aż do napotkania "
+#~ "odpowiadającego B<\\&.RE>."
+
+#~ msgid "B<\\&.RE>"
+#~ msgstr "B<\\&.RE>"
+
+#~ msgid ""
+#~ "End relative margin indent and restores the previous value of the "
+#~ "prevailing indent."
+#~ msgstr ""
+#~ "Kończy relatywne wcięcie marginesu i ustawia poprzednią wartość wcięcia."
+
+#~ msgid "Indented Paragraph Macros"
+#~ msgstr "Makra wcięć akapitów"
+
+#~ msgid "B<\\&.HP>I< i>"
+#~ msgstr "B<\\&.HP>I< i>"
+
+#~ msgid ""
+#~ "Begin paragraph with a hanging indent (the first line of the paragraph is "
+#~ "at the left margin of normal paragraphs, and the rest of the paragraph's "
+#~ "lines are indented)."
+#~ msgstr ""
+#~ "Rozpoczyna akapit od wiszącego wcięcia (pierwsza linia akapitu znajduje "
+#~ "się przy lewym marginesie w stosunku do zwykłych akapitów, a pozostałe "
+#~ "akapitu linie są wcięte)."
+
+#~ msgid "B<\\&.IP>I< x i>"
+#~ msgstr "B<\\&.IP>I< x i>"
+
+#~ msgid ""
+#~ "Indented paragraph with optional hanging tag.  If the tag I<x> is "
+#~ "omitted, the entire following paragraph is indented by I<i>.  If the tag "
+#~ "I<x> is provided, it is hung at the left margin before the following "
+#~ "indented paragraph (this is just like B<\\&.TP> except the tag is "
+#~ "included with the command instead of being on the following line).  If "
+#~ "the tag is too long, the text after the tag will be moved down to the "
+#~ "next line (text will not be lost or garbled).  For bulleted lists, use "
+#~ "this macro with \\e(bu (bullet) or \\e(em (em dash)  as the tag, and for "
+#~ "numbered lists, use the number or letter followed by a period as the tag; "
+#~ "this simplifies translation to other formats."
+#~ msgstr ""
+#~ "Wcięty akapit z opcjonalnym wiszącym znacznikiem. Jeżeli pominięto "
+#~ "znacznik I<x>, to cały następujący akapit będzie wcięty o I<i>. Jeżeli "
+#~ "podano znacznik I<x>, to będzie on umieszczony zaraz przy lewym "
+#~ "marginesie przed następującym po nim wciętym akapitem (podobnie jak to "
+#~ "robi B<\\&.TP> poza tym, że znacznik jest umieszczony przy poleceniu, a "
+#~ "nie w kolejnej linii). Jeżeli znacznik jest zbyt długi to tekst po "
+#~ "znaczniku będzie przeniesiony do kolejnej linii (tekst nie będzie "
+#~ "usunięty ani zniekształcony). Dla list nienumerowanych, należy użyć tego "
+#~ "makra, podając jako znacznik (bu (kula) or \\e(em (myślnik), a dla list "
+#~ "numerowanych należy w znaczniku podać liczbę lub cyfrę, po której "
+#~ "następuje kropka; ułatwi to przetworzenie do innych formatów."
+
+#~ msgid "B<\\&.TP>I< i>"
+#~ msgstr "B<\\&.TP>I< i>"
+
+#~ msgid ""
+#~ "Begin paragraph with hanging tag.  The tag is given on the next line, but "
+#~ "its results are like those of the B<\\&.IP> command."
+#~ msgstr ""
+#~ "Rozpoczyna akapit z wiszącym znacznikiem. Znacznik jest podawany w "
+#~ "następnej linii.  Wyniki są podobne do B<\\&.IP>"
+
+#~ msgid "Hypertext Link Macros"
+#~ msgstr "Makra odnośników hipertekstowych"
+
+#~ msgid ""
+#~ "(Feature supported with B<groff> only.)  In order to use hypertext link "
+#~ "macros, it is necessary to load the B<www.tmac> macro package.  Use the "
+#~ "request B<.mso www.tmac> to do this."
+#~ msgstr ""
+#~ "(Cecha obsługiwana tylko przez B<groff>a). Aby użyć makr łączy "
+#~ "hipertekstowych, potrzebne jest załadowanie pakietu makr B<www.tmac>. Aby "
+#~ "to zrobić, należy użyć żądania B<.mso www.tmac>."
+
+#~ msgid "B<\\&.URL>I< url link trailer>"
+#~ msgstr "B<\\&.URL>I< url link trailer>"
+
+#, fuzzy
+#~| msgid ""
+#~| "Inserts a hypertext link to the URI (URL)  I<url>, with I<link> as the "
+#~| "text of the link.  The I<trailer> will be printed immediately "
+#~| "afterwards.  When generating HTML this should translate into the HTML "
+#~| "command B<E<lt>A HREF=\">I<url>B<\"E<gt>>I<link>B<E<lt>/"
+#~| "AE<gt>>I<trailer>B<.>"
+#~ msgid ""
+#~ "Inserts a hypertext link to the URI (URL)  I<url>, with I<link> as the "
+#~ "text of the link.  The I<trailer> will be printed immediately afterward.  "
+#~ "When generating HTML this should translate into the HTML command B<E<lt>A "
+#~ "HREF=\">I<url>B<\"E<gt>>I<link>B<E<lt>/AE<gt>>I<trailer>B<.>"
+#~ msgstr ""
+#~ "Wstawia odnośnik hipertekstowy do lokalizacji URI (URL) I<uri>, z "
+#~ "I<linkiem> jako tekstem odnośnika, a zaraz po nim będzie wypisany "
+#~ "I<trailer>. Generując HTML-a, powinno się to przetłumaczyć jako "
+#~ "następujące polecenie HTML-a: B<E<lt>A HREF=\">I<url>B<"
+#~ "\"E<gt>>I<link>B<E<lt>/AE<gt>>I<trailer>B<.>"
+
+#~ msgid ""
+#~ "This and other related macros are new, and many tools won't do anything "
+#~ "with them, but since many tools (including troff) will simply ignore "
+#~ "undefined macros (or at worst insert their text) these are safe to insert."
+#~ msgstr ""
+#~ "Te i inne podobne makra są nowe, tak więc wiele narzędzi ich nie "
+#~ "obsługuje, ale ponieważ wiele narzędzi (włącznie z troffem) po prostu "
+#~ "zignoruje niezdefiniowane makra (albo w gorszym przypadku wstawi własny "
+#~ "tekst), więc można bezpiecznie używać tych makr."
+
+#~ msgid ""
+#~ "It can be useful to define your own B<URL> macro in manual pages for the "
+#~ "benefit of those viewing it with a roff viewer other than B<groff>.  That "
+#~ "way, the URL, link text, and trailer text (if any) are still visible."
+#~ msgstr ""
+#~ "Może być użyteczne zdefiniowanie własnego makra B<URL> w stronach "
+#~ "podręcznika ekranowego, aby dać możliwość oglądania ich w programach "
+#~ "innych niż B<groff>. Tym sposobem URL, tekst odnośnika i podpisu będzie "
+#~ "widoczny."
+
+#~ msgid "Here's an example:"
+#~ msgstr "Oto przykład:"
+
+#~ msgid "\\&.de URL"
+#~ msgstr "\\&.de URL"
+
+#~ msgid "\\e\\e$2 \\e(laURL: \\e\\e$1 \\e(ra\\e\\e$3"
+#~ msgstr "\\e\\e$2 \\e(laURL: \\e\\e$1 \\e(ra\\e\\e$3"
+
+#~ msgid "\\&.."
+#~ msgstr "\\&.."
+
+#~ msgid "\\&.if \\en[.g] .mso www.tmac"
+#~ msgstr "\\&.if \\en[.g] .mso www.tmac"
+
+#~ msgid "\\&.TH I<...>"
+#~ msgstr "\\&.TH I<...>"
+
+#~ msgid "I<(later in the page)>"
+#~ msgstr "I<(później na stronie)>"
+
+#~ msgid "This software comes from the"
+#~ msgstr "Ten program pochodzi z"
+
+#~ msgid "\\&.URL \"http://www.gnu.org/\" \"GNU Project\" \" of the\""
+#~ msgstr "\\&.URL \"http://www.gnu.org/\" \"Projektu GNU\" \" z\""
+
+#~ msgid "\\&.URL \"http://www.fsf.org/\" \"Free Software Foundation\" ."
+#~ msgstr "\\&.URL \"http://www.fsf.org/\" \"Free Software Foundation\" ."
+
+#~ msgid ""
+#~ "In the above, if B<groff> is being used, the B<www.tmac> macro package's "
+#~ "definition of the URL macro will supersede the locally defined one."
+#~ msgstr ""
+#~ "W powyższym przypadku, jeśli używany jest B<groff>, to definicja makra "
+#~ "URL z pakietu B<www.tmac> nadpisze makro zdefiniowane lokalnie."
+
+#~ msgid ""
+#~ "A number of other link macros are available.  See B<groff_www>(7)  for "
+#~ "more details."
+#~ msgstr ""
+#~ "Dostępna są także inne makra dla odnośników. Patrz B<groff_www>(7) po "
+#~ "dalsze informacje."
+
+#~ msgid "Miscellaneous Macros"
+#~ msgstr "Różnorodne makra"
+
+#~ msgid "B<\\&.DT>"
+#~ msgstr "B<\\&.DT>"
+
+#~ msgid ""
+#~ "Reset tabs to default tab values (every 0.5 inches); does not cause a "
+#~ "break."
+#~ msgstr ""
+#~ "Ustawia tabulację na jej domyślną wartość (co każde pół cala); nie "
+#~ "powoduje przerwy."
+
+#~ msgid "B<\\&.PD>I< d>"
+#~ msgstr "B<\\&.PD>I< d>"
+
+#~ msgid ""
+#~ "Set inter-paragraph vertical distance to d (if omitted, d=0.4v); does not "
+#~ "cause a break."
+#~ msgstr ""
+#~ "Ustawia odległość między wierszami w akapicie (jeśli pominięto, to "
+#~ "d=0.4v); nie powoduje przerwy."
+
+#~ msgid "B<\\&.SS>I< t>"
+#~ msgstr "B<\\&.SS>I< t>"
+
+#~ msgid ""
+#~ "Subheading I<t> (like B<\\&.SH>, but used for a subsection inside a "
+#~ "section)."
+#~ msgstr "Pod-nagłówek I<t> (jak B<\\&.SH>, lecz używane do podsekcji)"
+
+#~ msgid "Predefined Strings"
+#~ msgstr "Predefiniowane łańcuch znaków"
+
+#~ msgid "The B<man> package has the following predefined strings:"
+#~ msgstr "Pakiet B<man> zawiera następujące predefiniowane łańcuchy znaków:"
+
+#~ msgid "\\e*R"
+#~ msgstr "\\e*R"
+
+#~ msgid "Registration Symbol: \\*R"
+#~ msgstr "Symbol rejestracji: \\*R"
+
+#~ msgid "\\e*S"
+#~ msgstr "\\e*S"
+
+#~ msgid "Change to default font size"
+#~ msgstr "Zmienia domyślny rozmiar czcionki"
+
+#~ msgid "\\e*(Tm"
+#~ msgstr "\\e*(Tm"
+
+#~ msgid "Trademark Symbol: \\*(Tm"
+#~ msgstr "Symbol znaku towarowego: \\*(Tm"
+
+#~ msgid "\\e*(lq"
+#~ msgstr "\\e*(lq"
+
+#, fuzzy
+#~| msgid "Left angled doublequote: ``"
+#~ msgid "Left angled double quote: ``"
+#~ msgstr "Lewy cudzysłów: ``"
+
+#~ msgid "\\e*(rq"
+#~ msgstr "\\e*(rq"
+
+#, fuzzy
+#~| msgid "Right angled doublequote: ''"
+#~ msgid "Right angled double quote: ''"
+#~ msgstr "Prawy cudzysłów: ''"
+
+#~ msgid ""
+#~ "Although technically B<man> is a troff macro package, in reality a large "
+#~ "number of other tools process man page files that don't implement all of "
+#~ "troff's abilities.  Thus, it's best to avoid some of troff's more exotic "
+#~ "abilities where possible to permit these other tools to work correctly.  "
+#~ "Avoid using the various troff preprocessors (if you must, go ahead and "
+#~ "use B<tbl>(1), but try to use the B<IP> and B<TP> commands instead for "
+#~ "two-column tables).  Avoid using computations; most other tools can't "
+#~ "process them.  Use simple commands that are easy to translate to other "
+#~ "formats.  The following troff macros are believed to be safe (though in "
+#~ "many cases they will be ignored by translators): B<\\e\">, B<.>, B<ad>, "
+#~ "B<bp>, B<br>, B<ce>, B<de>, B<ds>, B<el>, B<ie>, B<if>, B<fi>, B<ft>, "
+#~ "B<hy>, B<ig>, B<in>, B<na>, B<ne>, B<nf>, B<nh>, B<ps>, B<so>, B<sp>, "
+#~ "B<ti>, B<tr>."
+#~ msgstr ""
+#~ "Chociaż z technicznego punktu widzenia B<man> jest pakietem makr troffa, "
+#~ "to w rzeczywistości strony podręcznika ekranowego mogą być przetwarzane "
+#~ "przez wiele innych narzędzi, które nie implementują wszystkich "
+#~ "właściwości troffa. Dlatego najlepiej unikać pewnych bardziej "
+#~ "egzotycznych makr troffa, tam gdzie jest to możliwe tak, aby inne "
+#~ "narzędzia pracowały poprawnie. Należy unikać używania preprocesorów "
+#~ "troffa (jeżeli jest to konieczne, proszę bardzo, użyj B<tbl>(1), ale "
+#~ "zamiast tworzyć dwukolumnowe tabele, spróbuj użyć poleceń B<IP> i B<TP>). "
+#~ "Należy unikać także używania wyliczeń \\(em większość innych narzędzi nie "
+#~ "umie ich przetworzyć. Lepiej użyć prostych poleceń, łatwych do "
+#~ "przetłumaczenia do innych formatów. Następujące makra troffa uważa się za "
+#~ "bezpieczne (chociaż w wielu przypadkach będą zignorowane przez tłumaczy): "
+#~ "B<\\e\">, B<.>, B<ad>, B<bp>, B<br>, B<ce>, B<de>, B<ds>, B<el>, B<ie>, "
+#~ "B<if>, B<fi>, B<ft>, B<hy>, B<ig>, B<in>, B<na>, B<ne>, B<nf>, B<nh>, "
+#~ "B<ps>, B<so>, B<sp>, B<ti>, B<tr>."
+
+#~ msgid ""
+#~ "You may also use many troff escape sequences (those sequences beginning "
+#~ "with \\e).  When you need to include the backslash character as normal "
+#~ "text, use \\ee.  Other sequences you may use, where x or xx are any "
+#~ "characters and N is any digit, include: B<\\e'>, B<\\e`>, B<\\e->, B<\\e."
+#~ ">, B<\\e\">, B<\\e%>, B<\\e*x>, B<\\e*(xx>, B<\\e(xx>, B<\\e$N>, B<"
+#~ "\\enx>, B<\\en(xx>, B<\\efx>, and B<\\ef(xx>.  Avoid using the escape "
+#~ "sequences for drawing graphics."
+#~ msgstr ""
+#~ "Można także używać wielu sekwencji cytowania (czyli sekwencji "
+#~ "zaczynających się od \\e). Aby użyć znaku odwrotnego ukośnika w zwykłym "
+#~ "tekście, należy wpisać \\ee. Do innych sekwencji, których można użyć, "
+#~ "należą (x i xx są zwykłymi znakami, a N \\(em dowolną liczbą): B<\\e'>, B<"
+#~ "\\e`>, B<\\e->, B<\\e.>, B<\\e\">, B<\\e%>, B<\\e*x>, B<\\e*(xx>, B<\\e"
+#~ "(xx>, B<\\e$N>, B<\\enx>, B<\\en(xx>, B<\\efx> oraz B<\\ef(xx>. Należy "
+#~ "unikać używania sekwencji cytowania do rysowania grafiki."
+
+#, fuzzy
+#~| msgid ""
+#~| "Do not use the optional parameter for B<bp> (break page).  Use only "
+#~| "positive values for B<sp> (vertical space).  Don't define a macro "
+#~| "(B<de>)  with the same name as a macro in this or the mdoc macro package "
+#~| "with a different meaning; it's likely that such redefinitions will be "
+#~| "ignored.  Every positive indent (B<in>)  should be paired with a "
+#~| "matching negative indent (although you should be using the B<RS> and "
+#~| "B<RE> macros instead).  The condition test (B<if,ie>)  should only have "
+#~| "'t' or 'n' as the condition.  Only translations (B<tr>)  that can be "
+#~| "ignored should be used.  Font changes (B<ft> and the B<\\ef> escape "
+#~| "sequence)  should only have the values 1, 2, 3, 4, R, I, B, P, or CW "
+#~| "(the ft command may also have no parameters)."
+#~ msgid ""
+#~ "Do not use the optional parameter for B<bp> (break page).  Use only "
+#~ "positive values for B<sp> (vertical space).  Don't define a macro "
+#~ "(B<de>)  with the same name as a macro in this or the mdoc macro package "
+#~ "with a different meaning; it's likely that such redefinitions will be "
+#~ "ignored.  Every positive indent (B<in>)  should be paired with a matching "
+#~ "negative indent (although you should be using the B<RS> and B<RE> macros "
+#~ "instead).  The condition test (B<if,ie>)  should only have \\(aqt\\(aq or "
+#~ "\\(aqn\\(aq as the condition.  Only translations (B<tr>)  that can be "
+#~ "ignored should be used.  Font changes (B<ft> and the B<\\ef> escape "
+#~ "sequence)  should only have the values 1, 2, 3, 4, R, I, B, P, or CW (the "
+#~ "ft command may also have no parameters)."
+#~ msgstr ""
+#~ "Nie należy używać nieobowiązkowego parametru makra B<bp> (podział "
+#~ "strony). Należy używać tylko dodatnich wartości dla B<sp> (spacja "
+#~ "pionowa). Nie należy definiować makr (B<de>) o takich samych nazwach jak "
+#~ "nazwy makr z tego pakietu lub z pakietu mdoc, ale o innym znaczeniu; jest "
+#~ "wysoce prawdopodobne, że takie powtórne zdefiniowanie makra będzie po "
+#~ "prostu zignorowane.Każde dodatnie wcięcie (B<in>) powinno być sparowane z "
+#~ "odpowiadającym mu wcięciem negatywnym (chociaż powinno się jednak używać "
+#~ "makr B<RS> i B<RE> zamiast B<in>). Instrukcje warunkowe (B<if,ie>) "
+#~ "powinny mieć tylko 't' lub 'n' w warunku. Powinny być używane tylko "
+#~ "tłumaczenia (B<tr>), które można zignorować. Zmiany czcionki (B<ft> oraz "
+#~ "sekwencja cytowania B<\\ef>) powinny mieć tylko wartości 1, 2, 3, 4, R, "
+#~ "I, B, P lub CW (polecenie ft może także nie mieć żadnych parametrów)."
+
+#~ msgid ""
+#~ "If you use capabilities beyond these, check the results carefully on "
+#~ "several tools.  Once you've confirmed that the additional capability is "
+#~ "safe, let the maintainer of this document know about the safe command or "
+#~ "sequence that should be added to this list."
+#~ msgstr ""
+#~ "Jeżeli używane są makra inne niż te opisane powyżej, należy dokładnie "
+#~ "sprawdzić wynik, używając kilku narzędzi. Po sprawdzeniu, że te dodatkowe "
+#~ "makra są bezpieczne, prosimy o poinformowanie o nich opiekuna tego "
+#~ "dokumentu, tak żeby można było je dodać do tej listy."
+
+#~ msgid "FILES"
+#~ msgstr "PLIKI"
+
+#~| msgid "I</usr/share/groff/>[*/]I<tmac/tmac.an>"
+#~ msgid "I</usr/share/groff/>[*/]I<tmac/an.tmac>"
+#~ msgstr "I</usr/share/groff/>[*/]I<tmac/an.tmac>"
+
+#~ msgid "I</usr/man/whatis>"
+#~ msgstr "I</usr/man/whatis>"
+
+#~ msgid "NOTES"
+#~ msgstr "UWAGI"
+
+#~ msgid ""
+#~ "By all means include full URLs (or URIs) in the text itself; some tools "
+#~ "such as B<man2html>(1)  can automatically turn them into hypertext "
+#~ "links.  You can also use the new B<URL> macro to identify links to "
+#~ "related information.  If you include URLs, use the full URL (e.g., "
+#~ "E<lt>http://www.kernelnotes.orgE<gt>) to ensure that tools can "
+#~ "automatically find the URLs."
+#~ msgstr ""
+#~ "W każdym wypadku należy włączać pełne URL-e (lub URI) do samego tekstu; "
+#~ "niektóre narzędzia, takie jak B<man2html>(1) potrafią automatycznie "
+#~ "przekształcić je na odnośniki. Można także używać nowego makra B<URL>, "
+#~ "aby wprowadzić informacje związane z odnośnikami. Podczas podawania URL-"
+#~ "i, należy używać ich w pełnej postaci (np. E<lt>http://www.kernelnotes."
+#~ "orgE<gt>), żeby narzędzia mogły je automatycznie znaleźć."
+
+#, fuzzy
+#~| msgid ""
+#~| "Tools processing these files should open the file and examine the first "
+#~| "non-whitespace character. A period (.) or single quote (')  at the "
+#~| "beginning of a line indicates a troff-based file (such as man or mdoc).  "
+#~| "A left angle bracket (E<lt>) indicates an SGML/XML-based file (such as "
+#~| "HTML or Docbook). Anything else suggests simple ASCII text (e.g., a "
+#~| "\"catman\" result)."
+#~ msgid ""
+#~ "Tools processing these files should open the file and examine the first "
+#~ "nonwhitespace character.  A period (.) or single quote (') at the "
+#~ "beginning of a line indicates a troff-based file (such as man or mdoc).  "
+#~ "A left angle bracket (E<lt>) indicates an SGML/XML-based file (such as "
+#~ "HTML or Docbook).  Anything else suggests simple ASCII text (e.g., a "
+#~ "\"catman\" result)."
+#~ msgstr ""
+#~ "Narzędzia przetwarzające pliki powinny otworzyć plik i sprawdzić "
+#~ "zawartość pierwszego znaku nie będącego białą spacją. Kropka (.) lub "
+#~ "pojedynczy cudzysłów (') na początku linii oznacza plik oparty na troffie "
+#~ "(taki jak man lub mdoc). Lewy nawias trójkąty (E<lt>) oznacza plik oparty "
+#~ "na SGML/XML-u (taki jak HTML lub Docbook). Wszystko inne oznacza zwykły "
+#~ "tekst ASCII (np. wynik \"catman\")."
+
+#, fuzzy
+#~| msgid ""
+#~| "Many man pages begin with '\\e\" followed by a space and a list of "
+#~| "characters, indicating how the page is to be preprocessed.  For "
+#~| "portability's sake to non-troff translators we recommend that you avoid "
+#~| "using anything other than B<tbl>(1), and Linux can detect that "
+#~| "automatically.  However, you might want to include this information so "
+#~| "your man page can be handled by other (less capable) systems.  Here are "
+#~| "the definitions of the preprocessors invoked by these characters:"
+#~ msgid ""
+#~ "Many man pages begin with B<\\'\\e\"> followed by a space and a list of "
+#~ "characters, indicating how the page is to be preprocessed.  For "
+#~ "portability's sake to non-troff translators we recommend that you avoid "
+#~ "using anything other than B<tbl>(1), and Linux can detect that "
+#~ "automatically.  However, you might want to include this information so "
+#~ "your man page can be handled by other (less capable) systems.  Here are "
+#~ "the definitions of the preprocessors invoked by these characters:"
+#~ msgstr ""
+#~ "Wiele stron podręcznika rozpoczyna się od '\\e\", po którym następuje "
+#~ "spacja i lista znaków, określających preprocesor, używany do "
+#~ "przetwarzania strony. Dla zachowania zgodności z innymi narzędziami, "
+#~ "zalecamy, aby unikać preprocesorów innych niż B<tbl>(1), który Linux "
+#~ "wykrywa automatycznie. Jednakże, można dodać informację o tym "
+#~ "preprocesorze, tak żeby strona podręcznika mogła być poprawnie odczytana "
+#~ "pod innymi systemami. Poniżej przedstawiamy listę preprocesorów wraz z "
+#~ "odpowiadającymi im znakami:"
+
+#~ msgid "B<e>"
+#~ msgstr "B<e>"
+
+#~ msgid "eqn(1)"
+#~ msgstr "eqn(1)"
+
+#~ msgid "B<g>"
+#~ msgstr "B<g>"
+
+#~ msgid "grap(1)"
+#~ msgstr "grap(1)"
+
+#~ msgid "B<p>"
+#~ msgstr "B<p>"
+
+#~ msgid "pic(1)"
+#~ msgstr "pic(1)"
+
+#~ msgid "B<r>"
+#~ msgstr "B<r>"
+
+#~ msgid "refer(1)"
+#~ msgstr "refer(1)"
+
+#~ msgid "B<t>"
+#~ msgstr "B<t>"
+
+#~ msgid "tbl(1)"
+#~ msgstr "tbl(1)"
+
+#~ msgid "B<v>"
+#~ msgstr "B<v>"
+
+#~ msgid "vgrind(1)"
+#~ msgstr "vgrind(1)"
+
+#~ msgid "BUGS"
+#~ msgstr "BŁĘDY"
+
+#~ msgid ""
+#~ "Most of the macros describe formatting (e.g., font type and spacing) "
+#~ "instead of marking semantic content (e.g., this text is a reference to "
+#~ "another page), compared to formats like mdoc and DocBook (even HTML has "
+#~ "more semantic markings).  This situation makes it harder to vary the "
+#~ "B<man> format for different media, to make the formatting consistent for "
+#~ "a given media, and to automatically insert cross-references.  By sticking "
+#~ "to the safe subset described above, it should be easier to automate "
+#~ "transitioning to a different reference page format in the future."
+#~ msgstr ""
+#~ "Większość makr opisuje formatowanie (np. typ czcionki i odstępy), zamiast "
+#~ "oznaczać zawartość składniową (np. to jest odnośnik do innej strony). Ta "
+#~ "sytuacja utrudnia dostosowywanie formatu B<man> do różnych mediów, w taki "
+#~ "sposób, by zachować jednolitość formatowania dla danego medium i "
+#~ "automatycznie dołożyć odnośniki do innych stron. Wybierając ten opisany "
+#~ "powyżej bezpieczny podzbiór makr, daje się lepszą możliwość "
+#~ "automatycznego przetworzenia strony do innego formatu."
+
+#~ msgid "The Sun macro B<TX> is not implemented."
+#~ msgstr "Makro B<TX> z systemu SUN nie jest zaimplementowane."
+
+#~ msgid "2004-07-27"
+#~ msgstr "2004-07-27"
+
+#~ msgid "PREAMBLE"
+#~ msgstr "PREAMBUŁA"
+
+#~ msgid ""
+#~ "For binaries, use something like: I<GNU>, I<NET-2>, I<SLS Distribution>, "
+#~ "I<MCC Distribution>."
+#~ msgstr ""
+#~ "Dla binariów używaj czegoś w rodzaju: I<GNU>, I<NET-2>, I<SLS "
+#~ "Distribution>, I<MCC Distribution>."
+
+#~ msgid ""
+#~ "For system calls, use the version of the kernel that you are currently "
+#~ "looking at: I<Linux 0.99.11>."
+#~ msgstr ""
+#~ "Dla wywołań systemowych, podaj wersję jądra, której używasz: I<Linux "
+#~ "0.99.11>."
+
+#~ msgid ""
+#~ "For library calls, use the source of the function: I<GNU>, I<4.3BSD>, "
+#~ "I<Linux DLL 4.4.1>."
+#~ msgstr ""
+#~ "Dla wywołań bibliotecznych, użyj źródła funkcji: I<GNU>, I<4.3BSD>, "
+#~ "I<Linux DLL 4.4.1>."
+
+#~ msgid ""
+#~ "A description of the standard file system layout, network protocols, "
+#~ "ASCII and other character codes, this man page, and other things."
+#~ msgstr ""
+#~ "Opis standardowego rozkładu systemu plików, protokoły sieciowe, kodowanie "
+#~ "znaków ASCII i inne kodowania, ta strona podręcznika i wiele innych "
+#~ "rzeczy."
+
+#~ msgid "B<9 Kernel routines>"
+#~ msgstr "B<9 Wywołania jądra>"
+
+#~ msgid ""
+#~ "This is an obsolete manual section.  Once it was thought a good idea to "
+#~ "document the Linux kernel here, but in fact very little has been "
+#~ "documented, and the documentation that exists is outdated already. There "
+#~ "are better sources of information for kernel developers."
+#~ msgstr ""
+#~ "Jest to przestarzała sekcja podręcznika. Kiedyś uważano, że dobrym "
+#~ "pomysłem będzie dokumentowanie tutaj jądra Linuksa, ale w rzeczywistości "
+#~ "utworzono bardzo mało stron podręcznika w tej sekcji, a te dokumenty, "
+#~ "które istnieją, są już przestarzałe. Istnieją lepsze źródła informacji "
+#~ "dla deweloperów jądra."
+
+#~ msgid "SECTIONS"
+#~ msgstr "SEKCJE"
+
+#~ msgid ""
+#~ "Sections are started with B<\\&.SH> followed by the heading name.  If the "
+#~ "name contains spaces and appears on the same line as B<\\&.SH>, then "
+#~ "place the heading in double quotes.  Traditional or suggested headings "
+#~ "include: NAME, SYNOPSIS, DESCRIPTION, RETURN VALUE, EXIT STATUS, ERROR "
+#~ "HANDLING, ERRORS, OPTIONS, USAGE, EXAMPLES, FILES, ENVIRONMENT, "
+#~ "DIAGNOSTICS, SECURITY, CONFORMING TO, NOTES, BUGS, AUTHOR, and SEE ALSO.  "
+#~ "Where a traditional heading would apply, please use it; this kind of "
+#~ "consistency can make the information easier to understand.  However, feel "
+#~ "free to create your own headings if they make things easier to "
+#~ "understand.  The only required heading is NAME, which should be the first "
+#~ "section and be followed on the next line by a one line description of the "
+#~ "program:"
+#~ msgstr ""
+#~ "Sekcje zaczynają się od B<\\&.SH>, po którym występuje nazwa. Jeśli nazwa "
+#~ "zawiera spacje i pojawia się w tej samej linii co B<\\&.SH>, to umieść ją "
+#~ "między podwójnymi cudzysłowami. Tradycyjne lub sugerowane nagłówki to: "
+#~ "NAZWA, SKŁADNIA, OPIS, WARTOŚĆ ZWRACANA, KOD WYJŚCIA, OBSŁUGA BŁĘDÓW, "
+#~ "BŁĘDY, OPCJE, UŻYCIE, PRZYKŁADY, PLIKI, ŚRODOWISKO, DIAGNOSTYKA,"
+#~ "BEZPIECZEŃSTWO, ZGODNE Z, UWAGI, USTERKI, AUTOR i ZOBACZ TAKŻE. Proszę "
+#~ "używać tych tradycyjnych nagłówków, tam gdzie jest to możliwe; pozwoli to "
+#~ "zachować spójność, ułatwiającą odbiorcy zrozumienie przekazywanych "
+#~ "informacji. Jednakże, prosimy tworzyć własne nagłówki, tam gdzie jeszcze "
+#~ "bardziej ułatwi to odbiór informacji. Jedynym wymaganym nagłówkiem jest "
+#~ "NAZWA, po którym powinna nastąpić linijka z opisem programu:"
+
+#~ msgid "chess \\e- the game of chess"
+#~ msgstr "chess \\e- gra w szachy"
+
+#~ msgid "Some other traditional sections have the following contents:"
+#~ msgstr "Zawartość innych tradycyjnych sekcji jest następująca:"
+
+#~ msgid "B<USAGE>"
+#~ msgstr "B<UŻYCIE>"
+
+#~ msgid "describes the grammar of any sublanguage this implements."
+#~ msgstr "opisuje gramatykę jakiegokolwiek języka, który to implementuje."
+
+#~ msgid "B<DIAGNOSTICS>"
+#~ msgstr "B<DIAGNOSTYKA>"
+
+#~ msgid ""
+#~ "gives an overview of the most common error messages and how to cope with "
+#~ "them.  You don't need to explain system error messages or fatal signals "
+#~ "that can appear during execution of any program unless they're special in "
+#~ "some way to your program."
+#~ msgstr ""
+#~ "pokrótce objaśnia najczęstsze komunikaty błędów oraz sposób ich obsługi. "
+#~ "Nie należy objaśniać komunikatów o błędach systemowych lub fatalnych "
+#~ "sygnałów, które mogą się pojawić podczas uruchamiania jakiegokolwiek "
+#~ "programu, chyba że są w jakiś specjalny sposób traktowane przez Twój "
+#~ "program."
+
+#~ msgid "B<SECURITY>"
+#~ msgstr "B<BEZPIECZEŃSTWO>"
+
+#~ msgid ""
+#~ "discusses security issues and implications.  Warn about configurations or "
+#~ "environments that should be avoided, commands that may have security "
+#~ "implications, and so on, especially if they aren't obvious.  Discussing "
+#~ "security in a separate section isn't necessary; if it's easier to "
+#~ "understand, place security information in the other sections (such as the "
+#~ "B<DESCRIPTION> or B<USAGE> section).  However, please include security "
+#~ "information somewhere!"
+#~ msgstr ""
+#~ "omawia kwestie związane z bezpieczeństwem. Ostrzega o niezalecanych "
+#~ "konfiguracjach lub zmiennych środowiska, poleceniach, które mogą mieć "
+#~ "wpływ na bezpieczeństwo itd., zwłaszcza jeżeli nie są oczywiste. "
+#~ "Omawianie zagadnień bezpieczeństwa w osobnej sekcji nie jest konieczne, "
+#~ "jeżeli będzie to prostsze do zrozumienia, umieść te informacje w innych "
+#~ "sekcjach (takich jak B<OPIS> lub B<UŻYCIE>). Jednakże, proszę gdzieś "
+#~ "umieścić te informacje o bezpieczeństwie!"
+
+#~ msgid "describes any standards or conventions this implements."
+#~ msgstr "opisuje wszystkie standardy lub konwencje, które to implementuje."
+
+#~ msgid "provides miscellaneous notes."
+#~ msgstr "zawiera różne uwagi."
+
+#~ msgid ""
+#~ "lists authors of the documentation or program so you can mail in bug "
+#~ "reports."
+#~ msgstr ""
+#~ "zawiera listę autorów dokumentacji lub programu, tak żeby można było im "
+#~ "mailem wysłać zgłoszenie o błędzie."
+
+#~ msgid "FONTS"
+#~ msgstr "CZCIONKI"
+
+#~ msgid ""
+#~ "Although there are many arbitrary conventions for man pages in the UNIX "
+#~ "world, the existence of several hundred Linux-specific man pages defines "
+#~ "our font standards:"
+#~ msgstr ""
+#~ "Chociaż istnieje wiele konwencji dla stron podręcznika w świecie "
+#~ "Uniksowym, istnienie setek stron specyficznych dla Linuksa definiuje "
+#~ "nasze standardy dotyczące czcionek:"
+
+#~ msgid ""
+#~ "Filenames are always in italics (e.g., I</usr/include/stdio.h>), except "
+#~ "in the SYNOPSIS section, where included files are in bold (e.g., "
+#~ "B<#include E<lt>stdio.hE<gt>>)."
+#~ msgstr ""
+#~ "Nazwy plików są także zawsze pisane kursywą (np.  I</usr/include/stdio."
+#~ "h>), poza tymi z sekcji SKŁADNIA, gdzie włączane pliki są pogrubione "
+#~ "(np.  B<#include E<lt>stdio.hE<gt>>)."
+
+#~ msgid "OTHER MACROS AND STRINGS"
+#~ msgstr "INNE MAKRA I ŁAŃCUCHY ZNAKÓW"
+
+#~ msgid "B<. >"
+#~ msgstr "B<. >"
+
+#~ msgid "SAFE SUBSET"
+#~ msgstr "BEZPIECZNY PODZBIÓR"
+
+#~ msgid "AUTHORS"
+#~ msgstr "AUTORZY"
+
+#~ msgid "\\(em"
+#~ msgstr "\\(em"
+
+#~ msgid ""
+#~ "James Clark (jjc@jclark.com) wrote the implementation of the macro "
+#~ "package."
+#~ msgstr "James Clark (jjc@jclark.com) zaimplementował ten pakiet makr."
+
+#~ msgid ""
+#~ "Rickard E. Faith (faith@cs.unc.edu) wrote the initial version of this "
+#~ "manual page."
+#~ msgstr ""
+#~ "Rickard E. Faith (faith@cs.unc.edu) napisał pierwszą wersję tej strony "
+#~ "podręcznika ekranowego."
+
+#~ msgid ""
+#~ "Jens Schweikhardt (schweikh@noc.fdn.de) wrote the Linux Man-Page Mini-"
+#~ "HOWTO (which influenced this manual page)."
+#~ msgstr ""
+#~ "Jens Schweikhardt (schweikh@noc.fdn.de) napisał Linux Man-Page Mini-HOWTO "
+#~ "(które miało wpływ na tę stronę podręcznika)."
+
+#~ msgid ""
+#~ "David A. Wheeler (dwheeler@ida.org) heavily modified this manual page, "
+#~ "such as adding detailed information on sections and macros."
+#~ msgstr ""
+#~ "David A. Wheeler (dwheeler@ida.org) znacząco zmodyfikował tę stronę "
+#~ "podręcznika, na przykład dodając szczegółowe informajce o sekcjach i "
+#~ "makrach."

@@ -1,0 +1,230 @@
+.\" Copyright (c) 1980 The Regents of the University of California.
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms are permitted
+.\" provided that the above copyright notice and this paragraph are
+.\" duplicated in all such forms and that any documentation,
+.\" advertising materials, and other materials related to such
+.\" distribution and use acknowledge that the software was developed
+.\" by the University of California, Berkeley.  The name of the
+.\" University may not be used to endorse or promote products derived
+.\" from this software without specific prior written permission.
+.\" THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+.\" IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+.\" WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+.\"
+.\"	@(#)me.7	6.4 (Berkeley) 4/13/90
+.\"
+.\" Modified for groff by jjc@jclark.com
+.hc %
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1980 The Regents of the University of California (Prior BSD)
+.\" Copyright © of Polish translation:
+.\" Marcin Mazurek (PTM) <mazek@capella.ae.poznan.pl>, 1998.
+.TH GROFF_ME 7 "31 grudnia 2010" "Groff wersja 1.21" 
+.UC 3
+.SH NAZWA
+groff_me \- makra troff do formatowania dokumentów
+.SH SKŁADNIA
+\fBgroff \-me\fP [ \fIopcje\fP ] \fIplik\fP ...
+.br
+\fBtroff \-me\fP [ \fIopcje\fP ] \fIplik\fP ...
+.SH OPIS
+Ten podręcznik opisuje wersję GNU makra \-me, które jest częścią groffa \-
+systemu formatowania dokumentów. Ta wersja może być używana zarówno z GNU
+troff jak i Unix troff.  Pakiet makrodefinicji \fItroff\fP dostarcza zbioru
+narzędzi do formatowania dokumentów technicznych w różnorodnych formatach.
+.PP
+Żądania makro zostały zdefiniowane poniżej.  Wiele z żądań \fItroff\fP nie jest
+bezpiecznych w połączeniu z tym pakietem, jakkolwiek, żądania te mogą być
+używane bez problemu po wystąpieniu pierwszego .pp:
+.nf
+.IP
+.ta \w'.sz +n  'u
+\&.bp	zacznij nową stronę
+\&.br	złam linię
+\&.sp n	wstaw n oddzielających linii
+\&.ls n	(oddzielenie liniami) n=1 pojedyncze, n=2 podwójne
+\&.na	bez wyrównania do prawego marginesu
+\&.ce n	wyśrodkuj n następnych linii
+\&.ul n	podkreśl n następnych linii
+.fi
+.PP
+Wyjście preprocesorów \fIpic,\fP \fIeqn,\fP \fIrefer,\fP oraz \fItbl\fP jest akceptowane
+jako wejście.
+.SH PLIKI
+/usr/share/groff/1.21/tmac/me.tmac (opakowanie wokół e.tmac)
+.br
+/usr/share/groff/1.21/tmac/e.tmac
+.SH "ZOBACZ TAKŻE"
+\fBgroff\fP(1), \fBtroff\fP(1)
+.br
+\-me Reference Manual, Eric P. Allman
+.br
+Writing Papers with Groff Using \-me
+.tr &.
+.SH ŻĄDANIA
+Ta lista jest niekompletna; należy zapoznać się z \fIThe \-me Reference
+Manual\fP aby poznać inne, ciekawe szczegóły.
+.PP
+.ta \w'.eh \'x\'y\'z\'  'u +\w'Initial 'u +\w'Cause 'u
+.br
+.di x
+  \ka
+.br
+.di
+.na
+.in \nau
+.ti 0
+Żądanie	Wartość	Tworzy Wyjaśnienie
+.ti 0
+  Począt.	Odstęp
+.br
+.in \nau
+.ti 0
+\&.(c	\-	tak	Zacznij wyśrodkowany blok
+.ti 0
+\&.(d	\-	nie	Zacznij opóźniony tekst
+.ti 0
+\&.(f	\-	nie	Zacznij stopkę
+.ti 0
+\&.(l	\-	tak	Zacznij listę
+.ti 0
+\&.(q	\-	tak	Zacznij główny cytat
+.ti 0
+\&.(x \fIx\fP	\-	nie	Zacznij punkt z indeksu \fIx\fP
+.ti 0
+\&.(z	\-	nie	Zacznij wysuniętą klauzulę
+.ti 0
+\&.)c	\-	tak	Zakończ wyśrodkowany blok
+.ti 0
+\&.)d	\-	tak	Zakończ opóźniony tekst
+.ti 0
+\&.)f	\-	tak	Zakończ stopkę
+.ti 0
+\&.)l	\-	tak	Zakończ listę
+.ti 0
+\&.)q	\-	tak	Zakończ główny cytat
+.ti 0
+\&.)x	\-	tak	Zakończ element indeksu
+.ti 0
+\&.)z	\-	tak	Zakończ wysuniętą klauzulę
+.ti 0
+\&.++ \fIm H\fP	\-	nie	Zdefiniuj sekcję dokumentu.  \fIm\fP definiuje sekcję
+dokumentu, i może ona być \fBC\fP (rozdziałem), \fBA\fP (dodatkiem), \fBP\fP (sekcją
+wstępną, np., streszczenie, spis treści, itp.), \fBB\fP (bibliografią), \fBRC\fP
+(rozdziały przenumerowane od strony pierwszej, każdy rozdział), lub \fBRA\fP
+(dodatek przenumerowany od strony pierwszej).
+.ti 0
+\&.+c \fIT\fP	\-	tak	Zacznij rozdział (lub dodatek, itd., jak zostało to
+zdefiniowane przez .++).  \fIT\fP jest nazwą rozdziału.
+.ti 0
+\&.1c	1	tak	Format jednokolumnowy na nowej stronie.
+.ti 0
+\&.2c	1	tak	Format dwukolumnowy.
+.ti 0
+\&.EN	\-	tak	Odstęp po równaniu stworzonym przez \fIeqn\fP lub \fIneqn\fP.
+.ti 0
+\&.EQ \fIx y\fP	\-	tak	Poprzedź równaniem; złam i dodaj miejsce.  Numer równania
+to \fIy\fP.  Opcjonalny argument \fIx\fP może być ustawiony na \fII\fP aby wciąć
+równanie (ustawienie standardowe), \fIL\fP aby dorównać do lewej równanie lub
+\fIC\fP aby wyśrodkować równanie.
+.ti 0
+\&.GE	\-	tak	Początek obrazka \fIgremlin\fP.
+.ti 0
+\&.GS	\-	tak	Koniec obrazka \fIgremlin\fP.
+.ti 0
+\&.PE	\-	tak	Początek \fIpic\fP.
+.ti 0
+\&.PS	\-	tak	Koniec obrazka \fIpic\fP.
+.ti 0
+\&.TE	\-	tak	Koniec tabeli.
+.ti 0
+\&.TH	\-	tak	Koniec sekcji nagłówka tabeli.
+.ti 0
+\&.TS \fIx\fP	\-	tak	Zacznij tabelę; jeśli \fIx\fP ma wartość \fIH\fP tabela ma
+powtórzony nagłówek.
+.ti 0
+\&.b \fIx\fP	nie	nie	Wypisz tekst \fIx\fP pogrubioną czcionką; jeśli brak jest
+argumentów przełącz się w tryb pisania grubą czcionką.
+.ti 0
+\&.ba \fI+n\fP	0	tak	Zwiększa podstawowe wcięcie o \fIn.\fP To wcięcie jest
+używane przy ustawianiu wcięcia w regularnym tekście (takim jak w akapicie).
+.ti 0
+\&.bc	nie	tak	Zacznij nową kolumnę
+.ti 0
+\&.bi \fIx\fP	nie	nie	Wypisz tekst \fIx\fP pogrubioną, pochyłą czcionką (jedynie
+nofill)
+.ti 0
+\&.bu	\-	tak	Zacznij paragraf wypunktowany
+.ti 0
+\&.bx \fIx\fP	nie	nie	Wypisz \fIx\fP w ramce (jedynie nofill).
+.ti 0
+\&.ef \fI\'x\'y\'z\'\fP	\'\'\'\'	nie	Ustaw parzystą stopkę na x y z
+.ti 0
+\&.eh \fI\'x\'y\'z\'\fP	\'\'\'\'	nie	Ustaw parzysty nagłówek na x y z
+.ti 0
+\&.fo \fI\'x\'y\'z\'\fP	\'\'\'\'	nie	Ustaw stopkę na x y z
+.ti 0
+\&.hx	\-	nie	Wyłącz nagłówki i stopki na następnej stronie
+.ti 0
+\&.he \fI\'x\'y\'z\'\fP	\'\'\'\'	nie	Ustaw nagłówek na to x y z
+.ti 0
+\&.hl	\-	tak	Wstaw poziomą linię
+.ti 0
+\&.i \fIx\fP	nie	nie	Wypisz tekst \fIx\fP pochyłą czcionką; jeśli brakuje \fIx\fP ,
+następujący tekst pisany jest czcionką pochyłą..
+.ti 0
+\&.ip \fIx y\fP	nie	tak	Rozpocznij wcięty akapit, z wiszącym tagiem \fIx\fP.
+Wcięcie wynosi \fIy\fP en\-spacji (standardowo 5).
+.ti 0
+\&.lp	tak	tak	Zacznij wyblokowany w lewo akapit.
+.ti 0
+\&.np	1	tak	Zacznij numerowany akapit.
+.ti 0
+\&.of \fI\'x\'y\'z\'\fP	\'\'\'\'	nie	Ustaw nieparzystą stopkę na x y z
+.ti 0
+\&.oh \fI\'x\'y\'z\'\fP	\'\'\'\'	nie	Ustaw nieparzysty nagłówek na x y z
+.ti 0
+\&.pd	\-	tak	Wypisz opóźniony tekst.
+.ti 0
+\&.pp	nie	tak	Zacznij akapit.  Pierwsza linia ma wcięcie.
+.ti 0
+\&.r	tak	nie	Włącz czcionkę standardową (rzymską).
+.ti 0
+\&.re	\-	nie	Ustaw tabulatory na standardowe wartości.
+.ti 0
+\&.sh \fIn x\fP	\-	tak	Dalej następuje sekcja nagłówka, czcionka automatycznie
+ustawiana jest na pogrubioną.  \fIn\fP jest numerem sekcji, \fIx\fP jest tytułem
+sekcji.
+.ti 0
+\&.sk	nie	nie	Zostaw następną stronę pustą.  Jedynie jedna strona jest
+pamiętana w przód.
+.ti 0
+\&.sm \fIx\fP	\-	nie	Wstaw \fIx\fP wyświetlane w mniejszej czcionce.
+.ti 0
+\&.sz \fI+n\fP	10p	nie	Zwiększ wielkość czcionki o \fIn\fP punktów.
+.ti 0
+\&.tp	nie	tak	Zacznij stronę tytułową.
+.ti 0
+\&.u \fIx\fP	\-	nie	Podkreśl argument (nawet w \fItroff\fP).  (jedynie Nofill).
+.ti 0
+\&.uh	\-	tak	Działanie jak .sh ale nienumerowane.
+.ti 0
+\&.xp \fIx\fP	\-	nie	Wypisz indeks \fIx.\fP
+.ad
+.
+.\" Local Variables:
+.\" mode: nroff
+.\" End:
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Marcin Mazurek (PTM) <mazek@capella.ae.poznan.pl>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 1.21 \fPoryginału.

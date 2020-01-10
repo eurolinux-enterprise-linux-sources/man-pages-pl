@@ -1,0 +1,42 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993-1997 Thomas Koenig, 1993 David Parsons, 2002,2005 Ryan Murray (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Wojtek Kotwica (PTM) <wkotwica@post.pl>, 2000.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH AT.ALLOW 5 "wrzesień 1997" "" "Podręcznik programisty linuksowego"
+.SH NAZWA
+at.allow, at.deny \- określa, kto może przekazywać zadania do at lub batch
+.SH OPIS
+Pliki \fI/etc/at.allow\fP i \fI/etc/at.deny\fP decydują o tym, którzy użytkownicy
+mogą przekazywać polecenia do późniejszego wykonania za pośrednictwem
+\fBat\fP(1) lub \fBbatch\fP(1).
+.PP
+Pliki te zawierają listę nazw użytkowników, po jednej w wierszu. Używanie
+odstępów (spacji, tabulatorów) nie jest dozwolone.
+.PP
+Jeśli istnieje plik \fI/etc/at.allow\fP, to zezwala się na używanie \fBat\fP
+wyłącznie użytkownikom w nim wymienionym.
+.PP
+Jeżeli nie istnieje \fI/etc/at.allow\fP, to sprawdzany jest \fI/etc/at.deny\fP
+\(em każdy użytkownik niewymieniony w tym pliku może używać \fBat\fP.
+.PP
+Pusty plik \fI/etc/at.deny\fP oznacza, że wszyscy użytkownicy mogą korzystać z
+\fBat\fP.
+.PP
+Jeśli nie istnieje żaden z tych plików, to tylko administrator systemu może
+używać \fBat\fP.
+.SH "ZOBACZ TAKŻE"
+\fBat\fP(1), \fBcron\fP(8), \fBcrontab\fP(1), \fBatd\fP(8).
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Wojtek Kotwica (PTM) <wkotwica@post.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.1.13 \fPoryginału.

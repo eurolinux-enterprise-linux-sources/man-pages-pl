@@ -1,0 +1,136 @@
+.\" Copyright (C) 2001 Andries Brouwer <aeb@cwi.nl>.
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2001 Andries Brouwer 
+.\" Copyright © of Polish translation:
+.\" Andrzej Krzysztofowicz (PTM) <ankry@mif.pg.gda.pl>, 2001.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH UNLOCKED_STDIO 3 2008\-08\-29 "" "Podręcznik programisty Linuksa"
+.SH NAZWA
+getc_unlocked, getchar_unlocked, putc_unlocked, putchar_unlocked \-
+nieblokujące funkcje standardowego wejścia/wyjścia
+.SH SKŁADNIA
+.nf
+\fB#include <stdio.h>\fP
+.sp
+\fBint getc_unlocked(FILE *\fP\fIstream\fP\fB);\fP
+\fBint getchar_unlocked(void);\fP
+\fBint putc_unlocked(int \fP\fIc\fP\fB, FILE *\fP\fIstream\fP\fB);\fP
+\fBint putchar_unlocked(int \fP\fIc\fP\fB);\fP
+.sp
+\fBvoid clearerr_unlocked(FILE *\fP\fIstream\fP\fB);\fP
+\fBint feof_unlocked(FILE *\fP\fIstream\fP\fB);\fP
+\fBint ferror_unlocked(FILE *\fP\fIstream\fP\fB);\fP
+\fBint fileno_unlocked(FILE *\fP\fIstream\fP\fB);\fP
+\fBint fflush_unlocked(FILE *\fP\fIstream\fP\fB);\fP
+\fBint fgetc_unlocked(FILE *\fP\fIstream\fP\fB);\fP
+\fBint fputc_unlocked(int \fP\fIc\fP\fB, FILE *\fP\fIstream\fP\fB);\fP
+\fBsize_t fread_unlocked(void *\fP\fIptr\fP\fB, size_t \fP\fIsize\fP\fB, size_t \fP\fIn\fP\fB,\fP
+\fB                      FILE *\fP\fIstream\fP\fB);\fP
+\fBsize_t fwrite_unlocked(const void *\fP\fIptr\fP\fB, size_t \fP\fIsize\fP\fB, size_t \fP\fIn\fP\fB,\fP
+\fB                      FILE *\fP\fIstream\fP\fB);\fP
+.sp
+\fBchar *fgets_unlocked(char *\fP\fIs\fP\fB, int \fP\fIn\fP\fB, FILE *\fP\fIstream\fP\fB);\fP
+\fBint fputs_unlocked(const char *\fP\fIs\fP\fB, FILE *\fP\fIstream\fP\fB);\fP
+.sp
+\fB#include <wchar.h>\fP
+.sp
+\fBwint_t getwc_unlocked(FILE *\fP\fIstream\fP\fB);\fP
+\fBwint_t getwchar_unlocked(void);\fP
+\fBwint_t fgetwc_unlocked(FILE *\fP\fIstream\fP\fB);\fP
+\fBwint_t fputwc_unlocked(wchar_t \fP\fIwc\fP\fB, FILE *\fP\fIstream\fP\fB);\fP
+\fBwint_t putwc_unlocked(wchar_t \fP\fIwc\fP\fB, FILE *\fP\fIstream\fP\fB);\fP
+\fBwint_t putwchar_unlocked(wchar_t \fP\fIwc\fP\fB);\fP
+\fBwchar_t *fgetws_unlocked(wchar_t *\fP\fIws\fP\fB, int \fP\fIn\fP\fB, FILE *\fP\fIstream\fP\fB);\fP
+\fBint fputws_unlocked(const wchar_t *\fP\fIws\fP\fB, FILE *\fP\fIstream\fP\fB);\fP
+.fi
+.sp
+.in -4n
+Wymagane ustawienia makr biblioteki glibc (patrz \fBfeature_test_macros\fP(7)):
+.ad l
+.in
+.sp
+\fBgetc_unlocked\fP(), \fBgetchar_unlocked\fP(), \fBputc_unlocked\fP(),
+\fBputchar_unlocked\fP():
+.RS 4
+_POSIX_C_SOURCE\ >=\ 1 || _XOPEN_SOURCE || _POSIX_SOURCE || _BSD_SOURCE
+|| _SVID_SOURCE
+.RE
+.sp
+\fBclearerr_unlocked\fP(), \fBfeof_unlocked\fP(), \fBferror_unlocked\fP(),
+\fBfileno_unlocked\fP(), \fBfflush_unlocked\fP(), \fBfgetc_unlocked\fP(),
+\fBfputc_unlocked\fP(), \fBfread_unlocked\fP(), \fBfwrite_unlocked\fP():
+.RS 4
+_BSD_SOURCE || _SVID_SOURCE
+.RE
+.sp
+\fBfgets_unlocked\fP(), \fBfputs_unlocked\fP(), \fBgetwc_unlocked\fP(),
+\fBgetwchar_unlocked\fP(), \fBfgetwc_unlocked\fP(), \fBfputwc_unlocked\fP(),
+\fBputwchar_unlocked\fP(), \fBfgetws_unlocked\fP(), \fBfputws_unlocked\fP():
+.RS 4
+_GNU_SOURCE
+.RE
+.ad b
+.SH OPIS
+Każda z tych funkcji zachowuje się tak samo, jak jej odpowiednik bez
+przyrostka "_unlocked" z tym wyjątkiem, że nie używają one blokad (same nie
+ustawiają blokad, jak też nie sprawdzają, czy blokada została ustawiona
+przez innych) i z tego względu nie są bezpieczne w trybie
+wielowątkowym. Zobacz \fBflockfile\fP(3).
+.SH "ZGODNE Z"
+Cztery następujące funkcje: \fBgetc_unlocked\fP(), \fBgetchar_unlocked\fP(),
+\fBputc_unlocked\fP() i \fBputchar_unlocked\fP()  występują w POSIX.1\-2001.
+
+.\" E.g., in HP-UX 10.0. In HP-UX 10.30 they are called obsolescent, and
+.\" moved to a compatibility library.
+.\" Available in HP-UX 10.0: clearerr_unlocked, fclose_unlocked,
+.\" feof_unlocked, ferror_unlocked, fflush_unlocked, fgets_unlocked,
+.\" fgetwc_unlocked, fgetws_unlocked, fileno_unlocked, fputs_unlocked,
+.\" fputwc_unlocked, fputws_unlocked, fread_unlocked, fseek_unlocked,
+.\" ftell_unlocked, fwrite_unlocked, getc_unlocked, getchar_unlocked,
+.\" getw_unlocked, getwc_unlocked, getwchar_unlocked, putc_unlocked,
+.\" putchar_unlocked, puts_unlocked, putws_unlocked, putw_unlocked,
+.\" putwc_unlocked, putwchar_unlocked, rewind_unlocked, setvbuf_unlocked,
+.\" ungetc_unlocked, ungetwc_unlocked.
+Niestandardowe odmiany funkcji \fB*_unlocked\fP() występują również w kilku
+systemach z rodziny Uniksów, jak też są dostępne w najnowszych wersjach
+glibc.  Raczej nie należy ich używać.
+.SH "ZOBACZ TAKŻE"
+\fBflockfile\fP(3), \fBstdio\fP(3)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Andrzej Krzysztofowicz (PTM) <ankry@mif.pg.gda.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

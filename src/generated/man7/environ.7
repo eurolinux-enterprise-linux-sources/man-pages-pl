@@ -1,0 +1,184 @@
+.\" Copyright (c) 1993 Michael Haardt (michael@moria.de),
+.\"   Fri Apr  2 11:32:09 MET DST 1993
+.\" and Andries Brouwer (aeb@cwi.nl), Fri Feb 14 21:47:50 1997.
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" Modified Sun Jul 25 10:45:30 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified Sun Jul 21 21:25:26 1996 by Andries Brouwer (aeb@cwi.nl)
+.\" Modified Mon Oct 21 17:47:19 1996 by Eric S. Raymond (esr@thyrsus.com)
+.\" Modified Wed Aug 27 20:28:58 1997 by Nicolás Lichtmaier (nick@debian.org)
+.\" Modified Mon Sep 21 00:00:26 1998 by Andries Brouwer (aeb@cwi.nl)
+.\" Modified Wed Jan 24 06:37:24 2001 by Eric S. Raymond (esr@thyrsus.com)
+.\" Modified Thu Dec 13 23:53:27 2001 by Martin Schulze <joey@infodrom.org>
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993 Michael Haardt, 1997 Andries Brouwer (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH ENVIRON 7 2009\-07\-25 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+environ \- środowisko użytkownika
+.SH SKŁADNIA
+.nf
+\fBextern char **\fP\fIenviron\fP\fB;\fP
+.br
+.fi
+.SH OPIS
+Zmienna \fIenviron\fP wskazuje na tablicę łańcuchów zwaną
+"środowiskiem". Ostatni wskaźnik w tej tablicy musi mieć wartość
+NULL. (Zmienna ta musi być zadeklarowana w programie użytkownika, jednakże
+jest ona zadeklarowana w pliku nagłówkowym \fIunistd.h\fP, w przypadku gdy plik
+ten pochodzi z libc4 lub libc5 oraz w przypadku gdy pochodzi on z glibc i
+zdefiniowano \fB_GNU_SOURCE\fP. Ta tablica łańcuchów udostępniana jest
+procesowi przez funkcję \fBexec\fP(3) podczas jego uruchamiania.
+
+Zgodnie z konwencją łańcuchy znaków w tablicy \fIenviron\fP mają postać
+"\fInazwa\fP\fB=\fP\fIwartość\fP". Typowe przykłady to:
+.TP 
+\fBUSER\fP
+Nazwa zalogowanego użytkownika (wykorzystywana przez niektóre programy
+wywodzące się z BSD).
+.TP 
+\fBLOGNAME\fP
+Nazwa zalogowanego użytkownika (wykorzystywana przez niektóre programy
+wywodzące się z Systemu V).
+.TP 
+\fBHOME\fP
+Katalog domowy użytkownika, zmienna ustawiana przez program \fBlogin\fP(1) na
+podstawie informacji z pliku \fBpasswd\fP(5).
+.TP 
+\fBLANG\fP
+Nazwa ustawień językowych, jaka ma być stosowana dla wszystkich kategorii
+ustawień, jeśli nie zostały narzucone przez zmienną \fBLC_ALL\fP lub inne
+bardziej szczegółowe zmienne, jak \fBLC_COLLATE\fP, \fBLC_CTYPE\fP,
+\fBLC_MESSAGES\fP, \fBLC_MONETARY\fP, \fBLC_NUMERIC\fP, \fBLC_TIME\fP, por.
+\fBlocale\fP(5).
+.TP 
+\fBPATH\fP
+Sekwencja katalogów, które \fBsh\fP(1) oraz wiele innych programów przeszukuje
+w poszukiwaniu plików, których nazwa nie zawiera pełnej ścieżki dostępu.
+Poszczególne katalogi są rozdzielane znakiem "\fB:\fP". (Podobnie, \fBCDPATH\fP
+jest używane przez niektóre powłoki do poszukiwania katalogu docelowego dla
+polecenia zmiany katalogu, a \fBMANPATH\fP jest używane przez \fBman\fP(1) do
+poszukiwania stron podręcznika itd.)
+.TP 
+\fBPWD\fP
+Bieżący katalog roboczy. Ustawiane przez niektóre powłoki.
+.TP 
+\fBSHELL\fP
+Nazwa powłoki zgłoszeniowej użytkownika.
+.TP 
+\fBTERM\fP
+Rodzaj terminala, dla którego system ma przygotowywać wyjście.
+.TP 
+\fBPAGER\fP
+Wybrane przez użytkownika narzędzie do wyświetlania plików tekstowych.
+.TP 
+\fBEDITOR\fP/\fBVISUAL\fP
+.\" .TP
+.\" .B BROWSER
+.\" The user's preferred utility to browse URLs. Sequence of colon-separated
+.\" browser commands. See http://www.catb.org/~esr/BROWSER/ .
+Wybrane przez użytkownika narzędzie do edycji plików tekstowych.
+.PP
+Dalsze nazwy mogą być umieszczane w środowisku za pomocą polecenia \fIexport\fP
+i "nazwa=wartość" w przypadku stosowania powłoki typu \fBsh\fP(1) lub polecenia
+\fIsetenv\fP w przypadku powłoki typu \fBcsh\fP(1). W środowisku mogą być również
+umieszczane argumenty w momencie wykonywania funkcji \fBexec\fP(3). Program
+napisany w C może manipulować środowiskiem za pomocą funkcji \fBgetenv\fP(3),
+\fBputenv\fP(3), \fBsetenv\fP(3) i \fBunsetenv\fP(3).
+
+Trzeba zauważyć, że obecność lub wartości pewnych zmiennych środowiska mają
+wpływ na zachowanie wielu programów i funkcji bibliotecznych. Przypadkowy
+zbiór:
+.LP
+Zmienne \fBLANG\fP, \fBLANGUAGE\fP, \fBNLSPATH\fP, \fBLOCPATH\fP, \fBLC_ALL\fP,
+\fBLC_MESSAGES\fP, itd. wpływają na obsługę ustawień językowych,
+por. \fBlocale\fP(5).
+.LP
+\fBTMPDIR\fP wpływa na prefiks ścieżki w nazwach tworzonych przez \fBtmpnam\fP(3)
+i inne funkcje, katalog tymczasowy wykorzystywany przez \fBsort\fP(1) i inne
+programy itd.
+.LP
+\fBLD_LIBRARY_PATH\fP, \fBLD_PRELOAD\fP i inne zmienne \fBLD_*\fP wpływają na
+zachowanie programu ładującego/konsolidatora bibliotek dynamicznych.
+.LP
+\fBPOSIXLY_CORRECT\fP powoduje, że niektóre programy i funkcje biblioteczne
+przestrzegają zaleceń POSIX.
+.LP
+Na zachowanie \fBmalloc\fP(3) wpływają zmienne \fBMALLOC_*\fP.
+.LP
+Zmienna \fBHOSTALIASES\fP określa nazwę pliku zawierającego aliasy, z których
+ma korzystać \fBgethostbyname\fP(3).
+.LP
+\fBTZ\fP i \fBTZDIR\fP podają informacje o strefie czasowej wykorzystywaną przez
+\fBtzset\fP(3) i przez funkcje takie jak \fIctime\fP(3), \fIlocaltime\fP(3),
+\fImktime\fP(3), \fIstrftime\fP(3).  Zobacz także \fBtzselect\fP(8).
+.LP
+\fBTERMCAP\fP podaje informacje o tym, jak adresować określony terminal (lub
+podaje nazwę pliku zawierającego te informacje).
+.LP
+\fBCOLUMNS\fP i \fBLINES\fP mówią aplikacjom o rozmiarze okna, ewentualnie
+narzucając wartości inne niż rzeczywiste rozmiary.
+.LP
+\fBPRINTER\fP lub \fBLPDEST\fP mogą określać drukarkę, która powinna być
+używana. Zobacz \fBlpr\fP(1).
+.LP
+I tak dalej.
+.SH BŁĘDY
+Oczywiście istnieje tu ryzyko naruszenia bezpieczeństwa. Wiele poleceń
+systemowych zostało oszukanych w celu wyrządzenia szkody przez użytkownika,
+który nadał nietypowe wartości zmiennym \fBIFS\fP lub \fBLD_LIBRARY_PATH\fP.
+
+Istnieje również ryzyko skażenia przestrzeni nazw. Programy takie jak
+\fImake\fP i \fIautoconf\fP pozwalają na nadpisywanie domyślnych nazw programów
+narzędziowych poprzez środowisko zawierające zmienne o nazwach podobnych do
+nazw tych programów, ale składających się wyłącznie z wielkich liter.  Zatem
+używa się \fBCC\fP do określenia pożądanego kompilatora C (i podobnie \fBMAKE\fP,
+\fBAR\fP, \fBAS\fP, \fBFC\fP, \fBLD\fP, \fBLEX\fP, \fBRM\fP, \fBYACC\fP itd.).  Jednakże, w
+niektórych tradycyjnych zastosowaniach takie zmienne środowiskowe podają
+opcje dla programów zamiast ścieżki. Zatem mamy \fBMORE\fP, \fBLESS\fP i
+\fBGZIP\fP. Takie zastosowanie jest traktowane jako błędne i należy go unikać w
+nowych programach. Autorzy programu \fIgzip\fP powinni rozważyć zmianę nazwy
+swojej opcji na \fBGZIP_OPT\fP.
+.SH "ZOBACZ TAKŻE"
+\fBbash\fP(1), \fBcsh\fP(1), \fBlogin\fP(1), \fBsh\fP(1), \fBtcsh\fP(1), \fBexecve\fP(2),
+\fBclearenv\fP(3), \fBexec\fP(3), \fBgetenv\fP(3), \fBputenv\fP(3), \fBsetenv\fP(3),
+\fBunsetenv\fP(3), \fBlocale\fP(5)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

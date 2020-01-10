@@ -1,0 +1,287 @@
+.\" -*- nroff -*-
+.\" Copyright 1993, 1994, 1995 by Theodore Ts'o.  All Rights Reserved.
+.\" This file may be copied under the terms of the GNU Public License.
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993-2008 Theodore Ts'o (GPL-2)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+.\" Grzegorz Goławski (PTM) <grzegol@pld.org.pl>, 2002.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH E2FSCK 8 "kwiecień 2012" "E2fsprogs wersja 1.42.2" 
+.SH NAZWA
+e2fsck \- sprawdza linuksowy system plików ext2/ext3/ext4
+.SH SKŁADNIA
+\fBe2fsck\fP [ \fB\-pacnyrdfkvtDFV\fP ] [ \fB\-b\fP \fIsuperblok\fP ] [ \fB\-B\fP
+\fIrozmiar\-bloku\fP ] [ \fB\-l\fP|\fB\-L\fP \fIplik\-złych\-bloków\fP ] [ \fB\-C\fP \fIfd\fP ] [
+\fB\-j\fP \fIzewnętrzny\-dziennik\fP ] [ \fB\-E\fP \fIopcje\-rozszerzone\fP ] \fIurządzenie\fP
+.SH OPIS
+\fBe2fsck\fP jest używany do sprawdzania rodziny systemów plików
+ext2/ext3/ext4. W przypadku systemów plików ext3 i ext4 używających
+dziennika, jeśli system zostanie nieprawidłowo zamknięty bez wystąpienia
+błędów, po odtworzeniu transakcji wprowadzonych do dziennika, system plików
+powinien zostać zwykle oznaczony jako czysty. Z tego powodu, w systemach
+plików używających dziennika, \fBe2fsck\fP zwykle odtworzy go i wyjdzie, chyba
+że superblok danego systemu plików wskazuje, że konieczne są dalsze
+sprawdzenia.
+.PP
+\fIUrządzenie\fP jest specjalnym plikiem urządzenia, gdzie przechowywany jest
+system plików (np. \fI/dev/hdc1\fP).
+.PP
+Proszę zauważyć, że uruchamianie \fBe2fsck\fP na zamontowanym systemie plików
+generalnie nie jest bezpieczne. Jedynym wyjątkiem jest sytuacja, gdy podano
+opcję \fB\-n\fP, ale \fInie\fP użyto \fB\-c\fP, \fB\-l\fP ani \fB\-L\fP. Jednak nawet gdy takie
+działanie jest bezpieczne, wyniki wypisane przez \fBe2fsck\fP nie są
+prawidłowe, jeśli system plików jest zamontowany. Jeśli \fBe2fsck\fP pyta czy
+należy sprawdzić zamontowany system plików, jedyną poprawną odpowiedzią jest
+"nie". Jedynie eksperci, którzy rzeczywiście wiedzą co robią, mogą
+zastanowić się nad inną odpowiedzią w takim wypadku.
+.SH OPCJE
+.TP 
+\fB\-a\fP
+Ta opcja robi to samo co opcja \fB\-p\fP.  Jest udostępniana jedynie ze względu
+na kompatybilność wstecz; zaleca się używanie \fB\-p\fP wszędzie tam, gdzie to
+możliwe.
+.TP 
+\fB\-b\fP\fI superblok\fP
+Zamiast używać normalnego superbloku, używa innego, podanego jako
+\fIsuperblok\fP.  Ta opcja używana jest, gdy podstawowy superblok został
+uszkodzony.  Położenie kopii zapasowej superbloku zależne jest od rozmiaru
+bloku w danym systemie plików. W systemach plików o rozmiarze bloku 1k,
+kopia zapasowa superbloku znajduje się w bloku 8193, dla systemów plików o
+rozmiarze bloku 2k, w bloku 16384, zaś dla systemów plików o rozmiarze bloku
+4k, w bloku 32768.
+.IP
+Położenie dodatkowej kopii zapasowej superbloku może być określone poprzez
+użycie programu \fBmke2fs\fP z opcją \fB\-n\fP wypisującą położenia
+superbloków. Opcja \fB\-b\fP programu \fBmke2fs\fP, określająca rozmiar bloku
+systemu plików musi być podana w dokładnie takiej samej kolejności, w jakiej
+wypisane zostały położenia.
+.IP
+Jeżeli podany jest alternatywny superblok, a system plików nie jest otwarty
+w trybie tylko do odczytu, e2fsck sprawdzi, czy podstawowy superblok jest
+uaktualniony.
+.TP 
+\fB\-B\fP\fI rozmiar\-bloku\fP
+Normalnie, e2fsck szuka superbloku w zmienianych rozmiarach bloku i próbuje
+znaleźć rozmiar odpowiedni. Ta technika czasem daje się ogłupić. Dlatego
+opcja ta wymusza na e2fsck wyszukiwanie superbloków o określonej wielkości
+bloku. Jeśli superblok nie zostanie znaleziony, e2fsck zakończy działanie z
+błędem krytycznym.
+.TP 
+\fB\-c\fP
+Opcja ta powoduje, że \fBe2fsck\fP uruchamia program \fBbadblocks\fP(8) w celu
+znalezienie uszkodzonych bloków systemu plików przy użyciu skanowania
+odczytu. Bloki takie są następnie zaznaczane poprzez dodawanie ich do
+i\-węzła uszkodzonych bloków.  Jeżeli opcja ta podana jest dwa razy, wtedy
+uszkodzone bloki będą poszukiwane przy użyciu niedestruktywnego testu
+odczytu i zapisu.
+.TP 
+\fB\-C\fP\fI fd\fP
+Ta opcja powoduje, że \fBe2fsck\fP wypisze kompletną informację do podanego
+deskryptoru pliku. Dzięki temu postęp sprawdzania systemu plików może być
+kontrolowany. Ta opcja jest używana przede wszystkim przez programy
+uruchamiające \fBe2fsck\fP. Jeśli liczba deskryptora pliku jest ujemna, to
+używana jest wartość bezwzględna z deskryptora pliku, a wyjście jest
+początkowo wyłączone. Można je później włączyć, wysyłając procesowi
+\fBe2fsck\fP sygnał SIGUSR1. Jeżeli jako deskryptor pliku podane jest 0,
+\fBe2fsck\fP wypisze pasek postępu w swoim stylu. To wymaga, aby e2fsck
+uruchomiony był na konsoli lub na terminalu.
+.TP 
+\fB\-d\fP
+Wypisuje wyjście debugowania (bezużyteczne, chyba że używane przy
+debugowaniu \fBe2fsck\fP).
+.TP 
+\fB\-D\fP
+Optymalizuje katalogi w systemie plików. Ta opcja powoduje, że e2fsck
+próbuje zoptymalizować wszystkie katalogi albo ponownie je indeksując (jeśli
+system plików obsługuje indeksowanie katalogów), albo sortując i kompresując
+katalogi (przy mniejszych katalogach, lub w systemach plików używających
+tradycyjnych, liniowych katalogów).
+.IP
+Nawet bez opcji \fB\-D\fP, \fBe2fsck\fP może niekiedy optymalizować część katalogów
+\- np. jeśli indeksowanie katalogów jest włączone, a katalogi nie zostały
+zindeksowane i mogą odnieść korzyści z tej operacji, albo jeśli struktury
+indeksowania są uszkodzone i muszą zostać odbudowane. Opcja \fB\-D\fP wymusza
+zoptymalizowanie wszystkich katalogów w systemie plików. Niekiedy może to
+sprawić, że będą nieco mniejsze i trochę szybsze w przeszukiwaniu, ale w
+praktyce, rzadko kiedy jest sens stosować tę opcję.
+.IP
+Opcja \fB\-D\fP wykryje wpisy katalogowe ze zduplikowanymi nazwami w pojedynczym
+katalogu, czego e2fsck normalnie nie wymusza ze względów wydajnościowych.
+.TP 
+\fB\-E\fP\fI opcje\-rozszerzone\fP
+Ustawia rozszerzone opcje e2fsck. Opcje rozszerzone są oddzielone
+przecinkami i mogą przyjmować argument za pomocą znaku równości
+("="). Obsługiwane są następujące opcje:
+.RS 1.2i
+.TP 
+\fBea_ver=\fP\fIwersja\-atrybutów\-rozszerzonych\fP
+Ustawia wersję rozszerzonych atrybutów bloków, które \fBe2fsck\fP wymaga do
+sprawdzania systemu plików. Numerem wersji może być 1 lub 2. Domyślnym
+formatem rozszerzonych atrybutów jest 2.
+.TP 
+\fBjournal_only\fP
+Jeśli to wymagane, odtwarza wyłącznie dziennik, ale nie przeprowadza żadnych
+dalszych sprawdzeń lub napraw.
+.TP 
+\fBfragcheck\fP
+Podczas pierwszego przebiegu, wypisuje szczegółowe sprawozdanie o wszystkich
+nieciągłych blokach plików, znalezionych w systemie plików.
+.TP 
+\fBdiscard\fP
+Próbuje wyczyścić wolne bloki i nieużywane i\-węzły po pełnym sprawdzeniu
+systemu plików (użyteczne na dyskach SSD i urządzeniach zapisujących "z
+dziurami" (sparse) lub alokujących dane elastycznie
+(thin\-provisioned)). Proszę zauważyć, że ta operacja jest przeprowadzana w
+przebiegu piątym, PO pełnym sprawdzeniu systemu plików i tylko, jeśli nie
+zawiera on rozpoznawalnych błędów. Może się jednak zdarzyć, że \fBe2fsck\fP nie
+rozpozna problemu w pełni i wówczas użycie tej opcji może uniemożliwić
+późniejsze, ręczne odzyskiwanie danych.
+.TP 
+\fBnodiscard\fP
+Nie próbuje wyczyścić wolnych bloków i nieużywanych bloków i\-węzłów. Ta
+opcja jest dokładnym przeciwieństwem opcji discard. Jest ustawiona jako
+domyślna.
+.RE
+.TP 
+\fB\-f\fP
+Wymusza sprawdzanie, nawet jeśli system wydaje się być czysty.
+.TP 
+\fB\-F\fP
+Wypróżnia bufory systemu plików przed uruchomieniem programu. Przydatne
+właściwie tylko w czasowych próbach \fBe2fsck\fP.
+.TP 
+\fB\-j\fP\fI zewnętrzny_dziennik\fP
+Ustawia ścieżkę dostępu do zewnętrznego dziennika dla tego systemu plików.
+.TP 
+\fB\-k\fP
+W połączeniu z opcją \fB\-c\fP, zachowywane są wszystkie uszkodzone bloki na
+liście złych bloków, a nowe uszkodzone bloki znalezione przez
+\fBbadblocks\fP(8) będą dodane do istniejącej listy złych bloków.
+.TP 
+\fB\-l\fP\fI plik\fP
+Dodaje podane przez \fIplik\fP bloki do listy bloków uszkodzonych. Format pliku
+jest taki sam jak ten utworzony przez program \fBbadblocks\fP(8). Proszę
+zauważyć, że numery bloków bazują na rozmiarze bloku systemu plików. Dlatego
+\fBbadblocks\fP(8)  musi otrzymać rozmiar bloku systemu plików. Jednak dużo
+łatwiejsze i bezpieczniejsze jest użycie opcji \fB\-c\fP programu \fBe2fsck\fP,
+ponieważ zapewnia to przekazanie właściwych parametrów do programu
+\fBbadblocks.\fP
+.TP 
+\fB\-L\fP\fI plik\fP
+Ustawia listę uszkodzonych bloków na listę bloków określoną przez \fIplik\fP.
+(Opcja ta jest identyczna z \fB\-l\fP, poza tym, że przed dodaniem listy bloków
+z pliku, stara lista uszkodzonych bloków jest czyszczona).
+.TP 
+\fB\-n\fP
+Otwiera system plików w trybie tylko do odczytu i zakłada odpowiedź "nie" na
+wszystkie pytania. Umożliwia to użycie \fBe2fsck\fP w trybie
+nieinteraktywnym. Ta opcja nie może być podana razem z opcjami \fB\-p\fP lub
+\fB\-y\fP.
+.TP 
+\fB\-p\fP
+Automatycznie naprawia ("preen") system plików. Ta opcja powoduje
+automatyczne naprawianie przez \fBe2fsck\fP wszystkich problemów systemu
+plików, które mogą zostać bezpiecznie naprawione bez udziału
+człowieka. Jeśli \fBe2fsck\fP wykryje problem, który może wymagać obecności
+administratora w celu wykonania dodatkowych działań, \fBe2fsck\fP wypisze opis
+problemu i wyjdzie z wartością 4 dodaną (logiczne OR) do kodu
+zakończenia. (patrz rozdział \fBKOD WYJŚCIA\fP). Ta opcja jest zwykle używana w
+systemowych skryptach rozruchowych. Nie może być użyta razem z opcjami \fB\-n\fP
+lub \fB\-y\fP.
+.TP 
+\fB\-r\fP
+Ta opcja nie robi nic; jest udostępniona dla kompatybilności wstecznej.
+.TP 
+\fB\-t\fP
+Wypisuje statystyki czasowe dla \fBe2fsck\fP.  Jeśli opcja ta jest użyta
+dwukrotnie, to wyświetlane są dodatkowe statystyki czasowe.
+.TP 
+\fB\-v\fP
+Tryb szczegółowy (verbose).
+.TP 
+\fB\-V\fP
+Wypisuje informację o wersji i wychodzi.
+.TP 
+\fB\-y\fP
+Zakłada odpowiedź "tak" na wszystkie pytania; umożliwia użycie \fBe2fsck\fP w
+trybie nieinteraktywnym. Opcja nie może być podana razem z opcjami \fB\-n\fP lub
+\fB\-p\fP.
+.SH "KOD WYJŚCIA"
+Kod wyjścia zwracany przez \fBe2fsck\fP jest sumą następujących warunków:
+.br
+	0	\- Bez błędów
+.br
+	1	\- Błędy systemu plików są poprawione
+.br
+	2	\- Błędy systemu plików są poprawione, system powinien
+.br
+		  zostać uruchomiony ponownie
+.br
+	4	\- Błędy systemu plików nie zostały poprawione
+.br
+	8	\- Błąd operacyjny
+.br
+	16	\- Błąd w składni lub użyciu
+.br
+	32	\- Działanie e2fsck przerwane przez użytkownika
+.br
+	128	\- Błąd biblioteki dzielonej
+.br
+.SH SYGNAŁY
+Następujące sygnały mają podany niżej efekt, gdy zostaną wysłane do
+\fBe2fsck\fP.
+.TP 
+\fBSIGUSR1\fP
+Ten sygnał powoduje, że \fBe2fsck\fP wyświetli pasek postępu. (Zobacz opis
+opcji \fB\-C\fP).
+.TP 
+\fBSIGUSR2\fP
+Ten sygnał powoduje, że \fBe2fsck\fP przestanie wyświetlać pasek postępu.
+.SH ZGŁASZANIE\ BŁĘDÓW
+Prawie każdy program ma błędy. W przypadku znalezienia systemu plików,
+powodującego pad programu \fBe2fsck\fP lub takiego, którego \fBe2fsck\fP nie
+potrafi naprawić, proszę zgłosić to autorowi.
+.PP
+Proszę załączyć tyle informacji, ile da się załączyć w swoim zgłoszeniu
+błędu. Najlepiej dołączyć kompletną transkrypcję uruchomienia \fBe2fsck\fP, tak
+by autor mógł dokładnie widzieć, co się działo. Proszę upewnić się, że
+komunikaty programu są wyświetlane po angielsku; jeśli system został
+skonfigurowany do używania tłumaczeń, proszę ustawić zmienną środowiskową
+\fBLC_ALL\fP na wartość \fBC\fP, dzięki czemu transkrypcja działania programu
+będzie przydatna dla autora. Jeśli jest zapisywalny system plików, gdzie
+można tę transkrypcję zapisać, program \fBscript\fP(1) umożliwia łatwe
+zapisanie wyjścia \fBe2fsck\fP do pliku.
+.PP
+Użyteczne może być też przesłanie wyjścia z \fBdumpe2fs\fP(8).  Jeśli określony
+i\-węzeł lub ich grupa wydaje się sprawiać e2fsck kłopoty, proszę spróbować
+uruchomić komendę \fBdebugfs\fP(8)  i wysłać wyjście komendy \fBstat\fP(1u)  na
+dotkniętych i\-węzłach. Jeśli i\-węzeł jest katalogiem, komenda \fIdebugfs\fP o
+nazwie \fIdump\fP umożliwi ekstrakcję zawartości i\-węzła katalogu, którą można
+przesłać po zakodowaniu jej programem \fBuuencode\fP(1). Najbardziej przydatną
+rzeczą, jaką można wysłać w celu umożliwienia odtworzenia błędu przez
+autora, jest surowy, skompresowany zrzut obrazu systemu plików, utworzony za
+pomocą \fBe2image\fP(8) (proszę zapoznać się z jego stroną podręcznika).
+.PP
+Proszę również zawsze załączać pełny tekst wersji, wyświetlany przez
+\fBe2fsck\fP podczas pracy.
+.SH AUTOR
+Ta wersja \fBe2fsck\fP została napisana przez Theodore'a Ts'o
+<tytso@mit.edu>.
+.SH "ZOBACZ TAKŻE"
+\fBe2fsck.conf\fP(5), \fBbadblocks\fP(8), \fBdumpe2fs\fP(8), \fBdebugfs\fP(8),
+\fBe2image\fP(8), \fBmke2fs\fP(8), \fBtune2fs\fP(8)
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>,
+Grzegorz Goławski (PTM) <grzegol@pld.org.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 1.42.4 \fPoryginału.

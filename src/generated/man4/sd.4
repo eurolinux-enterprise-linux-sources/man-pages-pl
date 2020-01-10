@@ -1,0 +1,123 @@
+.\" sd.4
+.\" Copyright 1992 Rickard E. Faith (faith@cs.unc.edu)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1992 Rickard E. Faith 
+.\" Copyright © of Polish translation:
+.\" Paweł Olszewski (PTM) <alder@amg.net.pl>, 1998.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH SD 4 1992\-12\-17 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+sd \- sterownik dysków twardych SCSI
+.SH DEFINICJA
+.nf
+\fB#include <linux/hdreg.h>        \fP/* dla HDIO_GETGEO */
+\fB#include <linux/fs.h>           \fP/* dla BLKGETSIZE and BLKRRPART */
+.fi
+.SH KONFIGURACJA
+Nazwa tego urządzenia blokowego ma następującą postać: \fBsd\fP\fIlp\fP, gdzie
+\fIl\fP jest literą oznaczającą fizyczny dysk, a \fIp\fP jest cyfrą oznaczającą
+partycję na tym fizycznym dysku. Często numer partycji \fIp\fP jest opuszczany,
+jeśli nazwa urządzenia odnosi się do całego dysku.
+
+Dyski SCSI mają główny numer urządzenia równy 8, a numer poboczny w postaci
+(16 * \fInumer_dysku\fP) + \fInumer_partycji\fP, gdzie \fInumer_dysku\fP jest numerem
+fizycznego dysku wg kolejności wykrywania, a \fInumer_partycji\fP jest
+następujący:
+.sp
+partycja 0 to cały dysk
+.br
+partycje 1\-4 to "podstawowe" partycje DOS
+.br
+partycje 5\-8 to "rozszerzone" ("logiczne") partycje DOS
+
+Na przykład \fI/dev/sda\fP ma numer główny 8, poboczny 0 i odnosić się będzie
+do całego pierwszego dysku SCSI w systemie; \fI/dev/sdb3\fP ma numer główny 8,
+poboczny 19 i odnosić się będzie do trzeciej "podstawowej" partycji DOS na
+drugim dysku SCSI w systemie.
+
+W chwili obecnej, obsługiwane są jedynie urządzenia blokowe. Urządzenia
+surowe nie zostały jeszcze zaimplementowane.
+.SH OPIS
+Obsługiwane są następujące \fIioctl\fPe:
+.TP 
+\fBHDIO_GETGEO\fP
+.RS
+Zwraca parametry dysku z BIOS w następującej strukturze:
+.in +4n
+.nf
+
+struct hd_geometry {
+    unsigned char  heads;
+    unsigned char  sectors;
+    unsigned short cylinders;
+    unsigned long  start;
+};
+.fi
+.in
+
+Wskaźnik do tej struktury przekazywany jest jako parametr funkcji
+\fBioctl\fP(2).
+
+Informacja zwracana do parametru jest geometrią dysku \fIw rozumieniu systemu
+DOS!\fP Owa geometria \fInie\fP jest fizyczną geometrią dysku. Jest jednak
+używana przy konstruowaniu tablicy partycji danego dysku i jest niezbędna
+dla poprawnego działania programów \fBfdisk\fP(1), \fBefdisk\fP(1) i
+\fBlilo\fP(1). Jeśli informacja o geometrii jest niedostępna, zwrócona będzie
+wartość zero dla wszystkich parametrów.
+.RE
+.TP 
+\fBBLKGETSIZE\fP
+Zwraca rozmiar urządzenia w sektorach. Parametr funkcji \fBioctl\fP(2)
+powinien być wskaźnikiem do zmiennej typu \fIlong\fP.
+.TP 
+\fBBLKRRPART\fP
+Wymusza ponowny odczyt tablicy partycji dysku SCSI. Nie są wymagane żadne
+parametry.
+
+Operacje \fBioctl\fP(2) dla \fBscsi\fP(4) są również obsługiwane. Jeśli wymagany
+jest parametr funkcji \fBioctl\fP(2) i ma on wartość NULL, wówczas \fBioctl\fP(2)
+zwróci błąd \fBEINVAL\fP.
+.SH PLIKI
+/dev/sd[a\-h]: całe urządzenie
+.br
+.\".SH "SEE ALSO"
+.\".BR scsi (4)
+/dev/sd[a\-h][0\-8]: poszczególne partycje blokowe
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Paweł Olszewski (PTM) <alder@amg.net.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

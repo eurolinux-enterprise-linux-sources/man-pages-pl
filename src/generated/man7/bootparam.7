@@ -1,0 +1,1093 @@
+.\" Copyright (c) 1995,1997 Paul Gortmaker and Andries Brouwer
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" This man page written 950814 by aeb, based on Paul Gortmaker's HOWTO
+.\" (dated v1.0.1, 15/08/95).
+.\" Major update, aeb, 970114.
+.\" FIXME ? The use of quotes on this page is inconsistent with the
+.\" rest of man-pages.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1995,1997 Paul Gortmaker & Andries Brouwer (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1998.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH BOOTPARAM 7 16\-12\-2007 Linux "Podręcznik linuksowego programisty"
+.SH NAZWA
+bootparam \- wprowadzenie do parametrów rozruchowych jądra Linux
+.SH OPIS
+Jądro (kernel) Linux przyjmuje pewne "opcje wiersza poleceń"", lub
+"parametry rozruchowe" podczas uruchamiania. Ogólnie jest to używane do
+przekazywania jądru informacji o parametrach sprzętu, których samodzielnie
+nie potrafi ono określić lub by zapobiec wartościom, które jądro by
+normalnie wykryło.
+
+Kiedy jądro jest uruchamiane bezpośrednio przez BIOS (powiedzmy, że z
+dyskietki, na którą je skopiowano używając `cp zImage /dev/fd0'), nie ma
+możliwości przekazywania żadnych parametrów. Tak więc, aby móc mieć tę
+możliwość, trzeba używać oprogramowania zdolnego do przekazywania
+parametrów, takiego jak LILO czy loadlin. Do kilku parametrów można także
+zmodyfikować sam obraz jądra, przy użyciu rdev, patrz \fBrdev\fP(8).
+
+Najpopularniejszym programem rozruchowym jest LILO (LInux LOader), napisany
+przez Wernera Almesberegera. Potrafi on uruchamiać różne jądra i zachowuje
+informację o konfiguracji w pliku tekstowym (patrz \fBlilo\fP(8) i
+\fBlilo.conf\fP(5)). LILO może uruchamiać DOS, OS/2 Linux, FreeBSD, itd., i
+jest dość elastyczne.
+
+Innym popularnym programem ładującym Linuksa jest "LoadLin", który jest
+programem dosowym, potrafiącym odpalać jądro Linuksa z DOS\-a (z argumentami
+rozruchowymi), zakładając że pewne zasoby są osiągalne. Jest to dobre dla
+osób chcących odpalać Linuksa z DOS\-a.
+
+Jest też bardzo przydatnym, jeśli ma się określony sprzęt, który bazuje na
+określonym DOS\-owym sterowniku, włączającym go w określony stan. Popularnym
+przykładem są karty "SoundBlaster Compatible", które wymagają dosowych
+sterowników do zamieszania kilkoma mistycznymi rejestrami aby włączyć kartę
+w tryb kompatybilności z SB. Rozruch DOS\-a z załączonym sterownikiem i
+późniejsze ładowanie Linuksa z dosowego wiersza poleceń zapobiega
+resetowaniu karty, co ma miejsce podczas ponownego uruchamiania komputera.
+.SS "Lista argumentów"
+Wiersz poleceń jądra jest przetwarzany w listę łańcuchów (argumentów
+rozruchowych) rozdzielonych spacjami. Większość argumentów rozruchowych
+przyjmuje postać:
+.IP
+\fInazwa\fP[\fB=\fP\fIwartość_1\fP][\fB,\fP\fIwartość_2\fP]...[\fB,\fP\fIwartość_10\fP]
+.LP
+gdzie "nazwa" jest unikalnym słowem kluczowym, które jest używane do
+określania, która część jądra ma otrzymać związane z nim
+wartości. Poszczególne argumenty rozruchowe są zwyczajnie oddzielone
+spacjami, w formacie wyżej podanym. Proszę zauważyć, że limit 10 wartości
+jest rzeczywisty, jako że obecnie kod obsługuje jedynie 10 oddzielonych
+przecinkami parametrów dla słowa kluczowego (można jednak użyć tego samego
+słowa kluczowego drugi raz, aby pomieścić dodatkowe parametry).
+
+Większość pracy idzie do linux/init/main.c. Najpierw jądro sprawdza czy
+argument jest jednym ze specjalnych argumentów "root=", "ro", "rw", lub
+"debug". Znaczenie tych specjalnych argumentów jest opisane dalej w tym
+dokumencie.
+
+Potem przechodzi przez listę funkcji konfigurujących, aby zobaczyć czy
+podany tekst argumentu (taki jak "foo") nie jest związany z funkcją
+konfigurującą ("foo_setup()") dla konkretnego urządzenia, lub części
+jądra. Jeśli przekazało się jądru linię foo=3,4,5,6 to przeszuka ono tablice
+bootsetupowe aby sprawdzić, czy "foo" było zarejestrowane. Jeśli było,
+wywołuje funkcję konfigurującą związaną z "foo" (foo_setup()) i przekazuje
+jej argumenty 3, 4, 5 i 6 podane w linii poleceń jądra.
+
+Wszystko, co jest w postaci "foo=bar", co nie jest akceptowane jako funkcja
+konfigurująca, jak opisano powyżej, zostaje zinterpretowane jako zmienna
+środowiskowa, która ma być ustawiona. (Bezużytecznym?) przykładem może być
+użycie "TERM=vt100" jako argumentu rozruchowego.
+
+Wszelkie pozostałe argumenty, które nie były wybrane przez jądro i nie były
+zinterpretowane jako zmienne środowiskowe, zostają potem przekazane
+procesowi jeden, którym zwykle jest program init. Najpopularniejszym
+argumentem, który jest przekazywany procesowi init jest słowo "single",
+które mówi initowi, by uruchomił komputer w trybie pojedynczego użytkownika,
+żeby nie odpalał wszystkich normalnych demonów. Proszę sprawdzić na stronie
+podręcznika init, jakie argumenty przyjmuje.
+.SS "Ogólne argumenty nieprzeznaczone do konkretnego urządzenia"
+.TP 
+\&\fB'init=...'\fP
+Ustawia to pierwotne polecenie do wykonania przez jądro. Jeśli nie jest ono
+ustawione lub nie może zostać znalezione, to jądra wypróbowuje
+\fI/sbin/init\fP, następnie \fI/etc/init\fP, później \fI/bin/init\fP i w końcu
+\fI/bin/sh\fP a ostatecznie panikuje, jeśli wszystkie te próby zawiodą.
+.TP 
+\&\fB'nfsaddrs=...'\fP
+Ustawia adres rozruchowy nfs na podany łańcuch. Adres rozruchowy jest
+używany w przypadku rozruchu sieciowego.
+.TP 
+\&\fB'nfsroot=...'\fP
+Ustawia nazwę katalogu głównego nfs na podany łańcuch. Jeśli łańcuch ten nie
+rozpoczyna się od "/", "," lub cyfry, to jest on poprzedzany przez
+"/tftpboot/". Ta nazwa katalogu głównego jest używana w przypadku rozruchu
+sieciowego.
+.TP 
+\&\fB'no387'\fP
+Tylko jeśli zdefiniowano \fBCONFIG_BUGi386\fP: Niektóre koprocesory i387 mają
+błędy, które pojawiają się gdy używa się ich w 32 bitowym trybie
+chronionym. Np. niektóre wczesne chipy ULSI\-387 miały wadliwe operacje
+zmiennoprzecinkowe. Używanie `no387' powoduje, że Linux ignoruje
+koprocesor. Oczywiście w tym wypadku trzeba mieć jądro skompilowane ze
+wsparciem dla emulacji koprocesora.
+.TP 
+\&\fB'no\-hlt'\fP
+Tylko jeśli zdefiniowano \fBCONFIG_BUGi386\fP: Niektóre z pierwszych chipów
+i486DX\-100 miały problem z instrukcją "hlt", przez co nie mogły normalnie
+powracać do trybu operacyjnego po jej użyciu.  Używanie "no\-hlt" mówi
+Linuksowi, by zwyczajnie wykonywał nieskończoną pętlę gdy nie ma nic do
+roboty, a nie mówił stop procesorowi. Pozwala to osobom z tym wadliwym
+chipem korzystać z Linuksa.
+.TP 
+\&\fB'root=...'\fP
+Ten argument mówi jądru, którego urządzenia użyć do jako głównego systemu
+plików podczas rozruchu. Domyślna wartość tego ustawienia jest
+skonfigurowana podczas kompilacji i zwykle jest wartością urządzenia
+głównego systemu, na którym zbudowano jądro. Aby nadpisać tę wartość i
+wybrać na urządzenie główne np. drugi napęd dyskietek, należy użyć
+"root=/dev/fd1" (urządzenie główne może także być ustawione przy pomocy
+\fBrdev\fP(8)).
+
+Urządzenie główne może zostać określone symbolicznie, lub numerycznie.
+Specyfikacja symboliczna ma format /dev/\fIXXYN\fP, gdzie \fIXX\fP określa typ
+urządzenia ("hd" dla dysków twardych kompatybilnych z ST\-506, z Y w zakresie
+"a"\-"h"; "sd" dla dysków SCSI, z Y w zakresie "a"\-"e"; "ad" dla dysków ACSI
+Atari, z Y w zakresie "a"\-"e", "ez" dla dysków wysuwalnych portu
+równoległego Syquest EZ135, z Y="a", "xd" dla dysków kompatybilnych z XT, z
+Y "a" lub "b"; "fd" dla stacji dyskietek, z Y określającym numer stacji \-
+fd0 będzie dosowym dyskiem "A:", a fd1 "B:"), \fIY\fP literę napędu lub jego
+numer, a \fIN\fP numer partycji na tym urządzeniu (nieobecne w przypadku
+dyskietek). Ostatnie wersje jądra obsługują wiele innych typów, w większości
+do CD\-ROM\-ów: nfs, ram, scd, mcd, cdu535, aztcd, cm206cd, gscd, sbpcd,
+sonycd, bpcs (typ nfs odnosi się do rozruchu sieciowego, a ram do ramdysku)
+
+Proszę zauważyć, że nie ma to nic do czynienia z przeznaczeniem tych
+urządzeń w bieżącym systemie. Część "/dev/" jest tylko konwencją.
+
+Powyższe urządzenia można przekazywać także w niewygodnej i mniej przenośnej
+reprezentacji numerycznej, która jest kombinacją numerów głównych/pobocznych
+(major/minor) urządzeń. (np. /dev/sda ma numer główny 8 i poboczny 3, więc
+można użyć "root=0x803" jako alternatywy).
+.TP 
+\&\fB'ro'\fP i \fB'rw'\fP
+Opcja 'ro' mówi jądru, by zamontowało główny system plików jako przeznaczony
+tylko do odczytu, aby fsck mógł pracować na nieruchomym systemie
+plików. Żaden proces nie może zapisywać plików na systemie plików, dopóki
+nie zostanie remontowany jako przeznaczony do odczytu i zapisu, np.  poprzez
+"mount \-w \-n \-o remount /" (patrz też \fBmount\fP(8)).
+
+Opcja 'rw' mówi jądru, by zamontować główny system plików jako przeznaczony
+do odczytu/zapisu. Tak jest domyślnie.
+
+Wybór między ro i rw może być również dokonany przy użyciu \fBrdev\fP(8).
+.TP 
+\&\fB'reserve=...'\fP
+Ta komenda jest używana do chronienia regionów portów wejścia/wyjścia przed
+sondowaniem.  Postać polecenia:
+.IP
+\fBreserve=\fP\fIiobase,extent[,iobase,extent]...\fP
+.sp
+W niektórych komputerach może być niezbędne chronienie sterowników urządzeń
+od szukania urządzeń (autosondowanie) w określonych regionach. Może to
+wynikać z błędnej reakcji sprzętu, możliwej błędnej identyfikacji lub po
+prostu z tego, że nie chce się tego sprzętu inicjalizować.
+
+Argument reserve podaje region portu wejścia/wyjścia, który nie ma być
+sondowany. Sterownik urządzenia nie będzie sondować zarezerwowanego regionu,
+chyba że inny argument rozruchowy wyjątkowo mu to nakaże.
+
+Na przykład, wiersz rozruchowy
+.IP
+reserve=0x300,32 blah=0x300
+.IP
+powstrzymuje wszystkie sterowniki urządzeń, poza sterownikiem "blah" od
+sondowania 0x300\-0x31f.
+.TP 
+\&\fB'mem=...'\fP
+Funkcja BIOS\-u zdefiniowana w specyfikacji PC, zwracająca wielkość
+zainstalowanej pamięci, była skonstruowana do zwracania wartości maksymalnie
+64MB. Linux używa tej funkcji podczas rozruchu, aby sprawdzić ile jest
+zainstalowanej pamięci. Jeśli ma się więcej niż 64MB, można użyć tego
+argumentu, aby powiedzieć Linuksowi o wielkości pamięci. Wartości mogą być
+przekazywane dziesiętnie lub szesnastkowo (przedrostek 0x), z opcjonalnymi
+końcówkami `k' (razy 1024) lub `M' (razy 1046576).  Oto cytat Linusa o
+używaniu parametru "mem=".
+
+.in +0.5i
+Jądro przyjmie dowolny parametr 'mem=xx', jaki mu się poda, lecz jeśli okaże
+się, że je okłamałeś, wcześniej czy później załamie się straszliwie.
+Parametr wskazuje na najwyższy adresowalny adres RAM, więc 'mem=0x1000000'
+oznacza na przykład, że masz 16 MB pamięci. Na maszynie z 96MB byłoby to
+\&'mem=0x6000000'.
+
+\fBUWAGA\fP: niektóre komputery mogą używać górną część pamięci dla buforowania
+BIOS\-u lub innych rzeczy, więc w rzeczywistości można mieć mniej niż pełne
+96MB adresowalnej pamięci. Odwrotny przypadek też może być prawdziwy:
+niektóre chipsety mapują pamięć fizyczną, która jest przykryta przez obszar
+BIOS\-u w obszar tuż za górą pamięci, więc wierzchołek pamięci będzie w tym
+wypadku wynosił np. 96MB + 384 KB. Jeśli powie się Linuksowi, że ma się
+więcej pamięci niż w rzeczywistości, staną się złe rzeczy: może nie naraz,
+ale w końcu z pewnością.
+.in
+
+Można również użyć parametru rozruchowego "mem=nopentium", aby wyłączyć 4
+megabajtowe tabele stron na jądrach skonfigurowanych do systemów IA32 z
+procesorem Pentium lub nowszym.
+.TP 
+\&\fB'panic=N'\fP
+Domyślnie, jądro nie uruchomi się ponownie po panice, ale za pomocą tej
+opcji można spowodować, że jądro wykona ponowne uruchomienie systemu po N
+sekundach (jeśli N jest większe niż zero). Czas ten można również ustawić za
+pomocą "echo N > /proc/sys/kernel/panic".
+.TP 
+\&\fB'reboot=\fP[\fBwarm\fP|\fBcold\fP][\fB,\fP[\fBbios\fP|\fBhard\fP]]\fB'\fP
+Tylko gdy zdefiniowano \fBCONFIG_BUGi386\fP. Od wersji 2.0.22 ponowne
+uruchomienie jest domyślnie "zimne" (cold). Można również wybrać stare
+ustawienie za pomocą 'reboot=warm'. "Zimny" restart może wymagać
+zresetowania określonego sprzętu, może również zniszczyć jeszcze nie
+zapisane dane w buforach dysku. "Ciepły" restart może być
+szybszy. Domyślnie, ponowne uruchomienie jest "twarde" (hard), poprzez
+żądanie pulsowania bitu 0 na linii resetu kontrolera klawiatury, lecz
+istnieje przynajmniej jeden typ płyt głównych, z którym to nie działa. Opcja
+\&'reboot=bios' może w zamian przeskoczyć przez BIOS.
+.TP 
+\&\fB'nosmp'\fP i \fB'maxcpus=N'\fP
+Tylko gdy zdefiniowano __SMP__. Opcja wiersza polecenia 'nosmp' lub
+\&'maxcpus=0' wyłączy całkowicie aktywację SMP, natomiast opcja 'maxcpus=N'
+ograniczy maksymalną liczbę aktywowanych procesorów w trybie SMP do N.
+.SS "Argumenty rozruchowe do użycia przez deweloperów jądra"
+.TP 
+\&\fB'debug'\fP
+Komunikaty jądra są przekazywane do klogd, demona logowania jądra, tak że
+mogą zostać zapisane na dysku. Wiadomości o priorytetach powyżej
+\fIconsole_loglevel\fP są także wypisywane na konsoli (<linux/kernel.h>
+zawiera informacje na temat poziomów priorytetów). Domyślnie ta zmienna jest
+ustawiona na logowanie wszystkiego co ważniejsze niż wiadomości
+debugowania. Ten argument rozruchowy dodatkowo nakazuje wypisywanie
+wiadomości o priorytecie DEBUG. Poziom logowania konsoli można również
+ustawić podczas pracy systemu dzięki opcjom klogd. Patrz \fBklogd\fP(8).
+.TP 
+\&\fB'profile=N'\fP
+Możliwe jest włączenie funkcji profilowania jądra, aby dowiedzieć się na co
+jądro zużywa cykle procesora. Profilowanie jest włączane, za pomocą
+ustawienia zmiennej \fIprof_shift\fP na wartość niezerową. Można to zrobić
+podając \fBCONFIG_PROFILE\fP w chwili kompilacji lub używając opcji
+\&'profile='. Wartość \fIprof_shift\fP będzie wynosić N, jeśli zostanie podana
+lub \fBCONFIG_PROFILE_SHIFT\fP, gdy poda się ją, lub 2 \- wartość
+domyślną. Ważność tej zmiennej jest taka, że daje ona rozdrobnienie
+profilowania: za każdym cyknięciem zegara, jeśli system wykonywał kod jądra,
+licznik jest zwiększany:
+.IP
+profile[address >> prof_shift]++;
+.sp
+Surowe informacje profilowania można odczytać z
+\fI/proc/profile\fP. Prawdopodobnie będzie trzeba użyć narzędzia takiego jak
+readprofile.c, aby je uporządkować. Zapis do \fI/proc/profile\fP wyczyści
+liczniki.
+.TP 
+\&\fB'swap=N1,N2,N3,N4,N5,N6,N7,N8'\fP
+Ustawia osiem parametrów: max_page_age, page_advance, page_decline,
+page_initial_age, age_cluster_fract, age_cluster_min, pageout_weight,
+bufferout_weight, które kontrolują algorytm korzystania z pamięci wymiany
+(swapu) przez jądro. Tylko dla dostosowujących jądro.
+.TP 
+\&\fB'buff=N1,N2,N3,N4,N5,N6'\fP
+Ustawia sześć parametrów: max_buff_age, buff_advance, buff_decline,
+buff_initial_age, bufferout_weight, buffermem_grace, które kontrolują
+zarządzanie pamięcią buforów jądra. Tylko dla dostosowujących jądro.
+.SS "Argumenty rozruchowe do użytku z ramdyskiem"
+Tylko jeśli jądro zostało skompilowane z \fBCONFIG_BLK_DEV_RAM\fP. Generalnie,
+złym pomysłem jest używanie ramdysku w Linuksie \- system sam będzie
+korzystał z dostępnej pamięci bardziej wydajnie. Jednak w trakcie rozruchu
+(lub podczas tworzenia dyskietek rozruchowych) często przydatne okazuje się
+załadowanie zawartości dyskietki na ramdysk. Może się również okazać, że
+pewne moduły (np. do systemu plików lub sprzętu) muszą zostać załadowane
+przed uzyskaniem dostępu do głównego dysku.
+
+W Linuksie 1.3.48, obsługa ramdysku uległa całkowitej zmianie. Wcześniej,
+pamięć była alokowana statycznie i istniał parametr 'ramdisk=N', który
+określał jego rozmiar. Mogło to również służyć do ustawienia obrazu jądra w
+czasie kompilacji lub do użycia \fBrdev\fP(8). Obecnie, ramdysk używa buforów i
+powiększa się w sposób dynamiczny. Wiele informacji (np. jak użyć \fBrdev\fP(8)
+w połączeniu z nową konfiguracją ramdysku) zawiera plik
+\fI/usr/src/linux/Documentation/ramdisk.txt\fP.
+
+Są cztery parametry: dwa logiczne i dwa całkowite.
+.TP 
+\&\fB'load_ramdisk=N'\fP
+Jeśli N=1 \- ładuje ramdysk, przy N=0 nie ładuje ramdysku (tak jest
+domyślnie).
+.TP 
+\&\fB'prompt_ramdisk=N'\fP
+Jeśli N=1 \- prosi o włożenie dyskietki (tak jest domyślnie), jeśli N=0 \- nie
+prosi (dlatego parametr ten nigdy nie jest potrzebny).
+.TP 
+\&\fB'ramdisk_size=N'\fP lub (przestarzałe) \fB'ramdisk=N'\fP
+Ustawia maksymalny rozmiar ramdysków na N kB. Domyślny wynosi 4096 (4 MB).
+.TP 
+\&\fB'ramdisk_start=N'\fP
+Ustawia startowy numer bloku (przesunięcie na dyskietce, gdzie ramdysk się
+rozpoczyna) na N. Jest to potrzebne w przypadku, gdy ramdysk znajduje się za
+obrazem jądra.
+.TP 
+\&\fB'noinitrd'\fP
+Tylko gdy jądro zostało skompilowane z \fBCONFIG_BLK_DEV_RAM\fP i
+\fBCONFIG_BLK_DEV_INITRD\fP. Obecnie, można skompilować jądro tak, aby używało
+initrd. Gdy ta funkcja jest włączona, proces rozruchowy załaduje jądro i
+początkowy ramdysk; następnie jądro konwertuje initrd do "normalnego"
+ramdysku, który jest montowany w trybie do odczytu i zapisu, jako urządzenie
+główne; następnie wykonywane jest /linuxrc; później montowany jest
+"rzeczywisty" główny system plików, a system plików initrd jest przenoszony
+do /initrd; na końcu wykonywana jest zwykła sekwencja rozruchowa
+(np. wywołanie /sbin/init).
+
+Szczegółowy opis funkcji initrd zawiera plik
+\fI/usr/src/linux/Documentation/initrd.txt\fP.
+
+Opcja 'noinitrd' mówi jądru, że choć zostało skompilowane w celu działania z
+initrd, to nie powinno przechodzić przez powyższe kroki, lecz pozostawić
+dane initrd w \fI/dev/initrd\fP. To urządzenie może być użyte jedynie
+jednokrotnie: dane są zwalniane w chwili, gdy ostatni proces, który je
+używał zamknie \fI/dev/initrd\fP.
+.SS "Argumenty rozruchowe do urządzeń SCSI"
+Ogólne pojęcia w tej sekcji:
+
+\fIiobase\fP \-\- pierwszy port I/O, który zajmuje host SCSI. Są one podawane w
+notacji heksadecymalnej i zazwyczaj leżą w zakresie od 0x200 do 0x3ff.
+
+\fIirq\fP \-\- przerwanie sprzętowe, które wykorzystuje karta. Prawidłowe
+wartości zależą od rozpatrywanej karty, lecz zwykle są to 5, 7, 9, 10, 11,
+12 i 15.  Inne wartości są zwykle używane w peryferiach takich jak dyski
+twarde IDE, stacje dysków, porty szeregowe, itp.
+
+\fIscsi\-id\fP \-\- identyfikator, którego adapter używa do identyfikowania siebie
+na szynie SCSI. Tylko niektóre adaptery umożliwiają zmianę tej wartości,
+jako że większość ma ją trwale ustaloną wewnątrz. Częstą wartością domyślną
+jest 7, lecz zestawy Seagate i Future Domain TMC\-950 używają 6.
+
+\fIparity\fP \-\- określa, czy adapter SCSI oczekuje od załączonych urządzeń
+dostarczania wartości parzystości przy wymianach informacji. Podanie jedynki
+oznacza, że sprawdzanie parzystości jest włączone, a zero ją wyłącza. Znowu
+jednak nie wszystkie adaptery przyjmują wybranie zachowania parzystości
+podczas rozruchu.
+.TP 
+\&\fB'max_scsi_luns=...'\fP
+Urządzenie SCSI może mieć wiele "podurządzeń" zawartych w nim
+samym. Najpopularniejszym przykładem jest jeden z nowych CD\-ROM\-ów SCSI,
+który obsługuje naraz więcej niż jeden dysk. Każdy CD jest adresowany jako
+"Logical Unit Number" (LUN) (ang. logiczny numer jednostki) tego
+urządzenia.  Jednak większość urządzeń takich jak twarde dyski, napędy
+kasetowe i inne jest pojedynczymi urządzeniami z LUN równym zero.
+
+Niektóre słabo dopracowane urządzenia SCSI nie mogą obsłużyć sondowania LUN
+nierównego zeru. Dlatego, jeśli flaga kompilacji CONFIG_SCSI_MULTI_LUN nie
+była ustawiona, nowe jądra sondują domyślnie tylko LUN zero.
+
+Aby podać ilość sondowanych LUN\-ów podczas rozruchu, wpisuje się
+\&'max_scsi_luns=n' jako argument rozruchowy, gdzie n jest liczbą między 1 a
+8.  Aby zapobiec problemom opisanym wyżej, używa się n=1 aby zapobiec
+denerwowaniu nieprawidłowych urządzeń.
+.TP 
+\fBKonfiguracja napędu kasetowego SCSI\fP
+Niektóre parametry konfiguracji sterownika kasetowego SCSI mogą być
+osiągnięte przez użycie następującego:
+.IP
+\fBst=\fP\fIbuf_size[,write_threshold[,max_bufs]]\fP
+.sp
+Pierwsze dwie liczby są podane w jednostkach kilobajtowych. Domyślna wartość
+\fIbuf_size\fP to 32 KB, a maksymalna wartość to 16384 KB.  Wartość
+\fIwrite_threshold\fP jest wartością przy której bufor jest przekazywany na
+kasetę z domyślną wartością 30 KB. Maksymalna liczba buforów zmienia się z
+liczbą wykrytych napędów, a domyślną wartością jest 2.  Przykładowym użyciem
+może być:
+.IP
+st=32,30,2
+.IP
+Szczegóły można znaleźć w pliku \fIDcumentation/scsi/st.txt\fP (lub
+\fIdrivers/scsi/README.st\fP w starszych jądrach) w źródłach jądra.
+.TP 
+\fBKonfiguracja Adapteca aha151x, aha152x, aic6260, aic6360, SB16\-SCSI\fP
+Numery aha odnoszą się do kart, a numery aic odnoszą się do rzeczywistych
+chipów SCSI na tych kartach, włączając SoundBlaster\-16 SCSI.
+
+Kod sondujący dla tych hostów SCSI szuka zainstalowanego BIOS\-u, a jeśli nie
+ma takowego, sonda nie znajduje danej karty. Można wtedy użyć argumentu
+rozruchowego w postaci:
+.IP
+\fBaha152x=\fP\fIiobase[,irq[,scsi\-id[,reconnect[,parity]]]]\fP
+.IP
+Jeśli sterownik był skompilowany z włączonym debugowaniem, szósta wartość
+może ustawić poziom debugowania.
+
+Wszystkie parametry są opisane na górze tej sekcji, a wartość \fIreconnect\fP
+umożliwia rozłączanie/podłączanie urządzenia jeśli użyto wartości
+niezerowej. Przykład:
+.IP
+aha152x=0x340,11,7,1
+.IP
+Proszę zauważyć, że parametry muszą być podane po kolei, co znaczy, że aby
+podać ustawienie parity, należy podać iobase, irq, scsi\-id i wartość
+reconnect.
+.TP 
+\fBKonfiguracja Adapteca aha154x\fP
+Seria kart aha1542 ma na pokładzie kontroler dyskietek i82077, podczas gdy
+aha1540 go nie ma. Są to karty rządzące szyną, i mają parametry określające
+"uczciwość" z jaką dzielą szynę między innymi urządzeniami. Argument
+rozruchowy wygląda następująco:
+.IP
+\fBaha1542=\fP\fIiobase[,buson,busoff[,dmaspeed]]\fP
+.IP
+Prawidłowe wartości iobase to zwykle jedno z: 0x130, 0x134, 0x230, 0x234,
+0x330, 0x334. Klony mogą dozwalać inne wartości.
+
+Wartości \fIbuson\fP, \fIbusoff\fP odnoszą się do liczby mikrosekund, którymi
+dominuje na szynie ISA. Domyślnie jest tu 11us na parametr on i 4us na off,
+więc inne karty (takie jak ISA LANCE Ethernet) mają szansę na uzyskanie
+dostępu do szyny ISA.
+
+Wartość \fIdmaspeed\fP odnosi się do częstotliwości (w MB/s), z jaką następuje
+DMA (Direct Memory Access). Domyślnie jest to 5 MB/s. Nowsze karty
+umożliwiają wybranie tej wartości jako części konfiguracji programowej,
+starsze karty poprzez zworki. Można używać wartości do 10 MB/s, zakładając,
+że dana płyta główna potrafi tyle obsłużyć. Proszę eksperymentować z rezerwą
+jeśli używa się wartości ponad 5 MB/s.
+.TP 
+\fBKonfiguracja Adapteca aha274x, aha284x, aic7xxx\fP
+Urządzenia te mogą przyjmować argument postaci:
+.IP
+\fBaic7xxx=\fP\fIextended,no_reset\fP
+.IP
+Wartość \fIextended\fP o ile jest niezerowa, wskazuje że translacja rozszerzona
+(extended translation) dla dużych dysków jest włączona. Wartość \fIno_reset\fP
+o ile jest niezerowa, mówi sterownikowi by nie resetował szyny SCSI kiedy
+konfiguruje adapter podczas rozruchu.
+.TP 
+\fBKonfiguracja AdvanSys SCSI Hosts ('advansys=')\fP
+Sterownik AdvanSys może akceptować do czterech adresów wejścia/wyjścia,
+które będą próbkowane do karty AdvanSys SCSI. Proszę zauważyć, że wartości
+te (jeśli są używane) nie wpływają w żaden sposób na próbkowanie EISA lub
+PCI. Są używane wyłącznie przy próbkowaniu kart ISA i VLB. Dodatkowo, jeśli
+tylko sterownik został skompilowany z włączonym debugowaniem, poziom wyjścia
+debugowania może zostać ustawiony przed dodanie parametru 0xdeb[0\-f]. 0\-f
+pozwala na ustawienie poziomu wiadomości debugowania na któryś z 16 poziomów
+szczegółowości.
+.TP 
+\fBAM53C974\fP
+.IP
+\fBAM53C974=\fP\fIhost\-scsi\-id,target\-scsi\-id,max\-rate,max\-offset\fP
+.TP 
+\fBKonfiguracja BusLogic SCSI Hosts ('BusLogic=')\fP
+.IP
+\fBBusLogic=\fP\fIN1,N2,N3,N4,N5,S1,S2,...\fP
+.IP
+Szczegółowe omówienie parametrów wiersza polecenia BusLogic zawiera
+\fI/usr/src/linux/drivers/scsi/BusLogic.c\fP (w chwili pisania tego podręcznika
+były to wiersze 3149\-3270 w tym pliku). Poniższy tekst jest bardzo skróconym
+podsumowaniem.
+
+Parametry N1\-N5 są liczbami całkowitymi. Parametry S1,... są łańcuchami. N1
+jest adresem wejścia/wyjścia, na którym zlokalizowany jest adapter hosta. N2
+to Tagged Queue Depth do użycia z urządzeniami typu Target, które obsługują
+Tagged Queuing. N3 to Bus Settle Time, w sekundach. Jest to czas do
+odczekania pomiędzy twardymi resetami adaptera hosta, które inicjują reset
+szyny SCSI i wykonaniami poleceń SCSI. N4 to opcje lokalne (do jednego
+adaptera hosta). N5 to opcje globalne (do wszystkich adapterów hostów).
+
+Opcje łańcuchowe są używane do dostarczenia kontroli nad Tagged Queuing
+(Q:Default, TQ:Enable, TQ:Disable, TQ:<Per\-Target\-Spec>), nad Error
+Recovery (ER:Default, ER:HardReset, ER:BusDeviceReset, ER:None,
+ER:<Per\-Target\-Spec>) i nad Host Adapter Probing (NoProbe,
+NoProbeISA, NoSortPCI).
+.TP 
+\fBKonfiguracja EATA/DMA\fP
+Domyślna lista portów wejścia/wyjścia, które mają być próbkowane może zostać
+w ten sposób zmieniona
+.IP
+\fBeata=\fP\fIiobase,iobase,...\fP\fB.\fP
+.TP 
+\fBKonfiguracja Future Domain TMC\-16x0\fP
+.IP
+\fBfdomain=\fP\fIiobase,irq[,adapter_id]\fP
+.TP 
+\fBKonfiguracja kontrolera SCSI Great Valley Products (GVP)\fP
+.IP
+\fBgvp11=\fP\fIdma_transfer_bitmask\fP
+.TP 
+\fBKonfiguracja Future Domain TMC\-8xx, TMC\-950\fP
+.IP
+\fBtmc8xx=\fP\fImem_base,irq\fP
+.IP
+Wartość \fImem_base\fP jest wartością mapowanego w pamięci regionu I/O, którego
+używa karta. Jest to zwykle jedna z następujących wartości: 0xc8000,
+0xca000, 0xcc000, 0xce000, 0xdc000, 0xde000.
+.TP 
+\fBKonfiguracja IN2000\fP
+.IP
+\fBin2000=\fP\fIS\fP
+.IP
+gdzie S jest łańcuchem składającym się z rozdzielonych przecinkiem wpisów
+słowo\-kluczowe[:wartość]. Rozpoznawane słowa\-kluczowe (ewentualnie z
+wartością) to: ioport:addr, noreset, nosync:x, period:ns, disconnect:x,
+debug:x, proc:x. Funkcja tych parametrów jest opisana w
+\fI/usr/src/linux/drivers/scsi/in2000.c\fP.
+.TP 
+\fBKonfiguracja NCR5380 i NCR53C400\fP
+Urządzenia te mogą przyjmować argument postaci:
+.IP
+\fBncr5380=\fP\fIiobase,irq,dma\fP
+.IP
+lub
+.IP
+\fBncr53c400=\fP\fIiobase,irq\fP
+.IP
+Jeśli karta nie używa przerwań, to wartość IRQ równa 255 (0xff) wyłączy
+je. Wartość IRQ równa 254 oznacza automatyczne próbkowanie. Więcej
+szczegółów zawiera plik \fIDocumentation/scsi/g_NCR5380.txt\fP (lub
+\fIdrivers/scsi/README.g_NCR5380\fP w starszych jądrach) w źródłach jądra.
+.TP 
+\fBKonfiguracja NCR53C8xx\fP
+.IP
+\fBncr53c8xx=\fP\fIS\fP
+.IP
+gdzie S jest łańcuchem składającym się z rozdzielonych przecinkiem wpisów
+słowo\-kluczowe:wartość. Rozpoznawanymi słowami kluczowymi są mpar
+(master_parity), spar (scsi_parity), disc (disconnection), specf
+(special_features), ultra (ultra_scsi), fsn (force_sync_nego), tags
+(default_tags), sync (default_sync), verb (verbose), debug (debug), burst
+(burst_max). Funkcja przypisanych wartość znajduje się w pliku
+\fI/usr/src/linux/drivers/scsi/ncr53c8xx.c\fP.
+.TP 
+\fBKonfiguracja NCR53c406a\fP
+.IP
+\fBncr53c406a=\fP\fIiobase[,irq[,fastpio]]\fP
+.IP
+Proszę podać irq = 0 w celu trybu bezprzerwaniowego. Ustawienie fastpio = 1
+poskutkuje trybem szybkiego pio, a 0 wolnego.
+.TP 
+\fBKonfiguracja Pro Audio Spectrum\fP
+PAS16 używa chipa SCSI NC5380, a nowsze modele wspierają bezzworkową
+konfigurację. Argument rozruchowy ma postać:
+.IP
+\fBpas16=\fP\fIiobase,irq\fP
+.IP
+Jedyną różnicą jest to, że trzeba podać wartość IRQ 255, która mówi
+sterownikowi by pracował bez przerwań, choć ze stratą wydajności. iobase
+zwykle wynosi 0x388.
+.TP 
+\fBKonfiguracja Seagate ST\-0x\fP
+Jeśli dana karta nie jest wykrywana podczas rozruchu, należy użyć argumentu
+następującej postaci:
+.IP
+\fBst0x=\fP\fImem_base,irq\fP
+.IP
+Wartość \fImem_base\fP jest wartością mapowanego w pamięci regionu I/O, którego
+używa karta. Jest to zwykle jedna z następujących wartości: 0xc8000,
+0xca000, 0xcc000, 0xce000, 0xdc000, 0xde000.
+.TP 
+\fBKonfiguracja Trantor T128\fP
+Te karty również bazują na chipie NCR5380 i przyjmują następujące opcje:
+.IP
+\fBt128=\fP\fImem_base,irq\fP
+.IP
+Prawidłowe wartości do \fImem_base\fP to: 0xcc000, 0xc8000, 0xdc000, 0xd8000.
+.TP 
+\fBKonfiguracja UltraStor 14F/34F\fP
+Domyślna lista portów wejścia/wyjścia, które mają być próbkowane może zostać
+w ten sposób zmieniona
+.IP
+\fBeata=\fP\fIiobase,iobase,...\fP\fB.\fP
+.TP 
+\fBKonfiguracja WD7000\fP
+.IP
+\fBwd7000=\fP\fIirq,dma,iobase\fP
+.TP 
+\fBKonfiguracja kontrolera SCSI Commodore Amiga A2091/590\fP
+.IP
+\fBwd33c93=\fP\fIS\fP
+.IP
+gdzie S jest łańcuchem składającym się z opcji rozdzielonych
+przecinkiem. Rozpoznawanymi opcjami są: nosync:bitmask, nodma:x, period:ns,
+disconnect:x, debug:x, clock:x, next. Więcej szczegółów można znaleźć w
+\fI/usr/src/linux/drivers/scsi/wd33c93.c\fP.
+.SS "Dyski twarde"
+.TP 
+\fBParametry sterownika dysków/CD\-ROM\-ów IDE\fP
+Sterownik IDE przyjmuje wiele parametrów, od specyfikacji geometrii dysku do
+wsparcia dla wadliwych chipów kontrolera. Specyficzne opcje dysku mogą być
+podawane poprzez użycie "hdX=" z X pomiędzy "a"\-"h".
+
+Opcje niespecyficzne napędom są przekazywane z przedrostkiem "hd=". Proszę
+zauważyć, że używanie przedrostka specyficznego dyskowi dla niespecyficznej
+opcji także zadziała, a opcja zostanie zaaplikowana tak jak oczekiwano.
+
+Proszę zauważyć także, że "hd=" może być użyty w odniesieniu do następnego
+niepodanego napędu w sekwencji (a, ..., h). W następujących omówieniach,
+opcja "hd=" będzie cytowana dla zwięzłości. Proszę zapoznać się z plikiem
+\fIDocumentation/ide.txt\fP (lub \fIdrivers/block/README.ide\fP w przypadku
+starszych jąder) w źródłach jądra, aby dowiedzieć się więcej.
+.TP 
+\fBOpcje 'hd=cyls,heads,sects[,wpcom[,irq]]'\fP
+Tych opcji używa się do przekazywania fizycznej geometrii dysku. Jedynie
+pierwsze trzy wartości są wymagane. Wartości cylinder/head/sectors będą tymi
+używanym przez fdisk. Wartość wpcom (write precompensation) jest ignorowana
+dla dysków IDE. Podana wartość IRQ będzie używana dla interfejsu, na którym
+rezyduje napęd i nie jest tak naprawdę parametrem specyficznym napędowi.
+.TP 
+\fBOpcja 'hd=serialize'\fP
+Chip CMD\-640 interfejsu dual IDE jest wadliwy; zaprojektowano go tak, że gdy
+napędy z drugiego interfejsu są używane równocześnie z napędami pierwszego,
+dane ulegają zniszczeniu. Używanie tej opcji mówi sterownikowi by upewnił
+się, że oba interfejsy nigdy nie są używane naraz.
+.TP 
+\fBOpcja 'hd=dtc2278'\fP
+Opcja ta mówi sterownikowi, że istnieje interfejs IDE DTC\-2278D. Sterownik
+próbuje dokonać wtedy specyficznych DTC operacji, aby włączyć drugi
+interfejs i włączyć szybsze tryby transferu.
+.TP 
+\fBOpcja 'hd=noprobe'\fP
+Nie sonduje danego dysku. Np.
+.IP
+hdb=noprobe hdb=1166,7,17
+.IP
+wyłączy sondowanie, lecz wciąż poda geometrię dysku, więc będzie
+zarejestrowany jako prawidłowe urządzenie blokowe, a więc będzie się nadawać
+do użytku.
+.TP 
+\fBOpcja 'hd=nowerr'\fP
+Niektóre napędy czasami mają trwale załączony bit \fBWRERR_STAT\fP. To
+usprawnia działanie tych wadliwych urządzeń.
+.TP 
+\fBOpcja 'hd=cdrom'\fP
+Mówi to sterownikowi IDE, że w miejscu normalnego dysku IDE mamy CD\-ROM typu
+ATAPI. W większości wypadków, CD\-ROM jest wykrywany automatycznie, lecz
+jeśli tak nie jest, to to powinno pomóc.
+.TP 
+\fBOpcje standardowego sterownika dysków ST\-506 ('hd=')\fP
+Standardowy sterownik dysków może przyjmować argumenty geometrii dla dysków
+podobnie do sterownika IDE. Proszę zauważyć jednak, że oczekuje on jedynie
+trzech wartości (C/H/S) \-\- więcej lub mniej spowoduje ciche zignorowanie
+podanego polecenia. Podobnie też, przyjmuje jedynie "hd=" jako argument,
+np. "hda=" jest tu nieprawidłowe. Format jest następujący:
+.IP
+hd=cylindry,głowice,sektory
+.IP
+Jeśli są tam zainstalowane dwa dyski, powyższe jest powtarzane z parametrami
+geometrii dla drugiego dysku.
+.TP 
+\fBOpcje sterownika dysków XT ('xd=')\fP
+Jeśli ma się pecha i używa jednej z tych starych 8 bitowych kart, które
+transferują dane z szybkością 125KB/s, to jest to właściwa opcja. Jeśli
+karta nie jest rozpoznawana, należy użyć argumentu rozruchowego postaci:
+.IP
+xd=type,irq,iobase,dma_chan
+.IP
+.\" 1.1.50, 1.3.81, 1.3.99, 2.0.34, 2.1.67, 2.1.78, 2.1.127
+Typ wartości określa danego producenta karty, przesłaniając automatyczne
+wykrywanie. Aby poznać dostępne typy, proszę zapoznać się z plikiem
+\fIdrivers/block/xd.c\fP w źródłach używanego jądra. Typ jest indeksem w liście
+\fIxd_sigs\fP, a w międzyczasie, dodano lub usunięto typy ze środka listy,
+zmieniając wszystkie ich numery. Obecnie (Linux 2.5.0) są to: 0=standardowy;
+1=DTC 5150cx; 2,3=DTC 5150x; 4,5=Western Digital; 6,7,8=Seagate; 9=Omti;
+10=XEBEC (w przypadku typów z kilkoma oznaczeniami, są one sobie
+równoważne).
+
+Funkcja xd_setup() nie sprawdza wartości i przyjmuje, że wprowadzono
+wszystkie cztery wartości. Nie należy jej zawieść. Oto przykład dla
+kontrolera WD1002 z wyłączonym/usuniętym BIOS\-em, przy użyciu "domyślnych"
+parametrów kontrolera XT:
+.IP
+xd=2,5,0x320,3
+.TP 
+\fBDyski wymienne Syquest's EZ*\fP
+.IP
+\fBez=\fP\fIiobase[,irq[,rep[,nybble]]]\fP
+.SS "Urządzenia szyny MCA IBM"
+Patrz też \fI/usr/src/linux/Documentation/mca.txt\fP.
+.TP 
+\fBDyski twarde ESDI PS/2\fP
+Można podać określoną geometrię w czasie rozruchu:
+.IP
+\fBed=\fP\fIcylindry,głowice,sektory\fP.
+.IP
+W przypadku ThinkPad\-720, proszę dodać opcję
+.IP
+\fBtp720=1\fP.
+.TP 
+\fBKonfiguracja podsystemu SCSI IBM Microchannel\fP
+.IP
+\fBibmmcascsi=\fP\fIN\fP
+.IP
+gdzie N jest \fIpun\fP (identyfikatorem SCSI) podsystemu.
+.TP 
+\fBInterfejs Aztech\fP
+Składnia do karty tego typu to:
+.IP
+aztcd=iobase[,liczba_magiczna]
+.IP
+Jeśli ustawi się magic_number na 0x79, to sterownik spróbuje i ruszy nawet
+mimo wszystko w przypadku nieznanej wersji firmware. Wszystkie inne wartości
+są ignorowane.
+.TP 
+\fBSterowniki portu równoległego CD\-ROM\-u\fP
+Składnia:
+.IP
+pcd.driveN=prt,pro,uni,mod,slv,dly
+.br
+pcd.nice=nice
+.IP
+gdzie "port" jest adresem bazowym, "pro" jest numerem protokołu, 'uni' jest
+wyborem jednostki (dla powiązanych urządzeń), "mod" jest trybem (lub \-1 aby
+wybrać automatycznie najlepszy), "slv" jest 1 jeśli napęd powinien być
+podrzędny (slave), a "dly" jest niewielką liczbą całkowitą do spowalniania
+dostępu do portu. Parametr "nice" kontroluje użycie wolnego czasu procesora
+przez sterownik, kosztem szybkości działania.
+.TP 
+\fBInterfejs Sony CDU\-31A i CDU\-33A\fP
+Ten interfejs CD\-ROM można znaleźć na niektórych kartach Pro Audio Spectrum
+i innych kartach z interfejsami Sony. Składnia jest następująca:
+.IP
+cdu31a=iobase,[irq[,is_pas_card]]
+.IP
+Podanie wartości IRQ zero mówi sterownikowi, że przerwania sprzętowe nie są
+wspierane (jak na niektórych kartach PAS). Jeśli dana karta wspiera
+przerwania, należy ich użyć, bo zmniejszają użycie CPU przez sterownik.
+
+Parametr \fIis_pas_card\fP powinien być wprowadzony jako "PAS", jeśli używana
+jest karta Pro Audio Spectrum, lub nie powinien być podawany w ogóle.
+.TP 
+\fBInterfejs Sony CDU\-535\fP
+Składnia do tego interfejsu CD\-ROM to:
+.IP
+sonycd535=iobase[,irq]
+.IP
+Zero może być użyte dla bazy I/O jako "wypełniacz miejsca", jeśli chce się
+podać wartość IRQ.
+.TP 
+\fBInterfejs GoldStar\fP
+Składnia do tego interfejsu CD\-ROM to:
+.IP
+gscd=iobase
+.TP 
+\fBInterfejs CD\-ROM\-u ISP16\fP
+Składnia:
+.IP
+isp16=[iobase[,irq[,dma[,type]]]]
+.IP
+Trzy liczby całkowite i łańcuch: jeśli podany typ to "noisp16", to interfejs
+nie będzie konfigurowany. Inne rozpoznawane typy to "Sanyo", "Sony",
+"Panasonic" i "Mitsumi".
+.TP 
+\fBStandardowy interfejs Mitsumi\fP
+Składnia do tego interfejsu CD\-ROM to:
+.IP
+mcd=iobase,[irq[,wait_value]]
+.IP
+Wartość \fIwait_value\fP jest używana jako wewnętrzna wartość oczekiwania dla
+ludzi, którzy mają problemy ze swoimi napędami i może lecz nie musi być
+zaimplementowana, zależnie od #define podczas kompilacji.  Mitsumi FX400
+jest odtwarzaczem CD\-ROM IDE/ATAPI i nie używa sterownika mcd.
+.TP 
+\fBInterfejs Mitsumi XA/MultiSession\fP
+Jest to do takiego samego sprzętu jak powyżej, lecz sterownik ma rozszerzone
+właściwości. Składnia:
+.IP
+mcdx=iobase[,irq]
+.TP 
+\fBInterfejs nośników Optics\fP
+Składnia do karty tego typu to:
+.IP
+optcd=iobase
+.TP 
+\fBInterfejs Phillips CM206\fP
+Składnia do karty tego typu to:
+.IP
+cm206=[iobase][,irq]
+.IP
+Sterownik zakłada, że numery pomiędzy 3 a 11 są wartościami IRQ, a numery
+między 0x300 i 0x370 są portami I/O, więc można podać jeden, lub dwa numery
+w dowolnym porządku. Przyjmuje też "cm206=auto", włączające autosondowanie.
+.TP 
+\fBInterfejs Sanyo\fP
+Składnia do karty tego typu to:
+.IP
+sjcd=iobase[,irq[,dma_channel]]
+.TP 
+\fBInterfejs SoundBlaster Pro\fP
+Składnia do karty tego typu to:
+.IP
+sbpcd=iobase,type
+.IP
+gdzie typ jest jednym z następujących (uwaga małe/duże litery) określeń:
+"SoundBlaster", "LaserMate", lub "SPEA". Baza I/O jest bazą interfejsu
+CD\-ROM, a nie tą z części dźwiękowej karty.
+.SS "Urządzenie ethernetowe"
+Różne sterowniki używają różnych parametrów, ale wszystkie przynajmniej
+dzielą IRQ, wartość bazowego portu I/O i nazwę. W najogólniejszej formie
+wygląda to tak:
+.IP
+ether=irq,iobase[,param_1[,param_2,...param_8]],nazwa
+.IP
+Pierwszy nienumeryczny argument jest pobierany jako nazwa. Wartości param_n
+(jeśli mają zastosowanie) zwykle mają różne znaczenia dla różnych
+kart/sterowników. Typowe wartości param_n są używane do podawania rzeczy
+takich jak adres pamięci dzielonej, wyboru interfejsu, kanału DMA i
+podobnych.
+
+Najpopularniejszym wykorzystaniem tego parametru jest wymuszenie sondowania
+drugiej karty ethernetowej, jako że domyślnie sondowana jest tylko jedna.
+Można tego dokonać prostym:
+.IP
+ether=0,0,eth1
+.IP
+Proszę zauważyć, że wartości zera dla IRQ i bazy I/O w powyższym przykładzie
+mówią sterownikowi, by je wysondował automatycznie.
+
+Ethernet\-Howto zawiera rozległą dokumentację o używaniu wielorakich kart i o
+specyficznych implementacjach karta/sterownik wartości
+param_n. Zainteresowani powinni odnieść się do odpowiedniej sekcji w tamtym
+dokumencie.
+.SS "Sterownik stacji dyskietek"
+Istnieje wiele opcji sterownika stacji dyskietek i wszystkie są wymienione w
+\fIDocumentation/floppy.txt\fP (lub \fIdrivers/block/README.fd\fP w przypadku
+starszych jąder) w źródle jądra. Tutejsze informacje pochodzą bezpośrednio z
+tamtego pliku.
+.TP 
+\fBfloppy=mask,allowed_drive_mask\fP
+Ustawia maskę bitową dozwolonych napędów na maskę. Domyślnie, dozwolone są
+jedynie jednostki 0 i 1 dla każdego kontrolera stacji dysków. Jest tak
+ponieważ niektóre niestandardowe urządzenia (płyty główne ASUS PCI) mieszają
+z klawiaturą, jeśli odwołuje się do jednostek 2 lub 3. Ta opcja jest niejako
+przedawniona dzięki opcji cmos.
+.TP 
+\fBfloppy=all_drives\fP
+Ustawia maskę bitową dozwolonych napędów na wszystkie napędy. Proszę użyć
+tego, jeśli ma sie więcej niż dwa napędy podłączone do kontrolera stacji
+dysków.
+.TP 
+\fBfloppy=asus_pci\fP
+Ustawia maskę bitową aby dozwolić tylko jednostki 0 i 1. (Domyślne)
+.TP 
+\fBfloppy=daring\fP
+Mówi, sterownikowi stacji dysków, że kontroler stacji dyskietek należy do
+tych dobrze zachowujących się. Umożliwia to efektywniejsze i łagodniejsze
+operacje, lecz może nie przejść na niektórych kontrolerach.
+.TP 
+\fBfloppy=0,daring\fP
+Mówi sterownikowi, że kontroler stacji dysków powinien być używany
+ostrożnie.
+.TP 
+\fBfloppy=one_fdc\fP
+Mówi sterownikowi, że jest tylko jeden kontroler stacji dysków (domyślne)
+.TP 
+\fBfloppy=two_fdc\fP lub \fBfloppy=address,two_fdc\fP
+Mówi sterownikowi, że są dwa kontrolery stacji stacji dysków. Drugi
+kontroler powinien być pod podanym adresem. Jeśli adres nie jest podany,
+zakłada się 0x370.
+.TP 
+\fBfloppy=thinkpad\fP
+Mówi sterownikowi, że jest to Thinkpad. Thinkpady używają odwróconej
+konwencji linii zmiany dysku.
+.TP 
+\fBfloppy=0,thinkpad\fP
+Mówi sterownikowi, że to nie jest Thinkpad.
+.TP 
+\fBfloppy=drive,type,cmos\fP
+Ustawia typ cmos napędu na typ. Dodatkowo ten napęd jest dozwolony przez
+maskę bitową. Jest to przydatne jeśli ma się więcej niż dwie stacje dysków
+(tylko dwie mogą być opisane przez fizyczny cmos), lub jeśli ten BIOS używa
+niestandardowych typów CMOS. Ustawienie CMOS na 0 dla pierwszych dwóch
+napędów (domyślne) powoduje, że sterownik stacji dysków odczytuje dla nich
+fizyczne dane cmos.
+.TP 
+\fBfloppy=unexpected_interrupts\fP
+Wypisuje wiadomość ostrzegawczą jeśli otrzyma nieoczekiwane przerwanie
+(domyślne zachowanie)
+.TP 
+\fBfloppy=no_unexpected_interrupts\fP lub \fBfloppy=L40SX\fP
+Nie wypisuje wiadomości kiedy pojawi się nieoczekiwane przerwanie. Jest to
+potrzebne laptopom IBM L40SX przy niektórych trybach wideo. Wydaje się być
+tam interakcja między video a stacją dysków. Nieoczekiwane przerwania
+zawalają tylko wydajność i mogą być spokojnie ignorowane.
+.SS "Sterownik dźwięku"
+Sterownik dźwięku może także akceptować argumenty rozruchowe do
+przesłonięcia wartości wkompilowanych. Nie jest to zalecane i jest raczej
+złożone. Jest to opisane w pliku w źródłach jądra
+\fIDocumentation/sound/oss/README.OSS\fP (\fIdrivers/sound/Readme.linux\fP w
+przypadku starszych wersji jądra). Przyjmuje parametr rozruchowy postaci:
+.IP
+sound=urządzenie1[,urządzenie2[,urządzenie3...[,urządzenie10]]]
+.IP
+gdzie każda wartość urządzenieN jest formatu 0xTaaaId, a bajty są użyte
+następująco:
+
+T \- rodzaj urządzenia: 1=FM, 2=SB, 3=PAS, 4=GUS, 5=MPU401, 6=SB16,
+7=SB16\-MPU401
+
+aaa \- heksadecymalnie zapisany adres I/O.
+
+I \- heksadecymalnie zapisana linia przerwań (np. 10=a, 11=b, ...)
+
+d \- kanał DMA.
+
+Jak widdać, jest to całkiem bałaganiarskie i lepiej wkompilować swoje własne
+wartości do sterownika. Używanie argumentu "sound=0" wyłączy sterownik
+dźwięku.
+.SS "Sterowniki ISDN"
+.TP 
+\fBSterownik ICN ISDN\fP
+Składnia:
+.IP
+icn=iobase,membase,icn_id1,icn_id2
+.IP
+gdzie icn_id1,icn_id2 to dwa łańcuchy używane do zidentyfikowania karty w
+wiadomościach jądra.
+.TP 
+\fBSterownik PCBIT ISDN\fP
+Składnia:
+.IP
+pcbit=membase1,irq1[,membase2,irq2]
+.IP
+gdzie membaseN jest bazą pamięci dzielonej N\-tej karty, a irqN jest
+ustawieniem przerwania N\-tej karty. Domyślnie używane są IRQ 5 i membase
+0xD0000.
+.TP 
+\fBSterownik Teles ISDN\fP
+Składnia:
+.IP
+teles=iobase,irq,membase,protocol,teles_id
+.IP
+gdzie iobase to adres portu wejścia/wyjścia karty, membase to adres bazy
+pamięci dzielonej karty, irq to kanał przerwań używany przez karty,
+natomiast teles_id to unikalny łańcuch ASCII będący identyfikatorem.
+.SS "Sterowniki portu szeregowego"
+.TP 
+\fBSterownik RISCom/8 Multiport Serial ('riscom8=')\fP
+Składnia:
+.IP
+riscom=iobase1[,iobase2[,iobase3[,iobase4]]]
+.IP
+Więcej szczegółów znajduje się w
+\fI/usr/src/linux/Documentation/riscom8.txt\fP.
+.TP 
+\fBSterownik DigiBoard ('digi=')\fP
+Jeśli ta opcja jest używana, powinna mieć dokładnie sześć
+parametrów. Składnia:
+.IP
+digi=status,type,altpin,numports,iobase,membase
+.IP
+Parametry mogą być podane jako liczby całkowite lub łańcuchy. W przypadku
+łańcuchów, iobase i membase powinny być podane w formie
+szesnastkowych. Argumenty całkowite (można podać mniej) są w kolejności:
+status (włącza(1) lub wyłącza(0) kartę), type (PC/Xi(0), PC/Xe(1),
+PC/Xeve(2), PC/Xem(3)), altpin (włącza(1) lub wyłącza(0) alternatywny
+schemat pinów), numports (liczba portów tej karty), iobase (port
+wejścia/wyjścia, na którym skonfigurowana jest karta (szesnastkowo)),
+membase (baza okna pamięci (szesnastkowo)). W związku z tym, następujące dwa
+argumenty rozruchowe są równoważne:
+.IP
+digi=E,PC/Xi,D,16,200,D0000
+.br
+digi=1,0,0,16,0x200,851968
+.IP
+Więcej szczegółów można znaleźć w
+\fI/usr/src/linux/Documentation/digiboard.txt\fP.
+.TP 
+\fBBaycom Serial/Parallel Radio Modem\fP
+Składnia:
+.IP
+baycom=iobase,irq,modem
+.IP
+Są dokładnie 3 parametry: w przypadku wielu karty, należy podać wiele
+poleceń "baycom=". Parametr modem jest łańcuchem, który może przyjąć jedną z
+wartości ser12, ser12*, par96, par96*. * oznacza oprogramowanie DCD do
+użycia, a ser12/par96 wybiera pomiędzy obsługiwanymi typami modemu. Więcej
+szczegółów zawiera plik \fIDocumentation/networking/baycom.txt\fP (lub
+\fIdrivers/net/README.baycom\fP w przypadku starszych jąder) w źródłach jądra.
+.TP 
+\fBSterownik Soundcard radio modem\fP
+Składnia:
+.IP
+soundmodem=iobase,irq,dma[,dma2[,serio[,pario]]],0,mode
+.IP
+Wszystkie parametry poza ostatnim są liczbami całkowitymi. Dodatkowe 0 jest
+wymagane ze względu na błąd w kodzie konfiguracyjnym. Parametr mode jest
+łańcuchem o składni: hw:modem, gdzie hw jest jednym z sbc, wss, wssfdx, a
+modem: afsk1200 lub fsk9600.
+.SS "Sterownik drukarki wierszowej"
+.TP 
+\&\fB'lp='\fP
+Składnia:
+.IP
+lp=0
+.br
+lp=auto
+.br
+lp=reset
+.br
+lp=port[,port...]
+.IP
+Można przekazać sterownikowi drukarki, który port ma użyć, a którego nie. To
+ostatnie przydaje się, jeśli nie chce się aby sterownik drukarki zajął
+wszystkie dostępne porty równoległe, dzięki czemu inne sterowniki (np. PLIP,
+PPA) mogą ich użyć w zamian.
+
+Format argumentu to wiele nazw portów. Np. lp=none,parport=0 użyje
+pierwszego portu równoległego do lp1 i wyłączy lp0. Aby wyłączyć cały
+sterownik drukarki, można użyć lp=0.
+.TP 
+\fBSterownik WDT500/501\fP
+Składnia:
+.IP
+wdt=io,irq
+.SS "Sterowniki myszy"
+.TP 
+\&\fB'bmouse=irq'\fP
+Sterownik busmouse przyjmuje tylko jeden argument, będący wartością
+używanego przerwania sprzętowego.
+.TP 
+\&\fB'msmouse=irq'\fP
+Dokładnie to samo tyczy się sterownika msmouse.
+.TP 
+\fBKonfiguracja myszy ATARI\fP
+.IP
+atamouse=threshold[,y\-threshold]
+.IP
+Jeśli poda się tylko jeden argument, to używany jest on zarówno w stosunku
+do progu x jak i y. W przeciwnym wypadku, pierwszy argument jest progiem x,
+a drugi progiem y. Wartości te muszą mieścić się w zakresie 1\-20 (włącznie),
+domyślną jest 2.
+.SS "Sprzęt wideo"
+.TP 
+\&\fB'no\-scroll'\fP
+.\" .SH AUTHORS
+.\" Linus Torvalds (and many others)
+Ta opcja przekazuje sterownikowi konsoli, aby nie używać przewijania
+sprzętowego (gdzie przewijanie dotyczy przewijania pochodzenia ekranu w
+pamięci wideo, nie przesuwania danych). Jest wymagany przez określone
+urządzenia Braille'a.
+.SH "ZOBACZ TAKŻE"
+\fBlilo.conf\fP(5), \fBklogd\fP(8), \fBlilo\fP(8), \fBmount\fP(8), \fBrdev\fP(8)
+
+Ta strona została napisana na podstawie Boot Parameter HOWTO (wersja 1.0.1),
+napisanego przez Paula Gortmakera. W HOWTO można znaleźć więcej (lub
+aktualniejszych) informacji niż w tym dokumencie. Zaktualizowane źródło
+informacji znajduje się w
+\fI/usr/src/linux/Documentation/kernel\-parameters.txt\fP.
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

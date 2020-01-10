@@ -1,0 +1,481 @@
+.\" -*- nroff -*-
+.\" Copyright 1993, 1994, 1995 by Theodore Ts'o.  All Rights Reserved.
+.\" This file may be copied under the terms of the GNU Public License.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993-2008 Theodore Ts'o (GPL-2)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+.\" Grzegorz Goławski (PTM) <grzegol@pld.org.pl>, 2002.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH MKE2FS 8 "kwiecień 2012" "E2fsprogs wersja 1.42.2" 
+.SH NAZWA
+mke2fs \- tworzy linuksowy system plików ext2/ext3/ext4
+.SH SKŁADNIA
+\fBmke2fs\fP [ \fB\-c\fP | \fB\-l\fP \fInazwa\-pliku\fP ] [ \fB\-b\fP \fIrozmiar\-bloku\fP ] [
+\fB\-D\fP ] [ \fB\-f\fP \fIrozmiar\-fragmentu\fP ] [ \fB\-g\fP \fIbloki\-na\-grupę\fP ] [ \fB\-G\fP
+\fIliczba\-grup\fP ][ \fB\-i\fP \fIbajty\-na\-i\-węzeł\fP ] [ \fB\-I\fP \fIrozmiar\-i\-węzła\fP ] [
+\fB\-j\fP ] [ \fB\-J\fP \fIopcje\-dziennika\fP ] [ \fB\-N\fP \fIliczba\-i\-węzłów\fP ] [ \fB\-n\fP ]
+[ \fB\-m\fP \fIprocent\-zarezerwowanych\-bloków\fP ] [ \fB\-o\fP \fItworzący\-os\fP ] [ \fB\-O\fP
+\fIwłaściwość\fP[,...] ] [ \fB\-q\fP ] [ \fB\-r\fP \fIrewizja\-fs\fP ] [ \fB\-E\fP
+\fIopcje\-rozszerzone\fP ] [ \fB\-v\fP ] [ \fB\-F\fP ] [ \fB\-L\fP \fIetykieta\-woluminu\fP ] [
+\fB\-M\fP \fIkatalog\-ostatniego\-montowania\fP ] [ \fB\-S\fP ]  [ \fB\-t\fP
+\fItyp\-systemu\-plików\fP ][ \fB\-T\fP \fItyp\-użycia\fP ] [ \fB\-U\fP \fIUUID\fP ] [ \fB\-V\fP ]
+\fIurządzenie\fP [ \fIliczba\-bloków\fP ]
+.sp
+.\" No external-journal specific journal options yet (size is ignored)
+.\" [
+.\" .B \-J
+.\" .I journal-options
+.\" ]
+\fBmke2fs \-O journal_dev\fP [ \fB\-b\fP \fIrozmiar\-bloku\fP ] [ \fB\-L\fP
+\fIetykieta\-woluminu\fP ] [ \fB\-n\fP ] [ \fB\-q\fP ] [ \fB\-v\fP ] \fIzewnętrzny\-dziennik\fP
+[ \fIliczba\-bloków\fP ]
+.SH OPIS
+\fBmke2fs\fP jest używany do tworzenia linuksowego systemu plików ext2, ext3
+lub ext4, zwykle na partycji dysku twardego. \fIUrządzenie\fP jest specjalnym
+plikiem odpowiadającym urządzeniu (np. \fI/dev/hdXX\fP). \fILiczba\-bloków\fP jest
+liczbą bloków na urządzeniu. Jeśli jest pominięta, \fBmke2fs\fP wykrywa ją
+automatycznie. Gdy program jest wywołany jako \fBmkfs.ext3\fP tworzony jest
+dziennik, tak jak gdyby była podana opcja \fB\-j\fP.
+.PP
+Domyślne parametry do nowo tworzonych systemów plików, jeśli nie są
+przesłonięte przez poniższe opcje, są kontrolowane przez plik konfiguracyjny
+\fB/etc/mke2fs.conf\fP. Strona podręcznika \fBmke2fs.conf\fP(5) zawiera więcej
+szczegółów na ten temat.
+.SH OPCJE
+.TP 
+\fB\-b\fP\fI rozmiar\-bloku\fP
+Określa rozmiar bloku w bajtach. Poprawnymi wartościami są 1024, 2048 oraz
+4096 bajtów na blok. Gdy wartość ta zostanie pominięta, rozmiar\-bloku mke2fs
+jest ustalany na podstawie rozmiaru systemu plików oraz oczekiwanej jego
+eksploatacji (zobacz opcję \fB\-T\fP). Jeśli \fIrozmiar\-bloku\fP jest poprzedzony
+minusem ("\-"), to \fBmke2fs\fP używa heurystyki, aby określić poprawny rozmiar
+bloku z tym ograniczeniem, że będzie on wynosił co najmniej \fIrozmiar\-bloku\fP
+bajtów. Jest to przydatne przy sprzęcie wymagającym rozmiaru bloku będącego
+wielokrotnością 2k.
+.TP 
+\fB\-c\fP
+Powoduje, że przed utworzeniem systemu plików, urządzenie zostanie
+sprawdzone w poszukiwaniu uszkodzonych bloków. Gdy opcja ta zostanie podana
+dwa razy, wykonany będzie wolniejszy test w trybie odczyt\-zapis, zamiast
+szybkiego testu w trybie tylko\-do\-odczytu.
+.TP 
+\fB\-D\fP
+Używa bezpośredniego wejścia/wyjścia podczas zapisu na dysk. Zapobiega to
+zajmowaniu przez mke2fs wielu buforów podręcznych, które mogą wpłynąć na
+inne aplikacje, podczas działania na obciążonym serwerze. Opcja ta spowoduje
+znaczne spowolnienie działania mke2fs, więc jest to pójście na kompromis.
+.TP 
+\fB\-E\fP\fI opcje\-rozszerzone\fP
+Ustawia rozszerzone opcje systemu plików. Opcje rozszerzone są oddzielone
+przecinkami i mogą zawierać argument podany po znaku równości ("="). Opcja
+\fB\-E\fP była nazwana \fB\-R\fP we wcześniejszych wersjach \fBmke2fs\fP i jest wciąż
+akceptowana w celu zachowania kompatybilności wstecznej. Obsługiwane są
+następujące opcje:
+.RS 1.2i
+.TP 
+\fBmmp_update_interval=\fP\fIinterwał\fP
+Dostosowuje pierwotny interwał aktualizacji MMP do \fIinterwał\fP
+sekund. Podanie wartości 0 spowoduje użycia domyślnego interwału. Podany
+interwał musi być mniejszy niż 300 sekund. Wymaga włączonej funkcji \fBmmp\fP.
+.TP 
+\fBstride=\fP\fIrozmiar\-części\fP
+Konfiguruje system plików do macierzy RAID z \fIrozmiarem\-części\fP
+(ang. stride size lub chunk size) bloków systemu plików. Jest to liczba
+bloków odczytywanych lub zapisywanych na dysk przed przejściem na następny
+dysk. To ustawienie wpływa głównie na położenie metadanych systemu plików,
+takich jak mapy bitów podczas wykonywania \fBmke2fs\fP, aby zapobiec
+umieszczeniu ich na jednym dysku, co mogłoby negatywnie wpłynąć na
+wydajność. Może być również użyte przez alokator bloków.
+.TP 
+\fBstripe_width=\fP\fIszerokość\-paska\fP
+Konfiguruje system plików do macierzy for RAID z \fIrozmiarem\-paska\fP
+(ang. stripe width) bloków systemu plików na pasek. Zazwyczaj jest to
+rozmiar\-części * N, gdzie N jest liczbą dysków z danymi w macierzy RAID
+(np. przy RAID 5, gdzie jest jeden dysk parzystości, M jest liczbą dysków w
+macierzy minus jeden). Pozwala to alokatorowi bloków na przeciwdziałanie
+cyklowi odczytu\-modyfikacji\-zapisu w pasku RAID, jeśli to możliwe, przy
+zapisie danych.
+.TP 
+\fBresize=\fP\fImaksymalna\-zmiana\-online\fP
+Rezerwuje przestrzeń, dzięki której tablica deskryptora grupy bloków może
+się powiększyć, aby obsłużyć system plików z \fImaksymalną\-zmianą\-online\fP
+bloków.
+.TP 
+\fBlazy_itable_init\fP[\fB= \fP\fI<0 aby wyłączyć, 1 aby włączyć>\fP]
+Jeśli jest włączone oraz włączona jest funkcja uninit_bg, to tabela i\-węzłów
+nie będzie w pełni inicjowana przez \fBmke2fs\fP. Przyspiesza to znacznie
+inicjalizację systemu plików, lecz wymaga zakończenia inicjowania systemu
+plików w tle, przez jądro, podczas gdy system plików jest wcześniej
+zamontowany. Jeśli pominie się wartość opcji, jest używana domyślnie 1, aby
+włączyć zerowanie leniwej tabeli i\-węzłów.
+.TP 
+\fBlazy_journal_init\fP[\fB= \fP\fI<0 aby wyłączyć, 1 aby włączyć>\fP]
+Jeśli jest włączone, to i\-węzeł dziennika nie będzie w pełni zerowany przez
+\fBmke2fs\fP. Znacznie przyspiesza to inicjowanie systemu, ale niesie
+niewielkie ryzyko, jeśli system załamie się przed pełnym, jednokrotnym
+nadpisaniem dziennika. Jeśli opcja zostanie pominięta, przyjmuje domyślną
+wartość 1, włączając leniwe zerowanie i\-węzła dziennika.
+.TP 
+\fBtest_fs\fP
+Ustawia flagę superbloku systemu plików, oznaczającą, że może być on
+montowany przy użyciu eksperymentalnego kodu jądra, np. kodu systemu plików
+ext4dev.
+.TP 
+\fBdiscard\fP
+Próbuje wykonać operację discard na blokach w czasie tworzenia systemu (jest
+to przydatne na SSD albo tzw. rzadkich dyskach lub dyskach dynamicznie
+alokowanych). Gdy urządzenie informuje że operacja discard również zeruje
+dane (każde kolejne odczytanie po tej operacji, a przed zapisem, zwraca
+zero), to wszystkie jeszcze niewyzerowane tabele i\-węzłów są oznaczane jako
+wyzerowane. Znacznie przyspiesza to inicjowanie systemu. Tak jest domyślnie.
+.TP 
+\fBnodiscard\fP
+Nie próbuje wykonać operacji discard na blokach w czasie tworzenia systemu
+plików.
+.TP 
+\fBquotatype\fP
+Określa typ udziałów ("usr" lub "grp"), który ma być zainicjowany. Opcja ma
+znaczenie jedynie, jeśli ustawiona jest funkcja \fBquota\fP. Bez tej opcji
+rozszerzonej, domyślnym zachowaniem jest inicjowanie zarówno udziałów
+użytkownika jak i grupy.
+.RE
+.TP 
+\fB\-f\fP\fI rozmiar\-fragmentu\fP
+Określa rozmiar fragmentów w bajtach.
+.TP 
+\fB\-F\fP
+Wymusza na \fBmke2fs\fP utworzenie systemu plików, nawet jeśli podane
+urządzenie nie jest partycją na specjalnym urządzeniu blokowym lub inne
+parametry nie mają sensu. Aby wymusić na \fBmke2fs\fP utworzenie systemu
+plików, nawet jeśli wygląda na to, że system plików jest w użyciu lub jest
+zamontowany (jest to niezwykle niebezpieczne), to opcja musi zostać podana
+dwukrotnie.
+.TP 
+\fBg\fP\fI bloki\-na\-grupę\fP
+Określa liczbę bloków w grupie bloków. Ogólnie rzecz biorąc, nie ma powodu,
+aby użytkownik musiał kiedykolwiek ustawiać ten parametr, ponieważ wartość
+domyślna jest optymalna dla systemu plików (administratorzy, którzy tworzą
+systemy plików na macierzach RAID, powinny używać parametru RAID \fIstride\fP
+jako część opcji \fB\-E\fP, zamiast zmieniać liczbą bloków na grupę). Opcja jest
+przeznaczona dla deweloperów, którzy używają jej w sytuacjach testowych.
+.TP 
+\fB\-G\fP\fI liczba\-grup\fP
+Określa liczbę grup bloków, która będzie spakowana razem, tworząc większą,
+wirtualną grupę bloków (lub "flex_bg group") w systemie plików
+ext4. Usprawnia to lokowanie metadanych i wydajność metadanych przy dużym
+obciążeniu. Liczba grup musi być potęgą dwójki i może być podana jedynie gdy
+włączona jest funkcja systemu plików \fBflex_bg\fP.
+.TP 
+\fB\-i\fP\fI bajty\-na\-i\-węzeł\fP
+Określa współczynnik bajty/i\-węzeł.  \fBmke2fs\fP tworzy i\-węzeł co każde
+\fIbajty\-na\-i\-węzeł\fP bajtów dysku. Im większy współczynnik
+\fIbajty\-na\-i\-węzeł\fP, tym więcej i\-węzłów. Generalnie, wartość ta nie powinna
+być mniejsza od rozmiaru bloku w systemie plików, gdyż wtedy byłoby
+utworzonych zbyt dużo i\-węzłów. Ostrzeżenie: wartość ta nie może być już
+zmieniona po utworzeniu systemu plików, więc należy ostrożnie dobrać wartość
+tego parametru.
+.TP 
+\fB\-I\fP\fI rozmiar\-i\-węzła\fP
+Określa rozmiar każdego i\-węzła w bajtach. \fBmke2fs\fP tworzy domyślnie
+256\-bajtowe i\-węzły. W jądrach w wersji późniejszej niż 2.6.10 i od
+niektórych wcześniejszych dostawców jąder, jest możliwe wykorzystanie
+i\-węzłów większych niż 128 bajtów, do przechowania rozszerzonych atrybutów,
+do zwiększenia wydajności. Wartość \fIrozmiaru\-i\-węzła\fP musi być potęgą
+dwójki, większą lub równą 128. Większy rozmiar \fIrozmiaru\-i\-węzła\fP powoduje
+zwiększenie powierzchni zajmowanej przez tabelę i\-węzłów i zredukowanie
+użytecznej powierzchni systemu plików, a może również negatywnie wpłynąć na
+wydajność. Atrybuty rozszerzone przechowywane w dużych i\-węzłach nie są
+widziane przez starsze jądra i takie systemy plików nie będą w ogóle
+montowalne przez jądra 2.4. Nie da się zmienić tej wartości po utworzeniu
+systemu plików.
+.TP 
+\fB\-j\fP
+Powoduje utworzenie system plików z księgowaniem ext3. Gdy nie podano opcji
+\fB\-J\fP, przy tworzeniu dziennika zostaną użyte domyślne parametry oraz
+dobrany będzie właściwy rozmiar tego dziennika (na podstawie wielkości
+systemu plików) przechowywanego we wnętrzu systemu plików. Proszę zauważyć,
+że trzeba korzystać z jądra posiadającego wsparcie dla ext3, aby móc używać
+dziennika.
+.TP 
+\fB\-J\fP\fI opcje\-dziennika\fP
+Tworzy dziennik ext3 używając opcji podanych z linii poleceń. Opcje te są
+oddzielone przecinkami i mogą posiadać argument, podawany po znaku równości
+('=').  Obsługiwane są następujące opcje:
+.RS 1.2i
+.TP 
+\fBsize=\fP\fIrozmiar\-dziennika\fP
+Tworzy wewnętrzny dziennik (np. przechowywany wewnątrz systemu plików) o
+rozmiarze \fIrozmiar\-dziennika\fP megabajtów.  Rozmiar dziennika musi wynosić
+co najmniej 1024 bloki systemu plików (np. 1MB przy korzystaniu z bloków 1k,
+4MB przy blokach 4k, itd.) i nie może być większy niż 10\ 240\ 000 bloków
+systemu plików lub połowę całkowitego rozmiaru systemu plików (mniejsza z
+tych dwóch wartości).
+.TP 
+\fBdevice=\fP\fIzewnętrzny\-dziennik\fP
+Przyłącza dziennik system plików do urządzenia blokowego znajdującego się na
+\fIzewnętrzny\-dziennik\fP.  Zewnętrzny dziennik musi być utworzony za pomocą
+polecenia
+.IP
+\fBmke2fs \-O journal_dev\fP \fIzewnętrzny\-dziennik\fP
+.IP
+Proszę zauważyć, że \fIzewnętrzny\-dziennik\fP musi zostać utworzony z tą samą
+wielkością bloku jak nowy system plików. Dodatkowo, o ile obsługa dołączania
+wielu systemów plików do pojedynczego dziennika zewnętrznego jest obecna,
+jądro Linux i \fBe2fsck\fP(8) nie obsługuje na razie dzielonych dzienników
+zewnętrznych.
+.IP
+Zamiast bezpośredniego podawania nazwy urządzenia, \fIzewnętrzny\-dziennik\fP
+można podać w postaci \fBLABEL=\fP\fIetykieta\fP lub \fBUUID=\fP\fIUUID\fP. Wtedy
+zewnętrzny dziennik zostanie znaleziony poprzez etykietę woluminu lub UUID
+przechowywany w superbloku ext2 na początku dziennika.  Do wyświetlenia
+nazwy woluminu oraz UUID urządzenia dziennika użyj \fBdumpe2fs\fP(8).  Zobacz
+także opcję \fB\-L\fP \fBtune2fs\fP(8).
+.RE
+.IP
+Dla danego systemu plików można podać tylko jedną z opcji: \fBsize\fP lub
+\fBdevice\fP.
+.TP 
+\fB\-l\fP\fI nazwa\-pliku\fP
+Powoduje odczytanie listy uszkodzonych bloków z \fInazwy\-pliku\fP. Proszę
+zauważyć, że numery bloków na liście zepsutych bloków muszą być wygenerowane
+przy użyciu takiego samego rozmiaru bloków jaki użyty był w mke2fs. W
+rezultacie opcja \fB\-c\fP do \fBmke2fs\fP jest prostszą i mniej podatną na błędy
+metodą sprawdzenia dysku pod kątem zepsutych bloków przed formatowaniem go,
+gdyż \fBmke2fs\fP automatycznie podaje odpowiednie parametry do programu
+\fBbadblocks\fP.
+.TP 
+\fB\-L\fP\fI nowa\-etykieta\-woluminu\fP
+Ustawia etykietę woluminu systemu plików na
+\fInową\-etykietę\-woluminu\fP. Maksymalna długość etykiety woluminu to 16
+bajtów.
+.TP 
+\fB\-m\fP\fI procent\-zarezerowanych\-bloków\fP
+Określa procent bloków systemu plików, zarezerwowanych dla
+superużytkownika. Zapobiega to fragmentacji i pozwala demonom działających z
+uprawnieniami roota, takim jak \fBsyslogd\fP(8), na poprawne kontynuowanie
+działania po tym, gdy procesy nieuprzywilejowane nie będą już mogły
+zapisywać do systemu plików. Domyślna wartość to 5%.
+.TP 
+\fB\-M\fP\fI ostatnio\-zamontowany\-katalog\fP
+Ustawia katalog ostatniego montowania systemu plików. Opcja ta może być
+użyteczna ze względu na aplikacje, dla których katalog ostatniego montowania
+wskazuje, gdzie należy zamontować dany system plików.
+.TP 
+\fB\-n\fP
+Powoduje, że \fBmke2fs\fP nie tworzy systemu plików, lecz wyświetla co
+zrobiłby, gdyby miał go utworzyć. Można wykorzystać tę opcję do określenia
+położenia zapasowych superbloków danego systemu plików tak długo, jak
+parametry \fBmke2fs\fP, które były podane podczas pierwotnego tworzenia systemu
+plików, są ponownie użyte (oczywiście z dodaną opcją \fB\-n\fP).
+.TP 
+\fB\-N\fP\fI liczba\-i\-węzłów\fP
+Zmienia domyślnie wyliczoną liczbę i\-węzłów, które powinny być zarezerwowane
+dla systemu plików (a która bazuje na liczbie bloków i współczynniku
+\fIbajty\-na\-i\-węzeł\fP).  To pozwala użytkownikowi podać bezpośrednio liczbę
+żądanych i\-węzłów.
+.TP 
+\fB\-o\fP\fI tworzący\-os\fP
+Służy do ręcznej zmiany domyślnej wartości pola "creator operating system"
+(tworzący system operacyjny) systemu plików. Normalnie pole to jest
+ustawiane na nazwę systemu operacyjnego, do którego skompilowano plik
+wykonywalny \fBmke2fs\fP.
+.TP 
+\fB\-O \fP\fIwłaściwość\fP[\fB,\fP\fI...\fP]
+Tworzy system plików z podanymi właściwościami (opcjami systemu plików),
+przesłaniając domyślne opcje systemu plików. Właściwości, które są włączane
+domyślnie, są podane w relacji \fIbase_features\fP, albo w sekcji \fI[defaults]\fP
+pliku \fB/etc/mke2fs.conf\fP , albo w podsekcji \fI[fs_types]\fP w przypadku typów
+użycia, zgodnie z opcją \fB\-T\fP, zmodyfikowane później przez relację
+\fIfeatures\fP z podsekcji \fI[fs_types\fP] w przypadku systemu plików i typów
+użycia. Strona podręcznika \fBmke2fs.conf\fP(5) zawiera więcej
+szczegółów. Konfiguracja charakterystyczna dla danego system plików
+mieszcząca się w sekcji \fI[fs_types]\fP przesłoni domyślne opcje globalne z
+sekcji \fI[defaults]\fP.
+.sp
+Właściwość systemu plików będzie edytowana później albo przez zestaw
+właściwości podanych przez tę opcję lub, jeśli nie użyto tej opcji, przez
+relację \fIdefault_features\fP do tworzonych typów systemów plików, lub w
+sekcji \fI[defaults]\fP pliku konfiguracyjnego.
+.sp
+Zestaw właściwości systemu plików składa się z listy właściwości,
+oddzielonych przecinkami, które mają być włączone. Aby wyłączyć którąś
+funkcję, należy poprzedzić nazwę właściwości znakiem karetki
+("^"). Pseudo\-właściwość "none" wyłączy wszystkie właściwości systemu
+plików.
+.RS 1.2i
+.TP 
+\fBdir_index\fP
+Używa haszowanych B\-drzew, aby przyspieszyć przeszukiwanie dużych katalogów.
+.TP 
+\fBextent\fP
+Zamiast używać pośredniego schematu bloków do przechowywania położenia
+bloków z danymi w i\-węźle, używa w zamian ekstentów. Jest to znacznie
+wydajniejsze kodowanie, które przyspiesza dostęp do systemu plików,
+szczególnie do dużych plików.
+.TP 
+\fBfiletype\fP
+Przechowuje informacje o typach plików we wpisach katalogów.
+.TP 
+\fBflex_bg\fP
+Pozwala metadanym grup bloków (mapom bitów i tabelom i\-węzłów) na bycie
+umieszczanym w dowolnym miejscu nośnika. Co więcej, \fBmke2fs\fP będzie
+umieszczał je razem, poczynając od pierwszej grupy bloków każdego "flex_bg
+group". Rozmiar flex_bg group można podać przy użyciu opcji \fB\-G\fP.
+.TP 
+\fBhas_journal\fP
+Tworzy dziennik ext3 (tak jak przy użyciu opcji \fB\-j\fP).
+.TP 
+\fBjournal_dev\fP
+Tworzy zewnętrzny dziennik ext3 na podanym urządzeniu zamiast w systemie
+plików ext2.  Proszę zauważyć, że \fIzewnętrzny\-dziennik\fP musi być utworzony
+z takim samym rozmiarem bloku jak system plików, który będzie go używał.
+.TP 
+\fBlarge_file\fP
+System plików może zawierać pliki większe niż 2 GB (obecne jądra ustawiają
+tę funkcję automatycznie, gdy tylko tworzony jest plik większy niż 2 GB).
+.TP 
+\fBquota\fP
+Tworzy i\-węzły udziałów (trzeci i\-węzeł do udziałów użytkownika i czwarty do
+udziałów grupy) i ustawia je w superbloku. Z tą właściwością, udziały są
+włączane automatycznie, przy montowaniu systemu plików.
+.TP 
+\fBresize_inode\fP
+Rezerwuje przestrzeń, dzięki której tabela deskryptora grupy bloków może się
+powiększyć w przyszłości. Przydatne do zmiany rozmiaru "w locie" za pomocą
+\fBresize2fs\fP. Domyślnie, \fBmke2fs\fP będzie próbował zarezerwować
+wystarczającą przestrzeń, aby system plików mógł powiększyć się 1024
+razy. Można to zmienić, przy użyciu opcji rozszerzonej \fBresize\fP.
+.TP 
+\fBsparse_super\fP
+Tworzy system plików z mniejszą liczbą kopii zapasowych superbloku
+(oszczędza miejsce na dużych systemach plików).
+.TP 
+\fBuninit_bg\fP
+Tworzy system plików, bez inicjowania wszystkich grup bloków. Ta właściwość
+włącza również sumy kontrolne i statystyki najwyższego użytego i\-węzła w
+każdej grupie bloków. Funkcja ta może znacznie przyspieszyć tworzenie
+systemu plików (jeśli włączono lazy_itable_init), może również zdecydowanie
+zmniejszyć czas potrzebny na wykonanie \fBe2fsck\fP. Jest obsługiwana wyłącznie
+przez system plików ext4, w ostatnich jądrach Linux.
+.RE
+.TP 
+\fB\-q\fP
+Ciche wywołanie. Przydatne gdy \fBmke2fs\fP jest uruchamiany ze skryptu.
+.TP 
+\fB\-r\fP\fI rewizja\fP
+Ustawia rewizję (wersję) systemu plików dla nowego systemu plików. Proszę
+zauważyć, że jądra 1.2 wspierają jedynie systemy plików o rewizji
+0. Domyślnie tworzone są systemy plików o rewizji 1.
+.TP 
+\fB\-S\fP
+.\" .TP
+.\" .BI \-t " test"
+.\" Check the device for bad blocks before creating the file system
+.\" using the specified test.
+Zapisuje jedynie superblok i deskryptory grupy. Przydaje się, gdy uszkodzony
+zostanie cały superblok i kopie zapasowe superbloków. Jest to ostateczna
+metoda odzyskania. Powoduje ona, że \fBmke2fs\fP ponownie inicjuje superblok i
+deskryptory grup, lecz nie dotyka tablicy i\-węzłów, bloku, ani map bitowych
+i\-węzłów.  Natychmiast po użyciu tej opcji należy uruchomić program
+\fBe2fsck\fP, a i tak nie jest pewne, czy że uda się odzyskać jakiekolwiek
+dane. Podczas korzystania z tej opcji najważniejsze jest ustawienie dobrego
+rozmiaru bloku systemu plików. Bez tego nie ma żadnej szansy na odzyskanie
+danych.
+.TP 
+\fB\-T\fP\fI typ\-systemu\-plików\fP
+Określa typ systemu plików (np. ext2, ext3, ext4 itp.) do utworzenia. Jeśli
+nie poda się tej opcji, \fBmke2fs\fP wybierze domyślny na podstawie polecenia,
+które go uruchomiło (np. mkfs.ext2, mkfs.ext3 itd.) lub na podstawie
+domyślnego systemu plików, zdefiniowanego plikiem
+\fB/etc/mke2fs.conf\fP(5). Opcja kontroluje, który system plików jest używany
+jako domyślny, na podstawie wpisu konfiguracyjnego \fBfstypes\fP w
+\fB/etc/mke2fs.conf\fP(5).
+.sp
+Jeśli opcja \fB\-O\fP jest użyta do jawnego dodania lub usunięcia opcji systemu
+plików, które powinny być ustawiane w nowo tworzonych systemach plików, to
+wynikowy system plików może nie być obsługiwany przez żądany
+\fItyp\-systemu\-plików\fP. (np. "\fBmke2fs \-t ext3 \-O extent /dev/sdXX\fP" utworzy
+system plików, który nie jest obsługiwany przez implementację ext3 w jądrze
+Linux, a "\fBmke2fs \-t ext3 \-O ^has_journal /dev/hdXX\fP" utworzy system plików
+nieposiadający dziennika i, w związku z tym, nieobsługiwany przez kod
+systemu plików ext3 w jądrze Linux).
+.TP 
+\fB\-T\fP\fI typ\-użycia\fP[\fB,\fP\fI...\fP]
+Określa, w jaki sposób dany system plików będzie wykorzystywany. Dzięki temu
+\fBmke2fs\fP może wybrać optymalne parametry dla systemu plików. Obsługiwane
+typy użycia są zdefiniowane w pliku konfiguracyjnym
+\fB/etc/mke2fs.conf\fP(5). Użytkownik może podać jeden lub więcej typów użycia,
+za pomocą listy, oddzielając poszczególne pozycje przecinkiem.
+.sp
+Jeśli nie poda się tej opcji, to \fBmke2fs\fP wybierze pojedynczy, domyślny typ
+użycia, bazując na rozmiarze tworzonego systemu plików. Jeśli rozmiar
+systemu plików jest równy lub mniejszy od 3 megabajtów, to \fBmke2fs\fP użyje
+typu \fIfloppy\fP (dyskietka) systemu plików. Jeśli rozmiar będzie się zawierał
+w przedziale 3\-512 megabajtów, to \fBmke2fs\fP utworzy system plików typu
+\fIsmall\fP (mały). Jeśli rozmiar systemu plików będzie większy lub równy 4
+terabajty, ale mniejszy niż 16 terabajtów, użytym typem będzie \fIbig\fP
+(duży). W przypadku systemu plików o wielkości ponad 16 terabajtów, użyty
+zostanie typ \fIhuge\fP (ogromny). W pozostałych przypadkach, \fBmke2fs\fP(8)
+użyje domyślnego typu systemu plików: \fIdefault\fP.
+.TP 
+\fB\-U\fP\fI UUID\fP
+Tworzy system plików z podanym UUID\-em.
+.TP 
+\fB\-v\fP
+Wypisuje szczegółowe informacje.
+.TP 
+\fB\-V\fP
+Wypisuje numer wersji \fBmke2fs\fP i wychodzi.
+.SH ŚRODOWISKO
+.TP 
+\fBMKE2FS_SYNC\fP
+Jeśli jest ustawiona na niezerową wartość całkowitą, to jej wartość jest
+używana do określenia częstości wywoływania \fBsync\fP(2) podczas inicjowania
+tabeli i\-węzłów.
+.TP 
+\fBMKE2FS_CONFIG\fP
+Określa położenie pliku konfiguracyjnego (patrz \fBmke2fs.conf\fP(5)).
+.TP 
+\fBMKE2FS_FIRST_META_BG\fP
+Jeśli jest ustawiona na niezerową wartość całkowitą, to jej wartość jest
+używana do określenia pierwszej grupy metabloków. Przeznaczona jest głównie
+do debugowania.
+.TP 
+\fBMKE2FS_DEVICE_SECTSIZE\fP
+Jeśli jest ustawiona na niezerową wartość całkowitą, to jej wartość jest
+używana do określenia fizycznego rozmiaru sektora \fIurządzenia\fP.
+.TP 
+\fBMKE2FS_SKIP_CHECK_MSG\fP
+Jeśli jest ustawiona, nie są pokazywane wiadomości automatycznego
+sprawdzania systemu plików, spowodowane liczbą montowań lub interwałem
+sprawdzania.
+.SH AUTOR
+Ta wersja \fBmke2fs\fP została napisana przez Theodora Ts'o
+<tytso@mit.edu>.
+.SH BŁĘDY
+\fBmke2fs\fP przyjmuje opcję \fB\-f,\fP lecz obecnie ją ignoruje, gdyż drugi
+rozszerzony system plików jeszcze nie obsługuje fragmentów.
+.br
+Mogą być też inne. Proszę zgłaszać je autorowi.
+.SH DOSTĘPNOŚĆ
+\fBmke2fs\fP jest częścią pakietu e2fsprogs i jest dostępne na stronie
+http://e2fsprogs.sourceforge.net.
+.SH "ZOBACZ TAKŻE"
+\fBmke2fs.conf\fP(5), \fBbadblocks\fP(8), \fBdumpe2fs\fP(8), \fBe2fsck\fP(8),
+\fBtune2fs\fP(8)
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>,
+Grzegorz Goławski (PTM) <grzegol@pld.org.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 1.42.4 \fPoryginału.

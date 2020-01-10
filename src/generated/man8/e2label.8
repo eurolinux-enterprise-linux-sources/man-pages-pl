@@ -1,0 +1,49 @@
+.\" -*- nroff -*-
+.\" Copyright 1993, 1994, 1995 by Theodore Ts'o.  All Rights Reserved.
+.\" This file may be copied under the terms of the GNU Public License.
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993-2008 Theodore Ts'o (GPL-2)
+.\" Copyright © of Polish translation:
+.\" Wojtek Kotwica (PTM) <wkotwica@post.pl>, 2000.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH E2LABEL 8 "kwiecień 2012" "E2fsprogs wersja 1.42.2" 
+.SH NAZWA
+e2label \- zmienia etykietę systemu plików ext2/ext3/ext4
+.SH SKŁADNIA
+\fBe2label\fP \fIurządzenie\fP [ \fInowa\-etykieta\fP ]
+.SH OPIS
+\fBe2label\fP wyświetla lub zmienia etykietę (ang. label) systemu plików typu
+ext2, ext3 lub ext4 położonego na danym \fIurządzeniu\fP.
+.PP
+Jeśli brak jest opcjonalnego argumentu \fInowa\-etykieta\fP, to \fBe2label\fP
+wyświetli po prostu bieżącą etykietę systemu plików.
+.PP
+Jeśli podano argument \fInowa_etykieta\fP, to \fBe2label\fP ustawi etykietę
+systemu plików na tę wartość. Etykiety systemu plików typu ext2 mogą mieć co
+najwyżej 16 znaków. Jeżeli \fInowa_etykieta\fP jest dłuższa niż 16 znaków, to
+\fBe2label\fP obetnie ją i wypisze komunikat ostrzegawczy.
+.PP
+Można również ustawić etykietę systemu plików przy pomocy opcji \fB\-L\fP
+polecenia \fBtune2fs\fP(8).
+.PP
+.SH AUTOR
+\fBe2label\fP zostało napisane przez Theodore'a Ts'o (tytso@mit.edu).
+.SH DOSTĘPNOŚĆ
+\fBe2label\fP jest częścią pakietu e2fsprogs i jest dostępne na stronie
+http://e2fsprogs.sourceforge.net.
+.SH "ZOBACZ TAKŻE"
+\fBmke2fs\fP(8), \fBtune2fs\fP(8)
+
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Wojtek Kotwica (PTM) <wkotwica@post.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 1.42.4 \fPoryginału.

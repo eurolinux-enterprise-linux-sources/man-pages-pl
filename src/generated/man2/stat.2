@@ -1,0 +1,479 @@
+.\" t
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright (c) 1992 Drew Eckhardt (drew@cs.colorado.edu), March 28, 1992
+.\" Parts Copyright (c) 1995 Nicolai Langfeldt (janl@ifi.uio.no), 1/1/95
+.\" and Copyright (c) 2007 Michael Kerrisk <mtk.manpages@gmail.com>
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified by Michael Haardt <michael@moria.de>
+.\" Modified 1993-07-24 by Rik Faith <faith@cs.unc.edu>
+.\" Modified 1995-05-18 by Todd Larason <jtl@molehill.org>
+.\" Modified 1997-01-31 by Eric S. Raymond <esr@thyrsus.com>
+.\" Modified 1995-01-09 by Richard Kettlewell <richard@greenend.org.uk>
+.\" Modified 1998-05-13 by Michael Haardt <michael@cantor.informatik.rwth-aachen.de>
+.\" Modified 1999-07-06 by aeb & Albert Cahalan
+.\" Modified 2000-01-07 by aeb
+.\" Modified 2004-06-23 by Michael Kerrisk <mtk.manpages@gmail.com>
+.\" 2007-06-08 mtk: Added example program
+.\" 2007-07-05 mtk: Added details on underlying system call interfaces
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1992 Drew Eckhardt, 1995 Nicolai Langfeldt, 2007 Michael Kerrisk 
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH STAT 2 2011\-10\-04 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+stat, fstat, lstat \- pobieranie stanu pliku
+.SH SKŁADNIA
+\fB#include <sys/types.h>\fP
+.br
+\fB#include <sys/stat.h>\fP
+.br
+\fB#include <unistd.h>\fP
+.sp
+\fBint stat(const char *\fP\fIpath\fP\fB, struct stat *\fP\fIbuf\fP\fB);\fP
+.br
+\fBint fstat(int \fP\fIfd\fP\fB, struct stat *\fP\fIbuf\fP\fB);\fP
+.br
+\fBint lstat(const char *\fP\fIpath\fP\fB, struct stat *\fP\fIbuf\fP\fB);\fP
+.sp
+.in -4n
+Wymagane ustawienia makr biblioteki glibc (patrz \fBfeature_test_macros\fP(7)):
+.in
+.ad l
+.PD 0
+.sp
+\fBlstat\fP():
+.RS 4
+_BSD_SOURCE || _XOPEN_SOURCE\ >=\ 500 || _XOPEN_SOURCE\ &&\ _XOPEN_SOURCE_EXTENDED
+.br
+|| /* od glibc 2.10: */ _POSIX_C_SOURCE\ >=\ 200112L
+.RE
+.PD
+.ad
+.SH OPIS
+.PP
+Funkcje te zwracają informacje o podanym pliku. Do uzyskania tej informacji
+nie są wymagane prawa dostępu do samego pliku, lecz \(em w przypadku
+\fBstat\fP() i \fBlstat\fP() \(em konieczne są prawa wykonywania (przeszukiwania)
+do wszystkich katalogów na prowadzącej do pliku ścieżce \fIpath\fP.
+.PP
+\fBstat\fP() zwraca status pliku wskazywanego przez \fIpath\fP, ładując go do
+argumentu \fIbuf\fP.
+
+\fBlstat\fP() jest identyczny z \fBstat\fP(), lecz w przypadku gdy \fIpath\fP jest
+dowiązaniem symbolicznym, to zwraca status tego dowiązania, a nie pliku, do
+którego się to dowiązanie odwołuje.
+
+\fBfstat\fP() jest identyczny z \fBstat\fP(), z tym wyjątkiem, że plik, którego
+status ma zwrócić, jest określony przez deskryptor pliku \fIfd\fP.
+.PP
+Wszystkie te funkcje zwracają strukturę \fIstat\fP, zawierającą następujące
+pola:
+.PP
+.in +4n
+.nf
+struct stat {
+    dev_t     st_dev;      /* ID urządzenia zawierającego plik */
+    ino_t     st_ino;      /* numer i\-węzła (inode) */
+    umode_t   st_mode;     /* ochrona */
+    nlink_t   st_nlink;    /* liczba dowiązań stałych (hardlinks) */
+    uid_t     st_uid;      /* ID użytkownika właściciela */
+    gid_t     st_gid;      /* ID grupy właściciela */
+    dev_t     st_rdev;     /* ID urządzenia (jeśli plik specjalny) */
+    off_t     st_size;     /* całkowity rozmiar w bajtach */
+    blksize_t st_blksize;  /* wielkość bloku dla I/O systemu plików */
+    blkcnt_t  st_blocks;   /* liczba zaalokowanych bloków 512\-bajtowych */
+    time_t    st_atime;    /* czas ostatniego dostępu */
+    time_t    st_mtime;    /* czas ostatniej modyfikacji */
+    time_t    st_ctime;    /* czas ostatniej zmiany */
+};
+.fi
+.in
+.PP
+Pole \fIst_dev\fP opisuje urządzenie, w którym plik się znajduje. (Makra
+\fBmajor\fP(3) i \fBminor\fP(3) mogą się przydać przy dekodowaniu identyfikatora
+urządzenia znajdującego się w tym polu).
+
+Pole \fIst_rdev\fP opisuje urządzenie reprezentowane przez ten plik (i\-węzeł).
+
+Pole \fIst_size\fP podaje rozmiar pliku w bajtach (jeżeli plik jest plikiem
+regularnym lub dowiązaniem symbolicznym). Rozmiarem dowiązania symbolicznego
+jest długość ścieżki, na którą wskazuje, z wyłączeniem końcowego bajtu NULL.
+
+Pole \fIst_sblocks\fP określa liczbę bloków zajmowanych przez plik w
+jednostkach 512\-bajtowych. (Liczba ta może być mniejsza niż \fIst_size\fP/512,
+na przykład wtedy, gdy plik ma dziury).
+
+Pole \fIst_blksize\fP zawiera "preferowany" rozmiar bloku dla efektywnych
+operacji wejścia/wyjścia dla pliku. (Zapis do pliku mniejszych kawałków może
+spowodować nieefektywne operacje odczyt\-modyfikacja\-powtórny zapis).
+.PP
+Nie wszystkie systemy plików pod Linuksem obsługują wszystkie pola
+czasu. Niektóre systemy plików można zamontować w ten sposób, że dostęp do
+pliku lub katalogu nie powoduje uaktualnienia pola \fIst_atime\fP. (Patrz
+\fInoatime\fP, \fInodiratime\fP i \fIrelatime\fP w \fBmount\fP(8) oraz powiązane
+informacje w \fBmount\fP(2)). Dodatkowo \fIst_atime\fP nie jest aktualizowane,
+jeśli plik jest otwierany z flagą \fBO_NOATIME\fP, patrz \fBopen\fP(2).
+
+Pole \fIst_atime\fP jest zmieniane przez każdy dostęp do pliku, np. przez
+\fBexecve\fP(2), \fBmknod\fP(2), \fBpipe\fP(2), \fButime\fP(2)  i \fBread\fP(2)  (w razie
+odczytania więcej niż zera bajtów). Inne procedury, jak \fBmmap\fP(2) mogą, ale
+nie muszą, zaktualizować \fIst_atime\fP.
+
+Zazwyczaj pole \fIst_mtime\fP jest zmieniane przez modyfikowanie pliku,
+np. przez \fBmknod\fP(2), \fBtruncate\fP(2), \fButime\fP(2)  i \fBwrite\fP(2) (więcej
+niż zera bajtów). Co więcej \fIst_mtime\fP katalogu jest zmieniane przy
+tworzeniu plików w tym katalogu lub ich usuwaniu. Pole \fIst_mtime\fP \fInie\fP
+jest zmieniane po zmianach właściciela, grupy, liczby dowiązań (hard links)
+czy uprawnień.
+
+Pole \fIst_ctime\fP jest zmieniane przy zapisywaniu lub ustawianiu informacji
+i\-węzła (np. właściciela, grupy, liczby dowiązań, praw itp.).
+.PP
+Zdefiniowane są następujące makra POSIX sprawdzające typ pliku przy użyciu
+pola \fIst_mode\fP:
+.RS 4
+.TP  1.2i
+\fBS_ISREG\fP(m)
+czy plik jest regularny?
+.TP 
+\fBS_ISDIR\fP(m)
+katalog?
+.TP 
+\fBS_ISCHR\fP(m)
+urządzenie znakowe?
+.TP 
+\fBS_ISBLK\fP(m)
+urządzenie blokowe?
+.TP 
+\fBS_ISFIFO\fP(m)
+kolejka FIFO (potok nazwany)?
+.TP 
+\fBS_ISLNK\fP(m)
+dowiązanie symboliczne? (Nie w POSIX.1\-1996).
+.TP 
+\fBS_ISSOCK\fP(m)
+gniazdo? (Nie w POSIX.1\-1996).
+.RE
+.PP
+Dla pola \fIst_mode\fP zdefiniowano następujące flagi:
+.in +4n
+.TS
+lB l l.
+S_IFMT	0170000	maska bitowa dla pól bitowych typu pliku
+S_IFSOCK	0140000	gniazdo
+S_IFLNK	0120000	dowiązanie symboliczne (symbolic link)
+S_IFREG	0100000	plik regularny
+S_IFBLK	0060000	urządzenie blokowe
+S_IFDIR	0040000	katalog
+S_IFCHR	0020000	urządzenie znakowe
+S_IFIFO	0010000	kolejka FIFO
+S_ISUID	0004000	bit "set UID"
+S_ISGID	0002000	bit "set\-group\-ID" (patrz niżej)
+S_ISVTX	0001000	bit "sticky" (patrz niżej)
+S_IRWXU	00700	maska praw dostępu właściciela pliku
+S_IRUSR	00400	właściciel ma prawa odczytu
+S_IWUSR	00200	właściciel ma prawa zapisu
+S_IXUSR	00100	właściciel ma prawa wykonania
+S_IRWXG	00070	maska praw dostępu dla grupy
+S_IRGRP	00040	grupa ma prawa odczytu
+S_IWGRP	00020	grupa ma prawa zapisu
+S_IXGRP	00010	grupa ma prawa wykonania
+S_IRWXO	00007	maska uprawnień dla innych (poza grupą)
+S_IROTH	00004	inni mają prawa odczytu
+S_IWOTH	00002	inni mają prawa zapisu
+S_IXOTH	00001	inni mają prawa wykonania
+.TE
+.in
+.P
+Bit "set\-group\-ID" (\fBS_ISGID\fP) ma kilka specjalnych znaczeń. Ustawiony na
+katalogu oznacza, że dla tego katalogu powinna być używana semantyka BSD:
+pliki w nim utworzone dziedziczą identyfikator grupy z katalogu, a nie z
+efektywnego identyfikatora grupy procesu tworzącego plik, ponadto tworzone
+katalogi będą miały także ustawiony bit \fBS_ISGID\fP. Dla pliku, który nie ma
+ustawionego bitu wykonywania dla grupy (\fBS_IXGRP\fP), bit "set\-group\-ID"
+oznacza obowiązkowe blokowanie pliku/rekordu.
+.P
+Bit "sticky" (\fBS_ISVTX\fP) ustawiony na katalogu oznacza, że tylko właściciel
+pliku lub właściciel katalogu albo proces uprzywilejowany może usunąć plik w
+tym katalogu lub zmienić nazwę tego pliku.
+.SH "WARTOŚĆ ZWRACANA"
+W przypadku powodzenia zwracane jest zero. W razie wystąpienia błędu
+zwracane jest \-1 i ustawiana jest odpowiednia wartość zmiennej \fIerrno\fP.
+.SH BŁĘDY
+.TP 
+\fBEACCES\fP
+Brak uprawnień do przeszukiwania jednego z katalogów w ścieżce zaczynającej
+\fIpath\fP. (Patrz także \fBpath_resolution\fP(7)).
+.TP 
+\fBEBADF\fP
+\fIfd\fP jest nieprawidłowy.
+.TP 
+\fBEFAULT\fP
+Niepoprawny adres.
+.TP 
+\fBELOOP\fP
+Podczas rozwiązywania ścieżki napotkano zbyt wiele dowiązań symbolicznych.
+.TP 
+\fBENAMETOOLONG\fP
+Ścieżka \fIpath\fP jest zbyt długa.
+.TP 
+\fBENOENT\fP
+Składnik ścieżki \fIpath\fP nie istnieje lub \fIpath\fP jest pustym łańcuchem
+znaków.
+.TP 
+\fBENOMEM\fP
+Brak pamięci (tj. pamięci jądra).
+.TP 
+\fBENOTDIR\fP
+Składnik ścieżki \fIpath\fP nie jest katalogiem.
+.TP 
+\fBEOVERFLOW\fP
+(\fBstat\fP()) \fIpath\fP odnosi się do pliku, którego rozmiar nie jest
+reprezentowalny w typie \fIoff_t\fP. Może się to zdarzyć, jeśli aplikacja
+skompilowana na platformie 32\-bitowej bez \fI\-D_FILE_OFFSET_BITS=64\fP wywoła
+\fBstat\fP() na pliku, którego rozmiar jest większy niż  \fI(1<<31)\-1\fP
+bitów.
+.SH "ZGODNE Z"
+.\" SVr4 documents additional
+.\" .BR fstat ()
+.\" error conditions EINTR, ENOLINK, and EOVERFLOW.  SVr4
+.\" documents additional
+.\" .BR stat ()
+.\" and
+.\" .BR lstat ()
+.\" error conditions EINTR, EMULTIHOP, ENOLINK, and EOVERFLOW.
+Opisywane wywołanie systemowe są zgodne z SVr4, BSD 4.3, POSIX.1\-2001.
+
+Według POSIX.1\-2001 \fBlstat\fP() na dowiązaniu symbolicznym powinien zwrócić
+poprawne wartości tylko w polu \fIst_size\fP i w części pola \fIst_mode\fP
+związanej z typem pliku struktury \fIstat\fP. POSIX.1\-2008 zaostrza tę
+specyfikację, wymagając od \fBlstat\fP() zwracania poprawnych informacji we
+wszystkich polach z wyjątkiem bitów uprawnień w \fIst_mode\fP.
+
+Używanie pól \fIst_blocks\fP i \fIst_blksize\fP może być nieprzenośne. (Były
+wprowadzone w BSD. Interpretacje różnią się zarówno między systemami, jak i
+na jednym systemie, jeśli użyty jest zdalny system plików montowany po
+NFS\-ie). Aby uzyskać definicje typów \fIblkcnt_t\fP i \fIblksize_t\fP z
+\fI<sys/stat.h>\fP należy zdefiniować \fB_XOPEN_SOURCE\fP na wartość 500
+lub wyższą (przed dołączeniem \fIjakiegokolwiek\fP innego pliku nagłówkowego).
+.LP
+POSIX.1\-1990  nie opisywał stałych \fBS_IFMT\fP, \fBS_IFSOCK\fP, \fBS_IFLNK\fP,
+\fBS_IFREG\fP, \fBS_IFBLK\fP, \fBS_IFDIR\fP, \fBS_IFCHR\fP, \fBS_IFIFO\fP, \fBS_ISVTX\fP , ale
+zamiast tego wymagał używania makr \fBS_ISDIR\fP() itp. Stałe \fBS_IF*\fP są
+obecne w POSIX.1\-2011 i późniejszych.
+
+Makra \fBS_ISLNK\fP()  i \fBS_ISSOCK\fP() nie są wymienione w POSIX.1\-1996, ale są
+obecne w POSIX.1\-2001; pierwsze z nich pochodzi z SVID 4, a drugie z SUSv2.
+.LP
+Unix V7 (i kolejne systemy) miał \fBS_IREAD\fP, \fBS_IWRITE\fP, \fBS_IEXEC\fP,
+podczas gdy POSIX nakazuje używanie synonimów \fBS_IRUSR\fP, \fBS_IWUSR\fP,
+\fBS_IXUSR\fP.
+.SS "Inne systemy"
+Wartości, które były (lub nadal są) w użyciu w różnych systemach:
+.TS
+l l l l l.
+szesn.	nazwa	ls	ósemk.	opis
+f000	S_IFMT		170000	maska bitowa dla pól bitowych typu pliku
+0000			000000	niedziałający i\-węzeł w SCO, nieznany typ
+				w BSD; SVID\-v2 i XPG2 mają zarówno
+				0, jak i 0100000 dla zwykłego pliku
+1000	S_IFIFO	p|	010000	kolejka FIFO (potok nazwany)
+2000	S_IFCHR	c	020000	specjalny znakowy (V7)
+3000	S_IFMPC		030000	specjalny znakowy zwielokrotniony (V7)
+4000	S_IFDIR	d/	040000	katalog (V7)
+5000	S_IFNAM		050000	nazwany plik specjalny XENIXa
+				z dwoma podtypami, rozróżnianymi przez
+				wartości 1, 2 w \fIst_rdev\fP
+0001	S_INSEM	s	000001	podtyp IFNAM semafora XENIX
+0002	S_INSHD	m	000002	podtyp IFNAM dzielonych danych XENIX
+6000	S_IFBLK	b	060000	specjalny blokowy (V7)
+7000	S_IFMPB		070000	specjalny blokowy zwielokrotniony (V7)
+8000	S_IFREG	\-	100000	regularny (V7)
+9000	S_IFCMP		110000	skompresowany VxFS
+9000	S_IFNWK	n	110000	sieciowy specjalny (HP\-UX)
+a000	S_IFLNK	l@	120000	dowiązanie symboliczne (BSD)
+b000	S_IFSHAD		130000	shadow i\-węzeł ACL w Solarisie
+				(niedostępny w przestrzeni użytkownika)
+c000	S_IFSOCK	s=	140000	gniazdo (BSD; także "S_IFSOC" na VxFS)
+d000	S_IFDOOR	D>	150000	drzwi Solarisa
+e000	S_IFWHT	w%	160000	BSD whiteout (nieużywane dla i\-węzła)
+0200	S_ISVTX		001000	"bit sticky": zachowuje wyswappowany tekst
+				nawet po użyciu (V7)
+				zarezerwowane (SVID\-v2)
+				Dla niekatalogów: nie buforuj tego
+				pliku (SunOS)
+				Dla katalogów: flaga ograniczonego
+				 usuwania (SVID\-v4.2)
+0400	S_ISGID		002000	set\-group\-ID podczas wykonywania (V7)
+				dla katalogów: używa semantyki BSD do
+				propagowania ID grupy
+0400	S_ENFMT		002000	egzekwowanie blokowania plików SysV
+				(dzielone z S_ISGID)
+0800	S_ISUID		004000	set\-user\-ID podczas wykonywania (V7)
+0800	S_CDF		004000	katalog jest plikiem zależnym od kontekstu
+				(HP\-UX)
+.TE
+
+Polecenie "sticky" pojawiło się w wersji 32V systemu AT&T UNIX.
+.SH UWAGI
+.\" As at kernel 2.6.25, XFS and JFS support nanosecond timestamps,
+.\" but ext2, ext3, and Reiserfs do not.
+Od wersji jądra 2.5.48 struktura \fIstat\fP obsługuje nanosekundową dokładność
+wszystkich trzech pól czasowych. Glibc podaje nanosekundową część każdego z
+tych pól, używając albo \fIst_atim.tv_nsec\fP, jeżeli zdefiniowano makro
+\fB_BSD_SOURCE\fP lub \fB_SVID_SOURCE\fP. Pola te są podane w POSIX.1\-2008 i w
+związku z tym, począwszy od wersji 2.12 biblioteka glibc udostępnia nazwy
+tych pól, jeśli \fB_POSIX_C_SOURCE\fP jest zdefiniowane na wartość 200809L lub
+większą, albo \fB_XOPEN_SOURCE\fP jest zdefiniowane na wartość 700 lub
+większą. Jeśli nie zdefiniowano żadnego z powyższych makr, to nanosekundowe
+wartości są dostępne w polu \fIst_atimensec\fP. W systemach plików, które nie
+obsługują takiej dokładności czasowej, wartości nanosekund w tych polach
+wynoszą 0.
+
+Pod Linuksem, \fBlstat\fP() nie spowoduje uruchomienia akcji automontera,
+natomiast \fBstat\fP() \- spowoduje (patrz jednakże \fBfstatat\fP(2)).
+
+Dla większości plików w katalogu \fI/proc\fP, \fBstat\fP() w polu \fIst_size\fP
+zwraca 0, a nie rzeczywisty rozmiar pliku.
+.SS "Interfejs jądra"
+.\"
+.\" A note from Andries Brouwer, July 2007
+.\"
+.\" > Is the story not rather more complicated for some calls like
+.\" > stat(2)?
+.\"
+.\" Yes and no, mostly no. See /usr/include/sys/stat.h .
+.\"
+.\" The idea is here not so much that syscalls change, but that
+.\" the definitions of struct stat and of the types dev_t and mode_t change.
+.\" This means that libc (even if it does not call the kernel
+.\" but only calls some internal function) must know what the
+.\" format of dev_t or of struct stat is.
+.\" The communication between the application and libc goes via
+.\" the include file <sys/stat.h> that defines a _STAT_VER and
+.\" _MKNOD_VER describing the layout of the data that user space
+.\" uses. Each (almost each) occurrence of stat() is replaced by
+.\" an occurrence of xstat() where the first parameter of xstat()
+.\" is this version number _STAT_VER.
+.\"
+.\" Now, also the definitions used by the kernel change.
+.\" But glibc copes with this in the standard way, and the
+.\" struct stat as returned by the kernel is repacked into
+.\" the struct stat as expected by the application.
+.\" Thus, _STAT_VER and this setup cater for the application-libc
+.\" interface, rather than the libc-kernel interface.
+.\"
+.\" (Note that the details depend on gcc being used as c compiler.)
+Z upływem czasu, zwiększanie rozmiarów struktury \fIstat\fP doprowadziło do
+powstania trzech kolejnych wersji funkcji \fBstat\fP(): \fIsys_stat\fP() (slot
+\fI__NR_oldstat\fP), \fIsys_newstat\fP() (slot \fI__NR_stat\fP) i \fIsys_stat64()\fP
+(nowe w jądrze 2.4; slot \fI__NR_stat64\fP). Funkcja opakowująca \fBstat\fP()
+biblioteki glibc ukrywa te szczegóły przed aplikacjami, wywołując najnowszą
+wersję wywołania systemowego dostarczanego przez jądro i przepakowując
+zwracaną informację, jeśli jest to wymagane przez starsze aplikacje. Podobne
+uwagi odnoszą się do \fBfstat\fP() i \fBlstat\fP().
+.SH PRZYKŁAD
+Poniższy program wywołuje \fBstat\fP() i wypisuje wybrane pola zwrócone w
+strukturze \fIstat\fP:
+.nf
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int
+main(int argc, char *argv[])
+{
+    struct stat sb;
+
+    if (argc != 2) {
+        fprintf(stderr, "Użycie: %s <ścieżka>\en", argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
+    if (stat(argv[1], &sb) == \-1) {
+        perror("stat");
+        exit(EXIT_FAILURE);
+    }
+
+    printf("Typ pliku:                 ");
+
+    switch (sb.st_mode & S_IFMT) {
+    case S_IFBLK:  printf("urządzenie blokowe\en");      break;
+    case S_IFCHR:  printf("urządzenie znakowe\en");      break;
+    case S_IFDIR:  printf("katalog\en");                 break;
+    case S_IFIFO:  printf("FIFO/pipe\en");               break;
+    case S_IFLNK:  printf("dowiązanie symboliczne\en");  break;
+    case S_IFREG:  printf("zwykły plik\en");             break;
+    case S_IFSOCK: printf("gniazdo\en");                 break;
+    default:       printf("typ nieznany\en");            break;
+    }
+
+    printf("numer I\-węzła:            %ld\en", (long) sb.st_ino);
+
+    printf("Tryb:                     %lo (octal)\en",
+            (unsigned long) sb.st_mode);
+
+    printf("Liczba dowiązań:           %ld\en", (long) sb.st_nlink);
+    printf("Właściciel:                UID=%ld   GID=%ld\en",
+            (long) sb.st_uid, (long) sb.st_gid);
+
+    printf("Preferowany rozmiar bloku I/O: %ld bajtów\en",
+            (long) sb.st_blksize);
+    printf("Rozmiar bloku:                 %lld bajtów\en",
+            (long long) sb.st_size);
+    printf("Liczba zaalokowanych bloków:   %lld\en",
+            (long long) sb.st_blocks);
+
+    printf("Ostatnia zmiana stanu:    %s", ctime(&sb.st_ctime));
+    printf("Ostatni dostęp do pliku:  %s", ctime(&sb.st_atime));
+    printf("Ostatnia zmiana pliku:    %s", ctime(&sb.st_mtime));
+
+    exit(EXIT_SUCCESS);
+}
+.fi
+.SH "ZOBACZ TAKŻE"
+\fBaccess\fP(2), \fBchmod\fP(2), \fBchown\fP(2), \fBfstatat\fP(2), \fBreadlink\fP(2),
+\fButime\fP(2), \fBcapabilities\fP(7), \fBsymlink\fP(7)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

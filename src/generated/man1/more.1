@@ -1,0 +1,236 @@
+.\" Copyright (c) 1988, 1990 The Regents of the University of California.
+.\" Copyright (c) 1988 Mark Nudleman
+.\" All rights reserved.
+.\"
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 3. All advertising materials mentioning features or use of this software
+.\"    must display the following acknowledgement:
+.\"	This product includes software developed by the University of
+.\"	California, Berkeley and its contributors.
+.\" 4. Neither the name of the University nor the names of its contributors
+.\"    may be used to endorse or promote products derived from this software
+.\"    without specific prior written permission.
+.\"
+.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\"	@(#)more.1	5.15 (Berkeley) 7/29/91
+.\"
+.\" Revised: Fri Dec 25 15:27:27 1992 by root
+.\" 25Dec92: Extensive changes made by Rik Faith (faith@cs.unc.edu) to
+.\" conform with the more 5.19 currently in use by the Linux community.
+.\"
+.\" .Dd July 29, 1991 (Modified December 25, 1992)
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.Dd luty 2011   
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1988, 1990 The Regents of the University of California, 1988 Mark Nudleman (BSD-4-clause)
+.\" Copyright © of Polish translation:
+.\" Gwidon S. Naskrent <naskrent@hoth.amu.edu.pl>, 1998.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.Dt MORE(1) "" "Polecenia użytkownika"
+.Os util-linux
+.Sh NAZWA
+.Nm more
+.Nd filtrowa przeglądarka plików do CRT
+.Sh SKŁADNIA
+.Nm more
+.Op Fl dlfpcsu
+.Op Fl numer
+.Op +/\fIwzór\fP
+.Op +\fInumer-wiersza\fP
+.Op \fIplik...\fP
+.Sh OPIS
+.Nm
+jest filtrem służącym do przeglądania tekstu strona po stronie, jeden
+ekran na raz.  Bieżąca wersja jest szczególnie prymitywna.  Użytkownicy
+powinni zdać sobie sprawę że
+.Xr less(1)
+dostarcza emulacji
+.Xr more(1)
+wraz z licznymi ulepszeniami.
+.Sh OPCJE
+Opcje wiersza poleceń podano poniżej. Opcje pobierane są także ze zmiennej
+środowiskowej
+.Ev MORE
+(proszę się upewnić, że poprzedzono je myślnikiem
+("-")), ale opcje wiersza poleceń mogą je unieważnić.
+.Bl -tag -width flag
+.It Fl num
+Opcja ta określa liczbę całkowitą będącą rozmiarem ekranu (w wierszach).
+.It Fl d
+.Nm more
+wypisze komunikat "[Spacja kontynuuje, 'q' kończy.]" oraz
+wyświetli "[Klawisz 'h' wyświetla opis.]" zamiast wysyłać znak dzwonka,
+kiedy naciśnięto nieprawidłowy klawisz.
+.It Fl l
+.Nm more
+zwykle traktuje
+.Ic \&^L
+(koniec strony) jako znak specjalny,
+i będzie pauzować po każdym wierszu, który zawiera koniec strony.  Opcja
+.Fl l
+zakazuje takiego zachowania.
+.It Fl f
+Powoduje że
+.Nm more
+liczy wiersze logiczne, zamiast ekranowych
+(tj. długie linie nie są zawijane).
+.It Fl p
+Nie przewija ekranu.  Zamiast tego czyści cały ekran i potem wyświetlaj
+tekst.
+.Pp
+Proszę zwrócić uwagę, że ta opcja jest włączana automatycznie, jeśli plik
+wykonywalny nazywa się
+.Nm page .
+.It Fl c
+Nie przewija ekranu.  Zamiast tego, rysuje każdy ekran od początku,
+czyszcząc resztę każdego wiersza w momencie jego wyświetlania.
+.It Fl s
+Zamienia wiele sąsiadujących pustych wierszy w jeden.
+.It Fl u
+Wyłącza podkreślanie.
+.It Ic +/
+Opcja
+.Ic +/
+określa łańcuch który należy przeszukać zanim zostanie
+wyświetlony każdy z plików.
+.It Ic +num
+Zaczyna od wiersza numer
+.Ic num .
+.El
+.Sh KOMENDY
+Interaktywne komendy dla
+.Nm more
+oparte są na
+.Xr vi(1) .
+Niektóre
+komendy mogą być poprzedzone liczbą dziesiętną, zwaną k w opisach poniżej.
+W poniższych opisach, ^X oznacza Control-X.
+.Pp
+.Bl -tag -width Ic
+.It Ic h No lub Ic ?
+Pomoc: wyświetl podsumowanie tych komend.  Jeśli zapomnisz wszystkich innych
+komend, pamiętaj o tej.
+.It Ic SPACJA
+Wyświetl poprzednie k wierszy tekstu.  Domyślnie bieżący rozmiar ekranu.
+.It Ic z
+Wyświetl następne k wierszy tekstu.  Domyślnie bieżący rozmiar ekranu.
+Argument staje się nową wartością domyślną.
+.It Ic RETURN
+Wyświetl następne k wierszy tekstu.  Domyślnie jeden.  Argument staje się
+nową wartością domyślną.
+.It Ic d No lub Ic \&^D
+Przewiń o k wierszy.  Domyślnie bieżący rozmiar przewijania, początkowo 11.
+Argument staje się nową wartością domyślną.
+.It Xo
+.Ic q
+.No lub
+.Ic Q
+.No lub
+.Ic INTERRUPT
+[to co stty oznacza
+przez intr - przyp. GSN]
+.Xc
+Wyjdź.
+.It Ic s
+Przeskocz k wierszy tekstu w przód.  Domyślnie jeden.
+.It Ic f
+Przeskocz k ekranów tekstu w przód.  Domyślnie jeden.
+.It Ic b No lub Ic \&^B
+Przeskocz k ekranów tekstu w tył.  Domyślnie jeden.
+.It Ic '
+Idź do miejsca rozpoczęcia poprzedniego wyszukiwania.
+.It Ic =
+Wyświetl bieżący numer wiersza.
+.It Ic \&/ Ns Ar wzór
+Poszukaj k-tego wystąpienia wyrażenia regularnego.  Domyślnie pierwszego.
+.It Ic n
+Poszukaj k-tego wystąpienia poprzedniego wyrażenia regularnego.  Domyślnie
+pierwszego.
+.It Ic !<cmd> No lub Ic :!<cmd>
+Wykonaj <cmd> w podpowłoce.
+.It Ic v
+Uruchom edytor od bieżącego wiersza. Edytor jest określony zmienną
+środowiskową VISUAL lub, jeśli jej nie zdefiniowano, EDITOR. Jeśli nie
+zdefiniowano żadnej ze zmiennych domyślnym edytorem jest vi.
+.It Ic \&^L
+Odśwież ekran.
+.It Ic :n
+Idź do k-tego następnego pliku.  Domyślnie pierwszego następnego.
+.It Ic :p
+Idź do k-tego poprzedniego pliku.  Domyślnie pierwszego poprzedniego.
+.It Ic :f
+Wyświetl bieżącą nazwę pliku i numer wiersza.
+.It Ic \&.
+Powtórz poprzednią komendę.
+.El
+.Sh ŚRODOWISKO
+.Nm more
+wykorzystuje następujące zmienne środowiskowe, jeśli istnieją:
+.Bl -tag -width Fl
+.It Ev MORE
+Zmienną tą można ustawić na ulubione opcje dla
+.Nm more .
+.It Ev SHELL
+Bieżąca używana powłoka (normalnie ustawiana przez powłokę w czasie
+logowania).
+.It Ev TERM
+Określa typ terminala, używany przez
+.Nm more
+do pobrania charakterystyk
+terminala koniecznych do manipulowania ekranem.
+.El
+.Sh ZOBACZ\ TAKŻE
+.Xr vi(1)
+.Xr less(1)
+.Sh AUTORZY
+Eric Shienbrood, UC Berkeley
+.br
+Zmodyfikowany przez Geoffa Pecka z UCB, który dodał podkreślenia i
+pojedyncze odstępy liniowe.
+.br
+Zmodyfikowany przez Johna Foderaro z UCB, który dodał \-c i zmienną
+środowiskową MORE.
+.Sh HISTORIA
+Polecenie
+.Nm more
+pojawiło się w
+.Bx 3.0 .
+Ta strona podręcznika
+dokumentuje wersję 5.19
+.Nm more
+(Berkeley 29 VI 88), która jest obecnie
+używana w środowisku linuksowym.  Dokumentacja została stworzona z użyciem
+kilku innych wersji stron man oraz szczegółowej inspekcji kodu źródłowego.
+.Sh DOSTĘPNOŚĆ
+Polecenie more jest częścią pakietu util-linux i jest dostępne pod adresem
+ftp://ftp.kernel.org/pub/linux/utils/util-linux/.
+.Sh TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Gwidon S. Naskrent <naskrent@hoth.amu.edu.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.br
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.20.1 \fPoryginału.

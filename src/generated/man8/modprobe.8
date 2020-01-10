@@ -1,0 +1,295 @@
+.\" t
+.\"     Title: modprobe
+.\"    Author: Jon Masters <jcm@jonmasters.org>
+.\" Generator: DocBook XSL Stylesheets v1.77.0 <http://docbook.sf.net/>
+.\"      Date: 06/19/2012
+.\"    Manual: modprobe
+.\"    Source: kmod
+.\"  Language: English
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2011 ProFUSION embedded systems (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>, 2001.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH MODPROBE 8 06/19/2012 kmod modprobe
+.ie  \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH NAZWA
+modprobe \- dodaje i usuwa moduły z jądra Linux
+.SH SKŁADNIA
+.HP \w'\fBmodprobe\fR\ 'u
+\fBmodprobe\fP [\fB\-v\fP] [\fB\-V\fP] [\fB\-C\ \fP\fIplik\-konfiguracyjny\fP] [\fB\-n\fP] [\fB\-i\fP]
+[\fB\-q\fP] [\fB\-b\fP] [\fInazwa\-modułu\fP] [\fImoduł\ parametry\fP...]
+.HP \w'\fBmodprobe\fR\ 'u
+\fBmodprobe\fP [\-r] [\fB\-v\fP] [\fB\-n\fP] [\fB\-i\fP] [\fInazwa\-modułu\fP...]
+.HP \w'\fBmodprobe\fR\ 'u
+\fBmodprobe\fP [\-c]
+.HP \w'\fBmodprobe\fR\ 'u
+\fBmodprobe\fP [\-\-dump\-modversions] [\fInazwa\-pliku\fP]
+.SH OPIS
+.PP
+
+\fBmodprobe\fP dodaje i usuwa moduły z jądra Linux w sposób inteligentny:
+proszę zauważyć, że dla wygody nie rozróżnia się _ i \- w nazwach modułów
+(przeprowadzana jest automatyczna konwersja znaków
+podkreślenia)\&. \fBmodprobe\fP szuka wszystkich modułów i innych plików w
+katalogu modułów /lib/modules/`uname \-r`. Wyjątkami są opcjonalne pliki
+konfiguracyjne w katalogu /etc/modprobe\&.d (patrz
+\fBmodprobe.conf\fP(5))\&. \fBmodprobe\fP użyje również opcji modułu podanych w
+wierszu polecenia jądra w postaci <moduł>\&.<opcja> i
+czarnych list w postaci modprobe\&.blacklist=<moduł>\&.
+.PP
+Proszę zauważyć, że w przeciwieństwie do jąder Linux z gałęzi 2\&.4 (które
+nie są obsługiwane przez to narzędzie) ta wersja \fBmodprobe\fP nic nie
+wykonuje na samych modułach: interpretowanie symboli i obsługa parametrów
+jest wykonywana wewnątrz jądra\&. W związku z tym, błędom modułów towarzyszą
+niekiedy komunikaty jądra: patrz \fBdmesg\fP(8)\&.
+.PP
+
+\fBmodprobe\fP oczekuje obecności zaktualizowanego pliku modules\&.dep\&.bin
+(lub odwołuje się do rezerwowego pliku w formie czytelnej dla człowieka:
+modules\&.dep), utworzonego przez powiązane narzędzie \fBdepmod\fP,
+dystrybuowane razem z \fBmodprobe\fP (patrz \fBdepmod\fP(8))\&. Dla każdego modułu
+plik ten posiada spis innych modułów jakich (jeśli jest taka potrzeba)
+wymaga dany moduł, a \fBmodprobe\fP używa jej do automatycznego dodawania lub
+usuwania tych zależności\&.
+.PP
+Jeśli po \fInazwie\-modułu\fP podano argumenty, są one przekazywane jądru
+(oprócz ewentualnych opcji umieszczonych w pliku konfiguracyjnym)\&.
+.SH OPCJE
+.PP
+\fB\-a\fP \fB\-\-all\fP
+.RS 4
+Ładuje wszystkie moduły podane w wierszu polecenia\&.
+.RE
+.PP
+\fB\-b\fP \fB\-\-use\-blacklist\fP
+.RS 4
+Opcja powoduje zastosowanie przez \fBmodprobe\fP poleceń \fBblacklist\fP z plików
+konfiguracyjnych (jeśli występują) także do nazw modułów\&. Jest ona używana
+z reguły przez \fBudev\fP(7)\&.
+.RE
+.PP
+\fB\-C\fP \fB\-\-config\fP
+.RS 4
+Opcja przesłania domyślny katalog konfiguracyjny (/etc/modprobe\&.d)\&.
+.sp
+Poprzez opcje \fBinstall\fP i \fBremove\fP, opcja jest podawana innym poleceniom
+\fBmodprobe\fP w zmiennej środowiskowej MODPROBE_OPTIONS\&.
+.RE
+.PP
+\fB\-c\fP \fB\-\-showconfig\fP
+.RS 4
+Zrzuca efektywną konfigurację z katalogu konfiguracyjnego i wychodzi\&.
+.RE
+.PP
+\fB\-\-dump\-modversions\fP
+.RS 4
+Wypisuje listę informacji o wersjach modułów wymaganych przez moduł\&. Opcja
+jest używana przeważnie przez dystrybucje, aby spakietować moduł jądra
+Linux, używając zależności uwzględniających wersje modułu.
+.RE
+.PP
+\fB\-d\fP \fB\-\-dirname\fP
+.RS 4
+Katalog gdzie znajdują się moduły, domyślnie /lib/modules/\fIWYDANIE\fP\&.
+.RE
+.PP
+\fB\-\-first\-time\fP
+.RS 4
+\fBmodprobe\fP zwykle kończy pracę pomyślnie (nic nie robiąc) jeśli poleci się
+mu załadować moduł, który jest już obecny lub usunąć moduł, który nie jest
+obecny. To dobre rozwiązanie do prostych skryptów, jednak bardziej
+skomplikowane chcą się często dowiedzieć, czy \fBmodprobe\fP tak naprawdę coś
+zrobił: ta opcja powoduje, że modprobe kończy pracę z niepowodzeniem, jeśli
+program faktycznie nic nie wykonuje.
+.RE
+.PP
+\fB\-\-force\-vermagic\fP
+.RS 4
+Każdy moduł zawiera niewielki łańcuch z ważnymi informacjami obejmującymi
+np. wersje jądra i kompilatora\&. Jeśli nie uda się załadować modułu, a
+jądro poinformuje że "version magic" nie pasuje, można użyć tej opcji do
+usunięcia go. Oczywiście to sprawdzenie odbywa się dla ochrony użytkownika,
+więc użycie niniejszej opcji jest niebezpieczne, chyba że jest się pewnym
+tego, co się robi.
+.sp
+Opcja odnosi się do wszystkich załadowanych modułów: zarówno modułu (lub
+aliasu) z wiersza polecenia, jak i do modułów od których jest on zależny\&.
+.RE
+.PP
+\fB\-\-force\-modversion\fP
+.RS 4
+Jeśli moduły są skompilowane z ustawieniem CONFIG_MODVERSIONS, tworzona jest
+sekcja nt. szczegółów wersji każdego modułu użytego przez (lub
+udostępnianego) przez dany moduł\&. Jeśli nie powiedzie się załadowanie
+modułu, a jądro poinformuje że nie zgadza się wersja któregoś z modułu
+będącego interfejsem, można użyć "\-\-force\-modversion" aby usunąć również
+informację o wersji\&. Oczywiście to sprawdzenie odbywa się dla ochrony
+użytkownika, więc użycie niniejszej opcji jest niebezpieczne, chyba że jest
+się pewnym tego, co się robi.
+.sp
+Opcja odnosi się do wszystkich załadowanych modułów: zarówno modułu (lub
+aliasu) z wiersza polecenia, jak i do modułów od których jest on zależny\&.
+.RE
+.PP
+\fB\-f\fP \fB\-\-force\fP
+.RS 4
+Próbuje wyciąć z modułu wszystkie informacje o wersji, które mogą spowodować
+jego niepomyślne załadowanie: jest to odpowiednik użycia obu opcji
+\fB\-\-force\-vermagic\fP i \fB\-\-force\-modversion\fP\&. Oczywiście to sprawdzenie
+odbywa się dla ochrony użytkownika, więc użycie niniejszej opcji jest
+niebezpieczne, chyba że jest się pewnym tego, co się robi.
+.sp
+Opcja odnosi się do wszystkich załadowanych modułów: zarówno modułu (lub
+aliasu) z wiersza polecenia, jak i do modułów od których jest on zależny\&.
+.RE
+.PP
+\fB\-i\fP \fB\-\-ignore\-install\fP \fB\-\-ignore\-remove\fP
+.RS 4
+Opcja powoduje ignorowanie przez \fBmodprobe\fP poleceń \fBinstall\fP i \fBremove\fP
+w pliku konfiguracyjnym (jeśli istnieje), do modułu podanego w wierszu
+polecenia (wszystkie zależne moduły będą wciąż miały ustawiane polecenia je
+dotyczące z pliku konfiguracyjnego)\&. Oba polecenia \fBinstall\fP i \fBremove\fP
+będą obecnie ignorowane gdy użyta jest ta opcja, niezależnie czy żądanie
+dotyczyło tylko jednego (a nie obu) z \fB\-\-ignore\-install\fP i
+\fB\-\-ignore\-remove\fP\&. Patrz \fBmodprobe.d\fP(5)\&.
+.RE
+.PP
+\fB\-n\fP \fB\-\-dry\-run\fP \fB\-\-show\fP
+.RS 4
+Opcja wykonuje wszystko poza rzeczywistym załadowaniem lub usunięciem modułu
+(lub wykonaniu poleceń install lub remove)\&. W połączeniu z \fB\-v\fP jest
+przydatna do debugowania problemów\&. Z powodów historycznych zarówno
+\fB\-\-dry\-run\fP i \fB\-\-show\fP oznaczają to samo i mogą być stosowane wymiennie\&.
+.RE
+.PP
+\fB\-q\fP \fB\-\-quiet\fP
+.RS 4
+Z tą opcją \fBmodprobe\fP nie będzie wypisywało informacji o błędzie, gdy
+będzie się próbowało załadować moduł, którego nie można znaleźć (i nie jest
+aliasem lub poleceniem \fBinstall\fP/\fBremove\fP)\&. Program będzie mógł wciąż
+zwracać niezerowy kod zakończenia\&. Jądro używa tej opcji do wypróbowania
+modułów, które mogą potencjalnie istnieć, przy użyciu request_module\&.
+.RE
+.PP
+\fB\-R\fP \fB\-\-resolve\-alias\fP
+.RS 4
+Wypisuje wszystkie nazwy modułów pasujące do aliasu\&. Może być przydatne do
+debugowania problemów z aliasem modułu\&.
+.RE
+.PP
+\fB\-r\fP \fB\-\-remove\fP
+.RS 4
+Opcja powoduje usunięcie modułu przez \fBmodprobe\fP, zamiast załadowania
+go\&. Jeśli moduły, od których on zależy są również nieużywane, \fBmodprobe\fP
+także spróbuje je usunąć. W przeciwieństwie do ładowania modułów, można
+podać kilka modułów w wierszu polecenia (nie ma sensu podawać parametrów
+modułu podczas usuwania go)\&.
+.sp
+Z reguły nie ma powodu aby usuwać moduły, ale część błędnych modułów może
+tego wymagać\&. Jądro dystrybucyjne może w ogóle nie być zbudowane z obsługą
+usuwania modułów\&.
+.RE
+.PP
+\fB\-S\fP \fB\-\-set\-version\fP
+.RS 4
+Ustawia wersję jądra, zamiast używania \fBuname\fP(2) do decydowania o niej
+(decyduje o miejscu szukania modułów)\&.
+.RE
+.PP
+\fB\-\-show\-depends\fP
+.RS 4
+Wypisuje zależności modułu (lub aliasu) włącznie z samym modułem. Wynikiem
+jest (być może pusty) zestaw nazw plików modułów, po jednym w wierszu,
+zaczynających się "insmod", który jest z reguły używany przez dystrybucje do
+określenia które moduły włączyć do generowanych obrazów
+initrd/initramfs. Stosowane polecenie \fBinstall\fP jest poprzedzone przez
+"install"\&. Opcja nie wykonuje żadnego z poleceń instalacji\&. Proszę
+zauważyć, że \fBmodinfo\fP(8) może zostać użyte do pozyskania zależności modułu
+z samego modułu, ale nie wie nic o aliasach ani poleceniach instalacji\&.
+.RE
+.PP
+\fB\-s\fP \fB\-\-syslog\fP
+.RS 4
+Opcja powoduje, że wszystkie komunikaty o błędach przesyłane są przez
+mechanizm syslog (jak LOG_DAEMON z poziomem LOG_NOTICE), zamiast na
+standardowe wyjście błędów\&. Włącza się również automatycznie, gdy stderr
+jest niedostępne\&.
+.sp
+Poprzez opcje \fBinstall\fP i \fBremove\fP, opcja jest podawana innym poleceniom
+\fBmodprobe\fP w zmiennej środowiskowej MODPROBE_OPTIONS\&.
+.RE
+.PP
+\fB\-V\fP \fB\-\-version\fP
+.RS 4
+wyświetla informacje o wersji i kończy działanie\&.
+.RE
+.PP
+\fB\-v\fP \fB\-\-verbose\fP
+.RS 4
+Wypisuje informacje o czynnościach wykonywanych przez program\&. \fBmodprobe\fP
+wypisuje zwykle komunikaty jedynie, gdy występują jakieś problemy\&.
+.sp
+Poprzez opcje \fBinstall\fP i \fBremove\fP, opcja jest podawana innym poleceniom
+\fBmodprobe\fP w zmiennej środowiskowej MODPROBE_OPTIONS\&.
+.RE
+.SH ŚRODOWISKO
+.PP
+Do przekazania argumentów do \fBmodprobe\fP można użyć również zmiennej
+środowiskowej MODPROBE_OPTIONS\&.
+.SH PRAWA\ AUTORSKIE
+.PP
+Pierwotnie: Copyright 2002, Rusty Russell, IBM Corporation\&. Strona
+podręcznika jest obecnie zarządzana przez Jona Mastersa i innych\&.
+.SH "ZOBACZ TAKŻE"
+.PP
+
+\fBmodprobe.d\fP(5), \fBinsmod\fP(8), \fBrmmod\fP(8), \fBlsmod\fP(8), \fBmodinfo\fP(8)
+.SH AUTORZY
+.PP
+\fBJon Masters\fP <\&jcm@jonmasters\&.org\&>
+.RS 4
+Deweloper
+.RE
+.PP
+\fBRobby Workman\fP <\&rworkman@slackware\&.com\&>
+.RS 4
+Deweloper
+.RE
+.PP
+\fBLucas De Marchi\fP <\&lucas\&.demarchi@profusion\&.mobi\&>
+.RS 4
+Deweloper
+.RE
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 9 \fPoryginału.

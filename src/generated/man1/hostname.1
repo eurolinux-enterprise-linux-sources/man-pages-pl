@@ -1,0 +1,200 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1997 Peter Tobias, 1997 Bernd Eckenfel, 2009 Michael Meskes (GPL-2)
+.\" Copyright © of Polish translation:
+.\" Wojtek Kotwica (PTM) <wkotwica@post.pl>, 2000
+.\" Robert Luberda <robert@debian.org>, 2012.
+.TH HOSTNAME 1 2009\-09\-16 "narzędzia sieciowe" "Podręcznik programisty Linuksa"
+
+.SH NAZWA
+hostname \- wyświetla lub ustawia systemową nazwę komputera
+.br
+domainname \- wyświetla lub ustawia systemową nazwę domeny NIS/YP
+.br
+ypdomainname \- wyświetla lub ustawia nazwę domeny NIS/YP
+.br
+nisdomainname \- wyświetla lub ustawia systemową nazwę domeny NIS/YP
+.br
+dnsdomainname \- wyświetla nazwę domenową systemu
+.br
+
+.SH SKŁADNIA
+\fBhostname\fP [\fB\-v\fP] [\fB\-a|\-\-alias\fP] [\fB\-d|\-\-domain\fP] [\fB\-f|\-\-fqdn|\-\-long\fP]
+[\fB\-A|\-\-all\-fqdns\fP] [\fB\-i|\-\-ip\-address\fP] [\fB\-I|\-\-all\-ip\-addresses\fP]
+[\fB\-s|\-\-short\fP] [\fB\-y|\-\-yp|\-\-nis\fP]
+.br
+\fBhostname\fP [\fB\-v\fP] [\fB\-b|\-\-boot\fP] [\fB\-F|\-\-file\ nazwa_pliku\fP]
+[\fBnazwa_komputera\fP]
+.br
+\fBhostname\fP [\fB\-v\fP] [\fB\-h|\-\-help\fP] [\fB\-V|\-\-version\fP]
+.PP
+\fBdomainname\fP [\fBdomena_nis\fP] [\fB\-F\ plik\fP]
+.br
+\fBypdomainname\fP [\fBdomena_nis\fP] [\fB\-F\ plik\fP]
+.br
+\fBnisdomainname\fP [\fBdomena_nis\fP] [\fB\-F\ plik\fP]
+.PP
+\fBdnsdomainname\fP [\fB\-v\fP]
+
+.SH OPIS
+\fBHostname\fP jest programem służącym do wyświetlania systemowej nazwy DNS
+oraz do wyświetlania lub nadawania nazwy komputera lub nazwy domeny NIS.
+
+.SS "POBIERANIE NAZWY"
+Program wywołany bez żadnych argumentów wyświetla bieżące nazwy:
+.LP
+\fBhostname\fP wydrukuje nazwę systemu zwracaną przez funkcję
+\fBgethostname\fP(2).
+.LP
+\fBdomainname\fP wyświetli nazwę domeny NIS systemu. \fBdomainname\fP używa
+funkcji \fBgethostname\fP(2), podczas gdy \fBypdomainname\fP i \fBnisdomainname\fP
+używają \fByp_get_default_domain\fP(3).
+.LP
+\fBdnsdomainname\fP wydrukuje część pełnej nazwy domenowej (FQDN \- Fully
+Qualified Domain Name) określającą domenę. Pełna nazwa domeny systemu
+zwracana jest przez funkcję \fBhostname \-\-fqdn\fP (patrz także ostrzeżenia w
+rozdziale \fBFQDN\fP poniżej).
+
+.SS "NADAWANIE NAZWY"
+Opisywane polecenia wywołane z jednym argumentem lub z opcją \fB\-\-file\fP
+ustawiają nazwę komputera lub nazwę domeny NIS/YP. \fBhostname\fP używa w tym
+celu funkcji \fBsethostname\fP(2) , podczas gdy pozostałe trzy polecenia, czyli
+\fBdomainname\fP, \fBypdomainname\fP oraz \fBnisdomainname\fP, używają
+\fBsetdomainname\fP(2). Proszę zauważyć, że zmieniona nazwa obowiązuje tylko do
+kolejnego restartu komputera. Stałą zmianę można uzyskać, edytując plik
+\fI/etc/hostname\fP.
+.LP
+Proszę zauważyć, że tylko administrator może zmienić te nazwy.
+.LP
+Przy pomocy polecenia \fBdnsdomainname\fP nie jest możliwe nadanie pełnej nazwy
+domenowej (FQDN) lub nazwy domeny DNS (zobacz \fBFQDN\fP poniżej).
+.LP
+Nazwa komputera jest zwykle nadawana jednorazowo podczas startu systemu w
+\fI/etc/init.d/hostname.sh\fP (zazwyczaj przez odczytanie zawartości pliku
+zawierającego nazwę komputera,  np. \fI/etc/hostname\fP).
+
+.SS "FQDN (pełna złożona nazwa domeny)"
+Opisywanym poleceniem nie można zmienić pełnej nazwy domeny (zwracanej przez
+\fBhostname \-\-fqdn\fP), ani nazwy domeny DNS (zwracanej przez
+\fBdnsdomainname\fP). Pełna nazwa domeny systemu jest nazwą, którą
+\fBresolver\fP(3) zwraca jako nazwę komputera.
+.LP
+Technicznie: pełna nazwa domeny jest nazwą, którą zwraca \fBgetaddrinfo\fP(3)
+dla nazwy zwracanej przez \fBgethostname\fP(2). Nazwa domeny DNS jest częścią
+nazwy występującą po pierwszej kropce.
+.LP
+Dlatego też od danej konfiguracji (zwykle określanej w \fI/etc/host.conf\fP)
+zależy, w jaki sposób można zmienić pełną nazwę domeny. Na ogół (jeśli plik
+nazw komputerów jest analizowany przed DNS lub NIS), można ją zmienić w
+pliku \fI/etc/hosts\fP.
+.LP
+Jeśli komputer ma wiele interfejsów lub adresów sieciowych albo jeśli jest
+używany w środowisku przenośnym, to może albo mieć kilka pełnych nazw
+domenowych, albo nie mieć żadnej. Dlatego prosimy unikać używania \fBhostname
+\-\-fqdn\fP, \fBhostname \-\-domain\fP i \fBdnsdomainname\fP. \fBhostname \-\-ip\-address\fP
+ma podobne ograniczenia, więc powinno się również unikać używania tej opcji.
+
+.SH OPCJE
+.TP 
+\fI\-a, \-\-alias\fP
+Wyświetla alternatywną nazwę komputera (alias), jeśli jest używana. Opcja
+jest przestarzała i nie powinna być używana.
+.TP 
+\fI\-A, \-\-all\-fqdns\fP
+Wyświetla wszystkie pełne nazwy domenowe (FQDN) maszyny. Ta opcja powoduje
+pobranie wszystkich adresów sieciowych ze wszystkich skonfigurowanych
+interfejsów sieciowych i przetłumaczenie ich na nazwy domenowe DNS. Adresy,
+których nie można przetłumaczyć (gdyż nie mają odpowiedniego odwrotnego
+wpisu w DNS\-ie), są pomijane. Proszę zauważyć, że różne adresy mogą się
+rozwijać do tej samej nazwy, tak więc na wyjściu mogą się pojawić
+zduplikowane wpisy. Prosimy nie robić żadnych założeń odnośnie do kolejności
+wpisów na wyjściu.
+.TP 
+\fI\-b, \-\-boot\fP
+Zawsze ustawia nazwę komputera. Plik podany w opcji \fI\-F\fP może nie istnieć
+lub być pusty \(em w takim wypadku zostanie użyta domyślna nazwa
+\fIlocalhost\fP, jeśli nazwa komputera nie jest jeszcze ustawiona.
+.TP 
+\fI\-d, \-\-domain\fP
+Wyświetla nazwę domeny DNS. Prosimy nie używać polecenia \fBdomainname\fP do
+pobrania nazwy domeny DNS, ponieważ wyświetla ono nazwę domeny NIS, a nie
+domeny DNS. Należy użyć \fBdnsdomainname\fP zamiast niego. Prosimy zapoznać się
+z ostrzeżeniami w rozdziale \fBFQDN\fP powyżej i unikać używania tej opcji.
+.TP 
+\fI\-f, \-\-fqdn, \-\-long\fP
+Wyświetla pełną nazwę domenową komputera (FQDN \- Fully Qualified Domain
+Name). Nazwa ta składa się z nazwy komputera i nazwy domeny DNS. O ile do
+przekształcania nazw na adresy nie jest używany serwer bind lub NIS, można w
+pliku \fI/etc/hosts\fP zmienić pełną nazwę domenową i nazwę domeny DNS (będącą
+częścią pełnej nazwy domenowej). Prosimy zapoznać się z ostrzeżeniami w
+rozdziale \fBFQDN (pełna złożona nazwa domeny)\fP powyżej i nie używać tej
+opcji, używając zamiast niej \fBhostname \-\-all\-fqdns\fP.
+.TP 
+\fI\-F, \-\-file filename\fP
+Czyta nazwę komputera z podanego pliku. Komentarze, czyli linie zaczynające
+się od znaku "#", są ignorowane.
+.TP 
+\fI\-i, \-\-ip\-address\fP
+Wyświetla adres sieciowy (lub adresy sieciowe) nazwy komputera. Prosimy
+zauważyć, że działa to tylko wtedy, gdy nazwa komputera może być
+przetłumaczona na adres. Prosimy unikać używania tej opcji i zamiast niej
+używać \fBhostname \-\-all\-ip\-addresses\fP.
+.TP 
+\fI\-I, \-\-all\-ip\-addresses\fP
+Wyświetla wszystkie adresy sieciowe komputera. Ta opcja powoduje pobranie
+wszystkich adresów sieciowych ze wszystkich skonfigurowanych interfejsów
+sieciowych. Adresy interfejsu zwrotnego (loopback) i adresy IPv6 mapowania
+lokalnych adresów IPv4 są pomijane. W przeciwieństwie do opcji \fI\-i\fP, ta
+opcja nie zależy od przekształceń adresów na nazwy. Prosimy nie robić
+żadnych założeń odnośnie do kolejności wpisów na wyjściu.
+.TP 
+\fI\-s, \-\-short\fP
+Wyświetla krótką nazwę komputera. Jest to nazwa komputera obcięta przed
+pierwszą kropką.
+.TP 
+\fI\-v, \-\-verbose\fP
+Jest gadatliwy i mówi, co się dzieje.
+.TP 
+\fI\-V, \-\-version\fP
+Drukuje informację o wersji na standardowym wyjściu i pomyślnie kończy
+pracę.
+.TP 
+\fI\-y, \-\-yp, \-\-nis\fP
+Wyświetla nazwę domeny NIS. Jeżeli podano parametr (lub opcję \fB\-\-file\fP
+\fInazwa\fP) to administrator może też nadać nową nazwę domenie NIS.
+.TP 
+\fI\-h, \-\-help\fP
+Wyświetla komunikat pomocy i kończy działanie.
+.SH UWAGI
+Rodziny adresów, które \fBhostname\fP przegląda podczas wyszukiwania pełnej
+nazwy domenowej, aliasy i adresy sieciowe komputera są określane przez
+konfigurację programu rozpoznawania nazw (resolver). Na przykład w systemach
+używających biblioteki GNU libc, program rozpoznawania nazw można
+skonfigurować (używając opcji \fBinet6\fP w pliku \fB/etc/resolv.conf\fP) w taki
+sposób, żeby najpierw próbował wyszukiwać adresy IPv6.
+.SH PLIKI
+\fB/etc/hosts\fP
+
+\fB/etc/hostname\fP Historycznie ten plik miał zawierać tylko nazwę komputera
+bez pełnej nazwy domenowej (FQDN). Obecnie większość programów obsługuje
+pełne nazwy domenowe w tym pliku.
+.SH AUTORZY
+Peter Tobias, <tobias@et\-inf.fho\-emden.de>
+.br
+Bernd Eckenfels, <net\-tools@lina.inka.de> (NIS i strona
+podręcznika).
+.br
+Michael Meskes, <meskes@debian.org>
+.br
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Wojtek Kotwica (PTM) <wkotwica@post.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.11 \fPoryginału.

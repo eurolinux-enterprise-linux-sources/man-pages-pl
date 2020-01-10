@@ -1,0 +1,138 @@
+.\" t
+.\" Copyright (c) Michael Haardt (michael@cantor.informatik.rwth-aachen.de),
+.\"     Sun Jan 15 19:16:33 1995
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" Modified, Sun Feb 26 15:02:58 1995, faith@cs.unc.edu
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1995 Michael Haardt (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Piotr Pogorzelski (PTM) <piotr.pogorzelski@ippt.gov.pl>, 1996.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH LP 4 15\-01\-1995 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+lp \- urządzenia drukarek wierszowych
+.SH SKŁADNIA
+\fB#include <linux/lp.h>\fP
+.SH KONFIGURACJA
+Pliki \fBlp\fP[0\(en2] są urządzeniami znakowymi obsługującymi drukarki
+dołączone do portów równoległych; numer główny tych urządzeń jest równy 6,
+numer podrzędny 0\(en2. Numery podrzędne odpowiadają adresom bazowym portu
+drukarki: 0x03bc, 0x0378 i 0x0278. Zwykle prawa dostępu do plików tych
+urządzeń wynoszą 220, a ich właścicielem jest użytkownik root i grupa
+lp. Porty drukarki mogą być obsługiwane zarówno przy wykorzystaniu
+próbkowania, jak i przerwań. Stosowanie przerwań jest zalecane, gdy
+spodziewamy się dużego ruchu, np. wynikającego z używania drukarki
+laserowej. W przypadku zwykłych drukarek mozaikowych wystarczające jest
+próbkowanie. Domyślnym trybem obsługi portu jest próbkowanie.
+.SH OPIS
+Obsługiwane są następujące wywołania funkcji \fBioctl\fP(2):
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPTIME, int \fP\fIarg\fP\fB)\fP"
+Ustawia okres, przez jaki sterownik jest uśpiony, zanim powtórnie sprawdzi
+stan drukarki w sytuacji, gdy bufor drukarki zdaje się być wypełnionym do
+\fIarg\fP. Jeśli drukarka jest szybka, można zmniejszyć ten parametr.  Jeśli
+drukarka jest wolna, należy zwiększyć ten parametr. Jest to liczba
+określająca czas w setnych częściach sekundy, wartość domyślna wynosi 2, co
+oznacza 0,02 sekundy. Parametr ten wpływa jedynie na tryb próbkowania.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPCHAR, int \fP\fIarg\fP\fB)\fP"
+Ustawia na \fIargv\fP maksymalną liczbę iteracji aktywnego oczekiwania
+(busy\-wait), jakie wykonuje sterownik próbkujący czekając, aż drukarka
+będzie gotowa na otrzymywanie znaków. Jeśli drukowanie odbywa się zbyt wolno
+należy zwiększyć tę liczbę; jeśli system za bardzo zwalnia \(em należy ją
+zmniejszyć. Domyślną wartością tego parametru jest 1000. Parametr ma wpływ
+na sterownik jedynie w trybie próbkowania.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPABORT, int \fP\fIarg\fP\fB)\fP"
+Jeśli parametr \fIarg\fP jest równy 0, wtedy sterownik drukarki będzie
+powtarzał operację po wystąpieniu błędu; w przeciwnym wypadku przerwie
+działanie. Standardową wartością tego parametru jest 0.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPABORTOPEN, int \fP\fIarg\fP\fB)\fP"
+Jeśli \fIarg\fP jest równy 0, funkcja \fBopen\fP(2) zostanie przerwana po
+wystąpieniu błędu; w przeciwnym wypadku błąd zostanie
+zignorowany. Standardowe zachowanie polega na ignorowaniu błędów.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPCAREFUL, int \fP\fIarg\fP\fB)\fP"
+Jeśli \fIarg\fP jest równy 0, wtedy wymaga się, aby sygnały "out\-of\-paper",
+"offline" oraz sygnały błędów były puste (false) we wszystkich operacjach
+zapisu, w przeciwnym wypadku są ignorowane. Domyślnie są ignorowane.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPWAIT, int \fP\fIarg\fP\fB)\fP"
+Ustawia na \fIarg\fP liczbę iteracji aktywnego oczekiwania (busy\-wait) przed
+spróbkowaniem, czy drukarka zaakceptowała właśnie zapisany znak, oraz liczbę
+iteracji, które należy przeczekać przed kolejnym próbkowaniem. Specyfikacje
+określają ten czas jako 0.5 mikrosekundy, lecz doświadczenie wykazało, że
+opóźnienie spowodowane wykonaniem kodu jest już wystarczające. Z tego powodu
+wartością domyślną dla tego ustawienia jest 0. Jest ono wykorzystywane w
+sterowniku zarówno w trybie próbkowania, jak i w trybie przerwań.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPSETIRQ, int \fP\fIarg\fP\fB)\fP"
+To wywołanie funkcji \fBioctl\fP(2) wymaga uprawnień administratora. Funkcja
+pobiera argument typu \fIint\fP zawierający nowe przerwanie IRQ. Skutkiem
+ubocznym jest inicjacja drukarki. Gdy \fIarg\fP jest zerem, to stosowany będzie
+sterownik z próbkowaniem; jest to równocześnie zachowanie domyślne.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPGETIRQ, int *\fP\fIarg\fP\fB)\fP"
+Zachowuje w parametrze \fIarg\fP aktualnie stosowane przerwanie IRQ.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPGETSTATUS, int *\fP\fIarg\fP\fB)\fP"
+Zachowuje wartość stanu portu w zmiennej \fIarg\fP.  Poszczególne bity mają
+następujące znaczenie:
+.TS
+l l.
+LP_PBUSY	odwrócony sygnał zajętości,
+	aktywny w stanie wysokim
+LP_PACK	niezmienione potwierdzenie wejścia,
+	aktywny w stanie niskim
+LP_POUTPA	niezmieniony sygnał braku papieru,
+	aktywny w stanie wysokim
+LP_PSELECD	niezmieniony sygnał wyboru,
+	aktywny w stanie wysokim
+LP_PERRORP	niezmieniony sygnał błędu,
+	aktywny w stanie niskim
+.TE
+.sp
+Znaczenia sygnałów należy szukać w dokumentacji drukarki. Należy pamiętać,
+że dla niektórych drukarek ustawiane mogą być też nieudokumentowane tu bity.
+.IP "\fBint ioctl(int \fP\fIfd\fP\fB, LPRESET)\fP"
+Inicjuje drukarkę. Nie stosuje się żadnych parametrów.
+.SH PLIKI
+.\" .SH AUTHORS
+.\" The printer driver was originally written by Jim Weigand and Linus
+.\" Torvalds.
+.\" It was further improved by Michael K.\& Johnson.
+.\" The interrupt code was written by Nigel Gamble.
+.\" Alan Cox modularized it.
+.\" LPCAREFUL, LPABORT, LPGETSTATUS were added by Chris Metcalf.
+/dev/lp*
+.SH "ZOBACZ TAKŻE"
+\fBchmod\fP(1), \fBchown\fP(1), \fBmknod\fP(1), \fBlpcntl\fP(8), \fBtunelp\fP(8)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Piotr Pogorzelski (PTM) <piotr.pogorzelski@ippt.gov.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

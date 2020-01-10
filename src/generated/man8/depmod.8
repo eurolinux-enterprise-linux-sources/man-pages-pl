@@ -1,0 +1,194 @@
+.\" t
+.\"     Title: depmod
+.\"    Author: Jon Masters <jcm@jonmasters.org>
+.\" Generator: DocBook XSL Stylesheets v1.77.0 <http://docbook.sf.net/>
+.\"      Date: 06/19/2012
+.\"    Manual: depmod
+.\"    Source: kmod
+.\"  Language: English
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2011 ProFUSION embedded systems (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>, 2001.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH DEPMOD 8 06/19/2012 kmod depmod
+.ie  \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH NAZWA
+depmod \- tworzy modules.dep i pliki map.
+.SH SKŁADNIA
+.HP \w'\fBdepmod\fR\ 'u
+\fBdepmod\fP [\fB\-b\ \fP\fIkatalog\-bazowy\fP] [\fB\-e\fP] [\fB\-E\ \fP\fIModule\&.symvers\fP]
+[\fB\-F\ \fP\fISystem\&.map\fP] [\fB\-n\fP] [\fB\-v\fP] [\fB\-A\fP] [\fB\-P\ \fP\fIprefiks\fP] [\fB\-w\fP]
+[\fIwersja\fP]
+.HP \w'\fBdepmod\fR\ 'u
+\fBdepmod\fP [\fB\-e\fP] [\fB\-E\ \fP\fIModule\&.symvers\fP] [\fB\-F\ \fP\fISystem\&.map\fP]
+[\fB\-m\fP] [\fB\-n\fP] [\fB\-v\fP] [\fB\-P\ \fP\fIprzedrostek\fP] [\fB\-w\fP] [\fIwersja\fP]
+[\fInazwa\-pliku\fP...]
+.SH OPIS
+.PP
+Moduły jądra Linux mogą udostępniać usługi (zwane "symbolami") do użycia
+przez inne moduły (używając jednego z wariantów EXPORT_SYMBOL w
+kodzie). Jeśli drugi moduł używa tego symbolu, w sposób oczywisty jest
+zależny od pierwszego modułu. Takie zależności mogą stać się dość złożone.
+.PP
+
+\fBdepmod\fP tworzy listę zależności modułów, odczytując każdy moduł z katalogu
+/lib/modules/\fIwersja\fP i określając jakie symbole on eksportuje i jakich
+symboli potrzebuje. Domyślnie, ta lista jest zapisywana do plików
+modules.dep oraz (w zahaszowanej postaci binarnej) do pliku modules.dep.bin,
+w tym samym katalogu. Jeśli w wierszu polecenia podano nazwy plików,
+sprawdzane są tylko te moduły (co rzadko kiedy jest przydatne, chyba że
+podane są wszystkie moduły). \fBdepmod\fP tworzy również listę symboli
+udostępnianych przez moduły w pliku modules.symbols i jego zahaszowanej
+postaci binarnej \- modules.symbols.bin. \fBdepmod\fP wypisuje również plik
+modules.devname, jeśli moduły udostępniają nazwy specjalnych urządzeń
+(devname), które powinny być tworzone w /dev przy uruchamianiu systemu
+(przez narzędzia takie jak udev).
+.PP
+Jeśli dostarczona jest \fIwersja\fP, to użyty jest katalog modułów wersji
+jądra, zamiast bieżącej wersji jądra (zwróconej przez \fBuname \-r\fP).
+.SH OPCJE
+.PP
+\fB\-a\fP \fB\-\-all\fP
+.RS 4
+Bada wszystkie moduły. Opcja jest domyślna, jeśli nie podano nazw plików w
+wierszu polecenia.
+.RE
+.PP
+\fB\-A\fP \fB\-\-quick\fP
+.RS 4
+Skanuje w celu sprawdzenia czy nie istnieją moduły nowsze niż w pliku
+modules.dep przed wykonaniem swej pracy, jeśli ich nie znajdzie, to po cichu
+wychodzi zamiast ponownie tworzyć pliki.
+.RE
+.PP
+\fB\-b \fP\fIkatalog\-bazowy\fP \fB\-\-basedir \fP\fIkatalog\-bazowy\fP
+.RS 4
+Jeśli dany moduł nie znajduje się obecnie w (zwykłym) katalogu
+/lib/modules/\fIwersja\fP, tylko w obszarze staging, można określić
+\fIkatalog\-bazowy\fP który poprzedza nazwę katalogu. \fIKatalog\-bazowy\fP jest
+wycinany z wynikowego pliku modules.dep, więc jest on gotowy do
+przeniesienia do zwykłej lokalizacji. Opcja jest przeznaczona dla dostawców
+dystrybucji, którzy chcą wstępnie wygenerować pliki metadanych zamiast
+ponownie wywoływać depmod później.
+.RE
+.PP
+\fB\-C\fP \fB\-\-config \fP\fIplik lub katalog\fP
+.RS 4
+Opcja przesłania domyślny katalog konfiguracyjny \- /etc/depmod.d/.
+.RE
+.PP
+\fB\-e\fP \fB\-\-errsyms\fP
+.RS 4
+W połączeniu z opcją \fB\-F\fP, wypisywane są symbole wymagane przez moduł,
+które nie są udostępniane przez inne moduły lub jądro. Przyjmuje się zwykle,
+że symbole nieudostępniane przez moduły są zapewniane przez jądro (co
+powinno być prawdą w idealnym świecie), ale to założenie może nie być
+prawdziwe, szczególnie gdy dodatkowo zaktualizowane sterowniki zewnętrzne
+nie są poprawnie zainstalowane lub zostały nieprawidłowo zbudowane.
+.RE
+.PP
+\fB\-E\fP \fB\-\-symvers\fP
+.RS 4
+W połączeniu z opcją \fB\-e\fP wypisywane są wersje symboli udostępnianych przez
+moduły, które nie pasują do wersji symboli udostępnianych przez jądro w
+Module.symvers. Opcja nie może być łączona z \fB\-F\fP.
+.RE
+.PP
+\fB\-F\fP \fB\-\-filesyms \fP\fISystem\&.map\fP
+.RS 4
+Z podaniem pliku System.map utworzonego przy budowaniu jądra, ta opcja
+pozwala opcji \fB\-e\fP wypisać nierozwiązane symbole. Opcja nie może być
+łączona z \fB\-E\fP.
+.RE
+.PP
+\fB\-h\fP \fB\-\-help\fP
+.RS 4
+Wyświetla ten tekst i kończy pracę.
+.RE
+.PP
+\fB\-n\fP \fB\-\-dry\-run\fP
+.RS 4
+Wypisuje wynikowy modules.dep i różne pliki map na standardowe wyjście,
+zamiast zapisywać je do katalogu modułów.
+.RE
+.PP
+\fB\-P\fP
+.RS 4
+Część architektur poprzedza symbole egzotycznym znakiem. Przy użyciu tej
+opcji może podać ten przedrostek (np. "_") w celu zignorowania go.
+.RE
+.PP
+\fB\-v\fP \fB\-\-verbose\fP
+.RS 4
+W trybie szczegółowym, \fBdepmod\fP wypisze (na standardowe wyjście) wszystkie
+symbole, od których zależy każdy moduł oraz nazwę pliku modułu, który go
+udostępnia.
+.RE
+.PP
+\fB\-V\fP \fB\-\-version\fP
+.RS 4
+Wyświetla informacje o wersji i kończy działanie. Wypisanie ostrzeżeń przy
+działaniu na starszym jądrze umożliwia poniższa opcja.
+.RE
+.PP
+\fB\-w\fP
+.RS 4
+Ostrzega o zdublowanych zależnościach, aliasach, wersjach symboli itp.
+.RE
+.SH PRAWA\ AUTORSKIE
+.PP
+Pierwotnie: Copyright 2002, Rusty Russell, IBM Corporation\&. Częściowo: Jon
+Masters i inni\&.
+.SH "ZOBACZ TAKŻE"
+.PP
+
+\fBdepmod.d\fP(5), \fBmodprobe\fP(8), \fBmodules.dep\fP(5)
+.SH AUTORZY
+.PP
+\fBJon Masters\fP <\&jcm@jonmasters\&.org\&>
+.RS 4
+Deweloper
+.RE
+.PP
+\fBRobby Workman\fP <\&rworkman@slackware\&.com\&>
+.RS 4
+Deweloper
+.RE
+.PP
+\fBLucas De Marchi\fP <\&lucas\&.demarchi@profusion\&.mobi\&>
+.RS 4
+Deweloper
+.RE
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 9 \fPoryginału.

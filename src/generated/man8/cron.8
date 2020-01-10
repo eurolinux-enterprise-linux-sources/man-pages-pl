@@ -1,0 +1,262 @@
+.\"/* Copyright 1988,1990,1993 by Paul Vixie
+.\" * All rights reserved
+.\" *
+.\" * Distribute freely, except: don't remove my name from the source or
+.\" * documentation (don't take credit for my work), mark your changes (don't
+.\" * get me blamed for your possible bugs), don't alter or remove this
+.\" * notice.  May be sold if buildable source is provided to buyer.  No
+.\" * warrantee of any kind, express or implied, is included with this
+.\" * software; use at your own risk, responsibility for damages (if any) to
+.\" * anyone resulting from the use of this software rests entirely with the
+.\" * user.
+.\" *
+.\" * Send bug reports, bug fixes, enhancements, requests, flames, etc., and
+.\" * I'll try to keep a version up to date.  I can be reached as follows:
+.\" * Paul Vixie          <paul@vix.com>          uunet!decwrl!vixie!paul
+.\" */
+.\" $Id: cron.8,v 2.2 1993/12/28 08:34:43 vixie Exp $
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1988,1990,1993,1994, Paul Vixie, 1994 Ian Jackson, 1996-2005 Steve Greenland, 2005-2006, 2008-2010 Javier Fernández-Sanguino Peña, 2010-2011 Christian Kastner, et al 
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1998, 1999.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH CRON 8 "19 kwietnia 2010"  
+.UC 4
+.SH NAZWA
+cron \- demon do wywoływania odłożonych poleceń (Vixie Cron)
+.SH SKŁADNIA
+cron [\fB\-f\fP] [\fB\-l\fP] [\fB\-L\fP \fIpoziom\-komunikatów\fP]
+.SH OPIS
+\fBcron\fP jest uruchamiany automatycznie z /etc/init.d, przy wchodzeniu w
+poziom pracy wielu użytkowników.
+.SH OPCJE
+.TP  8
+\fB\-f\fP
+Pozostaje w trybie pierwszoplanowym, nie staje się demonem.
+.TP 
+\fB\-l\fP
+Włącza zgodność nazw plików w katalogu /etc/cron.d z LSB. To ustawienie nie
+wpływa jednak na przetwarzanie plików w katalogach /etc/cron.hourly,
+/etc/cron.daily, /etc/cron.weekly lub /etc/cron.monthly.
+.TP 
+\fB\-L\fP \fIpoziom\-komunikatów\fP
+Wybiera, jakie informacje o \ \fIzadaniach\fP mają być zapisywane do dziennika
+(błędy są logowane niezależnie od tej wartości). Jest to suma poniższych
+wartości:
+.br
+.RS 12
+.IP \fB1\fP
+zapisuje uruchomienie wszystkich zadań crona
+.IP \fB2\fP
+zapisuje koniec wszystkich zadań crona
+.IP \fB4\fP
+zapisuje wszystkie zadania zakończone niepowodzeniem (kod zakończenia różny
+od 0)
+.IP \fB8\fP
+zapisuje numer procesu wszystkich zadań crona
+.RE
+.IP
+Domyślnie zapisywane jest uruchomienie wszystkich zadań (1). Logowanie jest
+wyłączane, jeśli \fIpoziom\-komunikatów\fP jest ustawiony na zero (0). Wartość
+równa piętnaście (15) wybierze wszystkie opcje.
+.SH UWAGI
+.PP
+\fBcron\fP przeszukuje swój katalog spool (/var/spool/cron/crontabs) w
+poszukiwaniu plików crontab (które są nazwane zgodnie z kontami w
+/etc/passwd); odnalezione pliki są następnie ładowane do pamięci. Proszę
+zauważyć, że pliki crontab w tym katalogu nie powinny być osiągane
+bezpośrednio \- do ich aktualizacji i dostępu powinno być używane polecenie
+\fBcrontab\fP.
+
+\fBcron\fP odczytuje również /etc/crontab, które posiada nieco inny format
+(patrz \fBcrontab(5)\fP). W Debianie, zawartość /etc/crontab jest
+predefiniowana do uruchamiania programów w katalogach /etc/cron.hourly,
+/etc/cron.daily, /etc/cron.weekly i /etc/cron.monthly. Konfiguracja ta jest
+charakterystyczna dla Debiana, proszę zapoznać się z opisem w poniższym
+rozdziale \fBZMIANY ODNOSZĄCE SIĘ DO DEBIANA\fP.
+
+Dodatkowo, w Debianie, \fBcron\fP odczytuje pliki w katalogu
+/etc/cron.d. \fBcron\fP traktuje pliki w /etc/cron.d w ten sam sposób, jak w
+pliku /etc/crontab (przestrzegają one specjalnego formatu tego pliku,
+np. zawierają pole \fIuser\fP). Są one jednak niezależne od /etc/crontab: nie
+dziedziczą np. ustawień zmiennych środowiskowych z wspomnianego
+pliku. Zmiana ta jest charakterystyczna dla Debiana \- patrz \fBZMIANY
+ODNOSZĄCE SIĘ DO DEBIANA\fP.
+
+Podobnie jak /etc/crontab, pliki w katalogu /etc/cron.d są monitorowane w
+poszukiwaniu zmian. Ogólnie, administrator systemu nie powinien używać
+/etc/cron.d/, lecz standardowego pliku /etc/crontab.
+
+Plik /etc/crontab i pliki w /etc/cron.d muszą był własnością roota i nie
+mogą być zapisywalne dla grupy lub innych. W odróżnieniu od katalogu spool,
+pliki w katalogach /etc/cron.d oraz /etc/cron.hourly, /etc/cron.daily,
+/etc/cron.weekly i /etc/cron.monthly mogą być również dowiązaniami
+symbolicznymi pod warunkiem, że zarówno samo dowiązanie jak i plik na który
+ono wskazuje, są własnością roota. Pliki w katalogu /etc/cron.d nie muszą
+być wykonywalne, natomiast pliki w katalogach /etc/cron.hourly,
+/etc/cron.daily, /etc/cron.weekly i /etc/cron.monthly \- muszą, ponieważ są
+uruchamiane przez \fBrun\-parts\fP (patrz podręcznik \fBrun\-parts(8)\fP).
+
+Program \fBcron\fP budzi się co minutę, sprawdzając wszystkie pliki crontab i
+sprawdzając, czy poszczególne polecenia nie muszą być wykonane w bieżącej
+minucie. Po wykonaniu poleceń, ich ewentualne wyjście jest wysyłane pocztą
+do właściciela pliku crontab (lub do użytkownika ze zmiennej środowiskowej
+MAILTO z pliku crontab, jeśli taka istnieje). Kopie potomne crona, które
+wykonują te procesy, mają ich nazwy zapisane wielkimi literami, jak to widać
+w wyniku poleceń syslog i ps.
+.PP
+Dodatkowo, \fBcron\fP sprawdza co minutę, czy czas modyfikacji swojego katalogu
+spool (lub pliku \fI/etc/crontab\fP) nie zmienił się, a jeśli tak się stało, to
+\fBcron\fP sprawdza czasy modyfikacji wszystkich plików crontab i przeładowuje
+te z nich, które się zmieniły. Z tego powodu \fBcron\fP nie musi być
+restartowany po modyfikacji plików crontab. Proszę zauważyć, że polecenie
+\fBcrontab\fP(1) aktualizuje czas modyfikacji katalogu spool, niezależnie od
+tego, czy zmodyfikował plik crontab.
+.PP
+Specjalnym przypadkiem jest, gdy czas zmieni się o mniej niż 3 godziny,
+np. na początku lub końcu obowiązywania czasu letniego. Jeśli czas przesuwa
+się do przodu, to zadania, które byłyby uruchomione w czasie, który został
+przesunięty, są uruchamiane zaraz po wystąpieniu zmiany. I na odwrót \- jeśli
+czas przesunie się do tyłu o mniej niż 3 godziny, to zadania, które
+przypadają w powtórzonym czasie, nie będą uruchamiane ponownie.
+.PP
+Tyczy się to wyłącznie zadań wykonywanych w określonym czasie (niepodanych
+jako @hourly, ani nie używających "*" jako określenia godziny lub
+minuty). Zadania, które są podawane z wieloznacznikiem, są uruchamiane od
+razu na podstawie nowego czasu.
+.PP
+Zmiany zegara o więcej niż 3 godziny, są uważane za poprawki zegara i od
+razu używany jest nowy czas.
+.PP
+Program \fBcron\fP zapisuje swoje działania do właściwości "cron" sysloga, a
+logowanie może być kontrolowane przy użyciu standardowej właściwości
+\fBsyslogd(8)\fP.
+.SH ŚRODOWISKO
+Jeśli zmienne środowiskowe lokalizacji (regionalne) w systemie Debian, w
+katalogu \fI/etc/default/cron\fP, zostaną skonfigurowane, to można nimi
+zarządzać używając \fI/etc/environment\fP albo za pomocą
+\fI/etc/default/locale\fP, przy czym wartości z drugiego pliku przesłaniają te
+z pierwszego. Pliki te są odczytywane i są używane do ustawienia zmiennych
+środowiskowych LANG, LC_ALL i LC_CTYPE. Zmienne te są używane do ustawienia
+kodowania poczty elektronicznej, przy czym domyślnie wynosi ono "C".
+.PP
+\fBNIE\fP wpływa to na środowisko zadań uruchamianych przez cron. Więcej
+informacji o modyfikowaniu środowiska zadań zawiera strona podręcznika
+\fBcrontab(5)\fP.
+.
+.PP
+Demon będzie używał, jeśli jest obecna, definicji strefy czasowej z pliku
+\fI/etc/timezone\fP.
+.PP
+Środowisko może zostać przefediniowane przez definicje z plików crontab
+użytkownika, lecz \fBcron\fP obsługuje wykonywanie zadań jedynie w pojedynczej
+strefie czasowej.
+
+.SH "ZMIANY ODNOSZĄCE SIĘ DO DEBIANA"
+.PP
+Debian wprowadził pewne zmiany do \fBcron\fPa, które nie były dostępne w
+oryginale. Najważniejsze zmiany to:
+
+.IP \(em
+obsługa /etc/cron.{hourly,daily,weekly,monthly} poprzez /etc/crontab,
+.IP \(em
+obsługa /etc/cron.d (katalog do umieszczania plików crontab pakietów),
+.IP \(em
+obsługa PAM,
+.IP \(em
+obsługa SELinux,
+.IP \(em
+obsługa auditlog,
+.IP \(em
+obsługa DST (czasu letniego) i inne zmiany/poprawki w stosunku do czasu,
+.IP \(em
+SGID crontab(1) zamiast SUID root,
+.IP \(em
+debianowe położenia plików i polecenia,
+.IP \(em
+debianowa konfiguracja (/etc/default/cron),
+.IP \(em
+wiele innych mniejszych funkcji i poprawek.
+
+.PP
+Obsługa /etc/cron.hourly, /etc/cron.daily, /etc/cron.weekly i
+/etc/cron.monthly w Debianie jest zapewniona przez domyślne ustawienia w
+pliku /etc/crontab (patrz systemowy przykład w \fBcrontab(5)\fP). Domyślny,
+ogólnosystemowy plik crontab zawiera cztery zadania, uruchamiane:
+cogodzinnie, codziennie, cotygodniowo i comiesięcznie. Każde z tych zadań
+wykona \fBrun\-parts\fP, podając każdy z tych katalogów jako argument. Zadania
+są wyłączane, jeśli zainstalowany jest \fBanacron\fP (z wyjątkiem zadań
+cogodzinnych) aby zapobiec konfliktom pomiędzy oboma demonami.
+
+Jak opisano powyżej, pliki w tych katalogach muszą spełniać kilka warunków,
+w tym następujące: bycie wykonywalnym, bycie własnością roota, nie mogą być
+zapisywalne dla grupy lub innych i, jeśli są dowiązaniami symbolicznymi,
+muszą wskazywać na pliki będące własnością roota. Dodatkowo, nazwy plików
+muszą spełniać warunki nazw plików programu \fBrun\-parts\fP: muszą składać się
+wyłącznie z liter, cyfr i znaków podkreślenia ("_") oraz minusa ("\-"). Każdy
+plik, który nie spełni powyższych wymagań, nie będzie wykonany przez
+\fBrun\-parts\fP. Na przykład wszystkie pliki zawierające kropkę, zostaną
+zignorowane. Celem takiej konfiguracji jest zapobiegnięcie wykonywania przez
+crona plików, które zostały pozostawione przez debianowy system zarządzania
+pakietami, podczas obsługi plików w /etc/cron.d/, jako plików
+konfiguracyjnych (chodzi tu o pliki kończące się na .dpkg\-dist, .dpkg\-orig i
+\&.dpkg\-new).
+
+Funkcja ta może zostać użyta przez administratorów systemu i pakiety, do
+zdefiniowania zadań, które mają być uruchamiane w zdefiniowanych
+interwałach. Pliki tworzone przez pakiety w tych katalogach, powinny być
+nazywane tak samo, jak dostarczający je pakiet.
+
+.PP
+Obsługa /etc/cron.d jest dołączona do samego demona \fBcron\fP, który obsługuje
+ich położenie za pomocą ogólnosystemowego spool crontab. Katalog ten może
+zawierać każdy plik definiujący zadania, przestrzegający formatu z
+/etc/crontab \- w przeciwieństwie do katalogu spool crona, pliki te muszą
+zawierać nazwę użytkownika, aby uruchamiać zadania jako definicje zadań.
+
+Pliki w tym katalogu muszą być własnością roota, lecz nie muszą być
+wykonywalne (są to pliki konfiguracyjne, jak /etc/crontab) i muszą
+przestrzegać tej samej konwencji nazw, jaka jest używana przez
+\fBrun\-parts(8)\fP: muszą składać się wyłącznie z wielkich i małych liter,
+cyfr, podkreślników i minusów. Oznacza to, że \fBnie mogą\fP zawierać
+kropek. Jeśli użyto opcji \fB\-l\fP (opcja ta może zostać skonfigurowana za
+pomocą /etc/default/cron \- patrz niżej), to nazwy plików muszą być zgodne z
+specyfikacją przestrzeni nazw LSB, identycznie jak opcja \fB\-\-lsbsysinit\fP w
+\fBrun\-parts\fP.
+
+Przeznaczeniem tej funkcji było umożliwienie pakietom, wymagającym
+dokładniejszej kontroli harmonogramu niż
+/etc/cron.{hourly,daily,weekly,monthly}, dodawania swoich plików crontab do
+/etc/cron.d. Pliki te powinny być nazwane tak samo, jak udostępniający je
+pakiet.
+
+
+Domyślna konfiguracja \fBcron\fPa jest kontrolowana przez plik
+\fI/etc/default/cron\fP, który jest odczytywany przez skrypt init.d,
+uruchamiający demona \fBcron\fP. Plik ten określa, czy \fBcron\fP będzie czytał
+systemowe zmienne środowiskowe oraz umożliwia dodawanie dodatkowych opcji do
+programu \fBcron\fP, przed jego wykonaniem \- umożliwiając konfigurację
+zapisywanego dziennika lub definiowanie sposobu traktowania plików w
+katalogu /etc/cron.d.
+
+.SH "ZOBACZ TAKŻE"
+crontab(1), crontab(5), run\-parts(8)
+.SH AUTOR
+Paul Vixie <paul@vix.com> jest autorem \fBcron\fPa i pierwotnym twórcą
+tej strony podręcznika systemowego. Niniejsza strona została również
+zmodyfikowana do Debiana przez Steve'a Greenlanda, Javiera
+Fernandez\-Sanguino i Christiana Kastnera.
+
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.0pl1 \fPoryginału.

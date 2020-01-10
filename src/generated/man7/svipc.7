@@ -1,0 +1,284 @@
+.\" Copyright 1993 Giorgio Ciucci (giorgio@crcc.it)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" FIXME There is now duplication of some of the information
+.\" below in semctl.2, msgctl.2, and shmctl.2 -- MTK, Nov 04
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993 Giorgio Ciucci 
+.\" Copyright © of Polish translation:
+.\" Piotr Pogorzelski (PTM) <piotr.pogorzelski@ippt.gov.pl>, 1996.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH SVIPC 7 2009\-01\-26 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+svipc \- Mechanizmy komunikacji między procesami w Systemie V
+.SH SKŁADNIA
+.nf
+\fB#include <sys/types.h>\fP
+\fB#include <sys/ipc.h>\fP
+\fB#include <sys/msg.h>\fP
+\fB#include <sys/sem.h>\fP
+\fB#include <sys/shm.h>\fP
+.fi
+.SH OPIS
+Niniejsza dokumentacja stara się opisać implementację w systemie Linux
+mechanizmów komunikacji między procesami (IPC) Systemu V: kolejek
+komunikatów, semaforów oraz segmentów pamięci wspólnej. Dalej w tekście
+słowo \fIzasób\fP oznacza egzemplarz/realizację jednego z tych mechanizmów.
+.SS "Prawa dostępu do zasobów"
+W przypadku każdego zasobu system korzysta z ogólnej struktury typu \fIstruct
+ipc_perm\fP, w której przechowuje informacje niezbędne do określenia uprawnień
+do wykonania operacji IPC. Struktura \fIipc_perm\fP zdefiniowana w systemowym
+pliku nagłówkowym \fI<sys/ipc.h>\fP składa się z następujących pól:
+.in +4n
+.nf
+
+struct ipc_perm {
+    uid_t          cuid;   /* ID użytkownika \- twórcy */
+    gid_t          cgid;   /* ID grupy twórcy */
+    uid_t          uid;    /* ID użytkownika właściciela */
+    gid_t          gid;    /* ID grupy właściciela */
+    unsigned short mode;   /* prawa dostępu do odczytu i zapisu */
+};
+.fi
+.in
+.PP
+Pole \fImode\fP struktury \fIipc_perm\fP w swoich najniższych dziewięciu bitach
+przechowuje informacje o prawach dostępu do zasobu dla procesu wywołującego
+funkcję systemową metod IPC. Uprawnienia są interpretowane w sposób
+następujący:
+.sp
+.nf
+    0400    Prawo do odczytu przez użytkownika.
+    0200    Prawo do zapisu przez użytkownika.
+.sp .5
+    0040    Prawo do odczytu przez grupę.
+    0020    Prawo do zapisu przez grupę.
+.sp .5
+    0004    Prawo do odczytu przez innych.
+    0002    Prawo do zapisu przez innych.
+.fi
+.PP
+Bity 0100, 0010 i 0001 (bity praw do uruchamiania) nie są przez system
+wykorzystywane. Co więcej, w przypadku zestawu semaforów "zapisz" efektywnie
+oznacza "zmień".
+.PP
+W tym samym systemowym pliku nagłówkowym zawarta jest definicja stałych
+symbolicznych:
+.TP  14
+\fBIPC_CREAT\fP
+Utworzenie pozycji, gdy klucz nie istnieje.
+.TP 
+\fBIPC_EXCL\fP
+Błąd, gdy klucz istnieje.
+.TP 
+\fBIPC_NOWAIT\fP
+Błąd, gdy żądanie musi czekać.
+.TP 
+\fBIPC_PRIVATE\fP
+Klucz prywatny.
+.TP 
+\fBIPC_RMID\fP
+Usunięcie zasobu.
+.TP 
+\fBIPC_SET\fP
+Ustawienie opcji zasobu.
+.TP 
+\fBIPC_STAT\fP
+Odczytanie opcji zasobu.
+.PP
+Proszę zauważyć, że \fBIPC_PRIVATE\fP jest typu \fIkey_t\fP, podczas gdy pozostałe
+stałe są polami znacznikowymi, które mogą być sumowane bitowo (OR) do jednej
+zmiennej typu \fIint\fP.
+.SS "Kolejki komunikatów"
+Kolejka komunikatów jest w sposób jednoznaczny identyfikowana przez dodatnią
+liczbę całkowitą (jej \fImsqid\fP) oraz posiada skojarzoną strukturę typu
+\fIstruct msqid_ds\fP, która jest zdefiniowana w pliku \fI<sys/msg.h>\fP i
+składa się z następujących pól:
+.in +4n
+.nf
+
+struct msqid_ds {
+    struct ipc_perm msg_perm;
+    msgqnum_t       msg_qnum;    /* liczba komunikatów w kolejce */
+    msglen_t        msg_qbytes;  /* maksymalna liczba bajtów w kolejce  */
+    pid_t           msg_lspid;   /* PID ostatniego wywołania msgsnd(2)  */
+    pid_t           msg_lrpid;   /* PID ostatniego wywołania msgrcv(2)  */
+    time_t          msg_stime;   /* czas ostatniego wywołania msgsnd(2) */
+    time_t          msg_rtime;   /* czas ostatniego wywołania msgrcv(2) */
+    time_t          msg_ctime;   /* czas ostatniej zmiany */
+};
+.fi
+.in
+.TP  11
+\fImsg_perm\fP
+Struktura \fIipc_perm\fP, która określa prawa dostępu do kolejki komunikatów.
+.TP 
+\fImsg_qnum\fP
+Liczba komunikatów znajdujących się aktualnie w kolejce.
+.TP 
+\fImsg_qbytes\fP
+Maksymalna liczba bajtów tekstu komunikatu, na jaką pozwala kolejka.
+.TP 
+\fImsg_lspid\fP
+Identyfikator procesu, który ostatni wykonał funkcję systemową \fBmsgsnd\fP(2).
+.TP 
+\fImsg_lrpid\fP
+identyfikator procesu, który ostatni wykonał funkcję systemową \fBmsgrcv\fP(2).
+.TP 
+\fImsg_stime\fP
+Czas ostatniego wykonania funkcji systemowej \fBmsgsnd\fP(2).
+.TP 
+\fImsg_rtime\fP
+Czas ostatniego wykonania funkcji systemowej \fBmsgrcv\fP(2).
+.TP 
+\fImsg_ctime\fP
+Czas ostatniego wywołania funkcji systemowej, w wyniku którego zmienione
+zostało pole struktury \fImsqid_ds\fP.
+.SS "Zestawy semaforów"
+Semafor jest jednoznacznie identyfikowany przez dodatnią liczbę całkowitą
+(jego \fIsemid\fP) i jest skojarzony ze strukturą typu \fIstruct semid_ds\fP,
+zdefiniowaną w pliku \fI<sys/sem.h>\fP, która składa się z
+następujących pól:
+.in +4n
+.nf
+
+struct semid_ds {
+    struct ipc_perm sem_perm;
+    time_t          sem_otime;   /* czas ostatniej operacji */
+    time_t          sem_ctime;   /* czas ostatniej zmiany */
+    unsigned long   sem_nsems;   /* liczba semaforów w zbiorze */
+};
+.fi
+.in
+.TP  11
+\fIsem_perm\fP
+Struktura \fIipc_perm\fP, która określa prawa dostępu do zestawu semaforów.
+.TP 
+\fIsem_otime\fP
+Czas ostatniego wywołania funkcji systemowej \fBsemop\fP(2).
+.TP 
+\fIsem_ctime\fP
+Czas ostatniego wywołania funkcji systemowej \fBsemctl\fP(2), która zmieniła
+element przedstawionej powyżej struktury lub jeden z semaforów należących do
+zestawu.
+.TP 
+\fIsem_nsems\fP
+Liczba semaforów w zestawie. Każdy semafor zestawu jest identyfikowany przez
+nieujemną liczbę całkowitą z zakresu od \fB0\fP do \fIsem_nsems\-1\fP.
+.PP
+Semafor jest strukturą typu \fIstruct sem\fP, która składa się z następujących
+pól:
+.in +4n
+.nf
+
+.\"    unsigned short semncnt; /* nr awaiting semval to increase */
+.\"    unsigned short semzcnt; /* nr awaiting semval = 0 */
+struct sem {
+    int semval;  /* wartość semaforu */
+    int sempid;  /* PID ostatniej operacji */
+};
+.fi
+.in
+.TP  11
+\fIsemval\fP
+Wartość semafora: nieujemna liczba całkowita.
+.TP 
+\fIsempid\fP
+.\".TP
+.\".I semncnt
+.\"Number of processes suspended awaiting for
+.\".I semval
+.\"to increase.
+.\".TP
+.\".I semznt
+.\"Number of processes suspended awaiting for
+.\".I semval
+.\"to become zero.
+Identyfikator ostatniego procesu, który wykonał operację na tym semaforze.
+.SS "Segmenty pamięci wspólnej"
+Segment pamięci wspólnej jest jednoznacznie identyfikowany przez dodatnią
+liczbę całkowitą (jego \fIshmid\fP) i jest skojarzony ze strukturą typu
+\fIstruct shmid_ds\fP, zdefiniowaną w \fI<sys/shm.h>\fP, która składa się
+z następujących pól:
+.in +4n
+.nf
+
+struct shmid_ds {
+    struct ipc_perm shm_perm;
+    size_t          shm_segsz;   /* rozmiar segmentu */
+    pid_t           shm_cpid;    /* PID twórcy */
+    pid_t           shm_lpid;    /* PID ostatniej operacji */
+    shmatt_t        shm_nattch;  /* liczba bieżących podłączeń */
+    time_t          shm_atime;   /* czas ostatniego podłączenia */
+    time_t          shm_dtime;   /* czas ostatniego odłączenia */
+    time_t          shm_ctime;   /* czas ostatniej zmiany */
+};
+.fi
+.in
+.TP  11
+\fIshm_perm\fP
+Struktura \fIipc_perm\fP, która określa prawa dostępu do segmentu pamięci
+wspólnej.
+.TP 
+\fIshm_segsz\fP
+Rozmiar segmentu pamięci wspólnej w bajtach.
+.TP 
+\fIshm_cpid\fP
+Identyfikator procesu, który utworzył ten segment pamięci wspólnej.
+.TP 
+\fIshm_lpid\fP
+Identyfikator procesu, który ostatni wykonał funkcję systemową \fBshmat\fP(2)
+lub \fBshmdt\fP(2).
+.TP 
+\fIshm_nattch\fP
+Liczba aktualnych, aktywnych przyłączeń do tego segmentu pamięci wspólnej.
+.TP 
+\fIshm_atime\fP
+Czas ostatniego wykonania funkcji systemowej \fBshmat\fP(2).
+.TP 
+\fIshm_dtime\fP
+Czas ostatniego wykonania funkcji systemowej \fBshmdt\fP(2).
+.TP 
+\fIshm_ctime\fP
+Czas ostatniego wykonania funkcji systemowej \fBshmctl\fP(2), w którego wyniku
+zmienione zostało \fIshmid_ds\fP.
+.SH "ZOBACZ TAKŻE"
+\fBipc\fP(2), \fBmsgctl\fP(2), \fBmsgget\fP(2), \fBmsgrcv\fP(2), \fBmsgsnd\fP(2),
+\fBsemctl\fP(2), \fBsemget\fP(2), \fBsemop\fP(2), \fBshmat\fP(2), \fBshmctl\fP(2),
+\fBshmdt\fP(2), \fBshmget\fP(2), \fBftok\fP(3)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Piotr Pogorzelski (PTM) <piotr.pogorzelski@ippt.gov.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

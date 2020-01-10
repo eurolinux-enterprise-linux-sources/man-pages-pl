@@ -1,0 +1,340 @@
+.\" Copyright (c) 2006, 2008 by Michael Kerrisk <mtk.manpages@gmail.com>
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2006, 2008 Michael Kerrisk 
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH CORE 5 2012\-01\-17 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+core \- plik zrzutu pamięci
+.SH OPIS
+Dla pewnych sygnałów domyślną akcją procesu jest zakończenie działania i
+utworzenie \fIpliku zrzutu pamięci\fP (core), czyli pliku zawierającego obraz
+pamięci procesu w czasie, gdy został on zakończony. Dowolny debugger
+(np. \fBgdb\fP(1)) może użyć tego obrazu do zbadania stanu programu w czasie
+jego zakończenia. Listę sygnałów powodujących utworzenie pliku core przez
+proces można znaleźć w \fBsignal\fP(7).
+
+Proces może ustawić miękki limit zasobów \fBRLIMIT_CORE\fP, aby ograniczyć
+maksymalny rozmiar pliku, który zostanie utworzony po otrzymaniu sygnału
+powodującego zrzut pamięci; szczegółowe informacje można znaleźć w
+\fBgetrlimit\fP(2).
+
+W następujących wypadkach plik zrzutu pamięci nie będzie utworzony:
+.IP * 3
+Proces nie ma uprawnień, aby zapisać plik zrzutu pamięci (Domyślnie plik ten
+nazywa się \fIcore\fP i jest tworzony w bieżącym katalogu roboczym
+procesu. Nazwę tę można zmienić \- patrz niżej). Zapisywanie pliku zrzutu nie
+powiedzie się również wtedy, gdy prawa katalogu, w którym ten plik miałby
+być utworzony, nie pozwalają na zapis do niego lub gdy plik o tej samej
+nazwie istnieje i nie jest zapisywalny lub nie jest zwykłym plikiem (ale
+np. katalogiem lub dowiązaniem symbolicznym).
+.IP *
+Już istnieje (zapisywalny, zwykły) plik o tej samej nazwie, jaka zostałaby
+użyta dla pliku zrzutu pamięci, jednakże plik ten ma więcej niż jedno
+dowiązanie twarde.
+.IP *
+System plików, w którym zostałby utworzony plik zrzutu pamięci, jest pełny,
+wyczerpał mu się limit i\-węzłów, jest zamontowany w trybie tylko do odczytu
+albo użytkownik osiągnął kwotę systemu plików
+.IP *
+Nie istnieje katalog, w którym miałby być utworzony plik zrzutu pamięci.
+.IP *
+Limity zasobów \fBRLIMIT_CORE\fP (rozmiar pliku zrzutu pamięci) lub
+\fBRLIMIT_FSIZE\fP (rozmiar pliku) dla procesu są ustawione na zero; patrz
+\fBgetrlimit\fP(2) i dokumentacja wbudowanego w powłokę polecenia \fIulimit\fP
+(lub \fIlimit\fP w powłoce \fIcsh\fP(1)).
+.IP *
+Nie są ustawione uprawnienia do odczytu pliku binarnego uruchomionego przez
+proces.
+.IP *
+.\" FIXME . Perhaps relocate discussion of /proc/sys/fs/suid_dumpable
+.\" and PR_SET_DUMPABLE to this page?
+Proces uruchomił program z flagą set\-user\-ID (set\-group\-ID), którego
+właścicielem jest użytkownik (grupa) inny niż rzeczywisty użytkownik (grupa)
+procesu. (Jednakże patrz w \fBprctl\fP(2) opis operacji \fBPR_SET_DUMPABLE\fP oraz
+w \fBproc\fP(5) opis pliku \fI/proc/sys/fs/suid_dumpable\fP).
+.SS "Nazwy plików zrzutu pamięci"
+Domyślnie plik zrzutu pamięci nazywa się \fIcore\fP, jednakże w pliku
+\fI/proc/sys/kernel/core_pattern\fP (od wersji 2.6 i 2.4.21 Linuksa) można
+zdefiniować szablon, który będzie użyty do nazywania plików zrzutu
+pamięci. Szablon ten może zawierać specjalne znaczniki zaczynające się od
+"%", które podczas tworzenia pliku zrzutu będą zastąpione następującymi
+wartościami:
+.PP
+.RS 4
+.PD 0
+.TP  4
+\fB%%\fP
+pojedynczy znak %
+.TP 
+\fB%p\fP
+Identyfikator (PID) procesu, który zrzucił pamięć
+.TP 
+\fB%u\fP
+(numeryczny) identyfikator użytkownika (UID) procesu, który zrzucił pamięć
+.TP 
+\fB%g\fP
+(numeryczny) identyfikator grupy (GID) procesu, który zrzucił pamięć
+.TP 
+\fB%s\fP
+numer sygnału powodującego zrzut pamięci
+.TP 
+\fB%t\fP
+czas zrzutu wyrażony w sekundach od początku epoki, czyli od 1970\-01\-01
+00:00:00 +0000 (UTC)
+.TP 
+\fB%h\fP
+nazwa komputera (taka sama jak \fInodename\fP zwracane przez \fBuname\fP(2))
+.TP 
+\fB%e\fP
+nazwa pliku wykonywalnego (niepoprzedzona pełną ścieżką do tego pliku)
+.TP 
+\fB%E\fP
+nazwa ścieżki pliku wykonywalnego, z ukośnikami ("/") zastąpionymi przez
+wykrzykniki ("!")
+.TP 
+\fB%c\fP
+miękki limit zasobu rozmiaru pliku zrzutu pamięci procesu zrzucającego
+pamięć (od Linuksa 2.6.24)
+.PD
+.RE
+.PP
+Jeśli szablon kończy się pojedynczym znakiem %, to znak ten zostanie
+usunięty z nazwy pliku zrzutu. Podobnie zostaną usunięte wszelkie kombinacje
+% ze znakami innymi niż te, wymienione powyżej. Wszystkie inne znaki
+szablonu staną się częścią nazwy pliku zrzutu. Szablon może zawierać znaki
+"/", które są interpretowane jako separatory nazw katalogów. Maksymalna
+długość wygenerowanej nazwy pliku wynosi 128 bajtów (64 bajty w wersjach
+jądra wcześniejszych niż 2.6.19). Domyślną wartością jest "core". W celu
+zachowania wstecznej zgodności, jeśli \fI/proc/sys/kernel/core_pattern\fP nie
+zawiera "%p", a \fI/proc/sys/kernel/core_uses_pid\fP (patrz niżej) ma niezerową
+wartość, to .PID będzie dołączony do nazwy pliku zrzutu.
+
+Od wersji 2.4 Linux dostarcza również bardziej prymitywnej metody
+kontrolowania nazwy pliku zrzutu pamięci. Gdy plik
+\fI/proc/sys/kernel/core_uses_pid\fP zawiera wartość 0, plik zrzutu pamięci ma
+po prostu nazwę \fIcore\fP. Gdy plik ten zawiera wartość niezerową, plik zrzutu
+pamięci będzie zawierał w swojej nazwie ID procesu, w postaci \fIcore.PID\fP.
+.SS "Przekazywanie zrzutów pamięci potokiem do programu"
+Od wersji 2.6.19 jądra Linux wspiera alternatywną składnię pliku
+\fI/proc/sys/kernel/core_pattern\fP. Jeśli pierwszym znakiem pliki jest symbol
+potoku (\fB|\fP), to wszystko, co po nim występuje, jest interpretowane jako
+program do uruchomienia. Zamiast zostać zapisanym na dysku, zrzut pamięci
+jest przekazywany na standardowe wejście programu. Proszę zauważyć, że:
+.IP * 3
+Program musi być podany używając ścieżki bezwzględnej (lub ścieżki względnej
+w stosunku do korzenia systemu plików, czyli katalogu \fI/\fP) i musi
+występować bezpośrednio po znaku "|".
+.IP *
+Proces tworzony do wykonania programu jest wykonywany jako użytkownik i
+grupa \fIroot\fP.
+.IP *
+Można przekazać do programu argumenty linii poleceń (od jądra 2.6.24),
+rozdzielając je spacjami (aż do wyczerpania limitu całkowitej długości linii
+wynoszącego 128 bajtów).
+.IP *
+Argumenty linii poleceń mogą zawierać dowolne z wymienionych powyżej
+specyfikatorów %. Na przykład, aby przekazać identyfikator procesu
+zrzucającego pamięć, należy podać \fI%p\fP jako argument.
+.SS "Kontrolowanie mapowań zapisywanych do pliku zrzutu pamięci"
+Od wersji 2.6.23 jądra można użyć specyficznego dla Linuksa pliku
+\fI/proc/PID/coredump_filter\fP do kontrolowania, które segmenty pamięci
+zostaną zapisane do pliku zrzutu pamięci, w przypadku gdy pamięć jest
+zrzucana przez proces o podanym identyfikatorze.
+
+Wartość w tym pliku jest maską bitową typów mapowań pamięci (patrz
+\fBmmap\fP(2)). Jeśli bit jest ustawiony w masce, to odpowiadające mu mapowanie
+jest zapisywane w pliku, w przeciwnym wypadku \- nie jest. Bity w masce mają
+następujące znaczenia:
+.PP
+.PD 0
+.RS 4
+.TP 
+bit 0
+Zrzucanie anonimowych mapowań prywatnych.
+.TP 
+bit 1
+Zrzucanie anonimowych mapowań współdzielonych.
+.TP 
+bit 2
+Zrzucanie prywatnych mapowań plików.
+.TP 
+bit 3
+.\" file-backed shared mappings of course also update the underlying
+.\" mapped file.
+Zrzucanie współdzielonych mapowań plików.
+.TP 
+bit 4 (od Linuksa 2.6.24)
+Zrzucanie nagłówków ELF.
+.TP 
+bit 5 (od Linuksa 2.6.28)
+Zrzucanie prywatnych dużych stron.
+.TP 
+bit 6 (od Linuksa 2.6.28)
+Zrzucanie współdzielonych dużych stron.
+.RE
+.PD
+.PP
+Domyślnie ustawione są następujące bity: 0, 1, 4 (jeśli jest włączona opcja
+\fBCONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS\fP konfiguracji jądra) oraz 5. Wartość
+pliku jest wyświetlana jako liczba szesnastkowa (dlatego domyślna wartość
+jest wyświetlana jako 33).
+
+Strony wejścia/wyjścia mapowane w pamięci, takie jak frame buffer, nigdy nie
+są zrzucane, a wirtualne strony DSO są zawsze zrzucane, niezależnie od
+wartości \fIcoredump_filter\fP.
+
+Proces\-dziecko utworzony przez \fBfork\fP(2) dziedziczy wartość
+\fIcoredump_filter\fP od swojego rodzica; wartość ta jest także zachowywana
+podczas \fBexecve\fP(2).
+
+Może być użyteczne ustawienie \fIcoredump_filter\fP w powłoce przed
+uruchomieniem programu, na przykład:
+
+.in +4n
+.nf
+$\fB echo 0x7 > /proc/self/coredump_filter\fP
+$\fB ./some_program\fP
+.fi
+.in
+.PP
+Plik istnieje, jeśli jądro zostało zbudowane z włączoną opcją konfiguracji
+\fBCONFIG_ELF_CORE\fP.
+.SH UWAGI
+Aby uzyskać zrzut pamięci działającego procesu, można użyć polecenia
+\fIgcore\fP programu \fBgdb\fP(1).
+
+.\" Always including the PID in the name of the core file made
+.\" sense for LinuxThreads, where each thread had a unique PID,
+.\" but doesn't seem to serve any purpose with NPTL, where all the
+.\" threads in a process share the same PID (as POSIX.1 requires).
+.\" Probably the behavior is maintained so that applications using
+.\" LinuxThreads continue appending the PID (the kernel has no easy
+.\" way of telling which threading implementation the userspace
+.\" application is using). -- mtk, April 2006
+Jeżeli pamięć zrzuca proces wielowątkowy (albo \- bardziej precyzyjnie \-
+proces, który dzieli swą pamięć z innym procesem utworzonym z flagą
+\fBCLONE_VM\fP funkcji \fBclone\fP(2)), to identyfikator procesu zawsze będzie
+dołączony do nazwy pliku zrzutu, chyba że ów identyfikator procesu już
+występuje w nazwie pliku, ponieważ w pliku \fI/proc/sys/kernel/core_pattern\fP
+użyto specyfikatora "%p" (Jest to szczególnie użyteczne podczas stosowania
+implementacji LinuxThreads, w której każdy wątek procesu ma inny PID).
+.SH PRZYKŁAD
+Poniższy program pokazuje użycie składni potoku w pliku
+\fI/proc/sys/kernel/core_pattern\fP. Poniższa sesja powłoki demonstruje użycie
+tego programu (skompilowanego do pliku o nazwie  \fIcore_pattern_pipe_test\fP):
+.PP
+.in +4n
+.nf
+$\fB cc \-o core_pattern_pipe_test core_pattern_pipe_test.c\fP
+$\fB su\fP
+Password:
+#\fB echo "|$PWD/core_pattern_pipe_test %p UID=%u GID=%g sig=%s" > \e\fP
+\fB/proc/sys/kernel/core_pattern\fP
+#\fB exit\fP
+$\fB sleep 100\fP
+\fB^\e\fP                     # wpisz control+odwrotny ukośnik
+Quit (core dumped)
+$\fB cat core.info\fP
+argc=5
+argc[0]=</home/mtk/core_pattern_pipe_test>
+argc[1]=<20575>
+argc[2]=<UID=1000>
+argc[3]=<GID=100>
+argc[4]=<sig=3>
+Całkowita liczba bajtów pliku core: 282624
+.fi
+.in
+.SS "Żródło programu"
+\&
+.nf
+/* core_pattern_pipe_test.c */
+
+#define _GNU_SOURCE
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#define BUF_SIZE 1024
+
+int
+main(int argc, char *argv[])
+{
+    int tot, j;
+    ssize_t nread;
+    char buf[BUF_SIZE];
+    FILE *fp;
+    char cwd[PATH_MAX];
+
+    /* Zmienia bieżący katalog roboczy na katalog procesu,
+       który generuje zrzut pamięci */
+
+    snprintf(cwd, PATH_MAX, "/proc/%s/cwd", argv[1]);
+    chdir(cwd);
+
+    /* Zapisuje wyjście do pliku "core.info" w tym katalogu */
+
+    fp = fopen("core.info", "w+");
+    if (fp == NULL)
+        exit(EXIT_FAILURE);
+
+    /* Wyświetla argumenty linii poleceń przekazane do programu
+       filtrującego "core_pattern" */
+
+    fprintf(fp, "argc=%d\en", argc);
+    for (j = 0; j < argc; j++)
+        fprintf(fp, "argc[%d]=<%s>\en", j, argv[j]);
+
+    /* Zlicza bajty na standardowym wejściu (daje rozmiar
+       zrzutu pamięci) */
+
+    tot = 0;
+    while ((nread = read(STDIN_FILENO, buf, BUF_SIZE)) > 0)
+        tot += nread;
+    fprintf(fp, "Całkowita liczba bajtów pliku core: %d\en", tot);
+
+    exit(EXIT_SUCCESS);
+}
+.fi
+.SH "ZOBACZ TAKŻE"
+\fBbash\fP(1), \fBgdb\fP(1), \fBgetrlimit\fP(2), \fBmmap\fP(2), \fBprctl\fP(2),
+\fBsigaction\fP(2), \fBelf\fP(5), \fBproc\fP(5), \fBpthreads\fP(7), \fBsignal\fP(7)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

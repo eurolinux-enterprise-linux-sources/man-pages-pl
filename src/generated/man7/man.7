@@ -1,0 +1,410 @@
+.\" (C) Copyright 1992-1999 Rickard E. Faith and David A. Wheeler
+.\" (faith@cs.unc.edu and dwheeler@ida.org)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Sun Jul 25 11:06:05 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Modified Sat Jun  8 00:39:52 1996 by aeb
+.\" Modified Wed Jun 16 23:00:00 1999 by David A. Wheeler (dwheeler@ida.org)
+.\" Modified Thu Jul 15 12:43:28 1999 by aeb
+.\" Modified Sun Jan  6 18:26:25 2002 by Martin Schulze <joey@infodrom.org>
+.\" Modified Tue Jul 27 20:12:02 2004 by Colin Watson <cjwatson@debian.org>
+.\" 2007-05-30, mtk: various rewrites and moved much text to new man-pages.7.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1992-1999 Rickard E. Faith, David A. Wheeler 
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@p-soft.silesia.linux.org.pl>, 1998.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH MAN 7 2011\-10\-05 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+man \- makra do formatowania stron man
+.SH SKŁADNIA
+\fBgroff \-Tascii \-man\fP \fIplik\fP \&...
+.LP
+\fBgroff \-Tps \-man\fP \fIplik\fP \&...
+.LP
+\fBman\fP [\fIsekcja\fP] \fItytuł\fP
+.SH OPIS
+Ta strona podręcznika opisuje pakiet makr \fBgroff an.tmac\fP (często nazywany
+pakietem makr \fBman\fP). Pakiet tych makr powinien być używany przez
+deweloperów, kiedy piszą lub przenoszą strony man dla Linuksa. Jest w pełni
+kompatybilny z innymi wersjami tego pakietu, więc przenoszenie stron nie
+powinno być głównym problemem (wyjątki włączają NET\-2 BSD, które używa
+całkiem innego pakietu makr zwanego mdoc; patrz \fBmdoc\fP(7)).
+.PP
+Proszę zauważyć, że strony NET\-2 BSD mogą być użyte z \fBgroff\fPem przez
+proste podanie opcji \fB\-mdoc\fP zamiast zwykłej \fB\-man\fP. Jednakże bardziej
+zalecane jest używanie opcji \fB\-mandoc\fP, ponieważ wybierze ona automatycznie
+odpowiedni zestaw makr.
+.PP
+Zasady, których powinno się przestrzegać podczas pisania stron podręcznika
+dla linuksowego pakietu \fIman\-pages\fP, opisano w \fBman\-pages\fP(7).
+.SS "Linia tytułowa"
+Pierwszą komendą na stronie man (po liniach komentarza, czyli liniach
+zaczynających się od \fB.\e"\fP) powinna być
+.RS
+.sp
+\fB\&.TH\fP \fItytuł sekcja data źródło podręcznik\fP
+.sp
+.RE
+Szczegółowy opis argumentów przekazywanych do komendy \fBTH\fP można znaleźć w
+\fBman\-pages\fP(7).
+.PP
+Proszę zauważyć, że strony formatowane za pomocą makr BSD mdoc rozpoczynają
+się od polecenia \fBDd\fP, a nie \fBTH\fP.
+.SS Sekcje
+.\" The following doesn't seem to be required (see Debian bug 411303),
+.\" If the name contains spaces and appears
+.\" on the same line as
+.\" .BR \&.SH ,
+.\" then place the heading in double quotes.
+Sekcje zaczynają się od \fB\&.SH\fP poprzedzonego przez nazwę sekcji.
+
+Jedynym wymaganym nagłówkiem jest NAME (NAZWA). Powinien występować w
+pierwszej sekcji, a kolejna linia powinna zawierać jednoliniowy opis
+programu:
+.RS
+.sp
+\&.SH NAZWA
+.br
+pozycja \e\- opis
+.sp
+.RE
+Jest niesamowicie ważne, aby używać tego formatu, oraz że występuje odwrotny
+ukośnik przed kreską po nazwie pozycji. Ta składnia (angielska, gdzie NAZWA
+to NAME)  jest wykorzystywana przez program \fBmandb\fP(8) do tworzenia bazy
+krótkich opisów dla programu \fBwhatis\fP(1) i \fBapropos\fP(1). (Dalsze szczegóły
+dotyczące składni rozdziału NAME można znaleźć w podręczniku \fBlexgrog\fP(1)).
+.PP
+Listę innych sekcji, które mogą wystąpić w stronie podręcznika można znaleźć
+w \fBman\-pages\fP(7).
+.SS Czcionki
+Komendy do wyboru czcionki są następujące:
+.TP  4
+\fB\&.B\fP
+Pogrubienie
+.TP 
+\fB\&.BI\fP
+Pogrubienie na przemian z kursywą (szczególnie użytecznie w specyfikacji
+funkcji)
+.TP 
+\fB\&.BR\fP
+Pogrubienie na przemian z czcionką Roman (szczególnie użyteczne w
+odnośnikach do innych stron podręcznika)
+.TP 
+\fB\&.I\fP
+Kursywa
+.TP 
+\fB\&.IB\fP
+Kursywa naprzemiennie z pogrubieniem
+.TP 
+\fB\&.IR\fP
+Kursywa naprzemiennie z fontem roman
+.TP 
+\fB\&.RB\fP
+Czcionka roman naprzemiennie z pogrubieniem
+.TP 
+\fB\&.RI\fP
+Czcionka roman naprzemiennie z kursywą
+.TP 
+\fB\&.SB\fP
+Mała czcionka naprzemiennie z pogrubieniem
+.TP 
+\fB\&.SM\fP
+Mała (użyteczne dla akronimów)
+.LP
+Tradycyjnie, każda komenda może mieć do sześciu argumentów, lecz wersja GNU
+wydaje się znosić to ograniczenie (wciąż jednak można rozważyć wprowadzenie
+limitu 6 argumentów w celu zachowania kompatybilności). Argumenty są
+oddzielane spacjami.  Podwójne cudzysłowy mogą być używane do określania
+argumentów ze spacjami. Wszystkie argumenty zostaną wydrukowane obok siebie,
+bez wtrąconych spacji, tak że komenda \fB\&.BR\fP może zostać użyta do podania
+słowa pogrubionego, po którym następuje znak interpunkcyjny zapisany
+czcionką roman. Jeżeli nie podano żadnych argumentów, polecenie stosuje się
+do linii tekstu następującej po nim.
+.SS "Inne makra i łańcuchy znaków"
+.PP
+Poniżej przedstawiono inne makra i predefiniowane łańcuchy znaków. Jeżeli
+nie podano inaczej, wszystkie makra powodują przerwę (zakończenie bieżącej
+linii tekstu). Wiele z tych makr ustawia lub używa wartości "powszechnego
+wcięcia". Wartość ta jest ustawiana przez każde makro przyjmujące parametr
+\fIi\fP; makra mogą pomijać \fIi\fP, co oznacza, że będzie używana bieżąca wartość
+"powszechnego wcięcia". W wyniku tego kolejne wcięte akapity mogą używać tej
+samej wartości wcięcia bez jej każdorazowego podawania. Zwykły (niewcięty)
+akapit ustawia wcięcie na jego domyślną wartość (0.5 cala). Domyślnie
+wcięcie jest wyrażone w "ens" [szerokość litery "n"]; zaleca się używanie
+"ens" lub "ems" jako jednostek wcięcia, ponieważ automatycznie dostosują się
+do zmian rozmiaru czcionki. Inne kluczowe definicje makr są następujące:
+.SS "Zwykłe akapity"
+.TP  9m
+\fB\&.LP\fP
+To samo, co \fB\&.PP\fP (rozpoczęcie nowego akapitu).
+.TP 
+\fB\&.P\fP
+To samo, co \fB\&.PP\fP (rozpoczęcie nowego akapitu).
+.TP 
+\fB\&.PP\fP
+Rozpoczęcie nowego akapitu i usunięcie bieżącego wcięcia.
+.SS "Początek wiszącego wcięcia"
+.TP  9m
+\fB\&.RS\fP\fI i\fP
+Rozpoczyna relatywne wcięcie marginesu: przesuwa lewy margines o \fIi\fP w
+prawo (jeżeli pominięto \fIi\fP, to używana jest wartość "powszechnego
+wcięcia"). Wartość "powszechnego wcięcia" ustawiana na 0.5 cala. W wyniku
+wcinane będą wszystkie kolejne akapity, aż do napotkania odpowiadającego
+\fB\&.RE\fP.
+.TP 
+\fB\&.RE\fP
+Kończy relatywne wcięcie marginesu i ustawia poprzednią wartość wcięcia.
+.SS "Makra wcięć akapitów"
+.TP  9m
+\fB\&.HP\fP\fI i\fP
+Rozpoczyna akapit od wiszącego wcięcia (pierwsza linia akapitu znajduje się
+przy lewym marginesie w stosunku do zwykłych akapitów, a pozostałe akapitu
+linie są wcięte).
+.TP 
+\fB\&.IP\fP\fI x i\fP
+Wcięty akapit z opcjonalnym wiszącym znacznikiem. Jeżeli pominięto znacznik
+\fIx\fP, to cały następujący akapit będzie wcięty o \fIi\fP. Jeżeli podano
+znacznik \fIx\fP, to będzie on umieszczony zaraz przy lewym marginesie przed
+następującym po nim wciętym akapitem (podobnie jak to robi \fB\&.TP\fP poza
+tym, że znacznik jest umieszczony przy poleceniu, a nie w kolejnej
+linii). Jeżeli znacznik jest zbyt długi to tekst po znaczniku będzie
+przeniesiony do kolejnej linii (tekst nie będzie usunięty ani
+zniekształcony). Dla list nienumerowanych, należy użyć tego makra, podając
+jako znacznik \e(bu (kula) lub \e(em (myślnik), a dla list numerowanych
+należy w znaczniku podać liczbę lub cyfrę, po której następuje kropka;
+ułatwi to przetworzenie do innych formatów.
+.TP 
+\fB\&.TP\fP\fI i\fP
+Rozpoczyna akapit z wiszącym znacznikiem. Znacznik jest podawany w następnej
+linii.  Wyniki są podobne do \fB\&.IP\fP
+.SS "Makra odnośników hipertekstowych"
+(Cecha obsługiwana tylko przez \fBgroff\fPa). Aby użyć makr łączy
+hipertekstowych, potrzebne jest załadowanie pakietu makr \fBwww.tmac\fP. Aby to
+zrobić, należy użyć żądania \fB.mso www.tmac\fP.
+.TP  9m
+\fB\&.URL\fP\fI url link trailer\fP
+.\" The following is a kludge to get a paragraph into the listing.
+Wstawia odnośnik hipertekstowy do lokalizacji URI (URL) \fIurl\fP, z \fIlinkiem\fP
+jako tekstem odnośnika, a zaraz po nim będzie wypisany \fItrailer\fP. Generując
+HTML\-a, powinno się to przetłumaczyć jako następujące polecenie HTML\-a:
+\fB<A HREF="\fP\fIurl\fP\fB">\fP\fIlink\fP\fB</A>\fP\fItrailer\fP.
+.TP 
+\fB\& \&\fR
+.\" The following is a kludge to get a paragraph into the listing.
+To i inne podobne makra są nowe, tak więc wiele narzędzi ich nie obsługuje,
+ale ponieważ wiele narzędzi (włącznie z troffem) po prostu zignoruje
+niezdefiniowane makra (albo w gorszym przypadku wstawi własny tekst), więc
+można ich bezpiecznie używać.
+.TP 
+\fB\& \&\fR
+.\" The following is a kludge to get a paragraph into the listing.
+Może być użyteczne zdefiniowanie własnego makra \fBURL\fP w stronach
+podręcznika ekranowego, aby dać możliwość oglądania ich w programach innych
+niż \fBgroff\fP. Tym sposobem URL, tekst odnośnika i podpisu będzie widoczny.
+.TP 
+\fB\& \&\fR
+Oto przykład:
+.RS 1.5i
+\&.de URL
+.br
+\e\e$2 \e(laURL: \e\e$1 \e(ra\e\e$3
+.br
+\&..
+.br
+\&.if \en[.g] .mso www.tmac
+.br
+\&.TH \fI...\fP
+.br
+\fI(później na stronie)\fP
+.br
+Ten program pochodzi z
+.br
+\&.URL "http://www.gnu.org/" "Projektu GNU" " z"
+.br
+\&.URL "http://www.fsf.org/" "Free Software Foundation" .
+.RE
+.\" The following is a kludge to get a paragraph into the listing.
+.TP 
+\fB\& \&\fR
+W powyższym przypadku, jeśli używany jest \fBgroff\fP, to definicja makra URL z
+pakietu \fBwww.tmac\fP nadpisze makro zdefiniowane lokalnie.
+.PP
+Dostępna są także inne makra dla odnośników. Patrz \fBgroff_www\fP(7) po dalsze
+informacje.
+.SS "Różnorodne makra"
+.TP  9m
+\fB\&.DT\fP
+Ustawia tabulację na jej domyślną wartość (co każde pół cala); nie powoduje
+przerwy.
+.TP 
+\fB\&.PD\fP\fI d\fP
+Ustawia odległość między wierszami w akapicie (jeśli pominięto, to d=0.4v);
+nie powoduje przerwy.
+.TP 
+\fB\&.SS\fP\fI t\fP
+Pod\-nagłówek \fIt\fP (jak \fB\&.SH\fP, lecz używane do podsekcji)
+.SS "Predefiniowane łańcuch znaków"
+Pakiet \fBman\fP zawiera następujące predefiniowane łańcuchy znaków:
+.IP \e*R
+Symbol rejestracji: \*R
+.IP \e*S
+Zmienia domyślny rozmiar czcionki
+.IP \e*(Tm
+Symbol znaku towarowego: \*(Tm
+.IP \e*(lq
+Lewy podwójny cudzysłów: \*(lq
+.IP \e*(rq
+Prawy podwójny cudzysłów: \*(rq
+.SS "Bezpieczny podzbiór"
+Chociaż z technicznego punktu widzenia \fBman\fP jest pakietem makr troffa, to
+w rzeczywistości strony podręcznika ekranowego mogą być przetwarzane przez
+wiele innych narzędzi, które nie implementują wszystkich właściwości
+troffa. Dlatego najlepiej unikać pewnych bardziej egzotycznych makr troffa,
+tam gdzie jest to możliwe tak, aby inne narzędzia pracowały
+poprawnie. Należy unikać używania preprocesorów troffa (jeżeli jest to
+konieczne, proszę bardzo, użyj \fBtbl\fP(1), ale zamiast tworzyć dwukolumnowe
+tabele, spróbuj użyć poleceń \fBIP\fP i \fBTP\fP). Należy unikać także używania
+wyliczeń \(em większość innych narzędzi nie umie ich przetworzyć. Lepiej
+użyć prostych poleceń, łatwych do przetłumaczenia do innych
+formatów. Następujące makra troffa uważa się za bezpieczne (chociaż w wielu
+przypadkach będą zignorowane przez tłumaczy): \fB\e"\fP, \fB.\fP, \fBad\fP, \fBbp\fP,
+\fBbr\fP, \fBce\fP, \fBde\fP, \fBds\fP, \fBel\fP, \fBie\fP, \fBif\fP, \fBfi\fP, \fBft\fP, \fBhy\fP, \fBig\fP,
+\fBin\fP, \fBna\fP, \fBne\fP, \fBnf\fP, \fBnh\fP, \fBps\fP, \fBso\fP, \fBsp\fP, \fBti\fP, \fBtr\fP.
+.PP
+Można także używać wielu sekwencji cytowania (czyli sekwencji zaczynających
+się od \e). Aby użyć znaku odwrotnego ukośnika w zwykłym tekście, należy
+wpisać \ee. Do innych sekwencji, których można użyć, należą (x i xx są
+zwykłymi znakami, a N \(em dowolną liczbą): \fB\e'\fP, \fB\e`\fP, \fB\e\-\fP, \fB\e.\fP,
+\fB\e"\fP, \fB\e%\fP, \fB\e*x\fP, \fB\e*(xx\fP, \fB\e(xx\fP, \fB\e$N\fP, \fB\enx\fP, \fB\en(xx\fP,
+\fB\efx\fP oraz \fB\ef(xx\fP. Należy unikać używania sekwencji cytowania do
+rysowania grafiki.
+.PP
+Nie należy używać nieobowiązkowego parametru makra \fBbp\fP (podział
+strony). Należy używać tylko dodatnich wartości dla \fBsp\fP (spacja
+pionowa). Nie należy definiować makr (\fBde\fP) o takich samych nazwach jak
+nazwy makr z tego pakietu lub z pakietu mdoc, ale o innym znaczeniu; jest
+wysoce prawdopodobne, że takie powtórne zdefiniowanie makra będzie po prostu
+zignorowane. Każde dodatnie wcięcie (\fBin\fP) powinno być sparowane z
+odpowiadającym mu wcięciem negatywnym (chociaż powinno się jednak używać
+makr \fBRS\fP i \fBRE\fP zamiast \fBin\fP). Instrukcje warunkowe (\fBif,ie\fP) powinny
+mieć tylko "t" lub "n" w warunku. Powinny być używane tylko tłumaczenia
+(\fBtr\fP), które można zignorować. Zmiany czcionki (\fBft\fP oraz sekwencja
+cytowania \fB\ef\fP) powinny mieć tylko wartości 1, 2, 3, 4, R, I, B, P lub CW
+(polecenie ft może także nie mieć żadnych parametrów).
+.PP
+Jeżeli używane są makra inne niż te opisane powyżej, należy dokładnie
+sprawdzić wynik, używając kilku narzędzi. Po sprawdzeniu, że te dodatkowe
+makra są bezpieczne, prosimy o poinformowanie o nich opiekuna tego
+dokumentu, tak żeby można było je dodać do tej listy.
+.SH PLIKI
+\fI/usr/share/groff/\fP[*/]\fItmac/an.tmac\fP
+.br
+\fI/usr/man/whatis\fP
+.SH UWAGI
+.PP
+W każdym wypadku należy włączać pełne URL\-e (lub URI) do samego tekstu;
+niektóre narzędzia, takie jak \fBman2html\fP(1) potrafią automatycznie
+przekształcić je na odnośniki. Można także używać nowego makra \fBURL\fP, aby
+wprowadzić informacje związane z odnośnikami. Podczas podawania URL\-i,
+należy używać ich w pełnej postaci
+(np. <http://www.kernelnotes.org>), żeby narzędzia mogły je
+automatycznie znaleźć.
+.PP
+Narzędzia przetwarzające pliki powinny otworzyć plik i sprawdzić zawartość
+pierwszego znaku nie będącego białą spacją. Kropka (.) lub pojedynczy
+cudzysłów (') na początku linii oznacza plik oparty na troffie (taki jak man
+lub mdoc). Lewy nawias trójkątny (<) oznacza plik oparty na SGML/XML\-u
+(taki jak HTML lub Docbook). Wszystko inne oznacza zwykły tekst ASCII
+(np. wynik "catman").
+.PP
+Wiele stron podręcznika rozpoczyna się od \fB\'\e"\fP, po którym następuje
+spacja i lista znaków, określających preprocesor, używany do przetwarzania
+strony. Dla zachowania zgodności z innymi narzędziami, zalecamy, aby unikać
+preprocesorów innych niż \fBtbl\fP(1), który Linux wykrywa
+automatycznie. Jednakże, można dodać informację o tym preprocesorze, tak
+żeby strona podręcznika mogła być poprawnie odczytana pod innymi
+systemami. Poniżej przedstawiamy listę preprocesorów wraz z odpowiadającymi
+im znakami:
+.TP  3
+\fBe\fP
+eqn(1)
+.TP 
+\fBg\fP
+grap(1)
+.TP 
+\fBp\fP
+pic(1)
+.TP 
+\fBr\fP
+refer(1)
+.TP 
+\fBt\fP
+tbl(1)
+.TP 
+\fBv\fP
+vgrind(1)
+.SH BŁĘDY
+.PP
+Większość makr opisuje formatowanie (np. typ czcionki i odstępy), zamiast
+oznaczać zawartość składniową (np. to jest odnośnik do innej strony). Ta
+sytuacja utrudnia dostosowywanie formatu \fBman\fP do różnych mediów, w taki
+sposób, by zachować jednolitość formatowania dla danego medium i
+automatycznie dołożyć odnośniki do innych stron. Wybierając ten opisany
+powyżej bezpieczny podzbiór makr, daje się lepszą możliwość automatycznego
+przetworzenia strony do innego formatu.
+.LP
+.\" .SH AUTHORS
+.\" .IP \(em 3m
+.\" James Clark (jjc@jclark.com) wrote the implementation of the macro package.
+.\" .IP \(em
+.\" Rickard E. Faith (faith@cs.unc.edu) wrote the initial version of
+.\" this manual page.
+.\" .IP \(em
+.\" Jens Schweikhardt (schweikh@noc.fdn.de) wrote the Linux Man-Page Mini-HOWTO
+.\" (which influenced this manual page).
+.\" .IP \(em
+.\" David A. Wheeler (dwheeler@ida.org) heavily modified this
+.\" manual page, such as adding detailed information on sections and macros.
+Makro \fBTX\fP z systemu SUN nie jest zaimplementowane.
+.SH "ZOBACZ TAKŻE"
+\fBapropos\fP(1), \fBgroff\fP(1), \fBlexgrog\fP(1), \fBman\fP(1), \fBman2html\fP(1),
+\fBgroff_mdoc\fP(7), \fBwhatis\fP(1), \fBgroff_man\fP(7), \fBgroff_www\fP(7),
+\fBman\-pages\fP(7), \fBmdoc\fP(7)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@p-soft.silesia.linux.org.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

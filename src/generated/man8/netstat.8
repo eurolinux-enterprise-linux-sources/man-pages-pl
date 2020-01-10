@@ -1,0 +1,351 @@
+.\"
+.\" netstat.8 
+.\"
+.\" Original: (mdw@tc.cornell.edu & dc6iq@insu1.etec.uni-karlsruhe.de)
+.\"
+.\" Modified: Bernd.Eckenfels@inka.de
+.\" Modified: Andi Kleen ak@muc.de 
+.\" Modified: Tuan Hoang tqhoang@bigfoot.com 
+.\"
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1988-1994 MicroWalt Corporation, 1995-1996 Bernd Eckenfels, 1997-2000 Andi Kleen, 1997-2000 Donald Becker (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH NETSTAT 8 16\-11\-2008 net\-tools "Podręcznik programisty Linuksa"
+
+.SH NAZWA
+netstat \- wyświetla połączenia sieciowe, tablice trasowania, statystyki
+interfejsu, połączenia maskaradowe i udziale w połączeniach multicast
+
+.SH SKŁADNIA
+
+\fBnetstat\fP [\fIopcje\-rodziny\-adresów\fP] [\fB\-\-tcp\fP|\fB\-t\fP] [\fB\-\-udp\fP|\fB\-u\fP]
+[\fB\-\-raw\fP|\fB\-w\fP] [\fB\-\-listening\fP|\fB\-l\fP] [\fB\-\-all\fP|\fB\-a\fP]
+[\fB\-\-numeric\fP|\fB\-n\fP] [\fB\-\-numeric\-hosts\fP] [\fB\-\-numeric\-ports\fP]
+[\fB\-\-numeric\-users\fP] [\fB\-\-symbolic\fP|\fB\-N\fP]
+[\fB\-\-extend\fP|\fB\-e\fP[\fB\-\-extend\fP|\fB\-e]\fP] [\fB\-\-timers\fP|\fB\-o\fP]
+[\fB\-\-program\fP|\fB\-p\fP] [\fB\-\-verbose\fP|\fB\-v\fP] [\fB\-\-continuous\fP|\fB\-c]\fP
+.P
+\fBnetstat\fP {\fB\-\-route\fP|\fB\-r\fP} [\fIopcje\-rodziny\-adresów\fP]
+[\fB\-\-extend\fP|\fB\-e\fP[\fB\-\-extend\fP|\fB\-e]\fP] [\fB\-\-verbose\fP|\fB\-v\fP]
+[\fB\-\-numeric\fP|\fB\-n\fP] [\fB\-\-numeric\-hosts\fP] [\fB\-\-numeric\-ports\fP]
+[\fB\-\-numeric\-users\fP] [\fB\-\-continuous\fP|\fB\-c]\fP
+.P
+\fBnetstat\fP {\fB\-\-interfaces\fP|\fB\-i\fP} [\fB\-\-all\fP|\fB\-a\fP]
+[\fB\-\-extend\fP|\fB\-e\fP[\fB\-\-extend\fP|\fB\-e]\fP] [\fB\-\-verbose\fP|\fB\-v\fP]
+[\fB\-\-program\fP|\fB\-p\fP] [\fB\-\-numeric\fP|\fB\-n\fP] [\fB\-\-numeric\-hosts\fP]
+[\fB\-\-numeric\-ports\fP] [\fB\-\-numeric\-users\fP] [\fB\-\-continuous\fP|\fB\-c]\fP
+.P
+\fBnetstat\fP {\fB\-\-groups\fP|\fB\-g\fP} [\fB\-\-numeric\fP|\fB\-n\fP] [\fB\-\-numeric\-hosts\fP]
+[\fB\-\-numeric\-ports\fP] [\fB\-\-numeric\-users\fP] [\fB\-\-continuous\fP|\fB\-c]\fP
+.P
+\fBnetstat\fP {\fB\-\-masquerade\fP|\fB\-M\fP} [\fB\-\-extend\fP|\fB\-e\fP] [\fB\-\-numeric\fP|\fB\-n\fP]
+[\fB\-\-numeric\-hosts\fP] [\fB\-\-numeric\-ports\fP] [\fB\-\-numeric\-users\fP]
+[\fB\-\-continuous\fP|\fB\-c]\fP
+.P
+\fBnetstat\fP {\fB\-\-statistics\fP|\fB\-s\fP} [\fB\-\-tcp\fP|\fB\-t\fP] [\fB\-\-udp\fP|\fB\-u\fP]
+[\fB\-\-raw\fP|\fB\-w\fP]
+.P
+\fBnetstat\fP {\fB\-\-version\fP|\fB\-V\fP}
+.P
+\fBnetstat\fP {\fB\-\-help\fP|\fB\-h\fP}
+.P
+\fIopcje\-rodziny\-adresów\fP:
+.PP
+[\fB\-4\fP] [\fB\-6\fP]
+[\fB\-\-protocol=\fP{\fBinet\fP,\fBunix\fP,\fBipx\fP,\fBax25\fP,\fBnetrom\fP,\fBddp\fP}[...]]
+[\fB\-\-unix\fP|\fB\-x\fP] [\fB\-\-inet\fP|\fB\-\-ip\fP] [\fB\-\-ax25\fP] [\fB\-\-ipx\fP] [\fB\-\-netrom\fP]
+[\fB\-\-ddp\fP]
+
+.SH OPIS
+\fBNetstat\fP wyświetla dane o podsystemie sieciowym Linuksa. Typ wyświetlanej
+informacji jest kontrolowany przez pierwszy argument, jak poniżej:
+.SS "(bez opcji)"
+Domyślnie \fBnetstat\fP wyświetla listę otwartych gniazd. Jeśli nie poda się
+rodzin adresów, to wypisane zostaną aktywne gniazda wszystkich
+skonfigurowanych rodzin adresów.
+.SS "\-\-route , \-r"
+Wyświetla tabele trasowania. Więcej informacji znajduje się w podręczniku
+\fBroute\fP(8). \fBnetstat \-r\fP i \fBroute \-e\fP wyświetlają to samo.
+.SS "\-\-groups , \-g"
+Wyświetla informacje o członkostwie w połączeniach multicast w przypadku
+IPv4 i IPv6.
+.SS "\-\-interfaces, \-i"
+Wyświetla tabelę wszystkich interfejsów sieciowych.
+.SS "\-\-masquerade , \-M"
+Wyświetla listę połączeń maskaradowych.
+.SS "\-\-statistics , \-s"
+Wyświetla zwięzłe statystyki każdego protokołu.
+.SH OPCJE
+.SS "\-\-verbose , \-v"
+Mówi użytkownikowi co się dzieje, wyświetlając więcej informacji. Co ważne,
+wypisuje niektóre interesujące informacje o nieskonfigurowanych rodzinach
+adresów.
+.SS "\-\-wide , \-W"
+Nie skraca adresów IP, używając tak szerokiego wyjścia, jakie jest
+potrzebne. Jest to obecnie opcjonalne, aby nie zepsuć istniejących skryptów.
+.SS "\-\-numeric , \-n"
+Pokazuje adresy numeryczne; nie próbuje zdeterminować symbolicznego hosta,
+portu czy nazwy użytkownika.
+.SS \-\-numeric\-hosts
+pokazuje adresy numeryczne; ale nie wpływa na określenie portu lub nazwy
+użytkownika.
+.SS \-\-numeric\-ports
+pokazuje porty numeryczne, ale nie wpływa na określenie komputera czy nazwy
+użytkownika.
+.SS \-\-numeric\-users
+pokazuje numeryczne identyfikatory użytkowników, ale nie wpływa na
+określenie komputera czy nazw portów.
+
+.SS "\-\-protocol=\fIrodzina \fP\fR, \fP\-A"
+Określa rodzinę adresów (prawdopodobnie lepsze określenie to protokoły
+niskiego poziomu) do pokazywanych połączeń. \fIrodzina\fP jest listą
+oddzielonych przecinkami słów kluczowych, takich jak \fBinet\fP, \fBunix\fP,
+\fBipx\fP, \fBax25\fP, \fBnetrom\fP i \fBddp\fP. To ma taki sam efekt, jak długie opcje
+\fB\-\-inet\fP, \fB\-\-unix\fP (\fB\-x\fP), \fB\-\-ipx\fP, \fB\-\-ax25\fP, \fB\-\-netrom\fP i \fB\-\-ddp\fP.
+.P
+Rodzina adresów \fBinet\fP obejmuje gniazda protokołów raw, udp i tcp.
+.SS "\-c, \-\-continuous"
+To powoduje, że \fBnetstat\fP będzie wypisywał wybraną informację w trybie
+ciągłym, co sekundę.
+.SS "\-e, \-\-extend"
+Wyświetla dodatkowe informacje. Dwukrotne użycie tej opcji da maksymalny
+poziom szczegółowości.
+.SS "\-o, \-\-timers"
+Obejmuje informacje związane z sieciowymi licznikami czasu.
+.SS "\-p, \-\-program"
+Pokazuje PID\-y oraz nazwy programów, do których należą poszczególne gniazda.
+.SS "\-l, \-\-listening"
+Pokazuje jedynie nasłuchujące gniazda (są one domyślnie pomijane).
+.SS "\-a, \-\-all"
+Pokazuje zarówno nasłuchujące jak i nienasłuchujące gniazda. Z opcją
+\fB\-\-interfaces\fP pokazuje nieaktywne interfejsy.
+.SS \-F
+Wypisuje informacje trasowania z FIB (domyślnie).
+.SS \-C
+Wypisuje informacje trasowania z buforu trasowania.
+.P
+.SH WYJŚCIE
+.P
+.SS "Aktywne połączenia internetowe \fR(TCP, UDP, RAW)\fP"
+.SS Proto
+Protokół (tcp, udp, raw) używany przez gniazdo.
+.SS Recv\-Q
+Liczba bajtów nieskopiowanych przez program użytkownika podłączonego do tego
+gniazda.
+.SS Send\-Q
+Liczba bajtów, których odbiór nie został potwierdzony przez zdalny host.
+.SS "Local Address"
+Adres lokalny (lokalna nazwa hosta) i numer portu gniazda. O ile nie podano
+opcji \fB\-\-numeric\fP (\fB\-n\fP), adres gniazda jest rozwiązywany do jego postaci
+kanonicznej (FQDN), a numer portu jest tłumaczony na odpowiadającą mu nazwę
+usługi.
+.SS "Foreign Address"
+Adres zdalnego komputera i numer portu jego gniazda. Analogiczne do "Local
+Adress".
+.SS State
+Stan gniazda. Ponieważ w RAW to nie działa, a zazwyczaj w UDP też nie, to
+pole pozostaje czasem puste. Normalnie może być to jedna z kilku wartości:
+.TP 
+\fIESTABLISHED\fP
+Gniazdo zestawiło połączenie.
+.TP 
+\fISYN_SENT\fP
+Gniazdo aktywnie próbuje zestawić połączenie.
+.TP 
+\fISYN_RECV\fP
+Żądanie połączenia zostało otrzymane z sieci.
+.TP 
+\fIFIN_WAIT1\fP
+Gniazdo jest zamknięte, a połączenie się zamyka.
+.TP 
+\fIFIN_WAIT2\fP
+Połączenie jest zamknięte, a gniazdo czeka na zamknięcie na drugim końcu.
+.TP 
+\fITIME_WAIT\fP
+Po zamknięciu, gniazdo czeka na obsługę pakietów wciąż będących w sieci.
+.TP 
+\fICLOSE\fP
+Gniazdo nie jest używane.
+.TP 
+\fICLOSE_WAIT\fP
+Zdalny koniec zamknął i oczekuje aż gniazdo się zamknie.
+.TP 
+\fILAST_ACK\fP
+Zdalny koniec zamknął, a gniazdo jest zamknięte. Oczekiwanie potwierdzenia.
+.TP 
+\fILISTEN\fP
+Gniazdo nasłuchuje nadchodzących połączeń. Te gniazda są wyświetlane tylko
+jeśli ustawiono opcję \fB\-\-listening\fP (\fB\-l\fP) lub \fB\-\-all\fP (\fB\-a\fP).
+.TP 
+\fICLOSING\fP
+Obydwa gniazda są zamknięte, lecz wciąż nie mamy wysłanych wszystkich
+danych.
+.TP 
+\fIUNKNOWN\fP
+Stan gniazda jest nieznany.
+.SS User
+Nazwa lub identyfikator użytkownika (UID) właściciela gniazda.
+.SS "PID/Program name"
+Identyfikator procesu i oddzielona ukośnikiem nazwa procesu, który jest
+właścicielem gniazda. Opcja \fB\-\-program\fP powoduje, że kolumna ta jest brana
+pod uwagę. Potrzebne są również uprawnienia \fIsuperużytkownika\fP, aby
+zobaczyć tę informację w przypadku gniazd, których nie jest się
+właścicielem. Ta informacja identyfikacyjna nie jest wciąż dostępna dla
+gniazd IPX.
+.SS Timer
+(musi to być napisane)
+.P
+.SS "Gniazda aktywne dziedziny UNIX\-owej"
+.SS Proto
+Protokół (zwykle unix) używany przez gniazdo.
+.SS RefCnt
+Liczba referencji (np. załączonych przez to gniazdo procesów).
+.SS Flags
+Wyświetlane flagi to SO_ACCEPTON (wyświetlane jako \fBACC\fP), SO_WAITDATA
+(\fBW\fP)  lub SO_NOSPACE (\fBN\fP).  SO_ACCECPTON jest używane na niepodłączonych
+gniazdach jeśli odpowiadające im procesy oczekują na żądanie
+połączenia. Pozostałe flagi zwykle nie są interesujące.
+.SS Type
+Istnieje wiele rodzajów dostępu do gniazd:
+.TP 
+\fISOCK_DGRAM\fP
+Gniazdo jest używane w trybie datagramowym (bezpołączeniowym).
+.TP 
+\fISOCK_STREAM\fP
+Gniazdo jest strumieniowe (połączeniowe).
+.TP 
+\fISOCK_RAW\fP
+Gniazdo jest gniazdem typu raw.
+.TP 
+\fISOCK_RDM\fP
+Gniazdo serwuje rdm (reliably\-delivered messages).
+.TP 
+\fISOCK_SEQPACKET\fP
+Gniazdo jest gniazdem typu sequential packet.
+.TP 
+\fISOCK_PACKET\fP
+Gniazdo dostępu interfejsu RAW.
+.TP 
+\fIUNKNOWN\fP
+Któż wie, co przyszłość może nam przynieść \- wypełnij :\-)
+.PP
+.SS State
+To pole będzie zawierać jedno z następujących słów kluczowych:
+.TP 
+\fIFREE\fP
+Gniazdo nie jest zaalokowane
+.TP 
+\fILISTENING\fP
+Gniazdo nasłuchuje żądań połączeń. Te gniazda są wyświetlane tylko jeśli
+ustawiono opcję \fB\-\-listening\fP (\fB\-l\fP) lub \fB\-\-all\fP (\fB\-a\fP).
+.TP 
+\fICONNECTING\fP
+Gniazdo ma zamiar zestawić połączenie.
+.TP 
+\fICONNECTED\fP
+Gniazdo jest połączone.
+.TP 
+\fIDISCONNECTING\fP
+Gniazdo się rozłącza.
+.TP 
+\fI(empty)\fP
+Gniazdo nie jest podłączone do innego.
+.TP 
+\fIUNKNOWN\fP
+Ten stan nie powinien nigdy wystąpić.
+.SS "PID/Program name"
+Identyfikator procesu (PID) i nazwa procesu, który posiada otwarte dane
+gniazdo. Więcej informacji znajduje się w rozdziale \fBAktywne połączenia
+internetowe\fP, znajdującym się wyżej.
+.SS Path
+Wyświetla ścieżkę do procesów przywiązanych do gniazda.
+.P
+.SS "Aktywne gniazda IPX"
+(powinno to być zrobione przez kogoś, kto je zna)
+.P
+.SS "Aktywne gniazda NET/ROM"
+(powinno to być zrobione przez kogoś, kto je zna)
+.P
+.SS "Aktywne gniazda AX.25"
+(powinno to być zrobione przez kogoś, kto je zna)
+.PP
+.SH UWAGI
+Od Linuksa 2.2, \fBnetstat \-i\fP nie wyświetla statystyk interfejsu, w
+przypadku aliasu interfejsu. Aby uzyskać liczniki aliasu interfejsu należy
+skonfigurować odpowiednie reguły za pomocą polecenia \fBipchains(8)\fP.
+
+.SH PLIKI
+.ta 
+\fI/etc/services\fP \-\- Plik translacji usług
+
+\fI/proc\fP \-\- Punkt montowania systemu plików proc, który daje dostęp do
+informacji statusu jądra za pomocą następujących plików:
+
+\fI/proc/net/dev\fP \-\- informacja o urządzeniach
+
+\fI/proc/net/raw\fP \-\- informacja o gniazdach RAW
+
+\fI/proc/net/tcp\fP \-\- informacja o gniazdach TCP
+
+\fI/proc/net/udp\fP \-\- informacja o gniazdach UDP
+
+\fI/proc/net/igmp\fP \-\- informacja o multicast IGMP.
+
+\fI/proc/net/unix\fP \-\- informacja o gniazdach dziedziny UNIX\-owej
+
+\fI/proc/net/ipx\fP \-\- informacja o gniazdach IPX
+
+\fI/proc/net/ax25\fP \-\- informacja o gniazdach AX25
+
+\fI/proc/net/appeltalk\fP \-\- informacja o gniazdach DDP (appletalk)
+
+\fI/proc/net/nr\fP \-\- informacja o gniazdach NET/ROM
+
+\fI/proc/net/route\fP \-\- informacje o trasowaniu IP
+
+\fI/proc/net/ax25_route\fP \-\- informacje o trasowaniu AX25
+
+\fI/proc/net/ipx_route\fP \-\- informacje o trasowaniu IPX
+
+\fI/proc/net/nr_nodes\fP \-\- lista węzłów NET/ROM
+
+\fI/proc/net/nr_neigh\fP \-\- jądrowi sąsiedzi NET/ROM
+
+\fI/proc/net/ip_masquerade\fP \-\- połączenia maskaradowe
+
+\fI/proc/net/snmp\fP \-\- statystyki
+.fi
+.P
+.SH "ZOBACZ TAKŻE"
+\fBroute\fP(8), \fBifconfig\fP(8), \fBipchains\fP(8), \fBiptables\fP(8), \fBproc\fP(5)
+.P
+.SH BŁĘDY
+Czasami mogą pojawić się dziwne informacje jeśli gniazdo zmienia się podczas
+przeglądania. Rzadko się to zdarza.
+.P
+.SH AUTORZY
+Interfejs użytkownika netstata został napisany przez Freda Baumgartena
+<dc6iq@insu1.etec.uni\-karlsruhe.de> strona podręcznika man przez
+Matta Welsha <mdw@tc.cornell.edu>. Była poprawiana przez Alana Coxa
+<Alan.Cox@linux.org>, który mógł się bardziej
+postarać. Zaktualizował ją ponownie Tuan Hoang
+<tqhoang@bigfoot.com>.
+.br
+Strona man i komendy załączone w pakiecie net\-tools zostały kompletnie
+przepisane przez Bernda Eckenfelsa <ecki@linux.de>.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 1.60 \fPoryginału.

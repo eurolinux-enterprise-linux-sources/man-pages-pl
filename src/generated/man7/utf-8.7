@@ -1,0 +1,214 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright (C) Markus Kuhn, 1996, 2001
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" 1995-11-26  Markus Kuhn <mskuhn@cip.informatik.uni-erlangen.de>
+.\"      First version written
+.\" 2001-05-11  Markus Kuhn <mgk25@cl.cam.ac.uk>
+.\"      Update
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © Markus Kuhn, 1996, 2001 (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Gwidon S. Naskrent (PTM) <naskrent@hoth.amu.edu.pl>, 1998.
+.\" Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>, 2002.
+.TH UTF\-8 7 11\-05\-2001 GNU "Podręcznik programisty Linuksa"
+.SH NAZWA
+UTF\-8 \- zgodne z ASCII wielobajtowe kodowanie Unikodowe
+.SH OPIS
+Zestaw znaków \fBUnicode 3.0\fP zajmuje szesnastobitową przestrzeń
+kodową. Najprostsze kodowanie Unikodowe (znane jako \fBUCS\-2\fP)  składa się z
+sekwencji słów szesnastobitowych. Takie łańcuchy mogą zawierać jako część
+wielu znaków 16\-bitowych bajty takie jak '\e0' lub '/', które mają specjalne
+znaczenie w nazwach plików i innych parametrach funkcji z biblioteki
+C. Dodatkowo, większość narzędzi uniksowych spodziewa się plików ASCII i nie
+potrafi bez znacznych modyfikacji czytać słów 16\-bitowych jako znaków. Z
+tych powodów \fBUCS\-2\fP nie jest pożądanym zewnętrznym kodowaniem \fBUnicode\fP w
+nazwach plików, plikach tekstowych, zmiennych środowiskowych itd.  \fBISO
+10646 Universal Character Set (UCS)\fP, nadzbiór Unicode, zajmuje nawet
+przestrzeń 31\-bitową i oczywiste dlań kodowanie \fBUCS\-4\fP (sekwencja słów
+32\-bitowych) stwarza te same problemy.
+
+Kodowanie \fBUTF\-8\fP dla \fBUnicode\fP i \fBUCS\fP nie ma tych problemów i jest
+słuszną metodą używania zestawu znaków \fBUnicode\fP w systemach operacyjnych
+wzorowanych na UNIX\-ie.
+.SS WŁAŚCIWOŚCI
+Kodowanie \fBUTF\-8\fP ma następujące przydatne właściwości:
+.TP  0.2i
+*
+\fBUCS\fP znaki od 0x00000000 do 0x0000007f (klasyczne znaki \fBUS\-ASCII\fP)
+zakodowane są po prostu jako bajty 0x00 do 0x7f (zgodność z ASCII). Oznacza
+to, że pliki i łańcuchy które zawierają tylko siedmiobitowe znaki ASCII mają
+takie samo kodowanie i w \fBASCII\fP i w \fBUTF\-8\fP.
+.TP 
+*
+Wszystkie znaki \fBUCS\fP > 0x7f zakodowane są jako wielobajtowy ciąg
+składający się tylko z bajtów w zakresie 0x80 do 0xfd, tak więc żadne bajty
+ASCII nie mogą się pojawić jako część innego znaku i nie występują tam
+problemy z np.  \&'\e0' czy '/'.
+.TP 
+*
+Zachowany jest leksykograficzny porządek sortowania łańcuchów w \fBUCS\-4\fP.
+.TP 
+*
+Za pomocą \fBUTF\-8\fP można zakodować wszystkie z możliwych 2^31 kodów UCS.
+.TP 
+*
+Bajty 0xfe i 0xff nie są nigdy używane w kodowaniu \fBUTF\-8\fP.
+.TP 
+*
+Pierwszy bajt ciągu wielobajtowego reprezentującego pojedynczy znak \fBUCS\fP
+nie\-ASCII zawsze zawiera się w zakresie 0xc0 do 0xfd i wskazuje jak długi
+jest ów ciąg. Wszystkie pozostałe bajty takiego wielobajtowego ciągu
+zawierają się w zakresie od 0x80 do 0xbf. Pozwala to na łatwą
+resynchronizację i sprawia, że kodowanie jest niezależne od stanu [systemu]
+oraz odporne na brakujące bajty.
+.TP 
+*
+Znaki \fBUCS\fP zakodowane w \fBUTF\-8\fP mogą mieć długość do sześciu bajtów,
+jakkolwiek standard \fBUnicode\fP nie definiuje znaków powyżej 0x10ffff, więc
+znaki Unicode mogą mieć maksymalnie cztery bajty w \fBUTF\-8\fP.
+.SS KODOWANIE
+Do reprezentacji znaku używane są następujące ciągi bajtów. Ciąg, którego
+należy użyć zależy od numeru kodu UCS znaku:
+.TP  0.4i
+0x00000000 \- 0x0000007F:
+0\fIxxxxxxx\fP
+.TP 
+0x00000080 \- 0x000007FF:
+110\fIxxxxx\fP 10\fIxxxxxx\fP
+.TP 
+0x00000800 \- 0x0000FFFF:
+1110\fIxxxx\fP 10\fIxxxxxx\fP 10\fIxxxxxx\fP
+.TP 
+0x00010000 \- 0x001FFFFF:
+11110\fIxxx\fP 10\fIxxxxxx\fP 10\fIxxxxxx\fP 10\fIxxxxxx\fP
+.TP 
+0x00200000 \- 0x03FFFFFF:
+111110\fIxx\fP 10\fIxxxxxx\fP 10\fIxxxxxx\fP 10\fIxxxxxx\fP 10\fIxxxxxx\fP
+.TP 
+0x04000000 \- 0x7FFFFFFF:
+1111110\fIx\fP 10\fIxxxxxx\fP 10\fIxxxxxx\fP 10\fIxxxxxx\fP 10\fIxxxxxx\fP 10\fIxxxxxx\fP
+.PP
+Pozycje bitowe \fIxxx\fP zostają wypełnione bitami numeru kodu znaku w
+reprezentacji dwójkowej.  Może zostać użyty tylko najkrótszy możliwy
+wielobajtowy ciąg, która reprezentuje numer kodowy danego znaku.
+.PP
+Wartości kodowe \fBUCS\fP 0xd800\(en0xdfff (zastępujące UTF\-16), jak też 0xfffe
+i 0xffff (nie\-znaki w UCS) nie powinny wystąpić w strumieniach zgodnych z
+\fBUTF\-8\fP.
+.SS PRZYKŁADY
+Znak \fBUnicode\fP 0xa9 = 1010 1001 (znak copyright) kodowany jest w UTF\-8 jako
+.PP
+.RS
+11000010 10101001 = 0xc2 0xa9
+.RE
+.PP
+a znak 0x2260 = 0010 0010 0110 0000 (symbol "nie równa się") kodowany jest
+jako:
+.PP
+.RS
+11100010 10001001 10100000 = 0xe2 0x89 0xa0
+.RE
+.SS "UWAGI O STOSOWANIU"
+Aby włączyć obsługę locale \fBUTF\-8\fP użytkownicy muszą wybrać na przykład
+.PP
+.RS
+export LANG=pl_PL.UTF\-8
+.RE
+.PP
+aby aktywować obsługę \fBUTF\-8\fP w aplikacjach.
+.PP
+Oprogramowanie, które musi wiedzieć, jakie kodowanie znaków jest używane
+powinno zawsze ustawiać locale, na przykład za pomocą
+.PP
+.RS
+setlocale(LC_CTYPE, "")
+.RE
+.PP
+a programiści mogą wówczas sprawdzać wartość wyrażenia
+.PP
+.RS
+strcmp(nl_langinfo(CODESET), "UTF\-8") == 0
+.RE
+.PP
+aby określić, czy zostało wybrane locale \fBUTF\-8\fP i czy wszystko:
+standardowe wprowadzanie i wyprowadzanie danych otwartym tekstem,
+komunikacja terminalowa, zawartość plików tekstowych oraz zmienne
+środowiska, jest zakodowane w \fBUTF\-8\fP.
+.PP
+Programiści przyzwyczajeni do jednobajtowego kodowania takiego, jak
+\fBUS\-ASCII\fP lub \fBISO 8859\fP muszą wiedzieć, że dwa z dotychczasowych założeń
+nie są spełnione w locale \fBUTF\-8\fP. Po pierwsze, pojedynczy bajt
+niekoniecznie nadal odpowiada pojedynczemu znakowi. Po drugie, ponieważ
+nowoczesne emulatory terminali w trybie \fBUTF\-8\fP wspierają również chińskie,
+japońskie i koreańskie \fBznaki o podwójnej długości\fP, jak też nie
+rozdzielone \fBznaki kombinowane\fP, wyprowadzenie pojedynczego znaku
+niekoniecznie przesuwa kursor o jedną pozycję, jak to miało miejsce w
+\fBASCII\fP.  Do zliczania znaków i pozycji kursora należy obecnie używać
+funkcji bibliotecznych takich, jak \fBmbsrtowcs\fP(3) i \fBwcswidth\fP(3).
+.PP
+Oficjalną sekwencją unikową przełączającą ze schematu kodowania \fBISO 2022\fP
+(używaną na przykład przez terminale VT100) do \fBUTF\-8\fP jest ESC % G
+("\ex1b%G").  Odpowiadającą jej sekwencją powrotu z \fBUTF\-8\fP do ISO 2022
+jest ESC % @ ("\ex1b%@"). Inne sekwencje ISO 2022 (takie jak przełączające
+zbiory G0 i G1) nie mają zastosowania w trybie UTF\-8.
+.PP
+Można mieć nadzieję, że w przewidywalnej przyszłości \fBUTF\-8\fP zastąpi na
+wszystkich poziomach \fBASCII\fP i \fBISO 8859\fP jako wspólne kodowanie znaków w
+systemach POSIX\-owych, doprowadzając do znacznego wzbogacenia środowiska
+obsługi czystego tekstu.
+.SS BEZPIECZEŃSTWO
+Standardy \fBUnicode\fP i \fBUCS\fP wymagają, aby przy generowaniu \fBUTF\-8\fP używać
+najkrótszej z możliwych postaci, np. generowanie dwubajtowej sekwencji o
+pierwszym bajcie 0xc0 nie jest zgodne ze standardem.  \fBUnicode 3.1\fP dodał
+wymaganie, aby zgodne ze standardem programy nie akceptowały innych niż
+najkrótsze postaci jako swoich danych wejściowych. Jest to związane z
+bezpieczeństwem: jeśli wprowadzane przez użytkownika dane są sprawdzane pod
+kątem możliwych naruszeń bezpieczeństwa, program może sprawdzać jedynie
+wersje \fBASCII\fP wystąpień "/../", ";" lub NUL i przeoczyć, że jest wiele
+niezgodnych z \fBASCII\fP sposobów przedstawienia tych rzeczy w nienajkrótszym
+kodowaniu \fBUTF\-8\fP.
+.SS STANDARDY
+.\" .SH AUTHOR
+.\" Markus Kuhn <mgk25@cl.cam.ac.uk>
+ISO/IEC 10646\-1:2000, Unicode 3.1, RFC\ 2279, Plan 9.
+.SH "ZOBACZ TAKŻE"
+\fBnl_langinfo\fP(3), \fBsetlocale\fP(3), \fBcharsets\fP(7), \fBunicode\fP(7)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Gwidon S. Naskrent (PTM) <naskrent@hoth.amu.edu.pl>
+i
+Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

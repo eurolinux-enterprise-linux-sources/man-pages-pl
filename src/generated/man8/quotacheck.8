@@ -1,0 +1,168 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1980-2008 Marco van Wieringen, Jan Kara et al (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Wojtek Kotwica (PTM) <wkotwica@post.pl>, 2000.
+.\" Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>, 2002.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH quotacheck 8 "20 lipca 2001"  
+.SH NAZWA
+quotacheck \- przeszukuje system plików w celu określenia wykorzystania dysku
+oraz tworzy, sprawdza i naprawia pliki kwot
+.SH SKŁADNIA
+\fBquotacheck\fP [ \fB\-gubcfinvdMmR\fP ] [ \fB\-F\fP \fInazwa\-formatu\fP ] \fB\-a\fP |
+\fIsystem\-plików\fP
+.br
+.SH OPIS
+\fBquotacheck\fP bada każdy z systemów plików, tworzy tablicę zajętości dysku i
+porównuje ją z tablicą zapisaną w pliku kwot dyskowych systemu plików (krok
+ten jest pomijany w przypadku podania opcji \fB\-c\fP).  Jeśli stwierdzone
+zostaną rozbieżności, to aktualizowane są zarówno plik kwot, jak i aktualna
+systemowa kopia nieprawidłowych kwot (to ostatnie ma miejsce jedynie podczas
+sprawdzania aktywnego systemu plików, co nie jest zalecane).  Domyślnym
+zachowaniem jest sprawdzanie jedynie kwot dyskowych użytkowników.
+\fBquotacheck\fP oczekuje, że każdy ze sprawdzanych systemów plików zawiera
+pliki kwot o nazwach \fI[a]quota.user\fP i \fI[a]quota.group\fP, umieszczone w
+głównym katalogu danego systemu plików. Jeśli plik nie istnieje, to
+\fBquotacheck\fP go utworzy.
+.PP
+Jeśli plik kwot jest uszkodzony, to \fBquotacheck\fP spróbuje zachować tyle
+danych, ile będzie możliwe. Odzyskiwanie danych może wymagać interwencji
+użytkownika. Bez dodatkowych opcji, \fBquotacheck\fP w takiej sytuacji po
+prostu zakończy pracę. W trybie interakcyjnym (opcja \fB\-i\fP), użytkownik jest
+proszony o poradę. Porady można udzielić z linii poleceń (patrz opcja
+\fB\-n\fP), co jest przydatne podczas automatycznego uruchamiania \fBquotacheck\fP
+(np. ze skryptu) i niepowodzenie jest nie do przyjęcia.
+.PP
+\fBquotacheck\fP powinno być uruchamiane każdorazowo gdy system startuje i
+montuje niepoprawne systemy plików. Najczęściej zdarza się to po awarii
+systemu.
+.PP
+Jest wysoce zalecane, aby uruchamiać \fBquotacheck\fP przy wyłączonych dla
+danego systemu plików kwotach. W przeciwnym razie, mogą wystąpić uszkodzenia
+lub utrata danych w plikach kwot. Nie jest również rozsądnym uruchamianie
+\fBquotacheck\fP na aktywnym systemie plików, gdyż aktualne zużycie zasobów
+może ulec zmianie podczas przeszukiwania. Aby temu zapobiec, \fBquotacheck\fP
+próbuje przełączyć system plików w tryb "tylko do odczytu", zanim rozpocznie
+przeszukiwanie. Po zakończeniu przeszukiwania system plików jest przełączany
+w tryb "do odczytu i zapisu". Można to wyłączyć za pomocą opcji \fB\-m\fP.
+Można również za pomocą opcji \fB\-M\fP spowodować, aby \fBquotacheck\fP ignorował
+niepomyślne przełączenie systemu plików w tryb "tylko do odczytu".
+.SH OPCJE
+.TP 
+\fB\-b\fP
+Wymusza tworzenie przez \fBquotacheck\fP kopii zapasowych pliku kwot przed
+zapisaniem nowych danych.
+.TP 
+\fB\-v, \-\-verbose\fP
+Sygnalizuje przez \fBquotacheck\fP postęp operacji. Normalnie, działa on po
+cichu. Jeśli poda się tę opcję dwukrotnie, wypisywany jest również bieżący
+katalog (proszę zauważyć, że może to spowolnić przeszukiwanie, w dający się
+odczuć sposób).
+.TP 
+\fB\-d, \-\-debug\fP
+Tryb odpluskwiania. Podaje mnóstwo informacji, które mogą posłużyć do
+wyszukiwania błędów w programie. Wynik jest bardzo szczegółowy a
+przeszukiwanie \- powolne.
+.TP 
+\fB\-u, \-\-user\fP
+Sprawdza jedynie kwoty dyskowe użytkowników na systemach plików wymienionych
+w \fI/etc/mtab\fP lub podanych w linii poleceń. Jest to zachowanie domyślne.
+.TP 
+\fB\-g, \-\-group\fP
+Sprawdza jedynie kwoty dyskowe grup na systemach plików wymienionych w
+\fI/etc/mtab\fP lub podanych w wierszu linii polecenia.
+.TP 
+\fB\-c, \-\-create\-files\fP
+Nie czyta istniejących plików kwot. Po prostu wykonuje przeszukanie i
+zapisuje jego wyniki na dysku.  \fBquotacheck\fP pominie również poszukiwanie
+starych plików kwot, gdy ich nie znajdzie.
+.TP 
+\fB\-f, \-\-force\fP
+Wymusza sprawdzanie systemu plików przy włączonych kwotach. Jest to
+niezalecane, gdyż utworzone pliki kwot mogą być nieaktualne.
+.TP 
+\fB\-M, \-\-try\-remount\fP
+Opcja ta wymusza sprawdzanie systemu plików w trybie "do odczytu i zapisu",
+gdy przełączenie w tryb "tylko do odczytu" się nie powiedzie. Należy to
+robić, gdy ma się pewność, że żaden proces nie zapisuje na przeszukiwanym
+systemie plików.
+.TP 
+\fB\-m, \-\-no\-remount\fP
+Omija próby przełączenia systemu plików w tryb "tylko do odczytu". Patrz
+komentarz do opcji \fB\-M\fP.
+.TP 
+\fB\-i, \-\-interactive\fP
+Tryb interaktywny. Domyślnie, \fBquotacheck\fP kończy pracę po wykryciu
+błędu. W trybie interaktywnym użytkownik jest pytany o decyzję. Patrz opcja
+\fB\-n\fP.
+.TP 
+\fB\-n, \-\-use\-first\-dquot\fP
+Jeśli plik kwot jest uszkodzony, mogą pojawić się podwójne wpisy dla
+poszczególnych identyfikatorów użytkowników lub grup. Normalnie, w takiej
+sytuacji \fBquotacheck\fP kończy pracę lub pyta użytkownika o decyzję. Przy
+włączeniu tej opcji, używany jest zawsze pierwszy wpis (działa ona również w
+trybie interakcyjnym).
+.TP 
+\fB\-F, \-\-format=\fP\fInazwa\-formatu\fP
+Sprawdza kwoty według podanego formatu (tzn. nie jest wykonywane
+automatyczne wykrywanie formatu). Jest to zalecane, gdyż detekcja może nie
+działać poprawnie w przypadku uszkodzonych plików kwot. Dozwolone są
+następujące nazwy formatów: \fBvfsold\fP \- pierwotny format udziałów z
+16\-bitowymi UID\-ami/GID\-ami, \fBvfsv0\fP \- format udziałów z 32\-bitowymi
+UID\-ami/GID\-ami, 64\-bitowe użycie przestrzeni, 32\-bitowe użycie i\-węzłów
+oraz limity, \fBvfsv1\fP \- format udziałów z 64\-bitowymi limitami i użyciem,
+\fBrpc\fP \- udziały poprzez NFS, \fBxfs\fP \- udziały w systemie plików XFS.
+.TP 
+\fB\-a, \-\-all\fP
+Sprawdza wszystkie zamontowane, różne od NFS systemy plików wymienione w
+\fB/etc/mtab\fP
+.TP 
+\fB\-R, \-\-exclude\-root\fP
+Używane w połączeniu z opcją \fB\-a\fP powoduje sprawdzenie kwot na wszystkich
+systemach plików, oprócz głównego.
+
+.SH UWAGA
+\fBquotacheck\fP powinno być uruchamiane tylko przez
+superużytkownika. Użytkownicy nieuprzywilejowani przypuszczalnie nie mają
+praw do odczytu wszystkich katalogów danego systemu plików.
+
+.SH "ZOBACZ TAKŻE"
+\fBquota\fP(1), \fBquotactl\fP(2), \fBfstab\fP(5), \fBquotaon\fP(8), \fBrepquota\fP(8),
+\fBconvertquota\fP(8), \fBsetquota\fP(8), \fBedquota\fP(8), \fBfsck\fP(8), \fBefsck\fP(8),
+\fBe2fsck\fP(8), \fBxfsck\fP(8)
+
+.SH PLIKI
+.PD 0
+.TP  15
+\fBaquota.user\fP lub \fBaquota.group\fP
+pliki kwot umieszczone w głównym katalogu systemu plików (wersja 2 kwot,
+systemy plików inne niż XFS)
+.TP  15
+\fBquota.user\fP lub \fBquota.group\fP
+pliki kwot umieszczone w głównym katalogu systemu plików (wersja 1 kwot,
+systemy plików inne niż XFS)
+.TP 
+\fB/etc/mtab\fP
+nazwy i lokalizacja zamontowanych systemów plików
+.SH AUTOR
+Jan Kara \<jack@suse.cz\>
+.br
+W oparciu o starą wersję \fBquotacheck\fP autorstwa:
+.br
+Edvarda Tuindera \<ed@elm.net\>
+.br
+Marco van Wieringena \<mvw@planets.elm.net\>
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Wojtek Kotwica (PTM) <wkotwica@post.pl>,
+Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 4.00 \fPoryginału.

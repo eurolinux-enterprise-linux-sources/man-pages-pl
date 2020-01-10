@@ -1,0 +1,552 @@
+# Polish translation of more.1 man page
+# This file is distributed under the same license as original manpage
+# Copyright of the original manpage:
+# Copyright © 1988, 1990 The Regents of the University of California, 1988 Mark Nudleman (BSD-4-clause)
+# Copyright © of Polish translation:
+# Gwidon S. Naskrent <naskrent@hoth.amu.edu.pl>, 1998.
+# Michał Kułach <michal.kulach@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-pl\n"
+"POT-Creation-Date: 2012-03-30 18:13+0300\n"
+"PO-Revision-Date: 2012-03-30 18:51+0200\n"
+"Last-Translator: Michał Kułach <michal.kulach@gmail.com>\n"
+"Language-Team: Polish <manpages-pl-list@lists.sourceforge.net>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+
+#. type: Dd
+#, no-wrap
+msgid "February 2011   "
+msgstr "luty 2011   "
+
+#. type: Dt
+#, no-wrap
+msgid "MORE(1) \"\" \"User Commands\""
+msgstr "MORE(1) \"\" \"Polecenia użytkownika\""
+
+#. type: Os
+#, no-wrap
+msgid "util-linux"
+msgstr "util-linux"
+
+#. type: Sh
+#, no-wrap
+msgid "NAME"
+msgstr "NAZWA"
+
+#. type: Plain text
+msgid "E<.Nm more>"
+msgstr "E<.Nm more>"
+
+#. type: Nd
+#, no-wrap
+msgid "file perusal filter for crt viewing"
+msgstr "filtrowa przeglądarka plików do CRT"
+
+#. type: Sh
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "SKŁADNIA"
+
+#. type: Plain text
+msgid ""
+"E<.Nm more> E<.Op Fl dlfpcsu> E<.Op Fl num> E<.Op +/\\fIpattern\\fP> E<.Op "
+"+\\fIlinenum\\fP> E<.Op Ar>"
+msgstr ""
+"E<.Nm more> E<.Op Fl dlfpcsu> E<.Op Fl numer> E<.Op +/\\fIwzór\\fP> E<.Op "
+"+\\fInumer-wiersza\\fP> E<.Op \\fIplik...\\fP>"
+
+#. type: Sh
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "OPIS"
+
+#. type: Plain text
+msgid ""
+"E<.Nm> is a filter for paging through text one screenful at a time.  This "
+"version is especially primitive.  Users should realize that E<.Xr less 1> "
+"provides E<.Xr more 1> emulation plus extensive enhancements."
+msgstr ""
+"E<.Nm> jest filtrem służącym do przeglądania tekstu strona po stronie, "
+"jeden ekran na raz.  Bieżąca wersja jest szczególnie prymitywna.  "
+"Użytkownicy powinni zdać sobie sprawę że E<.Xr less(1)> dostarcza emulacji "
+"E<.Xr more(1)> wraz z licznymi ulepszeniami."
+
+#. type: Sh
+#, no-wrap
+msgid "OPTIONS"
+msgstr "OPCJE"
+
+#. type: Plain text
+msgid ""
+"Command-line options are described below.  Options are also taken from the "
+"environment variable E<.Ev MORE> (make sure to precede them with a dash "
+"(``-'')) but command line options will override them."
+msgstr ""
+"Opcje wiersza poleceń podano poniżej. Opcje pobierane są także ze zmiennej "
+"środowiskowej E<.Ev MORE> (proszę się upewnić, że poprzedzono je myślnikiem "
+"(\"-\")), ale opcje wiersza poleceń mogą je unieważnić."
+
+#. type: It
+#, no-wrap
+msgid "Fl num"
+msgstr "Fl num"
+
+#. type: Plain text
+msgid "This option specifies an integer which is the screen size (in lines)."
+msgstr ""
+"Opcja ta określa liczbę całkowitą będącą rozmiarem ekranu (w wierszach)."
+
+#. type: It
+#, no-wrap
+msgid "Fl d"
+msgstr "Fl d"
+
+#. type: Plain text
+msgid ""
+"E<.Nm more> will prompt the user with the message \"[Press space to "
+"continue, 'q' to quit.]\" and will display \"[Press 'h' for instructions.]\" "
+"instead of ringing the bell when an illegal key is pressed."
+msgstr ""
+"E<.Nm more> wypisze komunikat \"[Spacja kontynuuje, 'q' kończy.]\" oraz "
+"wyświetli \"[Klawisz 'h' wyświetla opis.]\" zamiast wysyłać "
+"znak dzwonka, kiedy naciśnięto nieprawidłowy klawisz."
+
+#. type: It
+#, no-wrap
+msgid "Fl l"
+msgstr "Fl l"
+
+#. type: Plain text
+msgid ""
+"E<.Nm more> usually treats E<.Ic \\&^L> (form feed) as a special character, "
+"and will pause after any line that contains a form feed.  The E<.Fl l> "
+"option will prevent this behavior."
+msgstr ""
+"E<.Nm more> zwykle traktuje E<.Ic \\&^L> (koniec strony) jako znak "
+"specjalny, i będzie pauzować po każdym wierszu, który zawiera koniec strony.  "
+"Opcja E<.Fl l> zakazuje takiego zachowania."
+
+#. type: It
+#, no-wrap
+msgid "Fl f"
+msgstr "Fl f"
+
+#. type: Plain text
+msgid ""
+"Causes E<.Nm more> to count logical, rather than screen lines (i.e., long "
+"lines are not folded)."
+msgstr ""
+"Powoduje że E<.Nm more> liczy wiersze logiczne, zamiast ekranowych (tj. "
+"długie "
+"linie nie są zawijane)."
+
+#. type: It
+#, no-wrap
+msgid "Fl p"
+msgstr "Fl p"
+
+#. type: Plain text
+msgid ""
+"Do not scroll.  Instead, clear the whole screen and then display the text."
+msgstr ""
+"Nie przewija ekranu.  Zamiast tego czyści cały ekran i potem wyświetlaj "
+"tekst."
+
+#. type: Plain text
+msgid ""
+"Notice that this option is switched on automatically if the executable is "
+"named E<.Nm page>."
+msgstr ""
+"Proszę zwrócić uwagę, że ta opcja jest włączana automatycznie, jeśli plik "
+"wykonywalny nazywa się E<.Nm page>."
+
+#. type: It
+#, no-wrap
+msgid "Fl c"
+msgstr "Fl c"
+
+#. type: Plain text
+msgid ""
+"Do not scroll.  Instead, paint each screen from the top, clearing the "
+"remainder of each line as it is displayed."
+msgstr ""
+"Nie przewija ekranu.  Zamiast tego, rysuje każdy ekran od początku, "
+"czyszcząc resztę każdego wiersza w momencie jego wyświetlania."
+
+#. type: It
+#, no-wrap
+msgid "Fl s"
+msgstr "Fl s"
+
+#. type: Plain text
+msgid "Squeeze multiple blank lines into one."
+msgstr "Zamienia wiele sąsiadujących pustych wierszy w jeden."
+
+#. type: It
+#, no-wrap
+msgid "Fl u"
+msgstr "Fl u"
+
+#. type: Plain text
+msgid "Suppress underlining."
+msgstr "Wyłącza podkreślanie."
+
+#. type: It
+#, no-wrap
+msgid "Ic +/"
+msgstr "Ic +/"
+
+#. type: Plain text
+msgid ""
+"The E<.Ic +/> option specifies a string that will be searched for before "
+"each file is displayed."
+msgstr ""
+"Opcja E<.Ic +/> określa łańcuch który należy przeszukać zanim zostanie "
+"wyświetlony każdy z plików."
+
+#. type: It
+#, no-wrap
+msgid "Ic +num"
+msgstr "Ic +num"
+
+#. type: Plain text
+msgid "Start at line number E<.Ic num>."
+msgstr "Zaczyna od wiersza numer E<.Ic num>."
+
+#. type: Sh
+#, no-wrap
+msgid "COMMANDS"
+msgstr "KOMENDY"
+
+#. type: Plain text
+msgid ""
+"Interactive commands for E<.Nm more> are based on E<.Xr vi 1>.  Some "
+"commands may be preceded by a decimal number, called k in the descriptions "
+"below.  In the following descriptions, ^X means control-X."
+msgstr ""
+"Interaktywne komendy dla E<.Nm more> oparte są na E<.Xr vi(1)>.  Niektóre "
+"komendy mogą być poprzedzone liczbą dziesiętną, zwaną k w opisach poniżej.  "
+"W poniższych opisach, ^X oznacza Control-X."
+
+#. type: It
+#, no-wrap
+msgid "Ic h No or Ic ?"
+msgstr "Ic h No lub Ic ?"
+
+#. type: Plain text
+msgid ""
+"Help: display a summary of these commands.  If you forget all the other "
+"commands, remember this one."
+msgstr ""
+"Pomoc: wyświetl podsumowanie tych komend.  Jeśli zapomnisz wszystkich innych "
+"komend, pamiętaj o tej."
+
+#. type: It
+#, no-wrap
+msgid "Ic SPACE"
+msgstr "Ic SPACJA"
+
+#. type: Plain text
+msgid "Display next k lines of text.  Defaults to current screen size."
+msgstr ""
+"Wyświetl poprzednie k wierszy tekstu.  Domyślnie bieżący rozmiar ekranu."
+
+#. type: It
+#, no-wrap
+msgid "Ic z"
+msgstr "Ic z"
+
+#. type: Plain text
+msgid ""
+"Display next k lines of text.  Defaults to current screen size.  Argument "
+"becomes new default."
+msgstr ""
+"Wyświetl następne k wierszy tekstu.  Domyślnie bieżący rozmiar ekranu.  "
+"Argument staje się nową wartością domyślną."
+
+#. type: It
+#, no-wrap
+msgid "Ic RETURN"
+msgstr "Ic RETURN"
+
+#. type: Plain text
+msgid ""
+"Display next k lines of text.  Defaults to 1.  Argument becomes new default."
+msgstr ""
+"Wyświetl następne k wierszy tekstu.  Domyślnie jeden.  Argument staje się "
+"nową "
+"wartością domyślną."
+
+#. type: It
+#, no-wrap
+msgid "Ic d No or Ic \\&^D"
+msgstr "Ic d No lub Ic \\&^D"
+
+#. type: Plain text
+msgid ""
+"Scroll k lines.  Default is current scroll size, initially 11.  Argument "
+"becomes new default."
+msgstr ""
+"Przewiń o k wierszy.  Domyślnie bieżący rozmiar przewijania, początkowo 11.  "
+"Argument staje się nową wartością domyślną."
+
+#. type: It
+#, no-wrap
+msgid "Xo"
+msgstr "Xo"
+
+#. type: Plain text
+msgid "E<.Ic q> E<.No or> E<.Ic Q> E<.No or> E<.Ic INTERRUPT> E<.Xc> Exit."
+msgstr ""
+"E<.Ic q> E<.No lub> E<.Ic Q> E<.No lub> E<.Ic INTERRUPT >[to co stty oznacza "
+"przez intr - przyp. GSN] E<.Xc> Wyjdź."
+
+#. type: It
+#, no-wrap
+msgid "Ic s"
+msgstr "Ic s"
+
+#. type: Plain text
+msgid "Skip forward k lines of text.  Defaults to 1."
+msgstr "Przeskocz k wierszy tekstu w przód.  Domyślnie jeden."
+
+#. type: It
+#, no-wrap
+msgid "Ic f"
+msgstr "Ic f"
+
+#. type: Plain text
+msgid "Skip forward k screenfuls of text.  Defaults to 1."
+msgstr "Przeskocz k ekranów tekstu w przód.  Domyślnie jeden."
+
+#. type: It
+#, no-wrap
+msgid "Ic b No or Ic \\&^B"
+msgstr "Ic b No lub Ic \\&^B"
+
+#. type: Plain text
+msgid ""
+"Skip backwards k screenfuls of text.  Defaults to 1.  Only works with files, "
+"not pipes."
+msgstr "Przeskocz k ekranów tekstu w tył.  Domyślnie jeden."
+
+#. type: It
+#, no-wrap
+msgid "Ic '"
+msgstr "Ic '"
+
+#. type: Plain text
+msgid "Go to place where previous search started."
+msgstr "Idź do miejsca rozpoczęcia poprzedniego wyszukiwania."
+
+#. type: It
+#, no-wrap
+msgid "Ic ="
+msgstr "Ic ="
+
+#. type: Plain text
+msgid "Display current line number."
+msgstr "Wyświetl bieżący numer wiersza."
+
+#. type: It
+#, no-wrap
+msgid "Ic \\&/ Ns Ar pattern"
+msgstr "Ic \\&/ Ns Ar wzór"
+
+#. type: Plain text
+msgid "Search for kth occurrence of regular expression.  Defaults to 1."
+msgstr ""
+"Poszukaj k-tego wystąpienia wyrażenia regularnego.  Domyślnie pierwszego."
+
+#. type: It
+#, no-wrap
+msgid "Ic n"
+msgstr "Ic n"
+
+#. type: Plain text
+msgid "Search for kth occurrence of last r.e.  Defaults to 1."
+msgstr ""
+"Poszukaj k-tego wystąpienia poprzedniego wyrażenia regularnego.  Domyślnie "
+"pierwszego."
+
+#. type: It
+#, no-wrap
+msgid "Ic !E<lt>cmdE<gt> No or Ic :!E<lt>cmdE<gt>"
+msgstr "Ic !E<lt>cmdE<gt> No lub Ic :!E<lt>cmdE<gt>"
+
+#. type: Plain text
+msgid "Execute E<lt>cmdE<gt> in a subshell"
+msgstr "Wykonaj E<lt>cmdE<gt> w podpowłoce."
+
+#. type: It
+#, no-wrap
+msgid "Ic v"
+msgstr "Ic v"
+
+#. type: Plain text
+msgid ""
+"Start up an editor at current line.  The editor is taken from the "
+"environment variable VISUAL if defined, or EDITOR if VISUAL is not defined, "
+"or defaults to \"vi\" if neither VISUAL nor EDITOR is defined."
+msgstr ""
+"Uruchom edytor od bieżącego wiersza. Edytor jest określony zmienną "
+"środowiskową VISUAL lub, jeśli jej nie zdefiniowano, EDITOR. Jeśli nie "
+"zdefiniowano żadnej ze zmiennych domyślnym edytorem jest vi."
+
+#. type: It
+#, no-wrap
+msgid "Ic \\&^L"
+msgstr "Ic \\&^L"
+
+#. type: Plain text
+msgid "Redraw screen"
+msgstr "Odśwież ekran."
+
+#. type: It
+#, no-wrap
+msgid "Ic :n"
+msgstr "Ic :n"
+
+#. type: Plain text
+msgid "Go to kth next file.  Defaults to 1."
+msgstr "Idź do k-tego następnego pliku.  Domyślnie pierwszego następnego."
+
+#. type: It
+#, no-wrap
+msgid "Ic :p"
+msgstr "Ic :p"
+
+#. type: Plain text
+msgid "Go to kth previous file.  Defaults to 1."
+msgstr "Idź do k-tego poprzedniego pliku.  Domyślnie pierwszego poprzedniego."
+
+#. type: It
+#, no-wrap
+msgid "Ic :f"
+msgstr "Ic :f"
+
+#. type: Plain text
+msgid "Display current file name and line number"
+msgstr "Wyświetl bieżącą nazwę pliku i numer wiersza."
+
+#. type: It
+#, no-wrap
+msgid "Ic \\&."
+msgstr "Ic \\&."
+
+#. type: Plain text
+msgid "Repeat previous command"
+msgstr "Powtórz poprzednią komendę."
+
+#. type: Sh
+#, no-wrap
+msgid "ENVIRONMENT"
+msgstr "ŚRODOWISKO"
+
+#. type: Plain text
+msgid ""
+"E<.Nm More> utilizes the following environment variables, if they exist:"
+msgstr ""
+"E<.Nm more> wykorzystuje następujące zmienne środowiskowe, jeśli istnieją:"
+
+#. type: It
+#, no-wrap
+msgid "Ev MORE"
+msgstr "Ev MORE"
+
+#. type: Plain text
+msgid "This variable may be set with favored options to E<.Nm more>."
+msgstr "Zmienną tą można ustawić na ulubione opcje dla E<.Nm more>."
+
+#. type: It
+#, no-wrap
+msgid "Ev SHELL"
+msgstr "Ev SHELL"
+
+#. type: Plain text
+msgid "Current shell in use (normally set by the shell at login time)."
+msgstr ""
+"Bieżąca używana powłoka (normalnie ustawiana przez powłokę w czasie "
+"logowania)."
+
+#. type: It
+#, no-wrap
+msgid "Ev TERM"
+msgstr "Ev TERM"
+
+#. type: Plain text
+msgid ""
+"Specifies terminal type, used by more to get the terminal characteristics "
+"necessary to manipulate the screen."
+msgstr ""
+"Określa typ terminala, używany przez E<.Nm more> do pobrania charakterystyk "
+"terminala koniecznych do manipulowania ekranem."
+
+#. type: Sh
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "ZOBACZ TAKŻE"
+
+#. type: Plain text
+msgid "E<.Xr vi 1>, E<.Xr less 1>"
+msgstr "E<.Xr vi(1)> E<.Xr less(1)>"
+
+#. type: Sh
+#, no-wrap
+msgid "AUTHORS"
+msgstr "AUTORZY"
+
+#. type: Plain text
+msgid "Eric Shienbrood, UC Berkeley"
+msgstr "Eric Shienbrood, UC Berkeley"
+
+#. type: Plain text
+msgid "Modified by Geoff Peck, UCB to add underlining, single spacing"
+msgstr ""
+"Zmodyfikowany przez Geoffa Pecka z UCB, który dodał podkreślenia i "
+"pojedyncze odstępy liniowe."
+
+#. type: Plain text
+msgid "Modified by John Foderaro, UCB to add -c and MORE environment variable"
+msgstr ""
+"Zmodyfikowany przez Johna Foderaro z UCB, który dodał \\-c i zmienną "
+"środowiskową MORE."
+
+#. type: Sh
+#, no-wrap
+msgid "HISTORY"
+msgstr "HISTORIA"
+
+#. type: Plain text
+msgid ""
+"The E<.Nm more> command appeared in E<.Bx 3.0>.  This man page documents "
+"E<.Nm more> version 5.19 (Berkeley 6/29/88), which is currently in use in "
+"the Linux community.  Documentation was produced using several other "
+"versions of the man page, and extensive inspection of the source code."
+msgstr ""
+"Polecenie E<.Nm more> pojawiło się w E<.Bx 3.0>.  Ta strona podręcznika "
+"dokumentuje "
+"wersję 5.19 E<.Nm more> (Berkeley 29 VI 88), która jest obecnie używana w "
+"środowisku linuksowym.  Dokumentacja została stworzona z użyciem kilku "
+"innych wersji stron man oraz szczegółowej inspekcji kodu źródłowego."
+
+#. type: Sh
+#, no-wrap
+msgid "AVAILABILITY"
+msgstr "DOSTĘPNOŚĆ"
+
+#. type: Plain text
+msgid ""
+"The more command is part of the util-linux package and is available from "
+"ftp://ftp.kernel.org/pub/linux/utils/util-linux/."
+msgstr ""
+"Polecenie more jest częścią pakietu util-linux i jest dostępne pod adresem "
+"ftp://ftp.kernel.org/pub/linux/utils/util-linux/."
+

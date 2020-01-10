@@ -1,0 +1,111 @@
+.\" Hey Emacs! This file is -*- nroff -*- source.
+.\"
+.\" Copyright (C) 1997 Andries Brouwer (aeb@cwi.nl)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified, 2003-05-26, Michael Kerrisk, <mtk.manpages@gmail.com>
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1997 Andries Brouwer 
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH SETRESUID 2 2010\-11\-22 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+setresuid, setresgid \- ustawienie rzeczywistego, efektywnego i zachowanego
+ID użytkownika lub grupy
+.SH SKŁADNIA
+\fB#define _GNU_SOURCE\fP /* Patrz feature_test_macros(7) */
+.br
+\fB#include <unistd.h>\fP
+.sp
+\fBint setresuid(uid_t \fP\fIruid\fP\fB, uid_t \fP\fIeuid\fP\fB, uid_t \fP\fIsuid\fP\fB);\fP
+.br
+\fBint setresgid(gid_t \fP\fIrgid\fP\fB, gid_t \fP\fIegid\fP\fB, gid_t \fP\fIsgid\fP\fB);\fP
+.SH OPIS
+\fBsetresuid\fP() ustawia dla bieżącego procesu rzeczywisty i efektywny
+identyfikator użytkownika (UID) oraz wartość zachowanego set\-user\-ID.
+
+Proces nieuprzywilejowany może zmienić rzeczywisty UID, efektywny UID i
+zachowany set\-user\-ID na jeden z: bieżący rzeczywisty UID, bieżący efektywny
+UID lub bieżący zachowany set\-user\-ID.
+
+Proces uprzywilejowany (pod Linuksem \- mający atrybut \fBCAP_SETUID\fP) może
+ustawić rzeczywisty UID, efektywny UID i zachowany set\-user\-ID na dowolne
+wartości.
+
+Jeżeli którykolwiek z parametrów jest równy \-1, to odpowiadająca mu wartość
+nie jest zmieniana.
+
+Niezależnie od zmian rzeczywistego UID, efektywnego UID i zachowanego
+set\-user\-ID, file\-system\-UID jest zawsze ustawiany na taką samą wartość,
+jaką ma (być może nowy) efektywny UID.
+
+Analogicznie, \fBsetresgid\fP() ustawia rzeczywisty identyfikator grupy (GID),
+efektywny GID i zachowany set\-group\-ID bieżącego procesu (i zawsze ustawia
+file\-system\-GID na wartość efektywnego GID), z takimi samymi ograniczeniami
+dla procesów nieuprzywilejowanych.
+.SH "WARTOŚĆ ZWRACANA"
+Po pomyślnym zakończeniu zwracane jest zero. Po błędzie zwracane jest \-1 i
+odpowiednio ustawiane \fIerrno\fP.
+.SH BŁĘDY
+.TP 
+\fBEAGAIN\fP
+\fIuid\fP nie pasuje do obecnego UID użytkownika, a to wywołanie pozwoliłoby
+obejść użytkownikowi limit zasobu \fBRLIMIT_NPROC\fP.
+.TP 
+\fBEPERM\fP
+Proces wywołujący nie jest procesem uprzywilejowanym (nie ma atrybutu
+\fBCAP_SETUID\fP) i próbował ustawić niedozwoloną wartość któregoś z
+identyfikatorów.
+.SH WERSJE
+Opisywane wywołania systemowe są dostępne w Linuksie od wersji 2.1.44.
+.SH "ZGODNE Z"
+Opisywane wywołania systemowe są niestandardowe; występują również na HP\-UX
+i niektórych systemach BSD.
+.SH UWAGI
+Na HP\-UX i FreeBSD prototyp funkcji można znaleźć w
+\fI<unistd.h>\fP. Pod Linuksem prototyp jest dostarczany przez glibc od
+wersji 2.3.2.
+
+Oryginalne, linuksowe wywołania \fBsetresuid\fP()  i \fBsetresgid\fP() obsługiwały
+tylko 16\-bitowe identyfikatory użytkownika i grupy. Następnie w Linuksie 2.4
+dodano  \fBsetresuid32\fP()  i \fBsetresgid32\fP(), obsługujące 32\-bitowe
+identyfikatory. Funkcje opakowujące \fBsetresuid\fP()  i \fBsetresgid\fP()
+biblioteki  glibc obsługują te warianty wywołań w różnych wersjach jądra w
+sposób przezroczysty dla użytkownika.
+.SH "ZOBACZ TAKŻE"
+\fBgetresuid\fP(2), \fBgetuid\fP(2), \fBsetfsgid\fP(2), \fBsetfsuid\fP(2),
+\fBsetreuid\fP(2), \fBsetuid\fP(2), \fBcapabilities\fP(7), \fBcredentials\fP(7)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

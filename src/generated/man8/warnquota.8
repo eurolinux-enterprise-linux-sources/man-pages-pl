@@ -1,0 +1,95 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1980-2008 Marco van Wieringen, Jan Kara et al (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH WARNQUOTA 8   
+.SH NAZWA
+warnquota \- wysyła mail do użytkowników z przekroczoną kwotą dysku
+.SH SKŁADNIA
+\fBwarnquota\fP [ \fB\-ugsid\fP ] [ \fB\-F\fP \fIformat_kwoty\fP ] [ \fB\-q\fP
+\fIplik_quotatab\fP ] [ \fB\-c\fP \fIplik_konfig\fP ] [ \fB\-a\fP \fIplik_admin\fP ]
+.SH OPIS
+\fBwarnquota\fP sprawdza kwoty dyskowe dla każdego lokalnego systemu plików i
+wysyła ostrzeżenia do tych użytkowników, którzy osiągnęli miękki limit
+kwot. Zazwyczaj jest uruchamiana przez \fBcron\fP(8).
+.TP 
+\fB\-F, \-\-format=\fP\fIformat_kwoty\fP
+Wymusza ustawienie podanego formatu (tj. nie przeprowadza automatycznego
+wykrywania formatu). Możliwe nazwy formatów to: \fBvfsold\fP \(em oryginalny
+format kwoty z 16\-bitowymi identyfikatorami użytkownika i grupy; \fBvfsv0\fP
+\(em format kwoty z 32\-bitowymi identyfikatorami użytkownika i grupy,
+32\-bitowymi polami użycia i\-węzłów i limitami; \fBvfsv1\fP \(em format kwoty z
+64\-bitowymi polami limitów i użycia; \fBxfs\fP \(em kwoty w systemie plików
+XFS.
+.TP 
+\fB\-q, \-\-quota\-tab=\fP\fIplik_quotatab\fP
+Używa pliku \fIplik_quotatab\fP zamiast \fI/etc/quotatab\fP jako pliku z opisem
+urządzeń (opis składni można znaleźć w przykładowym pliku).
+.TP 
+\fB\-c, \-\-config=\fP\fIplik_konfig\fP
+Używa pliku \fIplik_konfig\fP zamiast \fI/etc/warnquota.conf\fP jako pliku
+konfiguracyjnego (opis składni można znaleźć w przykładowym pliku).
+.TP 
+\fB\-a, \-\-admins\-file=\fP\fIplik_admin\fP
+Używa pliku \fIplik_admin\fP zamiast \fI/etc/quotagrpadmins\fP jako pliku
+zawierającego nazwy administratorów grup.
+.TP 
+\fB\-u, \-\-user\fP
+Sprawdza, czy użytkownicy nie przekraczają kwot (domyślnie).
+.TP 
+\fB\-g, \-\-group\fP
+Sprawdza, czy grupy nie przekraczają kwot. Jeżeli grupa przekracza kwotę, to
+jest wysyłany mail do użytkownika podanego w \fI/etc/quotagrpadmins\fP.
+.TP 
+\fB\-s, \-\-human\-readable\fP
+Próbuje raportować użytą przestrzeń, liczbę używanych i\-węzłów oraz limity w
+jednostkach bardziej odpowiednich niż te domyślne.
+.TP 
+\fB\-i, \-\-no\-autofs\fP
+Ignoruje punkty zamontowane przez automountera.
+.TP 
+\fB\-d, \-\-no\-details\fP
+Nie dołącza raportu kwot do e\-mailu.
+.SH PLIKI
+.PD 0
+.TP  20
+\fBaquota.user\fP
+plik kwoty w głównym katalogu systemu plików (kwota w wersji 2 na systemach
+plików nie będących XFS)
+.TP 
+\fBquota.user\fP
+plik kwoty w głównym katalogu systemu plików (kwota w wersji 1 na systemach
+plików nie będących XFS)
+.TP 
+\fB/etc/warnquota.conf\fP
+plik konfiguracyjny
+.TP 
+\fB/etc/quotatab\fP
+opis urządzenia
+.TP 
+\fB/etc/quotagrpadmins\fP
+administratorzy grup
+.TP 
+\fB/etc/mtab\fP
+domyślne systemy plików
+.TP 
+\fB/etc/passwd\fP
+domyślni użytkownicy
+.PD
+.SH "ZOBACZ TAKŻE"
+\fBquota\fP(1), \fBcron\fP(8), \fBedquota\fP(8).
+.SH AUTORZY
+\fBwarnquota\fP(8) napisał Marco van Wieringen <mvw@planets.elm.net>,
+modyfikował Jan Kara <jack@suse.cz>. Tę stronę podręcznika napisał
+Heiko Schlittermann <heiko@lotte.sax.de>, modyfikował Jan Kara.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 4.00 \fPoryginału.

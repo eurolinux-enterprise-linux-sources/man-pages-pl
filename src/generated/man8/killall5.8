@@ -1,0 +1,60 @@
+.\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2003 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1997-2005 Miquel van Smoorenburg et al (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH KILLALL5 8 "4 listopada 2003" "" "Podręcznik administratora systemu Linux"
+.SH NAZWA
+killall5 \- wysyła sygnał do wszystkich procesów
+.SH SKŁADNIA
+\fBkillall5\fP \-\fInumer\-sygnału\fP [\fB\-o\fP \fIpomiń\-pid\fP[\fB,\fP\fIpomiń\-pid\fP...]]
+.SH OPIS
+\fBkillall5\fP jest poleceniem killall z SystemV. Wysyła sygnał do wszystkich
+procesów, poza procesami jądra i procesami swojej sesji, więc nie ubije
+powłoki, w której pracuje skrypt, w którym wywołano tę komendę. Podstawowym
+(jedynym) zastosowaniem polecenia jest użycie w plikach startowych \fBrc\fP, z
+katalogu /etc/init.d.
+.SH OPCJE
+.IP "\fB\-o\fP \fIpomiń\-pid\fP"
+Nakazuje \fBkillall5\fP pomijać procesy o podanym identyfikatorze procesu.
+.SH UWAGI
+\fBkillall5\fP może zostać wywołany również jako pidof, który jest dowiązaniem
+symbolicznym do programu \fBkillall5\fP.
+.SH "KOD ZAKOŃCZENIA"
+Program zwraca zero, jeśli istnieje zabity proces. Zwraca 2, gdy nie zabito
+żadnego procesu i 1, gdy nie udało się znaleźć żadnego procesu (brak
+/proc/).
+.SH "ZOBACZ TAKŻE"
+\fBhalt\fP(8), \fBreboot\fP(8), \fBpidof\fP(8)
+.SH AUTOR
+Miquel van Smoorenburg, miquels@cistron.nl
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.88 \fPoryginału.

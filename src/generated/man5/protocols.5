@@ -1,0 +1,97 @@
+.\" Copyright (c) 1995 Martin Schulze <joey@infodrom.north.de>
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" 1995-10-18  Martin Schulze  <joey@infodrom.north.de>
+.\"	* first released
+.\" 2002-09-22  Seth W. Klein  <sk@sethwklein.net>
+.\"     * protocol numbers are now assigned by the IANA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1995 Martin Schulze (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Bartłomiej Sowa (PTM) <bartowl@kki.net.pl>, 1998.
+.\" Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>, 2002.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH PROTOCOLS 5 23\-09\-2008 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+protocols \- plik definiujący protokoły
+.SH OPIS
+Jest to plik tekstowy w formacie ASCII, opisujący różne, dostępne w
+podsystemie TCP/IP, protokoły internetowe DARPA. Plik ten powinien zawierać
+właściwe wartości, a nie użyte w plikach nagłówkowych ARPA, ani tym bardziej
+po prostu wymyślone.  Zawarte w tym pliku numery protokołów pojawią się w
+polu protocol każdego nagłówka IP.
+
+.\" .. by the DDN Network Information Center.
+Najlepiej nic tu nie zmieniać, gdyż zmiany mogą być przyczyną powstawania
+nieprawidłowych pakietów IP. Numery protokołów i ich nazwy ustalane są przez
+IANA (Internet Assigned Numbers Authority).
+
+Każda linia ma następującą postać:
+
+.RS
+\fIprotokół numer aliasy ...\fP
+.RE
+
+gdzie pola są rozdzielane spacją lub znakiem tabulacji. Puste linie są
+ignorowane. Jeśli linia zaczyna się od krzyżyka (#), to znak ten i część
+linii, która po nim następuje są ignorowane.
+
+Opisy pól:
+.TP 
+\fIprotokół\fP
+wewnętrzna nazwa protokołu. Na przykład \fIip\fP, \fItcp\fP lub \fIudp\fP.
+.TP 
+\fInumer\fP
+oficjalny numer tego protokołu, który będzie widoczny w nagłówku IP.
+.TP 
+\fIaliasy\fP
+opcjonalne aliasy dla protokołu.
+.LP
+Ten plik może być rozprowadzany przez sieć przy użyciu ogólnosieciowej
+usługi nazewnictwa, takiej jak Yellow Pages/NIS czy BIND/Hesoid.
+.SH PLIKI
+.TP 
+\fI/etc/protocols\fP
+Plik definicji protokołów.
+.SH "ZOBACZ TAKŻE"
+\fBgetprotoent\fP(3)
+
+http://www.iana.org/assignments/protocol\-numbers
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Bartłomiej Sowa (PTM) <bartowl@kki.net.pl>,
+Andrzej M. Krzysztofowicz (PTM) <ankry@green.mf.pg.gda.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

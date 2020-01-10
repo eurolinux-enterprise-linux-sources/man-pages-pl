@@ -1,0 +1,612 @@
+.\" t
+.\" Copyright (c) 1996 Andries Brouwer <aeb@cwi.nl>, Mon Oct 31 22:13:04 1996
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" This is combined from many sources.
+.\" For Linux, the definitive source is of course console.c.
+.\" About vt100-like escape sequences in general there are
+.\" the ISO 6429 and ISO 2022 norms, the descriptions of
+.\" an actual vt100, and the xterm docs (ctlseqs.ms).
+.\" Substantial portions of this text are derived from a write-up
+.\" by Eric S. Raymond <esr@thyrsus.com>.
+.\"
+.\" Tiny correction, aeb, 961107.
+.\"
+.\" 2006-05-27, Several corrections - Thomas E. Dickey
+.\" Modified Thu Dec 13 23:23:41 2001 by Martin Schulze <joey@infodrom.org>
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1996 Andres Brouwer (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH CONSOLE_CODES 4 2011\-09\-15 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+console_codes \- Kody konsolowe Linuksa oraz sekwencje specjalne
+.SH OPIS
+Konsola Linuksa implementuje duży podzbiór kontrolek terminali VT102 oraz
+ECMA\-48/ISO 6429/ANSI X3.64, plus określone sekwencje trybu prywatnego,
+dotyczące zmiany palety kolorów, mapowania zestawu znaków itp.  W
+poniższych, tabelarycznych opisach, druga kolumna podaje dla danej funkcji
+mnemoniki ECMA\-48 lub DEC (te drugie są poprzedzone ciągiem DEC).  Sekwencje
+bez mnemoników nie są ani ECMA\-48 ani VT102.
+.LP
+Po przetworzeniu normalnego wyjścia, gdy strumień znaków dojdzie do
+sterownika konsoli, która ma go fizycznie wyświetlić, to pierwszą rzeczą,
+która jest robiona, jest przetłumaczenie tego strumienia z języka
+przetwarzania na język wyświetlania.
+.LP
+Jeśli konsola znajduje się w trybie UTF\-8, to nadchodzące bajty są najpierw
+składane w 16\-bitowe kody Unicode. W przeciwnym wypadku, każdy bajt jest
+przetwarzany zgodnie z bieżącym mapowaniem (które go tłumaczy na wartość
+Unicode). Dalsza dyskusja znajduje się poniżej, w sekcji \fBZestawy znaków\fP.
+.LP
+W normalnym wypadku, wartość Unicode jest konwertowana na indeks czcionki,
+który jest przechowywany w pamięci obrazu. Efektem użycia tego indeksu jest
+pojawienie się odpowiadającego glifu (wizerunku znaku, znalezionego w
+nieulotnej pamięci obrazu) na ekranie. Należy zauważyć, że użycie Unicode (i
+konstrukcja sprzętu PC) pozwala na jednoczesne używanie 512 różnych glifów.
+.LP
+Jeśli bieżąca wartość Unicode jest znakiem sterującym lub jeśli przetwarzana
+jest sekwencja specjalna, to wartość ta jest traktowana w sposób specjalny.
+Zamiast zmieniania jej na indeks czcionki i interpretacji jako glif, może
+ona wyzwolić ruchy kursora lub inne funkcje sterujące.  Dalsza dyskusja
+znajduje się poniżej, w sekcji \fBKontrolki konsoli systemu Linux\fP.
+.LP
+Ogólnie nie jest dobrym zwyczajem wkodowywanie do programów kodów terminala
+na sztywno. Linux obsługuje bazę danych \fBterminfo\fP(5), która opisuje
+właściwości terminali.  Zamiast ręcznego wyprowadzania sekwencji kontrolnych
+konsoli, prawie zawsze wygodniej jest korzystać z biblioteki obsługi
+terminala \fBncurses\fP(3), oraz programów narzędziowych, takich jak \fBtput\fP(1)
+czy \fBreset\fP(1).
+.SS "Kontrolki konsoli systemu Linux"
+Sekcja ta opisuje wszystkie znaki sterujące i sekwencje specjalne, które
+wywołują funkcje specjalne (tj. wszystko inne niż wypisywanie glifu w
+pozycji kursora) konsoli Linuksa.
+.PP
+\fBZnaki sterujące\fP
+.sp
+Znak jest znakiem sterującym, jeśli (przed transformacją wynikającą z
+tablicy mapowania) posiada jeden z 14 kodów 00 (NUL), 07 (BEL), 08 (BS), 09
+(HT), 0a (LF), 0b (VT), 0c (FF), 0d (CR), 0e (SO), 0f (SI), 18 (CAN), 1a
+(SUB), 1b (ESC), 7f (DEL).  Można sobie ustawić tryb "display control
+characters" (wyświetlania znaków sterujących), który umożliwia wyświetlanie
+07, 09, 0b, 18, 1a, 7f jako glifów. Z drugiej strony, w trybie UTF\-8
+wszystkie kody 00\-1f są uznawane za znaki sterujące, niezależnie od trybu
+"display control characters".
+.PP
+Jeśli mamy znak sterujący, to jest on natychmiast wykonywany i kasowany
+(nawet w środku sekwencji specjalnej), a sekwencja specjalna leci dalej, z
+następnym znakiem. (Jednak ESC rozpoczyna nową sekwencję specjalną,
+przypuszczalnie anulując niedokończoną poprzednią, a CAN i SUB przerywają
+dowolną sekwencję specjalną). Rozpoznawanymi znakami sterującymi są BEL, BS,
+HT, LF, VT, FF, CR, SO, SI, CAN, SUB, ESC, DEL, CSI. Robią one to, czego
+można oczekiwać:
+.HP
+BEL (0x07, \fB^G\fP) wydaje dźwięk;
+.HP
+BS (0x08, \fB^H\fP) przesuwa kursor o jedną spację w lewo (lecz nie poza
+początek wiersza);
+.HP
+HT (0x09, \fB^I\fP) przesuwa kursor do następnego tabulatora, lub na koniec
+wiersza, gdy wcześniej tabulatora nie ma;
+.HP
+LF (0x0A, \fB^J\fP), VT (0x0B, \fB^K\fP) i FF (0x0C, \fB^L\fP) wypisują znak nowego
+wiersza, a jeśli ustawiono LF/NL (tryb nowego wiesza), to wypisują także
+znak powrotu karetki.
+.HP
+CR (0x0D, \fB^M\fP) daje powrót karetki \- przewinięcie kursora na początek
+wiersza;
+.HP
+SO (0x0E, \fB^O\fP) włącza zestaw znaków G1;
+.HP
+SI (0x0F, \fB^O\fP) włącza zestaw znaków G0;
+.HP
+CAN (0x18, \fB^X\fP) i SUB (0x1A, \fB^Z\fP) przerywają sekwencje specjalne;
+.HP
+ESC (0x1B, \fB^[\fP) rozpoczyna nową sekwencję specjalną;
+.HP
+DEL (0x7F) jest ignorowane;
+.HP
+CSI (0x9B) równoważne ESC [.
+.PP
+\fBSekwencje ESC\- lecz nie CSI\-\fP
+.TS
+l l l.
+ESC c	RIS	Reset.
+ESC D	IND	Przesunięcie o wiersz.
+ESC E	NEL	Nowy wiersz.
+ESC H	HTS	Ustawienie tabulatora w bieżącej kolumnie.
+ESC M	RI	Cofnięcie o wiersz.
+ESC Z	DECID	T{
+prywatna identyfikacja DEC. Jądro
+zwraca napis ESC [ ? 6 c, twierdząc,
+że jest to VT102.
+T}
+ESC 7	DECSC	T{
+Zachowanie bieżącego stanu (współrzędne kursora,
+atrybuty, zestawy znaków wskazywane przez G0 i G1).
+T}
+ESC 8	DECRC	Odtworzenie ostatnio zachowanego przez ESC 7 stanu.
+ESC [	CSI	Wprowadzacz sekwencji sterujących
+ESC %		Rozpoczęcie sekwencji wybierania zestawu znaków
+ESC % @		\0\0\0Wybranie domyślnego (ISO 646 / ISO 8859\-1)
+ESC % G		\0\0\0Wybranie UTF\-8
+ESC % 8		\0\0\0Wybranie UTF\-8 (przestarzałe)
+ESC # 8	DECALN	DEC test wyrównania ekranu \- wypełnienie ekranu znakami E
+ESC (		Rozpoczęcie sekwencji, definiującej zestaw znaków G0
+ESC ( B		\0\0\0Wybranie domyślnego (mapowanie ISO 8859\-1)
+ESC ( 0		\0\0\0Wybranie mapowania grafiki VT100
+ESC ( U		\0\0\0Wybranie mapowania zerowego \- wprost do ROM ze znakami
+ESC ( K		\0\0\0Wybranie mapowania użytkownika \- mapę załadowaną
+		\0\0\0programem narzędziowym \fBmapscrn\fP(8).
+ESC )		Rozpoczęcie sekwencji, definiującej zestaw znaków G1
+		(po której następuje B, 0, U, K, jak wyżej).
+ESC >	DECPNM	Ustawienie dla bloku klawiszy trybu numerycznego.
+ESC =	DECPAM	Ustawienie dla bloku klawiszy trybu aplikacyjnego.
+ESC ]	OSC	T{
+(Powinno być: polecenie systemu operacyjnego)
+ESC ] P \fInrrggbb\fP: ustawienie palety z parametrem
+podanym w 7 szesnastkowych cyfrach, następujących po ostatnim P :\-(.
+\fIn\fP jest tu kolorem (0\-15), a \fIrrggbb\fP określa
+wartości czerwieni/zieleni/niebieskości (0\-255).
+ESC ] R: resetuje paletę
+T}
+.TE
+.PP
+\fBSekwencje ECMA\-48 CSI\fP
+.sp
+Za CSI (lub ESC [) następuje sekwencja parametrów, co najwyżej NPAR (16),
+które są liczbami dziesiętnymi, oddzielonymi średnikami. Pusty lub nieobecny
+parametr przyjmowany jest za zero. Sekwencja parametrów może być poprzedzona
+pojedynczym znakiem zapytania.
+.PP
+Jednak po CSI [ (lub ESC [ [) odczytywany jest pojedynczy znak, a cała
+sekwencja jest ignorowana (pomysł ten ma na celu ignorowanie klawisza
+funkcyjnego dającego echo).
+.PP
+Akcja sekwencji CSI jest określona jej ostatnim znakiem.
+.TS
+l l l l.
+@	ICH	Wstawienie określonej liczby pustych znaków.
+A	CUU	Przesunięcie kursora w górę o zadaną liczbę wierszy.
+B	CUD	Przesunięcie kursora w dół o zadaną liczbę wierszy.
+C	CUF	Przesunięcie kursora w prawo o zadaną liczbę kolumn.
+D	CUB	Przesunięcie kursora w lewo o zadaną liczbę kolumn.
+E	CNL	Przesunięcie kursora w dół o zadaną liczbę wierszy do kolumny 1.
+F	CPL	Przesunięcie kursora w górę o zadaną liczbę wierszy do kolumny 1.
+G	CHA	Przesunięcie kursora do wskazanej kolumny bieżącego wiersza.
+H	CUP	Przesunięcie kursora do wskazanego wiersza i kolumny (początek w 1,1).
+J	ED	Wymazanie ekranu (domyślnie: od pozycji kursora, do końca ekranu).
+		ESC [ 1 J: czyści od początku do kursora.
+		ESC [ 2 J: czyści cały ekran.
+		ESC [ 3 J: czyści cały ekran, włączając w to bufor
+		           pamięci ekranu (od Linuksa 3.0).
+.\" ESC [ 3 J: commit f8df13e0a901fe55631fed66562369b4dba40f8b
+K	EL	Wymazanie wiersza (domyślnie od kursora do końca wiersza).
+		ESC [ 1 K: czyści od początku wiersza do kursora.
+		ESC [ 2 K: czyści cały wiersz.
+L	IL	Wstawienie zadanej liczby pustych wierszy.
+M	DL	Skasowanie zadanej liczby wskazanych wierszy.
+P	DCH	Skasowanie zadanej liczby wskazanych znaków w bieżącym wierszu.
+X	ECH	Wymazanie zadanej liczby wskazanych znaków w bieżącym wierszu.
+a	HPR	Przesunięcie kursora w prawo o zadaną liczbę kolumn.
+c	DA	Odpowiedź: ESC [ ? 6 c: "Jestem VT102"
+d	VPA	Przesunięcie kursora do wskazanego wiersza i bieżącej kolumny.
+e	VPR	Przesunięcie kursora w dół zadaną liczbę o wierszy.
+f	HVP	Przesunięcie kursora do wskazanego wiersza i kolumny.
+g	TBC	Bez parametrów: skasowanie tabulatora w bieżącej pozycji.
+		ESC [ 3 g: skasowanie wszystkich tabulatorów.
+h	SM	Ustawienie trybu (patrz niżej).
+l	RM	Inicjacja trybu (patrz niżej).
+m	SGR	Ustawienie atrybutów (patrz niżej).
+n	DSR	Raport o stanie (patrz niżej).
+q	DECLL	Ustawienie LED\-ów klawiatury.
+		ESC [ 0 q: wyłączenie wszystkich LED\-ów.
+		ESC [ 1 q: włączenie diody ScrollLock
+		ESC [ 2 q: włączenie diody NumLock
+		ESC [ 3 q: włączenie diody CapsLock
+r	DECSTBM	Ustawienie obszaru przewijania; parametry to górny i dolny wiersz.
+s	?	Zapamiętanie pozycji kursora.
+u	?	Odtworzenie pozycji kursora.
+\`	HPA	Przesunięcie kursora do wskazanej kolumny bieżącego wiersza.
+.TE
+.PP
+\fBInterpretacja grafiki zbioru ECMA\-48\fP
+.sp
+Sekwencja ECMA\-48 SGR, czyli ESC [ \fIparametry\fP m ustawia atrybuty
+wyświetlania. Można ustawić wiele atrybutów w pojedynczej sekwencji
+specjalnej, oddzielając je od siebie znakami średnika. Pusty parametr
+(pomiędzy średnikami lub początkiem lub końcem sekwencji) jest
+interpretowany jako zero.
+.TS
+l l.
+param	wynik
+0	inicjacja wszystkich atrybutów do wartości domyślnych
+1	włączenie pogrubienia
+2	włączenie półrozjaśnienia (symulowane kolorem na ekranach kolorowych)
+4	T{
+włączenie podkreślenia (symulowane kolorem na ekranach kolorowych)
+(kolory używane do symulacji są ustawiane 
+za pomocą ESC ] ...)
+T}
+5	włączenie migania
+7	włączenie inwersji
+10	T{
+wyłączenie wybranego mapowania, znacznika kontroli wyświetlania,
+i przełączenie flagi "meta" (ECMA\-48 nazywa to "czcionką podstawową"). 
+T}
+11	T{
+wybranie mapowania zerowego, ustawienie znacznika kontroli,
+czyści znacznik przełączania meta (ECMA\-48 nazywa to "pierwsza czcionka alternatywna").
+T}
+12	T{
+wybranie mapowania zerowego, ustawienie znacznika kontroli,
+ustawia znacznik przełączania meta (ECMA\-48 określa to "drugą czcionką alternatywną").
+Znacznik przełączania meta
+powoduje przestawienie wysokiego bitu w bajcie
+przed zakończeniem translacji tablicy mapowań.
+T}
+21	ustawia zwykłą intensywność (ECMA\-48: "podwójne podkreślenie")
+22	ustawienie normalnej jasności
+24	wyłączenie podkreślenia
+25	wyłączenie migania
+27	wyłączenie inwersji
+30	ustawienie koloru czarnego
+31	ustawienie koloru czerwonego
+32	ustawienie koloru zielonego
+33	ustawienie koloru brązowego
+34	ustawienie koloru niebieskiego
+35	ustawienie koloru fioletowego
+36	ustawienie koloru niebieskozielonego
+37	ustawienie koloru białego
+38	włączenie podkreślenia, ustawienie koloru domyślnego
+39	wyłączenie podkreślenia, ustawienie koloru domyślnego
+40	ustawienie czarnego tła
+41	ustawienie czerwonego tła
+42	ustawienie zielonego tła
+43	ustawienie brązowego tła
+44	ustawienie niebieskiego tła
+45	ustawienie fioletowego tła
+46	ustawienie niebieskozielonego tła
+47	ustawienie białego tła
+49	ustawienie domyślnego koloru tła
+.TE
+.PP
+\fBPrzełączniki trybu ECMA\-48\fP
+.TP 
+ESC [ 3 h
+DECCRM (domyślnie wyłączone): Wyświetlanie znaków sterujących.
+.TP 
+ESC [ 4 h
+DECIM (domyślnie wyłączone): Włączenie trybu wstawiania (insert).
+.TP 
+ESC [ 20 h
+.\"
+LF/NL (domyślnie wyłączone): Automatyczne podążanie za echem LF, VT lub FF z
+CR.
+.PP
+.\"
+\fBPolecenia zgłaszania stanu ECMA\-48\fP
+.TP 
+ESC [ 5 n
+Raport stanu urządzenia (DSR): Odpowiedzią jest ESC [ 0 n (Terminal OK).
+.TP 
+ESC [ 6 n
+.\"
+Raport pozycji kursora (CPR): Odpowiedzią jest ESC [ \fIy\fP ; \fIx\fP R, gdzie
+\fIx,y\fP to pozycja kursora.
+.PP
+\fBSekwencje trybu prywatnego DEC (DECSET/DECRST)\fP
+.sp
+.\"
+Nie są one opisane w ECMA\-48. Opisano tu sekwencje włączania trybu;
+Sekwencje wyłączania trybu można uzyskać przez zamianę ostatniego "h" na
+"l".
+.TP 
+ESC [ ? 1 h
+DECCKM (domyślnie wyłączone): Gdy włączone, klawisze kursora wysyłają
+przedrostek ESC O, a nie ESC [.
+.TP 
+ESC [ ? 3 h
+DECCOLM (domyślnie wyłączone = 80 kolumn): Przełącznik trybu 80/132
+kolumny.  W źródłach sterownika zaznaczono, że to nie wystarcza; niektóre
+narzędzia trybu użytkownika, takie jak \fBresizecons\fP(8)  muszą zmienić
+rejestry sprzętowe karty graficznej konsoli.
+.TP 
+ESC [ ? 5 h
+DECSCNM (domyślnie wyłączone): Włączenie trybu inwersji.
+.TP 
+ESC [ ? 6 h
+DECOM (domyślnie wyłączone): Gdy włączone, adresowanie kursora następuje
+względem górnego lewego narożnika regionu przewijania.
+.TP 
+ESC [ ? 7 h
+DECAWM (domyślnie włączone): Włączenie autozawijania. W tym trybie znak
+graficzny, wyemitowany za 80 (lub 132) kolumną, zostanie zawinięty na
+początek następnego wiersza.
+.TP 
+ESC [ ? 8 h
+DECARM (domyślnie włączone): Włączenie samopowtarzania klawiatury.
+.TP 
+ESC [ ? 9 h
+Zgłaszanie myszy X10 (domyślnie wyłączone): Ustawienie trybu zgłaszania na 1
+(lub wyłączenie na 0) \(em patrz niżej.
+.TP 
+ESC [ ? 25 h
+DECTECM (domyślnie włączone): Uczynienie kursora widzialnym.
+.TP 
+ESC [ ? 1000 h
+.\"
+Zgłaszanie myszy X11 (domyślnie wyłączone): Ustawienie trybu zgłaszania na 2
+(lub wyłączenie na 0) \(em patrz niżej.
+.PP
+\fBPrywatne sekwencje CSI konsoli Linuksa\fP
+.sp
+.\"
+Następujące sekwencje nie należą ani do ECMA\-48, ani do oryginalnego VT102.
+Zostały one wprowadzone przez sterownik konsoli Linuksa. Kolorami w
+parametrach SGR są: 0 = czarny, 1 = czerwony, 2 = zielony, 3 = brązowy, 4 =
+niebieski, 5 = fioletowy, 6 = niebieskozielony, 7 = biały.
+.TS
+l l.
+ESC [ 1 ; \fIn\fP ]	Ustawienie koloru \fIn\fP jako kolor podkreślenia.
+ESC [ 2 ; \fIn\fP ]	Ustawienie koloru \fIn\fP jako kolor dim.
+ESC [ 8 ]       	Uczynienie bieżącej pary kolorów atrybutem domyślnym.
+ESC [ 9 ; \fIn\fP ]	Ustawienie okresu wygaszania ekranu na \fIn\fP minut.
+ESC [ 10 ; \fIn\fP ]	Ustawienie częstotliwości dzwonka w Hz.
+ESC [ 11 ; \fIn\fP ]	Ustawienie czasu trwania dzwonka w ms.
+ESC [ 12 ; \fIn\fP ]	Przeniesienie podanej konsoli na wierzch.
+ESC [ 13 ]      	Wyłączenie wygaszenia ekranu.
+ESC [ 14 ; \fIn\fP ]   	Ustawienie czasu wyłączenia zasilania VESA w minutach.
+.TE
+.SS "Zestawy znaków"
+Jądro zna 4 translacje bajtów na symbole znaków ekranu konsoli.  Tymi
+czterema tablicami są: a) Latin1 \-> PC, b) grafika VT100 \-> PC, c)
+PC \-> PC, d) zdefiniowane przez użytkownika.
+.PP
+Istnieją dwa zbiory znaków, zwane G0 i G1, a jeden z nich jest bieżącym
+zestawem znaków (początkowo G0). Wpisanie \fB^N\fP powoduje, że bieżącym
+zestawem staje się G1, a \fB^O\fP \(em że G0.
+.PP
+Zmienne G0 i G1 wskazują na tablicę translacji i mogą być zmieniane przez
+użytkownika. Początkowo wskazują odpowiednio na tablice a) i b).  Sekwencje
+ESC ( B, ESC ( 0, ESC ( U, ESC ( K powodują, że G0 wskazuje odpowiednio na
+tablice a), b), c), d).  Sekwencje ESC ) B, ESC ) 0,  ESC ) U, ESC ) K
+powodują, że G1 wskazuje odpowiednio na tablice a), b), c), d).
+.PP
+Sekwencja ESC c powoduje reset terminala. Jest to tym, czego potrzeba, jeśli
+ekran zostanie zaśmiecony. Często zalecane "echo ^V^O" powoduje tylko, że G0
+staje się bieżącym zestawem znaków, lecz nie ma gwarancji że wskazuje on na
+tablicę a).  W niektórych dystrybucjach znajduje się program \fBreset\fP(1),
+który po prostu wysyła "echo ^[c".  Jeśli wpis dla konsoli w bazie terminfo
+jest prawidłowy (i zawiera wpis rs1=\eEc), to zadziała również "tput reset".
+.PP
+Zdefiniowana przez użytkownika tablica mapowań może być ustawiana za pomocą
+\fBmapscrn\fP(8). Wynikiem mapowania jest to, że jeśli wyświetlany jest symbol
+c, to do pamięci grafiki wysyłany jest symbol s = mapa[c]. Mapa bitowa,
+odpowiadająca s, która znajduje się w nieulotnej pamięci grafiki, może być
+zmieniona za pomocą \fBsetfont\fP(8).
+.SS "Śledzenie myszy"
+Funkcja śledzenia myszy jest przeznaczana do zgłaszania stanu myszy,
+zgodnego z \fBxterm\fP(1). Ponieważ sterownik konsoli nie ma możliwości
+dowiedzenia się o urządzeniu ani o rodzaju myszy, zgłoszenia te zwracane są
+w strumieniu wejściowym konsoli tylko wtedy, gdy sterownik terminala
+wirtualnego otrzymuje ioctl odświeżający stan myszy. Ioctl\-e te muszą być
+generowane przez świadomą istnienia myszy aplikację trybu użytkownika, taką
+jak demon \fBgpm\fP(8).
+.PP
+Parametry wszystkich sekwencji specjalnych śledzenia myszy, generowanych
+przez \fBxterm\fP(1) są kodowane numerycznie w pojedynczych znakach, jako
+\fIwartość\fP+040. Na przykład, "!" to 1. Współrzędne ekranu zaczynają się od
+1.
+.PP
+Tryb zgodności z X10 wysyła sekwencje specjalne przy naciskaniu przycisków,
+kodując położenie oraz to, który przycisk myszy został naciśnięty. Jest to
+włączane przez wysłanie ESC [ ? 9 h i wyłączane przez ESC [ ? 9 l.  Przy
+naciskaniu przycisków, \fBxterm\fP(8) wysyła ESC [ M \fIbxy\fP (6 znaków). \fIb\fP
+jest tu równe klawisz\-1, a \fIx\fP i \fIy\fP są współrzędnymi x i y kursora myszy
+w momencie przyciśnięcia. Ten sam kod produkuje jądro.
+.PP
+Normalny tryb śledzenia (nie zaimplementowany w Linuksie 2.0.24) wysyła
+sekwencję specjalną zarówno po przyciśnięciu, jak i po zwolnieniu
+przycisku.  Wysyłana jest również informacja modyfikatora. Jest to włączane
+przez wysłanie ESC [ ? 1000 h, a wyłączane przez ESC [ 1000 l. \fBxterm\fP(1)
+po naciśnięciu lub zwolnieniu przycisku wysyła ESC [ M \fIbxy\fP. Dwa niższe
+bity \fIb\fP kodują informację o przycisku: 0=naciśnięto pierwszy, 1=naciśnięto
+drugi, 2=naciśnięto trzeci, 3=zwolnienie. W górnych bitach zakodowane są
+modyfikatory wciśnięte podczas naciskania przycisku. Są one dodawane:
+4=Shift, 8=Meta, 16=Control. Znowu, \fIx\fP i \fIy\fP to współrzędne kursora myszy
+podczas zdarzenia. Górny lewy narożnik to (1,1).
+.SS "Porównania z innymi terminalami"
+.\"
+Wiele różnych typów terminali, podobnie jak konsola Linuksa, jest
+opisywanych jako "zgodne z VT100". Poniżej omówiono różnice między konsolą
+Linuksa i dwoma najważniejszymi spośród innych terminali: DEC VT102 i
+\fBxterm\fP(1).
+.PP
+\fBObsługa znaków sterujących\fP
+.sp
+VT 102 rozpoznawał też następujące znaki sterujące:
+.HP
+NUL (0x00) było ignorowane;
+.HP
+ENQ (0x05) wywoływało komunikat odpowiadający;
+.HP
+DC1 (0x11, \fB^Q\fP, XON) wznawiało transmisję;
+.HP
+DC3 (0x13, \fB^S\fP, XOFF) powodowało, że VT100 ignorował (i przestawał
+transmitować) wszystkie kody poza XOFF i XON.
+.LP
+Przetwarzanie DC1/DC3 tego rodzaju, jakie było w VT100 może być włączone
+przez sterownik tty.
+.LP
+.\"
+Program \fBxterm\fP(1) (w trybie VT100) rozpoznaje znaki sterujące BEL, BS, HT,
+LF, VT, FF, CR, SO, SI, ESC.
+.PP
+\fBSekwencje specjalne\fP
+.sp
+Sekwencje VT100 nie implementowane przez konsolę Linuksa:
+.TS
+l l l.
+ESC N	SS2	Pojedyncze przesunięcie 2. (Wybranie zestawu znaków G2
+		tylko dla następnego znaku.)
+ESC O	SS3	Pojedyncze przesunięcie 3. (Wybranie zestawu znaków G3
+		tylko dla następnego znaku.)
+ESC P	DCS	Łańcuch kontrolny urządzenia (zakończony ESC \e)
+ESC X	SOS	Początek łańcucha.
+ESC ^	PM	Komunikat prywatności (zakończony ESC \e)
+ESC \e	ST	Zakończenie łańcucha
+ESC * ...		Wyznaczenie zestawu znaków G2
+ESC + ...		Wyznaczenie zestawu znaków G3
+.TE
+.PP
+Program \fBxterm\fP(1) (w trybie VT100) rozpoznaje ESC c, ESC # 8, ESC >,
+ESC =, ESC D, ESC E, ESC H, ESC M, ESC N, ESC O, ESC P ... ESC \e, ESC Z
+(daje odpowiedź ESC [ ? 1 ; 2 c, "Jestem VT100 z rozszerzoną opcją grafiki")
+i ESC ^ ... ESC \e o takich samych znaczeniach, jak opisano powyżej.
+Przyjmuje ESC (, ESC ), ESC *, ESC + , po których następuje 0, A, B,
+odpowiednio dla specjalnego zestawu znaków DEC i zbioru rysowania linii, UK
+oraz US\-ASCII.
+.PP
+Użytkownik może skonfigurować \fBxterm\fP(1) tak, żeby odpowiadał używając
+sekwencji kontrolnych specyficznych dla VT220. Może identyfikować siebie
+jako VT52, VT100 i większe \(em w zależności od tego, jak jest
+skonfigurowany i zainicjowany.
+.PP
+Zezwala na ustawienie pewnych zasobów za pomocą ESC ] (OSC). Oprócz znaku
+końca łańcucha znaków (ST) z ECMA\-48, \fBxterm\fP(1) akceptuje także BEL do
+zakończenia łańcucha znaków OSC. \fBxterm\fP(1) rozpoznaje kilka następujących
+sekwencji sterujących:
+.TS
+l l.
+ESC ] 0 ; \fItxt\fP ST	Ustawienie nazwy ikony i tytułu okna na \fItxt\fP.
+ESC ] 1 ; \fItxt\fP ST	Ustawienie nazwy ikony na \fItxt\fP.
+ESC ] 2 ; \fItxt\fP ST	Ustawienie tytułu okna na \fItxt\fP.
+ESC ] 4 ; \fInum\fP; \fItxt\fP ST	Ustawienie koloru ANSI \fInum\fP na \fItxt\fP.
+ESC ] 10 ; \fItxt\fP ST	Ustawienie dynamicznego koloru tekstu na \fItxt\fP.
+ESC ] 4 6 ; \fInazwa\fPST	Zmiana pliku logu na \fInazwa\fP (normalnie wyłączone
+	przez opcję kompilacji)
+ESC ] 5 0 ; \fIfn\fP ST	Ustawienie czcionki na \fIfn\fP.
+.TE
+.PP
+Rozpoznaje następujące, z nieznacznie zmienionym znaczeniem (zapisuje więcej
+stanów, zachowanie jest bliższe do VT100/VT220):
+.TS
+l l l.
+ESC 7  DECSC	Zachowanie kursora
+ESC 8  DECRC	Odtworzenie kursora
+.TE
+.PP
+Podobnie, rozpoznaje również
+.TS
+l l l.
+ESC F		Kursor do dolnego lewego narożnika ekranu (o ile włączone
+		przez zasób \fBhpLowerleftBugCompat\fP programu \fBxterm\fP(1)).
+ESC l		Blokowanie pamięci (dla terminali HP).
+		Blokuje pamięć ponad kursorem.
+ESC m		Odblokowanie pamięci (dla terminali HP).
+ESC n	LS2	Wywołanie zestawu znaków G2.
+ESC o	LS3	Wywołanie zestawu znaków G3.
+ESC |	LS3R	Wywołanie zestawu znaków G3 jako GR.
+		W xtermie jest to bez widocznego efektu.
+ESC }	LS2R	Wywołanie zestawu znaków G2 jako GR.
+		W xtermie jest to bez widocznego efektu.
+ESC ~	LS1R	Wywołanie zestawu znaków G1 jako GR.
+		W xtermie jest to bez widocznego efektu.
+.TE
+.PP
+.\"
+Rozpoznaje także sekwencje ESC % i dostarcza bardziej kompletnej
+implementacji UTF\-8 niż konsola  linuksowa.
+.PP
+\fBSekwencje CSI\fP
+.sp
+Stare wersje programu \fBxterm\fP(1), na przykład wersja z X11R5, interpretują
+migający SGR jako pogrubiony SGR. Późniejsze wersje, w których
+zaimplementowano obsługę kolorów ANSI, na przykład XFree86 3.1.2A z 1995r.,
+pozwalały na wyświetlanie atrybutu migania jako koloru. Nowoczesne wersje
+\fBxterm\fP(1) implementują migający SGR jako migający tekst, ale wciąż
+pozwalają na alternatywne wyświetlanie tego atrybutu jako kolor. Oryginalne
+wersje z X11R6 nie rozpoznawały SGR\-a ustawiającego kolor aż do wydania
+X11R6.8, które zawierało xterm pochodzący z XFree86. Wszystkie sekwencje
+ECMA\-48 CSI rozpoznawane przez Linuksa są także rozpoznawane przez \fIxterm\fP,
+jednakże \fBxterm\fP(1) implementuje kilka sekwencji sterujących ECMA\-48 i DEC,
+których Linux  nie rozpoznaje.
+.PP
+Program \fBxterm\fP(1) rozpoznaje wszystkie opisane powyżej sekwencje trybu
+prywatnego DEC, lecz nie rozpoznaje żadnej z prywatnych sekwencji
+Linuksa. Omówienie sekwencji prywatnych programu \fBxterm\fP(1) znajduje się w
+dokumencie \fIXterm Control Sequences\fP, napisanym przez Edwarda Moya i
+Stephena Gildea'a, dostępnym w dystrybucji X. Dokument ten, choć zwięzły,
+jest o wiele dłuższy niż ta strona podręcznika. Po wprowadzenie w porządku
+chronologicznym, patrz
+.PP
+.in +4n
+http://invisible\-island.net/xterm/xterm.log.html
+.in
+.PP
+szczegóły zmian w xtermie
+.PP
+Program \fIvttest\fP
+.PP
+.in +4n
+http://invisible\-island.net/vttest/
+.in
+.PP
+obrazuje wiele z powyższych sekwencji sterujących. Archiwum źródłowe
+programu \fBxterm\fP(1) także zawiera przykładowe skrypty, pokazujące również
+inne właściwości.
+.SH UWAGI
+ESC 8 (DECRC) nie potrafi odtworzyć zestawu znaków zmienionego przez ESC %.
+.SH BŁĘDY
+W 2.0.23 CSI jest zepsute, a NUL nie jest ignorowany w sekwencjach
+specjalnych.
+.PP
+Niektóre starsze wersje jądra (po wersji 2.0) interpretują 8\-bitowe
+sekwencje sterujące. Te "kontrolki C1" używają kodów pomiędzy 128 i 159,
+zastępując nimi ESC [, ESC ] i podobne początki sekwencji sterujących. W
+nowoczesnych jądrach zostały tylko pozostałości po tej funkcjonalności (albo
+je przeoczono, albo popsuto, implementując zmiany związane z obsługą UTF\-8),
+jednakże ich implementacja jest niekompletna i nie należy na niej polegać.
+.PP
+Sekwencje "prywatnego trybu" Linuksa nie przestrzegają reguł ECMA\-48
+dotyczących sekwencji sterujących trybu prywatnego. W szczególności
+sekwencje kończące się znakiem ] nie używają standardowego znaku kończącego
+sekwencję. Większym problemem jest sekwencja OSC (ustawienie palety),
+ponieważ \fBxterm\fP(1) może interpretować ją jako sekwencję sterującą
+wymagającą znaku zakończenia łańcucha znaków (ST). W przeciwieństwie do
+sekwencji generowanych przez \fBsetterm\fP(1), które zostaną zignorowane
+(ponieważ są niepoprawne), sekwencja ustawienia palety spowoduje, że
+\fBxterm\fP(1) będzie się zachowywał tak, jakby się zawiesił (naciśnięcie
+klawisza return go odblokuje). Aby  aplikacje, w których na sztywno
+zaimplementowano obsługę linuksowych sekwencji sterujących, działały
+poprawnie pod \fBxterm\fP\-em, należy ustawić zasób \fBbrokenLinuxOSC\fP programu
+\fBxterm\fP na "true".
+.PP
+Wcześniejsza wersja tego dokumentu sugerowała, że Linux rozpoznaje sekwencje
+kontrolne ECMA\-48 dla niewidocznego tekstu. Są one ignorowane.
+.SH "ZOBACZ TAKŻE"
+\fBconsole\fP(4), \fBconsole_ioctl\fP(4), \fBcharsets\fP(7)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

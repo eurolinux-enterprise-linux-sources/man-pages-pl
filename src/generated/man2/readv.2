@@ -1,0 +1,194 @@
+.\" Copyright (C) 2007, 2010 Michael Kerrisk <mtk.manpages@gmail.com>
+.\" and Copyright (c) 1993 by Thomas Koenig (ig25@rz.uni-karlsruhe.de)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\" License.
+.\" Modified Sat Jul 24 18:34:44 1993 by Rik Faith (faith@cs.unc.edu)
+.\" Merged readv.[23], 2002-10-17, aeb
+.\" 2007-04-30 mtk, A fairly major rewrite to fix errors and
+.\"     add more details.
+.\" 2010-11-16, mtk, Added documentation of preadv() and pwritev()
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993 Thomas Koenig, 2007,2010 Michael Kerrisk 
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH READV 2 2010\-11\-17 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+readv, writev, preadv, pwritev \- czytanie lub zapisywanie danych do wielu
+buforów
+.SH SKŁADNIA
+.nf
+\fB#include <sys/uio.h>\fP
+.sp
+\fBssize_t readv(int \fP\fIfd\fP\fB, const struct iovec *\fP\fIiov\fP\fB, int \fP\fIiovcnt\fP\fB);\fP
+.sp
+\fBssize_t writev(int \fP\fIfd\fP\fB, const struct iovec *\fP\fIiov\fP\fB, int \fP\fIiovcnt\fP\fB);\fP
+.sp
+\fBssize_t preadv(int \fP\fIfd\fP\fB, const struct iovec *\fP\fIiov\fP\fB, int \fP\fIiovcnt\fP\fB,\fP
+\fB               off_t \fP\fIoffset\fP\fB);\fP
+.sp
+\fBssize_t pwritev(int \fP\fIfd\fP\fB, const struct iovec *\fP\fIiov\fP\fB, int \fP\fIiovcnt\fP\fB,\fP
+\fB                off_t \fP\fIoffset\fP\fB);\fP
+.fi
+.sp
+.in -4n
+Wymagane ustawienia makr biblioteki glibc (patrz \fBfeature_test_macros\fP(7)):
+.in
+.sp
+\fBpreadv\fP(), \fBpwritev\fP(): _BSD_SOURCE
+.SH OPIS
+Wywołanie systemowe \fBreadv\fP() czyta liczbę \fIiovcnt\fP bloków z pliku
+skojarzonego z deskryptorem pliku \fIfd\fP do wielu buforów opisanych przez
+\fIiov\fP ("rozrzucone wejście").
+.PP
+Funkcja \fBwritev\fP() zapisuje co najwyżej \fIiovcnt\fP bloków opisanych przez
+\fIiov\fP do pliku skojarzonego z deskryptorem pliku \fIfd\fP ("zgromadzone
+wyjście").
+.PP
+Wskaźnik \fIiov\fP prowadzi do struktury \fIiovec\fP zdefiniowanej w pliku
+\fI<sys/uio.h>\fP następująco:
+.PP
+.br
+.in +4n
+.nf
+struct iovec {
+    void  *iov_base;    /* Adres początkowy */
+    size_t iov_len;     /* Liczba bajtów do przeniesienia */
+};
+.fi
+.in
+.PP
+Wywołanie systemowe \fBreadv\fP() działa tak samo jak \fBread\fP(2), z tą różnicą
+że wypełnianych jest wiele buforów.
+.PP
+Wywołanie systemowe \fBwritev\fP() działa tak samo jak \fBwrite\fP(2), z tą
+różnicą że zapisywane dane pochodzą z wielu buforów.
+.PP
+Bufory są przetwarzane w porządku, w którym zostały wymienione w
+tablicy. Oznacza to, że \fBreadv\fP() całkowicie zapełni \fIiov\fP[0] zanim
+przejdzie do \fIiov\fP[1] itd. (jeśli jest za mało danych, to nie wszystkie
+bufory w \fIiov\fP zostaną wypełnione). Podobnie \fBwritev\fP zapisuje całkowicie
+zawartość \fIiov\fP[0], zanim przejdzie do \fIiov\fP[1], itd.
+.PP
+Transfery danych przeprowadzane przez \fBreadv\fP() i \fBwritev\fP() są atomowe:
+dane zapisywane przez \fBwritev\fP() są zapisywane jako pojedynczy blok danych,
+niekolidujący z danymi zapisywanymi przez inne procesy (z jednym wyjątkiem,
+patrz \fBpipe\fP(7)). Analogicznie  \fBreadv\fP() gwarantuje przeczytanie
+sąsiadujących bloków danych, niezależnie od operacji odczytu
+przeprowadzanych przez inne wątki lub procesy mające deskryptory plików
+odnoszące się do tego samego otwartego pliku (patrz \fBopen\fP(2)).
+.SS "preadv() i pwritev()"
+Wywołanie systemowe \fBpreadv\fP() łączy w sobie funkcjonalności dostarczane
+przez \fBreadv\fP() i przez \fBpread\fP(2). Wykonuje to samo zadanie, co
+\fBreadv\fP(), ale dodaje czwarty argument, \fIoffset\fP, określający miejsce w
+pliku, w którym zostanie przeprowadzona operacja wejściowa.
+
+Wywołanie systemowe \fBpwritev\fP() łączy w sobie funkcjonalności dostarczane
+przez \fBwritev\fP() i przez \fBpwrite\fP(2). Wykonuje to samo zadanie, co
+\fBwritev\fP, ale dodaje czwarty argument, \fIoffset\fP, określający miejsce w
+pliku, w którym zostanie przeprowadzona operacja wyjściowa.
+
+Opisywane wywołania systemowe nie zmieniają pozycji przesunięcia w
+pliku. Pliki wskazywane  przez \fIfd\fP muszą pozwalać na swobodny dostęp
+(przeszukiwanie).
+.SH "WARTOŚĆ ZWRACANA"
+Gdy się powiodą, funkcje \fBreadv\fP() i \fBpreadv\fP() zwracają liczbę
+przeczytanych bajtów, a funkcje \fBwritev\fP() i \fBpwritev\fP() zwracają liczbę
+bajtów zapisanych. W przypadku błędu zwracane jest \-1 i odpowiednio jest
+ustawiana zmienna \fIerrno\fP.
+.SH BŁĘDY
+Zwracane błędy są takie same, jak w przypadku funkcji \fBread\fP(2) i
+\fBwrite\fP(2). Ponadto \fBpreadv\fP() i \fBpwritev\fP() mogą także zwrócić błędy
+takie jak w przypadku \fBlseek\fP(2). Dodatkowo zdefiniowany jest następujący
+błąd:
+.TP 
+\fBEINVAL\fP
+Suma wartości \fIiov_len\fP przekracza rozmiar \fIssize_t\fP albo liczba \fIiovcnt\fP
+wektorów jest mniejsza niż zero lub większa niż dopuszczalne maksimum.
+.SH WERSJE
+\fBpreadv\fP() i \fBpwritev\fP() po raz pierwszy pojawiły się w Linuksie 2.6.30;
+wsparcie biblioteczne  tych wywołań pojawiło się w glibc 2.10.
+.SH "ZGODNE Z"
+.\" The readv/writev system calls were buggy before Linux 1.3.40.
+.\" (Says release.libc.)
+\fBreadv\fP(), \fBwritev\fP(): BSD 4.4 (wywołania te początkowo pojawiły się w BSD
+4.2), POSIX.1\-2001. libc5 w Linuksie używała \fIsize_t\fP jako typu parametru
+\fIiovcnt\fP oraz \fIint\fP jako typu wartości zwracanej.
+
+\fBpreadv\fP(), \fBpwritev\fP(): niestandardowe, ale obecne także w nowoczesnych
+systemach BSD.
+.SH UWAGI
+.SS "Uwagi linuksowe"
+Standard POSIX.1\-2001 dopuszcza, aby implementacja wprowadziła ograniczenia
+na liczbę rekordów przekazywanych w parametrze \fIiov\fP. Limit ten jest
+określony jako wartość  \fBIOV_MAX\fP w \fI<limits.h>\fP, a w czasie
+działania programu \-  jako wartość zwracana przez wywołanie
+\fIsysconf(_SC_IOV_MAX)\fP. Pod Linuksem limit określony przez te mechanizmy
+wynosi 1024, co jest prawdziwym ograniczeniem jądra Linuksa. Jednakże
+funkcje glibc wykonują pewne dodatkowe działania po wykryciu, że odpowiednie
+wywołanie systemowe zakończyło się błędem z powodu przekroczenia limitu. W
+takim wypadku funkcja  \fBreadv\fP() biblioteki glibc przydziela tymczasowy
+bufor, wystarczająco duży, by pomieścić wszystkie elementy określone przez
+\fIiov\fP, przekazuje ten bufor wywołaniu systemowemu \fBread\fP(2), kopiuje dane
+z bufora tymczasowego do lokalizacji określonych przez \fIiov\fP, a następnie
+zwalnia pamięć bufora. Funkcja glibc dla \fBwritev\fP() wykonuje analogiczne
+zadanie, używając bufora tymczasowego i wywołania funkcji \fBwrite\fP(2).
+.SH BŁĘDY
+Nie jest zalecane mieszanie wywołań funkcji operujących na deskryptorach
+plików, takich jak \fBreadv\fP() czy \fBwritev\fP(), z funkcjami biblioteki stdio;
+rezultaty takiego mieszania nie są określone i najprawdopodobniej nie będą
+zgodne z oczekiwaniami.
+.SH PRZYKŁAD
+Następujący przykładowy kod pokazuje użycie funkcji \fBwritev\fP():
+
+.in +4n
+.nf
+char *str0 = "witaj ";
+char *str1 = "świecie\en";
+struct iovec iov[2];
+ssize_t nwritten;
+
+iov[0].iov_base = str0;
+iov[0].iov_len = strlen(str0);
+iov[1].iov_base = str1;
+iov[1].iov_len = strlen(str1);
+
+nwritten = writev(STDOUT_FILENO, iov, 2);
+.fi
+.in
+.SH "ZOBACZ TAKŻE"
+\fBpread\fP(2), \fBread\fP(2), \fBwrite\fP(2)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

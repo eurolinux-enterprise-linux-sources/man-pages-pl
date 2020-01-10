@@ -1,0 +1,398 @@
+# Polish translation of swapon.8 man page
+# This file is distributed under the same license as original manpage
+# Copyright of the original manpage:
+# Copyright © 1980, 1991 Regents of the University of California (BSD-4-clause)
+# Copyright © of Polish translation:
+# Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+# Michał Kułach <michal.kulach@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-pl\n"
+"POT-Creation-Date: 2012-03-25 19:58+0300\n"
+"PO-Revision-Date: 2012-03-25 20:31+0200\n"
+"Last-Translator: Michał Kułach <michal.kulach@gmail.com>\n"
+"Language-Team: Polish <manpages-pl-list@lists.sourceforge.net>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+
+#. type: TH
+#, no-wrap
+msgid "SWAPON"
+msgstr "SWAPON"
+
+#. type: TH
+#, no-wrap
+msgid "September 1995"
+msgstr "wrzesień 1995"
+
+#. type: TH
+#, no-wrap
+msgid "util-linux"
+msgstr "util-linux"
+
+#. type: TH
+#, no-wrap
+msgid "System Administration"
+msgstr "Administracja systemem"
+
+#. type: SH
+#, no-wrap
+msgid "NAME"
+msgstr "NAZWA"
+
+#. type: Plain text
+msgid ""
+"swapon, swapoff - enable/disable devices and files for paging and swapping"
+msgstr ""
+"swapon, swapoff - włącza/wyłącza urządzenia oraz pliki stronicowania i wymiany"
+
+#. type: SH
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "SKŁADNIA"
+
+#. type: Plain text
+msgid "Get info:"
+msgstr "Wyświetl informacje:"
+
+#. type: Plain text
+msgid "B<swapon -s> [B<-h>] [B<-V>]"
+msgstr "B<swapon -s> [B<-h>] [B<-V>]"
+
+#. type: Plain text
+msgid "Enable/disable:"
+msgstr "Włącz/wyłącz:"
+
+#. type: Plain text
+msgid "B<swapon> [B<-d>] [B<-f>] [B<-p> I<priority>] [B<-v>] I<specialfile>..."
+msgstr ""
+"B<swapon> [B<-d>] [B<-f>] [B<-p> I<priorytet>] [B<-v>] I<plik-specjalny>..."
+
+#. type: Plain text
+msgid "B<swapoff> [B<-v>] I<specialfile>..."
+msgstr "B<swapoff> [B<-v>] I<plik-specjalny>..."
+
+#. type: Plain text
+msgid "Enable/disable all:"
+msgstr "Włącz/wyłącz wszystkie:"
+
+#. type: Plain text
+msgid "B<swapon -a> [B<-e>] [B<-f>] [B<-v>]"
+msgstr "B<swapon -a> [B<-e>] [B<-f>] [B<-v>]"
+
+#. type: Plain text
+msgid "B<swapoff -a> [B<-v>]"
+msgstr "B<swapoff -a> [B<-v>]"
+
+#. type: SH
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "OPIS"
+
+#. type: Plain text
+msgid ""
+"B<swapon> is used to specify devices on which paging and swapping are to "
+"take place."
+msgstr ""
+"Polecenie B<swapon> jest używane do określania urządzeń do stronicowania i "
+"wymiany."
+
+#. type: Plain text
+msgid ""
+"The device or file used is given by the I<specialfile> parameter. It may be "
+"of the form B<-L>I< label> or B<-U>I< uuid> to indicate a device by label or "
+"uuid."
+msgstr ""
+"Urządzenie lub plik może być podany za pomocą parametru I<plik-specjalny>. "
+"Może mieć on postać B<-L>I< etykieta> lub B<-U>I< uuid> aby określić "
+"urządzenie za pomocą etykiety lub uuid (unikalnego identyfikatora)."
+
+#. type: Plain text
+msgid ""
+"Calls to B<swapon> normally occur in the system boot scripts making all swap "
+"devices available, so that the paging and swapping activity is interleaved "
+"across several devices and files."
+msgstr ""
+"Odwołanie do B<swapon> normalnie powinno się pojawiać w systemowych skryptach "
+"uruchomieniowych, udostępniając wszystkie urządzenia wymiany, dzięki czemu "
+"stronicowanie i wymiana jest rozłożone między wiele urządzeń i plików."
+
+#. type: Plain text
+msgid ""
+"B<swapoff> disables swapping on the specified devices and files.  When the "
+"B<-a> flag is given, swapping is disabled on all known swap devices and "
+"files (as found in I</proc/swaps> or I</etc/fstab>)."
+msgstr ""
+"Polecenie B<swapoff> wyłącza wymianę na podanych urządzeniach i plikach. "
+"Jeśli użyto opcji B<-a>, to swap jest wyłączany na wszystkich znanych "
+"urządzeniach i plikach wymiany (zgodnie z plikiem I</proc/swaps> lub I<"
+"/etc/fstab>)."
+
+#. type: TP
+#, no-wrap
+msgid "B<-a, --all>"
+msgstr "B<-a, --all>"
+
+#. type: Plain text
+msgid ""
+"All devices marked as ``swap'' in I</etc/fstab> are made available, except "
+"for those with the ``noauto'' option.  Devices that are already being used "
+"as swap are silently skipped."
+msgstr ""
+"Udostępnia wszystkie urządzenia oznaczone jako \"swap\" w pliku I</etc/fstab>"
+", z wyjątkiem plików z opcją \"noauto\". Urządzenia, które są już używane "
+"jako swap, są po cichu pomijane."
+
+#. type: TP
+#, no-wrap
+msgid "B<-d, --discard>"
+msgstr "B<-d, --discard>"
+
+#. type: Plain text
+msgid ""
+"Discard freed swap pages before they are reused, if the swap device supports "
+"the discard or trim operation.  This may improve performance on some Solid "
+"State Devices, but often it does not.  The I</etc/fstab> mount option "
+"B<discard> may be also used to enable discard flag."
+msgstr ""
+"Oznacza zwolnione strony swap jako wolne, przed ich ponownym użyciem, jeśli "
+"urządzenie obsługuje operacje discard lub trim. Może to poprawić wydajność na "
+"niektórych dyskach SSD, choć często tak się nie dzieje. Opcja montowania B<"
+"discard> w pliku I</etc/fstab> może być również użyta do włączenia opcji "
+"discard."
+
+#. type: TP
+#, no-wrap
+msgid "B<-e, --ifexists>"
+msgstr "B<-e, --ifexists>"
+
+#. type: Plain text
+msgid ""
+"Silently skip devices that do not exist.  The I</etc/fstab> mount option "
+"B<nofail> may be also used to skip non-existing device."
+msgstr ""
+"Pomija po cichu nieistniejące urządzenia. Opcja montowania B<nofail> w I<"
+"/etc/fstab> może być również użyta do pomijania nieistniejących urządzeń."
+
+#. type: TP
+#, no-wrap
+msgid "B<-f, --fixpgsz>"
+msgstr "B<-f, --fixpgsz>"
+
+#. type: Plain text
+msgid ""
+"Reinitialize (exec /sbin/mkswap) the swap space if its page size does not "
+"match that of the the current running kernel.  B<mkswap(2)> initializes the "
+"whole device and does not check for bad blocks."
+msgstr ""
+"Ponownie inicjuje przestrzeń swap (exec /sbin/mkswap), jeśli rozmiar strony "
+"nie pasuje do rozmiaru podawanego przez aktualnie uruchomione jądro. "
+"Polecenie B<mkswap(2)> inicjuje całe urządzenie i nie sprawdza go pod kątem "
+"błędnych bloków."
+
+#. type: TP
+#, no-wrap
+msgid "B<-h, --help>"
+msgstr "B<-h, --help>"
+
+#. type: Plain text
+msgid "Provide help."
+msgstr "Udostępnia pomoc."
+
+#. type: TP
+#, no-wrap
+msgid "B<-L >I<label>"
+msgstr "B<-L >I<etykieta>"
+
+#. type: Plain text
+msgid ""
+"Use the partition that has the specified I<label>.  (For this, access to I</"
+"proc/partitions> is needed.)"
+msgstr ""
+"Używa partycji z określoną I<etykietą> (potrzebny jest w tym celu dostęp do "
+"I</proc/partitions>)."
+
+#. type: TP
+#, no-wrap
+msgid "B<-p, --priority >I<priority>"
+msgstr "B<-p, --priority >I<priorytet>"
+
+#. type: Plain text
+msgid ""
+"Specify the priority of the swap device.  I<priority> is a value between 0 "
+"and 32767. Higher numbers indicate higher priority. See B<swapon>(2)  for a "
+"full description of swap priorities. Add B<pri=>I<value> to the option field "
+"of I</etc/fstab> for use with B<swapon -a>."
+msgstr ""
+"Określa priorytet urządzenia wymiany. I<Priorytet> jest wartością z "
+"przedziału pomiędzy 0 a 32767. Wyższa liczba oznacza wyższy priorytet. "
+"Podręcznik polecenia B<swapon>(2) zawiera pełny opis priorytetów swap. Do "
+"pliku I</etc/fstab> można dodać opcję B<pri=>I<wartość>, która będzie używana "
+"ze B<swapon -a>."
+
+#. type: TP
+#, no-wrap
+msgid "B<-s, --summary>"
+msgstr "B<-s, --summary>"
+
+#. type: Plain text
+msgid ""
+"Display swap usage summary by device. Equivalent to \"cat /proc/swaps\".  "
+"Not available before Linux 2.1.25."
+msgstr ""
+"Wyświetla podsumowanie użycia swapu wg urządzenia. Jest to odpowiednik \"cat "
+"/proc/swaps\". Opcja jest niedostępna w przypadku Linuksa starszego niż 2.1."
+"25."
+
+#. type: TP
+#, no-wrap
+msgid "B<-U >I<uuid>"
+msgstr "B<-U >I<uuid>"
+
+#. type: Plain text
+msgid "Use the partition that has the specified I<uuid>."
+msgstr "Używa partycji o określonym I<uuid> (unikalnym identyfikatorze)."
+
+#. type: TP
+#, no-wrap
+msgid "B<-v, --verbose>"
+msgstr "B<-v, --verbose>"
+
+#. type: Plain text
+msgid "Be verbose."
+msgstr "Więcej szczegółów."
+
+#. type: TP
+#, no-wrap
+msgid "B<-V, --version>"
+msgstr "B<-V, --version>"
+
+#. type: Plain text
+msgid "Display version."
+msgstr "Wyświetla wersję."
+
+#. type: SH
+#, no-wrap
+msgid "NOTES"
+msgstr "UWAGI"
+
+#. type: Plain text
+msgid ""
+"You should not use B<swapon> on a file with holes.  Swap over NFS may not "
+"work."
+msgstr ""
+"Nie powinno się używać B<swapon> na pliku z dziurami (tzw. rzadki plik). Swap "
+"poprzez NFS może nie działać."
+
+#. type: Plain text
+msgid ""
+"B<swapon> automatically detects and rewrites swap space signature with old "
+"software suspend data (e.g S1SUSPEND, S2SUSPEND, ...). The problem is that "
+"if we don't do it, then we get data corruption the next time an attempt at "
+"unsuspending is made."
+msgstr ""
+"Polecenie B<swapon> automatycznie wykrywa i nadpisuje podpis przestrzeni "
+"wymiany ze starymi danymi wstrzymania (np. S1SUSPEND, S2SUSPEND, ...). Jest "
+"to konieczne, gdyż w przeciwnym wypadku nastąpiłoby uszkodzenie danych przy "
+"kolejnej próbie wybudzenia."
+
+#. type: Plain text
+msgid ""
+"B<swapon> may not work correctly when using a swap file with some versions "
+"of btrfs.  This is due to the swap file implementation in the kernel "
+"expecting to be able to write to the file directly, without the assistance "
+"of the file system.  Since btrfs is a copy-on-write file system, the file "
+"location may not be static and corruption can result. Btrfs actively "
+"disallows the use of files on its file systems by refusing to map the file. "
+"This can be seen in the system log as \"swapon: swapfile has holes.\" One "
+"possible workaround is to map the file to a loopback device. This will allow "
+"the file system to determine the mapping properly but may come with a "
+"performance impact."
+msgstr ""
+"Program B<swapon> może nie działać prawidłowo z plikiem wymiany na niektórych "
+"wersjach btrfs. Jest to spowodowane implementacją pliku wymiany w jądrze, "
+"które oczekuje możliwości bezpośredniego zapisu do pliku, bez pośrednictwa "
+"systemu plików. Ponieważ btrfs jest systemem plików używającym kopiowania "
+"przy zapisie, położenie pliku może nie być statyczne, co może spowodować błąd."
+" Btrfs aktywnie nie pozwala na używanie plików w swoim systemie plików, "
+"odmawiając przypisania (zmapowania) pliku. Można to dostrzec w dzienniku "
+"systemowym jako \"swapon: swapfile has holes.\" Możliwym obejściem problemu "
+"jest przypisanie pliku do urządzenia typu loopback. Pozwoli to systemowi "
+"plików na poprawne określenie przypisania, ale może odbić się negatywnie na "
+"wydajności."
+
+#. type: SH
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "ZOBACZ TAKŻE"
+
+#. type: Plain text
+msgid ""
+"B<swapon>(2), B<swapoff>(2), B<fstab>(5), B<init>(8), B<mkswap>(8), B<rc>"
+"(8), B<mount>(8)"
+msgstr ""
+"B<swapon>(2), B<swapoff>(2), B<fstab>(5), B<init>(8), B<mkswap>(8), B<rc>"
+"(8), B<mount>(8)"
+
+#. type: SH
+#, no-wrap
+msgid "FILES"
+msgstr "PLIKI"
+
+#. type: Plain text
+msgid "I</dev/sd??> standard paging devices"
+msgstr "I</dev/sd??> standardowe urządzenia stronicowania"
+
+#. type: Plain text
+msgid "I</etc/fstab> ascii filesystem description table"
+msgstr "I</etc/fstab> tablica opisująca systemy plików w ascii"
+
+#. type: SH
+#, no-wrap
+msgid "HISTORY"
+msgstr "HISTORIA"
+
+#. type: Plain text
+msgid "The B<swapon> command appeared in 4.0BSD."
+msgstr "Polecenie B<swapon> pojawiło się w 4.0BSD."
+
+#. type: SH
+#, no-wrap
+msgid "AVAILABILITY"
+msgstr "DOSTĘPNOŚĆ"
+
+#. type: Plain text
+msgid ""
+"The swapon command is part of the util-linux package and is available from "
+"ftp://ftp.kernel.org/pub/linux/utils/util-linux/."
+msgstr ""
+"Polecenie swapon jest częścią pakietu util-linux i jest dostępne pod adresem "
+"ftp://ftp.kernel.org/pub/linux/utils/util-linux/."
+
+#~ msgid "Report swapon bugs to bug-coreutils@gnu.org"
+#~ msgstr ""
+#~ "Zgłoszenia błędów w swapon proszę wysyłać (po angielsku) na adres bug-"
+#~ "coreutils@gnu.org"
+
+#~ msgid ""
+#~ "Report swapon translation bugs to E<lt>http://translationproject.org/team/"
+#~ "E<gt>"
+#~ msgstr ""
+#~ "Zgłoszenia błędów w tłumaczeniu swapon proszę wysyłać na adres "
+#~ "E<lt>http://translationproject.org/team/pl.htmlE<gt>"
+
+#~ msgid ""
+#~ "The full documentation for B<swapon> is maintained as a Texinfo manual.  "
+#~ "If the B<info> and B<swapon> programs are properly installed at your "
+#~ "site, the command"
+#~ msgstr ""
+#~ "Pełna dokumentacja B<swapon> jest dostępna w formacie Texinfo. Jeśli "
+#~ "program B<info> i B<swapon> jest poprawnie zainstalowany, to polecenie"
+
+#~ msgid "B<info coreutils \\(aqswapon invocation\\(aq>"
+#~ msgstr "B<info coreutils \\(aqswapon invocation\\(aq>"

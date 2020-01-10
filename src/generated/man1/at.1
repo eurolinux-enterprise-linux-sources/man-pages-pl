@@ -1,0 +1,195 @@
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993-1997 Thomas Koenig, 1993 David Parsons, 2002,2005 Ryan Murray (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Wojtek Kotwica (PTM) <wkotwica@post.pl>, 1999.
+.\" Robert Luberda <robert@debian.org>, 2012.
+.TH AT 1 2009\-11\-14  
+.SH NAZWA
+at, batch, atq, atrm \- kolejkuje, sprawdza lub usuwa zadania do późniejszego
+wykonania
+.SH SKŁADNIA
+\fBat\fP [\fB\-V\fP] [\fB\-q\fP \fIkolejka\fP] [\fB\-f\fP \fIplik\fP] [\fB\-mMlv\fP]
+\fIokreślenie_czasu\fP...
+.br
+\fBat\fP [\fB\-V\fP] [\fB\-q\fP \fIkolejka\fP] [\fB\-f\fP \fIplik\fP] [\fB\-mMkv\fP] [\fB\-t\fP \fIczas\fP]
+.br
+\fBat \-c\fP \fIzadanie\fP [\fIzadanie...\fP]
+.br
+\fBatq\fP [\fB\-V\fP] [\fB\-q\fP \fIkolejka\fP]
+.br
+\fBat\fP [\fB\-rd\fP] \fIzadanie\fP [\fIzadanie...\fP]
+.br
+\fBatrm\fP [\fB\-V\fP] \fIzadanie\fP [\fIzadanie...\fP]
+.br
+\fBbatch\fP
+.br
+\fBat \-b\fP
+.SH OPIS
+\fBat\fP i \fBbatch\fP czytają ze standardowego wejścia lub z podanego pliku
+polecenia, które mają zostać wykonane za pomocą \fB/bin/sh\fP w terminie
+późniejszym.
+.TP  8
+\fBat\fP
+wykonuje polecenia o zadanym czasie.
+.TP  8
+\fBatq\fP
+pokazuje oczekujące zadania użytkownika, chyba że jest on administratorem
+\(em w tym przypadku wyświetlane są zadania wszystkich użytkowników. Postać
+wierszy wynikowych (po jednym na każde zadanie): numer zadania, data,
+godzina, kolejka i nazwa użytkownika.
+.TP  8
+\fBatrm\fP
+usuwa zadania identyfikowane przez ich numer zadania.
+.TP  8
+\fBbatch\fP
+wykonuje polecenia, gdy pozwala na to poziom obciążenia systemu; inaczej
+mówiąc, gdy średnie obciążenie spada poniżej 1.5 lub wartości określonej w
+wywołaniu \fBatd\fP.
+.PP
+\fBat\fP pozwala na dość złożone określanie czasu, wychodząc poza standard
+POSIX.2. Akceptuje czasy w postaci \fBHH:MM\fP, nakazujące wykonanie zadania o
+zadanej godzinie (Jeśli czas ten już minął, to przyjmowany jest następny
+dzień). Można też podać \fBmidnight\fP [północ], \fBnoon\fP [południe] lub
+\fBteatime\fP ["czas herbatki": czwarta po południu]. Można używać przyrostków
+[tłum: decydują one równocześnie o użyciu zegara 12\-godzinnego zamiast
+24\-godzinnego] \fBAM\fP lub \fBPM\fP do zapisu uruchomień porannych lub
+wieczornych. Można też wskazać, w jakim dniu ma zostać uruchomione zadanie,
+podając datę w postaci \fBnazwa\-miesiąca\fP \fBdzień\fP z opcjonalnym \fBrokiem\fP,
+lub też w formacie \fIMMDD\fP[\fICC\fP]\fIYY\fP, \fIMM\fP/\fIDD\fP/[\fICC\fP]\fIYY\fP,
+\fIDD\fP.\fIMM\fP.[\fICC\fP]\fIYY\fP or [\fICC\fP]\fIYY\fP\-\fIMM\fP\-\fIDD\fP. Określenie daty
+\fImusi\fP występować po określeniu godziny (pory dnia). Można również podawać
+czasy takie jak \fBnow\fP [teraz], \fB\+\fP \fIliczba\fP \fIjednostek\-czasu\fP, gdzie
+jednostkami czasu mogą być \fBminutes\fP [minuty], \fBhours\fP [godziny], \fBdays\fP
+[dni] lub \fBweeks\fP [tygodnie]. Można też nakazać \fBat\fP uruchomienie zadania
+w dniu dzisiejszym, kończąc określenie czasu słowem \fBtoday\fP [dzisiaj], lub
+jutrzejszym, używając przyrostka \fBtomorrow\fP [jutro].
+.PP
+Na przykład, by uruchomić zadanie za trzy dni, o godzinie 4 po południu,
+powinno się wykonać: \fBat 4pm + 3 days\fP; aby uruchomić zadania 31 lipca o
+10:00: \fBat 10am Jul 31\fP, jutro o pierwszej w nocy: \fBat 1am tomorrow\fP.
+.PP
+Dokładną definicję specyfikacji czasu można znaleźć w
+\fI/usr/share/doc/at/timespec\fP.
+.PP
+Zarówno \fBat\fP, jak i \fBbatch\fP czytają i wykonują polecenia ze standardowego
+wejścia lub z pliku podanego w opcji \fB\-f\fP. Katalog roboczy, środowisko
+(oprócz zmiennych  \fBBASH_VERSINFO\fP, \fBDISPLAY\fP, \fBEUID\fP, \fBGROUPS\fP,
+\fBSHELLOPTS\fP, \fBTERM\fP, \fBUID\fP i \fB_\fP) oraz maska praw dostępu (umask) są
+zachowywane z czasu uruchomienia.
+
+Ponieważ \fBat\fP jest zaimplementowany jako program setuid inne zmienne
+środowiskowe (np. \fBLD_LIBRARY_PATH\fP lub \fBLD_PRELOAD\fP) nie są
+eksportowane. Może się to zmienić w przyszłości. Aby obejść ten problem,
+należy ustawić te zmienne bezpośrednio w zadaniu.
+
+Polecenie \fBat\fP lub \fBbatch\fP wywołane z powłoki \fBsu\fP(1) zachowuje bieżący
+identyfikator użytkownika. Wyniki kierowane przez zadane polecenia na
+standardowe wyjście lub wyjście raportowania błędów zostaną skierowane do
+skrzynki pocztowej użytkownika (przekazane pocztą elektroniczną). Przesyłki
+te zostaną dostarczone przy pomocy polecenia \fB/usr/sbin/sendmail\fP. Jeżeli
+\fBat\fP wykonywane jest z powłoki \fBsu\fP(1), to korespondencję otrzyma
+właściciel powłoki zgłoszeniowej (login shell).
+.PP
+Administrator systemu może zawsze posługiwać się opisywanymi
+poleceniami. Dla pozostałych użytkowników, dostęp do \fBat\fP jest określany
+przez pliki \fI/etc/at.allow\fP i \fI/etc/at.deny\fP. Szczegóły można znaleźć w
+\fBat.allow\fP(5).
+.SH OPCJE
+.TP  8
+\fB\-V\fP
+wyświetla numer wersji programu na standardowe wyjście błędów i kończy
+działanie.
+.TP  8
+\fB\-q\fP\fI kolejka\fP
+używa zadanej kolejki. Określenie kolejki składa się z pojedynczej litery;
+dopuszczalne są określenia kolejki w zakresie od \fBa\fP do \fBz\fP oraz od \fBA\fP
+do \fBZ\fP. Kolejka \fBa\fP jest kolejką domyślną dla \fBat\fP, zaś kolejka \fBb\fP
+domyślną dla \fBbatch\fP. Kolejki opisywane kolejnymi literami uruchamiane są z
+wzrastającym priorytetem. Specjalna kolejka \fB=\fP zarezerwowana jest dla
+zadań obecnie wykonywanych.
+.P
+Jeśli zadanie wysyłane jest do kolejki określonej dużą literą, to traktowane
+jest jakby było wysłane do wykonania o tym czasie przez polecenie
+\fBbatch\fP. Po osiągnięciu tego czasu, \fBbatch\fP zacznie przetwarzać reguły,
+zwracając uwagę na obciążenie systemu (load average). Jeśli użyto konkretnej
+kolejki w poleceniu \fBatq\fP, to pokaże ono tylko zadania oczekujące w tej
+kolejce.
+.TP  8
+\fB\-m\fP
+Po zakończeniu zadania wysyła pocztą powiadomienie do użytkownika, nawet
+jeśli zadanie nie zwróciło żadnych danych na wyjściu.
+.TP  8
+\fB\-M\fP
+Nigdy nie wysyła poczty do użytkownika.
+.TP  8
+\fB\-f\fP\fI plik\fP
+Czyta zadania z \fIpliku\fP, a nie ze standardowego wejścia.
+.TP  8
+\fB\-t\fP\fI czas\fP
+Uruchamia zadanie w zadanym \fIczasie\fP podanym w formacie
+[[CC]YY]MMDDhhmm[.ss].
+.TP  8
+\fB\-l\fP
+Jest skrótem (aliasem) dla \fBatq\fP.
+.TP 
+\fB\-r\fP
+Jest skrótem dla \fBatrm\fP.
+.TP 
+\fB\-d\fP
+Jest skrótem dla \fBatrm\fP.
+.TP 
+\fB\-b\fP
+Jest skrótem dla \fBbatch\fP.
+.TP 
+\fB\-v\fP
+Zanim przeczyta zadanie, pokaże czas, w którym zadanie będzie wykonane,
+.P
+Czas jest wyświetlany w formacie "Thu Feb 20 14:50:00 1997".
+.TP 
+\fB\-c\fP
+wysyła [jak polecenie \fBcat\fP(1)] podane w wierszu poleceń zadania na
+standardowe wyjście.
+.SH PLIKI
+\fI/var/spool/cron/atjobs\fP
+.br
+\fI/var/spool/cron/atspool\fP
+.br
+\fI/proc/loadavg\fP
+.br
+\fI/var/run/utmp\fP
+.br
+\fI/etc/at.allow\fP
+.br
+\fI/etc/at.deny\fP
+.SH "ZOBACZ TAKŻE"
+\fBat.allow\fP(5), \fBat.deny\fP(5), \fBatd\fP(8), \fBcron\fP(1), \fBnice\fP(1), \fBsh\fP(1),
+\fBumask\fP(2).
+.SH BŁĘDY
+Poprawne działanie \fBbatch\fP w Linuksie zależy od obecności katalogu typu
+\fIproc\fP montowanego w \fI/proc\fP.
+.PP
+Jeżeli plik \fI/var/run/utmp\fP nie jest dostępny lub jest uszkodzony albo
+jeśli podczas wywoływania \fBat\fP użytkownik nie jest zalogowany, to poczta
+wysyłana będzie do użytkownika o identyfikatorze znalezionym w zmiennej
+środowiska \fBLOGNAME\fP. Jeżeli nie jest ona zdefiniowana lub jest pusta, to
+przyjmowany jest bieżący identyfikator użytkownika.
+.PP
+\fBat\fP i \fBbatch\fP w obecnej implementacji są nieużyteczne w sytuacji, kiedy
+użytkownicy rywalizują o zasoby. Jeśli jest tak w przypadku Twojego systemu,
+powinieneś rozważyć inne rozwiązanie systemu wsadowego, takie jak \fBnqs\fP.
+.SH AUTOR
+\fBat\fP zostało w większości napisane przez Thomasa Koeniga,
+ig25@rz.uni\-karlsruhe.de.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Wojtek Kotwica (PTM) <wkotwica@post.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.1.13 \fPoryginału.

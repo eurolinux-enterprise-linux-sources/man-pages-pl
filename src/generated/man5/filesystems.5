@@ -1,0 +1,182 @@
+.\" Copyright 1996 Daniel Quinlan (Daniel.Quinlan@linux.org)
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" 2007-12-14 mtk Added Reiserfs, XFS, JFS.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1996 Daniel Quinlan (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Gwidon S. Naskrent (PTM) <naskrent@hoth.amu.edu.pl>, 1998.
+.\" Robert Luberda <robert@debian.org>, 2005, 2012.
+.TH FILESYSTEMS 5 2010\-05\-24 Linux "Podręcznik programisty Linuksa"
+.nh
+.SH NAZWA
+filesystems \- typy systemów plików Linuksa: minix, ext, ext2, ext3, ext4,
+Reiserfs, XFS, JFS, xia, msdos, umsdos, vfat, ntfs, proc, nfs, iso9660,
+hpfs, sysv, smb, ncpfs
+.SH OPIS
+Gdy, jak jest przyjęte, system plików \fBproc\fP jest zamontowany w \fI/proc\fP, w
+pliku \fI/proc/filesystems\fP można znaleźć listę systemów plików obsługiwanych
+w danej chwili przez jądro. Jeśli potrzebny jest któryś z aktualnie
+nieobsługiwanych, należy załadować odpowiedni moduł lub ponownie skompilować
+jądro.
+
+Aby móc korzystać z systemu plików, należy go \fIzamontować\fP; patrz
+\fBmount\fP(8).
+
+Poniżej znajduje się opis różnych systemów plików.
+.TP  10
+\fBminix\fP
+jest systemem plików używanym w systemie operacyjnym Minix, jest to pierwszy
+system plików, który działał pod Linuksem. Ma on pewną liczbę niedociągnięć:
+ograniczenie rozmiaru partycji do 64 MB, krótkie nazwy plików, pojedyncze
+znaczniki czasu itd.  Jest on nadal przydatny dla dyskietek i RAM\-dysków.
+.TP 
+\fBext\fP
+jest bardziej złożonym rozwinięciem systemu plików \fBminix\fP.  Został
+całkowicie zastąpiony przez drugą wersję rozszerzonego systemu plików
+(\fBext2\fP)  i ostatecznie usunięty z jądra (w 2.1.21).
+.TP 
+\fBext2\fP
+jest dyskowym systemem plików o wysokiej wydajności używanym przez Linuksa
+zarówno dla dysków stałych, jak i dla nośników wymiennych. Drugi rozszerzony
+system plików został zaprojektowany jako rozszerzenie rozszerzonego systemu
+plików (\fBext\fP). \fBext2\fP oferuje najlepszą wydajność (w przeliczeniu na
+szybkość i wykorzystanie CPU)  ze wszystkich systemów plików obsługiwanych
+przez Linuksa.
+.TP 
+\fBext3\fP
+jest wersją systemu plików ext2 z dziennikiem. Przełączanie się pomiędzy
+systemami plików ext2 i ext3 jest niezmiernie łatwe.
+.TP 
+\fBext4\fP
+jest zbiorem aktualizacji do ext3 znacząco poprawiającym wydajność i
+niezawodność, a także podnoszącym limity liczby i rozmiaru plików i
+katalogów.
+.TP 
+\fBReiserfs\fP
+jest to system plików z dziennikiem, zaprojektowany przez Hansa Reisera,
+obsługiwany przez jądro Linuksa od wersji 2.4.1.
+.TP 
+\fBXFS\fP
+jest to system plików z dziennikiem, rozwijany przez SGI, obsługiwany przez
+jądro Linuksa od wersji 2.4.20.
+.TP 
+\fBJFS\fP
+jest to system plików z dziennikiem, rozwijany przez IBM, obsługiwany przez
+jądro Linuksa od wersji 2.4.24.
+.TP 
+\fBxiafs\fP
+został zaprojektowany i zaimplementowany jako stabilny, pewny system plików
+poprzez rozszerzenie kodu systemu plików Minix. Dostarcza podstawowych,
+najczęściej wymaganych funkcjonalności bez zbędnej złożoności. System plików
+\fBxia\fP nie jest już aktywnie rozwijany i utrzymywany. Został usunięty z
+jądra w 2.1.21.
+.TP 
+\fBmsdos\fP
+jest systemem plików używanym przez DOS, Windows, i niektóre komputery z
+OS/2. Nazwy plików w \fBmsdos\fP nie mogą być dłuższe niż 8 znaków nazwy, plus
+opcjonalna kropka i 3 znaki rozszerzenia.
+.TP 
+\fBumsdos\fP
+to rozszerzony system plików DOS\-u używany przez Linuksa. Dodaje on
+właściwości takie jak długie nazwy, UID/GID, uprawnienia zgodne z POSIX,
+oraz pliki specjalne (urządzenia, potoki nazwane itp) w systemie plików
+DOS\-u, bez poświęcania zgodności z DOS\-em.
+.TP 
+\fBvfat\fP
+to rozszerzony system plików DOS używany przez Microsoft Windows95 i Windows
+NT. VFAT dodaje możliwość używania długich nazw w systemie plików MSDOS.
+.TP 
+\fBntfs\fP
+zastępuje system plików FAT (VFAT, FAT32) systemu Microsof Windows. Zawiera
+ulepszenia związane z niezawodnością, wydajnością i użyciem przestrzeni
+dyskowej, ponadto obsługuje uprawnienia (ACL\-e), dzienniki, szyfrowanie itp.
+.TP 
+\fBproc\fP
+jest pseudosystemem plików używanym jako interfejs do struktur danych jądra,
+zamiast czytania i interpretowania \fI/dev/kmem\fP. W szczególności, jego pliki
+nie zajmują przestrzeni dyskowej. Zobacz \fBproc\fP(5).
+.TP 
+\fBiso9660\fP
+to system plików CD\-ROM zgodny ze standardem ISO 9660.
+.RS
+.TP 
+\fBHigh Sierra\fP
+Linux obsługuje High Sierra, prekursora standardu ISO 9660 dla systemów
+plików CD\-ROM. Jest on rozpoznawany automatycznie w ramach obsługi systemu
+plików \fBiso9660\fP w Linuksie.
+.TP 
+\fBRock Ridge\fP
+Linux obsługuje także rekordy System Use Sharing Protocol określone przez
+Rock Ridge Interchange Protocol. Używane są one do dokładniejszego opisania
+plików w systemie \fBiso9660\fP komputerowi uniksowemu i dostarczają informacji
+takich jak długie nazwy, UID/GID, uprawnienia zgodne z POSIX oraz
+urządzenia. Jest on rozpoznawany automatycznie w ramach obsługi systemu
+plików \fBiso9660\fP w Linuksie.
+.RE
+.TP 
+\fBhpfs\fP
+jest to High Performance Filesystem, używany w OS/2. Ten system plików jest
+w Linuksie dostępny tylko do odczytu z powodu braku dokumentacji.
+.TP 
+\fBsysv\fP
+jest implementacją systemów plików SystemV/Coherent dla Linux. Implementuje
+on wszystkie systemy plików Xenix, SystemV/386 oraz Coherent.
+.TP 
+\fBnfs\fP
+to sieciowy system plików używany do dostępu do dysków umieszczonych na
+odległych komputerach.
+.TP 
+\fBsmb\fP
+to sieciowy system plików obsługujący protokół SMB, używany przez Windows
+for Workgroups, Windows NT oraz Lan Manager.
+.sp
+By używać systemu plików \fBsmb\fP potrzebny jest specjalny program do
+montowania, który znaleźć można w pakiecie ksmbfs, dostępnym pod
+\fIftp://sunsite.unc.edu/pub/Linux/system/Filesystems/smbfs\fP.
+.TP 
+\fBncpfs\fP
+to sieciowy system plików obsługujący protokół NCP używany przez Novell
+NetWare.
+.sp
+By używać \fBncpfs\fP, potrzebne są specjalne programy, które znaleźć można pod
+\fIftp://linux01.gwdg.de/pub/ncpfs\fP.
+.SH "ZOBACZ TAKŻE"
+\fBproc\fP(5), \fBfsck\fP(8), \fBmkfs\fP(8), \fBmount\fP(8)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Gwidon S. Naskrent (PTM) <naskrent@hoth.amu.edu.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

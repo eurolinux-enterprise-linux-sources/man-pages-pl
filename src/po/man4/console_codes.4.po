@@ -1,0 +1,1823 @@
+# Polish translation of console_codes.4 man page
+# This file is distributed under the same license as original manpage
+# Copyright of the original manpage:
+# Copyright © 1996 Andres Brouwer (GPL-2+)
+# Copyright © of Polish translation:
+# Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+# Robert Luberda <robert@debian.org>, 2006, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-pl\n"
+"POT-Creation-Date: 2012-05-13 19:07+0300\n"
+"PO-Revision-Date: 2012-07-26 18:14+0200\n"
+"Last-Translator: Robert Luberda <robert@debian.org>\n"
+"Language-Team: Polish <manpages-pl-list@lists.sourceforge.net>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.4\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+
+#. type: TH
+#, no-wrap
+msgid "CONSOLE_CODES"
+msgstr "CONSOLE_CODES"
+
+#. type: TH
+#, no-wrap
+msgid "2011-09-15"
+msgstr "2011-09-15"
+
+#. type: TH
+#, no-wrap
+msgid "Linux"
+msgstr "Linux"
+
+#. type: TH
+#, no-wrap
+msgid "Linux Programmer's Manual"
+msgstr "Podręcznik programisty Linuksa"
+
+#. type: SH
+#, no-wrap
+msgid "NAME"
+msgstr "NAZWA"
+
+#. type: Plain text
+msgid "console_codes - Linux console escape and control sequences"
+msgstr "console_codes - Kody konsolowe Linuksa oraz sekwencje specjalne"
+
+#. type: SH
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "OPIS"
+
+#. type: Plain text
+msgid ""
+"The Linux console implements a large subset of the VT102 and ECMA-48/ISO "
+"6429/ANSI X3.64 terminal controls, plus certain private-mode sequences for "
+"changing the color palette, character-set mapping, etc.  In the tabular "
+"descriptions below, the second column gives ECMA-48 or DEC mnemonics (the "
+"latter if prefixed with DEC) for the given function.  Sequences without a "
+"mnemonic are neither ECMA-48 nor VT102."
+msgstr ""
+"Konsola Linuksa implementuje duży podzbiór kontrolek terminali VT102 oraz "
+"ECMA-48/ISO 6429/ANSI X3.64, plus określone sekwencje trybu prywatnego, "
+"dotyczące zmiany palety kolorów, mapowania zestawu znaków itp.  W "
+"poniższych, tabelarycznych opisach, druga kolumna podaje dla danej funkcji "
+"mnemoniki ECMA-48 lub DEC (te drugie są poprzedzone ciągiem DEC).  Sekwencje "
+"bez mnemoników nie są ani ECMA-48 ani VT102."
+
+#. type: Plain text
+msgid ""
+"After all the normal output processing has been done, and a stream of "
+"characters arrives at the console driver for actual printing, the first "
+"thing that happens is a translation from the code used for processing to the "
+"code used for printing."
+msgstr ""
+"Po przetworzeniu normalnego wyjścia, gdy strumień znaków dojdzie do "
+"sterownika konsoli, która ma go fizycznie wyświetlić, to pierwszą rzeczą, "
+"która jest robiona, jest przetłumaczenie tego strumienia z języka "
+"przetwarzania na język wyświetlania."
+
+#. type: Plain text
+msgid ""
+"If the console is in UTF-8 mode, then the incoming bytes are first assembled "
+"into 16-bit Unicode codes.  Otherwise each byte is transformed according to "
+"the current mapping table (which translates it to a Unicode value).  See the "
+"B<Character Sets> section below for discussion."
+msgstr ""
+"Jeśli konsola znajduje się w trybie UTF-8, to nadchodzące bajty są najpierw "
+"składane w 16-bitowe kody Unicode. W przeciwnym wypadku, każdy bajt jest "
+"przetwarzany zgodnie z bieżącym mapowaniem (które go tłumaczy na wartość "
+"Unicode). Dalsza dyskusja znajduje się poniżej, w sekcji B<Zestawy znaków>."
+
+#. type: Plain text
+msgid ""
+"In the normal case, the Unicode value is converted to a font index, and this "
+"is stored in video memory, so that the corresponding glyph (as found in "
+"video ROM) appears on the screen.  Note that the use of Unicode (and the "
+"design of the PC hardware)  allows us to use 512 different glyphs "
+"simultaneously."
+msgstr ""
+"W normalnym wypadku, wartość Unicode jest konwertowana na indeks czcionki, "
+"który jest przechowywany w pamięci obrazu. Efektem użycia tego indeksu jest "
+"pojawienie się odpowiadającego glifu (wizerunku znaku, znalezionego w "
+"nieulotnej pamięci obrazu) na ekranie. Należy zauważyć, że użycie Unicode (i "
+"konstrukcja sprzętu PC) pozwala na jednoczesne używanie 512 różnych glifów."
+
+#. type: Plain text
+msgid ""
+"If the current Unicode value is a control character, or we are currently "
+"processing an escape sequence, the value will treated specially.  Instead of "
+"being turned into a font index and rendered as a glyph, it may trigger "
+"cursor movement or other control functions.  See the B<Linux Console "
+"Controls> section below for discussion."
+msgstr ""
+"Jeśli bieżąca wartość Unicode jest znakiem sterującym lub jeśli przetwarzana "
+"jest sekwencja specjalna, to wartość ta jest traktowana w sposób specjalny.  "
+"Zamiast zmieniania jej na indeks czcionki i interpretacji jako glif, może "
+"ona wyzwolić ruchy kursora lub inne funkcje sterujące.  Dalsza dyskusja "
+"znajduje się poniżej, w sekcji B<Kontrolki konsoli systemu Linux>."
+
+#. type: Plain text
+msgid ""
+"It is generally not good practice to hard-wire terminal controls into "
+"programs.  Linux supports a B<terminfo>(5)  database of terminal "
+"capabilities.  Rather than emitting console escape sequences by hand, you "
+"will almost always want to use a terminfo-aware screen library or utility "
+"such as B<ncurses>(3), B<tput>(1), or B<reset>(1)."
+msgstr ""
+"Ogólnie nie jest dobrym zwyczajem wkodowywanie do programów kodów terminala "
+"na sztywno. Linux obsługuje bazę danych B<terminfo>(5), która opisuje "
+"właściwości terminali.  Zamiast ręcznego wyprowadzania sekwencji kontrolnych "
+"konsoli, prawie zawsze wygodniej jest korzystać z biblioteki obsługi "
+"terminala B<ncurses>(3), oraz programów narzędziowych, takich jak B<tput>(1) "
+"czy B<reset>(1)."
+
+#. type: SS
+#, no-wrap
+msgid "Linux Console Controls"
+msgstr "Kontrolki konsoli systemu Linux"
+
+#. type: Plain text
+msgid ""
+"This section describes all the control characters and escape sequences that "
+"invoke special functions (i.e., anything other than writing a glyph at the "
+"current cursor location) on the Linux console."
+msgstr ""
+"Sekcja ta opisuje wszystkie znaki sterujące i sekwencje specjalne, które "
+"wywołują funkcje specjalne (tj. wszystko inne niż wypisywanie glifu w "
+"pozycji kursora) konsoli Linuksa."
+
+#. type: Plain text
+msgid "B<Control characters>"
+msgstr "B<Znaki sterujące>"
+
+#. type: Plain text
+msgid ""
+"A character is a control character if (before transformation according to "
+"the mapping table) it has one of the 14 codes 00 (NUL), 07 (BEL), 08 (BS), "
+"09 (HT), 0a (LF), 0b (VT), 0c (FF), 0d (CR), 0e (SO), 0f (SI), 18 (CAN), 1a "
+"(SUB), 1b (ESC), 7f (DEL).  One can set a \"display control characters\" "
+"mode (see below), and allow 07, 09, 0b, 18, 1a, 7f to be displayed as "
+"glyphs.  On the other hand, in UTF-8 mode all codes 00-1f are regarded as "
+"control characters, regardless of any \"display control characters\" mode."
+msgstr ""
+"Znak jest znakiem sterującym, jeśli (przed transformacją wynikającą z "
+"tablicy mapowania) posiada jeden z 14 kodów 00 (NUL), 07 (BEL), 08 (BS), 09 "
+"(HT), 0a (LF), 0b (VT), 0c (FF), 0d (CR), 0e (SO), 0f (SI), 18 (CAN), 1a "
+"(SUB), 1b (ESC), 7f (DEL).  Można sobie ustawić tryb \"display control "
+"characters\" (wyświetlania znaków sterujących), który umożliwia wyświetlanie "
+"07, 09, 0b, 18, 1a, 7f jako glifów. Z drugiej strony, w trybie UTF-8 "
+"wszystkie kody 00-1f są uznawane za znaki sterujące, niezależnie od trybu "
+"\"display control characters\"."
+
+#. type: Plain text
+msgid ""
+"If we have a control character, it is acted upon immediately and then "
+"discarded (even in the middle of an escape sequence)  and the escape "
+"sequence continues with the next character.  (However, ESC starts a new "
+"escape sequence, possibly aborting a previous unfinished one, and CAN and "
+"SUB abort any escape sequence.)  The recognized control characters are BEL, "
+"BS, HT, LF, VT, FF, CR, SO, SI, CAN, SUB, ESC, DEL, CSI.  They do what one "
+"would expect:"
+msgstr ""
+"Jeśli mamy znak sterujący, to jest on natychmiast wykonywany i kasowany "
+"(nawet w środku sekwencji specjalnej), a sekwencja specjalna leci dalej, z "
+"następnym znakiem. (Jednak ESC rozpoczyna nową sekwencję specjalną, "
+"przypuszczalnie anulując niedokończoną poprzednią, a CAN i SUB przerywają "
+"dowolną sekwencję specjalną). Rozpoznawanymi znakami sterującymi są BEL, BS, "
+"HT, LF, VT, FF, CR, SO, SI, CAN, SUB, ESC, DEL, CSI. Robią one to, czego "
+"można oczekiwać:"
+
+#. type: Plain text
+msgid "BEL (0x07, B<^G>) beeps;"
+msgstr "BEL (0x07, B<^G>) wydaje dźwięk;"
+
+#. type: Plain text
+msgid ""
+"BS (0x08, B<^H>) backspaces one column (but not past the beginning of the "
+"line);"
+msgstr ""
+"BS (0x08, B<^H>) przesuwa kursor o jedną spację w lewo (lecz nie poza "
+"początek wiersza);"
+
+#. type: Plain text
+msgid ""
+"HT (0x09, B<^I>) goes to the next tab stop or to the end of the line if "
+"there is no earlier tab stop;"
+msgstr ""
+"HT (0x09, B<^I>) przesuwa kursor do następnego tabulatora, lub na koniec "
+"wiersza, gdy wcześniej tabulatora nie ma;"
+
+#. type: Plain text
+msgid ""
+"LF (0x0A, B<^J>), VT (0x0B, B<^K>) and FF (0x0C, B<^L>) all give a linefeed, "
+"and if LF/NL (new-line mode) is set also a carriage return;"
+msgstr ""
+"LF (0x0A, B<^J>), VT (0x0B, B<^K>) i FF (0x0C, B<^L>) wypisują znak nowego "
+"wiersza, a jeśli ustawiono LF/NL (tryb nowego wiesza), to wypisują także "
+"znak powrotu karetki. "
+
+#. type: Plain text
+msgid "CR (0x0D, B<^M>) gives a carriage return;"
+msgstr ""
+"CR (0x0D, B<^M>) daje powrót karetki - przewinięcie kursora na początek "
+"wiersza;"
+
+#. type: Plain text
+msgid "SO (0x0E, B<^N>) activates the G1 character set;"
+msgstr "SO (0x0E, B<^O>) włącza zestaw znaków G1;"
+
+#. type: Plain text
+msgid "SI (0x0F, B<^O>) activates the G0 character set;"
+msgstr "SI (0x0F, B<^O>) włącza zestaw znaków G0;"
+
+#. type: Plain text
+msgid "CAN (0x18, B<^X>) and SUB (0x1A, B<^Z>) interrupt escape sequences;"
+msgstr "CAN (0x18, B<^X>) i SUB (0x1A, B<^Z>) przerywają sekwencje specjalne;"
+
+#. type: Plain text
+msgid "ESC (0x1B, B<^[>) starts an escape sequence;"
+msgstr "ESC (0x1B, B<^[>) rozpoczyna nową sekwencję specjalną;"
+
+#. type: Plain text
+msgid "DEL (0x7F) is ignored;"
+msgstr "DEL (0x7F) jest ignorowane;"
+
+#. type: Plain text
+msgid "CSI (0x9B) is equivalent to ESC [."
+msgstr "CSI (0x9B) równoważne ESC [."
+
+#. type: Plain text
+msgid "B<ESC- but not CSI-sequences>"
+msgstr "B<Sekwencje ESC- lecz nie CSI->"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC c\tRIS\tReset.\n"
+msgstr "ESC c\tRIS\tReset.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC D\tIND\tLinefeed.\n"
+msgstr "ESC D\tIND\tPrzesunięcie o wiersz.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC E\tNEL\tNewline.\n"
+msgstr "ESC E\tNEL\tNowy wiersz.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC H\tHTS\tSet tab stop at current column.\n"
+msgstr "ESC H\tHTS\tUstawienie tabulatora w bieżącej kolumnie.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC M\tRI\tReverse linefeed.\n"
+msgstr "ESC M\tRI\tCofnięcie o wiersz.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC Z\tDECID\tT{\n"
+msgstr "ESC Z\tDECID\tT{\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "DEC private identification. The kernel\n"
+msgstr "prywatna identyfikacja DEC. Jądro\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "returns the string  ESC [ ? 6 c, claiming\n"
+msgstr "zwraca napis ESC [ ? 6 c, twierdząc,\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "that it is a VT102.\n"
+msgstr "że jest to VT102.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "T}\n"
+msgstr "T}\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC 7\tDECSC\tT{\n"
+msgstr "ESC 7\tDECSC\tT{\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "Save current state (cursor coordinates,\n"
+msgstr "Zachowanie bieżącego stanu (współrzędne kursora,\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "attributes, character sets pointed at by G0, G1).\n"
+msgstr "atrybuty, zestawy znaków wskazywane przez G0 i G1).\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC 8\tDECRC\tRestore state most recently saved by ESC 7.\n"
+msgstr "ESC 8\tDECRC\tOdtworzenie ostatnio zachowanego przez ESC 7 stanu.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC [\tCSI\tControl sequence introducer\n"
+msgstr "ESC [\tCSI\tWprowadzacz sekwencji sterujących\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC %\t\tStart sequence selecting character set\n"
+msgstr "ESC %\t\tRozpoczęcie sekwencji wybierania zestawu znaków\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC % @\t\t\\0\\0\\0Select default (ISO 646 / ISO 8859-1)\n"
+msgstr "ESC % @\t\t\\0\\0\\0Wybranie domyślnego (ISO 646 / ISO 8859-1)\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC % G\t\t\\0\\0\\0Select UTF-8\n"
+msgstr "ESC % G\t\t\\0\\0\\0Wybranie UTF-8\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC % 8\t\t\\0\\0\\0Select UTF-8 (obsolete)\n"
+msgstr "ESC % 8\t\t\\0\\0\\0Wybranie UTF-8 (przestarzałe)\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC # 8\tDECALN\tDEC screen alignment test - fill screen with E's.\n"
+msgstr ""
+"ESC # 8\tDECALN\tDEC test wyrównania ekranu - wypełnienie ekranu znakami E\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC (\t\tStart sequence defining G0 character set\n"
+msgstr "ESC (\t\tRozpoczęcie sekwencji, definiującej zestaw znaków G0\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC ( B\t\t\\0\\0\\0Select default (ISO 8859-1 mapping)\n"
+msgstr "ESC ( B\t\t\\0\\0\\0Wybranie domyślnego (mapowanie ISO 8859-1)\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC ( 0\t\t\\0\\0\\0Select VT100 graphics mapping\n"
+msgstr "ESC ( 0\t\t\\0\\0\\0Wybranie mapowania grafiki VT100\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC ( U\t\t\\0\\0\\0Select null mapping - straight to character ROM\n"
+msgstr ""
+"ESC ( U\t\t\\0\\0\\0Wybranie mapowania zerowego - wprost do ROM ze znakami\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC ( K\t\t\\0\\0\\0Select user mapping - the map that is loaded by\n"
+msgstr "ESC ( K\t\t\\0\\0\\0Wybranie mapowania użytkownika - mapę załadowaną\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\t\\0\\0\\0the utility B<mapscrn>(8).\n"
+msgstr "\t\t\\0\\0\\0programem narzędziowym B<mapscrn>(8).\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC )\t\tStart sequence defining G1\n"
+msgstr "ESC )\t\tRozpoczęcie sekwencji, definiującej zestaw znaków G1\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\t(followed by one of B, 0, U, K, as above).\n"
+msgstr "\t\t(po której następuje B, 0, U, K, jak wyżej).\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC E<gt>\tDECPNM\tSet numeric keypad mode\n"
+msgstr "ESC E<gt>\tDECPNM\tUstawienie dla bloku klawiszy trybu numerycznego.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC =\tDECPAM\tSet application keypad mode\n"
+msgstr "ESC =\tDECPAM\tUstawienie dla bloku klawiszy trybu aplikacyjnego.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC ]\tOSC\tT{\n"
+msgstr "ESC ]\tOSC\tT{\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "(Should be: Operating system command)\n"
+msgstr "(Powinno być: polecenie systemu operacyjnego)\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC ] P I<nrrggbb>: set palette, with parameter\n"
+msgstr "ESC ] P I<nrrggbb>: ustawienie palety z parametrem\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "given in 7 hexadecimal digits after the final P :-(.\n"
+msgstr "podanym w 7 szesnastkowych cyfrach, następujących po ostatnim P :-(.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "Here I<n> is the color (0-15), and I<rrggbb> indicates\n"
+msgstr "I<n> jest tu kolorem (0-15), a I<rrggbb> określa\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "the red/green/blue values (0-255).\n"
+msgstr "wartości czerwieni/zieleni/niebieskości (0-255).\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC ] R: reset palette\n"
+msgstr "ESC ] R: resetuje paletę\n"
+
+#. type: Plain text
+msgid "B<ECMA-48 CSI sequences>"
+msgstr "B<Sekwencje ECMA-48 CSI>"
+
+#. type: Plain text
+msgid ""
+"CSI (or ESC [) is followed by a sequence of parameters, at most NPAR (16), "
+"that are decimal numbers separated by semicolons.  An empty or absent "
+"parameter is taken to be 0.  The sequence of parameters may be preceded by a "
+"single question mark."
+msgstr ""
+"Za CSI (lub ESC [) następuje sekwencja parametrów, co najwyżej NPAR (16), "
+"które są liczbami dziesiętnymi, oddzielonymi średnikami. Pusty lub nieobecny "
+"parametr przyjmowany jest za zero. Sekwencja parametrów może być poprzedzona "
+"pojedynczym znakiem zapytania."
+
+#. type: Plain text
+msgid ""
+"However, after CSI [ (or ESC [ [) a single character is read and this entire "
+"sequence is ignored.  (The idea is to ignore an echoed function key.)"
+msgstr ""
+"Jednak po CSI [ (lub ESC [ [) odczytywany jest pojedynczy znak, a cała "
+"sekwencja jest ignorowana (pomysł ten ma na celu ignorowanie klawisza "
+"funkcyjnego dającego echo)."
+
+#. type: Plain text
+msgid "The action of a CSI sequence is determined by its final character."
+msgstr "Akcja sekwencji CSI jest określona jej ostatnim znakiem."
+
+#. type: tbl table
+#, no-wrap
+msgid "@\tICH\tInsert the indicated # of blank characters.\n"
+msgstr "@\tICH\tWstawienie określonej liczby pustych znaków.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "A\tCUU\tMove cursor up the indicated # of rows.\n"
+msgstr "A\tCUU\tPrzesunięcie kursora w górę o zadaną liczbę wierszy.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "B\tCUD\tMove cursor down the indicated # of rows.\n"
+msgstr "B\tCUD\tPrzesunięcie kursora w dół o zadaną liczbę wierszy.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "C\tCUF\tMove cursor right the indicated # of columns.\n"
+msgstr "C\tCUF\tPrzesunięcie kursora w prawo o zadaną liczbę kolumn.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "D\tCUB\tMove cursor left the indicated # of columns.\n"
+msgstr "D\tCUB\tPrzesunięcie kursora w lewo o zadaną liczbę kolumn.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "E\tCNL\tMove cursor down the indicated # of rows, to column 1.\n"
+msgstr ""
+"E\tCNL\tPrzesunięcie kursora w dół o zadaną liczbę wierszy do kolumny 1.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "F\tCPL\tMove cursor up the indicated # of rows, to column 1.\n"
+msgstr ""
+"F\tCPL\tPrzesunięcie kursora w górę o zadaną liczbę wierszy do kolumny 1.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "G\tCHA\tMove cursor to indicated column in current row.\n"
+msgstr "G\tCHA\tPrzesunięcie kursora do wskazanej kolumny bieżącego wiersza.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "H\tCUP\tMove cursor to the indicated row, column (origin at 1,1).\n"
+msgstr ""
+"H\tCUP\tPrzesunięcie kursora do wskazanego wiersza i kolumny (początek w "
+"1,1).\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "J\tED\tErase display (default: from cursor to end of display).\n"
+msgstr ""
+"J\tED\tWymazanie ekranu (domyślnie: od pozycji kursora, do końca ekranu).\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\tESC [ 1 J: erase from start to cursor.\n"
+msgstr "\t\tESC [ 1 J: czyści od początku do kursora.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\tESC [ 2 J: erase whole display.\n"
+msgstr "\t\tESC [ 2 J: czyści cały ekran.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\tESC [ 3 J: erase whole display including scroll-back\n"
+msgstr "\t\tESC [ 3 J: czyści cały ekran, włączając w to bufor\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\t           buffer (since Linux 3.0).\n"
+msgstr "\t\t           pamięci ekranu (od Linuksa 3.0).\n"
+
+#.  ESC [ 3 J: commit f8df13e0a901fe55631fed66562369b4dba40f8b
+#. type: tbl table
+#, no-wrap
+msgid "K\tEL\tErase line (default: from cursor to end of line).\n"
+msgstr "K\tEL\tWymazanie wiersza (domyślnie od kursora do końca wiersza).\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\tESC [ 1 K: erase from start of line to cursor.\n"
+msgstr "\t\tESC [ 1 K: czyści od początku wiersza do kursora.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\tESC [ 2 K: erase whole line.\n"
+msgstr "\t\tESC [ 2 K: czyści cały wiersz.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "L\tIL\tInsert the indicated # of blank lines.\n"
+msgstr "L\tIL\tWstawienie zadanej liczby pustych wierszy.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "M\tDL\tDelete the indicated # of lines.\n"
+msgstr "M\tDL\tSkasowanie zadanej liczby wskazanych wierszy.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "P\tDCH\tDelete the indicated # of characters on the current line.\n"
+msgstr ""
+"P\tDCH\tSkasowanie zadanej liczby wskazanych znaków w bieżącym wierszu.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "X\tECH\tErase the indicated # of characters on the current line.\n"
+msgstr ""
+"X\tECH\tWymazanie zadanej liczby wskazanych znaków w bieżącym wierszu.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "a\tHPR\tMove cursor right the indicated # of columns.\n"
+msgstr "a\tHPR\tPrzesunięcie kursora w prawo o zadaną liczbę kolumn.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "c\tDA\tAnswer ESC [ ? 6 c: \"I am a VT102\".\n"
+msgstr "c\tDA\tOdpowiedź: ESC [ ? 6 c: \"Jestem VT102\"\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "d\tVPA\tMove cursor to the indicated row, current column.\n"
+msgstr ""
+"d\tVPA\tPrzesunięcie kursora do wskazanego wiersza i bieżącej kolumny.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "e\tVPR\tMove cursor down the indicated # of rows.\n"
+msgstr "e\tVPR\tPrzesunięcie kursora w dół zadaną liczbę o wierszy.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "f\tHVP\tMove cursor to the indicated row, column.\n"
+msgstr "f\tHVP\tPrzesunięcie kursora do wskazanego wiersza i kolumny.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "g\tTBC\tWithout parameter: clear tab stop at the current position.\n"
+msgstr "g\tTBC\tBez parametrów: skasowanie tabulatora w bieżącej pozycji.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\tESC [ 3 g: delete all tab stops.\n"
+msgstr "\t\tESC [ 3 g: skasowanie wszystkich tabulatorów.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "h\tSM\tSet Mode (see below).\n"
+msgstr "h\tSM\tUstawienie trybu (patrz niżej).\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "l\tRM\tReset Mode (see below).\n"
+msgstr "l\tRM\tInicjacja trybu (patrz niżej).\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "m\tSGR\tSet attributes (see below).\n"
+msgstr "m\tSGR\tUstawienie atrybutów (patrz niżej).\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "n\tDSR\tStatus report (see below).\n"
+msgstr "n\tDSR\tRaport o stanie (patrz niżej).\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "q\tDECLL\tSet keyboard LEDs.\n"
+msgstr "q\tDECLL\tUstawienie LED-ów klawiatury.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\tESC [ 0 q: clear all LEDs\n"
+msgstr "\t\tESC [ 0 q: wyłączenie wszystkich LED-ów.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\tESC [ 1 q: set Scroll Lock LED\n"
+msgstr "\t\tESC [ 1 q: włączenie diody ScrollLock\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\tESC [ 2 q: set Num Lock LED\n"
+msgstr "\t\tESC [ 2 q: włączenie diody NumLock\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\tESC [ 3 q: set Caps Lock LED\n"
+msgstr "\t\tESC [ 3 q: włączenie diody CapsLock\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "r\tDECSTBM\tSet scrolling region; parameters are top and bottom row.\n"
+msgstr ""
+"r\tDECSTBM\tUstawienie obszaru przewijania; parametry to górny i dolny "
+"wiersz.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "s\t?\tSave cursor location.\n"
+msgstr "s\t?\tZapamiętanie pozycji kursora.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "u\t?\tRestore cursor location.\n"
+msgstr "u\t?\tOdtworzenie pozycji kursora.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\\`\tHPA\tMove cursor to indicated column in current row.\n"
+msgstr ""
+"\\`\tHPA\tPrzesunięcie kursora do wskazanej kolumny bieżącego wiersza.\n"
+
+#. type: Plain text
+msgid "B<ECMA-48 Set Graphics Rendition>"
+msgstr "B<Interpretacja grafiki zbioru ECMA-48>"
+
+#. type: Plain text
+msgid ""
+"The ECMA-48 SGR sequence ESC [ I<parameters> m sets display attributes.  "
+"Several attributes can be set in the same sequence, separated by "
+"semicolons.  An empty parameter (between semicolons or string initiator or "
+"terminator) is interpreted as a zero."
+msgstr ""
+"Sekwencja ECMA-48 SGR, czyli ESC [ I<parametry> m ustawia atrybuty "
+"wyświetlania. Można ustawić wiele atrybutów w pojedynczej sekwencji "
+"specjalnej, oddzielając je od siebie znakami średnika. Pusty parametr "
+"(pomiędzy średnikami lub początkiem lub końcem sekwencji) jest "
+"interpretowany jako zero."
+
+#. type: tbl table
+#, no-wrap
+msgid "param\tresult\n"
+msgstr "param\twynik\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "0\treset all attributes to their defaults\n"
+msgstr "0\tinicjacja wszystkich atrybutów do wartości domyślnych\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "1\tset bold\n"
+msgstr "1\twłączenie pogrubienia\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "2\tset half-bright (simulated with color on a color display)\n"
+msgstr ""
+"2\twłączenie półrozjaśnienia (symulowane kolorem na ekranach kolorowych)\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "4\tT{\n"
+msgstr "4\tT{\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "set underscore (simulated with color on a color display)\n"
+msgstr "włączenie podkreślenia (symulowane kolorem na ekranach kolorowych)\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "(the colors used to simulate dim or underline are set\n"
+msgstr "(kolory używane do symulacji są ustawiane \n"
+
+#. type: tbl table
+#, no-wrap
+msgid "using ESC ] ...)\n"
+msgstr "za pomocą ESC ] ...)\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "5\tset blink\n"
+msgstr "5\twłączenie migania\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "7\tset reverse video\n"
+msgstr "7\twłączenie inwersji\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "10\tT{\n"
+msgstr "10\tT{\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "reset selected mapping, display control flag,\n"
+msgstr "wyłączenie wybranego mapowania, znacznika kontroli wyświetlania,\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "and toggle meta flag (ECMA-48 says \"primary font\").\n"
+msgstr ""
+"i przełączenie flagi \"meta\" (ECMA-48 nazywa to \"czcionką podstawową\"). \n"
+
+#. type: tbl table
+#, no-wrap
+msgid "11\tT{\n"
+msgstr "11\tT{\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "select null mapping, set display control flag,\n"
+msgstr "wybranie mapowania zerowego, ustawienie znacznika kontroli,\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "reset toggle meta flag (ECMA-48 says \"first alternate font\").\n"
+msgstr ""
+"czyści znacznik przełączania meta (ECMA-48 nazywa to \"pierwsza czcionka "
+"alternatywna\").\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "12\tT{\n"
+msgstr "12\tT{\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "set toggle meta flag (ECMA-48 says \"second alternate font\").\n"
+msgstr ""
+"ustawia znacznik przełączania meta (ECMA-48 określa to \"drugą czcionką "
+"alternatywną\").\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "The toggle meta flag\n"
+msgstr "Znacznik przełączania meta\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "causes the high bit of a byte to be toggled\n"
+msgstr "powoduje przestawienie wysokiego bitu w bajcie\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "before the mapping table translation is done.\n"
+msgstr "przed zakończeniem translacji tablicy mapowań.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "21\tset normal intensity (ECMA-48 says \"doubly underlined\")\n"
+msgstr "21\tustawia zwykłą intensywność (ECMA-48: \"podwójne podkreślenie\")\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "22\tset normal intensity\n"
+msgstr "22\tustawienie normalnej jasności\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "24\tunderline off\n"
+msgstr "24\twyłączenie podkreślenia\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "25\tblink off\n"
+msgstr "25\twyłączenie migania\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "27\treverse video off\n"
+msgstr "27\twyłączenie inwersji\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "30\tset black foreground\n"
+msgstr "30\tustawienie koloru czarnego\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "31\tset red foreground\n"
+msgstr "31\tustawienie koloru czerwonego\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "32\tset green foreground\n"
+msgstr "32\tustawienie koloru zielonego\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "33\tset brown foreground\n"
+msgstr "33\tustawienie koloru brązowego\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "34\tset blue foreground\n"
+msgstr "34\tustawienie koloru niebieskiego\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "35\tset magenta foreground\n"
+msgstr "35\tustawienie koloru fioletowego\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "36\tset cyan foreground\n"
+msgstr "36\tustawienie koloru niebieskozielonego\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "37\tset white foreground\n"
+msgstr "37\tustawienie koloru białego\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "38\tset underscore on, set default foreground color\n"
+msgstr "38\twłączenie podkreślenia, ustawienie koloru domyślnego\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "39\tset underscore off, set default foreground color\n"
+msgstr "39\twyłączenie podkreślenia, ustawienie koloru domyślnego\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "40\tset black background\n"
+msgstr "40\tustawienie czarnego tła\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "41\tset red background\n"
+msgstr "41\tustawienie czerwonego tła\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "42\tset green background\n"
+msgstr "42\tustawienie zielonego tła\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "43\tset brown background\n"
+msgstr "43\tustawienie brązowego tła\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "44\tset blue background\n"
+msgstr "44\tustawienie niebieskiego tła\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "45\tset magenta background\n"
+msgstr "45\tustawienie fioletowego tła\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "46\tset cyan background\n"
+msgstr "46\tustawienie niebieskozielonego tła\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "47\tset white background\n"
+msgstr "47\tustawienie białego tła\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "49\tset default background color\n"
+msgstr "49\tustawienie domyślnego koloru tła\n"
+
+#. type: Plain text
+msgid "B<ECMA-48 Mode Switches>"
+msgstr "B<Przełączniki trybu ECMA-48>"
+
+#. type: TP
+#, no-wrap
+msgid "ESC [ 3 h"
+msgstr "ESC [ 3 h"
+
+#. type: Plain text
+msgid "DECCRM (default off): Display control chars."
+msgstr "DECCRM (domyślnie wyłączone): Wyświetlanie znaków sterujących."
+
+#. type: TP
+#, no-wrap
+msgid "ESC [ 4 h"
+msgstr "ESC [ 4 h"
+
+#. type: Plain text
+msgid "DECIM (default off): Set insert mode."
+msgstr "DECIM (domyślnie wyłączone): Włączenie trybu wstawiania (insert)."
+
+#. type: TP
+#, no-wrap
+msgid "ESC [ 20 h"
+msgstr "ESC [ 20 h"
+
+#. type: Plain text
+msgid "LF/NL (default off): Automatically follow echo of LF, VT or FF with CR."
+msgstr ""
+"LF/NL (domyślnie wyłączone): Automatyczne podążanie za echem LF, VT lub FF z "
+"CR."
+
+#. type: Plain text
+msgid "B<ECMA-48 Status Report Commands>"
+msgstr "B<Polecenia zgłaszania stanu ECMA-48>"
+
+#. type: TP
+#, no-wrap
+msgid "ESC [ 5 n"
+msgstr "ESC [ 5 n"
+
+#. type: Plain text
+msgid "Device status report (DSR): Answer is ESC [ 0 n (Terminal OK)."
+msgstr ""
+"Raport stanu urządzenia (DSR): Odpowiedzią jest ESC [ 0 n (Terminal OK)."
+
+#. type: TP
+#, no-wrap
+msgid "ESC [ 6 n"
+msgstr "ESC [ 6 n"
+
+#. type: Plain text
+msgid ""
+"Cursor position report (CPR): Answer is ESC [ I<y> ; I<x> R, where I<x,y> is "
+"the cursor location."
+msgstr ""
+"Raport pozycji kursora (CPR): Odpowiedzią jest ESC [ I<y> ; I<x> R, gdzie "
+"I<x,y> to pozycja kursora."
+
+#. type: Plain text
+msgid "B<DEC Private Mode (DECSET/DECRST) sequences>"
+msgstr "B<Sekwencje trybu prywatnego DEC (DECSET/DECRST)>"
+
+#. type: Plain text
+msgid ""
+"These are not described in ECMA-48.  We list the Set Mode sequences; the "
+"Reset Mode sequences are obtained by replacing the final \\(aqh\\(aq by "
+"\\(aql\\(aq."
+msgstr ""
+"Nie są one opisane w ECMA-48. Opisano tu sekwencje włączania trybu; "
+"Sekwencje wyłączania trybu można uzyskać przez zamianę ostatniego \"h\" na "
+"\"l\"."
+
+#. type: TP
+#, no-wrap
+msgid "ESC [ ? 1 h"
+msgstr "ESC [ ? 1 h"
+
+#. type: Plain text
+msgid ""
+"DECCKM (default off): When set, the cursor keys send an ESC O prefix, rather "
+"than ESC [."
+msgstr ""
+"DECCKM (domyślnie wyłączone): Gdy włączone, klawisze kursora wysyłają "
+"przedrostek ESC O, a nie ESC [."
+
+#. type: TP
+#, no-wrap
+msgid "ESC [ ? 3 h"
+msgstr "ESC [ ? 3 h"
+
+#. type: Plain text
+msgid ""
+"DECCOLM (default off = 80 columns): 80/132 col mode switch.  The driver "
+"sources note that this alone does not suffice; some user-mode utility such "
+"as B<resizecons>(8)  has to change the hardware registers on the console "
+"video card."
+msgstr ""
+"DECCOLM (domyślnie wyłączone = 80 kolumn): Przełącznik trybu 80/132 "
+"kolumny.  W źródłach sterownika zaznaczono, że to nie wystarcza; niektóre "
+"narzędzia trybu użytkownika, takie jak B<resizecons>(8)  muszą zmienić "
+"rejestry sprzętowe karty graficznej konsoli."
+
+#. type: TP
+#, no-wrap
+msgid "ESC [ ? 5 h"
+msgstr "ESC [ ? 5 h"
+
+#. type: Plain text
+msgid "DECSCNM (default off): Set reverse-video mode."
+msgstr "DECSCNM (domyślnie wyłączone): Włączenie trybu inwersji."
+
+#. type: TP
+#, no-wrap
+msgid "ESC [ ? 6 h"
+msgstr "ESC [ ? 6 h"
+
+#. type: Plain text
+msgid ""
+"DECOM (default off): When set, cursor addressing is relative to the upper "
+"left corner of the scrolling region."
+msgstr ""
+"DECOM (domyślnie wyłączone): Gdy włączone, adresowanie kursora następuje "
+"względem górnego lewego narożnika regionu przewijania."
+
+#. type: TP
+#, no-wrap
+msgid "ESC [ ? 7 h"
+msgstr "ESC [ ? 7 h"
+
+#. type: Plain text
+msgid ""
+"DECAWM (default on): Set autowrap on.  In this mode, a graphic character "
+"emitted after column 80 (or column 132 of DECCOLM is on)  forces a wrap to "
+"the beginning of the following line first."
+msgstr ""
+"DECAWM (domyślnie włączone): Włączenie autozawijania. W tym trybie znak "
+"graficzny, wyemitowany za 80 (lub 132) kolumną, zostanie zawinięty na "
+"początek następnego wiersza."
+
+#. type: TP
+#, no-wrap
+msgid "ESC [ ? 8 h"
+msgstr "ESC [ ? 8 h"
+
+#. type: Plain text
+msgid "DECARM (default on): Set keyboard autorepeat on."
+msgstr "DECARM (domyślnie włączone): Włączenie samopowtarzania klawiatury."
+
+#. type: TP
+#, no-wrap
+msgid "ESC [ ? 9 h"
+msgstr "ESC [ ? 9 h"
+
+#. type: Plain text
+msgid ""
+"X10 Mouse Reporting (default off): Set reporting mode to 1 (or reset to "
+"0)\\(emsee below."
+msgstr ""
+"Zgłaszanie myszy X10 (domyślnie wyłączone): Ustawienie trybu zgłaszania na 1 "
+"(lub wyłączenie na 0) \\(em patrz niżej."
+
+#. type: TP
+#, no-wrap
+msgid "ESC [ ? 25 h"
+msgstr "ESC [ ? 25 h"
+
+#. type: Plain text
+msgid "DECTECM (default on): Make cursor visible."
+msgstr "DECTECM (domyślnie włączone): Uczynienie kursora widzialnym."
+
+#. type: TP
+#, no-wrap
+msgid "ESC [ ? 1000 h"
+msgstr "ESC [ ? 1000 h"
+
+#. type: Plain text
+msgid ""
+"X11 Mouse Reporting (default off): Set reporting mode to 2 (or reset to "
+"0)\\(emsee below."
+msgstr ""
+"Zgłaszanie myszy X11 (domyślnie wyłączone): Ustawienie trybu zgłaszania na 2 "
+"(lub wyłączenie na 0) \\(em patrz niżej."
+
+#. type: Plain text
+msgid "B<Linux Console Private CSI Sequences>"
+msgstr "B<Prywatne sekwencje CSI konsoli Linuksa>"
+
+#. type: Plain text
+msgid ""
+"The following sequences are neither ECMA-48 nor native VT102.  They are "
+"native to the Linux console driver.  Colors are in SGR parameters: 0 = "
+"black, 1 = red, 2 = green, 3 = brown, 4 = blue, 5 = magenta, 6 = cyan, 7 = "
+"white."
+msgstr ""
+"Następujące sekwencje nie należą ani do ECMA-48, ani do oryginalnego VT102.  "
+"Zostały one wprowadzone przez sterownik konsoli Linuksa. Kolorami w "
+"parametrach SGR są: 0 = czarny, 1 = czerwony, 2 = zielony, 3 = brązowy, 4 = "
+"niebieski, 5 = fioletowy, 6 = niebieskozielony, 7 = biały."
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC [ 1 ; I<n> ]\tSet color I<n> as the underline color\n"
+msgstr "ESC [ 1 ; I<n> ]\tUstawienie koloru I<n> jako kolor podkreślenia.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC [ 2 ; I<n> ]\tSet color I<n> as the dim color\n"
+msgstr "ESC [ 2 ; I<n> ]\tUstawienie koloru I<n> jako kolor dim.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC [ 8 ]       \tMake the current color pair the default attributes.\n"
+msgstr ""
+"ESC [ 8 ]       \tUczynienie bieżącej pary kolorów atrybutem domyślnym.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC [ 9 ; I<n> ]\tSet screen blank timeout to I<n> minutes.\n"
+msgstr "ESC [ 9 ; I<n> ]\tUstawienie okresu wygaszania ekranu na I<n> minut.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC [ 10 ; I<n> ]\tSet bell frequency in Hz.\n"
+msgstr "ESC [ 10 ; I<n> ]\tUstawienie częstotliwości dzwonka w Hz.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC [ 11 ; I<n> ]\tSet bell duration in msec.\n"
+msgstr "ESC [ 11 ; I<n> ]\tUstawienie czasu trwania dzwonka w ms.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC [ 12 ; I<n> ]\tBring specified console to the front.\n"
+msgstr "ESC [ 12 ; I<n> ]\tPrzeniesienie podanej konsoli na wierzch.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC [ 13 ]      \tUnblank the screen.\n"
+msgstr "ESC [ 13 ]      \tWyłączenie wygaszenia ekranu.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC [ 14 ; I<n> ]   \tSet the VESA powerdown interval in minutes.\n"
+msgstr ""
+"ESC [ 14 ; I<n> ]   \tUstawienie czasu wyłączenia zasilania VESA w minutach.\n"
+
+#. type: SS
+#, no-wrap
+msgid "Character Sets"
+msgstr "Zestawy znaków"
+
+#. type: Plain text
+msgid ""
+"The kernel knows about 4 translations of bytes into console-screen symbols.  "
+"The four tables are: a) Latin1 -E<gt> PC, b) VT100 graphics -E<gt> PC, c) PC "
+"-E<gt> PC, d) user-defined."
+msgstr ""
+"Jądro zna 4 translacje bajtów na symbole znaków ekranu konsoli.  Tymi "
+"czterema tablicami są: a) Latin1 -E<gt> PC, b) grafika VT100 -E<gt> PC, c) "
+"PC -E<gt> PC, d) zdefiniowane przez użytkownika."
+
+#. type: Plain text
+msgid ""
+"There are two character sets, called G0 and G1, and one of them is the "
+"current character set.  (Initially G0.)  Typing B<^N> causes G1 to become "
+"current, B<^O> causes G0 to become current."
+msgstr ""
+"Istnieją dwa zbiory znaków, zwane G0 i G1, a jeden z nich jest bieżącym "
+"zestawem znaków (początkowo G0). Wpisanie B<^N> powoduje, że bieżącym "
+"zestawem staje się G1, a B<^O> \\(em że G0."
+
+#. type: Plain text
+msgid ""
+"These variables G0 and G1 point at a translation table, and can be changed "
+"by the user.  Initially they point at tables a) and b), respectively.  The "
+"sequences ESC ( B and ESC ( 0 and ESC ( U and ESC ( K cause G0 to point at "
+"translation table a), b), c) and d), respectively.  The sequences ESC ) B "
+"and ESC ) 0 and ESC ) U and ESC ) K cause G1 to point at translation table "
+"a), b), c) and d), respectively."
+msgstr ""
+"Zmienne G0 i G1 wskazują na tablicę translacji i mogą być zmieniane przez "
+"użytkownika. Początkowo wskazują odpowiednio na tablice a) i b).  Sekwencje "
+"ESC ( B, ESC ( 0, ESC ( U, ESC ( K powodują, że G0 wskazuje odpowiednio na "
+"tablice a), b), c), d).  Sekwencje ESC ) B, ESC ) 0,  ESC ) U, ESC ) K "
+"powodują, że G1 wskazuje odpowiednio na tablice a), b), c), d)."
+
+#. type: Plain text
+msgid ""
+"The sequence ESC c causes a terminal reset, which is what you want if the "
+"screen is all garbled.  The oft-advised \"echo ^V^O\" will only make G0 "
+"current, but there is no guarantee that G0 points at table a).  In some "
+"distributions there is a program B<reset>(1)  that just does \"echo ^[c\".  "
+"If your terminfo entry for the console is correct (and has an entry rs1="
+"\\eEc), then \"tput reset\" will also work."
+msgstr ""
+"Sekwencja ESC c powoduje reset terminala. Jest to tym, czego potrzeba, jeśli "
+"ekran zostanie zaśmiecony. Często zalecane \"echo ^V^O\" powoduje tylko, że "
+"G0 staje się bieżącym zestawem znaków, lecz nie ma gwarancji że wskazuje on "
+"na tablicę a).  W niektórych dystrybucjach znajduje się program B<reset>(1), "
+"który po prostu wysyła \"echo ^[c\".  Jeśli wpis dla konsoli w bazie "
+"terminfo jest prawidłowy (i zawiera wpis rs1=\\eEc), to zadziała również "
+"\"tput reset\"."
+
+#. type: Plain text
+msgid ""
+"The user-defined mapping table can be set using B<mapscrn>(8).  The result "
+"of the mapping is that if a symbol c is printed, the symbol s = map[c] is "
+"sent to the video memory.  The bitmap that corresponds to s is found in the "
+"character ROM, and can be changed using B<setfont>(8)."
+msgstr ""
+"Zdefiniowana przez użytkownika tablica mapowań może być ustawiana za pomocą "
+"B<mapscrn>(8). Wynikiem mapowania jest to, że jeśli wyświetlany jest symbol "
+"c, to do pamięci grafiki wysyłany jest symbol s = mapa[c]. Mapa bitowa, "
+"odpowiadająca s, która znajduje się w nieulotnej pamięci grafiki, może być "
+"zmieniona za pomocą B<setfont>(8)."
+
+#. type: SS
+#, no-wrap
+msgid "Mouse Tracking"
+msgstr "Śledzenie myszy"
+
+#. type: Plain text
+msgid ""
+"The mouse tracking facility is intended to return B<xterm>(1)-compatible "
+"mouse status reports.  Because the console driver has no way to know the "
+"device or type of the mouse, these reports are returned in the console input "
+"stream only when the virtual terminal driver receives a mouse update ioctl.  "
+"These ioctls must be generated by a mouse-aware user-mode application such "
+"as the B<gpm>(8)  daemon."
+msgstr ""
+"Funkcja śledzenia myszy jest przeznaczana do zgłaszania stanu myszy, "
+"zgodnego z B<xterm>(1). Ponieważ sterownik konsoli nie ma możliwości "
+"dowiedzenia się o urządzeniu ani o rodzaju myszy, zgłoszenia te zwracane są "
+"w strumieniu wejściowym konsoli tylko wtedy, gdy sterownik terminala "
+"wirtualnego otrzymuje ioctl odświeżający stan myszy. Ioctl-e te muszą być "
+"generowane przez świadomą istnienia myszy aplikację trybu użytkownika, taką "
+"jak demon B<gpm>(8)."
+
+#. type: Plain text
+msgid ""
+"The mouse tracking escape sequences generated by B<xterm>(1) encode numeric "
+"parameters in a single character as I<value>+040.  For example, \\(aq!\\(aq "
+"is 1.  The screen coordinate system is 1-based."
+msgstr ""
+"Parametry wszystkich sekwencji specjalnych śledzenia myszy, generowanych "
+"przez B<xterm>(1) są kodowane numerycznie w pojedynczych znakach, jako "
+"I<wartość>+040. Na przykład, \"!\" to 1. Współrzędne ekranu zaczynają się od "
+"1."
+
+#. type: Plain text
+msgid ""
+"The X10 compatibility mode sends an escape sequence on button press encoding "
+"the location and the mouse button pressed.  It is enabled by sending ESC [ ? "
+"9 h and disabled with ESC [ ? 9 l.  On button press, B<xterm>(1) sends ESC "
+"[ M I<bxy> (6 characters).  Here I<b> is button-1, and I<x> and I<y> are the "
+"x and y coordinates of the mouse when the button was pressed.  This is the "
+"same code the kernel also produces."
+msgstr ""
+"Tryb zgodności z X10 wysyła sekwencje specjalne przy naciskaniu przycisków, "
+"kodując położenie oraz to, który przycisk myszy został naciśnięty. Jest to "
+"włączane przez wysłanie ESC [ ? 9 h i wyłączane przez ESC [ ? 9 l.  Przy "
+"naciskaniu przycisków, B<xterm>(8) wysyła ESC [ M I<bxy> (6 znaków). I<b> "
+"jest tu równe klawisz-1, a I<x> i I<y> są współrzędnymi x i y kursora myszy "
+"w momencie przyciśnięcia. Ten sam kod produkuje jądro."
+
+#. type: Plain text
+msgid ""
+"Normal tracking mode (not implemented in Linux 2.0.24) sends an escape "
+"sequence on both button press and release.  Modifier information is also "
+"sent.  It is enabled by sending ESC [ ? 1000 h and disabled with ESC [ ? "
+"1000 l.  On button press or release, B<xterm>(1) sends ESC [ M I<bxy>.  The "
+"low two bits of I<b> encode button information: 0=MB1 pressed, 1=MB2 "
+"pressed, 2=MB3 pressed, 3=release.  The upper bits encode what modifiers "
+"were down when the button was pressed and are added together: 4=Shift, "
+"8=Meta, 16=Control.  Again I<x> and I<y> are the x and y coordinates of the "
+"mouse event.  The upper left corner is (1,1)."
+msgstr ""
+"Normalny tryb śledzenia (nie zaimplementowany w Linuksie 2.0.24) wysyła "
+"sekwencję specjalną zarówno po przyciśnięciu, jak i po zwolnieniu "
+"przycisku.  Wysyłana jest również informacja modyfikatora. Jest to włączane "
+"przez wysłanie ESC [ ? 1000 h, a wyłączane przez ESC [ 1000 l. B<xterm>(1) "
+"po naciśnięciu lub zwolnieniu przycisku wysyła ESC [ M I<bxy>. Dwa niższe "
+"bity I<b> kodują informację o przycisku: 0=naciśnięto pierwszy, 1=naciśnięto "
+"drugi, 2=naciśnięto trzeci, 3=zwolnienie. W górnych bitach zakodowane są "
+"modyfikatory wciśnięte podczas naciskania przycisku. Są one dodawane: "
+"4=Shift, 8=Meta, 16=Control. Znowu, I<x> i I<y> to współrzędne kursora myszy "
+"podczas zdarzenia. Górny lewy narożnik to (1,1)."
+
+#. type: SS
+#, no-wrap
+msgid "Comparisons With Other Terminals"
+msgstr "Porównania z innymi terminalami"
+
+#. type: Plain text
+msgid ""
+"Many different terminal types are described, like the Linux console, as "
+"being \"VT100-compatible\".  Here we discuss differences between the Linux "
+"console and the two most important others, the DEC VT102 and B<xterm>(1)."
+msgstr ""
+"Wiele różnych typów terminali, podobnie jak konsola Linuksa, jest "
+"opisywanych jako \"zgodne z VT100\". Poniżej omówiono różnice między konsolą "
+"Linuksa i dwoma najważniejszymi spośród innych terminali: DEC VT102 i "
+"B<xterm>(1)."
+
+#. type: Plain text
+msgid "B<Control-character handling>"
+msgstr "B<Obsługa znaków sterujących>"
+
+#. type: Plain text
+msgid "The VT102 also recognized the following control characters:"
+msgstr "VT 102 rozpoznawał też następujące znaki sterujące:"
+
+#. type: Plain text
+msgid "NUL (0x00) was ignored;"
+msgstr "NUL (0x00) było ignorowane;"
+
+#. type: Plain text
+msgid "ENQ (0x05) triggered an answerback message;"
+msgstr "ENQ (0x05) wywoływało komunikat odpowiadający;"
+
+#. type: Plain text
+msgid "DC1 (0x11, B<^Q>, XON) resumed transmission;"
+msgstr "DC1 (0x11, B<^Q>, XON) wznawiało transmisję;"
+
+#. type: Plain text
+msgid ""
+"DC3 (0x13, B<^S>, XOFF) caused VT100 to ignore (and stop transmitting)  all "
+"codes except XOFF and XON."
+msgstr ""
+"DC3 (0x13, B<^S>, XOFF) powodowało, że VT100 ignorował (i przestawał "
+"transmitować) wszystkie kody poza XOFF i XON."
+
+#. type: Plain text
+msgid "VT100-like DC1/DC3 processing may be enabled by the tty driver."
+msgstr ""
+"Przetwarzanie DC1/DC3 tego rodzaju, jakie było w VT100 może być włączone "
+"przez sterownik tty."
+
+#. type: Plain text
+msgid ""
+"The B<xterm>(1)  program (in VT100 mode) recognizes the control characters "
+"BEL, BS, HT, LF, VT, FF, CR, SO, SI, ESC."
+msgstr ""
+"Program B<xterm>(1) (w trybie VT100) rozpoznaje znaki sterujące BEL, BS, HT, "
+"LF, VT, FF, CR, SO, SI, ESC."
+
+#. type: Plain text
+msgid "B<Escape sequences>"
+msgstr "B<Sekwencje specjalne>"
+
+#. type: Plain text
+msgid "VT100 console sequences not implemented on the Linux console:"
+msgstr "Sekwencje VT100 nie implementowane przez konsolę Linuksa:"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC N\tSS2\tSingle shift 2. (Select G2 character set for the next\n"
+msgstr "ESC N\tSS2\tPojedyncze przesunięcie 2. (Wybranie zestawu znaków G2\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\tcharacter only.)\n"
+msgstr "\t\ttylko dla następnego znaku.)\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC O\tSS3\tSingle shift 3. (Select G3 character set for the next\n"
+msgstr "ESC O\tSS3\tPojedyncze przesunięcie 3. (Wybranie zestawu znaków G3\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC P\tDCS\tDevice control string (ended by ESC \\e)\n"
+msgstr "ESC P\tDCS\tŁańcuch kontrolny urządzenia (zakończony ESC \\e)\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC X\tSOS\tStart of string.\n"
+msgstr "ESC X\tSOS\tPoczątek łańcucha.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC ^\tPM\tPrivacy message (ended by ESC \\e)\n"
+msgstr "ESC ^\tPM\tKomunikat prywatności (zakończony ESC \\e)\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC \\e\tST\tString terminator\n"
+msgstr "ESC \\e\tST\tZakończenie łańcucha\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC * ...\t\tDesignate G2 character set\n"
+msgstr "ESC * ...\t\tWyznaczenie zestawu znaków G2\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC + ...\t\tDesignate G3 character set\n"
+msgstr "ESC + ...\t\tWyznaczenie zestawu znaków G3\n"
+
+#. type: Plain text
+msgid ""
+"The program B<xterm>(1)  (in VT100 mode) recognizes ESC c, ESC # 8, ESC "
+"E<gt>, ESC =, ESC D, ESC E, ESC H, ESC M, ESC N, ESC O, ESC P ... ESC \\e, "
+"ESC Z (it answers ESC [ ? 1 ; 2 c, \"I am a VT100 with advanced video option"
+"\")  and ESC ^ ... ESC \\e with the same meanings as indicated above.  It "
+"accepts ESC (, ESC ), ESC *, ESC + followed by 0, A, B for the DEC special "
+"character and line drawing set, UK, and US-ASCII, respectively."
+msgstr ""
+"Program B<xterm>(1) (w trybie VT100) rozpoznaje ESC c, ESC # 8, ESC E<gt>, "
+"ESC =, ESC D, ESC E, ESC H, ESC M, ESC N, ESC O, ESC P ... ESC \\e, ESC Z "
+"(daje odpowiedź ESC [ ? 1 ; 2 c, \"Jestem VT100 z rozszerzoną opcją grafiki"
+"\") i ESC ^ ... ESC \\e o takich samych znaczeniach, jak opisano powyżej.  "
+"Przyjmuje ESC (, ESC ), ESC *, ESC + , po których następuje 0, A, B, "
+"odpowiednio dla specjalnego zestawu znaków DEC i zbioru rysowania linii, UK "
+"oraz US-ASCII."
+
+#. type: Plain text
+msgid ""
+"The user can configure B<xterm>(1) to respond to VT220-specific control "
+"sequences, and it will identify itself as a VT52, VT100, and up depending on "
+"the way it is configured and initialized."
+msgstr ""
+"Użytkownik może skonfigurować B<xterm>(1) tak, żeby odpowiadał używając "
+"sekwencji kontrolnych specyficznych dla VT220. Może identyfikować siebie "
+"jako VT52, VT100 i większe \\(em w zależności od tego, jak jest "
+"skonfigurowany i zainicjowany."
+
+#. type: Plain text
+msgid ""
+"It accepts ESC ] (OSC) for the setting of certain resources.  In addition to "
+"the ECMA-48 string terminator (ST), B<xterm>(1) accepts a BEL to terminate "
+"an OSC string.  These are a few of the OSC control sequences recognized by "
+"B<xterm>(1):"
+msgstr ""
+"Zezwala na ustawienie pewnych zasobów za pomocą ESC ] (OSC). Oprócz znaku "
+"końca łańcucha znaków (ST) z ECMA-48, B<xterm>(1) akceptuje także BEL do "
+"zakończenia łańcucha znaków OSC. B<xterm>(1) rozpoznaje kilka następujących "
+"sekwencji sterujących:"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC ] 0 ; I<txt> ST\tSet icon name and window title to I<txt>.\n"
+msgstr "ESC ] 0 ; I<txt> ST\tUstawienie nazwy ikony i tytułu okna na I<txt>.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC ] 1 ; I<txt> ST\tSet icon name to I<txt>.\n"
+msgstr "ESC ] 1 ; I<txt> ST\tUstawienie nazwy ikony na I<txt>.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC ] 2 ; I<txt> ST\tSet window title to I<txt>.\n"
+msgstr "ESC ] 2 ; I<txt> ST\tUstawienie tytułu okna na I<txt>.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC ] 4 ; I<num>; I<txt> ST\tSet ANSI color I<num> to I<txt>.\n"
+msgstr ""
+"ESC ] 4 ; I<num>; I<txt> ST\tUstawienie koloru ANSI I<num> na I<txt>.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC ] 10 ; I<txt> ST\tSet dynamic text color to I<txt>.\n"
+msgstr ""
+"ESC ] 10 ; I<txt> ST\tUstawienie dynamicznego koloru tekstu na I<txt>.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC ] 4 6 ; I<name> ST\tChange log file to I<name> (normally disabled\n"
+msgstr ""
+"ESC ] 4 6 ; I<nazwa>ST\tZmiana pliku logu na I<nazwa> (normalnie wyłączone\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\tby a compile-time option)\n"
+msgstr "\tprzez opcję kompilacji)\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC ] 5 0 ; I<fn> ST\tSet font to I<fn>.\n"
+msgstr "ESC ] 5 0 ; I<fn> ST\tUstawienie czcionki na I<fn>.\n"
+
+#. type: Plain text
+msgid ""
+"It recognizes the following with slightly modified meaning (saving more "
+"state, behaving closer to VT100/VT220):"
+msgstr ""
+"Rozpoznaje następujące, z nieznacznie zmienionym znaczeniem (zapisuje więcej "
+"stanów, zachowanie jest bliższe do VT100/VT220):"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC 7  DECSC\tSave cursor\n"
+msgstr "ESC 7  DECSC\tZachowanie kursora\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC 8  DECRC\tRestore cursor\n"
+msgstr "ESC 8  DECRC\tOdtworzenie kursora\n"
+
+#. type: Plain text
+msgid "It also recognizes"
+msgstr "Podobnie, rozpoznaje również"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC F\t\tCursor to lower left corner of screen (if enabled by\n"
+msgstr "ESC F\t\tKursor do dolnego lewego narożnika ekranu (o ile włączone\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\tB<xterm>(1)'s B<hpLowerleftBugCompat> resource)\n"
+msgstr "\t\tprzez zasób B<hpLowerleftBugCompat> programu B<xterm>(1)).\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC l\t\tMemory lock (per HP terminals).\n"
+msgstr "ESC l\t\tBlokowanie pamięci (dla terminali HP).\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\tLocks memory above the cursor.\n"
+msgstr "\t\tBlokuje pamięć ponad kursorem.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC m\t\tMemory unlock (per HP terminals).\n"
+msgstr "ESC m\t\tOdblokowanie pamięci (dla terminali HP).\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC n\tLS2\tInvoke the G2 character set.\n"
+msgstr "ESC n\tLS2\tWywołanie zestawu znaków G2.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC o\tLS3\tInvoke the G3 character set.\n"
+msgstr "ESC o\tLS3\tWywołanie zestawu znaków G3.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC |\tLS3R\tInvoke the G3 character set as GR.\n"
+msgstr "ESC |\tLS3R\tWywołanie zestawu znaków G3 jako GR.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "\t\tHas no visible effect in xterm.\n"
+msgstr "\t\tW xtermie jest to bez widocznego efektu.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC }\tLS2R\tInvoke the G2 character set as GR.\n"
+msgstr "ESC }\tLS2R\tWywołanie zestawu znaków G2 jako GR.\n"
+
+#. type: tbl table
+#, no-wrap
+msgid "ESC ~\tLS1R\tInvoke the G1 character set as GR.\n"
+msgstr "ESC ~\tLS1R\tWywołanie zestawu znaków G1 jako GR.\n"
+
+#. type: Plain text
+msgid ""
+"It also recognizes ESC % and provides a more complete UTF-8 implementation "
+"than Linux console."
+msgstr ""
+"Rozpoznaje także sekwencje ESC % i dostarcza bardziej kompletnej "
+"implementacji UTF-8 niż konsola  linuksowa."
+
+#. type: Plain text
+msgid "B<CSI Sequences>"
+msgstr "B<Sekwencje CSI>"
+
+#. type: Plain text
+msgid ""
+"Old versions of B<xterm>(1), for example, from X11R5, interpret the blink "
+"SGR as a bold SGR.  Later versions which implemented ANSI colors, for "
+"example, XFree86 3.1.2A in 1995, improved this by allowing the blink "
+"attribute to be displayed as a color.  Modern versions of xterm implement "
+"blink SGR as blinking text and still allow colored text as an alternate "
+"rendering of SGRs.  Stock X11R6 versions did not recognize the color-setting "
+"SGRs until the X11R6.8 release, which incorporated XFree86 xterm.  All "
+"ECMA-48 CSI sequences recognized by Linux are also recognized by I<xterm>, "
+"however B<xterm>(1) implements several ECMA-48 and DEC control sequences not "
+"recognized by Linux."
+msgstr ""
+"Stare wersje programu B<xterm>(1), na przykład wersja z X11R5, interpretują "
+"migający SGR jako pogrubiony SGR. Późniejsze wersje, w których "
+"zaimplementowano obsługę kolorów ANSI, na przykład XFree86 3.1.2A z 1995r., "
+"pozwalały na wyświetlanie atrybutu migania jako koloru. Nowoczesne wersje "
+"B<xterm>(1) implementują migający SGR jako migający tekst, ale wciąż "
+"pozwalają na alternatywne wyświetlanie tego atrybutu jako kolor. Oryginalne "
+"wersje z X11R6 nie rozpoznawały SGR-a ustawiającego kolor aż do wydania "
+"X11R6.8, które zawierało xterm pochodzący z XFree86. Wszystkie sekwencje "
+"ECMA-48 CSI rozpoznawane przez Linuksa są także rozpoznawane przez I<xterm>, "
+"jednakże B<xterm>(1) implementuje kilka sekwencji sterujących ECMA-48 i DEC, "
+"których Linux  nie rozpoznaje."
+
+#. type: Plain text
+msgid ""
+"The B<xterm>(1)  program recognizes all of the DEC Private Mode sequences "
+"listed above, but none of the Linux private-mode sequences.  For discussion "
+"of B<xterm>(1)'s own private-mode sequences, refer to the I<Xterm Control "
+"Sequences> document by Edward Moy, Stephen Gildea, and Thomas E. Dickey "
+"available with the X distribution.  That document, though terse, is much "
+"longer than this manual page.  For a chronological overview,"
+msgstr ""
+"Program B<xterm>(1) rozpoznaje wszystkie opisane powyżej sekwencje trybu "
+"prywatnego DEC, lecz nie rozpoznaje żadnej z prywatnych sekwencji Linuksa. "
+"Omówienie sekwencji prywatnych programu B<xterm>(1) znajduje się w "
+"dokumencie I<Xterm Control Sequences>, napisanym przez Edwarda Moya i "
+"Stephena Gildea'a, dostępnym w dystrybucji X. Dokument ten, choć zwięzły, "
+"jest o wiele dłuższy niż ta strona podręcznika. Po wprowadzenie w porządku "
+"chronologicznym, patrz"
+
+#. type: Plain text
+msgid "http://invisible-island.net/xterm/xterm.log.html"
+msgstr "http://invisible-island.net/xterm/xterm.log.html"
+
+#. type: Plain text
+msgid "details changes to xterm."
+msgstr "szczegóły zmian w xtermie"
+
+#. type: Plain text
+msgid "The I<vttest> program"
+msgstr "Program I<vttest>"
+
+#. type: Plain text
+msgid "http://invisible-island.net/vttest/"
+msgstr "http://invisible-island.net/vttest/"
+
+#. type: Plain text
+msgid ""
+"demonstrates many of these control sequences.  The B<xterm>(1) source "
+"distribution also contains sample scripts which exercise other features."
+msgstr ""
+"obrazuje wiele z powyższych sekwencji sterujących. Archiwum źródłowe "
+"programu B<xterm>(1) także zawiera przykładowe skrypty, pokazujące również "
+"inne właściwości."
+
+#. type: SH
+#, no-wrap
+msgid "NOTES"
+msgstr "UWAGI"
+
+#. type: Plain text
+msgid ""
+"ESC 8 (DECRC) is not able to restore the character set changed with ESC %."
+msgstr ""
+"ESC 8 (DECRC) nie potrafi odtworzyć zestawu znaków zmienionego przez ESC %."
+
+#. type: SH
+#, no-wrap
+msgid "BUGS"
+msgstr "BŁĘDY"
+
+#. type: Plain text
+msgid ""
+"In 2.0.23, CSI is broken, and NUL is not ignored inside escape sequences."
+msgstr ""
+"W 2.0.23 CSI jest zepsute, a NUL nie jest ignorowany w sekwencjach "
+"specjalnych."
+
+#. type: Plain text
+msgid ""
+"Some older kernel versions (after 2.0) interpret 8-bit control sequences.  "
+"These \"C1 controls\" use codes between 128 and 159 to replace ESC [, ESC ] "
+"and similar two-byte control sequence initiators.  There are fragments of "
+"that in modern kernels (either overlooked or broken by changes to support "
+"UTF-8), but the implementation is incomplete and should be regarded as "
+"unreliable."
+msgstr ""
+"Niektóre starsze wersje jądra (po wersji 2.0) interpretują 8-bitowe "
+"sekwencje sterujące. Te \"kontrolki C1\" używają kodów pomiędzy 128 i 159, "
+"zastępując nimi ESC [, ESC ] i podobne początki sekwencji sterujących. W "
+"nowoczesnych jądrach zostały tylko pozostałości po tej funkcjonalności (albo "
+"je przeoczono, albo popsuto, implementując zmiany związane z obsługą UTF-8), "
+"jednakże ich implementacja jest niekompletna i nie należy na niej polegać."
+
+#. type: Plain text
+msgid ""
+"Linux \"private mode\" sequences do not follow the rules in ECMA-48 for "
+"private mode control sequences.  In particular, those ending with ] do not "
+"use a standard terminating character.  The OSC (set palette) sequence is a "
+"greater problem, since B<xterm>(1) may interpret this as a control sequence "
+"which requires a string terminator (ST).  Unlike the B<setterm>(1) sequences "
+"which will be ignored (since they are invalid control sequences), the "
+"palette sequence will make B<xterm>(1) appear to hang (though pressing the "
+"return-key will fix that).  To accommodate applications which have been "
+"hardcoded to use Linux control sequences, set the B<xterm>(1) resource "
+"B<brokenLinuxOSC> to true."
+msgstr ""
+"Sekwencje \"prywatnego trybu\" Linuksa nie przestrzegają reguł ECMA-48 "
+"dotyczących sekwencji sterujących trybu prywatnego. W szczególności "
+"sekwencje kończące się znakiem ] nie używają standardowego znaku kończącego "
+"sekwencję. Większym problemem jest sekwencja OSC (ustawienie palety), "
+"ponieważ B<xterm>(1) może interpretować ją jako sekwencję sterującą "
+"wymagającą znaku zakończenia łańcucha znaków (ST). W przeciwieństwie do "
+"sekwencji generowanych przez B<setterm>(1), które zostaną zignorowane "
+"(ponieważ są niepoprawne), sekwencja ustawienia palety spowoduje, że B<xterm>"
+"(1) będzie się zachowywał tak, jakby się zawiesił (naciśnięcie klawisza "
+"return go odblokuje). Aby  aplikacje, w których na sztywno zaimplementowano "
+"obsługę linuksowych sekwencji sterujących, działały poprawnie pod B<xterm>-"
+"em, należy ustawić zasób B<brokenLinuxOSC> programu B<xterm> na \"true\"."
+
+#. type: Plain text
+msgid ""
+"An older version of this document implied that Linux recognizes the ECMA-48 "
+"control sequence for invisible text.  It is ignored."
+msgstr ""
+"Wcześniejsza wersja tego dokumentu sugerowała, że Linux rozpoznaje sekwencje "
+"kontrolne ECMA-48 dla niewidocznego tekstu. Są one ignorowane."
+
+#. type: SH
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "ZOBACZ TAKŻE"
+
+#. type: Plain text
+msgid "B<console>(4), B<console_ioctl>(4), B<charsets>(7)"
+msgstr "B<console>(4), B<console_ioctl>(4), B<charsets>(7)"
+
+#. type: SH
+#, no-wrap
+msgid "COLOPHON"
+msgstr "O STRONIE"
+
+#. type: Plain text
+msgid ""
+"This page is part of release 3.40 of the Linux I<man-pages> project.  A "
+"description of the project, and information about reporting bugs, can be "
+"found at http://www.kernel.org/doc/man-pages/."
+msgstr ""
+"Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux I<man-"
+"pages>. Opis projektu oraz informacje dotyczące zgłaszania błędów można "
+"znaleźć pod adresem http://www.kernel.org/doc/man-pages/."
+
+#~ msgid "1996-10-31"
+#~ msgstr "1996-10-31"
+
+#~ msgid "LINUX CONSOLE CONTROLS"
+#~ msgstr "KONTROLKI KONSOLI LINUX"
+
+#~ msgid ""
+#~ "SO (0x0E, ^N) activates the G1 character set, and if LF/NL (new line "
+#~ "mode) is set also a carriage return;"
+#~ msgstr ""
+#~ "SO (0x0E, ^N) włącza zbiór znaków G1, a jeśli ustawione jest LF/NL (tryb "
+#~ "nowego wiersza), również powrót karetki;"
+
+#~ msgid "\tand toggle meta flag.\n"
+#~ msgstr "\ti znacznika przełączania meta.\n"
+
+#~ msgid "12\tselect null mapping, set display control flag,\n"
+#~ msgstr "12\twybranie mapowania zerowego, ustawienie znacznika kontroli\n"
+
+#~ msgid "\tset toggle meta flag. (The toggle meta flag\n"
+#~ msgstr "\twyświetlania, włączenie znacznika przełączania meta.\n"
+
+#~ msgid "21\tset normal intensity (this is not compatible with ECMA-48)\n"
+#~ msgstr "21\tustawienie normalnej jasności (nie jest to zgodne z ECMA-48)\n"
+
+#~ msgid "CHARACTER SETS"
+#~ msgstr "ZESTAWY ZNAKÓW"
+
+#~ msgid "MOUSE TRACKING"
+#~ msgstr "ŚLEDZENIE MYSZY"
+
+#~ msgid "COMPARISONS WITH OTHER TERMINALS"
+#~ msgstr "PORÓWNANIA Z INNYMI TERMINALAMI"
+
+#~ msgid "It does not recognize ESC % ..."
+#~ msgstr "Nie rozpoznaje ESC % ..."
+
+#~ msgid ""
+#~ "The I<xterm> program (as of XFree86 3.1.2G) does not recognize the blink "
+#~ "or invisible-mode SGRs. Stock X11R6 versions do not recognize the color-"
+#~ "setting SGRs.  All other ECMA-48 CSI sequences recognized by Linux are "
+#~ "also recognized by I<xterm>, and vice-versa."
+#~ msgstr ""
+#~ "Program I<xterm> (od wersji XFree86 3.1.2G) nie rozpoznaje SGR-ów migania "
+#~ "i trybu niewidocznego. Podstawowe wersje X11R6 nie rozpoznają SGR-ów "
+#~ "ustawiania kolorów. Wszystkie inne sekwencje CSI ECMA-48, rozpoznawane "
+#~ "przez Linuksa, są również rozpoznawane przez I<xterm> i vice-versa."

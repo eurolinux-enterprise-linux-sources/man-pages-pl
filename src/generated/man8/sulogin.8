@@ -1,0 +1,102 @@
+.\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2006 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1997-2005 Miquel van Smoorenburg et al (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Wojtek Kotwica (PTM) <wkotwica@post.pl>, 1999.
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH SULOGIN 8 "17 stycznia 2006" "" "Podręcznik administratora systemu Linux"
+.SH NAZWA
+sulogin \- login w trybie jednoużytkownikowym
+.SH SKŁADNIA
+\fBsulogin\fP [ \fB\-e\fP ] [ \fB\-p\fP ] [ \fB\-t\fP \fISEKUNDY\fP ] [ \fITTY\fP ]
+.SH OPIS
+\fBsulogin\fP jest wywoływany przez \fBinit(8)\fP gdy system wchodzi w tryb
+jednoużytkownikowy (jest to wykonywane za pomocą wpisu w
+\fIinittab(5)\fP). \fBInit\fP stara się również wykonać \fBsulogin\fP, gdy program
+rozruchowy (np. \fBgrub\fP(8)) poda mu opcję \fB\-b\fP.
+.PP
+Wyświetlany jest następujący komunikat zachęty:
+.IP "" .5i
+Give root password for system maintenance
+.br
+(or type Control\-D for normal startup):
+.PP
+(Podaj hasło roota do konserwacji systemu lub wciśnij ^D aby kontynuować
+zwykły start) Gdy konto roota jest zablokowane, to powyższa zachęta nie jest
+wyświetlana, a \fBsulogin\fP zachowuje się tak, jakby podano prawidłowe hasło
+roota.
+.PP
+\fBsulogin\fP będzie podłączony do bieżącego terminala lub do opcjonalnego
+urządzenia podanego w wierszu polecenia zwykle (\fB/dev/console\fP).
+.PP
+Gdy użyje się opcji \fB\-t\fP, to program czeka na reakcję użytkownika jedynie
+określoną liczbę sekund.
+.PP
+Przy wykorzystaniu opcji \fB\-p\fP, powłoka jednoużytkownikowa jest przywoływana
+z \fImyślnikiem\fP jako pierwszym znakiem w \fIargv[0]\fP. Powoduje to, że powłoka
+zachowuje się jak powłoka zgłoszeniowa. Domyślnie tak się \fInie\fP dzieje, tak
+więc powłoka \fInie\fP odczytuje plików \fB/etc/profile\fP ani \fB$HOME/.profile\fP
+przy starcie.
+.PP
+Po tym, jak użytkownik wyjdzie z trybu jednoużytkownikowego lub wciśnie
+control\-D po wyświetleniu zachęty, system będzie kontynuował rozruch do
+domyślnego poziomu pracy.
+.SH "ZMIENNE ŚRODOWISKA"
+\fBsulogin\fP szuka zmiennych środowiskowych \fBSUSHELL\fP lub \fBsushell\fP, aby
+określić którą powłokę uruchomić. Jeśli zmienna środowiskowa nie jest
+ustawiona, to program spróbuje wykonać powłokę roota z pliku
+/etc/passwd. Jeśli to również się nie powiedzie, to na końcu wykorzystana
+zostanie powłoka \fB/bin/sh\fP.
+.PP
+Jest to niezwykle przydatne w połączeniu z opcją \fB\-b\fP do inita. Aby
+uruchomić system w trybie jednoużytkownikowym, z głównym systemem plików
+zamontowanym do odczytu i zapisu przy użyciu specjalnej "niezawodnej"
+powłoki, która jest statycznie zlinkowana (poniższy przykład jest prawidłowy
+z wierszem polecenia LILO):
+.PP
+boot: linux \-b rw sushell=/sbin/sash
+.SH "METODY ZASTĘPCZE"
+\fBsulogin\fP najpierw sprawdza hasło roota przy użyciu standardowej metody \-
+getpwnam. Następnie, jeśli poda się opcję \fB\-e\fP, to \fBsulogin\fP sprawdza
+bezpośrednio następujące pliki, w celu znalezienia hasło roota:
+.PP
+/etc/passwd,
+.br
+/etc/shadow (jeśli istnieje)
+.PP
+Jeśli są one uszkodzone lub nie istnieją, to sulogin uruchomi powłokę roota
+bez pytania o hasło. Opcji \fB\-e\fP należy używać tylko, gdy jest się pewnym,
+że konsola jest fizycznie zabezpieczona przed nieautoryzowanym dostępem.
+.SH AUTOR
+Miquel van Smoorenburg <miquels@cistron.nl>
+.SH "ZOBACZ TAKŻE"
+\fBinit\fP(8), \fBinittab\fP(5).
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Wojtek Kotwica (PTM) <wkotwica@post.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 2.88 \fPoryginału.

@@ -1,0 +1,49 @@
+.\" -*- nroff -*-
+.\" Copyright 1993, 1994, 1995 by Theodore Ts'o.  All Rights Reserved.
+.\" This file may be copied under the terms of the GNU Public License.
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993-2008 Theodore Ts'o (GPL-2)
+.\" Copyright © of Polish translation:
+.\" Wojtek Kotwica (PTM) <wkotwica@post.pl>
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH MKLOST+FOUND 8 "kwiecień 2012" "E2fsprogs wersja 1.42.2" 
+.SH NAZWA
+mklost+found \- tworzy katalog lost+found na zamontowanym linuksowym systemie
+plików ext2
+.SH SKŁADNIA
+\fBmklost+found\fP
+.SH OPIS
+\fBmklost+found\fP służy do tworzenia katalogu \fIlost+found\fP w bieżącym
+katalogu roboczym, na linuksowym systemie plików typu ext2. Katalog
+\fIlost+found\fP znajduje się zwykle w głównym katalogu każdego systemu plików.
+.PP
+\fBmklost+found\fP wstępnie alokuje bloki dyskowe dla tworzonego katalogu
+\fIlost+found\fP, dzięki czemu, gdy \fBe2fsck\fP(8) zostanie uruchomiony w celu
+odzyskania systemu plików, nie musi już alokować bloków w systemie plików,
+aby przechować dużą liczbę niedowiązanych plików.
+.SH OPCJE
+Nie ma żadnych.
+.SH AUTOR
+\fBmklost+found\fP zostało napisane przez Remy'ego Carda
+<Remy.Card@linux.org>. Obecnie opiekuje się nim Theodore Ts'o
+<tytso@alum.mit.edu>.
+.SH BŁĘDY
+Nie ma żadnych :\-)
+.SH DOSTĘPNOŚĆ
+\fBmklost+found\fP jest częścią pakietu e2fsprogs i jest dostępne na stronie
+http://e2fsprogs.sourceforge.net.
+.SH "ZOBACZ TAKŻE"
+\fBe2fsck\fP(8), \fBmke2fs\fP(8)
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Wojtek Kotwica (PTM) <wkotwica@post.pl>
+i
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 1.42.4 \fPoryginału.

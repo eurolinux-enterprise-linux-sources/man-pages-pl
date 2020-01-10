@@ -1,0 +1,188 @@
+.\" Copyright (c) 1993 by Thomas Koenig (ig25@rz.uni-karlsruhe.de)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" Modified Sat Jul 24 17:28:34 1993 by Rik Faith <faith@cs.unc.edu>
+.\" Modified Sun Jun 01 17:16:34 1997 by Jochen Hein
+.\"   <jochen.hein@delphi.central.de>
+.\" Modified Thu Apr 25 00:43:19 2002 by Bruno Haible <bruno@clisp.org>
+.\"
+.\" FIXME Document LOCPATH;
+.\" see http://sourceware.org/bugzilla/show_bug.cgi?id=174
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993 Thomas Koenig 
+.\" Copyright © of Polish translation:
+.\" Gwidon S. Naskrent (PTM) <naskrent@hoth.amu.edu.pl>, 1998.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH LOCALE 7 2008\-12\-05 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+locale \- Opis obsługi wielu języków
+.SH SKŁADNIA
+.nf
+\fB#include <locale.h>\fP
+.fi
+.SH OPIS
+Locale to zestaw reguł językowych i kulturalnych. Obejmują one aspekty
+takie, jak język komunikatów, różne zestawy znaków, konwencje
+leksykograficzne itd. Program musi umieć określić swoje locale i zachowywać
+się odpowiednio, aby można go było przenieść do innych kultur.
+.PP
+Nagłówek \fI<locale.h>\fP deklaruje typy danych, funkcje i makra
+przydatne w tym przedsięwzięciu.
+.PP
+Funkcje deklarowane to \fBsetlocale\fP(3), ustawiająca bieżące locale, i
+\fBlocaleconv\fP(3), pobierająca informacje o formatowaniu liczb.
+.PP
+Istnieją różne kategorie informacji regionalnych, których potrzebować może
+program; zadeklarowane są one jako makra. Używając ich jako pierwszego
+argumentu funkcji \fBsetlocale\fP(3), możliwe jest ustawienie poniższych
+informacji regionalnych:
+.TP 
+\fBLC_COLLATE\fP
+Używane do zmiany zachowania funkcji \fBstrcoll\fP(3) i \fBstrxfrm\fP(3),
+porównujących łańcuchy znaków w alfabecie lokalnym. Na przykład niemieckie
+scharfes S sortowane jest jako "ss".
+.TP 
+\fBLC_CTYPE\fP
+Zmienia zachowanie operacji na znakach i funkcji klasyfikacyjnych, takich
+jak \fBisupper\fP(3) i \fBtoupper\fP(3), oraz znakowych funkcji wielobajtowych,
+takich jak \fBmblen\fP(3) i \fBwctomb\fP(3).
+.TP 
+\fBLC_MONETARY\fP
+Zmienia informację zwracaną przez \fBlocaleconv\fP(3), która opisuje sposób, w
+jaki zwykle drukowane są liczby, ze szczegółami takimi jak kropka dziesiętna
+kontra przecinek dziesiętny. Informacja ta jest używana wewnętrznie przez
+funkcję \fBstrfmon\fP(3).
+.TP 
+\fBLC_MESSAGES\fP
+Zmienia język, w którym wyświetlane są komunikaty, oraz to, jak wygląda
+odpowiedź twierdząca i przecząca. Biblioteka GNU C zawiera funkcje
+\fBgettext\fP(3), \fBngettext\fP(3) oraz \fBrpmatch\fP(3), ułatwiające użycie tych
+informacji. Funkcje GNU z rodziny gettext biorą pod uwagę również zmienną
+środowiska \fBLANGUAGE\fP (zawierającą rozdzieloną dwukropkami listę ustawień
+językowych), jeśli bieżące ustawienia językowe są poprawne i różne od
+\fB"C"\fP.
+.TP 
+\fBLC_NUMERIC\fP
+Zmienia informacje używane przez rodzinę funkcji \fBprintf\fP(3) i \fBscanf\fP(3),
+kiedy radzi im się, żeby używały ustawień locale. Informacja ta może być
+także odczytana funkcją \fBlocaleconv\fP(3).
+.TP 
+\fBLC_TIME\fP
+Zmienia zachowanie funkcji \fBstrftime\fP(3), wyświetlającej bieżący czas w
+formie lokalnie akceptowalnej; na przykład, większość Europy używa zegara
+24\-godzinnego, podczas gdy w USA używa się 12\-godzinnego.
+.TP 
+\fBLC_ALL\fP
+.\" FIXME glibc 2.2.2 added new nonstandard locale categories:
+.\" LC_ADDRESS, LC_IDENTIFICATION, LC_MEASUREMENT, LC_NAME,
+.\" LC_PAPER, LC_TELEPHONE.  These need to be documented.
+Wszystko powyższe.
+.PP
+Jeśli drugim argumentem \fBsetlocale\fP(3) jest łańcuch pusty \fB""\fP oznaczający
+locale domyślne, ustala się je w następujący sposób:
+.IP 1.
+Jeśli istnieje niepusta zmienna środowiskowa \fBLC_ALL\fP, używana jest wartość
+\fBLC_ALL\fP
+.IP 2.
+Jeśli istnieje i jest niepusta zmienna środowiskowa o tej samej nazwie co
+jedna z kategorii powyżej, dla tej kategorii używana jest jej wartość.
+.IP 3.
+Jeśli istnieje niepusta zmienna środowiskowa \fBLANG\fP, używana jest wartość
+\fBLANG\fP
+.PP
+Wartości dotyczące lokalnego formatowania dostępne są w strukturze \fIlconv\fP,
+zwracanej przez funkcję \fBlocaleconv\fP(3). \fIlconv\fP ma następującą
+deklarację:
+.in +2n
+.nf
+
+struct lconv {
+
+    /* Informacja numeryczna (niewalutowa) */
+
+    char *decimal_point;     /* Znak dziesiętny  */
+    char *thousands_sep;     /* Separator tysięcy  */
+    char *grouping; /* Każdy element to liczba cyfr w danej grupie,
+                       elementy z większymi indeksami są bardziej
+                       na lewo. Element o wartości CHAR_MAX oznacza,
+                       że nie następuje dalsze grupowanie. Element
+                       o wartości 0 oznacza, że dla wszystkich
+                       grup bardziej na lewo używany jest element
+                       poprzedni. */
+
+    /* Pozostałe pola zawierają informacje o walucie */
+
+    char *int_curr_symbol;   /* Pierwsze trzy znaki to symbol waluty
+                                z ISO 4217. Czwarty znak to
+                                separator. Piąty to "\e0". */
+    char *currency_symbol;   /* Symbol lokalnej waluty  */
+    char *mon_decimal_point; /* Znak dziesiętny  */
+    char *mon_thousands_sep; /* Jak \fIthousands_sep\fP (powyżej) */
+    char *mon_grouping;      /* Jak \fIgrouping\fP (powyżej) */
+    char *positive_sign;     /* Znak dla wartości dodatnich */
+    char *negative_sign;     /* Znak dla wartości ujemnych */
+    char  int_frac_digits;   /* Międzynarodowe cyfry dziesiętne */
+    char  frac_digits;       /* Lokalne cyfry dziesiętne */
+    char  p_cs_precedes;     /* 1, jeśli symbol waluty poprzedza wartość
+                                dodatnią, 0, jeśli następuje po niej */
+    char  p_sep_by_space;    /* 1, jeśli symbol waluty oddziela
+                                od wartości dodatniej spacja */
+    char  n_cs_precedes;     /* 1, jeśli symbol waluty poprzedza wartość
+                                ujemną, 0 jeśli następuje po niej */
+    char  n_sep_by_space;    /* 1, jeśli symbol waluty oddziela
+                                od wartości ujemnej spacja */
+    /* Dodatnie i ujemne pozycje znaku:
+       0 Wartość i symbol waluty w nawiasach.
+       1 Znak poprzedza wartość i symbol waluty.
+       2 Znak następuje po wartości i symbolu waluty.
+       3 Znak następuje tuż przez symbolem waluty.
+       4 Znak następuje tuż po symbolu waluty. */
+    char p_sign_posn;
+    char n_sign_posn;
+};
+.fi
+.in
+.SH "ZGODNE Z"
+POSIX.1\-2001.
+
+Funkcje GNU gettext są zdefiniowane w LI18NUX2000.
+.SH "ZOBACZ TAKŻE"
+\fBlocale\fP(1), \fBlocaledef\fP(1), \fBgettext\fP(3), \fBlocaleconv\fP(3),
+\fBngettext\fP(3), \fBnl_langinfo\fP(3), \fBrpmatch\fP(3), \fBsetlocale\fP(3),
+\fBstrcoll\fP(3), \fBstrfmon\fP(3), \fBstrftime\fP(3), \fBstrxfrm\fP(3)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Gwidon S. Naskrent (PTM) <naskrent@hoth.amu.edu.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

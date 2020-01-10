@@ -1,0 +1,78 @@
+.\" t
+.\"     Title: insmod
+.\"    Author: Jon Masters <jcm@jonmasters.org>
+.\" Generator: DocBook XSL Stylesheets v1.77.0 <http://docbook.sf.net/>
+.\"      Date: 06/19/2012
+.\"    Manual: insmod
+.\"    Source: kmod
+.\"  Language: English
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 2011 ProFUSION embedded systems (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Michał Kułach <michal.kulach@gmail.com>, 2012.
+.TH INSMOD 8 19/06/2012 kmod insmod
+.ie  \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH NAZWA
+insmod \- prosty program do dodawania modułów do jądra Linux
+.SH SKŁADNIA
+.HP \w'\fBinsmod\fR\ 'u
+\fBinsmod\fP [\fInazwa\-pliku\fP] [\fIopcje modułu\fP...]
+.SH OPIS
+.PP
+
+\fBinsmod\fP jest trywialnym programem do dodawania modułu do jądra. Większość
+użytkowników będzie wolała użyć w zamian \fBmodprobe\fP(8), które jest znacznie
+sprytniejsze i potrafi obsłużyć zależności między modułami.
+.PP
+Zgłaszane są tylko najogólniejsze błędy: ponieważ próba zlinkowania modułu
+jest obecnie wykonywana wewnątrz jądra, \fBdmesg\fP daje z reguły więcej
+informacji na temat błędów.
+.SH PRAWA\ AUTORSKIE
+.PP
+Pierwotnie: Copyright 2002, Rusty Russell, IBM Corporation\&. Strona
+podręcznika jest obecnie zarządzana przez Jona Mastersa i innych\&.
+.SH "ZOBACZ TAKŻE"
+.PP
+
+\fBmodprobe\fP(8), \fBrmmod\fP(8), \fBlsmod\fP(8)  \fBmodinfo\fP(8)
+.SH AUTORZY
+.PP
+\fBJon Masters\fP <\&jcm@jonmasters\&.org\&>
+.RS 4
+Deweloper
+.RE
+.PP
+\fBLucas De Marchi\fP <\&lucas\&.demarchi@profusion\&.mobi\&>
+.RS 4
+Deweloper
+.RE
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Michał Kułach <michal.kulach@gmail.com>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 9 \fPoryginału.

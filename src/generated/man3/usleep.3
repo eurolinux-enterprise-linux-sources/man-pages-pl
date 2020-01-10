@@ -1,0 +1,130 @@
+.\" Copyright 1993 David Metcalfe (david@prism.demon.co.uk)
+.\"
+.\" Permission is granted to make and distribute verbatim copies of this
+.\" manual provided the copyright notice and this permission notice are
+.\" preserved on all copies.
+.\"
+.\" Permission is granted to copy and distribute modified versions of this
+.\" manual under the conditions for verbatim copying, provided that the
+.\" entire resulting derived work is distributed under the terms of a
+.\" permission notice identical to this one.
+.\"
+.\" Since the Linux kernel and libraries are constantly changing, this
+.\" manual page may be incorrect or out-of-date.  The author(s) assume no
+.\" responsibility for errors or omissions, or for damages resulting from
+.\" the use of the information contained herein.  The author(s) may not
+.\" have taken the same level of care in the production of this manual,
+.\" which is licensed free of charge, as they might when working
+.\" professionally.
+.\"
+.\" Formatted or processed versions of this manual, if unaccompanied by
+.\" the source, must acknowledge the copyright and authors of this work.
+.\"
+.\" References consulted:
+.\"     Linux libc source code
+.\"     Lewine's _POSIX Programmer's Guide_ (O'Reilly & Associates, 1991)
+.\"     386BSD man pages
+.\" Modified 1993-07-24 by Rik Faith (faith@cs.unc.edu)
+.\" Modified 2001-04-01 by aeb
+.\" Modified 2003-07-23 by aeb
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993 David Metcalfe 
+.\" Copyright © of Polish translation:
+.\" Robert Luberda <robert@debian.org>, 2005, 2006, 2012.
+.TH USLEEP 3 2010\-12\-03 "" "Podręcznik programisty Linuksa"
+.SH NAZWA
+usleep \- zawiesza wykonanie na czas wyrażony w mikrosekundach
+.SH SKŁADNIA
+.nf
+\fB#include <unistd.h>\fP
+.sp
+\fBint usleep(useconds_t \fP\fIusec\fP\fB);\fP
+.fi
+.sp
+.in -4n
+Wymagane ustawienia makr biblioteki glibc (patrz \fBfeature_test_macros\fP(7)):
+.in
+.sp
+\fBusleep\fP():
+.ad l
+.RS 4
+.PD 0
+.TP  4
+Od glibc 2.1.2:
+.nf
+_BSD_SOURCE ||
+    (_XOPEN_SOURCE\ >=\ 500 ||
+        _XOPEN_SOURCE\ &&\ _XOPEN_SOURCE_EXTENDED) &&
+    !(_POSIX_C_SOURCE\ >=\ 200809L || _XOPEN_SOURCE\ >=\ 700)
+.TP  4
+.fi
+Przed glibc 2.12: _BSD_SOURCE || _XOPEN_SOURCE\ >=\ 500 ||
+_XOPEN_SOURCE\ &&\ _XOPEN_SOURCE_EXTENDED
+.PD
+.RE
+.ad b
+.SH OPIS
+Funkcja \fBusleep\fP() zawiesza wykonanie wywołującego procesu na (co najmniej)
+\fIusec\fP mikrosekund. Zawieszenie może być delikatnie wydłużone przez
+jakąkolwiek aktywność systemu albo przez czas spędzony na przetwarzaniu
+wywołania, albo z powodu ziarnistości (częstotliwości odświeżania) liczników
+systemowych.
+.SH "WARTOŚĆ ZWRACANA"
+0 w razie powodzenia, \-1 w razie błędu.
+.SH BŁĘDY
+.TP 
+\fBEINTR\fP
+Przerwane przez sygnał, patrz \fBsignal\fP(7).
+.TP 
+\fBEINVAL\fP
+\fIusec\fP nie jest mniejsze niż 1000000. (Dla systemów, dla których jest to
+traktowane jako błąd).
+.SH "ZGODNE Z"
+4.3BSD, POSIX.1\-2001.  POSIX.1\-2001 uznają tę funkcję jako przestarzałą,
+sugerując używanie zamiast niej funkcji \fBnanosleep\fP(2).  POSIX.1\-2008
+usuwa opis funkcji \fBusleep\fP().
+
+W oryginalnej implementacji BSD oraz w wersjach wcześniejszych niż 2.2.2
+biblioteki glibc  typem zwracanym przez tę funkcję był \fIvoid\fP. Wersja POSIX
+zwraca \fIint\fP, taki typ jest też zwracany przez glibc od wersji 2.2.2.
+
+SUSv2 i POSIX.1\-2001 dokumentują tylko błąd \fBEINVAL\fP.
+.SH UWAGI
+Typ \fIuseconds_t\fP jest typem unsigned integer, zdolnym do przechowywania
+liczb naturalnych z zakresu [0,1000000]. Programy będą bardziej przenośne,
+gdy nigdy nie użyją wprost tego typu. Proszę użyć
+.in +4n
+.nf
+.sp
+#include <unistd.h>
+\&...
+    unsigned int usecs;
+\&...
+    usleep(usecs);
+.fi
+.in
+.LP
+Interakcja tej funkcji z sygnałem SIGALRM oraz z innymi funkcjami
+licznikowymi, takimi jak \fBalarm\fP(2), \fBsleep\fP(3), \fBnanosleep\fP(2),
+\fBsetitimer\fP(2), \fBtimer_create\fP(2), \fBtimer_delete\fP(2),
+\fBtimer_getoverrun\fP(2), \fBtimer_gettime\fP(2), \fBtimer_settime\fP(2),
+\fBualarm\fP(3) jest nieokreślona.
+.SH "ZOBACZ TAKŻE"
+\fBalarm\fP(2), \fBgetitimer\fP(2), \fBnanosleep\fP(2), \fBselect\fP(2),
+\fBsetitimer\fP(2), \fBsleep\fP(3), \fBualarm\fP(3), \fBtime\fP(7)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorem polskiego tłumaczenia niniejszej strony podręcznika man jest
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

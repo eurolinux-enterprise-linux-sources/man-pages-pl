@@ -1,0 +1,201 @@
+.\" This man page is Copyright (C) 1999 Andi Kleen <ak@muc.de>.
+.\" Permission is granted to distribute possibly modified copies
+.\" of this page provided the header is included verbatim,
+.\" and in case of nontrivial modification author and date
+.\" of the modification is added to the header.
+.\" $Id: udp.7,v 1.7 2000/01/22 01:55:05 freitag Exp $
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1999 Andi Kleen 
+.\" Copyright © of Polish translation:
+.\" Andrzej Krzysztofowicz (PTM) <ankry@mif.pg.gda.pl>, 2003.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH UDP 7 2010\-06\-13 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+udp \- Protokół datagramów użytkownika dla IPv4
+.SH SKŁADNIA
+\fB#include <sys/socket.h>\fP
+.br
+\fB#include <netinet/in.h>\fP
+.sp
+\fBudp_socket = socket(AF_INET, SOCK_DGRAM, 0);\fP
+.SH OPIS
+Jest to implementacja opisanego w RFC\ 768 protokołu datagramów
+użytkownika. Implementuje usługę bezpołączeniowych, niepewnych pakietów
+datagramowych. Kolejność pakietów może się zmienić przed ich dotarciem do
+celu, mogą one też zostać powielone. UDP generuje i sprawdza sumy kontrolne,
+aby wykryć błędy transmisji.
+
+Podczas tworzenia gniazda UDP jego adresy: lokalny i zdalny są
+nieokreślone. Datagramy można wysyłać natychmiast za pomocą \fBsendto\fP(2)
+lub \fBsendmsg\fP(2), podając jako argument prawidłowy adres docelowy. Gdy dla
+gniazda jest wywołane \fBconnect\fP(2), ustawiany jest domyślny adres docelowy
+i od tego momentu można wysyłać datagramy za pomocą \fBsend\fP(2) lub
+\fBwrite\fP(2), nie podając adresu docelowego. Nadal możliwe jest wysyłanie do
+innych adresów docelowych, przekazując adres do funkcji \fBsendto\fP(2) lub
+\fBsendmsg\fP(2).  Aby odbierać pakiety, gniazdo może zostać najpierw
+przypisane do adresu lokalnego za pomocą \fBbind\fP(2). W przeciwnym przypadku,
+warstwa gniazd automatycznie przypisze wolny port lokalny spoza zakresu
+zdefiniowanego przez \fI/proc/sys/net/ipv4/ip_local_port_range\fP  i przypisze
+gniazdo do \fBINADDR_ANY\fP.
+
+Wszystkie operacje odbioru zwracają tylko jeden pakiet. Gdy pakiet jest
+mniejszy niż przekazany bufor, zwracane są tylko dane o rozmiarze pakietu;
+gdy pakiet jest większy niż bufor, pakiet jest obcinany i ustawiany jest
+znacznik \fBMSG_TRUNC\fP. \fBMSG_WAITALL\fP nie jest wspierane.
+
+Opcje IP mogą być wysyłane lub odbierane za pomocą opcji gniazda opisanych w
+\fBip\fP(7). Są one przetwarzane przez jądro tylko wtedy, gdy włączony jest
+odpowiedni parametr w \fI/proc\fP (ale nadal są przekazywane do programu
+użytkownika, nawet gdy kontrolka jest wyłączona). Zobacz \fBip\fP(7).
+
+Gdy przy wysyłaniu ustawiony jest znacznik \fBMSG_DONTROUTE\fP, adres docelowy
+musi odnosić się do lokalnego adresu interfejsu i pakiet jest wysyłany
+jedynie do tego interfejsu.
+
+Domyślnie UDP pod Linuksem wykrywa MTU (Maximum Transmission Unit)
+ścieżki. Oznacza to, że jądro utrzymuje informacje o MTU określonego
+docelowego adresu IP i zwraca \fBEMSGSIZE\fP, jeśli pakiet UDP jest większy niż
+MTU. W takim wypadku aplikacja powinna zmniejszyć rozmiar
+pakietu. Wykrywanie MTU ścieżki można wyłączyć ustawiając opcję
+\fBIP_MTU_DISCOVER\fP gniazda lub używając pliku
+\fI/proc/sys/net/ipv4/ip_no_pmtu_disc\fP, szczegóły opisano w \fBip\fP(7). Jeśli
+jest wyłączone, UDP podzieli wychodzące pakiety UDP, których rozmiar
+przekracza MTU, na mniejsze pakiety. Jednakże wyłączenie wykrywania MTU
+ścieżki nie jest zalecane, gdyż ma negatywny wpływ na wydajność i
+niezawodność.
+.SS "Format adresu"
+UDP stosuje format adresu IPv4 \fIsockaddr_in\fP opisany w \fBip\fP(7).
+.SS "Obsługa błędów"
+Wszystkie błędy krytyczne są przekazywane do programu użytkownika jako
+wartość zwracana, nawet gdy gniazdo nie jest połączone. Dotyczy to także
+błędów asynchronicznych otrzymywanych z sieci. Można też otrzymać błąd
+dotyczący pakietu wcześniej wysłanego z danego gniazda. To zachowanie różni
+się od wielu innych implementacji gniazd BSD, które nie przekazują żadnych
+błędów, gdy gniazdo nie jest połączone. Zachowanie Linuksa ma oparcie w
+\fBRFC\ 1122\fP.
+
+Dla zgodności z kodem odziedziczonym w wersjach 2.0 i 2.2 jądra Linuksa było
+możliwe ustawienie opcji \fBSOL_SOCKET\fP \fBSO_BSDCOMPAT\fP, aby otrzymywać błędy
+zdalne tylko wtedy, gdy gniazdo jest połączone (z wyjątkiem \fBEPROTO\fP i
+\fBEMSGSIZE\fP). Błędy wygenerowane lokalnie są zawsze przekazywane. Obsługa
+tej opcji została usunięta w kolejnych wersjach jądra; szczegóły można
+znaleźć w \fBsocket\fP(7).
+
+Gdy włączona jest opcja \fBIP_RECVERR\fP, wszystkie błędy są przechowywane w
+kolejce błędów gniazda i mogą być odczytywane za pomocą \fBrecvmsg\fP(2)  z
+ustawionym znacznikiem \fBMSG_ERRQUEUE\fP.
+.SS "Interfejsy /proc"
+Systemowe ustawienia parametrów można zmieniać, używając plików z katalogu
+\fI/proc/sys/net/ipv4/\fP.
+.TP 
+\fIudp_mem\fP (od Linuksa 2.6.25)
+Jest wektorem trzech liczb całkowitych zawierających numery stron, które
+mogą być kolejkowane  przez wszystkie gniazda UDP.
+.RS
+.TP  10
+\fImin\fP
+Do chwili przekroczenia podanej liczny stron, UDP nie przejmuje się zużyciem
+pamięci. Kiedy ilość pamięci zaalokowanej przez UDP przekroczy tę liczbę,
+UDP zaczyna zmniejszać zużycie pamięci.
+.TP 
+\fIpressure\fP
+Wartość została wprowadzona, naśladując \fItcp_mem\fP (patrz \fBtcp\fP(7))
+.TP 
+\fImax\fP
+Liczba stron, które mogą być kolejkowane przez wszystkie gniazda UDP.
+.RE
+.IP
+Domyślne wartości powyższych trzech pozycji są wyliczane podczas startu
+systemu na podstawie ilości dostępnej pamięci.
+.TP 
+\fIudp_rmem_min\fP (liczba całkowita; wartość domyślna: PAGE_SIZE; od Linuksa 2.6.25)
+Minimalny rozmiar, bajtach, bufora otrzymywania używanego z umiarem przez
+gniazda UDP. Każde gniazdo UDP jest w stanie użyć tego rozmiaru do
+otrzymywania danych, nawet jeśli całkowita liczba stron gniazd UDP
+przekroczy \fIudp_mem\fP.
+.TP 
+\fIudp_wmem_min\fP (liczba całkowita; wartość domyślna: PAGE_SIZE; od Linuksa 2.6.25)
+Minimalny rozmiar, bajtach, bufora wysyłania używanego z umiarem przez
+gniazda UDP. Każde gniazdo UDP jest w stanie użyć tego rozmiaru do wysyłania
+danych, nawet jeśli całkowita liczba stron gniazd UDP przekroczy \fIudp_mem\fP.
+.SS "Opcje gniazda"
+Aby ustawić lub pobrać opcję gniazda UDP, należy wywołać \fBgetsockopt\fP(2) w
+celu odczytania lub \fBsetsockopt\fP(2) w celu zapisania opcji, ustawiając
+argument poziomu opcji na \fBIPPROTO_UDP\fP.
+.TP 
+\fBUDP_CORK\fP (od Linuksa 2.5.44)
+.\" FIXME document UDP_ENCAP (new in kernel 2.5.67)
+.\" From include/linux/udp.h:
+.\" /* UDP encapsulation types */
+.\" #define UDP_ENCAP_ESPINUDP_NON_IKE      1 /* draft-ietf-ipsec-nat-t-ike-00/01 */
+.\" #define UDP_ENCAP_ESPINUDP      2 /* draft-ietf-ipsec-udp-encaps-06 */
+.\" #define UDP_ENCAP_L2TPINUDP     3 /* rfc2661 */
+Jeśli ta opcja zostanie włączona, to wszystkie dane na wyjściu tego gniazda
+są łączone do pojedynczego datagramu, który zostanie wysłany, kiedy ta opcja
+zostanie wyłączona. Opcja ta nie powinna być używana w kodzie, który w
+zamierzeniu ma być przenośny.
+.SS "Kontrolki systemowe (ioctl)"
+Do poniższych kontrolek wejścia/wyjścia można uzyskać dostęp za pomocą
+funkcji \fBioctl\fP(2).  Prawidłowa składnia to:
+.PP
+.RS
+.nf
+\fBint\fP\fI value\fP\fB;\fP
+\fIerror\fP\fB = ioctl(\fP\fIudp_socket\fP\fB, \fP\fIioctl_type\fP\fB, &\fP\fIvalue\fP\fB);\fP
+.fi
+.RE
+.TP 
+\fBFIONREAD\fP (\fBSIOCINQ\fP)
+.\" See http://www.securiteam.com/unixfocus/5KP0I15IKO.html
+.\" "GNUnet DoS (UDP Socket Unreachable)", 14 May 2006
+Pobiera jako argument wskaźnik do liczby całkowitej. Zwraca w tej zmiennej
+rozmiar następnego oczekującego datagramu lub 0, w razie braku oczekujących
+datagramów. \fBOstrzeżenie:\fP \fBFIONREAD\fP nie daje możliwości rozróżnienia
+przypadku braku datagramów od przypadku, w którym następny oczekujący
+datagram zawiera zero bajtów danych. Żeby rozróżnić takie sytuacje
+bezpieczniej jest używać \fBselect\fP(2), \fBpoll\fP(2) lub \fBepoll\fP(7).
+.TP 
+\fBTIOCOUTQ\fP (\fBSIOCOUTQ\fP)
+Zwraca liczbę bajtów danych w lokalnej kolejce pakietów wychodzących.
+Wspierane przez Linuksa 2.4 i późniejsze wersje.
+.PP
+Ponadto wspierane są wszystkie kontrolki wejścia/wyjścia opisane w \fBip\fP(7)
+i \fBsocket\fP(7).
+.SH BŁĘDY
+Przy wysyłaniu lub odbieraniu za pośrednictwem gniazd UDP mogą wystąpić
+wszystkie błędy zdefiniowane dla \fBsocket\fP(7) lub \fBip\fP(7).
+.TP 
+\fBECONNREFUSED\fP
+Z adresem docelowym nie był skojarzony żaden odbiorca. Może to być
+spowodowane przez uprzednie wysłanie pakietu za pośrednictwem danego
+gniazda.
+.SH WERSJE
+.\" .SH CREDITS
+.\" This man page was written by Andi Kleen.
+\fBIP_RECVERR\fP pojawiło się w Linuksie 2.2.
+.SH "ZOBACZ TAKŻE"
+\fBip\fP(7), \fBraw\fP(7), \fBsocket\fP(7), \fBudplite\fP(7)
+
+RFC\ 768 dla protokołu datagramów użytkownika.
+.br
+RFC\ 1122 dla wymagań hostów.
+.br
+RFC\ 1191 dla opisu badania MTU ścieżki.
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Andrzej Krzysztofowicz (PTM) <ankry@mif.pg.gda.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.

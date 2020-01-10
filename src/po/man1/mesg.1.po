@@ -1,0 +1,146 @@
+# Polish translation of mesg.1 man page
+# This file is distributed under the same license as original manpage
+# Copyright of the original manpage:
+# Copyright © 1997-2005 Miquel van Smoorenburg et al (GPL-2+)
+# Copyright © of Polish translation:
+# Przemek Borys (PTM) <pborys@dione.ids.pl>, 1999.
+# Michał Kułach <michal.kulach@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: manpages-pl\n"
+"POT-Creation-Date: 2012-06-17 15:28+0300\n"
+"PO-Revision-Date: 2012-06-17 15:42+0200\n"
+"Last-Translator: Michał Kułach <michal.kulach@gmail.com>\n"
+"Language-Team: Polish <manpages-pl-list@lists.sourceforge.net>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+
+#. type: TH
+#, no-wrap
+msgid "MESG"
+msgstr "MESG"
+
+#. type: TH
+#, no-wrap
+msgid "Feb 26, 2001"
+msgstr "26 lutego 2001"
+
+#. type: TH
+#, no-wrap
+msgid "Linux User's Manual"
+msgstr "Podręcznik użytkownika systemu Linux"
+
+#. }}}
+#. {{{  Name
+#. type: SH
+#, no-wrap
+msgid "NAME"
+msgstr "NAZWA"
+
+#. }}}
+#. {{{  Synopsis
+#. type: Plain text
+msgid "mesg - control write access to your terminal"
+msgstr "mesg - kontroluje dostęp zapisu do terminala"
+
+#. type: SH
+#, no-wrap
+msgid "SYNOPSIS"
+msgstr "SKŁADNIA"
+
+#. }}}
+#. {{{  Description
+#. type: Plain text
+msgid "B<mesg> [B<y>|B<n>]"
+msgstr "B<mesg> [B<y>|B<n>]"
+
+#. type: SH
+#, no-wrap
+msgid "DESCRIPTION"
+msgstr "OPIS"
+
+#. }}}
+#. {{{  Options
+#. type: Plain text
+msgid ""
+"B<Mesg> controls the access to your terminal by others.  It's typically used "
+"to allow or disallow other users to write to your terminal (see B<write>(1))."
+msgstr ""
+"B<Mesg> kontroluje dostęp do terminala użytkownika przez inne osoby. "
+"Zazwyczaj jest "
+"używany do zezwalania/zabraniania innym osobom pisania (przy użyciu B<write>"
+"(1)) na terminal."
+
+#. type: SH
+#, no-wrap
+msgid "OPTIONS"
+msgstr "OPCJE"
+
+#. type: IP
+#, no-wrap
+msgid "B<y>"
+msgstr "B<y>"
+
+#. type: Plain text
+msgid "Allow write access to your terminal."
+msgstr "Zezwala na dostęp do terminala."
+
+#. type: IP
+#, no-wrap
+msgid "B<n>"
+msgstr "B<n>"
+
+#. type: Plain text
+msgid "Disallow write access to your terminal."
+msgstr "Zabrania dostępu do terminala."
+
+#. }}}
+#. {{{  Notes
+#. type: Plain text
+msgid ""
+"If no option is given, B<mesg> prints out the current access state of your "
+"terminal."
+msgstr "Bez opcji, B<mesg> wypisuje bieżący stan terminala."
+
+#. type: SH
+#, no-wrap
+msgid "NOTES"
+msgstr "UWAGI"
+
+#. type: Plain text
+msgid ""
+"B<Mesg> assumes that its standard input is connected to your terminal. That "
+"also means that if you are logged in multiple times, you can get/set the "
+"mesg status of other sessions by using redirection.  For example \"mesg n "
+"E<lt> /dev/pts/46\"."
+msgstr ""
+"B<Mesg> zakłada, że jego standardowe wejście jest podłączone do terminala "
+"użytkownika. Oznacza to również, że przy wielokrotnym zalogowaniu można "
+"ustawić/pobrać status mesg innych sesji, za pomocą przekierowania. Przykład: "
+"\"mesg n E<lt> /dev/pts/46\"."
+
+#. type: SH
+#, no-wrap
+msgid "AUTHOR"
+msgstr "AUTOR"
+
+#. }}}
+#. {{{  See also
+#. type: Plain text
+msgid "Miquel van Smoorenburg (miquels@cistron.nl)"
+msgstr "Miquel van Smoorenburg (miquels@cistron.nl)"
+
+#. type: SH
+#, no-wrap
+msgid "SEE ALSO"
+msgstr "ZOBACZ TAKŻE"
+
+#. type: Plain text
+msgid "B<talk>(1), B<write>(1), B<wall>(1)"
+msgstr "B<talk>(1), B<write>(1), B<wall>(1)"
+

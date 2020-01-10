@@ -1,0 +1,276 @@
+.\" Copyright (c) 1993 Michael Haardt (michael@cantor.informatik.rwth-aachen.de),
+.\" Fri Apr  2 11:32:09 MET DST 1993
+.\"
+.\" This is free documentation; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" The GNU General Public License's references to "object code"
+.\" and "executables" are to be interpreted as the output of any
+.\" document formatting or typesetting system, including
+.\" intermediate and printed output.
+.\"
+.\" This manual is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public
+.\" License along with this manual; if not, write to the Free
+.\" Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111,
+.\" USA.
+.\"
+.\" Modified 1993-07-25 by Rik Faith (faith@cs.unc.edu)
+.\" Modified 1995-02-26 by Michael Haardt
+.\" Modified 1996-07-20 by Michael Haardt
+.\" Modified 1997-07-02 by Nicolás Lichtmaier <nick@debian.org>
+.\" Modified 2004-10-31 by aeb, following Gwenole Beauchesne
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.\" This file is distributed under the same license as original manpage
+.\" Copyright of the original manpage:
+.\" Copyright © 1993 Michael Haardt (GPL-2+)
+.\" Copyright © of Polish translation:
+.\" Przemek Borys (PTM) <pborys@dione.ids.pl>, 1998.
+.\" Robert Luberda <robert@debian.org>, 2006, 2012.
+.TH UTMP 5 2011\-09\-28 Linux "Podręcznik programisty Linuksa"
+.SH NAZWA
+utmp, wtmp \- zapisy o logowaniu
+.SH SKŁADNIA
+\fB#include <utmp.h>\fP
+.SH OPIS
+Plik \fIutmp\fP umożliwia znalezienie informacji o tym, kto w danej chwili
+korzysta z systemu. Z systemu może korzystać więcej użytkowników, ponieważ
+nie wszystkie programy zapisują informacje do pliku \fIutmp\fP.
+.PP
+\fBOstrzeżenie:\fP \fIutmp\fP nie może mieć ustawionego prawa do zapisywania dla
+wszystkich  użytkowników, ponieważ wiele programów systemowych (głupio)
+polega na jego integralności. Istnieje ryzyko sfałszowania logów systemowych
+i modyfikacji plików systemowych, jeśli \fIutmp\fP będzie modyfikowalny przez
+użytkowników innych niż właściciel tego pliku i użytkownicy należący do
+grupy, do której należy właściciel pliku.
+.PP
+Plik jest sekwencją wpisów, z których każdy ma postać następującej struktury
+\fIutmp\fPzdeklarowanej w pliku nagłówkowym \fI<utmp.h>\fP (należy zwrócić
+uwagę, że jest to jedna z wielu definicji; szczegóły zależą od wersji libc):
+.in +4n
+.nf
+.sp
+/* Wartości pola ut_field poniżej */
+
+#define EMPTY         0 /* Rekord nie zawiera poprawnej informacji
+                           (poprzednio znany jako UT_UNKNOWN pod Linuksem) */
+#define RUN_LVL       1 /* Zmiana systemowych poziomów uruchomieniowych
+                           patrz \fBinit\fP(8)) */
+#define BOOT_TIME     2 /* Czas uruchomienia systemu (w \fIut_tv\fP) */
+#define NEW_TIME      3 /* Czas po zmianie zegara systemowego
+                           (w \fIut_tv\fP) */
+#define OLD_TIME      4 /* Czas przed zmianą zegara systemowego
+                           (w \fIut_tv\fP) */
+#define INIT_PROCESS  5 /* Proces uruchomiony przez \fBinit\fP(8) */
+#define LOGIN_PROCESS 6 /* Lider sesji procesów logowania użytkownika */
+#define USER_PROCESS  7 /* Zwykły proces */
+#define DEAD_PROCESS  8 /* Proces zakończony */
+#define ACCOUNTING    9 /* Niezaimplementowane */
+
+#define UT_LINESIZE      32
+#define UT_NAMESIZE      32
+#define UT_HOSTSIZE     256
+
+struct exit_status {              /* Typ dla ut_exit, patrz poniżej */
+    short int e_termination;      /* Kod przerwania procesu */
+    short int e_exit;             /* Kod wyjścia procesu */
+};
+
+struct utmp {
+    short   ut_type;              /* Typ recordu */
+    pid_t   ut_pid;               /* ID procesu logowania */
+    char    ut_line[UT_LINESIZE]; /* Nazwa urządzenie terminala \- "/dev/" */
+    char    ut_id[4];             /* Przyrostek nazwy terminala,
+                                     lub ID linii \fBinittab\fP(5) */
+    char    ut_user[UT_NAMESIZE]; /* Nazwa użytkownika */
+    char    ut_host[UT_HOSTSIZE]; /* Nazwa komputera dla zdalnego logowania lub
+                                     wersja jądra dla komunikatów o zmianach
+                                     systemowych poziomów uruchomieniowych */
+    struct  exit_status ut_exit;  /* Kod zakończenia procesu oznaczonego
+                                     jako DEAD_PROCESS; nieużywane
+                                     przez \fBinit\fP(8) pod Linuksem */
+    /* Pola ut_session i ut_tv  muszą mieć ten sam rozmiar w środowiskach
+       32\- i 64\-bitowych. Pozwala to na współdzielenie plików i pamięci dzielone
+       pomiędzy aplikacjami 32\- i 64\-bitowymi */
+#if __WORDSIZE == 64 && defined __WORDSIZE_COMPAT32
+    int32_t ut_session;           /* ID sesji (\fBgetsid\fP(2)),
+                                     używane przez GUI */
+    struct {
+        int32_t tv_sec;           /* Sekundy */
+        int32_t tv_usec;          /* Mikrosekundy */
+    } ut_tv;                      /* Czas utworzenia wpisu */
+#else
+     long   ut_session;           /* ID sesji  */
+     struct timeval ut_tv;        /* Czas utworzenia wpisu */
+#endif
+
+    int32_t ut_addr_v6[4];        /* Adres internetowy zdalnego
+                                     komputera; adres IPv4 używa
+                                     tylko ut_addr_v6[0] */
+    char __unused[20];            /* Zarezerwowane na przyszłość */
+};
+
+/* Dla zgodności w wcześniejszymi wersjami */
+#define ut_name ut_user
+#ifndef _NO_UT_TIME
+#define ut_time ut_tv.tv_sec
+#endif
+#define ut_xtime ut_tv.tv_sec
+#define ut_addr ut_addr_v6[0]
+.sp
+.fi
+.in
+Struktura ta podaje nazwę pliku specjalnego skojarzonego z terminalem
+użytkownika, nazwę użytkownika i czas zalogowania w postaci \fBtime\fP(2). Pola
+tekstowe są zakończone przez bajt NULL ("\e0"), jeżeli są krótsze niż
+rozmiar pola.
+.PP
+Pierwsze wpisy, jakie kiedykolwiek utworzono, pochodzą od \fBinit\fP(8)
+przetwarzającego \fBinittab\fP(5). Zanim jakikolwiek wpis zostanie utworzony,
+\fBinit\fP(8) czyści utmp przez wpisanie \fBDEAD_PROCESS\fP do \fIut_type\fP,
+wypełniając \fIut_user\fP, \fIut_host\fP i \fIut_time\fP bajtami NULL we wszystkich
+rekordach, w których \fIut_type\fP nie jest ustawione na \fBDEAD_PROCESS\fP lub
+\fBRUN_LVL\fP i dla których nie istnieje proces o PID równym \fIut_pid\fP. Jeśli
+nie znajdzie się żaden pusty rekord z wymaganym \fIut_id\fP, \fBinit\fP(8) tworzy
+nowy. Wpisuje do niego \fIut_id\fP z inittab, \fIut_pid\fP i \fIut_time\fP nadaje
+bieżące wartości, a \fIut_type\fP nadaje wartość \fBINIT_PROCESS\fP.
+.PP
+\fBmingetty\fP(8) (lub \fBagetty\fP(8)) lokalizuje wpis po numerze PID, zmienia
+\fIut_type\fP na \fBLOGIN_PROCESS\fP, zmienia \fIut_time\fP, ustawia \fIut_line\fP i
+czeka na zestawienie połączenia. Po autentykacji użytkownika, \fBlogin\fP(1)
+zmienia \fIut_type\fP na \fBUSER_PROCESS\fP, zmienia \fIut_time\fP i nadaje wartości
+\fIut_host\fP i \fIut_addr\fP. Zależnie od wersji \fBmingetty\fP(8) (lub
+\fBagetty\fP(8)) i \fBlogin\fP(8), rekordy mogą być wyszukiwane na podstawie
+\fIut_line\fP zamiast preferowanego \fIut_pid\fP.
+.PP
+Gdy \fBinit\fP(8) stwierdzi, że proces zakończył pracę, to znajduje jego wpis
+utmp według \fIut_pid\fP, ustawia \fIut_type\fP na \fBDEAD_PROCESS\fP i wypełnia
+\fIut_user\fP, \fIut_host\fP oraz \fIut_time\fP bajtami NULL.
+.PP
+\fBxterm\fP(1) i inne emulatory terminali tworzą bezpośrednio rekord
+\fBUSER_PROCESS\fP i generują \fIut_id\fP, używając końcowej części nazwy
+terminala (czyli znaków występujących po \fI/dev/[pt]ty\fP). Jeśli znajdą dla
+tego ID terminala wpis \fBDEAD_PROCESS\fP, utylizują go, w innym wypadku tworzą
+nowy wpis. Jeśli mogą, zaznaczają go jako \fBDEAD_PROCESS\fP podczas kończenia
+pracy i jest zalecane, by zerowały również \fIut_line\fP, \fIut_time\fP,
+\fIut_user\fP oraz \fIut_host\fP.
+.PP
+\fBtelnetd\fP(8) ustawia wpis \fBLOGIN_PROCESS\fP i zostawia resztę programowi
+\fBlogin\fP(1). Po zakończeniu sesji telnetu, \fBtelnetd\fP(8) czyści utmp w
+opisany sposób.
+.PP
+Plik \fIwtmp\fP śledzi wszystkie zalogowania i wylogowania. Jego format jest
+taki jak \fIutmp\fP, poza tym, że pusta nazwa użytkownika wskazuje na jego
+wylogowanie z odpowiedniego terminala. Co więcej, nazwa terminala \fB~\fP w
+połączeniu z nazwą użytkownika \fBshutdown\fP czy \fBreboot\fP wskazuje na
+zamknięcie lub restart systemu, a para nazw terminali \fB|\fP/\fB}\fP zapisuje
+stary i nowy czas systemowy w przypadku jego zmiany za pomocą
+\fBdate\fP(1). \fIwtmp\fP jest obsługiwane przez \fBlogin\fP(1), \fBinit\fP(1) oraz
+niektóre wersje \fBgetty\fP(1) (np. \fBmingetty\fP(8) lub \fBagetty\fP(8)). Żaden z
+tych programów nie tworzy tego pliku, więc jeśli zostanie usunięty, zapisy
+do niego zostaną wyłączone.
+.SH PLIKI
+/var/run/utmp
+.br
+/var/log/wtmp
+.SH "ZGODNE Z"
+.PP
+POSIX.1 nie definiuje struktury \fIutmp\fP, ale ma \fIutmpx\fP z definicjami pól
+\fIut_type\fP, \fIut_pid\fP, \fIut_line\fP, \fIut_id\fP, \fIut_user\fP, and
+\fIut_tv\fP. POSIX.1 nie określa długości pól \fIut_line\fP i \fIut_user\fP.
+
+Pod Linuksem struktura \fIutmpx\fP jest zdefiniowana tak samo jak struktura
+\fIutmp\fP.
+.SS "Porównanie z historycznymi systemami"
+Wpisy utmp Linuksa nie są zgodne ani z v7/BSD ani z Systemem V, ale są
+mieszaniną tych dwóch.
+
+v7/BSD zawiera mniej pól; najważniejszym problemem jest brak \fIut_type\fP,
+który powoduje że natywne programy v7/BSD wyświetlają (na przykład) wpisy
+\fBDEAD_PROCESS\fP lub \fBLOGIN_PROCESS\fP. Co więcej, nie ma pliku
+konfiguracyjnego, który przydziela rekordy sesjom. BSD tak robi z powodu
+braku pola \fIut_id\fP.
+
+W Linuksie (tak jak w Systemie V), pole \fIut_id\fP rekordu nigdy nie ulega
+zmianie, kiedy raz zostanie mu nadana wartość, co rezerwuje ten rekord bez
+potrzeby pliku konfiguracyjnego. Czyszczenie \fIut_id\fP może prowadzić do
+sytuacji wyścigu, których skutkiem będą uszkodzone wpisy w utmp i
+potencjalne dziury w bezpieczeństwie. Czyszczenie wymienionych wyżej pól
+przez wypełnianie ich bajtami NULL nie jest wymagane przy semantyce Systemu
+V, lecz pozwala na uruchamianie wielu programów, które zakładają semantykę
+BSD, a nie modyfikują utmp. Linux używa konwencji BSD dla zawartości pola
+line, jak opisano wyżej.
+.PP
+.\" mtk: What is the referrent of "them" in the following sentence?
+.\" System V only uses the type field to mark them and logs
+.\" informative messages such as \fB"new time"\fP in the line field.
+System V nie ma pól \fIut_host\fP ani \fIut_addr_v6\fP.
+.SH UWAGI
+.PP
+W przeciwieństwie do wielu innych systemów, gdzie utmp można wyłączyć przez
+usunięcie tego pliku, w Linuksie utmp zawsze musi istnieć. W celu wyłączenia
+\fBwho\fP(1) należy jedynie uniemożliwić odczyt utmp dla całego świata.
+.PP
+Format pliku jest zależny od maszyny, więc jest zalecane, by plik był
+przetwarzany tylko na maszynie, na której został utworzony.
+.PP
+Proszę zauważyć, że na platformach, które mogą uruchamiać zarówno 32\-bitowe,
+jaki 64\-bitowe aplikacje (x86\-64, ppc64, s390x itd.), rozmiar pola \fIut_tv\fP
+musi być taki sam w trybie 32\-bitowym, co w 64\-bitowym. Podobnie jest z
+polami \fIut_session\fP i \fIut_time\fP, jeśli są obecne. Pozwala to na dzielenie
+plików danych i pamięci współdzielonej pomiędzy aplikacjami 32\- i
+64\-bitowymi. Osiągnięto to zmieniając typ \fIut_session\fP na \fIint32_t\fP, a typ
+\fIut_tv\fP na strukturę zawierającą dwa pola o typie \fIint32_t\fP: \fItv_sec\fP and
+\fItv_usec\fP. Ponieważ \fIut_tv\fP może nie być takie samo jak \fIstruct timeval\fP,
+to zamiast wywoływania:
+.in +4n
+.nf
+.sp
+gettimeofday((struct timeval *) &ut.ut_tv, NULL);
+.fi
+.in
+
+zaleca się używanie poniższej metody do ustawiania wartości w tym polu:
+.in +4n
+.nf
+.sp
+struct utmp ut;
+struct timeval tv;
+
+gettimeofday(&tv, NULL);
+ut.ut_tv.tv_sec = tv.tv_sec;
+ut.ut_tv.tv_usec = tv.tv_usec;
+.fi
+.in
+.PP
+Trzeba zwrócić uwagę, że struktura utmp z libc5 została zmieniona w libc6. Z
+tego powodu binaria korzystające ze starej struktury libc5 będą uszkadzać
+\fI/var/run/utmp\fP lub \fI/var/log/wtmp\fP.
+.SH BŁĘDY
+Ta strona podręcznika została oparta na stronie z wersji libc5, rzeczy mogą
+obecnie działać inaczej.
+.SH "ZOBACZ TAKŻE"
+\fBac\fP(1), \fBdate\fP(1), \fBlast\fP(1), \fBlogin\fP(1), \fBwho\fP(1), \fBgetutent\fP(3),
+\fBgetutmp\fP(3), \fBlogin\fP(3), \fBlogout\fP(3), \fBlogwtmp\fP(3), \fBupdwtmp\fP(3),
+\fBinit\fP(8)
+.SH "O STRONIE"
+Angielska wersja tej strony pochodzi z wydania 3.40 projektu Linux
+\fIman\-pages\fP. Opis projektu oraz informacje dotyczące zgłaszania błędów
+można znaleźć pod adresem http://www.kernel.org/doc/man\-pages/.
+.SH TŁUMACZENIE
+Autorami polskiego tłumaczenia niniejszej strony podręcznika man są:
+Przemek Borys (PTM) <pborys@dione.ids.pl>
+i
+Robert Luberda <robert@debian.org>.
+.PP
+Polskie tłumaczenie jest częścią projektu manpages-pl; uwagi, pomoc, zgłaszanie błędów na stronie http://sourceforge.net/projects/manpages-pl/. Jest zgodne z wersją \fB 3.40 \fPoryginału.
