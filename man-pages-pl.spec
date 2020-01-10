@@ -1,7 +1,7 @@
 Summary: Polish man pages from the Linux Documentation Project
 Name: man-pages-pl
 Version: 0.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 Epoch: 1
 # Multiple man pages are distributed under different licenses.
 License: GPL+ and BSD and MIT and GFDL
@@ -31,6 +31,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{_mandir}/pl/man*/*
 
 %changelog
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 1:0.3-4
+- Mass rebuild 2013-12-27
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:0.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
